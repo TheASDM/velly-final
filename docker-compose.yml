@@ -1,0 +1,82 @@
+version: '3.8'
+
+services:
+  # PostgreSQL database - this stores all your Wiki.js content
+  postgres:
+    image: postgres:15-alpine
+    container_name: dnd_postgres
+    environment:
+      # These credentials secure your database
+      POSTGRES_DB: wiki
+      POSTGRES_USER: wikijs
+      POSTGRES_PASSWORD: changeme_secure_password
+    volumes:
+      # This ensures your wiki data persists even if the container restarts
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - dnd-network
+    restart: unless-stopped
+
+  # Wiki.js - the main wiki engine for your campaign content
+  wikijs:
+    image: ghcr.io/requarks/wiki:2
+    container_name: dnd_wiki
+    depends_on:
+      - postgres
+    environment:
+      DB_TYPE: postgres
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USER: wikijs
+      DB_PASS: changeme_secure_password
+      DB_NAME: wiki
+    networks:
+      - dnd-network
+    restart: unless-stopped
+
+  # Chatbot service - this is your custom Claude-powered lore assistant
+  chatbot:
+    build: ./chatbot
+    container_name: dnd_chatbot
+    environment:
+      # You'll add your Anthropic API key here
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY}
+      NODE_ENV: production
+    volumes:
+      # This lets the chatbot read your campaign data files
+      - ./campaign-data:/app/data:ro
+    networks:
+      - dnd-network
+    restart: unless-stopped
+
+  # Nginx - the web server that handles all incoming requests and routes them
+  nginx:
+    image: nginx:alpine
+    container_name: dnd_nginx
+    ports:
+      # These ports expose your site to your network
+      - "8080:80"
+      - "8443:443"
+    volumes:
+      # Nginx config tells it how to route different URLs
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/conf.d:/etc/nginx/conf.d:ro
+      # Your static website files (homepage, CSS, JS)
+      - ./static-site:/usr/share/nginx/html:ro
+      # SSL certificates for HTTPS
+      - ./ssl:/etc/nginx/ssl:ro
+    depends_on:
+      - wikijs
+      - chatbot
+    networks:
+      - dnd-network
+    restart: unless-stopped
+
+# Docker networks let containers talk to each other by name
+networks:
+  dnd-network:
+    driver: bridge
+
+# Named volumes persist data between container restarts
+volumes:
+  postgres-data:

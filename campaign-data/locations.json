@@ -1,0 +1,48 @@
+{
+  "thornkeep": {
+    "name": "Thornkeep",
+    "type": "City",
+    "population": "~15,000",
+    "government": "City Council of Seven",
+    "description": "A fortified trading city built around an ancient keep. The city sprawls in concentric rings from the central fortress, with the merchant quarter bustling with activity and the outer districts housing workers and craftsmen.",
+    "districts": {
+      "keep_quarter": "The original fortress and seat of government. Houses the Council chambers and elite guard barracks.",
+      "merchant_quarter": "Wealthy district with shops, banks, and guildhalls. The Silver Market operates here daily.",
+      "temple_district": "Religious center with temples to Moradin, Pelor, and the Raven Queen.",
+      "artisan_quarter": "Home to craftsmen, workshops, and the Mage's Collegiate.",
+      "docks": "River port with warehouses and taverns. Rougher area with higher crime.",
+      "outer_ring": "Working-class residential areas and farmsteads."
+    },
+    "points_of_interest": [
+      "The Crimson Tavern (party's base of operations)",
+      "Silver Market (largest marketplace)",
+      "Hall of Seven (council building)",
+      "Mage's Collegiate (arcane academy)",
+      "Temple of the Forge (Moradin)",
+      "Blackstone Prison (notorious for housing dangerous criminals)"
+    ],
+    "current_events": [
+      "Crimson Hand operatives infiltrating the guard",
+      "Mysterious disappearances in the docks district",
+      "Council deadlocked on trade treaty with Silverpine",
+      "Refugees arriving from destroyed villages to the south"
+    ],
+    "recent_history": "Recently survived a major demon incursion (Session 42). Walls damaged but being repaired. Population on edge.",
+    "notable_npcs": ["Captain Mira Stonehelm", "Valdris", "Council Speaker Aldrich"]
+  },
+  "silverpine-forest": {
+    "name": "Silverpine Forest",
+    "type": "Wilderness",
+    "danger_level": "Moderate to High",
+    "description": "Ancient woodland north of Thornkeep known for its silver-barked pines and ethereal beauty. Home to both fey creatures and darker things that lurk in the shadows.",
+    "notable_features": [
+      "The Standing Stones (ancient druidic circle)",
+      "Whispering Grove (rumored to be a fey crossing)",
+      "Thornwood Village (small logging settlement)",
+      "The Deadwoods (corrupted section, avoid)"
+    ],
+    "encounters": "Fey creatures, wolves, bandits, occasional undead near the Deadwoods",
+    "current_events": "Increased fey activity. Some villagers report seeing lights and hearing music at night.",
+    "quests_connected": ["The Missing Loggers", "Investigate the Standing Stones"]
+  }
+}

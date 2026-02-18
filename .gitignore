@@ -1,0 +1,14 @@
+# Environment variables - NEVER commit real keys
+.env
+.env.local
+
+# SSL certificates
+ssl/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/

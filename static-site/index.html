@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Crimson Tavern Chronicles</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/chatbot.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Crimson+Text:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        
+        <aside class="sidebar-left">
+            <div class="logo-section">
+                <h1 class="site-title">The Crimson<br>Tavern Chronicles</h1>
+                <p class="campaign-tagline">A D&D 5e Campaign</p>
+            </div>
+
+            <nav class="main-nav">
+                <h3>Navigation</h3>
+                <ul>
+                    <li><a href="/" class="active">Home</a></li>
+                    <li><a href="/wiki">Campaign Wiki</a></li>
+                    <li><a href="sessions.html">Session Archive</a></li>
+                    <li><a href="resources.html">Resources</a></li>
+                </ul>
+
+                <h3>Wiki Sections</h3>
+                <ul>
+                    <li><a href="/wiki/npcs">NPCs</a></li>
+                    <li><a href="/wiki/locations">Locations</a></li>
+                    <li><a href="/wiki/factions">Factions</a></li>
+                    <li><a href="/wiki/lore">Lore & History</a></li>
+                    <li><a href="/wiki/items">Magic Items</a></li>
+                    <li><a href="/wiki/rules">House Rules</a></li>
+                </ul>
+            </nav>
+
+            <div class="next-session-widget">
+                <h3>Next Session</h3>
+                <div id="session-info">
+                    <div class="session-date">Loading...</div>
+                    <div class="countdown" id="countdown">--</div>
+                </div>
+            </div>
+        </aside>
+
+        <main class="content">
+            <section class="hero-update" id="latest-update">
+                <div class="loading">Loading latest update...</div>
+            </section>
+
+            <section class="upcoming-session-section">
+                <h2>Upcoming Session</h2>
+                <div id="upcoming-session" class="session-card">
+                    <div class="loading">Loading session details...</div>
+                </div>
+            </section>
+
+            <section class="updates-feed">
+                <h2>Recent Updates</h2>
+                <div id="recent-updates" class="updates-list">
+                    <div class="loading">Loading updates...</div>
+                </div>
+            </section>
+        </main>
+
+        <aside class="sidebar-right">
+            <div class="quick-links-widget">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="resources/character-sheets.html">Character Sheets</a></li>
+                    <li><a href="resources/maps.html">Campaign Maps</a></li>
+                    <li><a href="resources/handouts.html">Player Handouts</a></li>
+                    <li><a href="/wiki/rules">House Rules</a></li>
+                    <li><a href="https://www.dndbeyond.com" target="_blank">D&D Beyond ↗</a></li>
+                </ul>
+            </div>
+
+            <div class="recent-wiki-widget">
+                <h3>Recent Wiki Updates</h3>
+                <div id="recent-wiki-edits" class="wiki-edits-list">
+                    <div class="loading">Loading...</div>
+                </div>
+            </div>
+
+            <div class="party-roster-widget">
+                <h3>The Party</h3>
+                <ul class="party-list">
+                    <li><span class="char-name">Theron Lightbringer</span> - Paladin 8</li>
+                    <li><span class="char-name">Aria Shadowstep</span> - Rogue 8</li>
+                    <li><span class="char-name">Grim Ironheart</span> - Barbarian 8</li>
+                    <li><span class="char-name">Lyra Moonwhisper</span> - Cleric 8</li>
+                </ul>
+            </div>
+        </aside>
+    </div>
+
+    <div id="chatbot-container"></div>
+
+    <script src="js/main.js"></script>
+    <script src="js/updates.js"></script>
+    <script src="js/chatbot.js"></script>
+    <script src="js/countdown.js"></script>
+</body>
+</html>

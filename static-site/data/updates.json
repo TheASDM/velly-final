@@ -1,0 +1,70 @@
+{
+  "updates": [
+    {
+      "id": 47,
+      "title": "Session 47: The Fall of Thornkeep's Shadow",
+      "date": "2026-01-15",
+      "type": "session-recap",
+      "session": 47,
+      "content": "The party finally confronted Lord Malachar in his sanctum beneath the old cemetery. After a brutal battle involving summoned demons and blood magic, they managed to destroy his phylactery and end his reign of terror. However, they discovered disturbing evidence that he was merely a lieutenant in the Crimson Hand's hierarchy. Captain Mira was gravely wounded but stabilized. The city celebrates, but dark times may lie ahead.",
+      "tags": ["combat", "boss-fight", "crimson-hand", "thornkeep"],
+      "wikiLink": "/wiki/sessions/session-47"
+    },
+    {
+      "id": 46,
+      "title": "New NPC: Valdris the Blade",
+      "date": "2026-01-12",
+      "type": "npc-update",
+      "content": "Meet Valdris the Blade, the grizzled half-elf commander of the Silver Company mercenaries. A veteran of countless battles with mysterious connections to the old war, Valdris has become a valuable ally in the fight against the Crimson Hand. His tactical expertise proved crucial in planning the assault on Malachar's stronghold.",
+      "tags": ["npc", "silver-company", "ally"],
+      "wikiLink": "/wiki/npcs/valdris"
+    },
+    {
+      "id": 45,
+      "title": "Updated: Thornkeep City Map",
+      "date": "2026-01-10",
+      "type": "location-update",
+      "content": "The Thornkeep city map has been updated to reflect recent damage from the demon incursion. New locations include the ruined eastern gate, the temporary refugee camps, and Malachar's discovered sanctum beneath the cemetery. Check the resources page for the high-resolution version.",
+      "tags": ["maps", "thornkeep", "location"],
+      "wikiLink": "/wiki/locations/thornkeep"
+    },
+    {
+      "id": 44,
+      "title": "Session 46: Gathering Storms",
+      "date": "2026-01-08",
+      "type": "session-recap",
+      "session": 46,
+      "content": "The party gathered intelligence on Lord Malachar's whereabouts, infiltrated the Blackstone Prison to interrogate a captured Crimson Hand operative, and formed an alliance with Valdris and the Silver Company for the final assault. Captain Mira revealed she had been investigating the Crimson Hand independently.",
+      "tags": ["investigation", "alliance", "preparation"],
+      "wikiLink": "/wiki/sessions/session-46"
+    },
+    {
+      "id": 43,
+      "title": "House Rules Update: Critical Hits",
+      "date": "2026-01-05",
+      "type": "rules-update",
+      "content": "Updated the critical hit rules for more exciting combat. Critical hits now maximize base weapon damage dice, then roll additional damage dice and add modifiers. This makes crits feel more impactful while maintaining balance.",
+      "tags": ["rules", "combat"],
+      "wikiLink": "/wiki/rules"
+    },
+    {
+      "id": 42,
+      "title": "The Crimson Hand Faction Deep Dive",
+      "date": "2026-01-03",
+      "type": "lore-update",
+      "content": "Added comprehensive lore about the Crimson Hand to the wiki, including their known hierarchy, goals, methods, and the mysterious 'Crimson Ritual' they seem to be working toward. With Malachar's defeat, many questions remain about the true scope of their plans.",
+      "tags": ["lore", "crimson-hand", "factions"],
+      "wikiLink": "/wiki/factions/crimson-hand"
+    },
+    {
+      "id": 41,
+      "title": "Session 45: Defense of the Eastern Gate",
+      "date": "2026-01-01",
+      "type": "session-recap",
+      "session": 45,
+      "content": "A massive demon assault on Thornkeep's eastern gate tested the party to their limits. Working alongside Valdris, Captain Mira, and the city guard, they held the line against waves of fiendish attackers. Though victorious, the battle revealed that someone inside the city was deliberately weakening the defenses. The hunt for the traitor begins.",
+      "tags": ["combat", "demons", "thornkeep", "betrayal"],
+      "wikiLink": "/wiki/sessions/session-45"
+    }
+  ]
+}

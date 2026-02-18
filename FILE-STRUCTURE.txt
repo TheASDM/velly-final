@@ -1,0 +1,115 @@
+D&D CAMPAIGN SITE - FILE STRUCTURE
+====================================
+
+Place these files in the following structure:
+
+dnd-campaign-site/
+├── .env                                    (Copy .env.example and add your API key)
+├── .env.example                            ✓ Provided
+├── .gitignore                              ✓ Provided
+├── README.md                               ✓ Provided
+├── SETUP.md                                ✓ Provided
+├── docker-compose.yml                      ✓ Provided
+├── deploy.sh                               ✓ Provided
+│
+├── nginx/
+│   ├── nginx.conf                          ✓ Provided as nginx-nginx.conf
+│   └── conf.d/
+│       └── dnd-site.conf                   ✓ Provided as nginx-dnd-site.conf
+│
+├── chatbot/
+│   ├── Dockerfile                          ✓ Provided as chatbot-Dockerfile
+│   ├── package.json                        ✓ Provided as chatbot-package.json
+│   └── index.js                            ✓ Provided as chatbot-index.js
+│
+├── campaign-data/
+│   ├── npcs.json                           ✓ Provided as campaign-data-npcs.json
+│   ├── locations.json                      ✓ Provided as campaign-data-locations.json
+│   ├── factions.json                       ✓ Provided as campaign-data-factions.json
+│   ├── sessions.json                       ✓ Provided as campaign-data-sessions.json
+│   ├── items.json                          ✓ Provided as campaign-data-items.json
+│   ├── lore.txt                            ✓ Provided as campaign-data-lore.txt
+│   └── house-rules.txt                     ✓ Provided as campaign-data-house-rules.txt
+│
+└── static-site/
+    ├── index.html                          ✓ Provided as static-site-index.html
+    ├── sessions.html                       ✓ Provided
+    ├── resources.html                      ✓ Provided
+    ├── css/
+    │   ├── style.css                       ✓ Provided as static-site-style.css
+    │   └── chatbot.css                     ✓ Provided as static-site-chatbot.css
+    ├── js/
+    │   ├── main.js                         ✓ Provided as static-site-main.js
+    │   ├── updates.js                      ✓ Provided as static-site-updates.js
+    │   ├── chatbot.js                      ✓ Provided as static-site-chatbot.js
+    │   └── countdown.js                    ✓ Provided as static-site-countdown.js
+    ├── data/
+    │   └── updates.json                    ✓ Provided as static-site-updates.json
+    └── resources/
+        └── maps/                           (Create this directory for your map images)
+
+
+SETUP INSTRUCTIONS
+==================
+
+1. Create the directory structure:
+   mkdir -p dnd-campaign-site/{nginx/conf.d,chatbot,campaign-data,static-site/{css,js,data,resources/maps},ssl}
+
+2. Download all files from this artifact
+
+3. Rename and move files to match the structure above:
+   - Remove the prefixes (e.g., nginx-nginx.conf → nginx/nginx.conf)
+   - Place each file in its proper directory
+
+4. Copy .env.example to .env:
+   cp .env.example .env
+
+5. Edit .env and add your Anthropic API key
+
+6. Make deploy.sh executable:
+   chmod +x deploy.sh
+
+7. Run deployment:
+   ./deploy.sh
+
+8. Access your site at http://localhost:8080
+
+
+QUICK RENAMING COMMANDS
+========================
+
+If you download all files to a folder called "downloaded", run:
+
+mv downloaded/.env.example .env.example
+mv downloaded/.gitignore .gitignore
+mv downloaded/README.md README.md
+mv downloaded/SETUP.md SETUP.md
+mv downloaded/docker-compose.yml docker-compose.yml
+mv downloaded/deploy.sh deploy.sh
+
+mv downloaded/nginx-nginx.conf nginx/nginx.conf
+mv downloaded/nginx-dnd-site.conf nginx/conf.d/dnd-site.conf
+
+mv downloaded/chatbot-Dockerfile chatbot/Dockerfile
+mv downloaded/chatbot-package.json chatbot/package.json
+mv downloaded/chatbot-index.js chatbot/index.js
+
+mv downloaded/campaign-data-npcs.json campaign-data/npcs.json
+mv downloaded/campaign-data-locations.json campaign-data/locations.json
+mv downloaded/campaign-data-factions.json campaign-data/factions.json
+mv downloaded/campaign-data-sessions.json campaign-data/sessions.json
+mv downloaded/campaign-data-items.json campaign-data/items.json
+mv downloaded/campaign-data-lore.txt campaign-data/lore.txt
+mv downloaded/campaign-data-house-rules.txt campaign-data/house-rules.txt
+
+mv downloaded/static-site-index.html static-site/index.html
+mv downloaded/sessions.html static-site/sessions.html
+mv downloaded/resources.html static-site/resources.html
+mv downloaded/static-site-style.css static-site/css/style.css
+mv downloaded/static-site-chatbot.css static-site/css/chatbot.css
+mv downloaded/static-site-main.js static-site/js/main.js
+mv downloaded/static-site-updates.js static-site/js/updates.js
+mv downloaded/static-site-chatbot.js static-site/js/chatbot.js
+mv downloaded/static-site-countdown.js static-site/js/countdown.js
+mv downloaded/static-site-updates.json static-site/data/updates.json
+

@@ -1,0 +1,49 @@
+{
+  "valdris-the-blade": {
+    "name": "Valdris the Blade",
+    "race": "Half-Elf",
+    "class": "Fighter (Battle Master)",
+    "level": 12,
+    "status": "Alive",
+    "current_location": "Thornkeep",
+    "affiliation": "Silver Company Mercenaries",
+    "description": "A grizzled veteran with silver-streaked black hair and numerous scars. Known for his tactical brilliance and unwavering loyalty to his comrades. Wields a masterwork longsword with mysterious runes.",
+    "personality": "Stoic and professional in combat, surprisingly jovial over drinks. Has a soft spot for orphans and strays.",
+    "first_appearance": "Session 23",
+    "notable_moments": [
+      "Led the defense of Thornkeep's eastern gate (Session 45)",
+      "Revealed his connection to the old war (Session 38)",
+      "Trained the party in advanced combat maneuvers (Session 31)"
+    ],
+    "relationships": {
+      "allies": ["Captain Mira Stonehelm", "The Party", "Silver Company"],
+      "enemies": ["The Crimson Hand", "Lord Malachar"],
+      "complicated": ["Lady Seraphine (former lover)"]
+    },
+    "secrets": "Was once a member of the King's Shadow Guard before a mission went wrong",
+    "current_quest": "Investigating Crimson Hand movements in the region"
+  },
+  "mira-stonehelm": {
+    "name": "Captain Mira Stonehelm",
+    "race": "Dwarf",
+    "class": "Paladin of Moradin",
+    "level": 10,
+    "status": "Alive",
+    "current_location": "Thornkeep Garrison",
+    "affiliation": "Thornkeep Guard",
+    "description": "Stout and sturdy with braided copper hair and a magnificent beard adorned with small steel rings. Wears battered but well-maintained plate armor.",
+    "personality": "By-the-book and honorable, but not above bending rules when it serves the greater good. Deeply devout but questions her god's silence lately.",
+    "first_appearance": "Session 12",
+    "notable_moments": [
+      "Arrested the party for unauthorized magic use (Session 12)",
+      "Became party ally after they saved her unit (Session 15)",
+      "Led the evacuation during the demon attack (Session 42)"
+    ],
+    "relationships": {
+      "allies": ["The Party", "Valdris", "Thornkeep Council"],
+      "enemies": ["Corruption in the city guard"],
+      "complicated": ["Father (estranged)"]
+    },
+    "current_quest": "Rooting out corrupt guards working with the Crimson Hand"
+  }
+}
