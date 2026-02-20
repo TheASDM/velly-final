@@ -3,105 +3,182 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Crimson Tavern Chronicles</title>
+    <title>Valley of Shadows — Venturia &amp; Vallombrosa</title>
+    <link rel="icon" type="image/png" href="images/valleyofshadowsmaskicon2.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=IM+Fell+English:ital@0;1&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/chatbot.css">
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Crimson+Text:wght@400;600&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="container">
-        
-        <aside class="sidebar-left">
-            <div class="logo-section">
-                <h1 class="site-title">The Crimson<br>Tavern Chronicles</h1>
-                <p class="campaign-tagline">A D&D 5e Campaign</p>
+
+    <!-- ── Navigation ── -->
+    <nav class="site-nav">
+        <div class="nav-inner">
+            <a href="/" class="nav-brand">
+                <img src="images/maskicon2.png" alt="Valley of Shadows" class="nav-logo">
+                <span class="nav-title">Valley of Shadows</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="/" class="active">Home</a></li>
+                <li><a href="/wiki">The Chronicle</a></li>
+                <li><a href="sessions.html">Sessions</a></li>
+                <li><a href="resources.html">Resources</a></li>
+            </ul>
+            <div class="nav-session">
+                <span class="nav-session-label">Next Gathering</span>
+                <span id="nav-countdown">—</span>
             </div>
+        </div>
+    </nav>
 
-            <nav class="main-nav">
-                <h3>Navigation</h3>
-                <ul>
-                    <li><a href="/" class="active">Home</a></li>
-                    <li><a href="/wiki">Campaign Wiki</a></li>
-                    <li><a href="sessions.html">Session Archive</a></li>
-                    <li><a href="resources.html">Resources</a></li>
-                </ul>
+    <!-- ── Hero ── -->
+    <header class="hero">
+        <div class="hero-bg"></div>
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <img src="images/maskiconcoloredwithtext.png"
+                 alt="Vallombrosa — A Valley of Shadows"
+                 class="hero-logo">
+            <p class="hero-tagline">Tales from Venturia &amp; Vallombrosa</p>
+        </div>
+        <div class="hero-scroll-hint">&#8595;</div>
+    </header>
 
-                <h3>Wiki Sections</h3>
-                <ul>
-                    <li><a href="/wiki/npcs">NPCs</a></li>
-                    <li><a href="/wiki/locations">Locations</a></li>
-                    <li><a href="/wiki/factions">Factions</a></li>
-                    <li><a href="/wiki/lore">Lore & History</a></li>
-                    <li><a href="/wiki/items">Magic Items</a></li>
-                    <li><a href="/wiki/rules">House Rules</a></li>
-                </ul>
-            </nav>
-
-            <div class="next-session-widget">
-                <h3>Next Session</h3>
-                <div id="session-info">
-                    <div class="session-date">Loading...</div>
-                    <div class="countdown" id="countdown">--</div>
-                </div>
-            </div>
-        </aside>
-
-        <main class="content">
-            <section class="hero-update" id="latest-update">
-                <div class="loading">Loading latest update...</div>
-            </section>
-
-            <section class="upcoming-session-section">
-                <h2>Upcoming Session</h2>
-                <div id="upcoming-session" class="session-card">
-                    <div class="loading">Loading session details...</div>
-                </div>
-            </section>
-
-            <section class="updates-feed">
-                <h2>Recent Updates</h2>
-                <div id="recent-updates" class="updates-list">
-                    <div class="loading">Loading updates...</div>
-                </div>
-            </section>
-        </main>
-
-        <aside class="sidebar-right">
-            <div class="quick-links-widget">
-                <h3>Quick Links</h3>
-                <ul>
-                    <li><a href="resources/character-sheets.html">Character Sheets</a></li>
-                    <li><a href="resources/maps.html">Campaign Maps</a></li>
-                    <li><a href="resources/handouts.html">Player Handouts</a></li>
-                    <li><a href="/wiki/rules">House Rules</a></li>
-                    <li><a href="https://www.dndbeyond.com" target="_blank">D&D Beyond ↗</a></li>
-                </ul>
-            </div>
-
-            <div class="recent-wiki-widget">
-                <h3>Recent Wiki Updates</h3>
-                <div id="recent-wiki-edits" class="wiki-edits-list">
-                    <div class="loading">Loading...</div>
-                </div>
-            </div>
-
-            <div class="party-roster-widget">
-                <h3>The Party</h3>
-                <ul class="party-list">
-                    <li><span class="char-name">Theron Lightbringer</span> - Paladin 8</li>
-                    <li><span class="char-name">Aria Shadowstep</span> - Rogue 8</li>
-                    <li><span class="char-name">Grim Ironheart</span> - Barbarian 8</li>
-                    <li><span class="char-name">Lyra Moonwhisper</span> - Cleric 8</li>
-                </ul>
-            </div>
-        </aside>
+    <!-- ── Full-width ornament divider ── -->
+    <div class="ornament-band">
+        <img src="images/masqueradeline.png" alt="" class="ornament-line">
     </div>
 
+    <!-- ── Main Content ── -->
+    <main class="site-main">
+        <div class="content-grid">
+
+            <!-- Left Sidebar -->
+            <aside class="sidebar sidebar-left">
+
+                <div class="widget countdown-widget">
+                    <h3 class="widget-title">Next Gathering</h3>
+                    <div id="session-info">
+                        <div class="session-date">Loading...</div>
+                        <div class="countdown-display" id="countdown">—</div>
+                    </div>
+                </div>
+
+                <div class="widget">
+                    <h3 class="widget-title">Session Details</h3>
+                    <div id="upcoming-session">
+                        <p class="loading-text">Loading...</p>
+                    </div>
+                </div>
+
+                <div class="widget party-widget">
+                    <h3 class="widget-title">The Company</h3>
+                    <ul class="party-list">
+                        <li>
+                            <span class="char-name">Theron Lightbringer</span>
+                            <span class="char-class">Paladin 8</span>
+                        </li>
+                        <li>
+                            <span class="char-name">Aria Shadowstep</span>
+                            <span class="char-class">Rogue 8</span>
+                        </li>
+                        <li>
+                            <span class="char-name">Grim Ironheart</span>
+                            <span class="char-class">Barbarian 8</span>
+                        </li>
+                        <li>
+                            <span class="char-name">Lyra Moonwhisper</span>
+                            <span class="char-class">Cleric 8</span>
+                        </li>
+                    </ul>
+                </div>
+
+            </aside>
+
+            <!-- Center Content -->
+            <section class="center-content">
+
+                <article class="hero-update-card" id="latest-update">
+                    <p class="loading-text">Consulting the archives&hellip;</p>
+                </article>
+
+                <div class="css-divider"><span>&#10022;</span></div>
+
+                <h2 class="section-heading">Recent Dispatches</h2>
+                <div class="updates-grid" id="recent-updates">
+                    <p class="loading-text">Loading dispatches&hellip;</p>
+                </div>
+
+            </section>
+
+            <!-- Right Sidebar -->
+            <aside class="sidebar sidebar-right">
+
+                <div class="widget">
+                    <h3 class="widget-title">The Chronicle</h3>
+                    <ul class="wiki-nav-list">
+                        <li><a href="/wiki"><span class="wni">&#10022;</span>Campaign Wiki</a></li>
+                        <li><a href="/wiki/npcs"><span class="wni">&#127917;</span>Persons of Note</a></li>
+                        <li><a href="/wiki/locations"><span class="wni">&#128205;</span>Locations</a></li>
+                        <li><a href="/wiki/factions"><span class="wni">&#9876;</span>Factions &amp; Houses</a></li>
+                        <li><a href="/wiki/lore"><span class="wni">&#128220;</span>Lore &amp; History</a></li>
+                        <li><a href="/wiki/items"><span class="wni">&#10024;</span>Relics &amp; Items</a></li>
+                        <li><a href="/wiki/rules"><span class="wni">&#128218;</span>House Rules</a></li>
+                    </ul>
+                </div>
+
+                <div class="widget">
+                    <h3 class="widget-title">Recent Chronicle Edits</h3>
+                    <div id="recent-wiki-edits" class="wiki-edits-list">
+                        <p class="loading-text">Loading&hellip;</p>
+                    </div>
+                </div>
+
+                <div class="widget">
+                    <h3 class="widget-title">Quick Links</h3>
+                    <ul class="quick-links-list">
+                        <li><a href="resources/character-sheets.html">Character Sheets</a></li>
+                        <li><a href="resources/maps.html">Campaign Maps</a></li>
+                        <li><a href="resources/handouts.html">Player Handouts</a></li>
+                        <li><a href="/wiki/rules">House Rules</a></li>
+                        <li><a href="https://www.dndbeyond.com" target="_blank">D&amp;D Beyond &#8599;</a></li>
+                    </ul>
+                </div>
+
+            </aside>
+
+        </div>
+    </main>
+
+    <!-- ── Footer ── -->
+    <footer class="site-footer">
+        <div class="footer-inner">
+            <img src="images/valleyofshadowsmaskicon2.png" alt="" class="footer-icon">
+            <p class="footer-title">Valley of Shadows</p>
+            <p class="footer-sub">Tales from Venturia &amp; Vallombrosa &mdash; A D&amp;D 5e Campaign</p>
+        </div>
+    </footer>
+
+    <!-- ── Chatbot ── -->
     <div id="chatbot-container"></div>
 
     <script src="js/main.js"></script>
     <script src="js/updates.js"></script>
     <script src="js/chatbot.js"></script>
     <script src="js/countdown.js"></script>
+    <script>
+        // Mirror countdown into nav bar
+        document.addEventListener('DOMContentLoaded', () => {
+            const navEl = document.getElementById('nav-countdown');
+            const cdEl  = document.getElementById('countdown');
+            if (!navEl || !cdEl) return;
+            const sync = () => { navEl.textContent = cdEl.textContent || '—'; };
+            new MutationObserver(sync).observe(cdEl, { childList: true, characterData: true, subtree: true });
+            sync();
+        });
+    </script>
+
 </body>
 </html>
