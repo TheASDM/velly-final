@@ -1,0 +1,56 @@
+THE CRIMSON TAVERN CHRONICLES - HOUSE RULES
+
+= CHARACTER CREATION =
+- Standard array or point buy (no rolling stats)
+- All official WOTC content allowed, Unearthed Arcana with DM approval
+- Start at level 3 (new characters join at party level -1)
+- Free feat at 1st level
+- Background must tie into campaign world
+
+= RESTING =
+- Short rest: 1 hour, maximum 2 per long rest
+- Long rest: 8 hours, must be in safe location
+- Gritty realism for downtime: short rest = 8 hours, long rest = 7 days in town
+
+= COMBAT =
+- Flanking grants advantage
+- Drinking potions: bonus action for yourself, action to give to others
+- Critical hits: maximize base damage dice, then roll damage dice and add
+- Death saves are secret (DM rolls them)
+- Revivify: Each use reduces max HP by 1d10 permanently until Greater Restoration
+
+= MAGIC =
+- Healing potions: roll or take average, your choice
+- Identify: 10 minutes, no spell slot required (ritual only)
+- Spell scrolls: Can attempt casting from higher level scrolls with DC 10 + spell level Arcana check
+- Counterspell: must identify spell being cast (reaction + Arcana check)
+
+= EXPLORATION =
+- Passive Perception used for ambushes/traps
+- Active Investigation for searching specific areas
+- Travel pace matters: fast (-5 passive Perception), slow (+5)
+- Survival checks to avoid getting lost, find food/water, track
+
+= SOCIAL =
+- Social skills don't control player characters
+- Persuasion/Deception/Intimidation set DC for NPC responses
+- Insight reveals emotional state and truthfulness, not mind reading
+- Roleplay can grant advantage/disadvantage on social checks
+
+= DOWNTIME =
+- Characters can pursue downtime activities between sessions
+- Crafting, research, carousing, training, etc.
+- See DM for specific rules and costs
+
+= MISCELLANEOUS =
+- Inspiration carries over between sessions (max 1)
+- Milestone leveling (no XP tracking in session-by-session)
+- Loot is distributed however party decides
+- Players narrate killing blows in combat
+- Rule of Cool: If it's awesome and makes sense, we'll make it work
+
+= DEATH AND CONSEQUENCES =
+- Character death is possible and meaningful
+- Dead characters can be buried, and their legacy honored
+- New characters inherit half the previous character's magic items (party's choice which ones)
+- The story goes on

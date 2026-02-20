@@ -1,0 +1,34 @@
+{
+  "sword-of-the-silver-flame": {
+    "name": "Sword of the Silver Flame",
+    "type": "Weapon (Longsword)",
+    "rarity": "Very Rare",
+    "requires_attunement": true,
+    "description": "A beautifully crafted longsword with a silver blade that seems to emit a soft glow. The crossguard is shaped like flames, and ancient runes run along the fuller.",
+    "properties": [
+      "+2 weapon",
+      "Deals an extra 2d6 radiant damage to fiends and undead",
+      "Sheds bright light in a 15-foot radius and dim light for an additional 15 feet",
+      "Once per day, can cast Daylight (spell save DC 15)"
+    ],
+    "history": "Forged by the Order of the Silver Flame centuries ago during the Demon Wars. Lost when the order was destroyed. Recently recovered from Malachar's hoard.",
+    "current_owner": "Theron (Paladin)",
+    "attunement_requirement": "Must be a creature of good alignment"
+  },
+  "cloak-of-whispers": {
+    "name": "Cloak of Whispers",
+    "type": "Wondrous Item",
+    "rarity": "Rare",
+    "requires_attunement": true,
+    "description": "A dark cloak that seems to absorb light. When worn, the wearer's movements make no sound, and they seem to blend into shadows.",
+    "properties": [
+      "Advantage on Stealth checks",
+      "Can cast Invisibility once per long rest",
+      "While in dim light or darkness, can use bonus action to teleport up to 30 feet to an unoccupied space you can see that is also in dim light or darkness"
+    ],
+    "curse": "The cloak whispers secrets and rumors to its wearer. Make a DC 12 Wisdom saving throw each day or become convinced someone you trust is plotting against you.",
+    "history": "Created by a paranoid spymaster. Has passed through many hands, often ending in betrayal and bloodshed.",
+    "current_owner": "Aria (Rogue)",
+    "attunement_requirement": "None, but the curse affects all wearers"
+  }
+}
