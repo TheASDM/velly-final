@@ -104,10 +104,10 @@ async function loadRecentWikiEdits() {
     const container = document.getElementById('recent-wiki-edits');
     if (!container) return;
     const recentEdits = [
-        { title: 'Valdris the Blade', url: '/wiki/npcs/valdris', time: '2 hours ago' },
-        { title: 'Thornkeep Districts', url: '/wiki/locations/thornkeep', time: '1 day ago' },
-        { title: 'The Crimson Hand', url: '/wiki/factions/crimson-hand', time: '2 days ago' },
-        { title: 'Session 47 Recap', url: '/wiki/sessions/session-47', time: '3 days ago' }
+        { title: 'Valdris the Blade', url: 'https://codex.valleyofshadows.wiki/npcs/valdris', time: '2 hours ago' },
+        { title: 'Thornkeep Districts', url: 'https://codex.valleyofshadows.wiki/locations/thornkeep', time: '1 day ago' },
+        { title: 'The Crimson Hand', url: 'https://codex.valleyofshadows.wiki/factions/crimson-hand', time: '2 days ago' },
+        { title: 'Session 47 Recap', url: 'https://codex.valleyofshadows.wiki/sessions/session-47', time: '3 days ago' }
     ];
     container.innerHTML = recentEdits.map(edit => `
         <div class="wiki-edit-item">

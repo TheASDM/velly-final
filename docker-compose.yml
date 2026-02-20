@@ -56,9 +56,7 @@ services:
     image: nginx:alpine
     container_name: dnd_nginx
     ports:
-      # These ports expose your site to your network
       - "8080:80"
-      - "8443:443"
     volumes:
       # Nginx config tells it how to route different URLs
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
