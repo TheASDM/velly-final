@@ -1,6 +1,6 @@
 class LoreMasterChatbot {
     constructor() {
-        this.chatApiUrl = '/api/chat';
+        this.chatApiUrl = window.LOREMASTER_API_URL || '/api/chat';
         this.conversationHistory = [];
         this.isOpen = false;
         this.isWaitingForResponse = false;
