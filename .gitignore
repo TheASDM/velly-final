@@ -1,6 +1,7 @@
 # Environment variables - NEVER commit real keys
 .env
 .env.local
+.githubkey
 
 # SSL certificates
 ssl/
