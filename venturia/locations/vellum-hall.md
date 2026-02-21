@@ -1,7 +1,7 @@
 ---
 title: The Vellum Hall
 description: Venturia's public library — independent of VAVA, open to any citizen, and home to a Restricted Stacks that everyone knows exists, whose waiting list moves on criteria no one has ever been able to articulate.
-tags: [market-tiers, locations, vellum-hall, library, knowledge, research, character-hooks]
+tags: "market-tiers, locations, vellum-hall, library, knowledge, research, character-hooks"
 ---
 
 # The Vellum Hall

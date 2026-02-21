@@ -1,7 +1,7 @@
 ---
 title: The Tiered Gardens
 description: Terraced public gardens cascading down the hillside between the Market Tiers and High Quarter, tended by a guild with centuries of techniques — where ancient trees predate the city and certain sections are closed for reasons no one fully explains.
-tags: [locations, tiered-gardens, nature, guilds, between-tiers, mystery, character-hooks]
+tags: "locations, tiered-gardens, nature, guilds, between-tiers, mystery, character-hooks"
 ---
 
 # The Tiered Gardens

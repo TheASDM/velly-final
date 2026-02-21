@@ -1,7 +1,7 @@
 ---
 title: The Ferriers' Confraternity
 description: An ancient guild of gondoliers operating from a boathouse that doesn't appear on any map — they know every canal in Venturia, including the ones that aren't supposed to exist.
-tags: [harbor-district, factions, locations, canals, ferriers, mystery, character-hooks]
+tags: "harbor-district, factions, locations, canals, ferriers, mystery, character-hooks"
 ---
 
 # The Ferriers' Confraternity

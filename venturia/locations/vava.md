@@ -1,7 +1,7 @@
 ---
 title: Venturia Academy of Veiled Arts
 description: Venturia's premier institution of magical study, where contract magic has teeth, the library's deepest levels require special permission, and the city's peculiarities make certain research considerably easier.
-tags: [vava, high-quarter, factions, magic, locations, academy, character-hooks]
+tags: "vava, high-quarter, factions, magic, locations, academy, character-hooks"
 ---
 
 # Venturia Academy of Veiled Arts

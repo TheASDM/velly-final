@@ -1,7 +1,7 @@
 ---
 title: The Undertow
 description: A gambling den built into the harbor cliffs where the house accepts memories, secrets, and future favors as stakes — and whose true owner has possibly been the same person for two hundred years.
-tags: [harbor-district, factions, locations, gambling, undertow, mystery, character-hooks]
+tags: "harbor-district, factions, locations, gambling, undertow, mystery, character-hooks"
 ---
 
 # The Undertow

@@ -1,7 +1,7 @@
 ---
 title: The Penny Shrine
 description: A shrine to no particular deity, wedged between Harbor District warehouses — centuries of accumulated offerings from sailors and desperate people, tended by a keeper who carefully avoids making any claims about whether the prayers are heard.
-tags: [harbor-district, locations, penny-shrine, religion, mystery, character-hooks]
+tags: "harbor-district, locations, penny-shrine, religion, mystery, character-hooks"
 ---
 
 # The Penny Shrine

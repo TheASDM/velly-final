@@ -1,7 +1,7 @@
 ---
 title: The Amaranth Theater
 description: Venturia's grand cultural institution — three centuries of performance, a Masquerade tradition that may have opinions of its own, and dressing room mirrors that veterans learn not to look into too long.
-tags: [high-quarter, factions, locations, theater, masquerade, culture, character-hooks]
+tags: "high-quarter, factions, locations, theater, masquerade, culture, character-hooks"
 ---
 
 # The Amaranth Theater

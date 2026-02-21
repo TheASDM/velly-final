@@ -1,7 +1,7 @@
 ---
 title: The Echoing Court
 description: A circular plaza with peculiar acoustics that has become Venturia's venue for public dispute resolution — where professional advocates make careers, and a poorly chosen phrase gets repeated in taverns for weeks.
-tags: [market-tiers, locations, echoing-court, law, public-life, performance, character-hooks]
+tags: "market-tiers, locations, echoing-court, law, public-life, performance, character-hooks"
 ---
 
 # The Echoing Court

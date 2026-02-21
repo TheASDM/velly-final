@@ -1,7 +1,7 @@
 ---
 title: The Fog Wardens' Garrison
 description: A small stone garrison at the Overlook where the city ends and the Vallombrosa fog begins — staffed by volunteers who keep meticulous logs of things moving in the mist, and who sometimes request to extend their rotation despite what it does to them.
-tags: [the-overlook, locations, fog-wardens, vallombrosa, fog, mystery, horror, character-hooks]
+tags: "the-overlook, locations, fog-wardens, vallombrosa, fog, mystery, horror, character-hooks"
 ---
 
 # The Fog Wardens' Garrison

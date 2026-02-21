@@ -1,7 +1,7 @@
 ---
 title: The Tidekeeper's Lodge
 description: Six centuries of harbor guardians who know every current, every channel, and every secret the sea brings in — and have learned that some knowledge is best kept within the family.
-tags: [harbor-district, factions, locations, harbor, tidekeepers, navigation, character-hooks]
+tags: "harbor-district, factions, locations, harbor, tidekeepers, navigation, character-hooks"
 ---
 
 # The Tidekeeper's Lodge
