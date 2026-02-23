@@ -1,7 +1,11 @@
 ---
 title: Venturia
 description: A coastal city built in the shadow of a cursed valley — where promises carry weight, mirrors sometimes lie, and the fog above has not moved in a thousand years.
-tags: "venturia, index, navigation"
+published: true
+date: 2026-02-23T23:52:04.667Z
+tags: venturia, index, navigation
+editor: markdown
+dateCreated: 2026-02-21T08:09:36.368Z
 ---
 
 # Venturia
