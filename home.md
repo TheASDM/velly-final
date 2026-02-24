@@ -2,7 +2,7 @@
 title: The Valley of Shadows 
 description: In the coastal city of Venturia, something is wrong at the edge of the fog. A scarred stranger has appeared. A Fog Warden has vanished. And the cursed valley above the city is starting to feel less like local legend and more like an immediate problem. 
 published: true
-date: 2026-02-24T15:04:26.222Z
+date: 2026-02-24T15:04:31.461Z
 tags: 
 editor: markdown
 dateCreated: 2026-02-20T05:30:38.113Z
