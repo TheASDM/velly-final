@@ -2,7 +2,7 @@
 title: The Valley of Shadows 
 description: In the coastal city of Venturia, something is wrong at the edge of the fog. A scarred stranger has appeared. A Fog Warden has vanished. And the cursed valley above the city is starting to feel less like local legend and more like an immediate problem. 
 published: true
-date: 2026-02-21T08:00:50.600Z
+date: 2026-02-24T14:51:15.499Z
 tags: 
 editor: markdown
 dateCreated: 2026-02-20T05:30:38.113Z
@@ -10,7 +10,7 @@ dateCreated: 2026-02-20T05:30:38.113Z
 
 <div style="text-align: center; margin-bottom: 1rem;">
   <img src="/vallombrosa-logo.png" alt="Vallombrosa Campaign Logo" style="max-width: 300px; width: 100%;">
-
+![vallombrosa-logo.png](/images/vallombrosa-logo.png)
 </div>
 
 <div style="background: linear-gradient(to bottom, rgba(139, 69, 19, 0.1), rgba(0, 0, 0, 0.3)); padding: 2rem; border-radius: 8px; margin-bottom: 2rem;">
