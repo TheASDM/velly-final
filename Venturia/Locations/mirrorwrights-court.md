@@ -1,7 +1,11 @@
 ---
 title: The Mirrorwright's Court
 description: The guild that makes Venturia's mirrors — including the rare "true mirrors" that show accurate reflections regardless of the city's peculiarities, for those who can afford to see clearly.
-tags: "market-tiers, factions, locations, mirrorwrights, guilds, identity, character-hooks"
+published: true
+date: 2026-02-23T23:57:33.073Z
+tags: factions, locations, character-hooks, market-tiers, guilds, mirrorwrights, identity
+editor: markdown
+dateCreated: 2026-02-23T23:57:32.396Z
 ---
 
 # The Mirrorwright's Court

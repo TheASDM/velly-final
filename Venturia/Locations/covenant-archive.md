@@ -1,7 +1,11 @@
 ---
 title: The Covenant Archive
 description: Where promises become binding in the most literal sense — a windowless vault of witnessed oaths, sealed contracts, and documents older than the city whose obligations may still be active.
-tags: "high-quarter, factions, locations, archive, contracts, oaths, magic, character-hooks"
+published: true
+date: 2026-02-23T23:57:25.944Z
+tags: high-quarter, factions, magic, locations, character-hooks, archive, contracts, oaths
+editor: markdown
+dateCreated: 2026-02-23T23:57:25.309Z
 ---
 
 # The Covenant Archive

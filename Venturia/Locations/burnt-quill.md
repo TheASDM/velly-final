@@ -1,7 +1,11 @@
 ---
 title: The Burnt Quill
 description: Four centuries of continuous publication, a legendary archive of everything Venturia has chosen to remember — and a restricted morgue of everything it hasn't.
-tags: "market-tiers, factions, locations, press, newspaper, information, secrets, character-hooks"
+published: true
+date: 2026-02-23T23:57:24.879Z
+tags: factions, locations, character-hooks, market-tiers, press, newspaper, information, secrets
+editor: markdown
+dateCreated: 2026-02-23T23:57:24.186Z
 ---
 
 # The Burnt Quill

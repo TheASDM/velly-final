@@ -1,7 +1,11 @@
 ---
 title: Locations
 description: An index of districts, institutions, guilds, and points of interest across the city of Venturia.
-tags: "venturia, locations, index, navigation"
+published: true
+date: 2026-02-23T23:57:30.052Z
+tags: venturia, locations, index, navigation
+editor: markdown
+dateCreated: 2026-02-23T23:57:29.295Z
 ---
 
 # Locations

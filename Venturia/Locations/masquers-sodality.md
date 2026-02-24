@@ -1,7 +1,11 @@
 ---
 title: The Masquers' Sodality
 description: Venturia's guild of mask-makers, who have spent nearly a millennium learning that in this city, the line between face and mask grows dangerously thin — and some commissions are made for clients who never sit for fittings.
-tags: "market-tiers, factions, locations, masks, masquerade, guilds, mystery, character-hooks"
+published: true
+date: 2026-02-23T23:57:32.078Z
+tags: masquerade, factions, locations, character-hooks, market-tiers, mystery, masks, guilds
+editor: markdown
+dateCreated: 2026-02-23T23:57:31.380Z
 ---
 
 # The Masquers' Sodality

@@ -1,7 +1,11 @@
 ---
 title: The Salted Cup
 description: A bathhouse built over hot springs that emerged after the curse — where Venturia's real business gets conducted in private chambers, under an ironclad tradition that nothing spoken here is ever written down.
-tags: "market-tiers, locations, salted-cup, bathhouse, intrigue, deals, character-hooks"
+published: true
+date: 2026-02-23T23:57:35.108Z
+tags: locations, character-hooks, market-tiers, salted-cup, bathhouse, intrigue, deals
+editor: markdown
+dateCreated: 2026-02-23T23:57:34.419Z
 ---
 
 # The Salted Cup

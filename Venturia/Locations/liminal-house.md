@@ -1,7 +1,11 @@
 ---
 title: The Liminal House
 description: Venturia's foundling home — four centuries old, no questions asked about before, and alumni who quietly recognize each other across the city by small signs they've never had to explain.
-tags: "market-tiers, locations, liminal-house, foundlings, mystery, community, character-hooks"
+published: true
+date: 2026-02-23T23:57:31.067Z
+tags: locations, character-hooks, market-tiers, mystery, liminal-house, foundlings, community
+editor: markdown
+dateCreated: 2026-02-23T23:57:30.363Z
 ---
 
 # The Liminal House
