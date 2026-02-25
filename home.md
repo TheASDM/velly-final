@@ -2,34 +2,27 @@
 title: Viro's Respite
 description: A healing institution run by the Abbey of Saint Viro, treating ailments that only exist in Venturia — from looping moments of déjà vu to the unsettling conviction of being watched by your own shadow.
 published: true
-date: 2026-02-25T06:11:53.805Z
+date: 2026-02-25T15:34:50.821Z
 tags: locations, character-hooks, market-tiers, religion, abbey, healing, fog-sickness
 editor: markdown
-dateCreated: 2026-02-25T06:11:53.805Z
+dateCreated: 2026-02-25T15:34:50.821Z
 ---
 
-<div style="background: linear-gradient(135deg, #1a0f0a 0%, #2d1f17 60%, #1a0f0a 100%); border: 1px solid #8b7355; border-radius: 8px; padding: 2rem 2.5rem; margin-bottom: 2.5rem; box-shadow: 0 4px 32px rgba(0,0,0,0.6);">
+<div style="text-align: center; padding: 3.5rem 2rem 2.75rem; margin-bottom: 2.5rem; border-bottom: 1px solid rgba(139,115,85,0.25);">
 
-<div style="text-align: center; margin-bottom: 1.75rem; padding-bottom: 1.5rem; border-bottom: 1px solid rgba(139,115,85,0.35);">
-<p style="font-size: 0.7rem; letter-spacing: 0.35em; text-transform: uppercase; color: #8b7355; margin: 0 0 0.6rem 0;">The Valley of Shadows Codex</p>
-<p style="color: rgba(212,165,116,0.75); font-style: italic; font-size: 0.95rem; margin: 0;">This page always shows the most recently published article. Every article ever posted lives in the <a href="/en/Archive" style="color: #d4a574; text-decoration: none;">Archive →</a></p>
-</div>
+<img src="https://codex.valleyofshadows.wiki/images/vallombrosa-logo.png" alt="Valley of Shadows" style="width: 320px; max-width: 80%; display: block; margin: 0 auto 1.75rem; filter: drop-shadow(0 12px 40px rgba(0,0,0,0.9));">
 
-<div style="background: rgba(139,0,0,0.12); border-left: 3px solid #8b0000; border-radius: 0 4px 4px 0; padding: 1.25rem 1.5rem; margin-bottom: 1.75rem;">
-<p style="font-size: 0.65rem; letter-spacing: 0.3em; text-transform: uppercase; color: #8b7355; margin: 0 0 0.5rem 0;">Latest Article</p>
-<p style="font-size: 1.5rem; font-weight: 700; color: #d4a574; margin: 0 0 0.3rem 0;">Viro's Respite</p>
-<p style="font-size: 0.82rem; color: rgba(212,165,116,0.55); margin: 0 0 0.85rem 0;">February 23, 2026&nbsp;&nbsp;·&nbsp;&nbsp;Venturia</p>
-<p style="font-size: 0.95rem; color: rgba(244,232,216,0.75); font-style: italic; line-height: 1.5; margin: 0 0 1rem 0;">A healing institution run by the Abbey of Saint Viro, treating ailments that only exist in Venturia — from looping moments of déjà vu to the unsettling conviction of being watched by your own shadow.</p>
-<a href="/en/Venturia/Locations/viros-respite" style="font-size: 0.75rem; letter-spacing: 0.2em; text-transform: uppercase; color: #8b7355; text-decoration: none; border-bottom: 1px solid rgba(139,115,85,0.4); padding-bottom: 1px;">View in Venturia →</a>
-</div>
+<p style="font-family: Georgia, serif; font-style: italic; font-size: 1.1rem; color: rgba(212,165,116,0.8); letter-spacing: 0.05em; margin: 0 0 2.25rem 0;">Tales from Venturia &amp; Vallombrosa</p>
 
-<div style="display: flex; gap: 0.6rem; flex-wrap: wrap;">
-<a href="/en/Archive" style="font-size: 0.75rem; letter-spacing: 0.15em; text-transform: uppercase; color: #d4a574; text-decoration: none; background: rgba(212,165,116,0.1); border: 1px solid rgba(212,165,116,0.25); border-radius: 4px; padding: 0.35rem 0.75rem;">📜 All Posts</a>
-<a href="/en/Articles" style="font-size: 0.75rem; letter-spacing: 0.15em; text-transform: uppercase; color: #8b7355; text-decoration: none; background: rgba(139,115,85,0.08); border: 1px solid rgba(139,115,85,0.2); border-radius: 4px; padding: 0.35rem 0.75rem;">Articles</a>
-<a href="/en/Updates" style="font-size: 0.75rem; letter-spacing: 0.15em; text-transform: uppercase; color: #8b7355; text-decoration: none; background: rgba(139,115,85,0.08); border: 1px solid rgba(139,115,85,0.2); border-radius: 4px; padding: 0.35rem 0.75rem;">Updates</a>
-<a href="/en/Class-Changes" style="font-size: 0.75rem; letter-spacing: 0.15em; text-transform: uppercase; color: #8b7355; text-decoration: none; background: rgba(139,115,85,0.08); border: 1px solid rgba(139,115,85,0.2); border-radius: 4px; padding: 0.35rem 0.75rem;">Class Changes</a>
-<a href="/en/House-Rules" style="font-size: 0.75rem; letter-spacing: 0.15em; text-transform: uppercase; color: #8b7355; text-decoration: none; background: rgba(139,115,85,0.08); border: 1px solid rgba(139,115,85,0.2); border-radius: 4px; padding: 0.35rem 0.75rem;">House Rules</a>
-<a href="/en/Venturia" style="font-size: 0.75rem; letter-spacing: 0.15em; text-transform: uppercase; color: #8b7355; text-decoration: none; background: rgba(139,115,85,0.08); border: 1px solid rgba(139,115,85,0.2); border-radius: 4px; padding: 0.35rem 0.75rem;">Venturia</a>
+<div style="height: 1px; background: linear-gradient(90deg, transparent, rgba(139,115,85,0.4), transparent); margin: 0 auto 2.25rem; max-width: 400px;"></div>
+
+<div style="display: flex; justify-content: center; gap: 2.5rem; flex-wrap: wrap;">
+<a href="/en/Archive" style="font-size: 0.68rem; letter-spacing: 0.35em; text-transform: uppercase; color: #d4a574; text-decoration: none;">The Chronicle</a>
+<a href="/en/Articles" style="font-size: 0.68rem; letter-spacing: 0.35em; text-transform: uppercase; color: #8b7355; text-decoration: none;">Articles</a>
+<a href="/en/Updates" style="font-size: 0.68rem; letter-spacing: 0.35em; text-transform: uppercase; color: #8b7355; text-decoration: none;">Updates</a>
+<a href="/en/Class-Changes" style="font-size: 0.68rem; letter-spacing: 0.35em; text-transform: uppercase; color: #8b7355; text-decoration: none;">Class Changes</a>
+<a href="/en/House-Rules" style="font-size: 0.68rem; letter-spacing: 0.35em; text-transform: uppercase; color: #8b7355; text-decoration: none;">House Rules</a>
+<a href="/en/Venturia" style="font-size: 0.68rem; letter-spacing: 0.35em; text-transform: uppercase; color: #8b7355; text-decoration: none;">Venturia</a>
 </div>
 
 </div>
