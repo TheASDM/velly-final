@@ -1,5 +1,5 @@
 ---
-title: Venturia: The Quirks and Traditions
+title: "Venturia: The Quirks and Traditions"
 description: The subtle supernatural quirks that shape everyday life in Venturia — from lagging mirrors and weighted words to the culture of contracts, masks, and the annual Autumn Masquerade that none of it is strange, it's just home.
 published: true
 date: 2026-02-21T08:00:55.121Z
