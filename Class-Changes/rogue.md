@@ -2,6 +2,7 @@
 title: Rogue — 2024 Class Changes
 description: A comprehensive breakdown of what changed for the Rogue class in the 2024 Player's Handbook, covering Weapon Mastery, Cunning Strike, and subclass updates.
 tags: "rules, rogue, 2024, class-changes, player-guide, cunning-strike, weapon-mastery"
+date: 2026-02-23T00:00:00.000Z
 ---
 
 ## Core Class Features

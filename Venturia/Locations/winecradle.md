@@ -2,6 +2,7 @@
 title: The Winecradle
 description: The Wine Merchants' Guild — above, a legendary tasting room and wines that fetch premium prices across the known world. Below, cellars extending deep into the hillside where some bottles have been aging since before the curse into something that is no longer quite wine.
 tags: "market-tiers, factions, locations, winecradle, guilds, trade, mystery, character-hooks"
+date: 2026-02-23T00:00:00.000Z
 ---
 
 # The Winecradle

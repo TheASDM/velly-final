@@ -2,6 +2,7 @@
 title: Building a Character for Long-Form Play
 description: When building a character for a campaign spanning years, you need a different approach — creating someone who will live in this world, form relationships across hundreds of sessions, and grow in unexpected ways.
 tags: "player-guide, character-creation, worldbuilding, long-form, roleplay, backstory"
+date: 2026-02-23T00:00:00.000Z
 ---
 
 When building a character for a campaign spanning years, you need a different approach than shorter adventures. You're creating someone who will live in this world, form relationships across hundreds of sessions, face moral complexity without easy answers, and grow in unexpected ways. **The character you create at session zero is just a starting point** with room to evolve while maintaining a recognizable core.

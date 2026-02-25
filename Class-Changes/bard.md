@@ -2,6 +2,7 @@
 title: Bard — 2024 Class Changes
 description: A comprehensive breakdown of what changed for the Bard class in the 2024 Player's Handbook, covering Bardic Inspiration, Magical Secrets, subclass updates, and the best spells at every level.
 tags: "rules, bard, 2024, class-changes, player-guide, bardic-inspiration, magical-secrets"
+date: 2026-02-23T00:00:00.000Z
 ---
 
 ## Core Class Features

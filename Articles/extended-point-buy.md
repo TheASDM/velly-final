@@ -2,6 +2,7 @@
 title: Why We Use Extended Point Buy
 description: Our campaign uses an extended point buy system starting at ability score 6 — creating real consequences and forcing meaningful character choices instead of inconsequential dump stats.
 tags: "player-guide, character-creation, rules, point-buy, ability-scores, hgarmany"
+date: 2026-02-23T00:00:00.000Z
 ---
 
 [![pointbuysmaller.png](https://theshort.rest/uploads/images/gallery/2026-01/scaled-1680-/pointbuysmaller.png)](https://theshort.rest/uploads/images/gallery/2026-01/scaled-1680-/pointbuysmaller.png)

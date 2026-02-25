@@ -2,6 +2,7 @@
 title: Languages of Vallombrosa
 description: Languages in Vallombrosa aren't puzzle-solving tools — they're windows into your character's education, social position, and connection to Venturia's layered history.
 tags: "player-guide, languages, worldbuilding, venturia, vallombrosa, character-creation"
+date: 2026-02-23T00:00:00.000Z
 ---
 
 Languages in D&D often feel like an afterthought—a small mechanical benefit you note on your character sheet and forget about until the DM asks "does anyone speak Elvish?" three sessions in. For Vallombrosa, think about languages differently: not as tools for puzzle-solving, but as windows into your character's education, social position, and connection to Venturia's layered history.

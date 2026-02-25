@@ -2,6 +2,7 @@
 title: Wizard — 2024 Class Changes
 description: A comprehensive breakdown of what changed for the Wizard class in the 2024 Player's Handbook, covering core features, subclass updates, and new spells.
 tags: "rules, wizard, 2024, class-changes, player-guide, spellcasting"
+date: 2026-02-23T00:00:00.000Z
 ---
 
 ## Core Class Features

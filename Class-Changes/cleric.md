@@ -2,6 +2,7 @@
 title: Cleric — 2024 Class Changes
 description: A comprehensive breakdown of what changed for the Cleric class in the 2024 Player's Handbook, covering Divine Order, Channel Divinity, healing buffs, and domain updates.
 tags: "rules, cleric, 2024, class-changes, player-guide, healing, divine-order"
+date: 2026-02-23T00:00:00.000Z
 ---
 
 ## Core Class Features

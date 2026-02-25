@@ -2,6 +2,7 @@
 title: Point Buy — Official Rules
 description: All characters are created using a 42-point buy system with ability scores ranging from 6 to 17. This is the official ruling for all character creation in this campaign.
 tags: "house-rules, point-buy, character-creation, rules, official, ability-scores, mandatory"
+date: 2026-02-23T00:00:00.000Z
 ---
 
 [![pointbuy2.png](https://theshort.rest/uploads/images/gallery/2026-01/scaled-1680-/pointbuy2.png)](https://theshort.rest/uploads/images/gallery/2026-01/scaled-1680-/pointbuy2.png)

@@ -2,6 +2,7 @@
 title: Warlock — 2024 Class Changes
 description: A comprehensive breakdown of what changed for the Warlock class in the 2024 Player's Handbook, covering invocations, pact boons, patron spells, and subclass updates.
 tags: "rules, warlock, 2024, class-changes, player-guide, invocations, pact-boons"
+date: 2026-02-23T00:00:00.000Z
 ---
 
 ## Core Class Features

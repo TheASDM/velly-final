@@ -2,6 +2,7 @@
 title: Encumbrance & Inventory Slots
 description: Instead of tracking pounds, characters have inventory slots based on their physical capabilities — a simplified system that makes encumbrance intuitive while maintaining meaningful resource management.
 tags: "house-rules, encumbrance, inventory, rules, reference"
+date: 2026-02-23T00:00:00.000Z
 ---
 
 [![encumbrance2.png](https://valleyofshadows.wiki/uploads/images/gallery/2026-01/scaled-1680-/encumbrance2.png)](https://valleyofshadows.wiki/uploads/images/gallery/2026-01/scaled-1680-/encumbrance2.png)

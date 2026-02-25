@@ -2,6 +2,7 @@
 title: 2024 Player's Handbook — Full Overview
 description: The 2024 PHB isn't D&D 6th Edition — it's a refined update to 5e incorporating 10 years of feedback. Here's everything that changed, from book structure to spell mechanics to class overhauls.
 tags: "rules, 2024, phb, overview, player-guide, system-changes, weapon-mastery, backgrounds, species"
+date: 2026-02-23T00:00:00.000Z
 ---
 
 The 2024 Player's Handbook isn't D&D 6th Edition—it's a refined, updated version of 5th Edition incorporating 10 years of feedback and playtesting. Here's everything that's changed.

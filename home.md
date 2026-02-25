@@ -2,10 +2,10 @@
 title: Viro's Respite
 description: A healing institution run by the Abbey of Saint Viro, treating ailments that only exist in Venturia — from looping moments of déjà vu to the unsettling conviction of being watched by your own shadow.
 published: true
-date: 2026-02-25T05:49:33.556Z
+date: 2026-02-25T06:06:00.295Z
 tags: locations, character-hooks, market-tiers, religion, abbey, healing, fog-sickness
 editor: markdown
-dateCreated: 2026-02-25T05:49:33.556Z
+dateCreated: 2026-02-25T06:06:00.295Z
 ---
 
 > **Latest article.** [View it in its original section](/en/Venturia/Locations/viros-respite)
