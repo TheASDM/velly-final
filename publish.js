@@ -122,7 +122,29 @@ function collectArticles() {
 
 function updateHome(article) {
   const now    = new Date().toISOString();
-  const notice = `> **Latest article.** [View it in its original section](${article.url})\n\n`;
+
+  const header = `<div style="text-align: center; padding: 3.5rem 2rem 2.75rem; margin-bottom: 2.5rem; border-bottom: 1px solid rgba(139,115,85,0.25);">
+
+<img src="https://codex.valleyofshadows.wiki/images/vallombrosa-logo.png" alt="Valley of Shadows" style="width: 320px; max-width: 80%; display: block; margin: 0 auto 1.75rem; filter: drop-shadow(0 12px 40px rgba(0,0,0,0.9));">
+
+<p style="font-family: Georgia, serif; font-style: italic; font-size: 1.1rem; color: rgba(212,165,116,0.8); letter-spacing: 0.05em; margin: 0 0 2.25rem 0;">Tales from Venturia &amp; Vallombrosa</p>
+
+<div style="height: 1px; background: linear-gradient(90deg, transparent, rgba(139,115,85,0.4), transparent); margin: 0 auto 2.25rem; max-width: 400px;"></div>
+
+<div style="display: flex; justify-content: center; gap: 2.5rem; flex-wrap: wrap;">
+<a href="/en/Archive" style="font-size: 0.68rem; letter-spacing: 0.35em; text-transform: uppercase; color: #d4a574; text-decoration: none;">The Chronicle</a>
+<a href="/en/Articles" style="font-size: 0.68rem; letter-spacing: 0.35em; text-transform: uppercase; color: #8b7355; text-decoration: none;">Articles</a>
+<a href="/en/Updates" style="font-size: 0.68rem; letter-spacing: 0.35em; text-transform: uppercase; color: #8b7355; text-decoration: none;">Updates</a>
+<a href="/en/Class-Changes" style="font-size: 0.68rem; letter-spacing: 0.35em; text-transform: uppercase; color: #8b7355; text-decoration: none;">Class Changes</a>
+<a href="/en/House-Rules" style="font-size: 0.68rem; letter-spacing: 0.35em; text-transform: uppercase; color: #8b7355; text-decoration: none;">House Rules</a>
+<a href="/en/Venturia" style="font-size: 0.68rem; letter-spacing: 0.35em; text-transform: uppercase; color: #8b7355; text-decoration: none;">Venturia</a>
+</div>
+
+</div>
+
+---
+
+`;
 
   const newContent = `---
 title: ${article.fm.title || article.title}
@@ -134,7 +156,7 @@ editor: markdown
 dateCreated: ${now}
 ---
 
-${notice}${article.body}`;
+${header}${article.body}`;
 
   fs.writeFileSync(HOME_PATH, newContent, 'utf-8');
   console.log(`✓ home.md → "${article.title}"`);
