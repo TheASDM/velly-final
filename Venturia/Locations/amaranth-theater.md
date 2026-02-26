@@ -2,7 +2,7 @@
 title: The Amaranth Theater
 description: Venturia's grand cultural institution — three centuries of performance, a Masquerade tradition that may have opinions of its own, and dressing room mirrors that veterans learn not to look into too long.
 published: true
-date: 2026-02-23T23:57:23.879Z
+date: 2026-02-26T16:18:23.318Z
 tags: culture, high-quarter, masquerade, factions, locations, character-hooks, theater
 editor: markdown
 dateCreated: 2026-02-23T23:57:23.247Z
@@ -12,7 +12,7 @@ dateCreated: 2026-02-23T23:57:23.247Z
 
 **Tier:** High Quarter &nbsp;|&nbsp; *"Where masks reveal more than faces ever could"*
 
-The Amaranth dominates the upper edge of the High Quarter — its grand facade of deep red stone and gilded trim visible from half the city below. For over three centuries, this sprawling complex of performance halls, rehearsal spaces, workshops, and artist residences has shaped Venturia's cultural identity. In a city obsessed with masks and performance, that makes the Amaranth something close to sacred ground.
+The Amaranth dominates the eastern coast. While technically in the Harobor District it is considered and extension of the High Quarter — its grand facade of deep blue stone and gilded trim visible from half the city. For over three centuries, this sprawling complex of performance halls, rehearsal spaces, workshops, and artist residences has shaped Venturia's cultural identity. In a city obsessed with masks and performance, that makes the Amaranth something close to sacred ground.
 
 ---
 
