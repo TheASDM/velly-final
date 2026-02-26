@@ -2,16 +2,15 @@
 title: Articles
 description: All Articles posts.
 published: true
-date: 2026-02-26T03:14:04.854Z
+date: 2026-02-26T03:14:29.244Z
 editor: markdown
-dateCreated: 2026-02-26T03:14:04.854Z
+dateCreated: 2026-02-26T03:14:29.244Z
 ---
 
 # Articles
 
 | Published | Title |
 |-----------|-------|
-| February 25, 2026 | [Articles](/en/Articles/index) |
 | February 22, 2026 | [Building a Character for Long-Form Play](/en/Articles/building-a-character-for-long-form-play) |
 | February 22, 2026 | [Why We Use Extended Point Buy](/en/Articles/extended-point-buy) |
 | February 22, 2026 | [Languages of Vallombrosa](/en/Articles/languages-of-vallombrosa) |
