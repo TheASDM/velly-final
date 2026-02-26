@@ -2,7 +2,7 @@
 title: Map of Venturia
 description: The official campaign map of Venturia — the full city, from the docks of the Undertow to the fog-shrouded estates above.
 published: true
-date: 2026-02-26T16:07:46.626Z
+date: 2026-02-26T16:09:16.450Z
 tags: venturia, reference, player-guide, locations, map
 editor: markdown
 dateCreated: 2026-02-26T03:20:09.069Z
