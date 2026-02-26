@@ -18,15 +18,3 @@ The final version of the official Venturia campaign map. Tap to open — scroll 
 <button id="vmap-close" style="position:fixed;top:1rem;right:1rem;background:rgba(255,255,255,0.15);color:#fff;border:none;border-radius:50%;width:2.5rem;height:2.5rem;font-size:1.4rem;cursor:pointer;z-index:10001;line-height:1;">×</button>
 <img src="https://codex.valleyofshadows.wiki/images/venturia-map.jpg" alt="Map of Venturia" style="width:max(100%,2400px);height:auto;display:block;touch-action:pan-x pan-y pinch-zoom;">
 </div>
-
-<script>
-(function(){
-  var thumb=document.getElementById('vmap-thumb');
-  var overlay=document.getElementById('vmap-overlay');
-  var close=document.getElementById('vmap-close');
-  if(!thumb||!overlay)return;
-  thumb.addEventListener('click',function(){overlay.style.display='block';document.body.style.overflow='hidden';});
-  overlay.addEventListener('click',function(){overlay.style.display='none';document.body.style.overflow='';});
-  close.addEventListener('click',function(e){e.stopPropagation();overlay.style.display='none';document.body.style.overflow='';});
-})();
-</script>
