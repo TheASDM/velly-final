@@ -29,6 +29,9 @@ const HOME_PATH   = path.join(ROOT, 'home.md');
 const ARCHIVE_DIR = path.join(ROOT, 'Archive');
 const ARCHIVE_PATH = path.join(ARCHIVE_DIR, 'index.md');
 
+// Folders that get auto-generated index pages (Venturia has a handwritten one)
+const AUTO_INDEX_FOLDERS = ['Articles', 'Class-Changes', 'House-Rules', 'Updates', 'Venturia'];
+
 // ─── HELPERS ─────────────────────────────────────────────────────────────────
 
 // Extract the raw frontmatter block and the body below it
@@ -56,7 +59,7 @@ function walkMd(dir, results = []) {
     const full = path.join(dir, name);
     if (fs.statSync(full).isDirectory()) {
       walkMd(full, results);
-    } else if (name.endsWith('.md')) {
+    } else if (name.endsWith('.md') && name !== 'index.md') {
       results.push(full);
     }
   });
@@ -121,45 +124,28 @@ function collectArticles() {
 // ─── UPDATE HOME.MD ──────────────────────────────────────────────────────────
 
 function updateHome(article) {
-  const now    = new Date().toISOString();
+  const now  = new Date().toISOString();
+  const date = fmtDate(article.date);
 
-  const header = `<div style="text-align: center; padding: 3.5rem 2rem 2.75rem; margin-bottom: 2.5rem; border-bottom: 1px solid rgba(139,115,85,0.25);">
+  const banner = `<div style="background: rgba(139,0,0,0.1); border: 1px solid rgba(139,115,85,0.3); border-radius: 6px; padding: 0.85rem 1.25rem; margin-bottom: 2rem; display: flex; align-items: center; gap: 1.25rem; flex-wrap: wrap;">
+<span style="font-size: 0.62rem; letter-spacing: 0.4em; text-transform: uppercase; color: #8b7355; flex-shrink: 0;">Latest Post</span>
+<a href="${article.url}" style="font-size: 0.95rem; color: #d4a574; text-decoration: none; font-style: italic; flex: 1;">${article.title} →</a>
+<span style="font-size: 0.75rem; color: rgba(139,115,85,0.55);">${date}</span>
+</div>`;
 
-<img src="https://codex.valleyofshadows.wiki/images/vallombrosa-logo.png" alt="Valley of Shadows" style="width: 320px; max-width: 80%; display: block; margin: 0 auto 1.75rem; filter: drop-shadow(0 12px 40px rgba(0,0,0,0.9));">
+  let content = fs.readFileSync(HOME_PATH, 'utf-8');
 
-<p style="font-family: Georgia, serif; font-style: italic; font-size: 1.1rem; color: rgba(212,165,116,0.8); letter-spacing: 0.05em; margin: 0 0 2.25rem 0;">Tales from Venturia &amp; Vallombrosa</p>
+  // Update the frontmatter date so the wiki registers the change
+  content = content.replace(/^date: .+$/m, `date: ${now}`);
 
-<div style="height: 1px; background: linear-gradient(90deg, transparent, rgba(139,115,85,0.4), transparent); margin: 0 auto 2.25rem; max-width: 400px;"></div>
+  // Replace only the banner between the markers
+  content = content.replace(
+    /<!-- LATEST_POST -->[\s\S]*?<!-- \/LATEST_POST -->/,
+    `<!-- LATEST_POST -->\n${banner}\n<!-- /LATEST_POST -->`
+  );
 
-<div style="display: flex; justify-content: center; gap: 2.5rem; flex-wrap: wrap;">
-<a href="/en/Archive" style="font-size: 0.68rem; letter-spacing: 0.35em; text-transform: uppercase; color: #d4a574; text-decoration: none;">The Chronicle</a>
-<a href="/en/Articles" style="font-size: 0.68rem; letter-spacing: 0.35em; text-transform: uppercase; color: #8b7355; text-decoration: none;">Articles</a>
-<a href="/en/Updates" style="font-size: 0.68rem; letter-spacing: 0.35em; text-transform: uppercase; color: #8b7355; text-decoration: none;">Updates</a>
-<a href="/en/Class-Changes" style="font-size: 0.68rem; letter-spacing: 0.35em; text-transform: uppercase; color: #8b7355; text-decoration: none;">Class Changes</a>
-<a href="/en/House-Rules" style="font-size: 0.68rem; letter-spacing: 0.35em; text-transform: uppercase; color: #8b7355; text-decoration: none;">House Rules</a>
-<a href="/en/Venturia" style="font-size: 0.68rem; letter-spacing: 0.35em; text-transform: uppercase; color: #8b7355; text-decoration: none;">Venturia</a>
-</div>
-
-</div>
-
----
-
-`;
-
-  const newContent = `---
-title: ${article.fm.title || article.title}
-description: ${article.description}
-published: true
-date: ${now}
-tags: ${article.tags}
-editor: markdown
-dateCreated: ${now}
----
-
-${header}${article.body}`;
-
-  fs.writeFileSync(HOME_PATH, newContent, 'utf-8');
-  console.log(`✓ home.md → "${article.title}"`);
+  fs.writeFileSync(HOME_PATH, content, 'utf-8');
+  console.log(`✓ home.md → latest post: "${article.title}"`);
 }
 
 // ─── UPDATE ARCHIVE ──────────────────────────────────────────────────────────
@@ -200,6 +186,43 @@ ${rows}
   console.log(`✓ Archive/index.md → ${articles.length} articles`);
 }
 
+// ─── UPDATE FOLDER INDEXES ───────────────────────────────────────────────────
+
+function updateFolderIndex(folder, articles) {
+  const indexPath = path.join(ROOT, folder, 'index.md');
+  const now       = new Date().toISOString();
+  const title     = folder.replace(/-/g, ' ');
+
+  const folderArticles = articles.filter(a => a.folder === folder);
+
+  const rows = folderArticles
+    .map(a => {
+      const dateCol = a.hasDate ? fmtDate(a.date) : '*(undated)*';
+      return `| ${dateCol} | [${a.title}](${a.url}) |`;
+    })
+    .join('\n');
+
+  const content = `---
+title: ${title}
+description: All ${title} posts.
+published: true
+date: ${now}
+editor: markdown
+dateCreated: ${now}
+---
+
+# ${title}
+
+| Published | Title |
+|-----------|-------|
+${rows}
+`;
+
+  fs.writeFileSync(indexPath, content, 'utf-8');
+  console.log(`✓ ${folder}/index.md → ${folderArticles.length} articles`);
+  return indexPath;
+}
+
 // ─── MAIN ────────────────────────────────────────────────────────────────────
 
 const articles = collectArticles();
@@ -222,13 +245,14 @@ console.log(`\nNewest article: "${newest.title}" (${fmtDate(newest.date)})\n`);
 
 updateHome(newest);
 updateArchive(articles);
+const indexPaths = AUTO_INDEX_FOLDERS.map(f => updateFolderIndex(f, articles));
 
 // ─── GIT COMMIT & PUSH ───────────────────────────────────────────────────────
 
 const git = cmd => execSync(cmd, { cwd: ROOT, stdio: 'inherit' });
 
 console.log('');
-git(`git add "${newest.filePath}" "${HOME_PATH}" "${ARCHIVE_PATH}"`);
+git(`git add "${newest.filePath}" "${HOME_PATH}" "${ARCHIVE_PATH}" ${indexPaths.map(p => `"${p}"`).join(' ')}`);
 git(`git commit -m "publish: ${newest.title}"`);
 git('git push');
 
