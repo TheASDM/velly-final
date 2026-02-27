@@ -61,10 +61,8 @@ services:
       # Nginx config tells it how to route different URLs
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./nginx/conf.d:/etc/nginx/conf.d:ro
-      # Your static website files (homepage, CSS, JS)
-      - ./static-site:/usr/share/nginx/html:ro
-      # SSL certificates for HTTPS
-      - ./ssl:/etc/nginx/ssl:ro
+      # Lore Master chatbot page and assets
+      - ./public:/usr/share/nginx/html:ro
     depends_on:
       - wikijs
       - chatbot

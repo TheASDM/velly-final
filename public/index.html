@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lore Master — Valley of Shadows</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Crimson+Text:ital,wght@0,400;1,400&family=IM+Fell+English:ital@1&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/chatbot.css">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background: #0a080e;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Crimson Text', Georgia, serif;
+            color: #e8dcc8;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .page-header h1 {
+            font-family: 'Cinzel', Georgia, serif;
+            font-size: 1.1rem;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            color: #c9a84c;
+            margin-bottom: 0.4rem;
+        }
+        .page-header p {
+            font-family: 'IM Fell English', Georgia, serif;
+            font-style: italic;
+            font-size: 0.95rem;
+            color: rgba(232, 220, 200, 0.45);
+        }
+
+        /* On the standalone page, expand and center the widget */
+        #chatbot-container {
+            position: static !important;
+            width: 100%;
+            max-width: 520px;
+            padding: 0 1rem;
+        }
+        #chatbot-widget {
+            width: 100% !important;
+            max-height: 72vh !important;
+        }
+        #chatbot-widget.chatbot-collapsed {
+            max-height: 52px !important;
+        }
+        #chat-messages {
+            min-height: 320px !important;
+            max-height: calc(72vh - 52px - 62px) !important;
+        }
+
+        @media (max-width: 480px) {
+            #chatbot-container {
+                padding: 0 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="page-header">
+        <h1>Lore Master</h1>
+        <p>Keeper of the Valley of Shadows Chronicles</p>
+    </div>
+
+    <div id="chatbot-container"></div>
+
+    <script src="/js/chatbot.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            if (loreMaster) loreMaster.toggleWidget();
+        });
+    </script>
+</body>
+</html>
