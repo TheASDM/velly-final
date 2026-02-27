@@ -222,15 +222,15 @@
     #chatbot-container {
         bottom: 0.75rem;
         right: 0.75rem;
-        left: 0.75rem;
+        /* no left — container hugs the right so it doesn't block nav when collapsed */
     }
     #chatbot-widget {
-        width: 100%;
+        /* Fill the screen when expanded */
+        width: calc(100vw - 1.5rem);
     }
-    /* When collapsed, shrink to a corner button so it doesn't block nav */
+    /* When collapsed, shrink to just the header so nav button is fully accessible */
     #chatbot-widget.chatbot-collapsed {
         width: auto;
         min-width: 160px;
-        margin-left: auto;
     }
 }
