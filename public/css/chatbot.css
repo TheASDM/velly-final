@@ -218,7 +218,7 @@
 #chat-send-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
 /* ── Mobile ── */
-@media (max-width: 480px) {
+@media (max-width: 768px) {
     #chatbot-container {
         bottom: 0.75rem;
         right: 0.75rem;
