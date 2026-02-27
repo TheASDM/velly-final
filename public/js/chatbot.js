@@ -24,10 +24,24 @@ class LoreMasterChatbot {
         this.createWidget();
         this.setupEventListeners();
         this.displayHistory();
+        this.applyMobileLayout(false);
         if (this.conversationHistory.length === 0) {
             this.addSystemMessage('🎲 Greetings, adventurer! I am the Lore Master, keeper of The Crimson Tavern Chronicles. Ask me about NPCs, locations, factions, past sessions, or house rules.');
         }
         console.log('🎲 Lore Master initialized');
+    }
+    applyMobileLayout(isOpen) {
+        if (window.innerWidth > 768) return;
+        const container = document.getElementById('chatbot-container');
+        const widget = document.getElementById('chatbot-widget');
+        if (!container || !widget) return;
+        if (isOpen) {
+            container.style.left = '0.75rem';
+            widget.style.width = '';
+        } else {
+            container.style.left = 'auto';
+            widget.style.width = '200px';
+        }
     }
     createWidget() {
         const container = document.getElementById('chatbot-container');
@@ -72,12 +86,14 @@ class LoreMasterChatbot {
         this.isOpen = !this.isOpen;
         if (this.isOpen) {
             widget.classList.remove('chatbot-collapsed');
+            this.applyMobileLayout(true);
             setTimeout(() => {
                 const input = document.getElementById('chat-input');
                 if (input) input.focus();
             }, 300);
         } else {
             widget.classList.add('chatbot-collapsed');
+            this.applyMobileLayout(false);
         }
     }
     async handleSendMessage() {
