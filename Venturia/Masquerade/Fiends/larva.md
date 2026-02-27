@@ -19,8 +19,8 @@ dateCreated: 2026-02-27T00:01:00.000Z
 
 <!-- NAME & TYPE -->
 <div style="padding:0.6rem 1rem 0.25rem;">
-<p style="color:#58180d;font-size:1.5rem;font-weight:bold;margin:0;line-height:1.15;letter-spacing:0.01em;">Larva</p>
-<p style="font-style:italic;font-size:0.82rem;color:#58180d;margin:0.1rem 0 0;">Medium Fiend, Neutral Evil</p>
+<div style="color:#58180d;font-size:1.5rem;font-weight:bold;margin:0;line-height:1.15;letter-spacing:0.01em;">Larva</div>
+<div style="font-style:italic;font-size:0.82rem;color:#58180d;margin:0.1rem 0 0;">Medium Fiend, Neutral Evil</div>
 </div>
 
 <!-- TAPERED DIVIDER -->
@@ -73,8 +73,8 @@ dateCreated: 2026-02-27T00:01:00.000Z
 
 <!-- ACTIONS -->
 <div style="padding:0.4rem 1rem 0.65rem;">
-<p style="color:#58180d;font-size:1rem;font-variant:small-caps;font-weight:bold;letter-spacing:0.06em;border-bottom:1px solid #58180d;padding-bottom:0.15rem;margin:0 0 0.5rem;">Actions</p>
-<p style="margin:0;font-size:0.85rem;line-height:1.7;"><strong><em>Bite.</em></strong> <em>Melee Attack Roll:</em> +1, reach 5 ft. <em>Hit:</em> 1 (1d4 − 1) piercing damage.</p>
+<div style="color:#58180d;font-size:1rem;font-variant:small-caps;font-weight:bold;letter-spacing:0.06em;border-bottom:1px solid #58180d;padding-bottom:0.15rem;margin:0 0 0.5rem;">Actions</div>
+<div style="margin:0;font-size:0.85rem;line-height:1.7;"><strong><em>Bite.</em></strong> <em>Melee Attack Roll:</em> +1, reach 5 ft. <em>Hit:</em> 1 (1d4 − 1) piercing damage.</div>
 </div>
 
 <!-- BOTTOM BAR -->
