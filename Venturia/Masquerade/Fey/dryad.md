@@ -60,8 +60,9 @@ dateCreated: 2026-02-27T00:02:00.000Z
 
 <!-- PROPERTIES -->
 <div style="padding:0.3rem 1rem;font-size:0.85rem;line-height:2.0;">
-<div><strong>Senses</strong> —</div>
-<div><strong>Languages</strong> —</div>
+<div><strong>Skills</strong> Perception +4, Stealth +5</div>
+<div><strong>Senses</strong> Passive Perception 14</div>
+<div><strong>Languages</strong> Elvish, Sylvan</div>
 <div><strong>Challenge</strong> 1 (200 XP) &nbsp;|&nbsp; <strong>Proficiency Bonus</strong> +2</div>
 </div>
 
