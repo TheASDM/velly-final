@@ -33,6 +33,21 @@
     overflow: hidden;
 }
 
+/* Collapsed on mobile: subtle tab on right edge */
+@media (max-width: 768px) {
+    #chatbot-widget.chatbot-collapsed {
+        opacity: 0.45;
+        border-radius: 8px 0 0 8px;
+        border-top-color: rgba(201, 168, 76, 0.25);
+        border-right: none;
+        transition: opacity 0.25s ease;
+    }
+    #chatbot-widget.chatbot-collapsed:hover,
+    #chatbot-widget.chatbot-collapsed:active {
+        opacity: 0.85;
+    }
+}
+
 /* ── Header ── */
 .chatbot-header {
     display: flex;

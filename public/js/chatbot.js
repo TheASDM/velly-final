@@ -36,11 +36,13 @@ class LoreMasterChatbot {
         const widget = document.getElementById('chatbot-widget');
         if (!container || !widget) return;
         if (isOpen) {
+            container.style.right = '0.75rem';
             container.style.left = '0.75rem';
             widget.style.width = '';
         } else {
+            container.style.right = '0';
             container.style.left = 'auto';
-            widget.style.width = '200px';
+            widget.style.width = '180px';
         }
     }
     createWidget() {
