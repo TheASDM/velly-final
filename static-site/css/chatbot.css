@@ -227,4 +227,10 @@
     #chatbot-widget {
         width: 100%;
     }
+    /* When collapsed, shrink to a corner button so it doesn't block nav */
+    #chatbot-widget.chatbot-collapsed {
+        width: auto;
+        min-width: 160px;
+        margin-left: auto;
+    }
 }
