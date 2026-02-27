@@ -16,17 +16,17 @@ dateCreated: 2026-02-27T00:00:03.000Z
 
 | Creature | CR | Notes |
 |---|---|---|
-| Larva | 0 | Soul-slugs; mostly used for flavor or "swarms." |
-| Lemure | 0 | The standard "flesh-blob" devil; regenerates unless hit by holy water. |
-| Manes | 1/8 | Lowly demon drones that dissolve into vapor when killed. |
-| Abyssal Wretch | 1/4 | Twisted souls transformed by the Abyss. |
-| Dretch | 1/4 | Pathetic demons with a poisonous "Fetid Cloud" attack. |
-| Gnoll Warrior | 1/2 | New Type. Fast skirmishers with "Rampage." |
-| Nupperibo | 1/2 | Bloated, mindless devils that sense others via vibrations. |
-| Imp | 1 | Shape-shifting, invisible devils; classic familiars. |
-| Maw Demon | 1 | A literal walking stomach that causes disadvantage via its ravenous presence. |
-| Quasit | 1 | The demonic counterpart to the Imp; uses fear and poison. |
-| Vargouille | 1 | Flying heads that can "kiss" victims to sprout new wings. |
+| [Larva](/en/Venturia/Masquerade/Fiends/larva) | 0 | Soul-slugs; mostly used for flavor or "swarms." |
+| [Lemure](/en/Venturia/Masquerade/Fiends/lemure) | 0 | The standard "flesh-blob" devil; regenerates unless hit by holy water. |
+| [Manes](/en/Venturia/Masquerade/Fiends/manes) | 1/8 | Lowly demon drones that dissolve into vapor when killed. |
+| [Abyssal Wretch](/en/Venturia/Masquerade/Fiends/abyssal-wretch) | 1/4 | Twisted souls transformed by the Abyss. |
+| [Dretch](/en/Venturia/Masquerade/Fiends/dretch) | 1/4 | Pathetic demons with a poisonous "Fetid Cloud" attack. |
+| [Gnoll Warrior](/en/Venturia/Masquerade/Fiends/gnoll-warrior) | 1/2 | New Type. Fast skirmishers with "Rampage." |
+| [Nupperibo](/en/Venturia/Masquerade/Fiends/nupperibo) | 1/2 | Bloated, mindless devils that sense others via vibrations. |
+| [Imp](/en/Venturia/Masquerade/Fiends/imp) | 1 | Shape-shifting, invisible devils; classic familiars. |
+| [Maw Demon](/en/Venturia/Masquerade/Fiends/maw-demon) | 1 | A literal walking stomach that causes disadvantage via its ravenous presence. |
+| [Quasit](/en/Venturia/Masquerade/Fiends/quasit) | 1 | The demonic counterpart to the Imp; uses fear and poison. |
+| [Vargouille](/en/Venturia/Masquerade/Fiends/vargouille) | 1 | Flying heads that can "kiss" victims to sprout new wings. |
 | **L'anima Vuota** | 1/8 | Hollow Skin demon. Hides creature type from detection magic. Marks targets. |
 | **Red Hand of Mammon** | 1/4 | Greed devil. Senses precious materials. Obsessed with one object. |
 | **Il Rosso** | 1/2 | Crimson devil. Fire immunity. Fiery Form, Eruption. |
