@@ -44,12 +44,12 @@ dateCreated: 2026-02-27T00:02:00.000Z
 
 <!-- ABILITY SCORES -->
 <div style="display:flex;text-align:center;padding:0.5rem 0.5rem;font-size:0.82rem;">
-<div style="flex:1;"><div style="color:#58180d;font-weight:bold;font-size:0.75rem;letter-spacing:0.04em;">STR</div><div>— (—)</div></div>
-<div style="flex:1;"><div style="color:#58180d;font-weight:bold;font-size:0.75rem;letter-spacing:0.04em;">DEX</div><div>— (—)</div></div>
-<div style="flex:1;"><div style="color:#58180d;font-weight:bold;font-size:0.75rem;letter-spacing:0.04em;">CON</div><div>— (—)</div></div>
-<div style="flex:1;"><div style="color:#58180d;font-weight:bold;font-size:0.75rem;letter-spacing:0.04em;">INT</div><div>— (—)</div></div>
-<div style="flex:1;"><div style="color:#58180d;font-weight:bold;font-size:0.75rem;letter-spacing:0.04em;">WIS</div><div>— (—)</div></div>
-<div style="flex:1;"><div style="color:#58180d;font-weight:bold;font-size:0.75rem;letter-spacing:0.04em;">CHA</div><div>— (—)</div></div>
+<div style="flex:1;"><div style="color:#58180d;font-weight:bold;font-size:0.75rem;letter-spacing:0.04em;">STR</div><div>13 (+1)</div></div>
+<div style="flex:1;"><div style="color:#58180d;font-weight:bold;font-size:0.75rem;letter-spacing:0.04em;">DEX</div><div>12 (+1)</div></div>
+<div style="flex:1;"><div style="color:#58180d;font-weight:bold;font-size:0.75rem;letter-spacing:0.04em;">CON</div><div>15 (+2)</div></div>
+<div style="flex:1;"><div style="color:#58180d;font-weight:bold;font-size:0.75rem;letter-spacing:0.04em;">INT</div><div>5 (-3)</div></div>
+<div style="flex:1;"><div style="color:#58180d;font-weight:bold;font-size:0.75rem;letter-spacing:0.04em;">WIS</div><div>8 (-1)</div></div>
+<div style="flex:1;"><div style="color:#58180d;font-weight:bold;font-size:0.75rem;letter-spacing:0.04em;">CHA</div><div>5 (-3)</div></div>
 </div>
 
 <!-- TAPERED DIVIDER -->
