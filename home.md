@@ -16,12 +16,12 @@ dateCreated: 2026-02-25T00:00:00.000Z
 <div style="height: 1px; background: linear-gradient(90deg, transparent, rgba(139,115,85,0.4), transparent); margin: 0 auto 2.25rem; max-width: 400px;"></div>
 
 <div style="display: flex; justify-content: center; gap: 2.5rem; flex-wrap: wrap;">
-<a href="/en/Archive" style="font-size: 0.68rem; letter-spacing: 0.35em; text-transform: uppercase; color: #d4a574; text-decoration: none;">The Chronicle</a>
-<a href="/en/Articles" style="font-size: 0.68rem; letter-spacing: 0.35em; text-transform: uppercase; color: #8b7355; text-decoration: none;">Articles</a>
-<a href="/en/Updates" style="font-size: 0.68rem; letter-spacing: 0.35em; text-transform: uppercase; color: #8b7355; text-decoration: none;">Updates</a>
-<a href="/en/Class-Changes" style="font-size: 0.68rem; letter-spacing: 0.35em; text-transform: uppercase; color: #8b7355; text-decoration: none;">Class Changes</a>
-<a href="/en/House-Rules" style="font-size: 0.68rem; letter-spacing: 0.35em; text-transform: uppercase; color: #8b7355; text-decoration: none;">House Rules</a>
-<a href="/en/Venturia" style="font-size: 0.68rem; letter-spacing: 0.35em; text-transform: uppercase; color: #8b7355; text-decoration: none;">Venturia</a>
+<a href="/en/Archive/index" style="font-size: 0.68rem; letter-spacing: 0.35em; text-transform: uppercase; color: #d4a574; text-decoration: none;">The Chronicle</a>
+<a href="/en/Articles/index" style="font-size: 0.68rem; letter-spacing: 0.35em; text-transform: uppercase; color: #8b7355; text-decoration: none;">Articles</a>
+<a href="/en/Updates/index" style="font-size: 0.68rem; letter-spacing: 0.35em; text-transform: uppercase; color: #8b7355; text-decoration: none;">Updates</a>
+<a href="/en/Class-Changes/index" style="font-size: 0.68rem; letter-spacing: 0.35em; text-transform: uppercase; color: #8b7355; text-decoration: none;">Class Changes</a>
+<a href="/en/House-Rules/index" style="font-size: 0.68rem; letter-spacing: 0.35em; text-transform: uppercase; color: #8b7355; text-decoration: none;">House Rules</a>
+<a href="/en/Venturia/index" style="font-size: 0.68rem; letter-spacing: 0.35em; text-transform: uppercase; color: #8b7355; text-decoration: none;">Venturia</a>
 </div>
 
 </div>
@@ -29,7 +29,7 @@ dateCreated: 2026-02-25T00:00:00.000Z
 <!-- LATEST_POST -->
 <div style="background: rgba(139,0,0,0.1); border: 1px solid rgba(139,115,85,0.3); border-radius: 6px; padding: 0.85rem 1.25rem; margin-bottom: 2rem; display: flex; align-items: center; gap: 1.25rem; flex-wrap: wrap;">
 <span style="font-size: 0.62rem; letter-spacing: 0.4em; text-transform: uppercase; color: #8b7355; flex-shrink: 0;">Latest Post</span>
-<a href="/en/Venturia/Masquerade/Celestials/empyrean-iota" style="font-size: 0.95rem; color: #d4a574; text-decoration: none; font-style: italic; flex: 1;">Empyrean Iota →</a>
+<a href="/en/Venturia/Creatures/Celestials/empyrean-iota" style="font-size: 0.95rem; color: #d4a574; text-decoration: none; font-style: italic; flex: 1;">Empyrean Iota →</a>
 <span style="font-size: 0.75rem; color: rgba(139,115,85,0.55);">February 26, 2026</span>
 </div>
 <!-- /LATEST_POST -->
