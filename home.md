@@ -2,7 +2,7 @@
 title: Valley of Shadows — Codex
 description: Tales from Venturia & Vallombrosa. The living chronicle of the Valley of Shadows campaign.
 published: true
-date: 2026-02-28T22:44:23.955Z
+date: 2026-02-28T22:45:52.806Z
 editor: markdown
 dateCreated: 2026-02-25T00:00:00.000Z
 ---
@@ -27,10 +27,24 @@ dateCreated: 2026-02-25T00:00:00.000Z
 </div>
 
 <!-- LATEST_POST -->
-<div style="background: rgba(139,0,0,0.1); border: 1px solid rgba(139,115,85,0.3); border-radius: 6px; padding: 0.85rem 1.25rem; margin-bottom: 2rem; display: flex; align-items: center; gap: 1.25rem; flex-wrap: wrap;">
-<span style="font-size: 0.62rem; letter-spacing: 0.4em; text-transform: uppercase; color: #8b7355; flex-shrink: 0;">Latest Post</span>
+<div style="background: rgba(139,0,0,0.1); border: 1px solid rgba(139,115,85,0.3); border-radius: 6px; margin-bottom: 2rem;">
+<div style="padding: 0.85rem 1.25rem; display: flex; align-items: center; gap: 1.25rem; flex-wrap: wrap;">
+<span style="font-size: 0.62rem; letter-spacing: 0.4em; text-transform: uppercase; color: #8b7355; flex-shrink: 0; min-width: 5.5rem;">Latest Post</span>
 <a href="/en/Articles/valley-of-shadows-framework" style="font-size: 0.95rem; color: #d4a574; text-decoration: none; font-style: italic; flex: 1;">The Valley of Shadows Framework →</a>
 <span style="font-size: 0.75rem; color: rgba(139,115,85,0.55);">February 27, 2026</span>
+</div>
+<div style="height: 1px; background: rgba(139,115,85,0.2); margin: 0 1.25rem;"></div>
+<div style="padding: 0.85rem 1.25rem; display: flex; align-items: center; gap: 1.25rem; flex-wrap: wrap;">
+<span style="font-size: 0.62rem; letter-spacing: 0.4em; text-transform: uppercase; color: #8b7355; flex-shrink: 0; min-width: 5.5rem;"></span>
+<a href="/en/House-Rules/simplification" style="font-size: 0.95rem; color: rgba(212,165,116,0.6); text-decoration: none; font-style: italic; flex: 1;">House Rules: Simplification the Autistic Way →</a>
+<span style="font-size: 0.75rem; color: rgba(139,115,85,0.55);">February 27, 2026</span>
+</div>
+<div style="height: 1px; background: rgba(139,115,85,0.2); margin: 0 1.25rem;"></div>
+<div style="padding: 0.85rem 1.25rem; display: flex; align-items: center; gap: 1.25rem; flex-wrap: wrap;">
+<span style="font-size: 0.62rem; letter-spacing: 0.4em; text-transform: uppercase; color: #8b7355; flex-shrink: 0; min-width: 5.5rem;"></span>
+<a href="/en/Updates/campaign-update-2" style="font-size: 0.95rem; color: rgba(212,165,116,0.6); text-decoration: none; font-style: italic; flex: 1;">Bi-Weekly Campaign Update #2 — February 25th thru March 11th →</a>
+<span style="font-size: 0.75rem; color: rgba(139,115,85,0.55);">February 27, 2026</span>
+</div>
 </div>
 <!-- /LATEST_POST -->
 

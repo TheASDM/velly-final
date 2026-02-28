@@ -124,14 +124,25 @@ function collectArticles() {
 
 // ─── UPDATE HOME.MD ──────────────────────────────────────────────────────────
 
-function updateHome(article) {
-  const now  = new Date().toISOString();
-  const date = fmtDate(article.date);
+function updateHome(recents) {
+  const now = new Date().toISOString();
 
-  const banner = `<div style="background: rgba(139,0,0,0.1); border: 1px solid rgba(139,115,85,0.3); border-radius: 6px; padding: 0.85rem 1.25rem; margin-bottom: 2rem; display: flex; align-items: center; gap: 1.25rem; flex-wrap: wrap;">
-<span style="font-size: 0.62rem; letter-spacing: 0.4em; text-transform: uppercase; color: #8b7355; flex-shrink: 0;">Latest Post</span>
-<a href="${article.url}" style="font-size: 0.95rem; color: #d4a574; text-decoration: none; font-style: italic; flex: 1;">${article.title} →</a>
+  const rows = recents.map((article, i) => {
+    const date       = fmtDate(article.date);
+    const label      = i === 0 ? 'Latest Post' : '';
+    const titleColor = i === 0 ? '#d4a574' : 'rgba(212,165,116,0.6)';
+    const divider    = i < recents.length - 1
+      ? '\n<div style="height: 1px; background: rgba(139,115,85,0.2); margin: 0 1.25rem;"></div>'
+      : '';
+    return `<div style="padding: 0.85rem 1.25rem; display: flex; align-items: center; gap: 1.25rem; flex-wrap: wrap;">
+<span style="font-size: 0.62rem; letter-spacing: 0.4em; text-transform: uppercase; color: #8b7355; flex-shrink: 0; min-width: 5.5rem;">${label}</span>
+<a href="${article.url}" style="font-size: 0.95rem; color: ${titleColor}; text-decoration: none; font-style: italic; flex: 1;">${article.title} →</a>
 <span style="font-size: 0.75rem; color: rgba(139,115,85,0.55);">${date}</span>
+</div>${divider}`;
+  }).join('\n');
+
+  const banner = `<div style="background: rgba(139,0,0,0.1); border: 1px solid rgba(139,115,85,0.3); border-radius: 6px; margin-bottom: 2rem;">
+${rows}
 </div>`;
 
   let content = fs.readFileSync(HOME_PATH, 'utf-8');
@@ -146,7 +157,7 @@ function updateHome(article) {
   );
 
   fs.writeFileSync(HOME_PATH, content, 'utf-8');
-  console.log(`✓ home.md → latest post: "${article.title}"`);
+  console.log(`✓ home.md → latest posts: ${recents.map(a => `"${a.title}"`).join(', ')}`);
 }
 
 // ─── UPDATE ARCHIVE ──────────────────────────────────────────────────────────
@@ -241,10 +252,11 @@ if (datedArticles.length === 0) {
   process.exit(1);
 }
 
-const newest = datedArticles[0];
+const newest  = datedArticles[0];
+const recents = datedArticles.slice(0, 3);
 console.log(`\nNewest article: "${newest.title}" (${fmtDate(newest.date)})\n`);
 
-updateHome(newest);
+updateHome(recents);
 updateArchive(articles);
 const indexPaths = AUTO_INDEX_FOLDERS.map(f => updateFolderIndex(f, articles));
 
