@@ -29,8 +29,9 @@ const HOME_PATH   = path.join(ROOT, 'home.md');
 const ARCHIVE_DIR = path.join(ROOT, 'Archive');
 const ARCHIVE_PATH = path.join(ARCHIVE_DIR, 'index.md');
 
-// Folders that get auto-generated index pages (Venturia has a handwritten one)
-const AUTO_INDEX_FOLDERS = ['Articles', 'Class-Changes', 'House-Rules', 'Updates', 'Venturia'];
+// Folders that get auto-generated index pages
+// Venturia and its sub-sections use handwritten category indexes
+const AUTO_INDEX_FOLDERS = ['Articles', 'Class-Changes', 'House-Rules', 'Updates'];
 
 // ─── HELPERS ─────────────────────────────────────────────────────────────────
 
