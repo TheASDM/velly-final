@@ -2,9 +2,9 @@
 title: All Posts
 description: Every article published, newest first.
 published: true
-date: 2026-02-28T05:26:29.997Z
+date: 2026-02-28T06:22:35.171Z
 editor: markdown
-dateCreated: 2026-02-28T05:26:29.997Z
+dateCreated: 2026-02-28T06:22:35.171Z
 ---
 
 # All Posts
@@ -13,60 +13,61 @@ Everything published, newest to oldest. Undated articles are older content added
 
 | Published | Title | Section |
 |-----------|-------|---------|
-| February 26, 2026 | [Empyrean Iota](/en/Venturia/Masquerade/Celestials/empyrean-iota) | Venturia |
-| February 26, 2026 | [Giant Eagle](/en/Venturia/Masquerade/Celestials/giant-eagle) | Venturia |
-| February 26, 2026 | [Giant Owl](/en/Venturia/Masquerade/Celestials/giant-owl) | Venturia |
-| February 26, 2026 | [Sphinx of Wonder](/en/Venturia/Masquerade/Celestials/sphinx-of-wonder) | Venturia |
-| February 26, 2026 | [Blink Dog](/en/Venturia/Masquerade/Fey/blink-dog) | Venturia |
-| February 26, 2026 | [Bugbear Warrior](/en/Venturia/Masquerade/Fey/bugbear-warrior) | Venturia |
-| February 26, 2026 | [Bullywug Warrior](/en/Venturia/Masquerade/Fey/bullywug-warrior) | Venturia |
-| February 26, 2026 | [Dryad](/en/Venturia/Masquerade/Fey/dryad) | Venturia |
-| February 26, 2026 | [Faerie Dragon (Youth)](/en/Venturia/Masquerade/Fey/faerie-dragon) | Venturia |
-| February 26, 2026 | [Fairy](/en/Venturia/Masquerade/Fey/fairy) | Venturia |
-| February 26, 2026 | [Goblin Minion](/en/Venturia/Masquerade/Fey/goblin-minion) | Venturia |
-| February 26, 2026 | [Goblin Warrior](/en/Venturia/Masquerade/Fey/goblin-warrior) | Venturia |
-| February 26, 2026 | [Hobgoblin Warrior](/en/Venturia/Masquerade/Fey/hobgoblin-warrior) | Venturia |
-| February 26, 2026 | [Pixie](/en/Venturia/Masquerade/Fey/pixie) | Venturia |
-| February 26, 2026 | [Quickling](/en/Venturia/Masquerade/Fey/quickling) | Venturia |
-| February 26, 2026 | [Satyr](/en/Venturia/Masquerade/Fey/satyr) | Venturia |
-| February 26, 2026 | [Sprite](/en/Venturia/Masquerade/Fey/sprite) | Venturia |
-| February 26, 2026 | [Worg](/en/Venturia/Masquerade/Fey/worg) | Venturia |
-| February 26, 2026 | [Abyssal Wretch](/en/Venturia/Masquerade/Fiends/abyssal-wretch) | Venturia |
-| February 26, 2026 | [Dretch](/en/Venturia/Masquerade/Fiends/dretch) | Venturia |
-| February 26, 2026 | [Gnoll Warrior](/en/Venturia/Masquerade/Fiends/gnoll-warrior) | Venturia |
-| February 26, 2026 | [Imp](/en/Venturia/Masquerade/Fiends/imp) | Venturia |
-| February 26, 2026 | [Lemure](/en/Venturia/Masquerade/Fiends/lemure) | Venturia |
-| February 26, 2026 | [Manes](/en/Venturia/Masquerade/Fiends/manes) | Venturia |
-| February 26, 2026 | [Maw Demon](/en/Venturia/Masquerade/Fiends/maw-demon) | Venturia |
-| February 26, 2026 | [Nupperibo](/en/Venturia/Masquerade/Fiends/nupperibo) | Venturia |
-| February 26, 2026 | [Quasit](/en/Venturia/Masquerade/Fiends/quasit) | Venturia |
-| February 26, 2026 | [Vargouille](/en/Venturia/Masquerade/Fiends/vargouille) | Venturia |
-| February 26, 2026 | [Acolyte](/en/Venturia/Masquerade/Humanoids/acolyte) | Venturia |
-| February 26, 2026 | [Apprentice](/en/Venturia/Masquerade/Humanoids/apprentice) | Venturia |
-| February 26, 2026 | [Bandit](/en/Venturia/Masquerade/Humanoids/bandit) | Venturia |
-| February 26, 2026 | [Commoner](/en/Venturia/Masquerade/Humanoids/commoner) | Venturia |
-| February 26, 2026 | [Cultist](/en/Venturia/Masquerade/Humanoids/cultist) | Venturia |
-| February 26, 2026 | [Drow Warrior](/en/Venturia/Masquerade/Humanoids/drow-warrior) | Venturia |
-| February 26, 2026 | [Duergar](/en/Venturia/Masquerade/Humanoids/duergar) | Venturia |
-| February 26, 2026 | [Grimlock](/en/Venturia/Masquerade/Humanoids/grimlock) | Venturia |
-| February 26, 2026 | [Guard](/en/Venturia/Masquerade/Humanoids/guard) | Venturia |
-| February 26, 2026 | [Jackalwere](/en/Venturia/Masquerade/Humanoids/jackalwere) | Venturia |
-| February 26, 2026 | [Kenku](/en/Venturia/Masquerade/Humanoids/kenku) | Venturia |
-| February 26, 2026 | [Lizardfolk Warrior](/en/Venturia/Masquerade/Humanoids/lizardfolk-warrior) | Venturia |
-| February 26, 2026 | [Orc Warrior](/en/Venturia/Masquerade/Humanoids/orc-warrior) | Venturia |
-| February 26, 2026 | [Performer](/en/Venturia/Masquerade/Humanoids/performer) | Venturia |
-| February 26, 2026 | [Sahuagin](/en/Venturia/Masquerade/Humanoids/sahuagin) | Venturia |
-| February 26, 2026 | [Scout](/en/Venturia/Masquerade/Humanoids/scout) | Venturia |
-| February 26, 2026 | [Soldier](/en/Venturia/Masquerade/Humanoids/soldier) | Venturia |
-| February 26, 2026 | [Spy](/en/Venturia/Masquerade/Humanoids/spy) | Venturia |
-| February 26, 2026 | [Thug](/en/Venturia/Masquerade/Humanoids/thug) | Venturia |
-| February 26, 2026 | [Tribal Warrior](/en/Venturia/Masquerade/Humanoids/tribal-warrior) | Venturia |
-| February 26, 2026 | [Larva](/en/Venturia/Masquerade/Fiends/larva) | Venturia |
-| February 26, 2026 | [Car's Masquerade Forms: Humanoids](/en/Venturia/Masquerade/humanoids) | Venturia |
-| February 26, 2026 | [Car's Masquerade Forms: Fiends](/en/Venturia/Masquerade/fiends) | Venturia |
-| February 26, 2026 | [Car's Masquerade Forms: Fey](/en/Venturia/Masquerade/fey) | Venturia |
-| February 26, 2026 | [Car's Masquerade Forms: Celestials](/en/Venturia/Masquerade/celestials) | Venturia |
-| February 26, 2026 | [Car: Masquerade Forms](/en/Venturia/Masquerade/car-masquerade-forms) | Venturia |
+| February 27, 2026 | [House Rules: Simplification the Autistic Way](/en/House-Rules/simplification) | House-Rules |
+| February 26, 2026 | [Empyrean Iota](/en/Venturia/Creatures/Celestials/empyrean-iota) | Venturia |
+| February 26, 2026 | [Giant Eagle](/en/Venturia/Creatures/Celestials/giant-eagle) | Venturia |
+| February 26, 2026 | [Giant Owl](/en/Venturia/Creatures/Celestials/giant-owl) | Venturia |
+| February 26, 2026 | [Sphinx of Wonder](/en/Venturia/Creatures/Celestials/sphinx-of-wonder) | Venturia |
+| February 26, 2026 | [Blink Dog](/en/Venturia/Creatures/Fey/blink-dog) | Venturia |
+| February 26, 2026 | [Bugbear Warrior](/en/Venturia/Creatures/Fey/bugbear-warrior) | Venturia |
+| February 26, 2026 | [Bullywug Warrior](/en/Venturia/Creatures/Fey/bullywug-warrior) | Venturia |
+| February 26, 2026 | [Dryad](/en/Venturia/Creatures/Fey/dryad) | Venturia |
+| February 26, 2026 | [Faerie Dragon (Youth)](/en/Venturia/Creatures/Fey/faerie-dragon) | Venturia |
+| February 26, 2026 | [Fairy](/en/Venturia/Creatures/Fey/fairy) | Venturia |
+| February 26, 2026 | [Goblin Minion](/en/Venturia/Creatures/Fey/goblin-minion) | Venturia |
+| February 26, 2026 | [Goblin Warrior](/en/Venturia/Creatures/Fey/goblin-warrior) | Venturia |
+| February 26, 2026 | [Hobgoblin Warrior](/en/Venturia/Creatures/Fey/hobgoblin-warrior) | Venturia |
+| February 26, 2026 | [Pixie](/en/Venturia/Creatures/Fey/pixie) | Venturia |
+| February 26, 2026 | [Quickling](/en/Venturia/Creatures/Fey/quickling) | Venturia |
+| February 26, 2026 | [Satyr](/en/Venturia/Creatures/Fey/satyr) | Venturia |
+| February 26, 2026 | [Sprite](/en/Venturia/Creatures/Fey/sprite) | Venturia |
+| February 26, 2026 | [Worg](/en/Venturia/Creatures/Fey/worg) | Venturia |
+| February 26, 2026 | [Abyssal Wretch](/en/Venturia/Creatures/Fiends/abyssal-wretch) | Venturia |
+| February 26, 2026 | [Dretch](/en/Venturia/Creatures/Fiends/dretch) | Venturia |
+| February 26, 2026 | [Gnoll Warrior](/en/Venturia/Creatures/Fiends/gnoll-warrior) | Venturia |
+| February 26, 2026 | [Imp](/en/Venturia/Creatures/Fiends/imp) | Venturia |
+| February 26, 2026 | [Lemure](/en/Venturia/Creatures/Fiends/lemure) | Venturia |
+| February 26, 2026 | [Manes](/en/Venturia/Creatures/Fiends/manes) | Venturia |
+| February 26, 2026 | [Maw Demon](/en/Venturia/Creatures/Fiends/maw-demon) | Venturia |
+| February 26, 2026 | [Nupperibo](/en/Venturia/Creatures/Fiends/nupperibo) | Venturia |
+| February 26, 2026 | [Quasit](/en/Venturia/Creatures/Fiends/quasit) | Venturia |
+| February 26, 2026 | [Vargouille](/en/Venturia/Creatures/Fiends/vargouille) | Venturia |
+| February 26, 2026 | [Acolyte](/en/Venturia/Creatures/Humanoids/acolyte) | Venturia |
+| February 26, 2026 | [Apprentice](/en/Venturia/Creatures/Humanoids/apprentice) | Venturia |
+| February 26, 2026 | [Bandit](/en/Venturia/Creatures/Humanoids/bandit) | Venturia |
+| February 26, 2026 | [Commoner](/en/Venturia/Creatures/Humanoids/commoner) | Venturia |
+| February 26, 2026 | [Cultist](/en/Venturia/Creatures/Humanoids/cultist) | Venturia |
+| February 26, 2026 | [Drow Warrior](/en/Venturia/Creatures/Humanoids/drow-warrior) | Venturia |
+| February 26, 2026 | [Duergar](/en/Venturia/Creatures/Humanoids/duergar) | Venturia |
+| February 26, 2026 | [Grimlock](/en/Venturia/Creatures/Humanoids/grimlock) | Venturia |
+| February 26, 2026 | [Guard](/en/Venturia/Creatures/Humanoids/guard) | Venturia |
+| February 26, 2026 | [Jackalwere](/en/Venturia/Creatures/Humanoids/jackalwere) | Venturia |
+| February 26, 2026 | [Kenku](/en/Venturia/Creatures/Humanoids/kenku) | Venturia |
+| February 26, 2026 | [Lizardfolk Warrior](/en/Venturia/Creatures/Humanoids/lizardfolk-warrior) | Venturia |
+| February 26, 2026 | [Orc Warrior](/en/Venturia/Creatures/Humanoids/orc-warrior) | Venturia |
+| February 26, 2026 | [Performer](/en/Venturia/Creatures/Humanoids/performer) | Venturia |
+| February 26, 2026 | [Sahuagin](/en/Venturia/Creatures/Humanoids/sahuagin) | Venturia |
+| February 26, 2026 | [Scout](/en/Venturia/Creatures/Humanoids/scout) | Venturia |
+| February 26, 2026 | [Soldier](/en/Venturia/Creatures/Humanoids/soldier) | Venturia |
+| February 26, 2026 | [Spy](/en/Venturia/Creatures/Humanoids/spy) | Venturia |
+| February 26, 2026 | [Thug](/en/Venturia/Creatures/Humanoids/thug) | Venturia |
+| February 26, 2026 | [Tribal Warrior](/en/Venturia/Creatures/Humanoids/tribal-warrior) | Venturia |
+| February 26, 2026 | [Larva](/en/Venturia/Creatures/Fiends/larva) | Venturia |
+| February 26, 2026 | [Car's Masquerade Forms: Humanoids](/en/Venturia/Creatures/humanoids) | Venturia |
+| February 26, 2026 | [Car's Masquerade Forms: Fiends](/en/Venturia/Creatures/fiends) | Venturia |
+| February 26, 2026 | [Car's Masquerade Forms: Fey](/en/Venturia/Creatures/fey) | Venturia |
+| February 26, 2026 | [Car's Masquerade Forms: Celestials](/en/Venturia/Creatures/celestials) | Venturia |
+| February 26, 2026 | [Car: Masquerade Forms](/en/Venturia/College-of-the-Masquerade-Bard/car-masquerade-forms) | Venturia |
 | February 26, 2026 | [Map of Venturia](/en/Venturia/Locations/venturia-map) | Venturia |
 | February 26, 2026 | [The Amaranth Theater](/en/Venturia/Locations/amaranth-theater) | Venturia |
 | February 25, 2026 | [Venturia: The Quirks and Traditions](/en/Venturia/Culture/venturian-quirks-and-traditions) | Venturia |
