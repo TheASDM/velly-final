@@ -1,60 +1,18 @@
 {
-  "session_47": {
-    "number": 47,
-    "title": "The Fall of Thornkeep's Shadow",
-    "date": "2026-01-15",
-    "summary": "The party finally confronted Lord Malachar in his sanctum beneath the old cemetery. After a brutal battle involving summoned demons and blood magic, they managed to destroy his phylactery and end his reign of terror. However, they discovered disturbing evidence that he was merely a lieutenant in the Crimson Hand's hierarchy. Captain Mira was gravely wounded but stabilized. The city celebrates, but dark times may lie ahead.",
-    "key_events": [
-      "Infiltrated the cemetery crypts using Valdris's intelligence",
-      "Fought through undead guardians and trapped corridors",
-      "Discovered Malachar's laboratory with detailed plans for a larger ritual",
-      "Epic boss battle - Malachar transformed into a demon-hybrid form",
-      "Destroyed the Crimson Phylactery, weakening Crimson Hand operations in the region",
-      "Found a coded message referring to 'The Awakening' in three months"
-    ],
-    "combat_encounters": [
-      "2x Shadow Demons",
-      "Lord Malachar (CR 13 Warlock/Necromancer)",
-      "Crimson Hand Elite Guards (4)"
-    ],
-    "loot": [
-      "Malachar's Spellbook (contains several necromancy spells)",
-      "Ring of Protection +2",
-      "4,500 gold pieces",
-      "Coded documents (require deciphering)",
-      "A black crystal pulsing with dark energy (purpose unknown)"
-    ],
-    "character_moments": [
-      "Theron's divine smite dealt the killing blow to Malachar",
-      "Aria's clever use of Dispel Magic prevented a TPK",
-      "Grim discovered his family connection to the Crimson Hand",
-      "Lyra stabilized Captain Mira with a clutch Medicine check"
-    ],
-    "xp_awarded": 8000,
-    "next_session_hooks": [
-      "Decode the Crimson Hand documents",
-      "Investigate 'The Awakening'",
-      "Deal with power vacuum in criminal underworld",
-      "Captain Mira's recovery and potential recruitment mission"
-    ]
+  "_note": "The campaign is just beginning. Session recaps will be added here after each session.",
+  "session_0": {
+    "number": 0,
+    "title": "Foundry Session (Level-Up and Practice)",
+    "type": "Pre-Campaign Session",
+    "summary": "The party met to level up characters and run a brief practice session to get familiar with the new system (D&D 5e 2024 Edition). Not a full story session — used to test mechanics and get everyone on the same page before the campaign begins.",
+    "notes": "Last pre-campaign session. The DM has committed that this was the final prep session — real play begins now."
   },
-  "session_46": {
-    "number": 46,
-    "title": "Gathering Storms",
-    "date": "2026-01-08",
-    "summary": "The party gathered intelligence on Lord Malachar's whereabouts, infiltrated the Blackstone Prison to interrogate a captured Crimson Hand operative, and formed an alliance with Valdris and the Silver Company for the final assault.",
-    "key_events": [
-      "Prison break investigation led to Crimson Hand connection",
-      "Interrogation revealed cemetery sanctum location",
-      "War council with Valdris, Mira, and council members",
-      "Gathered magical supplies and prepared for assault",
-      "Discovered Mira had been investigating Crimson Hand independently"
-    ],
-    "loot": [
-      "Map of cemetery tunnel network",
-      "Potions of Heroism (4)",
-      "Scroll of Greater Restoration"
-    ],
-    "xp_awarded": 5000
+  "session_1": {
+    "number": 1,
+    "title": "The Last Toll",
+    "type": "One-Shot / Campaign Prologue",
+    "status": "Upcoming",
+    "summary": "A standalone one-shot set in a pirate haven at the edge of the known world, on a night when the known world decides to change. Designed as a complete experience on its own and the party's first real chance to sit down together and find out how they play now that they know each other better.",
+    "notes": "This is the 'Ma moment' — the pause between all the preparation and the campaign itself, the space where the table figures out how they play together."
   }
 }

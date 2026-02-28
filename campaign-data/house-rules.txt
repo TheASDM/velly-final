@@ -1,56 +1,107 @@
-THE CRIMSON TAVERN CHRONICLES - HOUSE RULES
+VALLEY OF SHADOWS — HOUSE RULES
 
-= CHARACTER CREATION =
-- Standard array or point buy (no rolling stats)
-- All official WOTC content allowed, Unearthed Arcana with DM approval
-- Start at level 3 (new characters join at party level -1)
-- Free feat at 1st level
-- Background must tie into campaign world
+These rules serve the story we're telling together. When in doubt, choose what feels authentic to your character.
+
+= DESIGN PHILOSOPHY =
+
+Goal: streamline D&D and improve its worst parts. Every rule change does at least one of the following:
+- Provides demonstrable benefit to players while making things move faster and smoother
+- Creates opportunities for big character moments
+- Is written so that a player who opts out of a particular rule can do so without affecting anyone else's enjoyment
+
+= YOUR CHARACTER WON'T DIE FROM ONE BAD DECISION. PERIOD. =
+
+Failure creates story, not endings. Failed rolls introduce complications that enhance the narrative.
+
+Multiple safety nets exist for terrible ideas. Before something catastrophic happens, the DM will ask for a roll to see if your character senses the danger. Even if they fail, the DM will ask if you're sure.
+
+Death requires multiple conscious decisions. Character death comes from deliberate choices: entering dangerous combat, refusing retreat opportunities, poor positioning, and continued aggression while wounded. The exhaustion-based system requires 6 Wounds — that's multiple conscious decisions to keep pushing forward.
+
+Make the choices your character would make. Don't play it safe out of fear.
 
 = RESTING =
-- Short rest: 1 hour, maximum 2 per long rest
-- Long rest: 8 hours, must be in safe location
-- Gritty realism for downtime: short rest = 8 hours, long rest = 7 days in town
 
-= COMBAT =
-- Flanking grants advantage
-- Drinking potions: bonus action for yourself, action to give to others
-- Critical hits: maximize base damage dice, then roll damage dice and add
-- Death saves are secret (DM rolls them)
-- Revivify: Each use reduces max HP by 1d10 permanently until Greater Restoration
+SHORT REST: 1 hour. Roll as many hit dice as you like, one at a time. Requires a relatively safe location.
 
-= MAGIC =
-- Healing potions: roll or take average, your choice
-- Identify: 10 minutes, no spell slot required (ritual only)
-- Spell scrolls: Can attempt casting from higher level scrolls with DC 10 + spell level Arcana check
-- Counterspell: must identify spell being cast (reaction + Arcana check)
+FIELD REST: 8 hours in a non-safe location. Automatically receive the maximum value for any rolled hit dice. Does not provide Long Rest benefits.
 
-= EXPLORATION =
-- Passive Perception used for ambushes/traps
-- Active Investigation for searching specific areas
-- Travel pace matters: fast (-5 passive Perception), slow (+5)
-- Survival checks to avoid getting lost, find food/water, track
+LONG REST — Option A (Sleep in Your Own Bed): Sleep 8 consecutive hours in your permanent home or established residence in Venturia. Gain Long Rest benefits immediately.
 
-= SOCIAL =
-- Social skills don't control player characters
-- Persuasion/Deception/Intimidation set DC for NPC responses
-- Insight reveals emotional state and truthfulness, not mind reading
-- Roleplay can grant advantage/disadvantage on social checks
+LONG REST — Option B (Establish a Safe Haven): Sleep 8 consecutive hours per night in the same location for 3 consecutive nights without actively adventuring. After the third night, gain Long Rest benefits. Continue gaining them each consecutive night as long as you don't abandon the location for more than 48 hours.
 
-= DOWNTIME =
-- Characters can pursue downtime activities between sessions
-- Crafting, research, carousing, training, etc.
-- See DM for specific rules and costs
+Long Rest benefits: Recover all HP, Mana, Hit Dice, etc.
 
-= MISCELLANEOUS =
-- Inspiration carries over between sessions (max 1)
-- Milestone leveling (no XP tracking in session-by-session)
-- Loot is distributed however party decides
-- Players narrate killing blows in combat
-- Rule of Cool: If it's awesome and makes sense, we'll make it work
+= LOCATION CATEGORIES FOR RESTING =
 
-= DEATH AND CONSEQUENCES =
-- Character death is possible and meaningful
-- Dead characters can be buried, and their legacy honored
-- New characters inherit half the previous character's magic items (party's choice which ones)
-- The story goes on
+SECURE (Long Rest after one 8-hour sleep):
+- Your permanent home or residence in Venturia
+- Registered inns and lodging houses
+- Protected institutional spaces (VAVA dormitories, Abbey guest quarters, etc.)
+
+VIABLE HAVEN (Becomes secure after 3 consecutive quiet nights):
+- Friendly NPC homes (with permission)
+- Rented properties, safehouses, or warehouses
+- Established camps in wilderness outside hostile territories
+- Secured locations in settlements outside Vallombrosa
+
+FORBIDDEN HAVEN (Cannot become a safe haven, ever):
+- Any location within Vallombrosa's fog boundary
+- Active enemy territory
+- Dungeons, ruins, or locations with active supernatural threats
+- Anywhere malevolent supernatural forces operate
+
+A safe haven is lost if: abandoned for more than 48 hours, destroyed or compromised, taken by hostile forces, or if it shifts categories (e.g., the fog expands to cover it).
+
+= HEROIC REACTIONS =
+
+One reaction per round. Use any spell or ability with a reaction component, or one of the following:
+
+INTERPOSE: When a creature within 10 ft. would be struck, push them out of the way and become the target yourself.
+
+OPPORTUNITY ATTACK: When an adjacent enemy willingly moves away, make a melee attack with disadvantage. Only heroes can make opportunity attacks — monsters cannot.
+
+HELP: Grant an ally advantage on a roll if you can explain how you help. Automatic advantage if the help is straightforward and within your skillset. Requires a check if the help is creative, risky, or outside your expertise. Not allowed if there's no plausible way to help in the fiction. Limit: one Help reaction per roll.
+
+ASSESS: Make a DC 15 skill check to learn something about an enemy — weaknesses, abilities, plans, the environment, lore, etc. The DM answers honestly, limited to reasonably discernible information. Ties go to the player. Limit: once per player per combat encounter.
+
+= DYING SYSTEM =
+
+When you drop to 0 HP:
+- Gain 1 Point of Exhaustion
+- Gain the Dying condition until you regain HP
+- No unconsciousness. No death saving throws.
+
+While Dying, you act normally on your turn (action, bonus action, movement), but:
+- Concentration is broken
+- Make a DC 10 Constitution save or take 1 Point of Exhaustion when you take an action or bonus action that does not heal you
+- Taking damage causes 2 Points of Exhaustion (3 on a critical hit)
+
+= EXHAUSTION SYSTEM =
+
+This is in addition to, not in place of, the 2024 edition exhaustion mechanics.
+- Subtract 2 × your Exhaustion points from all d20 tests
+- Movement is reduced by 5 feet per point of Exhaustion
+- A PC dies at 6 Points of Exhaustion
+- Recovery: 1 Exhaustion point recovered per Long Rest
+
+= ADDITIONAL RULES =
+
+PVP COMBAT: Not permitted except as part of in-world contests. Combat concludes once it has served its narrative purpose. A private post-game conversation is required to ensure hostility stays with the characters, not the players.
+
+PVP INSIGHT CHECKS: Permitted. One player rolls Insight; the other rolls Deception (if lying) or Persuasion (if telling the truth).
+
+SPELL COMPONENTS: Only components with a gold cost are physically required.
+
+GROUP CHECKS: Majority pass or fail. NAT 20 counts as 2 successes; NAT 1 counts as 2 failures.
+
+INDIVIDUAL CHECKS: Generally limited to 1 party member unless reasonable assistance is offered. With assistance: choose between one roll with Advantage, or each relevant party member rolls independently.
+
+UNTIMED SKILL CHECKS: If there's no time limit and the PC is capable, the check determines how long it takes and whether complications arise — not whether they succeed.
+
+MISCELLANEOUS:
+- Flanking: No flanking
+- HP at level-up: Max HP at odd levels; average or rolled at even levels
+- NAT 20 on a skill check: Best possible outcome — not auto-succeed
+- NAT 1 on a skill check: Auto-fail, even with high bonuses. Reliable Talent usually prevents this.
+- Spell Scrolls: Anyone may attempt with a DC 12 Arcana check. The scroll is consumed regardless of success.
+- Trance resting: Must occur in the same general area for the full duration.

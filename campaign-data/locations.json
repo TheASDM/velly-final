@@ -1,48 +1,145 @@
 {
-  "thornkeep": {
-    "name": "Thornkeep",
+  "venturia": {
+    "name": "Venturia",
     "type": "City",
-    "population": "~15,000",
-    "government": "City Council of Seven",
-    "description": "A fortified trading city built around an ancient keep. The city sprawls in concentric rings from the central fortress, with the merchant quarter bustling with activity and the outer districts housing workers and craftsmen.",
+    "island": "Seravalle",
+    "description": "A coastal city built in tiers on the cliffs of Seravalle island. Harbor districts hum with salt and commerce. The High Quarter gleams with gilded towers. And everywhere — on feast days, in storefronts, hanging from iron posts in the lamplight — masks. Built on canals. Famous for the annual Autumn Masquerade.",
     "districts": {
-      "keep_quarter": "The original fortress and seat of government. Houses the Council chambers and elite guard barracks.",
-      "merchant_quarter": "Wealthy district with shops, banks, and guildhalls. The Silver Market operates here daily.",
-      "temple_district": "Religious center with temples to Moradin, Pelor, and the Raven Queen.",
-      "artisan_quarter": "Home to craftsmen, workshops, and the Mage's Collegiate.",
-      "docks": "River port with warehouses and taverns. Rougher area with higher crime.",
-      "outer_ring": "Working-class residential areas and farmsteads."
+      "high_quarter": "The upper city. Old money, the Academy, institutions that prefer to be above it all.",
+      "market_tiers": "The middle city. Commerce, craft, guilds. Most of daily city life.",
+      "harbor_district": "The lower city. Salt, trade, old loyalties, waterways that don't always behave.",
+      "overlook": "Where the city ends and Vallombrosa begins. The Fog Wardens' Garrison watches the boundary."
     },
-    "points_of_interest": [
-      "The Crimson Tavern (party's base of operations)",
-      "Silver Market (largest marketplace)",
-      "Hall of Seven (council building)",
-      "Mage's Collegiate (arcane academy)",
-      "Temple of the Forge (Moradin)",
-      "Blackstone Prison (notorious for housing dangerous criminals)"
-    ],
-    "current_events": [
-      "Crimson Hand operatives infiltrating the guard",
-      "Mysterious disappearances in the docks district",
-      "Council deadlocked on trade treaty with Silverpine",
-      "Refugees arriving from destroyed villages to the south"
-    ],
-    "recent_history": "Recently survived a major demon incursion (Session 42). Walls damaged but being repaired. Population on edge.",
-    "notable_npcs": ["Captain Mira Stonehelm", "Valdris", "Council Speaker Aldrich"]
+    "strangeness": "Mirrors sometimes show reflections a half-second late. Promises feel heavier than elsewhere. Colors are more saturated in autumn. Coincidences happen with uncanny frequency. Everyone considers this perfectly normal."
   },
-  "silverpine-forest": {
-    "name": "Silverpine Forest",
-    "type": "Wilderness",
-    "danger_level": "Moderate to High",
-    "description": "Ancient woodland north of Thornkeep known for its silver-barked pines and ethereal beauty. Home to both fey creatures and darker things that lurk in the shadows.",
-    "notable_features": [
-      "The Standing Stones (ancient druidic circle)",
-      "Whispering Grove (rumored to be a fey crossing)",
-      "Thornwood Village (small logging settlement)",
-      "The Deadwoods (corrupted section, avoid)"
-    ],
-    "encounters": "Fey creatures, wolves, bandits, occasional undead near the Deadwoods",
-    "current_events": "Increased fey activity. Some villagers report seeing lights and hearing music at night.",
-    "quests_connected": ["The Missing Loggers", "Investigate the Standing Stones"]
+  "vallombrosa": {
+    "name": "Vallombrosa",
+    "type": "Forbidden Zone / Dead Zone",
+    "description": "At the city's edge, where the streets end and the fog begins. Once the great estate of the di Errante family — the most powerful noble house on the island. A thousand years ago, something happened that turned it into a dead zone of perpetual fog. The fog never lifted. People who enter do not return.",
+    "history": "The di Errante name is now a cautionary tale. Every Venturian has a favorite legend about what happened there. None of them are right.",
+    "current_status": "The fog has been behaving differently lately — moving in ways it shouldn't. The Fog Wardens' logs document the boundary shifting. Something is changing.",
+    "dangers": "Cannot be used as a safe haven. Any location within Vallombrosa's fog boundary is categorically Forbidden Haven — no rest is possible there."
+  },
+  "vava": {
+    "name": "Venturia Academy of Veiled Arts (VAVA)",
+    "tier": "High Quarter",
+    "type": "Magical Academy",
+    "description": "One of the foremost institutions of magical study in the region. Autumn-colored spires and candlelit windows. Students and faculty recognized by amber-and-charcoal robes.",
+    "notable_facilities": ["The Veiled Tower (Divination)", "The Binding Hall (Contract Magic)", "The Glamour Courts (Illusion)", "The Library (five floors, deepest levels require special permission)"],
+    "alumni_influence": "VAVA graduates reach into every corner of Venturian society. A former student is rarely far away in any room that matters."
+  },
+  "covenant-archive-location": {
+    "name": "The Covenant Archive",
+    "tier": "High Quarter",
+    "type": "Legal Institution",
+    "description": "A windowless building of black stone. Inside, gray-robed Archivists maintain witnessed contracts and binding agreements on specially prepared vellum that cannot be altered once the ink dries. Their oldest records predate the city itself.",
+    "access": "Public for standard contract work. The Deep Archive is accessible only to senior staff."
+  },
+  "amaranth-theater": {
+    "name": "The Amaranth Theater",
+    "tier": "High Quarter (technically Harbor District, considered an extension of the High Quarter)",
+    "type": "Performance Venue / Cultural Institution",
+    "description": "Three centuries old. Deep blue stone and gilded trim visible from half the city. Over a thousand seats with acoustics that seem supernaturally perfect. The cultural heart of Venturia.",
+    "annual_event": "Stages 'The Tragedy of Vallombrosa' during the Autumn Masquerade every year — the most anticipated cultural event in the city. Each year brings a different director's interpretation.",
+    "strangeness": "The theater feels different during Masquerade season. Veterans learn not to look too long into the dressing room mirrors during the Tragedy's run."
+  },
+  "masquers-sodality-location": {
+    "name": "The Masquers' Sodality",
+    "tier": "Market Tiers",
+    "type": "Guild Workshop Complex",
+    "description": "A sprawling workshop complex in the upper Market Tiers. The smell of lacquer, leather, and something faintly sweet pervades the streets nearby. Produces masks from simple painted leather dominos to elaborate sculptural masterworks.",
+    "restricted": "The third-floor workshop is not open to the public and not discussed."
+  },
+  "liminal-house-location": {
+    "name": "The Liminal House",
+    "tier": "Market Tiers",
+    "type": "Charitable Institution / Care Facility",
+    "description": "A rambling compound of buildings added to and connected over four hundred years. Takes in children found wandering with no memory of family — including those found near the fog. Policy: no questions about before.",
+    "records": "Maintains case files on fog children going back generations. Not all of those records are shared with the public."
+  },
+  "viros-respite": {
+    "name": "Viro's Respite",
+    "tier": "Market Tiers",
+    "type": "Healing Institution / Abbey",
+    "description": "Run by the Abbey of Saint Viro. Provides treatment regardless of ability to pay. Has developed expertise in conditions that occur nowhere else: looping moments (persistent déjà vu), phantom memories (vivid recollections of lives never lived), shadow-watch (conviction of being observed by one's own shadow), and various forms of fog sickness.",
+    "notable": "Senior healers speak carefully about their practice. Some conditions can spread through discussion. Asking too many questions about why these ailments exist is itself a risk factor for developing them."
+  },
+  "ferriers-confraternity-location": {
+    "name": "The Ferriers' Confraternity",
+    "tier": "Harbor District",
+    "type": "Guild Hall",
+    "description": "Can only be reached by water — a converted boathouse where three canals meet in a junction that doesn't appear on any official map. The Confraternity predates the curse.",
+    "access": "Visitors who arrive by foot find only blank walls and locked gates. Those who come by gondola discover an arched entrance."
+  },
+  "tidekeepers-lodge": {
+    "name": "The Tidekeeper's Lodge",
+    "tier": "Harbor District",
+    "type": "Navigational Guild",
+    "description": "At the end of the longest pier. Every ship that enters Venturia's harbor does so under a Tidekeeper's guidance. Six hundred years old. The walls are papered with navigational charts — some showing currents that no longer exist, others marking hazards that were never there.",
+    "training": "Seven years of apprenticeship. Initiates learn official knowledge first, then the real education: offerings that keep certain waters calm, songs that should never be sung past the breakwater, how to read the fog when it behaves strangely."
+  },
+  "fog-wardens-garrison": {
+    "name": "The Fog Wardens' Garrison",
+    "tier": "The Overlook",
+    "type": "Military Post",
+    "description": "A stone building and watchtower at the Overlook, where the city ends and the Vallombrosa fog begins. Guards here volunteer for the posting. Their duties: maintain barriers, record names of anyone approaching the fog line, document anything unusual.",
+    "logs": "The logs document lights in the mist, voices in unrecognized languages, figures visible just inside the boundary, and measurements showing the fog line has been moving. Most rotations last only a few months — extended exposure produces sleep difficulties, persistent feelings of being watched, and dreams about places the dreamer has never been.",
+    "notable": "Some guards request extensions anyway. They claim they need to understand something they almost glimpsed."
+  },
+  "the-undertow": {
+    "name": "The Undertow",
+    "tier": "Harbor District",
+    "type": "Gambling Den / Underground Establishment",
+    "description": "Built into the harbor cliffs, accessible by sea cave at low tide or by a precarious rope-and-pulley system from a warehouse above. Famous for accepting stakes beyond coin: specific memories (extracted and held in crystal vials), secrets (recorded in ledgers no one is permitted to read), and future favors (traded like chips with elaborate contracts).",
+    "ownership": "The identity of the actual owner is one of Venturia's persistent mysteries. Some say it's been the same person for two hundred years.",
+    "rules": "The house always pays its debts. Winners are guaranteed safe passage out. Certain questions are never asked."
+  },
+  "burnt-quill": {
+    "name": "The Burnt Quill",
+    "tier": "Market Tiers",
+    "type": "Tavern / Gathering Place",
+    "description": "A Market Tiers establishment. Known to the locals."
+  },
+  "salted-cup": {
+    "name": "The Salted Cup",
+    "tier": "Market Tiers",
+    "type": "Tavern",
+    "description": "A Market Tiers tavern in the harbor-adjacent streets."
+  },
+  "winecradle": {
+    "name": "The Winecradle",
+    "tier": "Market Tiers",
+    "type": "Wine Bar / Social Venue",
+    "description": "A Market Tiers establishment, likely a wine bar or upscale gathering place."
+  },
+  "echoing-court": {
+    "name": "The Echoing Court",
+    "tier": "Market Tiers",
+    "type": "Unknown",
+    "description": "A Market Tiers location. Purpose and details to be established in play."
+  },
+  "mirrorwrights-court": {
+    "name": "The Mirrorwright's Court",
+    "tier": "Market Tiers",
+    "type": "Guild / Workshop",
+    "description": "A Market Tiers workshop. Given Venturia's strangeness with mirrors, the Mirrorwrights occupy an interesting position in the city's ecosystem."
+  },
+  "vellum-hall": {
+    "name": "The Vellum Hall",
+    "tier": "Market Tiers",
+    "type": "Unknown",
+    "description": "A Market Tiers location. Likely related to writing, records, or the city's paperwork trade."
+  },
+  "penny-shrine": {
+    "name": "The Penny Shrine",
+    "tier": "Harbor District",
+    "type": "Shrine / Religious Site",
+    "description": "A Harbor District shrine. Small religious site, likely tied to sailor traditions or harbor customs."
+  },
+  "tiered-gardens": {
+    "name": "The Tiered Gardens",
+    "tier": "Between the Tiers",
+    "type": "Public Space",
+    "description": "Gardens located between the city's tiers, connecting the Market Tiers and Harbor District."
   }
 }

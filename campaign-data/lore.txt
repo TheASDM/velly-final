@@ -1,46 +1,59 @@
-THE CRIMSON TAVERN CHRONICLES - CAMPAIGN LORE
+VALLEY OF SHADOWS — CAMPAIGN LORE
 
-= THE WORLD OF AETHERMOOR =
+= THE SETTING =
 
-Aethermoor is a world where magic and civilization exist in uneasy balance. The great kingdoms of old have fallen, leaving behind city-states and feudal territories struggling to maintain order in an age of chaos.
+Valley of Shadows is a long-term D&D 5e (2024 Edition) campaign set in the sister cities of Venturia and Vallombrosa on the island of Seravalle. The tone is dark romantasy: beauty and horror sharing the same room, elegant architecture built on buried crimes, moments of genuine warmth against mounting supernatural dread.
 
-= THE AGE OF FRACTURE =
+= VENTURIA, CITY OF MASKED FACES =
 
-Three centuries ago, the Empire of Aurelia collapsed in a cataclysmic event known as the Sundering. Archmages attempting to harness planar energies tore holes in reality, allowing demons and other horrors to pour through. The resulting wars devastated the continent.
+Built in tiers on the cliffs of Seravalle island, Venturia is a city obsessed with its own performance. The city is divided into three main tiers:
 
-Today, the world is still recovering. Ancient ruins dot the landscape, some containing powerful artifacts, others harboring nightmarish creatures. City-states like Thornkeep have risen from the ashes, but the old empire's glory is just a memory.
+THE HIGH QUARTER — The upper city. Old money, the Academy, institutions that prefer to be above it all. Home to VAVA, the Covenant Archive, and the Amaranth Theater.
 
-= THE DEMON WARS =
+THE MARKET TIERS — The middle city. Commerce, craft, and the guilds that keep Venturia running. Home to the Masquers' Sodality, the Liminal House, various taverns and gathering places.
 
-Following the Sundering, humanity faced near-extinction from demon incursions. The Order of the Silver Flame, a coalition of paladins and clerics, eventually closed most of the planar rifts and drove back the fiendish armies. However, the Order was destroyed in a final battle at the Shadowfell Gate. Few know what really happened there.
+THE HARBOR DISTRICT — The lower city. Salt, trade, old loyalties, waterways that don't always behave. Home to the Ferriers' Confraternity, the Tidekeeper's Lodge, the Undertow.
 
-Rumors persist that not all rifts were closed, and that the Crimson Hand seeks to reopen them for some dark purpose.
+THE OVERLOOK — Where the city ends and Vallombrosa begins. The Fog Wardens' Garrison watches the boundary.
 
-= THE CRIMSON HAND =
+Mask-wearing in Venturia is culture, not costume. The Masquers' Sodality has been crafting masks for centuries. The annual Autumn Masquerade is the most important social event of the year. The city's famed Veil Court knows something others don't: in Venturia, when you genuinely commit to wearing a different face, reality becomes slightly more willing to cooperate.
 
-Little is known about the origins of the Crimson Hand. They appeared roughly fifty years ago, operating from the shadows. Their goals seem to involve collecting artifacts from the old empire, conducting blood magic rituals, and destabilizing governments.
+THE STRANGENESS — The city has quirks everyone accepts as normal. Mirrors sometimes show your reflection a half-second late. Promises feel heavier — more binding than they should. Coincidences happen with uncanny frequency. Colors are more saturated in autumn than they have any right to be. None of this is actually normal.
 
-Recent evidence suggests they may be trying to complete whatever ritual the old Aurelian archmages began - the very ritual that caused the Sundering.
+= VALLOMBROSA — THE FORBIDDEN ZONE =
 
-= THE GODS =
+At the city's edge, where the streets end and the fog begins, there is a boundary no one crosses.
 
-The gods are real but distant in Aethermoor. They grant divine magic to their faithful but rarely intervene directly. Some say they were wounded during the Sundering and have not fully recovered.
+Vallombrosa was once the great estate of the di Errante family — the most powerful noble house on the island. A thousand years ago, something happened there. Something so complete and so terrible that the estate became a dead zone, the di Errante name became a cautionary tale, and the fog that swallowed everything never lifted.
 
-Major deities:
-- Moradin: God of craft, honor, and endurance (dwarven)
-- Pelor: God of sun, healing, and redemption  
-- The Raven Queen: Goddess of death, fate, and winter
-- Corellon: God of magic, arts, and elvenkind
-- Bahamut: God of justice and nobility (dragonborn)
+People have gone in over the centuries. They don't come back. There are a hundred legends about why. They contradict each other completely. None of them are right. The truth is older, stranger, and considerably worse.
 
-= CURRENT POLITICAL SITUATION =
+The fog is not passive. It has been behaving differently lately — the Fog Wardens' logs show the boundary has been shifting. People have been disappearing in Venturia. A comatose stranger was found at the fog line covered in brands that shouldn't exist, burned into flesh by something that lives between the world and whatever lies beneath it.
 
-The region is divided among several city-states and petty kingdoms:
+This campaign is about what happens when the scar starts bleeding.
 
-- Thornkeep: Largest city in the region, ruled by the Council of Seven
-- Silverpine Confederacy: Alliance of forest villages, led by druid circles
-- Ironhearth: Dwarven fortress-city in the mountains
-- Ravenshore: Coastal city-state, powerful navy
-- The Ashlands: Wasteland to the south, rumors of undead kingdoms
+= THE MYSTERY =
 
-Tensions are rising as resources become scarce and old alliances fray. The Crimson Hand's activities are making everything worse, pushing the region toward war.
+Something is wrong in Venturia. The threads the characters will pull on lead through the city's political factions, through its secret societies, through the buried history of a family that used to own everything — and whatever is at the bottom of that history has been waiting a very long time to be found.
+
+The truth at the center of this campaign is not a locked door with a key. It is a situation where no one is clean, no resolution leaves everyone standing, and the best outcome still costs something.
+
+= THEMES =
+
+IDENTITY & THE FACES WE WEAR — Who are you when you take the mask off? What if someone could steal your face — your memories, your relationships, your very sense of self?
+
+MEMORY & TRUTH — Memory is not a recording. It is a story we tell ourselves. In Vallombrosa, that story can be rewritten.
+
+BEAUTY THAT HIDES ROT — Venturia is gorgeous. It is also rotten underneath in specific and deliberate ways. The beauty is real. So is the rot.
+
+THE COST OF KNOWLEDGE — Some truths in this campaign are devastating. The decision about whether to keep pulling threads — whether knowing is worth what it costs — will be genuinely yours to make.
+
+IMPOSSIBLE JUSTICE — The final question is not "defeat the villain." It is "what does resolution actually look like when victims can be dangerous, when justice requires harming someone who has already suffered, and when the best outcome still costs something?"
+
+= CHARACTER CREATION NOTES =
+
+Characters live in Venturia. Ideally born here. They know the canals, the festivals, the gossip. They have opinions about the Masquers' Sodality and a favorite spot near the harbor and an uncomfortable memory from the last Autumn Masquerade.
+
+They do not know about the supernatural elements of the setting. They know the legends — everyone does — but treat them like ghost stories: entertaining, not literal.
+
+Characters should have: someone they love who isn't in the party, a wound that hasn't healed, something they want that has nothing to do with adventure.
