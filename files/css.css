@@ -263,3 +263,6 @@ a.is-internal-link:hover {
 .page-header-title {
   display: none!important
 }
+.v-list--dense.grey .v-list-item:first-child {
+  display: none!important
+}
