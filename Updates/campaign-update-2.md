@@ -1,11 +1,11 @@
 ---
-title: "Bi-Weekly Campaign Update #2 — February 25th thru March 11th"
+title: Bi-Weekly Campaign Update #2 — February 25th thru March 11th
 description: The new wiki is live, the map of Venturia is out, and The Last Toll is next. Plus a new column on Ma and negative space.
 published: true
-date: 2026-02-28T00:00:00.000Z
-tags: campaign-update, bi-weekly, march-2026, news, the-last-toll
+date: 2026-02-28T23:48:25.672Z
+tags: campaign-update, bi-weekly, news, march-2026, the-last-toll
 editor: markdown
-dateCreated: 2026-02-28T00:00:00.000Z
+dateCreated: 2026-02-28T22:42:21.191Z
 ---
 
 # Bi-Weekly Campaign Update #2 — February 25th thru March 11th
@@ -60,7 +60,7 @@ There is a concept in Japanese aesthetics called <a href="https://en.wikipedia.o
 
 There's a scene in *Seven Samurai* where the samurai and the villagers sit together in the rain the night before a battle they may not survive. Nothing is decided. Nothing is explained. Kurosawa just holds on it — the rain, the fire, the silence between people who have run out of words. The audience fills in everything else.
 
-I've been thinking about it because **The Last Toll is our Ma moment** — the pause between all the preparation and the campaign itself, and the space where we figure out how we play together.
+I've been thinking about it because **The Last Toll is our first Ma moment** — the pause between all the preparation and the real start of the pre-amble to the campaign itself, and the space where we figure out how we play together.
 
 You have all been extraordinary through months of preparation — reading lore, building characters, showing up for early sessions, answering questions about people who didn't exist yet. That's not nothing. But prep is the notes. It's time to play the music.
 
