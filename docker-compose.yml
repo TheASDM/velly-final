@@ -47,6 +47,8 @@ services:
     volumes:
       # This lets the chatbot read your campaign data files
       - ./campaign-data:/app/data:ro
+      # Writable volume for chat logs
+      - ./logs:/app/logs
     networks:
       - dnd-network
     restart: unless-stopped

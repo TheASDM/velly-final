@@ -88,6 +88,7 @@ class LoreMasterChatbot {
             <div id="chatbot-widget" class="chatbot-collapsed">
                 <div class="chatbot-header">
                     <span>Lore Master</span>
+                    <button id="chat-clear-btn" style="display:none;margin-left:auto;margin-right:0.5rem;background:none;border:none;cursor:pointer;font-size:0.7rem;letter-spacing:0.08em;color:rgba(212,165,116,0.45);padding:0;line-height:1;text-transform:uppercase;font-family:inherit" title="Start a new conversation">new chat</button>
                     <span class="toggle-icon">▼</span>
                 </div>
                 <div class="chatbot-body">
@@ -103,6 +104,8 @@ class LoreMasterChatbot {
     setupEventListeners() {
         const header = document.querySelector('.chatbot-header');
         if (header) header.addEventListener('click', () => this.toggleWidget());
+        const clearBtn = document.getElementById('chat-clear-btn');
+        if (clearBtn) clearBtn.addEventListener('click', (e) => { e.stopPropagation(); this.clearHistory(); });
         const sendBtn = document.getElementById('chat-send-btn');
         if (sendBtn) sendBtn.addEventListener('click', () => this.handleSendMessage());
         const input = document.getElementById('chat-input');
@@ -119,8 +122,10 @@ class LoreMasterChatbot {
         const widget = document.getElementById('chatbot-widget');
         if (!widget) return;
         this.isOpen = !this.isOpen;
+        const clearBtn = document.getElementById('chat-clear-btn');
         if (this.isOpen) {
             widget.classList.remove('chatbot-collapsed');
+            if (clearBtn) clearBtn.style.display = 'inline';
             this.applyMobileLayout(true);
             setTimeout(() => {
                 const input = document.getElementById('chat-input');
@@ -128,6 +133,7 @@ class LoreMasterChatbot {
             }, 300);
         } else {
             widget.classList.add('chatbot-collapsed');
+            if (clearBtn) clearBtn.style.display = 'none';
             this.applyMobileLayout(false);
         }
     }

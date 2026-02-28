@@ -13,3 +13,6 @@ Thumbs.db
 # Editor
 .vscode/
 .idea/
+
+# Chat logs (written by chatbot container at runtime)
+logs/*.log

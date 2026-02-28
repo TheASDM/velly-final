@@ -6,6 +6,17 @@ const path = require('path');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
+const LOG_PATH = '/app/logs/chat.log';
+
+function writeLog(role, text) {
+    const line = `[${new Date().toISOString()}] ${role.toUpperCase()}: ${text.replace(/\n/g, ' ')}\n`;
+    try {
+        fs.mkdirSync('/app/logs', { recursive: true });
+        fs.appendFileSync(LOG_PATH, line, 'utf8');
+    } catch (e) {
+        console.error('Log write failed:', e.message);
+    }
+}
 
 // Initialize Claude API client
 const anthropic = new Anthropic({
@@ -105,6 +116,9 @@ Keep responses focused and helpful. You're here to enhance the player experience
 
         // Extract Claude's text response
         const assistantMessage = response.content[0].text;
+
+        writeLog('user', message);
+        writeLog('assistant', assistantMessage);
 
         // Build updated conversation history (important for context in follow-up questions)
         const updatedHistory = [
