@@ -13,24 +13,24 @@ A city of tiers — literally and otherwise. The High Quarter looks down on the 
 
 ---
 
-## [Locations](/en/Venturia/Locations)
+## [Locations](/en/Venturia/Locations/index)
 
 Districts, institutions, guilds, and points of interest across the city.
 
 ---
 
-## [Culture](/en/Venturia/Culture)
+## [Culture](/en/Venturia/Culture/index)
 
 Language, customs, traditions, and the unspoken rules of daily life.
 
 ---
 
-## [Creatures](/en/Venturia/Creatures)
+## [Creatures](/en/Venturia/Creatures/index)
 
 Celestials, Fey, Fiends, and Humanoids encountered in and around Venturia.
 
 ---
 
-## [College of the Masquerade Bard](/en/Venturia/College-of-the-Masquerade-Bard)
+## [College of the Masquerade Bard](/en/Venturia/College-of-the-Masquerade-Bard/index)
 
 Subclass resources and Car's available transformation forms.
