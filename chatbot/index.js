@@ -54,7 +54,7 @@ app.post('/api/chat', async (req, res) => {
 
     // Build the system prompt that tells Claude what it knows and how to behave
     // This is crucial - it gives Claude all your campaign context
-    const systemPrompt = `You are the Lore Master, a knowledgeable and helpful assistant for "The Crimson Tavern Chronicles" D&D campaign.
+    const systemPrompt = `You are the Lore Master, a knowledgeable guide to the Valley of Shadows campaign — a long-term D&D 5e campaign set in the masked city of Venturia and the fog-bound valley of Vallombrosa.
 
 Your role is to help players understand the campaign world, recall past events, and clarify rules. You have access to the complete campaign knowledge base including NPCs, locations, factions, session recaps, items, lore, and house rules.
 
@@ -94,7 +94,7 @@ Keep responses focused and helpful. You're here to enhance the player experience
     try {
         // Call Claude API with the conversation history and new message
         const response = await anthropic.messages.create({
-            model: 'claude-sonnet-4-20250514',
+            model: 'claude-sonnet-4-6',
             max_tokens: 1024,
             system: systemPrompt,
             messages: [

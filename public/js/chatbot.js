@@ -26,9 +26,9 @@ class LoreMasterChatbot {
         this.displayHistory();
         this.applyMobileLayout(false);
         if (this.conversationHistory.length === 0) {
-            this.addSystemMessage('🎲 Greetings, adventurer! I am the Lore Master, keeper of The Crimson Tavern Chronicles. Ask me about NPCs, locations, factions, past sessions, or house rules.');
+            this.addSystemMessage('I am the Lore Master — your guide to the city of Venturia and the Valley of Shadows. Ask me about characters, locations, factions, past sessions, or house rules.');
         }
-        console.log('🎲 Lore Master initialized');
+        console.log('Lore Master initialized');
     }
     applyMobileLayout(isOpen) {
         if (window.innerWidth > 768) return;
@@ -54,7 +54,7 @@ class LoreMasterChatbot {
         container.innerHTML = `
             <div id="chatbot-widget" class="chatbot-collapsed">
                 <div class="chatbot-header">
-                    <span>🎲 Lore Master</span>
+                    <span>Lore Master</span>
                     <span class="toggle-icon">▼</span>
                 </div>
                 <div class="chatbot-body">
