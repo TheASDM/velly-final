@@ -267,7 +267,7 @@ a.is-internal-link:hover {
   font-size: 0!important
 }
 .v-list--dense.grey .v-list-item:first-child .v-list-item__title::before {
-  content: '/ Home';
+  content: 'Home';
   font-size: 1rem;
   color: var(--crd);
   font-family: 'Crimson Text',serif
