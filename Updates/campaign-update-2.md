@@ -2,7 +2,7 @@
 title: Bi-Weekly Campaign Update #2 — February 25th thru March 11th
 description: The new wiki is live, the map of Venturia is out, and The Last Toll is next. Plus a new column on Ma and negative space.
 published: true
-date: 2026-02-28T23:49:46.902Z
+date: 2026-02-28T23:50:14.571Z
 tags: campaign-update, bi-weekly, news, march-2026, the-last-toll
 editor: markdown
 dateCreated: 2026-02-28T22:42:21.191Z
