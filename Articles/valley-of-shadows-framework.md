@@ -10,6 +10,8 @@ dateCreated: 2026-02-28T00:00:00.000Z
 
 # The Valley of Shadows Framework
 
+> ## This page reads better as a PDF. [Read it here.](https://github.com/TheASDM/velly-final/blob/main/files/ValleyofShadowsFramework.pdf)
+
 *A Tabletop RPG Campaign · D&D 5e (2024 Edition) · Long-Term Campaign*
 
 ---

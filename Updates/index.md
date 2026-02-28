@@ -2,9 +2,9 @@
 title: Updates
 description: All Updates posts.
 published: true
-date: 2026-02-28T22:45:52.810Z
+date: 2026-02-28T22:47:20.180Z
 editor: markdown
-dateCreated: 2026-02-28T22:45:52.810Z
+dateCreated: 2026-02-28T22:47:20.180Z
 ---
 
 # Updates

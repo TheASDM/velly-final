@@ -26,11 +26,11 @@ One final note: this is a wiki, which means anyone can contribute to it. If you 
 
 ## The Map
 
-Last week I released the [official map of Venturia](/en/Venturia/Locations/venturia-map) and I'm really happy with how it turned out. It's not a tactical tool. It's not going to tell you which alley to duck into or how far the market district is from the harbor — but it will give you a sense of the whole city at a glance. What's where, how the districts relate to each other, what this place actually looks like from above.
+Last week I released the <a href="/en/Venturia/Locations/venturia-map" target="_blank">official map of Venturia</a> and I'm really happy with how it turned out. It's not a tactical tool. It's not going to tell you which alley to duck into or how far the market district is from the harbor — but it will give you a sense of the whole city at a glance. What's where, how the districts relate to each other, what this place actually looks like from above.
 
 There are more maps coming. More practical ones, more specific ones. But when you just want to hold the whole city in your head, that map is the one.
 
-While I was building it I realized I had never produced a proper campaign framework — something that explains in plain terms what this campaign is, structurally and thematically, for anyone who wants that kind of orientation. So I made one: [The Valley of Shadows Framework](/en/Articles/valley-of-shadows-framework).
+While I was building it I realized I had never produced a proper campaign framework — something that explains in plain terms what this campaign is, structurally and thematically, for anyone who wants that kind of orientation. So I made one: <a href="/en/Articles/valley-of-shadows-framework" target="_blank">The Valley of Shadows Framework</a>.
 
 ---
 
@@ -56,7 +56,7 @@ Our next in-person session is a one-shot called **The Last Toll** — a standalo
 
 *A new self-indulgent bi-weekly column.*
 
-There is a concept in Japanese aesthetics called [*Ma*](https://en.wikipedia.org/wiki/Ma_(negative_space)). It resists clean translation, but the closest English approximation is something like "negative space" — the pause between notes, the silence between words, the empty room that gives the occupied room its meaning.
+There is a concept in Japanese aesthetics called <a href="https://en.wikipedia.org/wiki/Ma_(negative_space)" target="_blank"><em>Ma</em></a>. It resists clean translation, but the closest English approximation is something like "negative space" — the pause between notes, the silence between words, the empty room that gives the occupied room its meaning.
 
 There's a scene in *Seven Samurai* where the samurai and the villagers sit together in the rain the night before a battle they may not survive. Nothing is decided. Nothing is explained. Kurosawa just holds on it — the rain, the fire, the silence between people who have run out of words. The audience fills in everything else.
 
