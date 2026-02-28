@@ -2,7 +2,7 @@
 title: Valley of Shadows — Codex
 description: Tales from Venturia & Vallombrosa. The living chronicle of the Valley of Shadows campaign.
 published: true
-date: 2026-02-26T03:19:34.285Z
+date: 2026-02-28T05:26:29.996Z
 editor: markdown
 dateCreated: 2026-02-25T00:00:00.000Z
 ---
@@ -29,8 +29,8 @@ dateCreated: 2026-02-25T00:00:00.000Z
 <!-- LATEST_POST -->
 <div style="background: rgba(139,0,0,0.1); border: 1px solid rgba(139,115,85,0.3); border-radius: 6px; padding: 0.85rem 1.25rem; margin-bottom: 2rem; display: flex; align-items: center; gap: 1.25rem; flex-wrap: wrap;">
 <span style="font-size: 0.62rem; letter-spacing: 0.4em; text-transform: uppercase; color: #8b7355; flex-shrink: 0;">Latest Post</span>
-<a href="/en/Venturia/Locations/venturia-map" style="font-size: 0.95rem; color: #d4a574; text-decoration: none; font-style: italic; flex: 1;">Map of Venturia →</a>
-<span style="font-size: 0.75rem; color: rgba(139,115,85,0.55);">February 25, 2026</span>
+<a href="/en/Venturia/Masquerade/Celestials/empyrean-iota" style="font-size: 0.95rem; color: #d4a574; text-decoration: none; font-style: italic; flex: 1;">Empyrean Iota →</a>
+<span style="font-size: 0.75rem; color: rgba(139,115,85,0.55);">February 26, 2026</span>
 </div>
 <!-- /LATEST_POST -->
 
