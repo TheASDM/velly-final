@@ -2,7 +2,7 @@
 title: Bi-Weekly Campaign Update #2 — February 25th thru March 11th
 description: The new wiki is live, the map of Venturia is out, and The Last Toll is next. Plus a new column on Ma and negative space.
 published: true
-date: 2026-02-28T23:48:25.672Z
+date: 2026-02-28T23:48:56.173Z
 tags: campaign-update, bi-weekly, news, march-2026, the-last-toll
 editor: markdown
 dateCreated: 2026-02-28T22:42:21.191Z
@@ -68,7 +68,7 @@ So here's what's been on my mind as I build it.
 
 Most of us have learned to play D&D like a point-and-click adventure game. You examine the object. The DM tells you what it means. You examine the next object. Eventually you have enough information to proceed. The DM is the answer machine and your job is to ask the right questions in the right order.
 
-That's not how this works.
+That's not I want it to work for this campaign.
 
 When I finish a description, the most interesting thing that can happen next is not a question directed at me. It's you turning to the person next to you and saying *what do you make of that* — and meaning it. Because your character grew up in this world and mine didn't. You know what a ship formation in the outer moorings means to someone who has sailed these waters for three years. I'm just the narrator. You're the ones who live here.
 
