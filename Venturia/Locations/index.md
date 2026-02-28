@@ -18,9 +18,9 @@ Venturia is a city of tiers — literally and otherwise. The High Quarter looks 
 
 The upper city — home to old money, the Academy, and institutions that prefer to be above it all.
 
-- [Venturia Academy of Veiled Arts (VAVA)](/venturia/locations/vava)
-- [The Covenant Archive](/venturia/locations/covenant-archive)
-- [The Amaranth Theater](/venturia/locations/amaranth-theater)
+- [Venturia Academy of Veiled Arts (VAVA)](/en/Venturia/Locations/vava)
+- [The Covenant Archive](/en/Venturia/Locations/covenant-archive)
+- [The Amaranth Theater](/en/Venturia/Locations/amaranth-theater)
 
 ---
 
@@ -28,15 +28,15 @@ The upper city — home to old money, the Academy, and institutions that prefer 
 
 The middle city — commerce, craft, and the institutions that keep the city running day to day.
 
-- [The Masquers' Sodality](/venturia/locations/masquers-sodality)
-- [The Mirrorwright's Court](/venturia/locations/mirrorwrights-court)
-- [The Burnt Quill](/venturia/locations/burnt-quill)
-- [The Vellum Hall](/venturia/locations/vellum-hall)
-- [Viro's Respite](/venturia/locations/viros-respite)
-- [The Salted Cup](/venturia/locations/salted-cup)
-- [The Winecradle](/venturia/locations/winecradle)
-- [The Echoing Court](/venturia/locations/echoing-court)
-- [The Liminal House](/venturia/locations/liminal-house)
+- [The Masquers' Sodality](/en/Venturia/Locations/masquers-sodality)
+- [The Mirrorwright's Court](/en/Venturia/Locations/mirrorwrights-court)
+- [The Burnt Quill](/en/Venturia/Locations/burnt-quill)
+- [The Vellum Hall](/en/Venturia/Locations/vellum-hall)
+- [Viro's Respite](/en/Venturia/Locations/viros-respite)
+- [The Salted Cup](/en/Venturia/Locations/salted-cup)
+- [The Winecradle](/en/Venturia/Locations/winecradle)
+- [The Echoing Court](/en/Venturia/Locations/echoing-court)
+- [The Liminal House](/en/Venturia/Locations/liminal-house)
 
 ---
 
@@ -44,16 +44,16 @@ The middle city — commerce, craft, and the institutions that keep the city run
 
 The lower city — salt, trade, old loyalties, and waterways that don't always behave.
 
-- [The Ferriers' Confraternity](/venturia/locations/ferriers-confraternity)
-- [The Tidekeeper's Lodge](/venturia/locations/tidekeepers-lodge)
-- [The Undertow](/venturia/locations/the-undertow)
-- [The Penny Shrine](/venturia/locations/penny-shrine)
+- [The Ferriers' Confraternity](/en/Venturia/Locations/ferriers-confraternity)
+- [The Tidekeeper's Lodge](/en/Venturia/Locations/tidekeepers-lodge)
+- [The Undertow](/en/Venturia/Locations/the-undertow)
+- [The Penny Shrine](/en/Venturia/Locations/penny-shrine)
 
 ---
 
 ## Between the Tiers
 
-- [The Tiered Gardens](/venturia/locations/tiered-gardens)
+- [The Tiered Gardens](/en/Venturia/Locations/tiered-gardens)
 
 ---
 
@@ -61,4 +61,4 @@ The lower city — salt, trade, old loyalties, and waterways that don't always b
 
 Where the city ends and Vallombrosa begins.
 
-- [The Fog Wardens' Garrison](/venturia/locations/fog-wardens-garrison)
+- [The Fog Wardens' Garrison](/en/Venturia/Locations/fog-wardens-garrison)
