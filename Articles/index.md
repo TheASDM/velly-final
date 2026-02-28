@@ -2,15 +2,16 @@
 title: Articles
 description: All Articles posts.
 published: true
-date: 2026-02-28T22:40:37.359Z
+date: 2026-02-28T22:44:23.959Z
 editor: markdown
-dateCreated: 2026-02-28T22:40:37.359Z
+dateCreated: 2026-02-28T22:44:23.959Z
 ---
 
 # Articles
 
 | Published | Title |
 |-----------|-------|
+| February 27, 2026 | [The Valley of Shadows Framework](/en/Articles/valley-of-shadows-framework) |
 | February 22, 2026 | [Building a Character for Long-Form Play](/en/Articles/building-a-character-for-long-form-play) |
 | February 22, 2026 | [Why We Use Extended Point Buy](/en/Articles/extended-point-buy) |
 | February 22, 2026 | [Languages of Vallombrosa](/en/Articles/languages-of-vallombrosa) |
