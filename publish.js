@@ -253,7 +253,7 @@ const indexPaths = AUTO_INDEX_FOLDERS.map(f => updateFolderIndex(f, articles));
 const git = cmd => execSync(cmd, { cwd: ROOT, stdio: 'inherit' });
 
 console.log('');
-git(`git add "${newest.filePath}" "${HOME_PATH}" "${ARCHIVE_PATH}" ${indexPaths.map(p => `"${p}"`).join(' ')}`);
+git('git add -A');
 git(`git commit -m "publish: ${newest.title}"`);
 git('git push');
 
