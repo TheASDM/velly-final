@@ -1,0 +1,12 @@
+{
+  "name": "campaign-review-tool",
+  "version": "1.0.0",
+  "description": "Local review and editing tool for Valley of Shadows campaign data",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}

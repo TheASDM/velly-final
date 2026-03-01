@@ -41,8 +41,14 @@ services:
     build: ./chatbot
     container_name: dnd_chatbot
     environment:
-      # You'll add your Anthropic API key here
+      # Anthropic (default)
       ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY}
+      ANTHROPIC_MODEL: ${ANTHROPIC_MODEL:-claude-haiku-4-5-20251001}
+      # Set AI_PROVIDER=openwebui to use your local Open WebUI instead
+      AI_PROVIDER: ${AI_PROVIDER:-anthropic}
+      OPENWEBUI_URL: ${OPENWEBUI_URL:-}
+      OPENWEBUI_API_KEY: ${OPENWEBUI_API_KEY:-}
+      OPENWEBUI_MODEL: ${OPENWEBUI_MODEL:-llama3.2}
       NODE_ENV: production
     volumes:
       # This lets the chatbot read your campaign data files

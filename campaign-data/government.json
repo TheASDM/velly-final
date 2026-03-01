@@ -1,0 +1,229 @@
+{
+  "schema_version": "1.0",
+  "category": "government",
+  "entries": [
+    {
+      "id": "autumn_council",
+      "type": "lore",
+      "name": "The Autumn Council",
+      "aliases": [
+        "The Council"
+      ],
+      "tags": [
+        "government",
+        "politics",
+        "gridlock",
+        "venturia"
+      ],
+      "spoiler": false,
+      "summary": "Venturia's ruling body of eleven voting members split among Harbor-Lords, Guild-Masters, Temple Authority, and the Watch-Captain. Chronically deadlocked at 3-3-3-1, achieving little during the current crisis.",
+      "details": [
+        {
+          "label": "Structure",
+          "content": "Eleven voting members: three Harbor-Lords, three Guild-Masters, three Temple Authority representatives, one Watch-Captain, and one rotating Council Chair (currently Temple Authority). Meets weekly in Council Hall, High Quarter.",
+          "spoiler": false
+        },
+        {
+          "label": "Voting Requirements",
+          "content": "Simple majority (6 votes) for routine business. Two-thirds majority (8 votes) for emergency powers, significant taxation, or entering the fog zone. Unanimous vote to overturn founding charter laws.",
+          "spoiler": false
+        },
+        {
+          "label": "The Gridlock Problem",
+          "content": "Each faction bloc-votes on most issues, creating 3-3-3-1 deadlock. The Watch-Captain and Chair become critical swing votes, meaning almost nothing gets done without extensive negotiation. During crisis, this is catastrophic.",
+          "spoiler": false
+        },
+        {
+          "label": "Marcello's Exploitation Strategy",
+          "content": "Marcello doesn't need to control the council — the gridlock already paralyzes it. He charms Harbor-Lords with economic solutions, exploits Guild-Master divisions, manipulates Temple Authority through false friendship, and makes a deal with the Watch-Captain. By the time they recognize the danger, he is already established.",
+          "spoiler": true
+        }
+      ],
+      "connections": [],
+      "dm_notes": "The gridlock is a feature for party engagement — they can navigate the political maze, offer coalition-building help, or exploit divisions to get authorization for things they need. The council can't effectively resist Marcello once he arrives. Individual council members approaching the party privately for help or information are good hooks."
+    },
+    {
+      "id": "teodor_vast",
+      "type": "government_npc",
+      "name": "Lord-Admiral Teodor Vast",
+      "aliases": [],
+      "tags": [
+        "harbor-lord",
+        "autumn-council",
+        "merchant-fleet",
+        "pragmatic"
+      ],
+      "spoiler": false,
+      "summary": "The wealthiest Harbor-Lord on the Council, commanding the largest private merchant fleet in Venturia. Blunt, pragmatic, and impatient with philosophy. Believes transactional solutions exist for most problems.",
+      "details": [
+        {
+          "label": "Background",
+          "content": "Rose from ship's captain to fleet owner through skill, ruthlessness, and strategic marriages. Controls the largest private merchant fleet based in Venturia. Affects a 'simple sailor' persona when convenient.",
+          "spoiler": false
+        },
+        {
+          "label": "Council Position",
+          "content": "Blunt and pragmatic. 'Pay the party to solve it, pay VAVA to research it — but solve it and let us get back to business.' Opposed the initial hiring of the party but now that supernatural elements are undeniable, wants decisive action.",
+          "spoiler": false
+        },
+        {
+          "label": "Exploitable Weakness",
+          "content": "His fleet captains are reporting increasingly strange phenomena at sea — time distortions, crew members with false memories, compasses behaving erratically near the island. He's terrified this will spread beyond Venturia and destroy his entire commercial network. Will pay almost anything to prevent that.",
+          "spoiler": true
+        }
+      ],
+      "connections": [],
+      "dm_notes": "His fleet's supernatural phenomena (time distortions, false memories at sea) are evidence of the prison's weakening effects spreading. He's a potential financial patron for the party if they can demonstrate they'll solve the problem."
+    },
+    {
+      "id": "constanza_marea",
+      "type": "government_npc",
+      "name": "Constanza Marea",
+      "aliases": [],
+      "tags": [
+        "harbor-lord",
+        "autumn-council",
+        "warehouse-consortium",
+        "undertow",
+        "ambitious"
+      ],
+      "spoiler": false,
+      "summary": "A sharp, ambitious Harbor-Lord representing the Warehouse Consortium. Newer to the Council but compensates with aggressive political instincts. Sees the crisis as an opportunity if she plays it right.",
+      "details": [
+        {
+          "label": "Background",
+          "content": "Represents the Warehouse Consortium. Family has run the largest warehouse complex in the Harbor District for four generations. Newer to the council (three years). Excellent at reading rooms and finding leverage points.",
+          "spoiler": false
+        },
+        {
+          "label": "Council Position",
+          "content": "'Everyone wants power and money. Fine. Let's trade. What does everyone need to feel safe enough to let commerce resume? Let's broker that deal.'",
+          "spoiler": false
+        },
+        {
+          "label": "Secret Undertow Connection",
+          "content": "She has been meeting secretly with The Undertow's representatives. She either owes them something significant or is working a deal that would horrify the rest of the council. The party could discover this and gain leverage — or become targets if they threaten to expose it.",
+          "spoiler": true
+        }
+      ],
+      "connections": [
+        {
+          "target_id": "the_undertow",
+          "target_name": "The Undertow",
+          "relationship": "Secret meetings with Undertow representatives; nature of obligation or deal unknown",
+          "spoiler": true
+        }
+      ],
+      "dm_notes": "Her Undertow connection is leverage or a threat to the party. What exactly does she owe The Undertow, or what deal is she working? This could tie into the broader memory manipulation network. She's the most politically sophisticated Harbor-Lord — could be an ally or antagonist depending on party approach."
+    },
+    {
+      "id": "vincen_tidecaller",
+      "type": "government_npc",
+      "name": "Vincen Tidecaller",
+      "aliases": [],
+      "tags": [
+        "harbor-lord",
+        "autumn-council",
+        "tidekeepers-lodge",
+        "hidden-knowledge",
+        "traditional"
+      ],
+      "spoiler": false,
+      "summary": "Master of the Tidekeeper's Lodge and Harbor-Lord by ancient charter right. Quiet and thoughtful, speaks rarely but commands attention when he does. Carries generations of knowledge about Venturia's waters — including things he isn't sharing.",
+      "details": [
+        {
+          "label": "Background",
+          "content": "Master of the Tidekeeper's Lodge. Not wealthy like other Harbor-Lords — influence comes from the Lodge's essential function and accumulated knowledge. Was the compromise candidate when Teodor and Constanza deadlocked two years ago.",
+          "spoiler": false
+        },
+        {
+          "label": "Council Position",
+          "content": "'The waters have been strange for months. The fog moves wrong. Something's waking up that was sleeping. This isn't a problem you throw money at — it's older than your warehouses and your trade routes. We need to understand it before we act.'",
+          "spoiler": false
+        },
+        {
+          "label": "Hidden Knowledge",
+          "content": "He knows something specific about Vallombrosa's history that he's not sharing — something the Tidekeepers recorded centuries ago. The party could earn his trust and learn it, or discover he's been withholding information that could have saved lives.",
+          "spoiler": true
+        }
+      ],
+      "connections": [],
+      "dm_notes": "The Tidekeepers' pre-curse records are a major investigative resource. What specifically does Vincen know? Earning his trust should be a meaningful process — he's traditional and suspicious of rapid change, but also genuinely cares about understanding before acting."
+    },
+    {
+      "id": "celeste_orion",
+      "type": "government_npc",
+      "name": "Master Artisan Celeste Orion",
+      "aliases": [],
+      "tags": [
+        "guild-master",
+        "autumn-council",
+        "binding-crafts",
+        "liminal-house-connection",
+        "workers-rights"
+      ],
+      "spoiler": false,
+      "summary": "Guild-Master of the Binding Crafts Guild and passionate advocate for Venturia's working people. Daughter of a Liminal House foundling, she built her career from nothing and is fiercely protective of workers' rights.",
+      "details": [
+        {
+          "label": "Background",
+          "content": "Master of the Binding Crafts Guild (carpenters, masons, shipwrights, construction trades). Built reputation on major architectural projects. Daughter of a Liminal House foundling — built her career from nothing.",
+          "spoiler": false
+        },
+        {
+          "label": "Council Position",
+          "content": "'My people are the ones disappearing. My people are the ones The Bound are recruited from. We need protection NOW — more Watch patrols in working districts, hazard pay for anyone working near the fog line, immediate compensation for families of the disappeared.'",
+          "spoiler": false
+        },
+        {
+          "label": "Personal Crisis",
+          "content": "Her eldest son vanished three weeks ago. Officially she's recused from cases involving the disappeared, but she's privately desperate and might make irrational decisions or trust the wrong people if they promise information about him.",
+          "spoiler": true
+        },
+        {
+          "label": "Liminal House Connection",
+          "content": "Her being the daughter of a Liminal House foundling means she has personal family connection to the fog child phenomenon. Her father was a fog child — like Noname's father. This could give her personal motivation to help the party investigate Liminal House's secrets.",
+          "spoiler": true
+        }
+      ],
+      "connections": [],
+      "dm_notes": "Her missing son is powerful leverage for her as an ally — she'll work with the party if they promise to look for him. Her Liminal House connection through her father is a potential personal stake in the fog child investigation. She's the most emotionally accessible council member to the party."
+    },
+    {
+      "id": "thora_iron",
+      "type": "government_npc",
+      "name": "Watch-Captain Thora Iron",
+      "aliases": [
+        "Thora"
+      ],
+      "tags": [
+        "watch-captain",
+        "autumn-council",
+        "shadowed-wardens",
+        "pragmatic",
+        "off-books"
+      ],
+      "spoiler": false,
+      "summary": "The Watch-Captain on the Autumn Council, commanding both the public Watch and the secret Shadowed Wardens. A pragmatist willing to do what is necessary to protect the city, including things the council would never authorize.",
+      "details": [
+        {
+          "label": "Background",
+          "content": "Technically the Watch-Captain is Alessia Marren who commands the Watch. The Watch-Captain council seat is occupied by someone who must navigate between the council factions alone, making them a critical but politically isolated swing vote.",
+          "spoiler": false
+        },
+        {
+          "label": "Off-Books Operations",
+          "content": "The Watch-Captain has been conducting operations without council authorization — illegal detentions, aggressive interrogations, surveillance violating Venturian law. If exposed, this could destroy her politically. Alternatively, the party could leverage this to get unofficial help with things the council won't authorize.",
+          "spoiler": true
+        },
+        {
+          "label": "Marcello's Target",
+          "content": "Marcello will offer the Watch-Captain power she's been unable to get from the council: 'I can identify the Bound before they activate. I can prevent disasters before they happen. Work with me, and you'll finally be able to protect this city the way you know it needs protection.' She may accept even if suspicious of his motives.",
+          "spoiler": true
+        }
+      ],
+      "connections": [],
+      "dm_notes": "The Watch-Captain is a double-edged ally — willing to do things the council won't authorize (useful to the party) but also potentially compromised by Marcello's offer. Her off-books operations could be leverage for the party or a threat. She's the most politically isolated council member but also the most pragmatic."
+    }
+  ]
+}

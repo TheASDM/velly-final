@@ -1,12 +1,56 @@
 const express = require('express');
 const cors = require('cors');
-const Anthropic = require('@anthropic-ai/sdk');
 const fs = require('fs');
 const path = require('path');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
 const LOG_PATH = '/app/logs/chat.log';
+
+// ── Provider selection ────────────────────────────────────────────────────────
+// Set AI_PROVIDER=openwebui in .env to use your local Open WebUI instance.
+// Defaults to 'anthropic' if not set.
+const AI_PROVIDER = (process.env.AI_PROVIDER || 'anthropic').toLowerCase();
+
+let callAI;
+
+if (AI_PROVIDER === 'openwebui') {
+    const OpenAI = require('openai');
+    const client = new OpenAI({
+        baseURL: `${process.env.OPENWEBUI_URL}/api`,
+        apiKey: process.env.OPENWEBUI_API_KEY || 'none',
+    });
+    const model = process.env.OPENWEBUI_MODEL || 'llama3.2';
+
+    callAI = async (systemPrompt, messages) => {
+        const res = await client.chat.completions.create({
+            model,
+            max_tokens: 1024,
+            messages: [{ role: 'system', content: systemPrompt }, ...messages],
+        });
+        return res.choices[0].message.content;
+    };
+
+    console.log(`AI provider: Open WebUI @ ${process.env.OPENWEBUI_URL} (model: ${model})`);
+
+} else {
+    const Anthropic = require('@anthropic-ai/sdk');
+    const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+    const model = process.env.ANTHROPIC_MODEL || 'claude-haiku-4-5-20251001';
+
+    callAI = async (systemPrompt, messages) => {
+        const res = await client.messages.create({
+            model,
+            max_tokens: 1024,
+            system: systemPrompt,
+            messages,
+        });
+        return res.content[0].text;
+    };
+
+    console.log(`AI provider: Anthropic (model: ${model})`);
+}
+// ─────────────────────────────────────────────────────────────────────────────
 
 function writeLog(role, text) {
     const line = `[${new Date().toISOString()}] ${role.toUpperCase()}: ${text.replace(/\n/g, ' ')}\n`;
@@ -18,19 +62,11 @@ function writeLog(role, text) {
     }
 }
 
-// Initialize Claude API client
-const anthropic = new Anthropic({
-    apiKey: process.env.ANTHROPIC_API_KEY
-});
-
 app.use(cors());
 app.use(express.json());
 
-// Load campaign knowledge base from JSON files
-// This function reads all your campaign data and makes it available to Claude
 function loadCampaignData() {
     const dataPath = '/app/data';
-    
     try {
         return {
             npcs: JSON.parse(fs.readFileSync(path.join(dataPath, 'npcs.json'), 'utf8')),
@@ -39,7 +75,7 @@ function loadCampaignData() {
             sessions: JSON.parse(fs.readFileSync(path.join(dataPath, 'sessions.json'), 'utf8')),
             items: JSON.parse(fs.readFileSync(path.join(dataPath, 'items.json'), 'utf8')),
             lore: fs.readFileSync(path.join(dataPath, 'lore.txt'), 'utf8'),
-            rules: fs.readFileSync(path.join(dataPath, 'house-rules.txt'), 'utf8')
+            rules: fs.readFileSync(path.join(dataPath, 'house-rules.txt'), 'utf8'),
         };
     } catch (error) {
         console.error('Error loading campaign data:', error);
@@ -47,24 +83,18 @@ function loadCampaignData() {
     }
 }
 
-// Main chat endpoint - this is what your frontend JavaScript calls
 app.post('/api/chat', async (req, res) => {
     const { message, conversationHistory = [] } = req.body;
-    
-    // Validate the request
+
     if (!message || typeof message !== 'string') {
         return res.status(400).json({ error: 'Invalid message' });
     }
 
-    // Load fresh campaign data on each request (so updates are picked up immediately)
     const campaignData = loadCampaignData();
-    
     if (!campaignData) {
         return res.status(500).json({ error: 'Campaign data not available' });
     }
 
-    // Build the system prompt that tells Claude what it knows and how to behave
-    // This is crucial - it gives Claude all your campaign context
     const systemPrompt = `You are the Lore Master, a knowledgeable guide to the Valley of Shadows campaign — a long-term D&D 5e campaign set in the masked city of Venturia and the fog-bound valley of Vallombrosa.
 
 Your role is to help players understand the campaign world, recall past events, and clarify rules. You have access to the complete campaign knowledge base including NPCs, locations, factions, session recaps, items, lore, and house rules.
@@ -103,48 +133,33 @@ GUIDELINES:
 Keep responses focused and helpful. You're here to enhance the player experience, not replace the DM.`;
 
     try {
-        // Call Claude API with the conversation history and new message
-        const response = await anthropic.messages.create({
-            model: 'claude-haiku-4-5-20251001',
-            max_tokens: 1024,
-            system: systemPrompt,
-            messages: [
-                ...conversationHistory,
-                { role: 'user', content: message }
-            ]
-        });
-
-        // Extract Claude's text response
-        const assistantMessage = response.content[0].text;
+        const assistantMessage = await callAI(systemPrompt, [
+            ...conversationHistory,
+            { role: 'user', content: message },
+        ]);
 
         writeLog('user', message);
         writeLog('assistant', assistantMessage);
 
-        // Build updated conversation history (important for context in follow-up questions)
-        const updatedHistory = [
-            ...conversationHistory,
-            { role: 'user', content: message },
-            { role: 'assistant', content: assistantMessage }
-        ];
-
-        // Send back the response and updated history
         res.json({
             response: assistantMessage,
-            conversationHistory: updatedHistory
+            conversationHistory: [
+                ...conversationHistory,
+                { role: 'user', content: message },
+                { role: 'assistant', content: assistantMessage },
+            ],
         });
-
     } catch (error) {
-        console.error('Error calling Claude API:', error);
-        res.status(500).json({ 
+        console.error('AI call failed:', error);
+        res.status(500).json({
             error: 'Failed to get response from Lore Master',
-            details: error.message 
+            details: error.message,
         });
     }
 });
 
-// Health check endpoint - useful for monitoring
 app.get('/health', (req, res) => {
-    res.json({ status: 'ok', service: 'dnd-chatbot' });
+    res.json({ status: 'ok', service: 'dnd-chatbot', provider: AI_PROVIDER });
 });
 
 app.listen(PORT, () => {

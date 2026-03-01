@@ -1,0 +1,532 @@
+{
+  "schema_version": "1.0",
+  "category": "fey",
+  "entries": [
+    {
+      "id": "reverie_solenne",
+      "type": "location",
+      "name": "The Reverie Solenne",
+      "aliases": ["Solemn Reverie", "Waking Dream", "The Fey Realm"],
+      "tags": ["fey", "realm", "keeper", "identity", "autumn", "court"],
+      "spoiler": true,
+      "summary": "The fey realm connected to Venturia, once governed by the Keeper of Faces. Its name captured the court's central paradox: everything was both performance and completely sincere. Identity was an ongoing creative act, not a fixed inheritance.",
+      "details": [
+        {
+          "label": "Core Philosophy",
+          "content": "The face you choose to show the world is not less real than the face you were born with — it may be more real, because it is chosen. Identity in the Reverie Solenne was an ongoing creative act, not a fixed inheritance. The Keeper's domain governed this truth in all its forms.",
+          "spoiler": false
+        },
+        {
+          "label": "The Sacred Season",
+          "content": "Autumn was the sacred season, because autumn wears its dying beautifully. The Keeper considered this the highest expression of identity: performing your truest self at the moment of greatest vulnerability.",
+          "spoiler": false
+        },
+        {
+          "label": "How It Connected to the Material Plane",
+          "content": "The realm didn't exist somewhere else — it bled through still water and mirrors. Every canal in Venturia, every polished surface, every rain puddle at night was a potential window into what fey called the Liminal Deep. This is why Venturia feels uncanny: it is a city built on reflections, where the real and its mirror image coexist constantly.",
+          "spoiler": true
+        },
+        {
+          "label": "The Di Errante Compact",
+          "content": "The veil between realms was thinnest at Vallombrosa, where the di Errante compact maintained it intentionally. That managed thinness now has no manager — it simply bleeds. The entire Vallombrosa estate was the material plane embassy of the Reverie Solenne.",
+          "spoiler": true
+        }
+      ],
+      "connections": [
+        {
+          "target_id": "pale_carnival",
+          "target_name": "The Pale Carnival",
+          "relationship": "What the Reverie Solenne became after the Keeper's imprisonment",
+          "spoiler": true
+        },
+        {
+          "target_id": "keeper_of_faces",
+          "target_name": "The Keeper of Faces",
+          "relationship": "Sovereign of the court",
+          "spoiler": false
+        },
+        {
+          "target_id": "liminal_deep",
+          "target_name": "The Liminal Deep",
+          "relationship": "The threshold/veil between the realm and the material plane, accessible through still water and mirrors",
+          "spoiler": true
+        }
+      ],
+      "dm_notes": "Autumn as the sacred season ties directly into why the Autumn Masquerade is the ritual skeleton of the court's own celebration — the mortal version inverted the court practice (mortals reveal faces; the court revealed masks at midnight, showing chosen identity). The court considered dying beautifully as the highest identity performance."
+    },
+    {
+      "id": "pale_carnival",
+      "type": "location",
+      "name": "The Pale Carnival",
+      "aliases": ["Fractured Carnival", "The Carnival"],
+      "tags": ["fey", "realm", "prison", "leaked", "keeper", "horror"],
+      "spoiler": true,
+      "summary": "What the Reverie Solenne became after the Keeper's imprisonment. The name is a eulogy coined by outsiders — pale for colorless, carnival because it still resembles a celebration if you don't look carefully. The masquerade kept running, but hollowed out.",
+      "details": [
+        {
+          "label": "What Happened to the Court",
+          "content": "Without the Keeper's governing intelligence, the court continued on ritual momentum. Masks stopped coming off at the end of the night. Performers began forgetting their original faces. The court runs on empty performance without the substance beneath.",
+          "spoiler": true
+        },
+        {
+          "label": "The Name Is a Eulogy",
+          "content": "The name 'Pale Carnival' was coined by outsiders and grieving subjects after the imprisonment. Pale for colorless. Carnival because it still resembles a celebration if you don't look carefully. The Reverie Solenne's subjects would not use this name — to them it is still home, just broken.",
+          "spoiler": true
+        },
+        {
+          "label": "The Leaked",
+          "content": "As the Keeper's prison weakens, contents of the Pale Carnival spill through cracks into the material plane. These are not random reality glitches — they are legible to anyone who understands the court. They represent the court's degradation made physical.",
+          "spoiler": true
+        },
+        {
+          "label": "The Maskless",
+          "content": "When a fey loses their identity entirely in the fractured Carnival, they become a Maskless — wearing a rotating collection of stolen identities because they've forgotten their own face. The horror element of the campaign's middle phase.",
+          "spoiler": true
+        }
+      ],
+      "connections": [
+        {
+          "target_id": "reverie_solenne",
+          "target_name": "The Reverie Solenne",
+          "relationship": "What it once was",
+          "spoiler": true
+        },
+        {
+          "target_id": "the_leaked",
+          "target_name": "The Leaked",
+          "relationship": "Contents spilling through the failing prison as the Pale Carnival deteriorates",
+          "spoiler": true
+        },
+        {
+          "target_id": "the_maskless",
+          "target_name": "The Maskless",
+          "relationship": "Fey who have lost their identity entirely within the fractured Carnival",
+          "spoiler": true
+        },
+        {
+          "target_id": "keeper_of_faces",
+          "target_name": "The Keeper of Faces",
+          "relationship": "His imprisonment caused the court's fracture; the Pale Carnival's degradation accelerates his starvation",
+          "spoiler": true
+        }
+      ],
+      "dm_notes": "The Maskless and other Leaked are hostile to Marcello — he is the reason their home broke. They are not his servants. This is a player-facing clue if they observe Leaked behavior around him. The late-phase events (canals running wrong, mirrors showing wrong seasons) are legible to players who know about the Pale Carnival — rewarding engagement with the lore."
+    },
+    {
+      "id": "liminal_deep",
+      "type": "concept",
+      "name": "The Liminal Deep",
+      "aliases": ["The Veil", "The Threshold"],
+      "tags": ["fey", "veil", "mirrors", "canals", "vallombrosa", "threshold"],
+      "spoiler": true,
+      "summary": "The threshold between the material plane and the Pale Carnival. Fey name for the space accessible through still water, mirrors, and reflective surfaces. Scholars call what they glimpse through it 'the Pale Carnival's reflection.' Thinnest at Vallombrosa.",
+      "details": [
+        {
+          "label": "Access Points",
+          "content": "Every canal in Venturia, every polished surface, every rain puddle at night is a potential window. The veil is not a place you travel to — it bleeds through reflection. This is why Venturia's canal city design feels uncanny: it is built on the very surfaces that thin the boundary.",
+          "spoiler": false
+        },
+        {
+          "label": "Vallombrosa",
+          "content": "The veil is thinnest at Vallombrosa, where the di Errante compact maintained it intentionally — the estate was the material plane's embassy of the Reverie Solenne. That managed thinness now has no manager. The binding site in the ceremonial gardens is the literal site of the veil's managed thinning, which is why the original binding ritual worked there specifically.",
+          "spoiler": true
+        },
+        {
+          "label": "The Fog",
+          "content": "The fog covering Vallombrosa is partly the result of the veil's vacancy: unmanaged thinness leaking atmospheric bleed-through from the Pale Carnival. When Marcello returns to Vallombrosa and spends time at the binding site (increasing his power draw on the Keeper), he accelerates this bleed.",
+          "spoiler": true
+        }
+      ],
+      "connections": [
+        {
+          "target_id": "pale_carnival",
+          "target_name": "The Pale Carnival",
+          "relationship": "The realm beyond the threshold",
+          "spoiler": true
+        },
+        {
+          "target_id": "reverie_solenne",
+          "target_name": "The Reverie Solenne",
+          "relationship": "What lies beyond the threshold in its original form",
+          "spoiler": true
+        }
+      ],
+      "dm_notes": ""
+    },
+    {
+      "id": "face_of_beginning",
+      "type": "concept",
+      "name": "The Face of Beginning",
+      "aliases": [],
+      "tags": ["fey", "court", "regents", "identity", "temple", "celestine", "faces-primordial"],
+      "spoiler": true,
+      "summary": "One of the three Faces Primordial who governed the Reverie Solenne. Domain: identity as given — who you are by origin, birth, inheritance. Its Venturian echo is the Temple Authority and Mother Celestine.",
+      "details": [
+        {
+          "label": "Court Role",
+          "content": "Governed identity as given. Who you are by origin, birth, inheritance. One of three regents forming the philosophical tripartite council governing daily court life alongside the Faces of Becoming and Memory.",
+          "spoiler": true
+        },
+        {
+          "label": "Venturian Echo",
+          "content": "Temple Authority — affirms identity as given, divine inheritance, cosmic order. Mother Celestine embodies this: keeper of oldest records, holder of fragmentary evidence she cannot interpret. The Temple's obsession with lineage, divine appointment, and unchanging holy record descends from the Face of Beginning's influence.",
+          "spoiler": true
+        },
+        {
+          "label": "Marcello's Strategy",
+          "content": "Marcello neutralizes the Temple first — Celestine's suspicion is the main threat; her grief over the Abbey's hidden knowledge is his entry point. Philosophically: he destroys the Face of Beginning first, eliminating the force that affirms identity-as-given before he can claim an identity he was never given.",
+          "spoiler": true
+        }
+      ],
+      "connections": [
+        {
+          "target_id": "face_of_becoming",
+          "target_name": "The Face of Becoming",
+          "relationship": "Fellow regent of the tripartite council",
+          "spoiler": true
+        },
+        {
+          "target_id": "face_of_memory",
+          "target_name": "The Face of Memory",
+          "relationship": "Fellow regent of the tripartite council",
+          "spoiler": true
+        }
+      ],
+      "dm_notes": "The three Faces together form a complete philosophy of identity. Marcello's systematic conquest of their Venturian echoes is a philosophical violation as much as a political one — he is dismantling the framework that would expose him."
+    },
+    {
+      "id": "face_of_becoming",
+      "type": "concept",
+      "name": "The Face of Becoming",
+      "aliases": [],
+      "tags": ["fey", "court", "regents", "identity", "guilds", "celeste", "faces-primordial"],
+      "spoiler": true,
+      "summary": "One of the three Faces Primordial. Domain: chosen identity — who you are making yourself into through labor and will. Stagnation was the court's closest equivalent to sin. Its Venturian echo is the Guild-Masters and Celeste Orion.",
+      "details": [
+        {
+          "label": "Court Role",
+          "content": "Governed chosen identity. Who you are making yourself into through labor and will. A Masquer could lose their position for stagnation — stopping becoming and merely being. The court's closest equivalent to sin was to stop choosing.",
+          "spoiler": true
+        },
+        {
+          "label": "Venturian Echo",
+          "content": "Guild-Masters — institutions of transformation. You enter as apprentice, exit as master. Celeste Orion is the Face of Becoming made flesh: built her career from nothing, politics of the sacred act of making. The guild system's entire philosophy (merit over birth, the transformative journey) descends from this regent's influence.",
+          "spoiler": true
+        },
+        {
+          "label": "Marcello's Strategy",
+          "content": "He co-opts the Guild-Masters second — Celeste's grief over her missing son is his lever. He corrupts the Face of Becoming by exploiting the transformation institutions rather than dismantling them.",
+          "spoiler": true
+        }
+      ],
+      "connections": [
+        {
+          "target_id": "face_of_beginning",
+          "target_name": "The Face of Beginning",
+          "relationship": "Fellow regent of the tripartite council",
+          "spoiler": true
+        },
+        {
+          "target_id": "face_of_memory",
+          "target_name": "The Face of Memory",
+          "relationship": "Fellow regent of the tripartite council",
+          "spoiler": true
+        }
+      ],
+      "dm_notes": ""
+    },
+    {
+      "id": "face_of_memory",
+      "type": "concept",
+      "name": "The Face of Memory",
+      "aliases": [],
+      "tags": ["fey", "court", "regents", "identity", "harbor-lords", "vincen", "faces-primordial"],
+      "spoiler": true,
+      "summary": "One of the three Faces Primordial. Domain: identity as others perceive it — reputation, legacy, what persists after you. Its Venturian echo is the Harbor-Lords and Vincen Tidecaller.",
+      "details": [
+        {
+          "label": "Court Role",
+          "content": "Governed identity as others perceive it. Reputation, legacy, what persists after you die. The argument: who you are in the memory of others is as real as who you are to yourself — and far more durable.",
+          "spoiler": true
+        },
+        {
+          "label": "Venturian Echo",
+          "content": "Harbor-Lords — trade is the business of memory: contracts, accumulated reputation, legacy across generations. Vincen Tidecaller is the clearest expression — carries generational knowledge, speaks rarely but with weight, is deliberately withholding something from old Tidekeeper records.",
+          "spoiler": true
+        },
+        {
+          "label": "Marcello's Strategy",
+          "content": "He turns the Harbor-Lords last — Teodor's fear about his fleet provides the commercial promises needed. He turns the Face of Memory by exploiting accumulated reputation anxiety: I will make you remembered as the lord who saved Venturia.",
+          "spoiler": true
+        }
+      ],
+      "connections": [
+        {
+          "target_id": "face_of_beginning",
+          "target_name": "The Face of Beginning",
+          "relationship": "Fellow regent of the tripartite council",
+          "spoiler": true
+        },
+        {
+          "target_id": "face_of_becoming",
+          "target_name": "The Face of Becoming",
+          "relationship": "Fellow regent of the tripartite council",
+          "spoiler": true
+        }
+      ],
+      "dm_notes": "Vincen Tidecaller withholding something from old Tidekeeper records — this is the Face of Memory's institutional knowledge being deliberately suppressed. Worth developing what he knows."
+    },
+    {
+      "id": "masquers_of_standing",
+      "type": "concept",
+      "name": "The Masquers of Standing",
+      "aliases": [],
+      "tags": ["fey", "court", "nobility", "masquers-sodality", "katelynn"],
+      "spoiler": true,
+      "summary": "The court nobility of the Reverie Solenne — powerful fey recognized (not born) into their positions based on demonstrated understanding of identity's complexity. Their Venturian echo is the Masquers' Sodality.",
+      "details": [
+        {
+          "label": "Court Role",
+          "content": "Recognized, not born into their positions. A Masquer could lose their standing for stagnation — the court's recognition was conditional on continued becoming. Governance of the court's major ceremonies and arbitration of identity disputes.",
+          "spoiler": true
+        },
+        {
+          "label": "Venturian Echo",
+          "content": "Masquers' Sodality — earned recognition over inherited status, governance of the Autumn Masquerade, arbiters of performance and presentation. Katelynn's family has old blood that remembers something it cannot articulate.",
+          "spoiler": true
+        }
+      ],
+      "connections": [],
+      "dm_notes": "Katelynn's family's old blood 'remembering something it cannot articulate' — they may have had Masquer of Standing ancestors, or the Threshold Keepers maintained a particularly close relationship with that bloodline."
+    },
+    {
+      "id": "weavers_of_thread",
+      "type": "concept",
+      "name": "The Weavers of Thread",
+      "aliases": [],
+      "tags": ["fey", "court", "covenant-archive", "contracts", "oaths", "katelynn"],
+      "spoiler": true,
+      "summary": "Archivists and contract-keepers of the Reverie Solenne. Maintained records of every bargain the Keeper made and every identity transaction. Their Venturian echo is the Covenant Archive — Katelynn's parents' institution.",
+      "details": [
+        {
+          "label": "Court Function",
+          "content": "The court's bureaucrats, solemn about their function. Maintained records of every bargain the Keeper made and every identity transaction that passed through the court. In a court where identity was fluid and chosen, they were the institutional memory.",
+          "spoiler": true
+        },
+        {
+          "label": "Venturian Echo",
+          "content": "The Covenant Archive — Katelynn's parents' institution. The mortal obsession with binding contracts, the cultural taboo against oath-breaking, the weight words carry in Venturia — all descend from the Weavers' centuries of seeding these values into mortal institutions.",
+          "spoiler": true
+        }
+      ],
+      "connections": [],
+      "dm_notes": "The Weavers would have records of every compact the Keeper ever made — including the di Errante compact in full. If the Weavers' records survived the fracturing somehow, they would be an extraordinary prize."
+    },
+    {
+      "id": "threshold_keepers_court",
+      "type": "concept",
+      "name": "The Threshold Keepers (Court Role)",
+      "aliases": [],
+      "tags": ["fey", "court", "veil-court", "crossings", "di-errante", "compact"],
+      "spoiler": true,
+      "summary": "Border agents of the Reverie Solenne. Managed crossings between the fey realm and the material plane, maintained relationships with mortal families, and ensured compact terms were honored. Most direct ancestor of Venturia's Veil Court.",
+      "details": [
+        {
+          "label": "Court Function",
+          "content": "Managed crossings between the Reverie Solenne and the material plane. Maintained relationships with mortal compact-holders like the di Errante family. Ensured compact terms were honored on both sides.",
+          "spoiler": true
+        },
+        {
+          "label": "Seeding of Venturia",
+          "content": "The Threshold Keepers spent centuries quietly seeding Venturia's institutions with echoes of the court's philosophy. The mortals who built these institutions thought they were inventing practical governance. They were re-creating a structure they felt was correct without knowing why.",
+          "spoiler": true
+        },
+        {
+          "label": "Venturian Echo",
+          "content": "The Veil Court — most direct institutional descendant. An institution that remembers it was supposed to guard something important but has forgotten what. Fey institutional memory without fey knowledge.",
+          "spoiler": true
+        },
+        {
+          "label": "The Autumn Council Gap",
+          "content": "The eleventh seat — the Watch-Captain and rotating Chair — has no fey equivalent. It's a purely mortal invention, which explains why Alessia is the most pragmatic and least susceptible to Marcello's supernatural influence. She was never shaped by the court's philosophy.",
+          "spoiler": true
+        }
+      ],
+      "connections": [],
+      "dm_notes": "The Threshold Keepers maintained the di Errante compact specifically. They would have recognized Marcello (the original) as the mortal anchor of the compact — his fey-touched gifts were their investment in the relationship."
+    },
+    {
+      "id": "brownies",
+      "type": "creature",
+      "name": "Brownies",
+      "aliases": [],
+      "tags": ["fey", "creature", "household", "di-errante", "vallombrosa", "roxy", "covenant"],
+      "spoiler": false,
+      "summary": "Small, secretive fey tied to households and ancient promises. They accumulate secrets the way mortals accumulate possessions. Ancient court citizens who crossed over from the Liminal Deep when the di Errante estate was thriving — household spirits who maintained the compact.",
+      "details": [
+        {
+          "label": "Nature",
+          "content": "Small, secretive, tied to households and ancient promises. They accumulate secrets the way mortals accumulate possessions. Patient beyond mortal reckoning, and deeply loyal to the household or compact they serve.",
+          "spoiler": false
+        },
+        {
+          "label": "Their History at Vallombrosa",
+          "content": "Ancient fey who crossed over from the Liminal Deep generations ago when the di Errante estate was thriving — essentially household spirits who maintained the relationship between the mortal family and the Pale Carnival under Threshold Keeper supervision.",
+          "spoiler": true
+        },
+        {
+          "label": "Current Situation",
+          "content": "The Brownies enslaved in Vallombrosa (Roxy's hook) are being used in violation of something sacred. They are not just any fey — they are the surviving stewards of a thousand-year-old covenant. Their enslavement is desecration of the original compact.",
+          "spoiler": true
+        },
+        {
+          "label": "Why Garl Glittergold Cares",
+          "content": "He's not just protecting gnome-adjacent fey. He's watching someone desecrate an ancient covenant that his faithful (gnomes, halflings) have stood adjacent to for centuries. The brownies' enslavement is a cosmic wrong, not just a local injustice.",
+          "spoiler": true
+        }
+      ],
+      "connections": [
+        {
+          "target_id": "roxy",
+          "target_name": "Roxanya",
+          "relationship": "PC whose divine hook involves the enslaved brownies at Vallombrosa",
+          "spoiler": false
+        }
+      ],
+      "dm_notes": "The brownies predate the binding — they were the di Errante estate's household spirits maintaining the compact before Lorenzo's crime. Their enslavement by (presumably) Marcello is a direct violation of the covenant they were part of. They likely know things about the estate, the compact terms, and the original Marcello that no living mortal could know."
+    },
+    {
+      "id": "carnival_fey",
+      "type": "creature",
+      "name": "Carnival Fey",
+      "aliases": [],
+      "tags": ["fey", "creature", "pale-carnival", "masquerade", "infiltration"],
+      "spoiler": false,
+      "summary": "Citizens of the Pale Carnival who occasionally cross into Venturia when the veil thins, usually during the Autumn Masquerade. They look almost human but slightly off in ways that are hard to articulate.",
+      "details": [
+        {
+          "label": "Appearance",
+          "content": "Almost human but slightly off in ways that are hard to articulate: too still when they should move, too fluid when they should be still. They move through crowds like water, never quite where you were looking a moment ago.",
+          "spoiler": false
+        },
+        {
+          "label": "Behavior and Motivation",
+          "content": "They cross when the veil thins — particularly during the Autumn Masquerade because the mortal ritual resonates with their home court. Some have formed lasting arrangements with mortal families across centuries. They generally mean no harm and are drawn to the familiar shape of a celebration they once knew.",
+          "spoiler": false
+        },
+        {
+          "label": "Political Sensitivity",
+          "content": "They are not loyal to Marcello — he is the reason their home is broken. If encountered, they may be sources of information about the Pale Carnival's current state, though they often communicate obliquely.",
+          "spoiler": true
+        }
+      ],
+      "connections": [
+        {
+          "target_id": "pale_carnival",
+          "target_name": "The Pale Carnival",
+          "relationship": "Their home court",
+          "spoiler": false
+        }
+      ],
+      "dm_notes": "Carnival Fey can be used as atmospheric encounters during the Masquerade week, or as unexpected information sources. They would recognize the structure of the Masquers' Sodality as a pale shadow of what they knew."
+    },
+    {
+      "id": "the_maskless",
+      "type": "creature",
+      "name": "The Maskless",
+      "aliases": [],
+      "tags": ["fey", "creature", "horror", "leaked", "identity-loss", "pale-carnival", "middle-phase"],
+      "spoiler": true,
+      "summary": "What happens when a fey loses their identity entirely in the fractured Carnival. They've forgotten which face is theirs and now wear a rotating collection of stolen ones. The campaign's primary horror element and the middle-phase Leaked.",
+      "details": [
+        {
+          "label": "Nature",
+          "content": "They've forgotten which face is theirs and now wear a rotating collection of stolen ones. Not evil exactly — hungry, the way someone starving for sleep is hungry. The fracturing of the Pale Carnival broke them before they could be lost.",
+          "spoiler": true
+        },
+        {
+          "label": "Encounter Behavior",
+          "content": "They will try to wear the identities of people they encounter — mimicking speech, posture, mannerisms — making encounters deeply unsettling before any combat begins. Witnesses often report the creature 'looked like it was practicing being me.'",
+          "spoiler": true
+        },
+        {
+          "label": "Relationship to Marcello",
+          "content": "The Maskless are hostile to Marcello. He is the reason their home broke. They are not his servants, not loyal to him, and may actively interfere with his plans if they stumble through the veil near him.",
+          "spoiler": true
+        }
+      ],
+      "connections": [
+        {
+          "target_id": "the_leaked",
+          "target_name": "The Leaked",
+          "relationship": "Middle-phase Leaked — the Maskless stumble through tears in reality when the prison weakens",
+          "spoiler": true
+        },
+        {
+          "target_id": "pale_carnival",
+          "target_name": "The Pale Carnival",
+          "relationship": "What the fractured Carnival produces when fey lose their identity entirely",
+          "spoiler": true
+        }
+      ],
+      "dm_notes": "The Maskless hostile to Marcello is a player-facing clue if they observe how Leaked creatures react to him. Since the Maskless mimic identity, a particularly disturbing encounter might involve one wearing the face of someone the party knows — or one wearing a face that looks like it's trying to be Marcello's original face (the real one, not Lorenzo's stolen version)."
+    },
+    {
+      "id": "the_leaked",
+      "type": "concept",
+      "name": "The Leaked",
+      "aliases": ["Leaked entities", "Leaked phenomenon"],
+      "tags": ["fey", "leaked", "prison", "pale-carnival", "phases", "horror", "prison-collapse"],
+      "spoiler": true,
+      "summary": "Contents of the Pale Carnival spilling through cracks in the Keeper's failing prison. Not random reality glitches — they are legible to anyone who understands the court. Each phase corresponds to a different stage of the prison's collapse.",
+      "details": [
+        {
+          "label": "Early Phase — Atmosphere",
+          "content": "The Carnival's atmosphere leaking through. Animals that feel wrong have briefly passed through a reflection of the Pale Carnival and come back wearing their own faces awkwardly. Shadow wisps are the trailing edges of masquerade costumes from the other side, present in Venturia without any body attached.",
+          "spoiler": false
+        },
+        {
+          "label": "Middle Phase — The Maskless",
+          "content": "The Maskless stumble through tears in reality. Not sent by anyone. They'll try to wear the identities of people they encounter — mimicking speech, posture, mannerisms — making encounters deeply unsettling before any combat begins.",
+          "spoiler": true
+        },
+        {
+          "label": "Late Phase — Architecture",
+          "content": "The actual architecture of the Pale Carnival briefly overlapping with Venturia. City districts might wake to canals running the wrong direction, every mirror in a neighborhood showing the wrong seasonal colors, music playing from no source that follows specific people. To players who've built up knowledge of the Pale Carnival, these events are legible: the prison wall is nearly gone.",
+          "spoiler": true
+        },
+        {
+          "label": "Lotan's Unique Window",
+          "content": "Lotan's patron is imprisoned in the Pale Carnival. The Keeper may send warnings or pleas specifically when a Leaked entity is nearby, because to the Keeper, each one represents his home falling apart. Lotan has a more immediate and visceral relationship to the Leaked than other PCs.",
+          "spoiler": true
+        },
+        {
+          "label": "Not Marcello's Servants",
+          "content": "The Leaked are hostile to Marcello — he is the reason their home broke. They are not his agents. If players assume the Leaked serve the antagonist, the Maskless attacking or disrupting Marcello's operations should reframe their understanding.",
+          "spoiler": true
+        }
+      ],
+      "connections": [
+        {
+          "target_id": "pale_carnival",
+          "target_name": "The Pale Carnival",
+          "relationship": "Source — contents of the Pale Carnival spilling through the failing prison walls",
+          "spoiler": true
+        },
+        {
+          "target_id": "the_maskless",
+          "target_name": "The Maskless",
+          "relationship": "Middle-phase Leaked — fey who lost their identity in the fractured Carnival",
+          "spoiler": true
+        },
+        {
+          "target_id": "keeper_of_faces",
+          "target_name": "The Keeper of Faces",
+          "relationship": "Each Leaked entity represents his home falling apart; he may warn Lotan specifically when they are near",
+          "spoiler": true
+        }
+      ],
+      "dm_notes": "The late-phase architectural overlap events are rewards for player engagement with the lore. A player who has pieced together what the Pale Carnival was will recognize 'canals running wrong' as court geography bleeding through. The Leaked phases function as a visible, external clock for the prison's collapse."
+    }
+  ]
+}
