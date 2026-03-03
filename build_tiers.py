@@ -13,8 +13,8 @@ from pathlib import Path
 ROOT         = Path(__file__).parent
 CURATED_DIR  = ROOT / "campaign-data" / "curated"
 FILTERED_DIR = ROOT / "campaign-data" / "5e-filtered"
-PLAYER_OUT   = ROOT / "tier1_player.md"
-DM_OUT       = ROOT / "tier1_dm.md"
+PLAYER_OUT   = ROOT / "campaign-data" / "tier1_player.md"
+DM_OUT       = ROOT / "campaign-data" / "tier1_dm.md"
 
 # ── 5etools text helpers ─────────────────────────────────────────────────────
 
