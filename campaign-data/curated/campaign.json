@@ -1,0 +1,653 @@
+{
+  "schema_version": "1.1",
+  "category": "campaign",
+  "entries": [
+    {
+      "id": "campaign_overview",
+      "type": "planning",
+      "name": "Campaign Overview and Core Concept",
+      "aliases": [
+        "Overview",
+        "Campaign Concept"
+      ],
+      "tags": [
+        "planning",
+        "tone",
+        "scope",
+        "romantasy",
+        "strahd_parallel"
+      ],
+      "spoiler": false,
+      "summary": "Vallombrosa is a three-to-five-year campaign emphasizing mystery, moral complexity, and sophisticated storytelling within a romantasy tone. Inspired by Curse of Strahd's structure but set on the material plane with a focus on stolen identity, manipulation disguised as romance, and cosmic-level betrayal.",
+      "details": [
+        {
+          "label": "Scale and Duration",
+          "content": "Massive three-to-five-year campaign spanning potentially 100-200 sessions. Session number references are relative progression markers, not literal counts. Mid-sized city setting — large enough for complex dynamics, not so massive it becomes unwieldy for intimate storytelling.",
+          "spoiler": false
+        },
+        {
+          "label": "Key Difference from Strahd",
+          "content": "Vallombrosa exists on the normal material plane, not a pocket dimension. Marcello can come and go freely — he chooses to be there. Players cannot simply escape by leaving the island, because leaving means abandoning Celina and other residents. Reality IS warped in subtle ways (strange time, unreliable memories, impossible architecture) but the setting remains material plane.",
+          "spoiler": false
+        },
+        {
+          "label": "Core Tone",
+          "content": "Mystery and the uncanny rather than overwhelming dread. Beautiful wrongness — the fog is eerie but hauntingly lovely, the fey-touched quirks are strange but not threatening. Makes space for romance, humor, beauty, and genuine human connection as essential contrasts that make dangerous moments matter. Marcello is an elegant predator, not an unstoppable horror. Victory should feel genuinely achievable.",
+          "spoiler": false
+        },
+        {
+          "label": "Romantasy Subversion",
+          "content": "Marcello appears to embody romantic tropes — mysterious figure from the past, supernatural courtship, grand gestures. The campaign reveals these as manipulation. His 'love' is possessive obsession about validation. The campaign contrasts this hollow imitation against genuine connections players build.",
+          "spoiler": true
+        }
+      ],
+      "connections": [],
+      "dm_notes": "The romantasy tone is not window dressing — it's structural. A masquerade ball can be both romantically charged and the site of supernatural intrigue. A quiet library conversation can reveal crucial information while also being a moment of connection. These aren't breaks from the 'real' story."
+    },
+    {
+      "id": "phase_one",
+      "type": "planning",
+      "name": "Campaign Phase One: Pre-Marcello",
+      "aliases": [
+        "Act One",
+        "Phase One",
+        "Noble Kidnapping Mystery"
+      ],
+      "tags": [
+        "campaign_structure",
+        "act_one",
+        "silas",
+        "investigation",
+        "escalation"
+      ],
+      "spoiler": true,
+      "summary": "Sessions 1-50+. Opens with an apparently mundane mystery (noble disappearances) that reveals Silas's research operation. After disruption, Silas creates The Bound and the supernatural crisis escalates. Establishes Venturia as worth protecting and builds toward Marcello's arrival.",
+      "details": [
+        {
+          "label": "Opening Hook",
+          "content": "The campaign does NOT begin with prophecy or supernatural threats. Young nobles ages 14-22 have been disappearing without ransom, bodies, or motives. The party is hired to investigate. Investigation leads to Silas Vane's commune outside Venturia where missing nobles study 'transcendence' and ancient wisdom.",
+          "spoiler": false
+        },
+        {
+          "label": "The Moral Complexity",
+          "content": "Silas immediately releases anyone under 18 when confronted. Adults insist they want to stay — legally their right. Is this a crime or people making choices families disapprove of? Where's the line between cult manipulation and genuine philosophy? This provides 3-5+ sessions of investigation and social encounters before overt supernatural threats.",
+          "spoiler": false
+        },
+        {
+          "label": "The Underlying Truth",
+          "content": "Silas is using nobles for access to family archives and city connections. He's researching the di Errante tragedy, searching for the three objects of power, and trying to understand the binding ritual mechanics. The nobles were selected for their families' relevant documents.",
+          "spoiler": true
+        },
+        {
+          "label": "The Escalation",
+          "content": "After the party disrupts his research, Silas goes into hiding and creates The Bound. The supernatural crisis emerges directly from the party's interference — making it feel like natural escalation from their actions rather than arbitrary event. The Leaked also begin appearing as prison integrity degrades.",
+          "spoiler": true
+        },
+        {
+          "label": "Design Purpose",
+          "content": "Establishes Venturia as a living city worth protecting. Creates investment in NPCs before larger horror emerges. Makes supernatural crisis feel earned through player actions. Provides investigation/social encounter gameplay before combat-heavy supernatural threats. Builds relationship with Celina before her significance is revealed.",
+          "spoiler": false
+        }
+      ],
+      "connections": [
+        {
+          "target_id": "silas",
+          "target_name": "Silas Vane",
+          "relationship": "Primary antagonist of Phase One",
+          "spoiler": true
+        },
+        {
+          "target_id": "the_bound",
+          "target_name": "The Bound",
+          "relationship": "Primary supernatural threat of mid-Phase One",
+          "spoiler": true
+        },
+        {
+          "target_id": "the_leaked",
+          "target_name": "The Leaked",
+          "relationship": "Escalating environmental threat throughout Phase One",
+          "spoiler": true
+        }
+      ],
+      "dm_notes": "Phase One's length is flexible — it ends when Marcello's arrival feels dramatically right, not at a predetermined session count. The party should feel like they've fought hard and earned progress against Silas before the rug gets pulled. At least one Tartuzi-messenger tragedy should occur during this phase."
+    },
+    {
+      "id": "phase_two",
+      "type": "planning",
+      "name": "Campaign Phase Two: Marcello's Domain",
+      "aliases": [
+        "Act Two",
+        "Phase Two",
+        "The Fane Hunt"
+      ],
+      "tags": [
+        "campaign_structure",
+        "act_two",
+        "marcello",
+        "fane_hunt",
+        "vallombrosa",
+        "celina"
+      ],
+      "spoiler": true,
+      "summary": "Sessions 50-100+. Begins with Marcello's arrival and Vallombrosa's transformation. The campaign shifts to protecting Celina, investigating Vallombrosa, understanding memory manipulation, hunting the three fanes, and navigating Vallombrosa as a living Barovia-like setting.",
+      "details": [
+        {
+          "label": "The Threshold",
+          "content": "Marcello arrives during a set-piece event (recommended: Autumn Masquerade), effortlessly defeats Silas, positions himself as savior. Claims di Errante estates. Vallombrosa transforms. The horrible irony: the party's victories against Silas cleared the path for something far worse.",
+          "spoiler": true
+        },
+        {
+          "label": "Core Activities",
+          "content": "Protecting Celina from supernatural stalker. Investigating Vallombrosa's transformation and population. Understanding and resisting the false memory mechanism. Hunting and destroying the three fanes. Navigating Vallombrosa's living community as modified Curse of Strahd structure. Building alliances among Vallombrosa's residents and Venturia's factions.",
+          "spoiler": true
+        },
+        {
+          "label": "The Fane Hunt Structure",
+          "content": "Clear objectives with escalating difficulty building toward final confrontation. Each fane destroyed weakens Marcello but accelerates the prison crisis. The party must balance defeating Marcello against destabilizing the prison. Mirror likely discovered in Act One; compass and hourglass must be found in Act Two.",
+          "spoiler": true
+        },
+        {
+          "label": "Social Dynamics",
+          "content": "Marcello is popular. The city celebrates him as hero. Opposition is socially difficult. NPCs' memories are being rewritten. The party becomes increasingly isolated in their accurate understanding of reality. One-month timeline before Venturia fully accepts Vallombrosa as always having existed.",
+          "spoiler": true
+        }
+      ],
+      "connections": [
+        {
+          "target_id": "marcello",
+          "target_name": "Marcello di Errante (Lorenzo)",
+          "relationship": "Primary antagonist of Phase Two",
+          "spoiler": true
+        },
+        {
+          "target_id": "celina_cross",
+          "target_name": "Celina Cross",
+          "relationship": "The person the party must protect from supernatural stalking",
+          "spoiler": true
+        },
+        {
+          "target_id": "the_fanes",
+          "target_name": "The Three Fanes",
+          "relationship": "The structural backbone of Phase Two",
+          "spoiler": true
+        },
+        {
+          "target_id": "false_memory_mechanism",
+          "target_name": "The False Memory Mechanism",
+          "relationship": "The ticking clock of Phase Two",
+          "spoiler": true
+        }
+      ],
+      "dm_notes": "Phase Two is the longest and most open-ended portion of the campaign. It needs enough structure (fane hunt, Celina protection, memory timeline) to maintain direction without railroading. Vallombrosa should feel like a real place the party explores over many sessions, not a dungeon to clear."
+    },
+    {
+      "id": "phase_three",
+      "type": "planning",
+      "name": "Campaign Phase Three and Endgame",
+      "aliases": [
+        "Act Three",
+        "Phase Three",
+        "Endgame"
+      ],
+      "tags": [
+        "campaign_structure",
+        "act_three",
+        "endgame",
+        "resolution",
+        "player_agency"
+      ],
+      "spoiler": true,
+      "summary": "Variable timing. The party discovers the full truth of the ancient tragedy, faces the impossible choice, and determines the campaign's resolution. Multiple imperfect endings are possible. Resolution should feel earned through choices, not predetermined.",
+      "details": [
+        {
+          "label": "Discovery",
+          "content": "The party uncovers the complete history through investigation — the brothers, the bargain, the cosmic theft, the murders, Tartuzi's entrapment. They learn the full scope of the impossible choice: killing Marcello breaks the prison, freeing a potentially dangerous entity with millennia of justified rage.",
+          "spoiler": true
+        },
+        {
+          "label": "The Choice",
+          "content": "Multiple imperfect resolutions: heroic sacrifice (someone takes Marcello's place as lock), negotiation with the Archfey (fey law, contract renegotiation), maintaining status quo (pragmatic but morally unsatisfying), or creative solutions the players devise. None is presented as 'correct.'",
+          "spoiler": true
+        },
+        {
+          "label": "Campaign Philosophy",
+          "content": "The goal is resolution that feels earned through choices and consequences rather than predetermined by narrative structure. Players should struggle with these questions, disagree, seek counsel from trusted NPCs, and make decisions they can live with even if those decisions come with significant costs.",
+          "spoiler": true
+        }
+      ],
+      "connections": [
+        {
+          "target_id": "impossible_choice",
+          "target_name": "The Impossible Choice",
+          "relationship": "The central dilemma the party must resolve",
+          "spoiler": true
+        },
+        {
+          "target_id": "ancient_tragedy",
+          "target_name": "The Ancient Tragedy",
+          "relationship": "The full truth the party discovers",
+          "spoiler": true
+        }
+      ],
+      "dm_notes": "Phase Three is the least defined because it depends most on player decisions throughout Phases One and Two. Don't over-plan the endgame — let it emerge from accumulated choices. The players' relationship with Tartuzi, their understanding of fey law, their alliances, and their moral framework should all shape what options feel available and desirable."
+    },
+    {
+      "id": "dm_principles",
+      "type": "planning",
+      "name": "DM Running Principles",
+      "aliases": [
+        "Running Principles",
+        "Campaign Principles"
+      ],
+      "tags": [
+        "dm_guidance",
+        "tone",
+        "player_agency",
+        "pacing",
+        "celina"
+      ],
+      "spoiler": false,
+      "summary": "Core principles for running Vallombrosa: Marcello is genuinely monstrous, Celina must be a complete person before plot relevance, flexible pacing through natural thresholds, tension from wrongness without overwhelming dread, beauty and horror coexist, and victory should feel achievable.",
+      "details": [
+        {
+          "label": "Marcello Is Not Sympathetic",
+          "content": "Marcello is genuinely monstrous, not tragically sympathetic. His villainy emerges from jealousy and entitlement rather than protective love or understandable desperation. His 'love' is desperate need for validation. He doesn't love Celina as a person — he loves what she represents: proof he existed as Lorenzo.",
+          "spoiler": true
+        },
+        {
+          "label": "Celina Before Plot",
+          "content": "Celina MUST be established as a complete person with her own life, personality, goals, dreams, and relationships BEFORE supernatural significance is revealed. Players should know and care about her as an individual. When Marcello's courtship begins, it should feel like violation of someone they're invested in. Every player should have meaningful reasons to oppose him based on genuine relationship with Celina.",
+          "spoiler": false
+        },
+        {
+          "label": "Flexible Pacing",
+          "content": "Thresholds happen when natural rather than on predetermined schedule. The campaign adapts to player choices and table dynamics. Session count estimates are progression markers, not deadlines.",
+          "spoiler": false
+        },
+        {
+          "label": "Tone Balance",
+          "content": "Tension from wrongness and violation without overwhelming dread. Beauty and horror coexist — autumn light through fog, elegant architecture hiding dark secrets. Romance, humor, and genuine connection are essential contrasts, not breaks from the 'real' story. The campaign should feel dangerous and mysterious but never hopeless.",
+          "spoiler": false
+        },
+        {
+          "label": "Player Agency Is Sacred",
+          "content": "Never take away meaningful player choice to serve narrative elegance. Tragedy and predetermined outcomes work when players have agency over HOW events unfold, not when railroaded into specific actions. Present options without dictating which is correct. Victory should feel earned through ingenuity and difficult decisions.",
+          "spoiler": false
+        }
+      ],
+      "connections": [],
+      "dm_notes": "These principles should be revisited periodically throughout the campaign, especially when planning major story beats. If a planned scene requires removing player choice to work, redesign the scene."
+    },
+    {
+      "id": "pc_integration",
+      "type": "planning",
+      "name": "Player Character Integration",
+      "aliases": [
+        "PC Integration",
+        "Character Hooks"
+      ],
+      "tags": [
+        "dm_guidance",
+        "player_characters",
+        "backstory",
+        "reincarnation",
+        "session_zero"
+      ],
+      "spoiler": false,
+      "summary": "Guidance for weaving player backstories into the campaign. All PCs are Venturia natives who grew up with Vallombrosa as landscape. Possible reincarnation connections to the original adventuring party. Early sessions establish personal investment before supernatural escalation.",
+      "details": [
+        {
+          "label": "Session Zero Context",
+          "content": "Players should know: they live in Venturia and grew up with Vallombrosa as part of their landscape. They have favorite legends but nobody believes any specific version. They don't know about the Archfey, the cosmic theft, Tartuzi, or that anyone from the tragedy still exists.",
+          "spoiler": false
+        },
+        {
+          "label": "Backstory Integration",
+          "content": "Weave personal stories into larger narrative as they emerge. Prophecy/oracle backgrounds create investment in understanding Tartuzi. Memory/identity themes resonate with Lorenzo's curse and reality warping. Fey bargain experience equips characters for understanding contract mechanics. Each character needs reasons for protecting Venturia beyond abstract heroism.",
+          "spoiler": false
+        },
+        {
+          "label": "Reincarnation Possibility",
+          "content": "One or more PCs could be reincarnations of the original Sphinx Twice adventuring party. Handle carefully — should emerge naturally through play (strange dreams, recognizing unknown locations, inexplicable knowledge). Should create interesting character moments, not make players feel like vehicles for predetermined story. When the party uncovers historical records, they're getting distorted versions of events one-shot players witnessed.",
+          "spoiler": true
+        },
+        {
+          "label": "Celina Relationship Building",
+          "content": "Early sessions must establish genuine relationships with Celina before her supernatural significance is revealed. Each PC needs personal connection to her — as friend, colleague, neighbor, confidant, or something else organic to their backstory. By Marcello's arrival, opposing him should feel personal.",
+          "spoiler": false
+        }
+      ],
+      "connections": [],
+      "dm_notes": "The seven current players each have backstories already connecting them to Venturia and its factions. Use the character entries in characters.json for specific integration points. The pre-campaign vignettes and one-shots are designed to establish these connections before the main campaign begins."
+    },
+    {
+      "id": "thematic_guide",
+      "type": "planning",
+      "name": "Thematic Resonance Guide",
+      "aliases": [
+        "Themes",
+        "Thematic Guide"
+      ],
+      "tags": [
+        "dm_guidance",
+        "themes",
+        "identity",
+        "victimhood",
+        "complicity",
+        "love"
+      ],
+      "spoiler": true,
+      "summary": "The campaign's core themes: stolen identity and recognition, cycles of victimization and revenge, complicity and responsibility, reincarnation and identity persistence, and possessive obsession versus genuine love. These should emerge through play, not be stated explicitly.",
+      "details": [
+        {
+          "label": "Stolen Identity",
+          "content": "Lorenzo's loss of name and face mirrors his crime of stealing Isabella's autonomy. He wanted recognition and received eternal anonymity. He wanted to possess Isabella and lost everything. The di Errante surname ('of the wandering one') proves prophetic across millennia.",
+          "spoiler": true
+        },
+        {
+          "label": "Cycles of Victimization",
+          "content": "Tartuzi is genuinely a victim but willing to cause catastrophe for freedom. The Archfey was betrayed but could be dangerous if freed. The campaign explores whether suffering justifies harmful actions, whether victims bear responsibility for harm caused while seeking justice.",
+          "spoiler": true
+        },
+        {
+          "label": "Complicity and Responsibility",
+          "content": "Isabella was victimized by coercion but also provided knowledge enabling the cosmic theft through her prophetic abilities. Did she know? Did her visions show consequences? Does she bear any responsibility even under coercion? These questions should emerge naturally.",
+          "spoiler": true
+        },
+        {
+          "label": "Reincarnation and Identity",
+          "content": "If Celina has Isabella's memories or tendencies, is she responsible for past-life actions? If she has no connection, is Lorenzo's obsession delusion imposed on an innocent? What does identity mean when memory might persist across lifetimes?",
+          "spoiler": true
+        },
+        {
+          "label": "Possessive Obsession vs Genuine Love",
+          "content": "Lorenzo's 'love' is need for validation. He doesn't love Celina as a person with autonomy — he loves what she represents. The campaign contrasts this against whatever genuine relationships players build, exploring the difference between loving someone for who they are versus what they represent.",
+          "spoiler": true
+        }
+      ],
+      "connections": [],
+      "dm_notes": "These themes should emerge through events, NPC interactions, and player choices — never through the DM stating them explicitly. The table will find its own emphasis among these themes. Don't force all of them; let the ones that resonate with the specific players rise naturally."
+    },
+    {
+      "id": "open_questions",
+      "type": "planning",
+      "name": "Open Questions for Campaign Development",
+      "aliases": [
+        "Open Questions",
+        "Unresolved Questions",
+        "Future Development"
+      ],
+      "tags": [
+        "planning",
+        "unresolved",
+        "silas",
+        "tartuzi",
+        "celina",
+        "fanes",
+        "marcello"
+      ],
+      "spoiler": true,
+      "summary": "Critical campaign decisions that need resolution as play develops. These should be treated as opportunities rather than problems — the best answers will emerge from table dynamics and player choices.",
+      "details": [
+        {
+          "label": "Silas Questions",
+          "content": "What is Silas's secondary agenda beyond scholarly research? What specific actions bring him into direct conflict with the party? What climaxes at the Masquerade? Does Silas create ALL Bound, or are most caused by weakening prison with Silas creating only targeted ones?",
+          "spoiler": true
+        },
+        {
+          "label": "Tartuzi Questions",
+          "content": "When and how is Tartuzi's true identity revealed to the party? Does she want Marcello dead, alive, or no preference? Does she survive into Act Two or die during Act One? If she survives, what role in endgame? Is freeing her from servitude a goal the party pursues?",
+          "spoiler": true
+        },
+        {
+          "label": "Fane Questions",
+          "content": "Which fane does the party discover during Act One and under what circumstances? What specific methods or conditions destroy fanes? How do destruction consequences escalate?",
+          "spoiler": true
+        },
+        {
+          "label": "Marcello Questions",
+          "content": "Was there actually a third di Errante brother, or is this fabrication? Should this be definitively answered or left ambiguous? If any PCs are reincarnations, when does Marcello recognize them? When does he realize the party is hunting fanes? What does he want beyond claiming Celina?",
+          "spoiler": true
+        },
+        {
+          "label": "Celina Questions",
+          "content": "Two key framework decisions with different downstream consequences. Personality: Option A — Celina shares Isabella's tendencies (drawn to power, prophecy, supernatural influence), creating horrifying possibility of partial complicity and moral complexity about respecting her choices versus recognizing supernatural compromise. Option B — complete personality inversion from Isabella (repulsed by supernatural power), making Marcello's centuries of preparation useless and forcing him to adapt. Memory: no memories (significance entirely external/imposed on her), vague impressions that clarify as Marcello's influence grows (raises questions about genuine vs. implanted memories), or clear conscious memories (profound identity questions about continuity of self and past-life responsibility). Each combination creates different dramatic possibilities. Additional open questions: how does the party protect her from dream manipulation and memory implantation? How does she actively participate in her own defense rather than being purely a prize?",
+          "spoiler": true
+        },
+        {
+          "label": "Structural Questions",
+          "content": "How many sessions should Act One run before Marcello's arrival? What is session-to-session structure of Act Two? What are major milestones between Marcello's arrival and final confrontation?",
+          "spoiler": true
+        }
+      ],
+      "connections": [],
+      "dm_notes": "Review these periodically as the campaign progresses. Some will resolve naturally through play. Others will need deliberate decisions during prep. Don't feel pressured to answer everything before it becomes relevant — the best campaigns leave room for discovery."
+    },
+    {
+      "id": "scarred_patient_crisis",
+      "type": "planning",
+      "name": "The Scarred Patient Crisis: Campaign Opening",
+      "aliases": [
+        "Campaign Opening",
+        "Scarred Patient",
+        "Session One",
+        "The Inciting Event"
+      ],
+      "tags": [
+        "session_one",
+        "opening",
+        "silas",
+        "marcus",
+        "fog_wardens",
+        "investigation"
+      ],
+      "spoiler": true,
+      "summary": "The campaign's actual opening event. On the same night, Fog Warden Marcus disappears from his post and a scarred, comatose figure (Silas) appears at the same location. Multiple PCs have immediate personal stakes. This replaces the noble kidnapping hook as the session one inciting incident.",
+      "details": [
+        {
+          "label": "The Night It Happens",
+          "content": "Same night: Marcus (Noname's fiancé, Kryton's close friend, active Fog Warden) disappears from his post. A figure wrapped in tattered clothes, body covered in strange supernatural scars, appears at the same location, collapses, and slips into a coma. He's brought to St. Viro's Respite under Orabella's care. The scars are the Archfey's prisoner brands marking Silas as property of the Keeper of Faces.",
+          "spoiler": true
+        },
+        {
+          "label": "Immediate Multi-PC Stakes",
+          "content": "Noname: her fiancé is missing, mysterious scarred man appeared in his place, her memory of the night is foggy (Silas manipulated it). Kryton: his friend disappeared the same night, feels responsible since he introduced Noname and Marcus. Orabella: actively caring for the comatose patient, trying to understand the supernatural scars — she's a fog child herself, so supernatural phenomena resonate differently for her. Lotan: his patron (the Keeper) can potentially identify the prisoner brands if shown or described. Party-wide: personal crisis affecting multiple members from session one.",
+          "spoiler": true
+        },
+        {
+          "label": "Investigation Threads",
+          "content": "The Fog Warden post — what happened that night, garrison logs, other witnesses. The scarred patient — who is he, where did the marks come from, why won't he wake. Orabella's memory — why is it foggy, can magic restore it, what's been blocked. The missing fiancé — where did Marcus go, is he alive. The scars themselves — patterns suggest brands not wounds, faint magical energy, Lotan's Keeper patron might recognize them as prisoner marks.",
+          "spoiler": true
+        },
+        {
+          "label": "Noname's Foggy Memory",
+          "content": "Has direct cause: Silas manipulated Noname's memory during or after the incident. This was his first use of abilities in Venturia — crude and incomplete, which is why the memory is foggy rather than cleanly rewritten. This connects to the campaign's broader memory manipulation themes and foreshadows Marcello's far more powerful version.",
+          "spoiler": true
+        }
+      ],
+      "connections": [
+        {
+          "target_id": "silas",
+          "target_name": "Silas Vane",
+          "relationship": "The scarred comatose figure is Silas, freshly escaped from the Archfey's prison",
+          "spoiler": true
+        },
+        {
+          "target_id": "marcus",
+          "target_name": "Marcus",
+          "relationship": "The missing Fog Warden whose disappearance coincides with Silas's appearance",
+          "spoiler": true
+        },
+        {
+          "target_id": "noname",
+          "target_name": "Noname",
+          "relationship": "Her fiancé is the missing man; her memory was manipulated by Silas",
+          "spoiler": true
+        },
+        {
+          "target_id": "orabella",
+          "target_name": "Orabella",
+          "relationship": "Caring for the comatose Silas at St. Viro's Respite",
+          "spoiler": true
+        },
+        {
+          "target_id": "kryton",
+          "target_name": "Kryton Novelli",
+          "relationship": "His friend is the missing Fog Warden; introduced Noname and Marcus",
+          "spoiler": true
+        },
+        {
+          "target_id": "lotan",
+          "target_name": "Lotan",
+          "relationship": "His patron can potentially identify the prisoner brands",
+          "spoiler": true
+        },
+        {
+          "target_id": "phase_one",
+          "target_name": "Campaign Phase One",
+          "relationship": "This crisis is the inciting event that launches Phase One",
+          "spoiler": true
+        }
+      ],
+      "dm_notes": "This opening immediately gives four PCs personal stakes in the central mystery without any forced exposition. The noble kidnapping investigation from the Unified Framework may still occur as a later Act One thread once Silas wakes and begins operating, but THIS is the session one hook. Open questions: what does Orabella believe about the comatose man (thinks he IS Marcus, knows Marcus was replaced, or conflicting memories)? Where is the real Marcus? When does Silas wake (recommended sessions 3-5)?"
+    },
+    {
+      "id": "session_one_decisions",
+      "type": "planning",
+      "name": "Session One Decision Framework",
+      "aliases": [
+        "Critical Questions",
+        "Pre-Campaign Decisions"
+      ],
+      "tags": [
+        "session_one",
+        "decisions",
+        "orabella",
+        "silas",
+        "marcus",
+        "noname",
+        "lotan"
+      ],
+      "spoiler": true,
+      "summary": "Decisions that must be made before or during early sessions. These shape the opening arc's emotional texture and investigation structure.",
+      "details": [
+        {
+          "label": "Noname's Memory State",
+          "content": "Option A: She thinks Marcus IS the scarred comatose man (doesn't remember clearly, devastated and confused). Option B: She knows Marcus disappeared and was replaced (memory of HOW is foggy). Option C: Mixed memory state — conflicting memories, can't reconcile which is true (most horror-inducing, mirrors the dual-memory residents in Act Two).",
+          "spoiler": true
+        },
+        {
+          "label": "Marcus's Fate",
+          "content": "Option A: Dead (killed by Silas, permanent loss). Option B: Trapped in the weakening prison (exchanged places with Silas, potentially recoverable). Option C: Transformed/changed (used as material for first Bound, alive but not himself). Option D: Imprisoned by Silas somewhere (kept for information, potentially discoverable).",
+          "spoiler": true
+        },
+        {
+          "label": "Silas's Awakening Timing",
+          "content": "Early (sessions 1-2): immediate interaction, quick escalation, less investigation time. Mid (sessions 3-5): time for investigation, Noname develops patient relationship, waking becomes major event — RECOMMENDED. Late (sessions 6-10+): extended investigation, party discovers who/what he is first, creates tension when he wakes.",
+          "spoiler": true
+        },
+        {
+          "label": "How Silas Manipulated Orabella's Memory",
+          "content": "Used emerging abilities (first use in Venturia, crude and incomplete). OR the prison escape itself caused memory disruption in nearby people. OR he created a temporary Bound to handle it (that person might still be around as evidence).",
+          "spoiler": true
+        },
+        {
+          "label": "What Each PC Knows at Opening",
+          "content": "Kryton: does he know his friend was Noname's fiancé? Has he visited St. Viro's to see the comatose man? Does his patron (Tartuzi) have any reaction? Orabella: what can she discover before Silas wakes? (Scars aren't natural wounds — they're brands in patterns, coma is magically induced, patient occasionally sounds conscious, scars radiate faint magic.) Does she know the patient replaced a Fog Warden? Lotan: can the Keeper identify prisoner brands from descriptions? Will the Keeper communicate this? What does the Keeper want done? Caravel: does the friend whose death she blames on secrets connect to Silas or the opening mystery?",
+          "spoiler": true
+        }
+      ],
+      "connections": [
+        {
+          "target_id": "scarred_patient_crisis",
+          "target_name": "The Scarred Patient Crisis",
+          "relationship": "These decisions shape how the opening plays out",
+          "spoiler": true
+        }
+      ],
+      "dm_notes": "These decisions interact with each other — Orabella's memory state affects what the party knows going in, Marcus's fate determines whether there's a rescue mission or a grief arc, Silas's awakening timing controls pacing. Decide the memory state and Marcus's fate before session one. Silas timing can be adjusted based on how investigation plays at the table."
+    },
+    {
+      "id": "pc_connection_web",
+      "type": "planning",
+      "name": "PC Connection Web and Thematic Clusters",
+      "aliases": [
+        "Connection Web",
+        "PC Connections",
+        "Character Intersections"
+      ],
+      "tags": [
+        "dm_guidance",
+        "player_characters",
+        "connections",
+        "themes",
+        "liminal_house"
+      ],
+      "spoiler": false,
+      "summary": "How the seven PCs interconnect and form thematic clusters that mirror the campaign's central concerns. These organic connections create natural party dynamics and investigation drivers.",
+      "details": [
+        {
+          "label": "The Liminal House Hub",
+          "content": "Three PCs connect through Liminal House: Noname (fog child's daughter, raised there after parents died), Orabella (fog child herself, raised there after appearing from Vallombrosa), Valentro (orphan, raised there after losing both parents). This institution has been dealing with fog children for centuries — exactly the population that manifests when Marcello transforms Vallombrosa. Liminal House likely has records going back generations and may know more about Vallombrosa's true nature than publicly admitted.",
+          "spoiler": false
+        },
+        {
+          "label": "The Fog Warden Disappearances",
+          "content": "Two PCs lost Fog Wardens: Noname's fiancé Marcus (recent, same night as Silas), Valentro's father (earlier). Both were people who should know better than to enter the fog. Pattern suggests Vallombrosa was already 'leaking' before Marcello's arrival — pulling people in before the main transformation. Fog Wardens specifically are being targeted or drawn in.",
+          "spoiler": true
+        },
+        {
+          "label": "Secrets vs. Transparency",
+          "content": "Roxy: obsessed with secrets (Garl's influence). Caravel: categorically opposed to secrets (blames them for friend's death). Natural party tension with room for growth. Perfect thematic resonance — the campaign's truth has been hidden for millennia, Marcello hides behind stolen identity, the Keeper was betrayed through hidden knowledge. Forces the party to grapple with whether some things should stay buried.",
+          "spoiler": false
+        },
+        {
+          "label": "Supernatural Patron Connections",
+          "content": "Lotan: The Keeper of Faces (imprisoned Archfey, direct campaign connection). Roxy: Garl Glittergold (made her interested in Vallombrosa). Kryton: his patron is connected to Tartuzi. Three PCs have divine/supernatural patrons with campaign relevance — natural exposition channels and moral complexity.",
+          "spoiler": true
+        },
+        {
+          "label": "Masks and Identity Cluster",
+          "content": "Caravel: Masquers' Sodality apprentice, family tragedy at the Masquerade. Roxy: stole a mask to come to Venturia. Lotan: patron is the Keeper of Faces (domain: masks, identity). Perfect cluster for a campaign about stolen identity, Lorenzo's curse, appearance vs. reality.",
+          "spoiler": false
+        },
+        {
+          "label": "Forgotten/Stolen Identity Cluster",
+          "content": "Kryton: sees tools as swords, muscle memory suggesting warrior past — exactly the kind of memory bleed the campaign uses. Orabella: memories returning that frighten her. Noname's father: no memory of life before appearing. Kryton: lost wizard knowledge and abilities. All tie directly to the campaign's memory manipulation and identity theft themes.",
+          "spoiler": false
+        },
+        {
+          "label": "The Tiered Gardens as Convergence Point",
+          "content": "Valentro works there professionally. Marcus proposed to Noname there (Valentro witnessed). Kryton's 'sword moment' happened there (Roxy witnessed). Kryton frequents for peace and contemplation. This location is a natural recurring setting for character moments.",
+          "spoiler": false
+        },
+        {
+          "label": "Pre-Campaign Timeline of Intersections",
+          "content": "Lotan meets Roxy (1 year before campaign). Caravel befriends Roxy (timing unclear). Noname and Orabella (childhood at Liminal House, current patient-healer relationship). Roxy discovers Kryton's secret (recent). Kryton introduced Noname to Marcus (past). Kryton taught at VAVA (connections to any PC students).",
+          "spoiler": false
+        }
+      ],
+      "connections": [
+        {
+          "target_id": "liminal_house",
+          "target_name": "Liminal House",
+          "relationship": "Hub connecting three PCs and central to fog children lore",
+          "spoiler": false
+        },
+        {
+          "target_id": "tiered_gardens",
+          "target_name": "The Tiered Gardens",
+          "relationship": "Convergence point for multiple PC backstory moments",
+          "spoiler": false
+        },
+        {
+          "target_id": "scarred_patient_crisis",
+          "target_name": "The Scarred Patient Crisis",
+          "relationship": "These connections determine why each PC is drawn into the opening mystery",
+          "spoiler": true
+        }
+      ],
+      "dm_notes": "These clusters aren't just flavor — they're structural. The Liminal House hub means three PCs have personal reasons to investigate fog children when Marcello creates a population of them. The secrets debate means the party will organically argue about whether to expose Vallombrosa's truth. The patron connections mean exposition can be personal and earned rather than delivered by DM fiat. Use these clusters to ensure every PC has a way into every major plot thread."
+    }
+  ]
+}

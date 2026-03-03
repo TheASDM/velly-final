@@ -1,0 +1,1097 @@
+{
+  "schema_version": "1.1",
+  "category": "lore",
+  "entries": [
+    {
+      "id": "ancient_tragedy",
+      "type": "lore",
+      "name": "The Ancient Tragedy of Vallombrosa",
+      "aliases": [
+        "The Tragedy",
+        "di Errante Tragedy",
+        "The Wedding Day",
+        "What Actually Happened"
+      ],
+      "tags": [
+        "history",
+        "di_errante",
+        "lorenzo",
+        "marcello_prime",
+        "isabella",
+        "keeper_of_faces",
+        "tartuzi",
+        "wedding",
+        "cosmic_theft",
+        "binding_ritual",
+        "origin"
+      ],
+      "spoiler": true,
+      "summary": "The true history of how Lorenzo di Errante bargained with an Archfey to coerce Isabella's love, orchestrated a cosmic theft of the Keeper of Faces' power on his wedding day, murdered both Isabella and his brother Marcello, and created the cursed zone of Vallombrosa. No player knows this history — they grew up hearing contradictory legends.",
+      "details": [
+        {
+          "label": "The Island Before",
+          "content": "Maeve is a large island in the material plane world of Eldoria, comparable to Madagascar in size. The di Errante family owned an enormous private estate spanning thousands of acres along the western coast on elevated ground — essentially a self-contained kingdom with a grand manor, village, farms, vineyards, workshops, private harbor, and family chapel.",
+          "spoiler": false
+        },
+        {
+          "label": "The Brothers and Isabella",
+          "content": "Marcello di Errante (Marcello Prime) was the elder brother — powerful, fey-touched, genuinely beloved. Isabella Fortuna was a woman of considerable beauty with genuine prophetic abilities who loved Marcello freely. Lorenzo di Errante was the younger brother, perpetually overshadowed, consumed by jealousy and entitlement, unable to accept that Isabella chose Marcello.",
+          "spoiler": true
+        },
+        {
+          "label": "Lorenzo's Bargain (Seven Years Before the Wedding)",
+          "content": "Lorenzo bargained with the Keeper of Faces for supernatural power to coerce Isabella's love. The price: 'the face you show the world,' collectible seven years later. Lorenzo assumed this meant reputation. The actual price: his literal identity — he would appear as Marcello and be unable to speak his own name. Shortly after, Lorenzo consulted Tartuzi the sphinx, who told him the collection date and provided basic principles of how to bind an Archfey.",
+          "spoiler": true
+        },
+        {
+          "label": "The Six Years of Manipulation",
+          "content": "Using bargain-granted power, Lorenzo coerced Isabella's love through supernatural means. Her genuine feelings for Marcello were redirected without her knowledge — she believed her love for Lorenzo was real. During these years, Lorenzo exploited her prophetic abilities, planned cosmic-level theft using contract loopholes, and orchestrated the arrival of an adventuring party as unwitting accomplices.",
+          "spoiler": true
+        },
+        {
+          "label": "The Wedding Day",
+          "content": "Six weeks prior, Isabella's visions showed adventurers arriving on The Emerald Tide. Lorenzo sent them a letter with 100 platinum to ensure their arrival. Isabella hired them — believing she acted independently — to prevent the Keeper from collecting Lorenzo's debt. They traveled through jungle, consulted Tartuzi, and received a binding ritual requiring a mirror, compass, and hourglass plus precise binding words.",
+          "spoiler": true
+        },
+        {
+          "label": "The Cosmic Theft",
+          "content": "When the Keeper manifested to collect the legitimate debt, the adventuring party activated the binding ritual. The Archfey was trapped — frozen, helpless. This was precisely what Lorenzo orchestrated. He drained massive power from the imprisoned entity. Marcello Prime protectively interposed himself between the party and Lorenzo, creating delay. The stolen power collapsed Isabella's coercion. Her true feelings returned in a horrifying rush of clarity.",
+          "spoiler": true
+        },
+        {
+          "label": "The Murders and Aftermath",
+          "content": "Isabella confronted Lorenzo with dawning horror. When she could no longer love him, Lorenzo murdered her with stolen power. Marcello attacked in grief and rage. The evenly matched fight destroyed the gardens. Lorenzo ultimately killed Marcello. Tartuzi appeared — pulled by the binding mechanism to become the eternal lock. Both she and the weakened Archfey merged into the imprisonment mechanism. The adventuring party was knocked unconscious and later woke in the estate dungeon, offered poisoned wine.",
+          "spoiler": true
+        },
+        {
+          "label": "The Curse Activates",
+          "content": "The Keeper's curse activated fully: Lorenzo now appeared as Marcello to all observers. When he tried to speak his own name, only 'Marcello' emerged. His entire identity was stolen — the ultimate ironic punishment from an Archfey whose domain was identity. The di Errante surname ('of the wandering one') proved grimly prophetic.",
+          "spoiler": true
+        },
+        {
+          "label": "The Transformation of Maeve",
+          "content": "Supernatural fog consumed the di Errante estates, stopping with geometric precision at old property boundaries. The land within became cursed with absence — no growth, no animals, ashen soil, stagnant water. The fog didn't respond to wind, maintained sharp boundaries, and never lifted. Those who entered past the point of no return never came back. The region became known as Vallombrosa — the valley of shadows.",
+          "spoiler": true
+        },
+        {
+          "label": "Lorenzo's Departure",
+          "content": "Despite stolen power, Lorenzo remained in Vallombrosa for years. The cursed valley offered no validation or recognition. The isolation drove him to wander the world for millennia, searching for something he could never name. He did not return for thousands of years — until the prison began weakening and he discovered Celina's presence.",
+          "spoiler": true
+        }
+      ],
+      "connections": [
+        {
+          "target_id": "marcello",
+          "target_name": "Marcello di Errante (Lorenzo)",
+          "relationship": "Lorenzo is the perpetrator of the tragedy, now living as 'Marcello'",
+          "spoiler": true
+        },
+        {
+          "target_id": "keeper_of_faces",
+          "target_name": "The Keeper of Faces",
+          "relationship": "The Archfey who granted Lorenzo's bargain and was subsequently imprisoned",
+          "spoiler": true
+        },
+        {
+          "target_id": "tartuzi",
+          "target_name": "Tartuzi",
+          "relationship": "The sphinx who provided binding knowledge and was pulled into the prison mechanism",
+          "spoiler": true
+        },
+        {
+          "target_id": "the_fanes",
+          "target_name": "The Three Fanes",
+          "relationship": "The mirror, compass, and hourglass used in the binding ritual",
+          "spoiler": true
+        },
+        {
+          "target_id": "vallombrosa",
+          "target_name": "Vallombrosa",
+          "relationship": "The cursed zone created by the tragedy",
+          "spoiler": false
+        }
+      ],
+      "dm_notes": "This is the campaign's core secret. Players from Sphinx Twice witnessed much of this but were knocked unconscious before the fight's conclusion — they don't know who won. The key meta-knowledge gap: they don't know whether 'Marcello' is actually Lorenzo cursed to look like his brother, the real Marcello who survived, or something else entirely. This uncertainty should drive investigation for dozens of sessions."
+    },
+    {
+      "id": "vallombrosa_legends",
+      "type": "lore",
+      "name": "The Legends of Vallombrosa",
+      "aliases": [
+        "The Legends",
+        "What People Believe",
+        "The Stories"
+      ],
+      "tags": [
+        "public_knowledge",
+        "culture",
+        "contradictory",
+        "autumn_masquerade",
+        "tragedy_of_vallombrosa",
+        "children",
+        "folklore"
+      ],
+      "spoiler": false,
+      "summary": "Every child in Venturia grows up hearing wildly contradictory stories about Vallombrosa. Nobody takes any specific version seriously as historical fact, but everyone knows them as cultural touchstones. The truth is so much worse than any legend.",
+      "details": [
+        {
+          "label": "Universal Agreement",
+          "content": "The only facts everyone agrees on: the di Errante family was wealthy and powerful, something catastrophically bad happened, supernatural fog appeared afterward and never left, everyone inside died or disappeared, the place is dangerous and people who enter don't come back.",
+          "spoiler": false
+        },
+        {
+          "label": "The Contradictory Versions",
+          "content": "Competing legends include: two brothers fought over a woman (multiple versions of who killed whom and why), the bride was a witch who cursed the estate when jilted, a plague broke out during a feast and the fog contains it, the family were secretly pirates with cursed treasure, 'definitely incest,' a massive fire with coincidental weather, demon deals gone wrong, immortality experiments, the woman was secretly a selkie/vampire/dragon, one brother is still alive inside ruling ghosts, fabulous treasure guarded by undead, and anyone who enters lives their worst fear in an endless loop.",
+          "spoiler": false
+        },
+        {
+          "label": "Annual Tradition",
+          "content": "During the Autumn Masquerade, 'The Tragedy of Vallombrosa' is performed at the Amaranth Theater — but the plot changes every year depending on which director and which legend version they prefer. Residents bet on which version will be performed and critique the production. It's an ongoing civic joke.",
+          "spoiler": false
+        },
+        {
+          "label": "What People Actually Think",
+          "content": "Children believe the scary versions completely. Teenagers think it's all stupid superstition and dare each other to touch the fog. Adults assume 'something mundane got exaggerated over centuries.' Scholars note they can't investigate because the fog kills. Elderly residents tell whichever version is most entertaining, changing details for effect. General consensus: 'Something bad definitely happened. The fog is real. The specific details? Who actually knows.'",
+          "spoiler": false
+        },
+        {
+          "label": "Campaign Significance",
+          "content": "PCs all grew up with Vallombrosa as part of their landscape — spooky but also just there, like living near a supposedly haunted house. They have favorite legend versions but nobody seriously believes any as fact. They don't know about the Keeper of Faces, the cosmic theft, Tartuzi's imprisonment, or that anyone from the ancient tragedy still exists. When they learn the truth, it will be genuinely revelatory.",
+          "spoiler": false
+        }
+      ],
+      "connections": [
+        {
+          "target_id": "ancient_tragedy",
+          "target_name": "The Ancient Tragedy of Vallombrosa",
+          "relationship": "The legends are wildly distorted versions of this actual history",
+          "spoiler": true
+        },
+        {
+          "target_id": "amaranth_theater",
+          "target_name": "The Amaranth Theater",
+          "relationship": "Annual 'Tragedy of Vallombrosa' performance during Masquerade season",
+          "spoiler": false
+        }
+      ],
+      "dm_notes": "The legends function like Hocus Pocus — spooky cultural tradition that nobody takes seriously as literal truth. This means the real history hits harder when discovered. Use the contradictory versions as NPC flavor — different characters have different favorite legends. The annual play is a good early-campaign scene-setting opportunity."
+    },
+    {
+      "id": "unexplained_prosperity",
+      "type": "lore",
+      "name": "The Unexplained Prosperity",
+      "aliases": [
+        "Venturia's Prosperity",
+        "The Good Fortune",
+        "Contagious Luck"
+      ],
+      "tags": [
+        "public_knowledge",
+        "agriculture",
+        "maritime",
+        "trade",
+        "fey_influence",
+        "mystery"
+      ],
+      "spoiler": false,
+      "summary": "After the tragedy, Maeve became remarkably fertile and prosperous in ways no one can explain. Crops grow better than they should, waters teem with fish, bad weather avoids the island, and ships that port in Venturia report unusually good fortune afterward. Most residents accept this without deep questioning.",
+      "details": [
+        {
+          "label": "The Phenomenon",
+          "content": "Crops grow better than soil and climate warrant. Harvests are consistently bountiful. Waters around Maeve teem with fish far beyond expectations. Bad weather tends to avoid the island. Ships that port in Venturia report unusually good fortune on subsequent voyages — as though luck itself is contagious.",
+          "spoiler": false
+        },
+        {
+          "label": "Local Explanations",
+          "content": "None definitive: 'The land was blessed to compensate for the curse.' 'The fog trapped all bad luck inside, leaving only good luck outside.' 'Just coincidence — good land and excellent harbor.' 'Best not to question good fortune too closely.' Most residents treat it as simply how things are.",
+          "spoiler": false
+        },
+        {
+          "label": "The True Source",
+          "content": "The prosperity is a side effect of the imprisoned Archfey's power bleeding through the weakening prison. The fey influence that makes Venturia subtly strange also makes it supernaturally fertile and fortunate. The Harbor Wardens have tracked this pattern for two centuries — Teodor Vast is convinced it's connected to whatever happened at Vallombrosa.",
+          "spoiler": true
+        }
+      ],
+      "connections": [
+        {
+          "target_id": "venturia",
+          "target_name": "Venturia",
+          "relationship": "The city built on unexplained prosperity",
+          "spoiler": false
+        },
+        {
+          "target_id": "harbor_wardens",
+          "target_name": "The Harbor Wardens' Compact",
+          "relationship": "Have been tracking the prosperity pattern for decades",
+          "spoiler": true
+        }
+      ],
+      "dm_notes": "The prosperity's true source creates a nasty implication: defeating Marcello and freeing the Archfey might end Venturia's good fortune. This adds to the impossible choice — the city's economic foundation may depend on continued imprisonment of an innocent being."
+    },
+    {
+      "id": "fey_touch",
+      "type": "lore",
+      "name": "The Subtle Fey-Touch",
+      "aliases": [
+        "Venturia's Quirks",
+        "The Strangeness",
+        "Fey-Touched Nature"
+      ],
+      "tags": [
+        "public_knowledge",
+        "mirrors",
+        "names",
+        "dreams",
+        "promises",
+        "masks",
+        "coincidences",
+        "culture"
+      ],
+      "spoiler": false,
+      "summary": "Venturia has developed quirks over centuries that residents consider completely normal. Mirrors lag, names slip, promises carry weight, coincidences pile up. These aren't seen as supernatural — just local character. Nobody thinks 'we're fey-touched.'",
+      "details": [
+        {
+          "label": "Minor Oddities",
+          "content": "Mirrors occasionally show reflections arriving a second late. Everyone has brief moments of forgetting their own name. Colors seem unnaturally vivid during autumn. Time occasionally feels strange. Dreams throughout Venturia are unusually vivid and memorable. Coincidences happen with remarkable frequency. Promises and deals feel more serious and binding than they should.",
+          "spoiler": false
+        },
+        {
+          "label": "Cultural Developments",
+          "content": "These quirks shaped Venturian culture: contracts and promises are taken very seriously with taboos against oath-breaking, strong tradition of careful speech, mask-making became a respected craft, the Autumn Masquerade is the city's biggest festival, superstitions developed around names and reflections and shadows, theater and performance are highly valued.",
+          "spoiler": false
+        },
+        {
+          "label": "Local Attitude",
+          "content": "'Yeah, Venturia's a bit weird, but every city has its quirks. It's just the way things are here.' Nobody considers the city supernaturally influenced — they think it has character and local color. Visitors sometimes find it slightly unsettling; residents don't notice anything unusual.",
+          "spoiler": false
+        },
+        {
+          "label": "True Source",
+          "content": "All quirks stem from the imprisoned Keeper of Faces' influence bleeding through the weakening prison. The Archfey's domain — masks, identity, reflection, glamour — manifests as exactly these cultural phenomena. VAVA's sealed research maps show fey-touched effects intensify nearest Vallombrosa and weaken with distance.",
+          "spoiler": true
+        }
+      ],
+      "connections": [
+        {
+          "target_id": "keeper_of_faces",
+          "target_name": "The Keeper of Faces",
+          "relationship": "The imprisoned Archfey whose domain creates these phenomena",
+          "spoiler": true
+        },
+        {
+          "target_id": "veil_court",
+          "target_name": "The Veil Court",
+          "relationship": "Has studied the mask/mirror phenomena more deeply than anyone",
+          "spoiler": true
+        }
+      ],
+      "dm_notes": "These quirks should be woven into every session as environmental flavor. Don't over-explain them — they're just how Venturia works. The mirror-lag is the most narratively useful (connects to Keeper of Faces' domain). The promise-weight connects to the Covenant of Silver Scales' supernatural contract discoveries. Players should internalize these as normal before learning they're supernatural."
+    },
+    {
+      "id": "the_fanes",
+      "type": "lore",
+      "name": "The Three Fanes: Mirror, Compass, Hourglass",
+      "aliases": [
+        "The Fanes",
+        "Three Objects of Power",
+        "Binding Anchors"
+      ],
+      "tags": [
+        "mirror",
+        "compass",
+        "hourglass",
+        "binding_ritual",
+        "prison_maintenance",
+        "power_source",
+        "fane_hunt",
+        "horcrux_parallel"
+      ],
+      "spoiler": true,
+      "summary": "The three mystical objects used in the original binding ritual now serve as anchor points maintaining both the Archfey's prison and Marcello's stolen power. Destroying them makes Marcello mortal but also accelerates the prison's collapse. The campaign's Act Two centers on finding and destroying them.",
+      "details": [
+        {
+          "label": "Dual Function",
+          "content": "The fanes serve two purposes: prison maintenance (anchor points for the binding that imprisons the Archfey and maintains Tartuzi's servitude) and power source (they channel and stabilize the power Lorenzo stole — as long as all three exist, Marcello retains supernatural abilities even as they weaken from the Archfey's deterioration).",
+          "spoiler": true
+        },
+        {
+          "label": "The Pipeline Mechanism",
+          "content": "The fanes are not just storage — they are a continuous mechanism routing residual power from the Keeper to stabilize Marcello's stolen abilities. Stolen Archfey power is fundamentally unstable in a mortal vessel; without constant feed from its source, it degrades. Each fane governs a different aspect of stabilization. Lorenzo built a pipeline. For a thousand years the fanes have drawn a slow continuous trickle from an already-wounded prisoner who cannot replenish what he loses.",
+          "spoiler": true
+        },
+        {
+          "label": "The Horcrux Parallel",
+          "content": "Destroying fanes doesn't kill Marcello directly but makes him killable. All three intact: effectively immortal with full supernatural power. Two intact: extremely difficult to kill, retains most power. One intact: mortal but still supernaturally powerful. Zero intact: mortal human with no supernatural abilities beyond accumulated knowledge and skill.",
+          "spoiler": true
+        },
+        {
+          "label": "Destruction Consequences",
+          "content": "Each fane destroyed has immediate effects: Marcello becomes noticeably weaker, the binding weakens further causing more Leaked and reality distortions, Tartuzi's condition worsens (dying faster from prison destabilization), the Archfey may manifest more directly, and Vallombrosa itself may destabilize (fog changes, false memory weakening, environmental shifts).",
+          "spoiler": true
+        },
+        {
+          "label": "The Moral Complexity",
+          "content": "Destroying fanes helps defeat Marcello but accelerates the crisis and brings the campaign closer to catastrophic prison failure. This creates tension between the goal of stopping Marcello and the consequences of destabilizing the prison that contains something potentially worse.",
+          "spoiler": true
+        },
+        {
+          "label": "The Fane Hunt",
+          "content": "Act Two's long-term structure: discover what the fanes are and what destroying them accomplishes, find all three (the party likely encounters the mirror during Act One investigation), figure out how to destroy them (powerful magic protections), do this while Marcello is actively present, and prevent him from protecting the fanes once he realizes the threat.",
+          "spoiler": true
+        }
+      ],
+      "connections": [
+        {
+          "target_id": "ancient_tragedy",
+          "target_name": "The Ancient Tragedy",
+          "relationship": "The fanes were the binding ritual components used during the wedding day",
+          "spoiler": true
+        },
+        {
+          "target_id": "marcello",
+          "target_name": "Marcello di Errante (Lorenzo)",
+          "relationship": "The fanes maintain his stolen power — destroying them makes him mortal",
+          "spoiler": true
+        },
+        {
+          "target_id": "keeper_of_faces",
+          "target_name": "The Keeper of Faces",
+          "relationship": "The fanes maintain the prison — destroying them accelerates the Archfey's release",
+          "spoiler": true
+        }
+      ],
+      "dm_notes": "The fane hunt is the structural backbone of Act Two — clear objectives with escalating difficulty building toward final confrontation. Each fane destruction should be a major campaign milestone with visible consequences. Open questions: which fane is discovered during Act One? What specific methods destroy them? How do consequences escalate? The mirror is the most thematically resonant for early discovery given the campaign's identity/reflection themes."
+    },
+    {
+      "id": "the_bound",
+      "type": "lore",
+      "name": "The Bound",
+      "aliases": [
+        "Bound",
+        "Bound Individuals"
+      ],
+      "tags": [
+        "supernatural_threat",
+        "silas",
+        "tartuzi",
+        "moral_complexity",
+        "indistinguishable",
+        "prophetic_notes",
+        "compulsion"
+      ],
+      "spoiler": false,
+      "summary": "Residents supernaturally compelled to fulfill specific purposes. There are TWO types that are visually indistinguishable: Silas's Bound (destructive tasks) and Tartuzi's Bound (delivering prophetic warnings). The party can't tell them apart until after confrontation — creating the campaign's most horrific recurring moral dilemma.",
+      "details": [
+        {
+          "label": "Silas's Bound",
+          "content": "People supernaturally compelled to fulfill purposes serving Silas's hidden agenda. NOT evil people who chose to serve him — they are victims. Appear completely normal until triggered, then display blank eyes, compelled state, single-minded focus. Tasked with destructive acts: arson, poisoning, sabotage, violence. Some are aware something is wrong and fight their urges.",
+          "spoiler": false
+        },
+        {
+          "label": "Tartuzi's Bound",
+          "content": "As the binding weakens, Tartuzi has gained limited ability to create her own Bound. They have identical blank eyes, compelled state, and single-minded drive. But they're tasked with delivering prophetic warnings — written notes containing predictions about future threats. Compelled to reach specific people: council members, the party, key NPCs.",
+          "spoiler": true
+        },
+        {
+          "label": "The Horror of Indistinguishability",
+          "content": "The party CANNOT tell the two types apart by observation. Both appear identically compelled, have the same blank-eyed driven demeanor, resist being stopped with similar desperation. The only way to know which type: after the confrontation — either they commit a destructive act (Silas's), or they're found carrying a prophetic note (Tartuzi's). This should produce at least one tragedy where the party kills a messenger and finds the note describing someone innocent dying — a description matching the person they just killed.",
+          "spoiler": true
+        },
+        {
+          "label": "The Prophetic Notes",
+          "content": "Written in archaic but readable script, brief and specific (location, time, threat description). Prove accurate when tested. As campaign progresses, increase in detail and personalization — occasional messages directly to the party, phrases suggesting the writer knows them, references to their specific actions. Never signed. Gradual personalization builds toward revealing who sends them.",
+          "spoiler": true
+        },
+        {
+          "label": "Moral Complexity",
+          "content": "The party must stop people who are supernaturally manipulated without killing innocents. They must develop methods for subduing and restraining rather than destroying. They must investigate causes rather than treating each incident as isolated. Over time, they might develop methods to distinguish the types or subdue non-lethally long enough to check for messages. This creates gameplay evolution.",
+          "spoiler": false
+        }
+      ],
+      "connections": [
+        {
+          "target_id": "silas",
+          "target_name": "Silas Vane",
+          "relationship": "Creates destructive Bound to serve his research agenda",
+          "spoiler": true
+        },
+        {
+          "target_id": "tartuzi",
+          "target_name": "Tartuzi",
+          "relationship": "Creates prophetic messenger Bound from within her prison",
+          "spoiler": true
+        }
+      ],
+      "dm_notes": "The Bound indistinguishability mechanic is the campaign's signature moral horror. The first time the party kills a Tartuzi messenger and finds the self-fulfilling prophecy note should be a gut-punch table moment. Build toward it carefully — establish Silas's Bound as genuinely dangerous first so the party has reason to act decisively, then introduce the tragedy. Open question: does Silas create ALL Bound, or are most caused by the weakening prison with Silas creating only targeted ones?"
+    },
+    {
+      "id": "the_leaked",
+      "type": "lore",
+      "name": "The Leaked",
+      "aliases": [
+        "Leaked",
+        "Leaked Entities",
+        "Reality Glitches"
+      ],
+      "tags": [
+        "supernatural_threat",
+        "prison_degradation",
+        "escalation",
+        "fey_creatures",
+        "combat_encounters",
+        "reality_distortion"
+      ],
+      "spoiler": false,
+      "summary": "Supernatural entities manifesting as the Pale Carnival spills through cracks in the Archfey's prison. NOT servants of the Keeper — they are contents of a degraded fey court crossing into the material plane without context or coherence. They escalate from atmosphere to Maskless fey to architectural overlap.",
+      "details": [
+        {
+          "label": "Nature — Pale Carnival Spillage",
+          "content": "The Leaked are not random reality glitches. They are contents of the Pale Carnival spilling through cracks in the prison. When the Archfey's imprisonment weakens, the walls between the fractured Carnival and the material plane thin, and whatever is on the other side seeps through without context or coherence. They are not Silas's responsibility and not loyal to Marcello — if anything, the Maskless are hostile to him because he is the reason their home broke.",
+          "spoiler": true
+        },
+        {
+          "label": "Early Phase — Atmosphere Leaking",
+          "content": "The Carnival's atmosphere bleeding through. Animals that feel wrong have briefly passed through a reflection of the Pale Carnival and come back wearing their own faces awkwardly. Shadow wisps are trailing edges of masquerade costumes from the other side, present in Venturia without any body attached.",
+          "spoiler": false
+        },
+        {
+          "label": "Middle Phase — The Maskless",
+          "content": "Fey who lost their identity in the fractured Carnival, stumbling through tears in reality. They try to wear the identities of people they encounter — mimicking speech, posture, mannerisms — making encounters deeply unsettling before any combat begins. Not evil, just desperately hungry for identity. Witnesses report the creature 'looked like it was practicing being me.'",
+          "spoiler": true
+        },
+        {
+          "label": "Late Phase — Architectural Overlap",
+          "content": "The actual architecture of the Pale Carnival briefly overlapping with Venturia. City districts might wake to canals running the wrong direction, every mirror in a neighborhood showing wrong seasonal colors, music playing from no source that follows specific people. To players who've built up knowledge of the Pale Carnival, these events read as legible: the prison wall is nearly gone.",
+          "spoiler": true
+        },
+        {
+          "label": "Lotan's Unique Window",
+          "content": "Lotan's patron is imprisoned in the Pale Carnival. The Keeper may send warnings or pleas specifically when a Leaked entity is nearby, because to the Keeper, each one represents his home falling apart.",
+          "spoiler": true
+        }
+      ],
+      "connections": [
+        {
+          "target_id": "reverie_solenne",
+          "target_name": "The Reverie Solenne / Pale Carnival",
+          "relationship": "The Leaked are the Pale Carnival's contents spilling into the material plane",
+          "spoiler": true
+        },
+        {
+          "target_id": "keeper_of_faces",
+          "target_name": "The Keeper of Faces",
+          "relationship": "Each Leaked entity represents further degradation of the Keeper's domain",
+          "spoiler": true
+        },
+        {
+          "target_id": "fey_folk_types",
+          "target_name": "The Three Fey Folk Types",
+          "relationship": "The Maskless are the primary middle-phase Leaked entities",
+          "spoiler": true
+        },
+        {
+          "target_id": "the_fanes",
+          "target_name": "The Three Fanes",
+          "relationship": "Destroying fanes accelerates Leaked manifestations",
+          "spoiler": true
+        }
+      ],
+      "dm_notes": "The Leaked reframed as Pale Carnival spillage gives them narrative coherence — they're not random, they're the contents of a dying fey court. The three phases map to the prison's degradation curve. The Maskless are the signature encounter type: play them as uncanny valley horror before combat. Late-phase architectural overlap is the campaign's visual indicator that the endgame is approaching. Lotan gets unique patron communication during Leaked encounters — use this for exposition and personal stakes."
+    },
+    {
+      "id": "false_memory_mechanism",
+      "type": "lore",
+      "name": "The False Memory Mechanism",
+      "aliases": [
+        "Memory Manipulation",
+        "Memory Erosion",
+        "The Venturia Effect",
+        "Reality Rewriting"
+      ],
+      "tags": [
+        "marcello_power",
+        "memory",
+        "identity",
+        "vallombrosa_residents",
+        "venturia_effect",
+        "timeline",
+        "resistance",
+        "act_two"
+      ],
+      "spoiler": true,
+      "summary": "When Marcello claims Vallombrosa, his reality manipulation rewrites memory and identity across both Vallombrosa and Venturia. Vallombrosa's population gains false lifetimes. Venturians gradually forget the transformation happened. The party has roughly one month before the city fully accepts Vallombrosa as always having existed.",
+      "details": [
+        {
+          "label": "Vallombrosa Residents — Initial State",
+          "content": "Two categories. The majority have complete false memories — entire lifetimes in Vallombrosa, childhoods, families, businesses. No memory of entering the fog. A minority have dual memories — they remember BOTH entering the fog AND living in Vallombrosa. Both sets feel equally real, creating profound psychological terror.",
+          "spoiler": true
+        },
+        {
+          "label": "The Erosion Process",
+          "content": "Dual-memory individuals try to flee but encounter mundane-seeming obstacles: ships booked, weather delays, bureaucratic requirements, obligations from false-memory lives. Each delay keeps them longer. Days 1-2: original memories primary. Days 3-5: both equally real. Days 6-10: false memories strengthening. Days 11-20: original memories becoming dreamlike. After day 21: original memories vanish entirely.",
+          "spoiler": true
+        },
+        {
+          "label": "The Venturia Effect",
+          "content": "Memory manipulation extends beyond Vallombrosa's boundaries, slower and more subtle. Days 1-3: people clearly remember transformation. Days 4-14: creeping doubt, impossible memories of shopping in Vallombrosa months ago. Days 15-30: false memories dominate, evidence seems wrong. After day 30: complete integration, everyone remembers Vallombrosa as always having existed. Physical evidence either vanishes or gets reinterpreted.",
+          "spoiler": true
+        },
+        {
+          "label": "Party Resistance",
+          "content": "PCs are more resistant (witnessed transformation directly, strong investment in truth, each other for reality-checking). But they should FEEL the pressure — occasional moments of doubt, NPCs confidently contradicting them, personal notes containing false references, dreams of visiting Vallombrosa years ago. They must actively maintain truth against easier false memories.",
+          "spoiler": true
+        },
+        {
+          "label": "Campaign Implications",
+          "content": "Limited time window (~1 month) before Venturia fully accepts Vallombrosa. Social isolation increases as allies' memories rewrite. Physical evidence vanishes or edits itself. Relationship strain as NPCs dispute the party's memories. Moral questions: if someone has complete false memories of a lifetime, are those memories real for them? Is it cruel to force them to remember a past they no longer identify with?",
+          "spoiler": true
+        },
+        {
+          "label": "Table Techniques for Running Memory Pressure",
+          "content": "Specific methods for making players feel the pressure even though their characters resist it: describe occasional unprompted moments of doubt about whether Vallombrosa 'just appeared' or was 'always there.' Have trusted NPCs confidently contradict the party's accurate memories in casual conversation. Let players find their own journal entries or personal notes that now contain references to visiting Vallombrosa before its transformation. Describe dreams of shopping in Vallombrosa years ago, attending events there, having childhood memories of the place. Force the active choice — 'you have to consciously remind yourself this isn't real' — rather than letting resistance feel automatic or free.",
+          "spoiler": true
+        }
+      ],
+      "connections": [
+        {
+          "target_id": "marcello",
+          "target_name": "Marcello di Errante (Lorenzo)",
+          "relationship": "His stolen Archfey power drives the false memory mechanism",
+          "spoiler": true
+        },
+        {
+          "target_id": "vallombrosa",
+          "target_name": "Vallombrosa",
+          "relationship": "The transformed zone where false memories are strongest and fastest",
+          "spoiler": true
+        }
+      ],
+      "dm_notes": "The false memory mechanism is Act Two's ticking clock. The one-month timeline creates urgency without being punitive — the party has time to investigate but can't dawdle. Use NPC memory erosion as emotional beats: an ally who was outraged by Vallombrosa's appearance now casually refers to 'always' shopping there. The mundane obstacles preventing dual-memory people from fleeing should feel infuriatingly plausible, not obviously magical."
+    },
+    {
+      "id": "impossible_choice",
+      "type": "lore",
+      "name": "The Impossible Choice",
+      "aliases": [
+        "The Central Dilemma",
+        "Campaign Endgame Dilemma"
+      ],
+      "tags": [
+        "endgame",
+        "moral_complexity",
+        "archfey_release",
+        "heroic_sacrifice",
+        "negotiation",
+        "player_agency",
+        "resolution"
+      ],
+      "spoiler": true,
+      "summary": "Defeating Marcello isn't simple — his existence maintains the prison keeping the Archfey sealed. Kill him and the Archfey is freed. The Archfey was betrayed and has every right to be vengeful, but a freed entity with millennia of accumulated rage could be catastrophic. The campaign presents multiple imperfect resolutions without dictating which is correct.",
+      "details": [
+        {
+          "label": "The Core Problem",
+          "content": "Marcello's existence and stolen power maintain the prison. If Marcello dies, the lock breaks and the Archfey is freed. The Archfey committed no crime justifying imprisonment — it was betrayed and robbed during legitimate contract fulfillment. It has every right to be vengeful. But it might be genuinely dangerous if released with millennia of accumulated rage.",
+          "spoiler": true
+        },
+        {
+          "label": "Resolution: Heroic Sacrifice",
+          "content": "Someone takes Marcello's place as the lock, maintaining the prison through personal sacrifice. Allows Marcello's destruction while preventing Archfey release. Could be a PC or beloved NPC. Creates questions about whether destroying evil is worth eternal imprisonment of an innocent.",
+          "spoiler": true
+        },
+        {
+          "label": "Resolution: Negotiation with the Archfey",
+          "content": "The party works to genuinely free the entity without catastrophe. Requires understanding fey law, discovering original contract details, possibly completing quests to satisfy legitimate grievances, helping the Archfey understand revenge perpetuates the cycle, and finding ways to sever Lorenzo's power without transferring the lock.",
+          "spoiler": true
+        },
+        {
+          "label": "Resolution: Maintaining Status Quo",
+          "content": "The party decides current injustice is preferable to risks of change. Can't free the Archfey regardless of its innocence. Can't destroy Marcello without triggering catastrophe. Find ways to limit his harm while leaving the fundamental situation unchanged. Deeply unsatisfying but raises questions about pragmatic wisdom versus moral cowardice.",
+          "spoiler": true
+        },
+        {
+          "label": "Resolution: Creative Solutions",
+          "content": "Players discover alternatives through investigation, magical research, bargaining with powerful entities, or creative application of accumulated resources and knowledge. The campaign should reward clever thinking and thorough preparation with possibilities not explicitly laid out.",
+          "spoiler": true
+        }
+      ],
+      "connections": [
+        {
+          "target_id": "marcello",
+          "target_name": "Marcello di Errante (Lorenzo)",
+          "relationship": "His death breaks the prison lock",
+          "spoiler": true
+        },
+        {
+          "target_id": "keeper_of_faces",
+          "target_name": "The Keeper of Faces",
+          "relationship": "The imprisoned entity that would be freed",
+          "spoiler": true
+        },
+        {
+          "target_id": "tartuzi",
+          "target_name": "Tartuzi",
+          "relationship": "Marcello's death also frees her from millennia of enslavement",
+          "spoiler": true
+        },
+        {
+          "target_id": "the_fanes",
+          "target_name": "The Three Fanes",
+          "relationship": "Destroying all fanes is prerequisite for defeating Marcello",
+          "spoiler": true
+        }
+      ],
+      "dm_notes": "This dilemma should emerge through play, not be presented as a menu. Players should discover the interconnections gradually — first learning about the fanes, then about the prison mechanism, then about what happens if Marcello dies. By the time they understand the full picture, they should feel the weight of every option. The goal is resolution that feels earned through choices rather than predetermined by narrative."
+    },
+    {
+      "id": "power_gradient",
+      "type": "lore",
+      "name": "Marcello's Power Gradient",
+      "aliases": [
+        "Power Levels",
+        "Geographic Power Gradient"
+      ],
+      "tags": [
+        "marcello_power",
+        "venturia",
+        "vallombrosa",
+        "binding_site",
+        "tactical",
+        "combat",
+        "archfey_deterioration"
+      ],
+      "spoiler": true,
+      "summary": "Marcello's stolen power operates on a geographic gradient — limited and costly in Venturia, substantially stronger in Vallombrosa, near-absolute at the original binding site. This creates strategic options for the party about when and where to engage him.",
+      "details": [
+        {
+          "label": "In Venturia",
+          "content": "Supernatural abilities but limited and costly. Reality manipulation is exhausting and temporary. Memory alteration works on individuals rather than masses. Coercion requires proximity and time. Can defend himself but isn't invincible. Must be strategic about power use.",
+          "spoiler": true
+        },
+        {
+          "label": "In Vallombrosa",
+          "content": "Power increases substantially within his claimed estates. Reality manipulation becomes easier and more extensive. Memory alteration affects everyone within bounds automatically. Supernatural presence is pervasive and harder to resist. Can observe and influence events throughout the territory. Combat becomes significantly more dangerous.",
+          "spoiler": true
+        },
+        {
+          "label": "At the Binding Site",
+          "content": "The courtyard/garden where Isabella died — Marcello is at full power. Abilities rival what he possessed immediately after the theft. Nearly unstoppable in direct confrontation. Reality itself bends to his will. This is the last place the party should fight him without significant preparation.",
+          "spoiler": true
+        },
+        {
+          "label": "Why He's Weakening",
+          "content": "The Archfey's dying state drains the stolen power. As the entity gives up and begins ceasing to exist, the stolen power deteriorates. This brought Marcello back to Vallombrosa after millennia of wandering — he returned to investigate why his power was weakening. There he discovered both the deteriorating prison and Celina's presence.",
+          "spoiler": true
+        }
+      ],
+      "connections": [
+        {
+          "target_id": "marcello",
+          "target_name": "Marcello di Errante (Lorenzo)",
+          "relationship": "His power operates on this gradient",
+          "spoiler": true
+        },
+        {
+          "target_id": "keeper_of_faces",
+          "target_name": "The Keeper of Faces",
+          "relationship": "The dying Archfey is the source of power deterioration",
+          "spoiler": true
+        }
+      ],
+      "dm_notes": "The power gradient is the key tactical framework for the entire campaign. It explains why Marcello doesn't simply dominate everything — he's weaker in Venturia where most of Act One occurs. His pursuit of Celina requires operating where he's more vulnerable. After claiming Vallombrosa, the party must be strategic about engaging him there versus luring him out. The binding site should be the final boss arena only after all fanes are destroyed."
+    },
+    {
+      "id": "vallombrosa_transformation",
+      "type": "lore",
+      "name": "Vallombrosa's Transformation",
+      "aliases": [
+        "The Threshold Moment",
+        "Marcello's Claim",
+        "The Masquerade Arrival"
+      ],
+      "tags": [
+        "act_two",
+        "marcello_arrival",
+        "masquerade",
+        "threshold",
+        "barovia_parallel",
+        "population",
+        "fog_change"
+      ],
+      "spoiler": true,
+      "summary": "When Marcello claims the di Errante estates, Vallombrosa transforms from cursed dead zone to functional — but eerie — town. The fog thins to perpetual twilight, structures restore to unsettling perfection, and a population appears with false memories of always having lived there. This is the Act One to Act Two transition.",
+      "details": [
+        {
+          "label": "The Arrival (Recommended)",
+          "content": "Ideally during the Autumn Masquerade Ball. Silas makes his final move. The party fights him. At the climactic moment, Marcello appears and effortlessly defeats Silas, demonstrating power far beyond anything encountered. He reveals identity as 'Marcello, descendant of the third di Errante brother,' produces documentation, and invites everyone to continue the celebration at his family's ancestral home.",
+          "spoiler": true
+        },
+        {
+          "label": "Physical Transformation",
+          "content": "The fog remains but thins to ~50 feet visibility, creating perpetual twilight. The manor and estate structures restore to beautiful functionality. Streets and buildings appear intact and elegant. Everything has a slightly unreal quality — too perfect, too clean, subtly wrong. Plants grow but pale and strange. Water flows. The place becomes livable but persistently unsettling.",
+          "spoiler": true
+        },
+        {
+          "label": "The Population",
+          "content": "Simultaneously, Vallombrosa gains residents who seem to have always been there — the people who disappeared into the fog over the past millennium, now manifested as functional community members with complex false memories. They provide NPCs, information sources, potential allies, and civilians who need protection. This gives Vallombrosa the feeling of a living community essential for the Barovia-like structure.",
+          "spoiler": true
+        },
+        {
+          "label": "Campaign Structure Shift",
+          "content": "Act Two operates like modified Curse of Strahd. Vallombrosa is Marcello's domain — power strongest here, influence pervasive, control near-absolute. Perpetual fog and twilight. Functional but eerie. Leaving feels difficult (confusing navigation, looping roads). The di Errante estate and surrounding structures provide iconic locations with environmental storytelling and tactical significance.",
+          "spoiler": true
+        }
+      ],
+      "connections": [
+        {
+          "target_id": "marcello",
+          "target_name": "Marcello di Errante (Lorenzo)",
+          "relationship": "Claims the estates and triggers the transformation",
+          "spoiler": true
+        },
+        {
+          "target_id": "vallombrosa",
+          "target_name": "Vallombrosa",
+          "relationship": "The zone that transforms",
+          "spoiler": true
+        },
+        {
+          "target_id": "false_memory_mechanism",
+          "target_name": "The False Memory Mechanism",
+          "relationship": "The transformation triggers the memory rewriting process across both Vallombrosa and Venturia",
+          "spoiler": true
+        }
+      ],
+      "dm_notes": "This is the campaign's biggest set piece and the threshold between two very different play experiences. The heroic entrance is critical — Marcello MUST feel like a savior, not a threat. The horrible irony: the party's hard-fought victories against Silas cleared the path for something far worse. Take at least a full session for the transformation itself — let players explore the changed Vallombrosa and meet the population before the sinister undertones become clear."
+    },
+    {
+      "id": "eldoria_history",
+      "type": "lore",
+      "name": "Pre-Great Reunion History of Eldoria",
+      "aliases": [
+        "Eldoria History",
+        "The Sealed Continents",
+        "The Shroud",
+        "Church of the Nine",
+        "The Great Reunion",
+        "The Last Wrongs"
+      ],
+      "tags": [
+        "world_history",
+        "eldoria",
+        "eldyrin",
+        "church_of_the_nine",
+        "true_pantheon",
+        "great_reunion",
+        "the_shroud",
+        "last_wrongs",
+        "vecna",
+        "orcus",
+        "background"
+      ],
+      "spoiler": false,
+      "summary": "For nearly five thousand years, the landmass of Eldoria was sealed from the wider world of Eldyrin by a catastrophe of its own making. Rulers fabricated nine false gods to wrest power from the true pantheon, and millions directing spiritual energy at nonexistent deities caused the continents to seal behind impassable fog. Inside, civilization thrived under the Church of the Nine's authority — until adventurers called the Last Wrongs exposed the fraud and broke the isolation. This is the cosmological context for the world Vallombrosa exists in.",
+      "details": [
+        {
+          "label": "The World Before",
+          "content": "Eldoria was a region of the wider world of Eldyrin — diverse nations including the militaristic Vurgorim, the fairy kingdom of Jovirim, the merchant republic of Thornehold, the Sylvan elf territories of Sulkwood, the Druid Freeholds, the half-orc territories of Yaephegor, and various island nations. Gods walked in mortal affairs. Clerics drew real power from real sources.",
+          "spoiler": false
+        },
+        {
+          "label": "The Tribunal of Cloudstone (Year 1 BN)",
+          "content": "Rulers of every major Eldorian power gathered in Cloudstone, Thornehold, to address divine influence over mortal affairs. Rather than negotiate with the gods, they fabricated nine gods from whole cloth — the Church of the Wheel, later the Church of the Nine — and collectively suppressed all mention of the true pantheon. The cynical logic: if people stopped praying to real gods, those gods would lose influence. What no one anticipated: millions redirecting spiritual energy to nonexistent gods caused the true deities to withdraw. The seas became impassable. Eldoria sealed itself from the world.",
+          "spoiler": false
+        },
+        {
+          "label": "The Age of the Church (Year 1-4800 YN)",
+          "content": "For nearly five millennia, Eldoria operated in isolation under the Church of the Nine. The fabricated religion became the dominant force. The true gods — dismissed as 'the Defeated Gods' — were reduced to heresy. But the Church wasn't without function: it reduced warfare, established legal frameworks, built institutions. And the true gods never fully disappeared — they channeled power through gaps in the false theology, patiently waiting.",
+          "spoiler": false
+        },
+        {
+          "label": "The Final Crisis",
+          "content": "Multiple threats converged: Vecna, a wizard of terrible ambition, attempted to use the Tome of Undeath to bring Orcus to the material plane. Against him stood the Last Wrongs — a group of adventurers including a half-elf druid who was secretly heir to Jovirim, a tiefling cleric, a sylvan elf sorceress, a half-orc paladin, and a goliath barbarian. Vecna was ultimately destroyed by heroes from Faerûn who crossed into the sealed continents. In the aftermath, High Inquisitor Thalia Mordaine militarized the Church to consolidate power. Thousands of years of belief had created the Manifestation of the Nine — an entity of pure concentrated false-divine power — which Thalia intended as her theocracy's divine engine.",
+          "spoiler": false
+        },
+        {
+          "label": "The Great Reunion",
+          "content": "The Last Wrongs defeated the Manifestation of the Nine at Eacromar. The Church's authority collapsed. Clerics noticed prayers felt different — fuller, more resonant. The impassable seas thinned and lifted. Ships from Faerûn and other Eldyrin regions sailed through for the first time in five millennia. The Great Reunion was a decade-long process of first contact, cultural shock, and theological reorientation. The true pantheon was reestablished alongside the Church's legacy institutions. Eldoria was changed irrevocably.",
+          "spoiler": false
+        },
+        {
+          "label": "Relevance to Vallombrosa",
+          "content": "The Vallombrosa campaign takes place in the post-Reunion world, on the island of Maeve within Eldoria. The Last Wrongs were a previous campaign — some Vallombrosa players participated. The restored true pantheon is the theological context for clerics, warlocks, and divine magic. The Great Reunion's theme of manufactured belief vs. genuine truth mirrors Vallombrosa's themes of false memory vs. real identity.",
+          "spoiler": false
+        }
+      ],
+      "connections": [
+        {
+          "target_id": "campaign_overview",
+          "target_name": "Campaign Overview",
+          "relationship": "Vallombrosa takes place in the post-Reunion world of Eldoria",
+          "spoiler": false
+        }
+      ],
+      "dm_notes": "This is background context, not active campaign content. Most players already know this history from the previous campaign. The key relevance: the post-Reunion theological landscape explains why the true pantheon exists alongside institutional religion, why Lotan can have a genuine Archfey patron, and why the Church of the Nine's legacy institutions still operate. The thematic parallel — rulers who fabricated gods to control people, Lorenzo who fabricated an identity to possess someone — is there if you want it but doesn't need to be made explicit."
+    },
+    {
+      "id": "reverie_solenne",
+      "type": "lore",
+      "name": "The Reverie Solenne and the Pale Carnival",
+      "aliases": [
+        "Reverie Solenne",
+        "Solemn Reverie",
+        "Waking Dream",
+        "Pale Carnival",
+        "The Fey Court",
+        "Liminal Deep"
+      ],
+      "tags": [
+        "fey_realm",
+        "keeper_of_faces",
+        "court_structure",
+        "identity",
+        "masks",
+        "autumn",
+        "reflections",
+        "mirrors",
+        "still_water",
+        "domain_collapse"
+      ],
+      "spoiler": true,
+      "summary": "The Keeper of Faces' fey court, once called the Reverie Solenne — where identity was an ongoing creative act and the face you chose to show was considered more real than the one you were born with. After the Keeper's imprisonment, outsiders named the degraded remnant the Pale Carnival: a hollow masquerade running on ritual momentum without the substance beneath.",
+      "details": [
+        {
+          "label": "The Reverie Solenne — What It Was",
+          "content": "Under the Keeper of Faces, the court was known as the Reverie Solenne — the Solemn Reverie, the Waking Dream. Its central paradox: everything was both performance and completely sincere. The Keeper's philosophy held that the face you choose to show the world is not less real than the one you were born with — it may be more real, because it is chosen. Identity was an ongoing creative act, not a fixed inheritance. Autumn was the sacred season, because autumn wears its dying beautifully — the highest expression of identity: performing your truest self at the moment of greatest vulnerability.",
+          "spoiler": true
+        },
+        {
+          "label": "The Pale Carnival — What It Became",
+          "content": "A eulogy, not a title. Coined by outsiders and grieving subjects after the Keeper's imprisonment. Pale for colorless. Carnival because it still resembles a celebration if you don't look carefully. Without the Keeper's governing intelligence, the court continued on ritual momentum — the masquerade kept running, but hollowed out. Masks stopped coming off at the end of the night. Performers began forgetting their original faces. Empty performance without the substance beneath.",
+          "spoiler": true
+        },
+        {
+          "label": "The Liminal Deep — How the Realms Connect",
+          "content": "The fey realm doesn't exist somewhere else — it bleeds through still water and mirrors. Every canal in Venturia, every polished surface, every rain puddle at night is a potential window into what fey call the Liminal Deep and scholars call the Pale Carnival's reflection. This is why Venice-inspired Venturia feels uncanny: it is a city built on reflections, where the real and its mirror image coexist constantly. The veil is thinnest at Vallombrosa, where the di Errante compact maintained it intentionally. That managed thinness now has no manager.",
+          "spoiler": true
+        },
+        {
+          "label": "Court Structure — Functions of Identity",
+          "content": "The court organized around functions of identity, not feudal hierarchy. The Keeper of Faces was sovereign. Below him: the three Faces Primordial (regents) — the Face of Beginning (identity as given: origin, birth, inheritance), the Face of Becoming (chosen identity: labor and will), and the Face of Memory (identity as perceived: reputation, legacy, what persists). They formed a philosophical tripartite council. The Masquers of Standing were court nobility — earned, not inherited, positions based on demonstrated understanding of identity's complexity. Stagnation was the court's closest equivalent to sin. The Revelers were general citizens — free, creative, joyful.",
+          "spoiler": true
+        },
+        {
+          "label": "Specialized Court Roles",
+          "content": "The Weavers of Thread were archivists and contract-keepers who maintained records of every bargain and identity transaction. The court's solemn bureaucrats. The Threshold Keepers were border agents who managed crossings between the Reverie Solenne and the material plane, maintained relationships with mortal families, and ensured compact terms were honored. Both roles have material-plane institutional descendants in Venturia.",
+          "spoiler": true
+        }
+      ],
+      "connections": [
+        {
+          "target_id": "keeper_of_faces",
+          "target_name": "The Keeper of Faces",
+          "relationship": "Sovereign of the Reverie Solenne; his imprisonment caused its collapse into the Pale Carnival",
+          "spoiler": true
+        },
+        {
+          "target_id": "venturia",
+          "target_name": "Venturia",
+          "relationship": "Venturia's institutions are unconscious echoes of the court's structure, seeded by Threshold Keepers over centuries",
+          "spoiler": true
+        },
+        {
+          "target_id": "ancient_tragedy",
+          "target_name": "The Ancient Tragedy",
+          "relationship": "Lorenzo's crime vacated both the Keeper's throne and the material plane stewardship simultaneously",
+          "spoiler": true
+        }
+      ],
+      "dm_notes": "The Reverie Solenne's philosophy — that chosen identity is more real than inherited identity — is the campaign's deepest thematic engine. Marcello/Lorenzo is the ultimate violation: he wears a stolen identity, not a chosen one. The court-to-Venturia institutional mapping gives players a way to understand the fey realm through familiar structures. Don't info-dump the court structure; let it emerge as they learn about the Pale Carnival through investigation and Lotan's patron connection."
+    },
+    {
+      "id": "court_venturia_mapping",
+      "type": "lore",
+      "name": "The Court's Echo in Venturia",
+      "aliases": [
+        "Fey Institutional Echoes",
+        "Court Mapping"
+      ],
+      "tags": [
+        "fey_realm",
+        "venturia",
+        "threshold_keepers",
+        "government",
+        "autumn_council",
+        "unconscious_echoes"
+      ],
+      "spoiler": true,
+      "summary": "Venturia's institutions are unconscious echoes of the Reverie Solenne. The Threshold Keepers spent centuries seeding the city with reflections of the court's philosophy. Mortals who built these institutions thought they were inventing practical governance — they were re-creating a structure they felt was correct without knowing why. This is why Marcello's arrival feels so right to the city: it was shaped to receive the real Marcello.",
+      "details": [
+        {
+          "label": "The Mapping",
+          "content": "Face of Beginning → Temple Authority (identity as given, divine inheritance). Face of Becoming → Guild-Masters (institutions of transformation — apprentice to master). Face of Memory → Harbor-Lords (trade as memory — contracts, reputation, legacy). Masquers of Standing → Masquers' Sodality (earned recognition, governance of the Masquerade). Weavers of Thread → Covenant Archive (binding contracts, the weight words carry). Threshold Keepers → The Veil Court (remembers it was supposed to guard something but has forgotten what). The Autumn Masquerade descends directly from the Reverie Solenne's signature celebration — the mortal tradition of revealing your face at midnight is a corruption of the court practice where you revealed your mask (your chosen face).",
+          "spoiler": true
+        },
+        {
+          "label": "Why Marcello Fits So Easily",
+          "content": "Venturia — unconsciously shaped by the Reverie Solenne's philosophy for a thousand years, naming its council after autumn, performing rituals structurally identical to court ceremonies — feels Marcello's claim in ways it cannot explain. Something monstrous is sliding into a space designed for something good. The city's instinctive recognition makes it harder to see the wrongness, not easier. His claim to the Keeper's seat is illegitimate — the Reverie Solenne doesn't recognize succession through theft — but Venturia doesn't know that.",
+          "spoiler": true
+        },
+        {
+          "label": "The Eleventh Seat",
+          "content": "The Watch-Captain/rotating Chair position has no fey equivalent. It's a purely mortal invention, which explains why Thora Ironmark is the most pragmatic and least susceptible to Marcello's supernatural influence.",
+          "spoiler": true
+        }
+      ],
+      "connections": [
+        {
+          "target_id": "reverie_solenne",
+          "target_name": "The Reverie Solenne",
+          "relationship": "Venturia's institutions are echoes of this court structure",
+          "spoiler": true
+        },
+        {
+          "target_id": "autumn_council",
+          "target_name": "The Autumn Council",
+          "relationship": "The council structure unconsciously mirrors the court's organization",
+          "spoiler": true
+        },
+        {
+          "target_id": "marcello",
+          "target_name": "Marcello di Errante (Lorenzo)",
+          "relationship": "The city was shaped to receive the real Marcello — Lorenzo exploits this",
+          "spoiler": true
+        }
+      ],
+      "dm_notes": "This mapping gives Act Two investigation a structural throughline — as the party learns about the Reverie Solenne, they can map its roles to Venturia's institutions and understand WHY the city is so receptive to Marcello. The Veil Court connection is the most actionable: an institution that remembers it was supposed to guard something. Thora's immunity is the practical takeaway — the one council member who can't be charmed by the institutional resonance."
+    },
+    {
+      "id": "fey_folk_types",
+      "type": "lore",
+      "name": "The Three Fey Folk Types",
+      "aliases": [
+        "Carnival Fey",
+        "The Maskless",
+        "Fey Types"
+      ],
+      "tags": [
+        "fey_creatures",
+        "brownies",
+        "carnival_fey",
+        "maskless",
+        "leaked",
+        "horror",
+        "identity"
+      ],
+      "spoiler": true,
+      "summary": "Three types of fey connected to the Pale Carnival. Brownies are ancient household spirits from the di Errante compact. Carnival Fey are court citizens who cross through during the Masquerade. The Maskless are fey who lost their identity entirely — the horror element among the Leaked.",
+      "details": [
+        {
+          "label": "Brownies — Sacred Covenant",
+          "content": "Ancient fey who crossed from the Liminal Deep generations ago when the di Errante estate was thriving. Essentially household spirits who maintained the relationship between the mortal family and the Reverie Solenne. The brownies enslaved in Vallombrosa (Roxy's hook) are being used in violation of something sacred — which is why Garl Glittergold cares. He's not just protecting gnome-adjacent fey; he's watching someone desecrate an ancient covenant.",
+          "spoiler": true
+        },
+        {
+          "label": "Carnival Fey",
+          "content": "Citizens of the Pale Carnival who occasionally cross into Venturia when the veil thins, usually during the Autumn Masquerade because the mortal ritual resonates with their home court. They look almost human but slightly off in ways hard to articulate: too still when they should move, too fluid when they should be still. Some have formed lasting arrangements with mortal families across centuries.",
+          "spoiler": true
+        },
+        {
+          "label": "The Maskless — Horror Element",
+          "content": "What happens when a fey loses their identity entirely in the fractured Carnival. They've forgotten which face is theirs and now wear a rotating collection of stolen ones. Not evil exactly — hungry, the way someone starving for sleep is hungry. Witnesses report the creature 'looked like it was practicing being me.' They are the middle-phase Leaked entities — stumbling through tears in reality, trying to wear the identities of people they encounter by mimicking speech, posture, and mannerisms. Deeply unsettling before any combat begins.",
+          "spoiler": true
+        }
+      ],
+      "connections": [
+        {
+          "target_id": "reverie_solenne",
+          "target_name": "The Reverie Solenne",
+          "relationship": "All three types originate from or were shaped by the Keeper's court",
+          "spoiler": true
+        },
+        {
+          "target_id": "the_leaked",
+          "target_name": "The Leaked",
+          "relationship": "Carnival Fey and especially the Maskless are what 'leaks' through as the prison degrades",
+          "spoiler": true
+        },
+        {
+          "target_id": "roxy",
+          "target_name": "Roxanya",
+          "relationship": "Roxy's mission to save brownies is unknowingly about protecting sacred covenant fey",
+          "spoiler": true
+        }
+      ],
+      "dm_notes": "The Maskless are the campaign's most unsettling monster type. Play them as uncanny valley — they look almost right but wrong enough to trigger deep discomfort. The 'practicing being me' description is the key image to deliver at the table. Brownies being sacred covenant creatures elevates Roxy's personal mission into something with cosmic significance she doesn't yet understand."
+    },
+    {
+      "id": "prison_mechanics",
+      "type": "lore",
+      "name": "The Prison Mechanics — Why It's Collapsing Now",
+      "aliases": [
+        "Prison Collapse",
+        "Three Drains",
+        "Why Now"
+      ],
+      "tags": [
+        "prison",
+        "keeper_of_faces",
+        "fanes",
+        "domain_collapse",
+        "pale_carnival",
+        "deterioration",
+        "marcello_power"
+      ],
+      "spoiler": true,
+      "summary": "The prison is failing from three simultaneous drains that have compounded to a breaking point: the original theft wound, domain collapse from the Pale Carnival's degradation, and the fanes' continuous power pipeline. Marcello's return has accelerated the very deterioration he came to investigate.",
+      "details": [
+        {
+          "label": "Drain One: The Original Theft",
+          "content": "Lorenzo didn't drain the Keeper like emptying a cup — he excised something from the Keeper's fundamental nature. The Keeper has been imprisoned with a wound that cannot close, because the stolen power is outside his reach sustaining someone else. Normally an Archfey recovers by drawing on their domain. But the domain is failing.",
+          "spoiler": true
+        },
+        {
+          "label": "Drain Two: Domain Collapse",
+          "content": "Archfey are sustained by being what they are — their domain must be alive and functioning. The Keeper needs a court where identity is celebrated and performed. The Pale Carnival fractured the moment he was imprisoned, and without his governing intelligence, it degraded. As it degraded, his ability to draw sustenance degraded with it. He has been in slow starvation for a thousand years, trying to recover using a domain that is itself dying.",
+          "spoiler": true
+        },
+        {
+          "label": "Drain Three: The Fanes as Pipeline",
+          "content": "The fanes are not just storage for stolen power — they are a continuous mechanism, routing residual power from the Keeper to stabilize Marcello's stolen abilities on an ongoing basis. Stolen Archfey power is fundamentally unstable in a mortal vessel; without constant feed from its source, it degrades. Each fane governs a different aspect of that stabilization. For a thousand years, the fanes have drawn a slow continuous trickle from an already-wounded prisoner who cannot replenish what he loses. Destroying a fane weakens Marcello but also accelerates the Keeper's deterioration — removing a regulated channel causes remaining draws to become more erratic and damaging.",
+          "spoiler": true
+        },
+        {
+          "label": "Why Now — The Intersection Point",
+          "content": "Three degradation curves finally reached intersection. The Keeper's original reserves are genuinely exhausted. The Pale Carnival has degraded past providing meaningful sustenance. The fanes are accumulating structural wear after a millennium. And Marcello, returning to investigate his weakening power, instinctively spends more time at the binding site where his abilities are strongest — increasing the draw on the Keeper, accelerating the very deterioration he came to investigate. He has been making it worse since he arrived.",
+          "spoiler": true
+        }
+      ],
+      "connections": [
+        {
+          "target_id": "keeper_of_faces",
+          "target_name": "The Keeper of Faces",
+          "relationship": "The prisoner being drained by all three mechanisms",
+          "spoiler": true
+        },
+        {
+          "target_id": "the_fanes",
+          "target_name": "The Three Fanes",
+          "relationship": "The continuous pipeline (Drain Three) — destroying them is double-edged",
+          "spoiler": true
+        },
+        {
+          "target_id": "reverie_solenne",
+          "target_name": "The Reverie Solenne / Pale Carnival",
+          "relationship": "Domain collapse (Drain Two) — the court's degradation starves the Keeper",
+          "spoiler": true
+        },
+        {
+          "target_id": "marcello",
+          "target_name": "Marcello di Errante (Lorenzo)",
+          "relationship": "His return and time at the binding site accelerates the collapse",
+          "spoiler": true
+        }
+      ],
+      "dm_notes": "The three drains framework gives players a legible explanation for the crisis and three potential intervention points. It also deepens the moral complexity of destroying fanes — you're not just weakening Marcello, you're ripping a regulated channel out of a dying prisoner's chest. The 'Marcello is making it worse' detail means the party can potentially use this against him — if he understood the mechanics, even he would want to stop."
+    }
+  ]
+}

@@ -1,0 +1,704 @@
+{
+  "schema_version": "1.1",
+  "category": "government",
+  "entries": [
+    {
+      "id": "autumn_council",
+      "type": "government",
+      "name": "The Autumn Council",
+      "aliases": [
+        "The Council",
+        "Autumn Council",
+        "City Council"
+      ],
+      "tags": [
+        "government",
+        "politics",
+        "gridlock",
+        "venturia",
+        "voting",
+        "council_hall",
+        "high_quarter",
+        "signore_seat"
+      ],
+      "spoiler": false,
+      "summary": "Venturia's governing body of eleven seats — ten filled, one empty. Chronically deadlocked, achieving little without extensive negotiation. During crisis, this is catastrophic.",
+      "details": [
+        {
+          "label": "Structure",
+          "content": "Eleven voting members: two Harbor-Lords, two Guild-Masters, two Temple Authority representatives, the Master of the Tidekeeper's Lodge, the Archmagister of VAVA, the Primo Navigante of the Ferriers' Confraternity, the Watch Commander of the Fog Wardens, and an empty honorary seat for the Signore of Venturia. The Council Chair rotates annually among the Harbor-Lords, Guild-Masters, and Temple Authority.",
+          "spoiler": false
+        },
+        {
+          "label": "Voting Requirements",
+          "content": "Simple majority (6 votes) for routine business. Four-fifths majority (8 votes) for emergency powers, significant taxation, or entering the fog zone. Unanimous vote required to overturn standing laws from the city's founding charter.",
+          "spoiler": false
+        },
+        {
+          "label": "The Gridlock Problem",
+          "content": "All faction leaders must vote together or get outside support to pass laws, while the non-faction group doesn't have enough votes without help from the factions. Nothing gets done without extensive negotiation. During crisis, this is catastrophic.",
+          "spoiler": false
+        },
+        {
+          "label": "The Empty Seat",
+          "content": "The Signore's seat has been empty since the last di Errante 'died out.' The seat is honorary, preserved out of tradition. When Marcello arrives claiming the di Errante name, the question of whether he can claim this seat — and whether it carries actual voting power — will throw the council into constitutional crisis.",
+          "spoiler": true
+        },
+        {
+          "label": "Marcello's Exploitation Strategy",
+          "content": "Marcello doesn't need to control the council — the gridlock already paralyzes it. He charms Harbor-Lords with economic stability promises, offers the Watch expanded authority, and exploits each faction's existing fears. The council's dysfunction is his greatest asset.",
+          "spoiler": true
+        }
+      ],
+      "connections": [
+        {
+          "target_id": "teodor_vast",
+          "target_name": "Lord-Admiral Teodor Vast",
+          "relationship": "Harbor-Lord",
+          "spoiler": false
+        },
+        {
+          "target_id": "constanza_marea",
+          "target_name": "Constanza Marea",
+          "relationship": "Harbor-Lord",
+          "spoiler": false
+        },
+        {
+          "target_id": "celeste_orion",
+          "target_name": "Master Artisan Celeste Orion",
+          "relationship": "Guild-Master",
+          "spoiler": false
+        },
+        {
+          "target_id": "vincenzo_copper",
+          "target_name": "Guildmaster Vincenzo Copper",
+          "relationship": "Guild-Master",
+          "spoiler": false
+        },
+        {
+          "target_id": "lucia_virosdottir",
+          "target_name": "Mother-Abbot Lucia Virosdottir",
+          "relationship": "Temple Authority, current Council Chair",
+          "spoiler": false
+        },
+        {
+          "target_id": "domenico_four_winds",
+          "target_name": "Father Domenico of the Four Winds",
+          "relationship": "Temple Authority",
+          "spoiler": false
+        },
+        {
+          "target_id": "vincen_tidecaller",
+          "target_name": "Vincen Tidecaller",
+          "relationship": "Master of the Tidekeeper's Lodge",
+          "spoiler": false
+        },
+        {
+          "target_id": "dorian_silvermarch",
+          "target_name": "Archmagister Dorian Silvermarch",
+          "relationship": "Archmagister of VAVA",
+          "spoiler": false
+        },
+        {
+          "target_id": "old_maren",
+          "target_name": "Primo Navigante Old Maren",
+          "relationship": "Primo Navigante of the Ferriers' Confraternity",
+          "spoiler": false
+        },
+        {
+          "target_id": "thora_ironmark",
+          "target_name": "Captain-Commander Thora Ironmark",
+          "relationship": "Watch Commander of the Fog Wardens",
+          "spoiler": false
+        }
+      ],
+      "dm_notes": "The council is a political sandbox. Each member can be an ally, obstacle, or both. The gridlock is a feature, not a bug — it forces the party to build coalitions rather than relying on a single patron. The empty Signore seat is a ticking bomb once Marcello arrives."
+    },
+    {
+      "id": "teodor_vast",
+      "type": "npc",
+      "name": "Lord-Admiral Teodor Vast",
+      "aliases": [
+        "Teodor",
+        "Lord-Admiral Vast",
+        "The Admiral"
+      ],
+      "tags": [
+        "harbor_lord",
+        "autumn_council",
+        "merchant_fleet",
+        "pragmatic",
+        "wealthy",
+        "harbor_wardens"
+      ],
+      "spoiler": false,
+      "summary": "Harbor-Lord on the Autumn Council. Controls the largest private merchant fleet in Venturia. Blunt, pragmatic, staggeringly wealthy. Believes what's good for his business is good for Venturia — and he's not entirely wrong.",
+      "details": [
+        {
+          "label": "Description",
+          "content": "Male human, late 50s, commanding presence with weathered features and silver-streaked black hair. Rose from ship's captain to fleet owner through skill, ruthlessness, and strategic marriages. Affects a 'simple sailor' persona when convenient. Has an unsettling habit of remembering every detail of every conversation.",
+          "spoiler": false
+        },
+        {
+          "label": "Council Position",
+          "content": "Blunt and pragmatic. 'People are scared, trade is suffering, and we're debating theology while ships sit idle in harbor. Pay the party to solve it, pay VAVA to research it, pay whoever needs paying — but solve it and let us get back to business.' Will fund almost anything if convinced it will work.",
+          "spoiler": false
+        },
+        {
+          "label": "Exploitable Weakness",
+          "content": "His fleet captains are reporting increasingly strange phenomena at sea — time distortions, crew members with false memories, compasses behaving erratically near the island. He's terrified this will spread beyond Venturia and destroy his commercial network. He'll pay almost anything to prevent that.",
+          "spoiler": true
+        }
+      ],
+      "connections": [
+        {
+          "target_id": "autumn_council",
+          "target_name": "The Autumn Council",
+          "relationship": "Harbor-Lord",
+          "spoiler": false
+        },
+        {
+          "target_id": "harbor_wardens",
+          "target_name": "The Harbor Wardens' Compact",
+          "relationship": "Faction leader",
+          "spoiler": false
+        },
+        {
+          "target_id": "constanza_marea",
+          "target_name": "Constanza Marea",
+          "relationship": "Fellow Harbor-Lord; they deadlocked two years ago, resolved by Vincen's compromise appointment",
+          "spoiler": false
+        }
+      ],
+      "dm_notes": "Teodor is the 'throw money at it' council member. Useful as a funding source but impatient with investigations that don't produce results. The sea phenomena reports are a hook for expanding the campaign beyond Venturia's borders if desired."
+    },
+    {
+      "id": "constanza_marea",
+      "type": "npc",
+      "name": "Constanza Marea",
+      "aliases": [
+        "Constanza",
+        "Marea"
+      ],
+      "tags": [
+        "harbor_lord",
+        "autumn_council",
+        "warehouse_consortium",
+        "ambitious",
+        "undertow_connection",
+        "manipulative"
+      ],
+      "spoiler": false,
+      "summary": "Harbor-Lord on the Autumn Council representing the Warehouse Consortium. Sharp-dressed and sharper-tongued. Ambitious, calculating, sees the crisis as an opportunity. Has a secret connection to The Undertow.",
+      "details": [
+        {
+          "label": "Description",
+          "content": "Female human, early 40s. Family has run the largest warehouse complex in the Harbor District for four generations. Newer to the council (three years) but compensates with aggressive political instincts. Unlike Teodor's blunt approach, she prefers elegant manipulation. Not cruel, but definitely self-interested.",
+          "spoiler": false
+        },
+        {
+          "label": "Council Position",
+          "content": "'The Watch wants martial law, the temples want prayer circles, the guilds want work guarantees — everyone wants power and money. Fine. Let's trade. What does everyone need to feel safe enough to let commerce resume? Let's broker that deal.'",
+          "spoiler": false
+        },
+        {
+          "label": "Secret Undertow Connection",
+          "content": "She's been meeting secretly with The Undertow's representatives. She either owes them something significant or is working a deal that would horrify the rest of the council. The party could discover this and gain leverage — or become targets if they threaten to expose it.",
+          "spoiler": true
+        }
+      ],
+      "connections": [
+        {
+          "target_id": "autumn_council",
+          "target_name": "The Autumn Council",
+          "relationship": "Harbor-Lord",
+          "spoiler": false
+        },
+        {
+          "target_id": "the_undertow",
+          "target_name": "The Undertow",
+          "relationship": "Secret meetings with Undertow representatives — leverage or obligation unknown",
+          "spoiler": true
+        }
+      ],
+      "dm_notes": "Constanza is the council's deal-maker. She'll work with the party if she sees advantage in it. The Undertow connection is both a vulnerability and a hook — discovering it gives the party political leverage over a council member."
+    },
+    {
+      "id": "celeste_orion",
+      "type": "npc",
+      "name": "Master Artisan Celeste Orion",
+      "aliases": [
+        "Celeste",
+        "Master Artisan Orion"
+      ],
+      "tags": [
+        "guild_master",
+        "autumn_council",
+        "binding_crafts",
+        "liminal_house_connection",
+        "workers_rights",
+        "missing_son",
+        "passionate"
+      ],
+      "spoiler": false,
+      "summary": "Guild-Master on the Autumn Council representing the Binding Crafts Guild. Passionate champion of workers' rights, daughter of a Liminal House foundling. Her eldest son vanished three weeks ago.",
+      "details": [
+        {
+          "label": "Description",
+          "content": "Female human, mid-50s, calloused hands and ink-stained fingers. Master of the Binding Crafts Guild (carpenters, masons, shipwrights, construction trades). Daughter of a Liminal House foundling. Built her career from nothing, fiercely protective of workers' rights.",
+          "spoiler": false
+        },
+        {
+          "label": "Council Position",
+          "content": "'My people are the ones disappearing. My people are the ones The Bound are recruited from. We need protection NOW — more Watch patrols in working districts, hazard pay for anyone working near the fog line, and immediate compensation for families of the disappeared.'",
+          "spoiler": false
+        },
+        {
+          "label": "Personal Crisis",
+          "content": "Her eldest son vanished three weeks ago. Officially recused from cases involving the disappeared, but privately desperate. Might make irrational decisions or trust the wrong people if they promise information about him.",
+          "spoiler": true
+        },
+        {
+          "label": "Liminal House Connection",
+          "content": "Being the daughter of a Liminal House foundling gives her personal family connection to the fog child phenomenon. She may have inherited some subtle connection to Vallombrosa's influence, which she's never fully acknowledged.",
+          "spoiler": true
+        }
+      ],
+      "connections": [
+        {
+          "target_id": "autumn_council",
+          "target_name": "The Autumn Council",
+          "relationship": "Guild-Master",
+          "spoiler": false
+        },
+        {
+          "target_id": "liminal_house",
+          "target_name": "Liminal House",
+          "relationship": "Her parent was a Liminal House foundling",
+          "spoiler": false
+        }
+      ],
+      "dm_notes": "Celeste's missing son is a personal hook that could connect her to the party. Her Liminal House connection means she might be on the Shadowed Wardens' supernatural registry, which she doesn't know. She's the most emotionally vulnerable council member — an asset for Marcello's manipulation."
+    },
+    {
+      "id": "vincenzo_copper",
+      "type": "npc",
+      "name": "Guildmaster Vincenzo Copper",
+      "aliases": [
+        "Vincenzo",
+        "Guildmaster Copper"
+      ],
+      "tags": [
+        "guild_master",
+        "autumn_council",
+        "metals_guild",
+        "dwarf",
+        "traditionalist",
+        "mirrorwrights"
+      ],
+      "spoiler": false,
+      "summary": "Guild-Master on the Autumn Council representing the Metals Guild (smiths, metalworkers, jewelers, Mirrorwrights). Conservative dwarf traditionalist. Takes the seven-generation view of problems — simultaneously wise and frustratingly slow to act.",
+      "details": [
+        {
+          "label": "Description",
+          "content": "Male dwarf, age unclear (appears middle-aged by dwarf standards), elaborate beard jewelry. Family has held Metals Guild leadership for three generations. Conservative, traditionalist, deeply invested in maintaining guild hierarchies and apprenticeship systems. Sees wealth as responsibility rather than indulgence.",
+          "spoiler": false
+        },
+        {
+          "label": "Council Position",
+          "content": "'The guilds have survived plagues, fires, wars, and three different forms of government. We'll survive this by doing what we've always done — maintaining our standards, protecting our people, and not panicking into stupid decisions. Rush produces shoddy work whether you're forging a sword or writing a law.'",
+          "spoiler": false
+        },
+        {
+          "label": "Mirrorwright Reports",
+          "content": "The Mirrorwrights have been reporting increasingly disturbing phenomena — mirrors behaving impossibly even for Venturia. He knows this is connected to something big but is trying to handle it internally through guild channels rather than admitting to the council that the crisis is affecting even the most skilled craftspeople.",
+          "spoiler": true
+        }
+      ],
+      "connections": [
+        {
+          "target_id": "autumn_council",
+          "target_name": "The Autumn Council",
+          "relationship": "Guild-Master",
+          "spoiler": false
+        },
+        {
+          "target_id": "mirrorwrights_court",
+          "target_name": "The Mirrorwright's Court",
+          "relationship": "The Mirrorwrights fall under his Metals Guild jurisdiction",
+          "spoiler": false
+        }
+      ],
+      "dm_notes": "Vincenzo's Mirrorwright connection is the political bridge to the mirror investigation thread. The disturbing mirror phenomena are connected to the Keeper of Faces' influence. His traditionalist patience is both obstacle (won't act quickly) and asset (won't be easily manipulated by Marcello's urgency)."
+    },
+    {
+      "id": "lucia_virosdottir",
+      "type": "npc",
+      "name": "Mother-Abbot Lucia Virosdottir",
+      "aliases": [
+        "Lucia",
+        "Mother-Abbot",
+        "Mother-Abbot Lucia"
+      ],
+      "tags": [
+        "temple_authority",
+        "autumn_council",
+        "council_chair",
+        "abbey_leader",
+        "saint_viro",
+        "hidden_knowledge",
+        "ward_fragments"
+      ],
+      "spoiler": false,
+      "summary": "Temple Authority on the Autumn Council, current Council Chair, and leader of the Abbey of Saint Viro. Wise and compassionate but increasingly weary as the crisis challenges her faith. Holds historical knowledge she's bound by tradition not to reveal.",
+      "details": [
+        {
+          "label": "Description",
+          "content": "Female human, early 70s, commanding presence despite slight frame. Forty years of service in the Abbey. Genuinely devoted to Saint Viro's teachings. Her family has deep roots in Venturia — ancestors were among the city's founders.",
+          "spoiler": false
+        },
+        {
+          "label": "Council Position",
+          "content": "'We pray, we provide sanctuary, we tend to the afflicted — but I won't lie to you. This is beyond our usual ministrations. The Abbey's scholars are researching historical precedents, but...' [pause, visible weight] '...we may need to accept that some evils require steel and spell as much as prayer.'",
+          "spoiler": false
+        },
+        {
+          "label": "Hidden Knowledge",
+          "content": "The Abbey archives contain records from before the curse — testimony from witnesses of the fog's arrival, accounts from the first generation after the tragedy. She's bound by centuries-old Abbey tradition not to reveal certain information, but the crisis is making her question whether that tradition serves the living or just protects the dead's secrets.",
+          "spoiler": true
+        }
+      ],
+      "connections": [
+        {
+          "target_id": "autumn_council",
+          "target_name": "The Autumn Council",
+          "relationship": "Temple Authority, current Council Chair",
+          "spoiler": false
+        },
+        {
+          "target_id": "abbey_of_saint_viro",
+          "target_name": "The Abbey of Saint Viro",
+          "relationship": "Abbey leader — Mother-Abbot",
+          "spoiler": false
+        },
+        {
+          "target_id": "viros_respite",
+          "target_name": "St. Viro's Respite",
+          "relationship": "The Respite operates under Abbey oversight",
+          "spoiler": false
+        }
+      ],
+      "dm_notes": "Lucia is the most sympathetic council member for the party — she genuinely wants to help but is constrained by tradition and politics. Her willingness to share knowledge scales with the party's demonstrated trustworthiness and the crisis severity. The ward fragments are a major Act Two/Three plot thread she can introduce."
+    },
+    {
+      "id": "domenico_four_winds",
+      "type": "npc",
+      "name": "Father Domenico of the Four Winds",
+      "aliases": [
+        "Domenico",
+        "Father Domenico"
+      ],
+      "tags": [
+        "temple_authority",
+        "autumn_council",
+        "interfaith",
+        "optimistic",
+        "ship_chaplain",
+        "coalition_builder"
+      ],
+      "spoiler": false,
+      "summary": "Temple Authority on the Autumn Council representing smaller temples and wandering clergy. Former ship's chaplain, natural coalition-builder, energetic and optimistic. His insight that Venturia's prosperity 'came from somewhere' is more right than he knows.",
+      "details": [
+        {
+          "label": "Description",
+          "content": "Male human, late 30s, weather-worn and restless. Was a ship's chaplain for fifteen years before settling in Venturia five years ago. Represents priests of travel gods, maritime deities, fortune and trade. More activist than contemplative — organized disaster relief, mediated disputes, built interfaith networks.",
+          "spoiler": false
+        },
+        {
+          "label": "Council Position",
+          "content": "'Venturia's prosperity came from somewhere. Maybe there's a price we've been unconsciously paying, and now it's coming due. We need to understand what bargain was made — who made it, what was promised, what was received. This isn't about blame. It's about understanding what we're actually dealing with.'",
+          "spoiler": false
+        },
+        {
+          "label": "Exploitable Weakness",
+          "content": "His optimism makes him susceptible to manipulation. He wants to believe people are fundamentally good and situations can be resolved through dialogue. This makes him vulnerable to Marcello's charm — or an unexpected ally if the party earns his trust.",
+          "spoiler": true
+        }
+      ],
+      "connections": [
+        {
+          "target_id": "autumn_council",
+          "target_name": "The Autumn Council",
+          "relationship": "Temple Authority",
+          "spoiler": false
+        }
+      ],
+      "dm_notes": "Domenico's 'prosperity came from somewhere' insight is dramatically ironic — he's closer to the truth than anyone except the Abbey. His optimism and naivety make him a potential Marcello target, which could create a dramatic moment if the party has to convince an ally that the charming newcomer is dangerous."
+    },
+    {
+      "id": "vincen_tidecaller",
+      "type": "npc",
+      "name": "Vincen Tidecaller",
+      "aliases": [
+        "Vincen",
+        "Tidecaller"
+      ],
+      "tags": [
+        "autumn_council",
+        "tidekeepers_lodge",
+        "hidden_knowledge",
+        "traditional",
+        "quiet",
+        "compromise_candidate"
+      ],
+      "spoiler": false,
+      "summary": "Master of the Tidekeeper's Lodge, holding an Autumn Council seat by ancient charter. Quiet, thoughtful, speaks rarely but everyone listens. Carries generations of Tidekeeper knowledge. Knows something specific about Vallombrosa's history that he's not sharing.",
+      "details": [
+        {
+          "label": "Description",
+          "content": "Male human, 60s, permanent squint from decades of watching horizons. Not wealthy like other council members — his influence comes from the Lodge's essential function and accumulated knowledge. Compromise candidate when Teodor and Constanza deadlocked on a vote two years ago. More interested in protecting the Lodge's independence than playing politics.",
+          "spoiler": false
+        },
+        {
+          "label": "Council Position",
+          "content": "'The waters have been strange for months. The fog moves wrong. Something's waking up that was sleeping, or something sleeping is dying. This isn't a problem you throw money at — it's older than your warehouses and your trade routes. We need to understand it before we act.'",
+          "spoiler": false
+        },
+        {
+          "label": "Hidden Knowledge",
+          "content": "He knows something specific about Vallombrosa's history that he's not sharing — something the Tidekeepers recorded centuries ago. The party could earn his trust and learn it, or discover he's been deliberately withholding information that could have saved lives.",
+          "spoiler": true
+        }
+      ],
+      "connections": [
+        {
+          "target_id": "autumn_council",
+          "target_name": "The Autumn Council",
+          "relationship": "Master of the Tidekeeper's Lodge",
+          "spoiler": false
+        },
+        {
+          "target_id": "tidekeepers_lodge",
+          "target_name": "The Tidekeeper's Lodge",
+          "relationship": "Lodge Master",
+          "spoiler": false
+        }
+      ],
+      "dm_notes": "Vincen is the 'earn trust to unlock knowledge' NPC. His hidden information should be significant enough to justify the effort. Old Maren is the only council member he seems to genuinely respect — their shared perspective could make them a voting bloc if the party brokers it."
+    },
+    {
+      "id": "thora_ironmark",
+      "type": "npc",
+      "name": "Captain-Commander Thora Ironmark",
+      "aliases": [
+        "Thora",
+        "Captain-Commander Ironmark",
+        "Watch Commander",
+        "Thora Iron"
+      ],
+      "tags": [
+        "watch_commander",
+        "autumn_council",
+        "shadowed_wardens",
+        "half_orc",
+        "pragmatic",
+        "isolated",
+        "swing_vote",
+        "unauthorized_operations"
+      ],
+      "spoiler": false,
+      "summary": "Watch Commander of the Fog Wardens and Autumn Council member. Half-orc veteran, direct without being cruel. Commands the Shadowed Wardens — Venturia's covert supernatural response division. Votes alone, making her a critical but isolated swing vote.",
+      "details": [
+        {
+          "label": "Description",
+          "content": "Female half-orc, 40s, scarred and imposing. Rose through Watch ranks over twenty years. Decorated veteran of the Harbor District fires, the Undertow purge of '47, and the Bleached Tide incident. Appointed Captain-Commander three years ago as a compromise candidate — every faction wanted someone competent but not politically ambitious. She doesn't want political power. She wants to protect people and be left alone to do it properly.",
+          "spoiler": false
+        },
+        {
+          "label": "Personality",
+          "content": "Direct, says what she means. Cuts through political maneuvering with 'so what are we actually doing about it.' Tough on officers in a way that earns loyalty — hard standards, fair enforcement, refuses to let political pressure roll downhill. When the Harbor-Lords leaned on the Watch about a customs dispute, she told Teodor to his face that his ships would be inspected like everyone else's. He backed down. Her officers still talk about it.",
+          "spoiler": false
+        },
+        {
+          "label": "The Weight She Carries",
+          "content": "Commands the Shadowed Wardens directly — she's seen things that would shake the council's confidence in reality. She can't fully explain her positions because doing so requires sharing classified intelligence that would cause public panic. So she sits in council meetings listening to people debate theory while she knows what's actually happening at the fog boundary. It makes her seem more aggressive than she is — when she pushes for expanded authority, it's desperation, not a power grab.",
+          "spoiler": false
+        },
+        {
+          "label": "Council Position",
+          "content": "'I'm not going to stand here and tell you the Watch can handle this with our current resources and authority, because that would be a lie, and I don't do that. My people are stretched thin dealing with manifestations you don't hear about because we handle them before they make the morning gossip. I'm not asking to suspend anyone's rights. I'm asking you to let me do my job.'",
+          "spoiler": false
+        },
+        {
+          "label": "Unauthorized Operations",
+          "content": "She's been authorizing Shadowed Warden operations that technically exceed her mandate — not corruption, but because waiting for council approval at two in the morning gets people killed. If exposed, every faction would use it against her. The party could discover this and gain either an enemy or the most reliable ally on the council, depending entirely on how they handle it.",
+          "spoiler": true
+        },
+        {
+          "label": "Council Relationships",
+          "content": "Votes alone — critical swing vote with no natural allies. Respects Vincen Tidecaller's honesty. Finds Dorian frustrating (senses he's hiding useful knowledge). Tolerates the Guild-Masters' suspicion. Grudging respect for Constanza's good-faith negotiation. Finds Teodor exhausting. Thinks Domenico means well but is dangerously naive.",
+          "spoiler": false
+        }
+      ],
+      "connections": [
+        {
+          "target_id": "autumn_council",
+          "target_name": "The Autumn Council",
+          "relationship": "Watch Commander, critical swing vote",
+          "spoiler": false
+        },
+        {
+          "target_id": "fog_wardens",
+          "target_name": "The Fog Wardens and Shadowed Wardens",
+          "relationship": "Commands both the visible Watch and the covert Shadowed Wardens",
+          "spoiler": false
+        }
+      ],
+      "dm_notes": "Thora is the most likely early council ally — she needs help and asks for it directly. Her unauthorized operations are the best leverage/trust hook for the party's council relationship. Write her as a competent professional drowning in a crisis beyond her resources, not as a power-hungry authoritarian. She reads more than most of the council, changes her mind with better information, and asks good questions."
+    },
+    {
+      "id": "old_maren",
+      "type": "npc",
+      "name": "Primo Navigante Old Maren",
+      "aliases": [
+        "Old Maren",
+        "Maren",
+        "Primo Navigante"
+      ],
+      "tags": [
+        "autumn_council",
+        "ferriers_confraternity",
+        "canals",
+        "ancient_knowledge",
+        "deliberate",
+        "unsettling",
+        "nephew_alessio"
+      ],
+      "spoiler": false,
+      "summary": "Primo Navigante of the Ferriers' Confraternity and Autumn Council member. Age uncertain, silver-streaked hair, hands that haven't lost their grip. Deliberate in everything — answers questions several seconds late, as though listening to something else finish first.",
+      "details": [
+        {
+          "label": "Description",
+          "content": "Female human, age uncertain (could be sixty, could be eighty — the canal light makes it hard to tell). 'Old Maren' is the only name anyone uses; asking for a family name is considered poor form. Earned mastery at an unusually young age — completed the Blind Navigation (piloting blindfolded through canals for an entire night) faster than anyone in living memory. Led the Confraternity for over twenty years.",
+          "spoiler": false
+        },
+        {
+          "label": "Personality",
+          "content": "Everything about Maren is deliberate — how she speaks, where she looks, when she chooses silence. Has the unnerving habit of answering questions several seconds after they're asked, as though listening to something else finish. Not unkind, but deeply private and almost impossible to read. Treats council meetings with patient tolerance of someone watching children argue about things they don't understand. Speaks in short, certain sentences. Does not explain her reasoning. Does not repeat herself.",
+          "spoiler": false
+        },
+        {
+          "label": "Council Position",
+          "content": "'The water knows. It's been restless for months — currents running wrong, reflections lagging, sounds carrying from places that aren't there. We've pulled our boats from certain routes already. The ones that go too close to the old waterways.' [Long pause.] 'You're all arguing about what's happening in the streets. That's not where this starts. It starts underneath.'",
+          "spoiler": false
+        },
+        {
+          "label": "What She Knows",
+          "content": "The Confraternity has mapped canal changes correlating with supernatural activity for centuries. Certain route sequences bring a gondola close to somewhere that feels like neither Venturia nor the material plane. The midnight Masquerade prohibition exists because the canals actually change during that period — ferriers caught on the water come back different.",
+          "spoiler": true
+        },
+        {
+          "label": "Exploitable Weakness",
+          "content": "Her nephew Alessio, a journeyman ferrier, broke the midnight prohibition on a dare and hasn't been the same since. He's functional but steers toward canal junctions that don't exist during daylight and responds to questions no one asked. Maren is handling this internally, refusing outside scrutiny into Confraternity secrets. The party could discover Alessio and use leverage — or help him and earn Maren's trust, which is worth considerably more than her compliance.",
+          "spoiler": true
+        },
+        {
+          "label": "Council Relationships",
+          "content": "Votes with no one consistently. Supports the Tidekeepers more often than not — Vincen is the only member she seems to genuinely respect. Opposes Thora's emergency powers not from principle but because she considers the Watch incapable of understanding what they'd be policing. Finds the Harbor-Lords' transactional worldview irrelevant. Watches Dorian with something that might be sympathy and might be suspicion — people who keep the same kind of secrets recognize each other.",
+          "spoiler": false
+        }
+      ],
+      "connections": [
+        {
+          "target_id": "autumn_council",
+          "target_name": "The Autumn Council",
+          "relationship": "Primo Navigante of the Ferriers' Confraternity",
+          "spoiler": false
+        },
+        {
+          "target_id": "ferriers_confraternity",
+          "target_name": "The Ferriers' Confraternity",
+          "relationship": "Confraternity leader",
+          "spoiler": false
+        },
+        {
+          "target_id": "vincen_tidecaller",
+          "target_name": "Vincen Tidecaller",
+          "relationship": "The only council member she seems to genuinely respect",
+          "spoiler": false
+        }
+      ],
+      "dm_notes": "Old Maren is one of the best NPCs in the campaign. Her delayed responses, her certainty, her canal knowledge — she should feel like someone who exists partially in a different version of reality. Alessio is the primary hook for earning her trust. The 'it starts underneath' line is literally true — the canals connect to the prison's influence in ways the surface world doesn't. Her recognition of Dorian as a fellow secret-keeper is great character work at the table."
+    },
+    {
+      "id": "dorian_silvermarch",
+      "type": "npc",
+      "name": "Archmagister Dorian Silvermarch",
+      "aliases": [
+        "Dorian",
+        "Archmagister Silvermarch",
+        "The Archmagister"
+      ],
+      "tags": [
+        "autumn_council",
+        "vava",
+        "high_elf",
+        "archmagister",
+        "veil_archive",
+        "institutional_politics",
+        "scholar",
+        "conflicted"
+      ],
+      "spoiler": false,
+      "summary": "Archmagister of VAVA and Autumn Council member. High elf, nearly two centuries old, warm eyes that miss nothing. Brilliant, charming, genuinely loves teaching — and privately sitting on a sealed archive of potentially life-saving research he can't release without destroying his institution.",
+      "details": [
+        {
+          "label": "Description",
+          "content": "Male high elf, appears middle-aged by elven standards (nearly two centuries old). Has taught at VAVA for close to a century and served as Archmagister for forty years. Rare academic who is both genuinely brilliant and genuinely likable — his lectures made obscure magical theory feel urgent and alive.",
+          "spoiler": false
+        },
+        {
+          "label": "The Two Dorians",
+          "content": "Charming, curious, enthusiastic about ideas. But underneath — the calculating administrator who has spent four decades managing wealthy donors who'll pull funding if forbidden research goes public. Can seem warm one moment, coldly political the next. When he demotes researchers for pursuing Vallombrosa studies, he does so with real regret and absolute firmness. He's made peace with being a hypocrite — he just hasn't made peace with enjoying the knowledge he denies others.",
+          "spoiler": false
+        },
+        {
+          "label": "Council Position",
+          "content": "'The Academy's position is clear — these manifestations are a security matter for the Watch and a spiritual matter for the Abbey.' [Then quietly, to someone he trusts:] 'Of course, that's the institutional answer. The real answer is that I have fifty scholars conducting unauthorized research as we speak, and I'm choosing not to notice because we may need what they find.'",
+          "spoiler": false
+        },
+        {
+          "label": "Exploitable Weakness",
+          "content": "The Veil Archive — he knows it contains research critical to the current crisis. Maps showing fey-touched effects intensifying near Vallombrosa, detailed fog disappearance accounts, magical theory suggesting the fog boundary is constructed rather than spontaneous. He's sitting on potentially life-saving knowledge because releasing it means destroying VAVA. The right pressure — moral, political, or personal — could crack him open.",
+          "spoiler": true
+        },
+        {
+          "label": "Council Relationships",
+          "content": "Votes independently, tends toward cautious pragmatism. Supports measured investigation, opposes anything destabilizing (because instability threatens VAVA's funding). Gets along with Temple Authority on scholarly matters, respects the Tidekeepers' long view. Finds Thora's emergency powers alarming because expanded Watch authority might include the right to search VAVA's restricted archives.",
+          "spoiler": false
+        }
+      ],
+      "connections": [
+        {
+          "target_id": "autumn_council",
+          "target_name": "The Autumn Council",
+          "relationship": "Archmagister of VAVA",
+          "spoiler": false
+        },
+        {
+          "target_id": "vava",
+          "target_name": "The Venturian Academy of Veiled Arts",
+          "relationship": "Academy leader and keeper of the Veil Archive",
+          "spoiler": false
+        },
+        {
+          "target_id": "kryton",
+          "target_name": "Kryton Novelli",
+          "relationship": "Faculty member — Dorian is likely aware of Kryton's erratic behavior and possibly his unauthorized research",
+          "spoiler": false
+        }
+      ],
+      "dm_notes": "Dorian is the campaign's institutional tragedy — a good man trapped by the system he maintains. His relationship with Kryton (faculty member going off the rails) creates personal stakes. The Veil Archive is one of the most important investigation resources in the campaign. Whether the party earns access through trust, leverage, or crisis should be a significant narrative moment."
+    }
+  ]
+}

@@ -1,0 +1,1166 @@
+{
+  "schema_version": "1.1",
+  "category": "locations",
+  "entries": [
+    {
+      "id": "venturia",
+      "type": "location",
+      "name": "Venturia",
+      "aliases": [
+        "The City",
+        "The Masked City",
+        "City of Masks",
+        "Seravalle"
+      ],
+      "tags": [
+        "city",
+        "seravalle",
+        "canals",
+        "masks",
+        "masquerade",
+        "high_quarter",
+        "market_tiers",
+        "harbor_district",
+        "overlook",
+        "autumn_masquerade"
+      ],
+      "tier": "Seravalle",
+      "tagline": "A coastal city built on masks, canals, and promises that carry weight",
+      "spoiler": false,
+      "summary": "A coastal city built in tiers on the cliffs of Seravalle island. Famous for its canals, its masks, and the annual Autumn Masquerade. The city where all player characters live.",
+      "details": [
+        {
+          "label": "Geography",
+          "content": "Built in tiers on the cliffs of Seravalle island. Harbor districts at the base hum with salt and commerce. The High Quarter gleams above with gilded towers. Canals thread through every level. The Overlook marks the boundary where the city ends and Vallombrosa begins.",
+          "spoiler": false
+        },
+        {
+          "label": "Districts",
+          "content": "Four main areas: the High Quarter (old money, the Academy, institutions that prefer to be above it all), the Market Tiers (commerce, craft, guilds — most of daily city life), the Harbor District (salt, trade, old loyalties, waterways that don't always behave), and the Overlook (where the city ends and the Fog Wardens watch the boundary).",
+          "spoiler": false
+        },
+        {
+          "label": "Culture of Masks",
+          "content": "Mask-wearing is culture, not costume. The Masquers' Sodality crafts masks for every occasion. The annual Autumn Masquerade is the most important social event of the year — and in Venturia, genuine commitment to a masked identity makes reality slightly more cooperative.",
+          "spoiler": false
+        },
+        {
+          "label": "The Strangeness",
+          "content": "Mirrors sometimes show reflections a half-second late. Promises feel heavier than elsewhere. Colors are more saturated in autumn. Coincidences happen with uncanny frequency. Everyone considers this perfectly normal.",
+          "spoiler": false
+        },
+        {
+          "label": "Governance",
+          "content": "Governed by the Autumn Council — eleven voting members split among Harbor-Lords, Guild-Masters, Temple Authority, and the Watch-Captain. Chronically deadlocked, achieving little during the current crisis.",
+          "spoiler": false
+        }
+      ],
+      "connections": [
+        {
+          "target_id": "vallombrosa",
+          "target_name": "Vallombrosa",
+          "relationship": "The forbidden zone at the city's edge — the fog boundary that has defined Venturia's existence for a thousand years",
+          "spoiler": false
+        }
+      ],
+      "dm_notes": "Venturia is the players' home. They should feel ownership of it — opinions about neighborhoods, favorite spots, complaints about politics. The strangeness is normalized; nobody panics about slow mirrors. The campaign is partly about that normalization cracking."
+    },
+    {
+      "id": "vallombrosa",
+      "type": "location",
+      "name": "Vallombrosa",
+      "aliases": [
+        "The Valley",
+        "The Fog",
+        "The Dead Zone",
+        "The Forbidden Zone",
+        "Valley of Shadows"
+      ],
+      "tags": [
+        "forbidden_zone",
+        "fog",
+        "di_errante",
+        "curse",
+        "prison",
+        "fey",
+        "dangerous",
+        "no_rest"
+      ],
+      "tier": "Beyond the Overlook",
+      "tagline": "Where the streets end and the fog begins",
+      "spoiler": false,
+      "summary": "The forbidden zone at Venturia's edge. Once the great estate of the di Errante family, now a dead zone of perpetual fog. People who enter do not return. The fog has been behaving differently lately.",
+      "details": [
+        {
+          "label": "History",
+          "content": "A thousand years ago, Vallombrosa was the great estate of the di Errante family — the most powerful noble house on Seravalle. Something happened there so complete and terrible that the estate became a dead zone, the di Errante name became a cautionary tale, and the fog that swallowed everything never lifted.",
+          "spoiler": false
+        },
+        {
+          "label": "Legends",
+          "content": "Every Venturian has a favorite legend about what happened at Vallombrosa. They contradict each other completely. None of them are right.",
+          "spoiler": false
+        },
+        {
+          "label": "Current State",
+          "content": "The fog has been behaving differently — moving in ways it shouldn't. The Fog Wardens' logs document the boundary shifting. People have been disappearing. Something is changing.",
+          "spoiler": false
+        },
+        {
+          "label": "Dangers",
+          "content": "Cannot be used as a safe haven under any circumstances. Any location within Vallombrosa's fog boundary is categorically Forbidden Haven — no rest is possible there.",
+          "spoiler": false
+        },
+        {
+          "label": "The Truth",
+          "content": "Vallombrosa is a fey prison — the Reverie Solenne — containing the Keeper of Faces, an imprisoned Archfey. The fog is a symptom of the prison's existence and its boundaries weakening. The di Errante tragedy was the event that created or sealed the prison.",
+          "spoiler": true
+        }
+      ],
+      "connections": [
+        {
+          "target_id": "venturia",
+          "target_name": "Venturia",
+          "relationship": "The city built in the shadow of the fog — defined by proximity to what it cannot explain",
+          "spoiler": false
+        },
+        {
+          "target_id": "fog_wardens_garrison",
+          "target_name": "The Fog Wardens' Garrison",
+          "relationship": "The garrison watches the boundary between city and fog",
+          "spoiler": false
+        },
+        {
+          "target_id": "keeper_of_faces",
+          "target_name": "The Keeper of Faces",
+          "relationship": "Vallombrosa is the Keeper's prison — the Reverie Solenne",
+          "spoiler": true
+        },
+        {
+          "target_id": "marcus",
+          "target_name": "Marcus",
+          "relationship": "Marcus is now imprisoned somewhere within Vallombrosa's fog",
+          "spoiler": true
+        }
+      ],
+      "dm_notes": "Vallombrosa is the campaign's title location and central mystery. Players should feel its presence constantly — references in conversation, the fog visible from certain vantage points, the way people avoid looking toward the Overlook. It should feel like a wound the city has learned to live around but never healed."
+    },
+    {
+      "id": "vava",
+      "type": "location",
+      "name": "Venturian Academy of Veiled Arts",
+      "aliases": [
+        "VAVA",
+        "The Academy",
+        "Veiled Arts"
+      ],
+      "tags": [
+        "high_quarter",
+        "magic",
+        "academy",
+        "education",
+        "restricted_stacks",
+        "veiled_tower",
+        "binding_hall",
+        "glamour_courts",
+        "library"
+      ],
+      "tier": "High Quarter",
+      "tagline": "Where knowledge wears many masks",
+      "spoiler": false,
+      "summary": "The foremost institution of magical study on Seravalle, rising from the High Quarter with autumn-colored spires and candlelit windows. Its distinctive amber-and-charcoal robes mark alumni throughout Venturian society.",
+      "details": [
+        {
+          "label": "Description",
+          "content": "The Academy rises from the High Quarter like a dream of scholarship made stone — autumn-colored spires and candlelit windows that seem to glow even at midday. Founded three centuries after the curse, VAVA draws scholars who appreciate that Venturia's peculiarities make certain research easier.",
+          "spoiler": false
+        },
+        {
+          "label": "Campus",
+          "content": "The main campus sprawls across several interconnected buildings. The Veiled Tower houses divination faculty. The Binding Hall teaches contract magic and oath-craft. The Glamour Courts train illusionists in spaces where the boundaries between appearance and reality have always been negotiable.",
+          "spoiler": false
+        },
+        {
+          "label": "The Library",
+          "content": "Five floors of collected knowledge, with the deepest levels requiring special permission and, some say, a willingness to forget certain things you might read there.",
+          "spoiler": false
+        },
+        {
+          "label": "The Veil Archive",
+          "content": "VAVA maintains a Veil Archive — a restricted collection containing two centuries of historical research into supernatural phenomena now officially prohibited for study. The Archmagister Dorian holds the key. Scholars who want access face political and institutional barriers.",
+          "spoiler": true
+        },
+        {
+          "label": "PC Connections",
+          "content": "Kryton is a faculty member. Roxy is a first-year student maintaining a facade of magical competence. Car may have connections through family.",
+          "spoiler": false
+        }
+      ],
+      "connections": [
+        {
+          "target_id": "kryton",
+          "target_name": "Kryton Novelli",
+          "relationship": "Faculty member — brilliant but increasingly erratic",
+          "spoiler": false
+        },
+        {
+          "target_id": "roxy",
+          "target_name": "Roxy",
+          "relationship": "First-year student; her powers are divine gifts, not academic achievement",
+          "spoiler": false
+        }
+      ],
+      "dm_notes": "The Veil Archive is a critical resource for later investigation. Archmagister Dorian faces impossible choices about opening it. The prohibition on research into certain phenomena (likely Vallombrosa-adjacent topics) creates tension between institutional caution and the party's need for information."
+    },
+    {
+      "id": "ferriers_confraternity",
+      "type": "location",
+      "name": "The Ferriers' Confraternity",
+      "aliases": [
+        "Ferriers",
+        "Ferriers' Confraternity",
+        "The Gondoliers"
+      ],
+      "tags": [
+        "harbor_district",
+        "gondolas",
+        "canals",
+        "secrets",
+        "ancient",
+        "supernatural_water",
+        "guild",
+        "pre_curse"
+      ],
+      "tier": "Harbor District",
+      "tagline": "The water remembers what the city forgets",
+      "spoiler": false,
+      "summary": "Venturia's ancient guild of gondola ferriers, reachable only by water. They know every canal in the city including ones that don't appear on official maps, and maintain traditions outsiders find peculiar but never quite explain.",
+      "details": [
+        {
+          "label": "Location",
+          "content": "A converted boathouse in a quiet backwater where three canals meet in a junction that doesn't appear on any official map. Visitors arriving by foot find only blank walls and locked gates. Those arriving by gondola find an arched entrance onto lantern-lit docks.",
+          "spoiler": false
+        },
+        {
+          "label": "The Gondolas",
+          "content": "Black hulls with bronze fittings, a small lantern at the prow that burns with a peculiar blue-tinged flame, and always a single ferrier standing at the stern with the distinctive curved oar that takes three years to learn to use properly.",
+          "spoiler": false
+        },
+        {
+          "label": "Traditions",
+          "content": "Ferriers do not speak while passing under bridges — passengers who have broken the silence report their voices echoed strangely, as though something beneath the water was listening. Payment is placed in a small bronze dish at the prow, never handed directly. Most famously, the Confraternity refuses to ferry passengers after midnight during the week before the Autumn Masquerade. They offer no explanation.",
+          "spoiler": false
+        },
+        {
+          "label": "Ancient Knowledge",
+          "content": "The Confraternity predates the curse. Their oldest records claim the guild was ferrying passengers when the di Errante estates still stood. Masters know every waterway in the city, including the ones that aren't supposed to exist.",
+          "spoiler": false
+        },
+        {
+          "label": "What They Know",
+          "content": "The Confraternity's pre-curse records contain information about the original waterways and the di Errante era. Their refusal to ferry during Masquerade week, the silence under bridges, and the blue-flame lanterns all point to knowledge of Venturia's supernatural nature that they guard carefully.",
+          "spoiler": true
+        }
+      ],
+      "connections": [
+        {
+          "target_id": "tidekeepers_lodge",
+          "target_name": "The Tidekeeper's Lodge",
+          "relationship": "Sister guild — Tidekeepers guide ships into the harbor, Ferriers navigate the canals within",
+          "spoiler": false
+        }
+      ],
+      "dm_notes": "The Ferriers are a potential investigation resource for Act Two — their pre-curse knowledge is unique. The midnight Masquerade ban and bridge silence customs are hooks for players who investigate local superstitions. The blue-flame lanterns may have practical supernatural function beyond tradition."
+    },
+    {
+      "id": "amaranth_theater",
+      "type": "location",
+      "name": "The Amaranth Theater",
+      "aliases": [
+        "Amaranth",
+        "Amaranth Theater",
+        "The Theater"
+      ],
+      "tags": [
+        "high_quarter",
+        "theater",
+        "masquerade",
+        "performance",
+        "tragedy_of_vallombrosa",
+        "resident_company",
+        "cultural"
+      ],
+      "tier": "High Quarter",
+      "tagline": "Where masks reveal more than faces ever could",
+      "spoiler": false,
+      "summary": "The cultural heart of Venturia, a grand performance complex of deep red stone and gilded trim in the High Quarter. For over three centuries it has staged everything from intimate performances to the annual Tragedy of Vallombrosa during the Autumn Masquerade.",
+      "details": [
+        {
+          "label": "Description",
+          "content": "Dominates the upper edge of the High Quarter, visible from half the city. The main house seats over a thousand with acoustics that seem supernaturally perfect — whispers from the stage reach back rows with crystalline clarity. Smaller venues host everything from intimate dramatic readings to experimental works.",
+          "spoiler": false
+        },
+        {
+          "label": "The Tragedy of Vallombrosa",
+          "content": "The Amaranth's crown jewel is its annual staging of 'The Tragedy of Vallombrosa' during the Autumn Masquerade — the most anticipated cultural event on the island. Each year brings a different director's interpretation. The city debates productions for months.",
+          "spoiler": false
+        },
+        {
+          "label": "Strange Phenomena",
+          "content": "Performers say the theater feels different during Masquerade season — more alive, more demanding, as though the building itself has opinions about how the old story should be told. Veterans learn not to look too long into dressing room mirrors during the Tragedy's run. Understudies sometimes get their chance through circumstances no one can explain.",
+          "spoiler": false
+        },
+        {
+          "label": "PC Connections",
+          "content": "Orabella attends performances here regularly, drawn to Celina Cross. Car is a Masquers' Sodality apprentice with professional connections to the theater world. The Autumn Masquerade where Car's friend died was held here.",
+          "spoiler": false
+        }
+      ],
+      "connections": [
+        {
+          "target_id": "celina_cross",
+          "target_name": "Celina Cross",
+          "relationship": "Celina is a star performer of the resident company",
+          "spoiler": false
+        },
+        {
+          "target_id": "orabella",
+          "target_name": "Orabella",
+          "relationship": "Orabella attends Celina's performances here whenever possible",
+          "spoiler": false
+        },
+        {
+          "target_id": "caravel",
+          "target_name": "Caravel \"Car\" Asteri",
+          "relationship": "Masquers' Sodality apprentice with theater connections; her friend died at the Masquerade held here",
+          "spoiler": false
+        },
+        {
+          "target_id": "masquers_sodality",
+          "target_name": "The Masquers' Sodality",
+          "relationship": "The Sodality provides masks and costumes for productions, particularly the annual Tragedy",
+          "spoiler": false
+        }
+      ],
+      "dm_notes": "The Autumn Masquerade at the Amaranth is a major calendar event — use it as a deadline or climax point. The dressing room mirrors and understudies-getting-chances are hooks for supernatural investigation."
+    },
+    {
+      "id": "tidekeepers_lodge",
+      "type": "location",
+      "name": "The Tidekeeper's Lodge",
+      "aliases": [
+        "Tidekeepers",
+        "The Lodge",
+        "Tidekeeper's Lodge"
+      ],
+      "tags": [
+        "harbor_district",
+        "navigation",
+        "guild",
+        "ancient",
+        "harbor",
+        "ships",
+        "supernatural_water"
+      ],
+      "tier": "Harbor District",
+      "tagline": "First to see what the fog brings in",
+      "spoiler": false,
+      "summary": "A weathered building at the end of the longest pier. Every ship entering Venturia's harbor does so under a Tidekeeper's guidance. Six hundred years of navigational charts paper the walls — some showing things that no longer exist.",
+      "details": [
+        {
+          "label": "Description",
+          "content": "Sits at the end of the longest pier, a weathered building of salt-stained timber and green copper that has watched over the port for six hundred years. Inside, generations of navigational charts paper the walls — some showing currents that no longer exist, others marking hazards that were never there.",
+          "spoiler": false
+        },
+        {
+          "label": "Training",
+          "content": "Apprenticeship lasts seven years. Initiates learn official knowledge first — channels, shoals, seasonal patterns. The real education comes later: offerings that keep certain waters calm, songs that should never be sung past the breakwater, how to read the fog when it behaves strangely. Senior Tidekeepers claim they can feel trouble coming — a pressure behind the eyes, a taste of copper on the tongue.",
+          "spoiler": false
+        },
+        {
+          "label": "Discretion",
+          "content": "The Lodge keeps its own counsel. When the Harbor-Lords ask about unusual vessels or strange cargo, Tidekeepers answer with technicalities about tides and drafts. They see everything that enters this port, and they've learned that some knowledge is best kept within the family.",
+          "spoiler": false
+        }
+      ],
+      "connections": [
+        {
+          "target_id": "ferriers_confraternity",
+          "target_name": "The Ferriers' Confraternity",
+          "relationship": "Sister guild — Tidekeepers guide ships in, Ferriers navigate the canals within",
+          "spoiler": false
+        }
+      ],
+      "dm_notes": "The Tidekeepers' pre-curse navigational charts and accumulated observations are a major investigative resource. They see everything entering the harbor and know things about the water around Seravalle that nobody else does. Earning their trust should be meaningful."
+    },
+    {
+      "id": "mirrorwrights_court",
+      "type": "location",
+      "name": "The Mirrorwright's Court",
+      "aliases": [
+        "Mirrorwrights",
+        "Mirror Court",
+        "Mirrorwright's Court"
+      ],
+      "tags": [
+        "market_tiers",
+        "guild",
+        "mirrors",
+        "identity",
+        "craft",
+        "true_mirrors",
+        "workshop"
+      ],
+      "tier": "Market Tiers",
+      "tagline": "True reflections in a city of delayed images",
+      "spoiler": false,
+      "summary": "A Market Tiers workshop complex where artisans craft, repair, and calibrate mirrors in a city where reflections don't always behave. Their 'true mirrors' show accurate reflections regardless of Venturia's peculiarities.",
+      "details": [
+        {
+          "label": "Description",
+          "content": "Their Court occupies a converted warehouse in the upper Market Tiers, its interior transformed into a maze of workshops where silver is applied to glass with techniques passed down through generations. The air smells of mercury and secrets.",
+          "spoiler": false
+        },
+        {
+          "label": "True Mirrors",
+          "content": "Not every mirror made here is special — most are ordinary looking glasses. But the Mirrorwrights also craft 'true mirrors' which show accurate reflections regardless of Venturia's peculiarities. The process is expensive and the waiting list is long. City officials, the Watch, and wealthy families pay premium prices for mirrors that won't deceive them.",
+          "spoiler": false
+        },
+        {
+          "label": "Expertise",
+          "content": "Occasionally consulted in legal matters — disputes about identity, accusations of impersonation, cases where someone claims not to recognize their own reflection. Senior Mirrorwrights serve as expert witnesses, though they're careful never to explain exactly how they know what they know. Some say the craft requires looking into mirrors for so long that you learn to see what others can't.",
+          "spoiler": false
+        }
+      ],
+      "connections": [],
+      "dm_notes": "The Mirrorwrights' understanding of Venturia's mirror strangeness could be critical for investigating the Keeper of Faces — identity and reflection themes connect directly. True mirrors might reveal things about the Bound, about Silas's constructed form, or about stolen identities. A Mirrorwright NPC could be a valuable investigative ally."
+    },
+    {
+      "id": "covenant_archive",
+      "type": "location",
+      "name": "The Covenant Archive",
+      "aliases": [
+        "Covenant Archive",
+        "The Archive"
+      ],
+      "tags": [
+        "high_quarter",
+        "legal",
+        "contracts",
+        "binding_agreements",
+        "deep_archive",
+        "ancient_records",
+        "oaths"
+      ],
+      "tier": "High Quarter",
+      "tagline": "Where words become binding",
+      "spoiler": false,
+      "summary": "A windowless building of black stone in the High Quarter where gray-robed Archivists maintain witnessed contracts and binding agreements on specially prepared vellum. The oldest records predate the city itself.",
+      "details": [
+        {
+          "label": "Function",
+          "content": "Citizens who want their promises to carry legal weight come here to have agreements recorded. Archivists witness each signing with solemn ceremony, speaking words in an old language before applying their seals. For a higher fee, certain clauses make oath-breaking inadvisable. The Archive has never needed to pursue a breach through ordinary courts.",
+          "spoiler": false
+        },
+        {
+          "label": "Access",
+          "content": "Public for standard contract work. The oldest sections — accessible only to senior staff — contain contracts written in languages no living person can read. Some predate the city itself. The Archivists maintain them with the same care as recent agreements, suggesting the obligations they record might still be active.",
+          "spoiler": false
+        },
+        {
+          "label": "The Deep Archive",
+          "content": "The oldest sections contain agreements between parties dead for centuries that may still be in effect, contracts involving things that should not be transactable, and records of the di Errante family's final negotiations before the tragedy. Some very powerful people would prefer certain documents never be found.",
+          "spoiler": true
+        }
+      ],
+      "connections": [
+        {
+          "target_id": "caravel",
+          "target_name": "Caravel \"Car\" Asteri",
+          "relationship": "Car's parents run the Archive; she rejected the family business",
+          "spoiler": false
+        }
+      ],
+      "dm_notes": "The Deep Archive is a major investigation resource for Act Two and beyond. The di Errante contract fragments are critical plot material. Car's family connection gives the party a personal entry point but also creates family tension if she's digging into dangerous records."
+    },
+    {
+      "id": "masquers_sodality",
+      "type": "location",
+      "name": "The Masquers' Sodality",
+      "aliases": [
+        "Masquers' Sodality",
+        "Sodality Workshop",
+        "The Maskmakers",
+        "Masquers"
+      ],
+      "tags": [
+        "market_tiers",
+        "guild",
+        "masks",
+        "workshop",
+        "third_floor",
+        "masquerade",
+        "craft",
+        "festival_committee"
+      ],
+      "tier": "Market Tiers",
+      "tagline": "Crafting the faces Venturia wears",
+      "spoiler": false,
+      "summary": "A sprawling workshop complex in the upper Market Tiers where the master maskmakers of Venturia practice their craft. The smell of lacquer, leather, and something faintly sweet pervades the nearby streets. Nearly a millennium old.",
+      "details": [
+        {
+          "label": "Description",
+          "content": "Founded shortly after the first Tragedy of Vallombrosa transformed the Autumn Masquerade from casual celebration into cultural institution. The Sodality has spent near a millennium perfecting the art of concealment — from simple painted leather dominos to elaborate sculptural masterworks commissioned years in advance.",
+          "spoiler": false
+        },
+        {
+          "label": "Hierarchy",
+          "content": "Apprentices spend five years learning basic craft before unsupervised work. Journeymen produce standard festival masks. Masters create commissioned pieces that can take months. What distinguishes the Sodality is their understanding of what masks mean in a city where reflections lie and promises carry supernatural weight.",
+          "spoiler": false
+        },
+        {
+          "label": "The Third Floor",
+          "content": "Senior Masquers learn techniques journeymen are not taught: how to craft masks that project emotions the wearer doesn't feel, shape features that encourage trust or fear or desire, create faces that shift expression from different angles despite being rigid materials. They do not discuss the workshop on the third floor that only masters may enter, or the commissions that arrive sealed and are delivered sealed, or the masks made for clients who never sit for fittings.",
+          "spoiler": true
+        },
+        {
+          "label": "Masquerade Season",
+          "content": "Three guild members sit on the Festival Committee. During Masquerade season, workshops run day and night. Neighbors report strange sounds — music, dancing, voices speaking in unison. The masks produced during this season are particularly fine, though some customers report dreams after wearing them — dreams of attending festivals they don't remember, wearing faces they don't recognize, dancing with partners who have no reflections.",
+          "spoiler": false
+        }
+      ],
+      "connections": [
+        {
+          "target_id": "caravel",
+          "target_name": "Caravel \"Car\" Asteri",
+          "relationship": "Apprentice at the Sodality",
+          "spoiler": false
+        },
+        {
+          "target_id": "amaranth_theater",
+          "target_name": "The Amaranth Theater",
+          "relationship": "Provides masks and costumes for productions, particularly the annual Tragedy of Vallombrosa",
+          "spoiler": false
+        }
+      ],
+      "dm_notes": "The third floor is a major investigation target. What happens to the masters who go up there? The Masquerade season dreams are subtle evidence of the Keeper's influence bleeding through masks. Car's apprenticeship gives the party insider access but also puts her at risk of the Sodality's deeper secrets."
+    },
+    {
+      "id": "the_undertow",
+      "type": "location",
+      "name": "The Undertow",
+      "aliases": [
+        "Undertow"
+      ],
+      "tags": [
+        "harbor_district",
+        "gambling",
+        "memory_theft",
+        "secrets",
+        "dangerous",
+        "criminal",
+        "memory_trade"
+      ],
+      "tier": "Harbor District",
+      "tagline": "Where fortunes change with the tide",
+      "spoiler": false,
+      "summary": "A gambling establishment built into the harbor cliffs, accessible by sea cave at low tide or rope-and-pulley system from above. Famous for accepting memories, secrets, and future favors as stakes.",
+      "details": [
+        {
+          "label": "Description",
+          "content": "Exists in the space between legitimate and forbidden. Built into the harbor cliffs, accessible by sea cave at low tide or by a precarious rope-and-pulley system from a warehouse above. Inside, lantern light flickers across gaming tables where Venturia's most interesting wagers change hands.",
+          "spoiler": false
+        },
+        {
+          "label": "The Stakes",
+          "content": "Coin is welcome, but the Undertow is famous for accepting other stakes. Memories can be wagered — specific ones, extracted by house specialists and held in small crystal vials. Secrets are currency, whispered to masked dealers who record them in ledgers no one may read. Future favors are traded like chips. The house takes a percentage of everything, building a treasury of intangibles.",
+          "spoiler": false
+        },
+        {
+          "label": "The Rules",
+          "content": "The establishment operates under rules as old as the city: the house always pays its debts, winners are guaranteed safe passage out, and certain questions are never asked. The identity of the Undertow's actual owner is one of Venturia's persistent mysteries — some say it's been the same person for two hundred years.",
+          "spoiler": false
+        },
+        {
+          "label": "Kryton's History Here",
+          "content": "Kryton's gambling problem has deep roots at The Undertow. Someone working through this establishment stole his memories — including his wizard spell knowledge. When he returned desperate to recover them, he instead won 'someone else's memory' — a vision of a warlock tome and ritual.",
+          "spoiler": false
+        },
+        {
+          "label": "Supernatural Significance",
+          "content": "The Undertow appears to be a venue where memories can be traded, stolen, or won. The mechanism — whether deliberate supernatural operation or emergent property — is unknown. It is likely connected to the broader memory manipulation occurring in Venturia.",
+          "spoiler": true
+        },
+        {
+          "label": "Political Connection",
+          "content": "Constanza Marea (a Harbor-Lord council member) has been meeting secretly with The Undertow's representatives. She either owes them something significant or is working a deal that would horrify the rest of the council.",
+          "spoiler": true
+        }
+      ],
+      "connections": [
+        {
+          "target_id": "kryton",
+          "target_name": "Kryton Novelli",
+          "relationship": "Regular patron with a gambling problem; site of his memory theft and warlock ritual discovery",
+          "spoiler": false
+        },
+        {
+          "target_id": "constanza_marea",
+          "target_name": "Constanza Marea",
+          "relationship": "She has been meeting secretly with Undertow representatives — leverage or obligation unknown",
+          "spoiler": true
+        }
+      ],
+      "dm_notes": "The Undertow is almost certainly a hub for the memory manipulation network. Who runs it and how the memory trading works are investigative threads. The Constanza connection gives this political weight. Kryton winning the 'wrong' memory there may have been arranged — someone wanted him to find that ritual and bind himself to Tartuzi."
+    },
+    {
+      "id": "viros_respite",
+      "type": "location",
+      "name": "St. Viro's Respite",
+      "aliases": [
+        "Viro's Respite",
+        "The Respite",
+        "St. Viro's"
+      ],
+      "tags": [
+        "market_tiers",
+        "healing",
+        "hospital",
+        "fog_children",
+        "hidden_records",
+        "fog_sickness",
+        "abbey"
+      ],
+      "tier": "Market Tiers",
+      "tagline": "Healing for ailments that only exist here",
+      "spoiler": false,
+      "summary": "The primary healing institution in Venturia, operated by the Abbey of Saint Viro. Specializes in conditions that occur nowhere else — persistent déjà vu, phantom memories, fog sickness. Currently housing both Noname and the comatose Silas.",
+      "details": [
+        {
+          "label": "Description",
+          "content": "Sprawls across several connected buildings in the middle Market Tiers, marked by the Abbey's silver hand symbol. Run by the Abbey of Saint Viro, it provides treatment regardless of ability to pay. The Abbey's doctrine holds that suffering doesn't check anyone's purse before arriving.",
+          "spoiler": false
+        },
+        {
+          "label": "Unique Expertise",
+          "content": "The healers here have developed expertise in conditions that occur nowhere else: persistent déjà vu that leaves patients trapped in looping moments, phantom memories of lives never lived, the conviction of being watched by one's own shadow. They call it 'fog sickness' in the general sense. Senior healers have learned that some treatments work better if patients don't know what's being done, that certain conditions can spread through discussion, and that asking too many questions about why these ailments exist is itself a risk factor.",
+          "spoiler": false
+        },
+        {
+          "label": "Current Notable Patients",
+          "content": "Noname is receiving treatment for foggy memories surrounding her fiancé's disappearance. Silas — the mysterious comatose man with unusual scars — is housed here under Orabella's care.",
+          "spoiler": false
+        },
+        {
+          "label": "Hidden Records",
+          "content": "Viro's Respite maintains hidden records documenting fog children, their experiences, and information the institution refuses to share publicly. These likely contain documentation of other fog children with dreams similar to Orabella's, historical accounts of similar cases, and theories the staff have suppressed.",
+          "spoiler": true
+        },
+        {
+          "label": "Institutional Silence on Fog Children",
+          "content": "The Respite's clergy actively deflect questions from fog children about their experiences and dreams. This is a deliberate policy of non-disclosure. Whether this protects fog children from dangerous knowledge or hides something the institution wants buried is an open question.",
+          "spoiler": true
+        }
+      ],
+      "connections": [
+        {
+          "target_id": "orabella",
+          "target_name": "Orabella",
+          "relationship": "Orabella works here as a cleric and caretaker to both Noname and Silas",
+          "spoiler": false
+        },
+        {
+          "target_id": "noname",
+          "target_name": "Noname",
+          "relationship": "Patient receiving treatment for memory issues",
+          "spoiler": false
+        },
+        {
+          "target_id": "silas",
+          "target_name": "Silas",
+          "relationship": "Comatose patient of unknown identity; Orabella is studying his unusual scars",
+          "spoiler": false
+        },
+        {
+          "target_id": "liminal_house",
+          "target_name": "Liminal House",
+          "relationship": "Closely coordinated institutions; both operated under St. Viro's Abbey's oversight",
+          "spoiler": false
+        }
+      ],
+      "dm_notes": "Orabella's quest to access hidden records is a major early plot thread. The records almost certainly contain information that would help the party — and information someone doesn't want discovered. The institutional silence is likely a combination of genuine protection and politically motivated suppression."
+    },
+    {
+      "id": "burnt_quill",
+      "type": "location",
+      "name": "The Burnt Quill",
+      "aliases": [
+        "Burnt Quill",
+        "The Venturian Ledger",
+        "The Ledger"
+      ],
+      "tags": [
+        "market_tiers",
+        "newspaper",
+        "press",
+        "morgue",
+        "archive",
+        "journalism",
+        "information"
+      ],
+      "tier": "Market Tiers",
+      "tagline": "Recording what Venturia chooses to remember",
+      "spoiler": false,
+      "summary": "Home of the Venturian Ledger, the city's newspaper published continuously for four centuries. The building's most valuable asset is the morgue — the archive of back issues, clippings, and unpublished notes stretching back to the paper's founding.",
+      "details": [
+        {
+          "label": "Description",
+          "content": "A converted textile mill with ink-stained windows and the constant clatter of presses running from dawn until well past midnight. The smell of paper and chemicals permeates the entire block.",
+          "spoiler": false
+        },
+        {
+          "label": "The Morgue",
+          "content": "The Quill's archive of back issues, clippings, and unpublished notes stretching back to the paper's founding. Researchers pay handsomely for access, though certain files require special permission and others simply don't exist anymore. The librarians have learned to recognize when someone is looking for information that Venturia has decided to forget.",
+          "spoiler": false
+        },
+        {
+          "label": "The Reporters",
+          "content": "Two camps: those with reputations for unimpeachable integrity who pursue stories wherever they lead, and those known for discretion — knowing when to stop asking questions, understanding that some truths are more valuable kept quiet than published. Both types find steady employment. Neither discusses their work with the other.",
+          "spoiler": false
+        }
+      ],
+      "connections": [],
+      "dm_notes": "The Burnt Quill's morgue is an investigation resource — four centuries of recorded history, including whatever Venturia has tried to forget. A reporter NPC could be a valuable ally or a dangerous complication. The 'two camps' of reporters means the party could encounter both helpful journalists and ones who actively suppress inconvenient truths."
+    },
+    {
+      "id": "tiered_gardens",
+      "type": "location",
+      "name": "The Tiered Gardens",
+      "aliases": [
+        "Tiered Gardens",
+        "The Gardens"
+      ],
+      "tags": [
+        "between_tiers",
+        "gardens",
+        "peaceful",
+        "gardeners_guild",
+        "ancient_trees",
+        "supernatural_growth",
+        "public"
+      ],
+      "tier": "Between Tiers",
+      "tagline": "Where impossible things bloom in impossible colors",
+      "spoiler": false,
+      "summary": "Cascading terraces between the Market Tiers and High Quarter, maintained by the Gardener's Guild. Features plants that produce impossible results — roses in seventeen colors, fruit trees bearing year-round, flowers that glow at twilight. Site of significant personal moments for several PCs.",
+      "details": [
+        {
+          "label": "Description",
+          "content": "The Gardens cascade down the hillside between the Market Tiers and the High Quarter, a series of terraces connected by winding paths and occasional staircases. What began as practical agriculture has evolved over centuries into something between public park and living artwork.",
+          "spoiler": false
+        },
+        {
+          "label": "The Gardener's Guild",
+          "content": "Maintains these spaces with techniques developed nowhere else. Roses bloom in seventeen colors including three that don't have proper names. Fruit trees bear year-round. Flowers glow faintly at twilight. The oldest specimens predate the city itself — ancient trees with bark like weathered silver that supposedly grew here when the di Errante estates were still occupied.",
+          "spoiler": false
+        },
+        {
+          "label": "Closed Sections",
+          "content": "The Gardens are technically public, but the Guild has authority to close sections when they're 'in transition' — periods lasting days or weeks, during which strange sounds and lights are sometimes reported from behind the barriers.",
+          "spoiler": false
+        },
+        {
+          "label": "PC Significance",
+          "content": "Valentro works here under her mentor 'Strider.' Noname's fiancé proposed to her here, with Valentro present. Roxy sneaks here nightly to sleep — she can't sleep indoors after 18 years outside. The sword incident occurred here, witnessed by Roxy.",
+          "spoiler": false
+        }
+      ],
+      "connections": [
+        {
+          "target_id": "valentro",
+          "target_name": "Valentro",
+          "relationship": "Works here as a groundskeeper; site of the sword incident",
+          "spoiler": false
+        },
+        {
+          "target_id": "roxy",
+          "target_name": "Roxy",
+          "relationship": "Sleeps here nightly; witnessed Valentro's sword incident",
+          "spoiler": false
+        },
+        {
+          "target_id": "noname",
+          "target_name": "Noname",
+          "relationship": "Her fiancé proposed to her in these gardens",
+          "spoiler": false
+        }
+      ],
+      "dm_notes": "A gentle, personal location that contrasts with the supernatural dread elsewhere. Good for character development scenes. The proposal memory is bittersweet — Valentro was there, and the fiancé is now gone. The closed sections during 'transition' are hooks for investigation if players are curious."
+    },
+    {
+      "id": "liminal_house",
+      "type": "location",
+      "name": "Liminal House",
+      "aliases": [
+        "The House",
+        "The Liminal House"
+      ],
+      "tags": [
+        "market_tiers",
+        "fog_children",
+        "orphanage",
+        "institution",
+        "hidden_records",
+        "abbey_connection",
+        "alumni_network"
+      ],
+      "tier": "Market Tiers",
+      "tagline": "Home for those who came from nowhere",
+      "spoiler": false,
+      "summary": "An institution in the lower Market Tiers operating for over four hundred years, taking in children regardless of origin. Many residents arrive with no memory of family or home. Three PCs grew up here: Noname, Valentro, and Orabella.",
+      "details": [
+        {
+          "label": "Description",
+          "content": "Occupies a rambling compound in the lower Market Tiers — buildings added to, modified, and connected over centuries until the architecture itself seems uncertain about where one structure ends and another begins.",
+          "spoiler": false
+        },
+        {
+          "label": "How Children Arrive",
+          "content": "Some are left at the door. Others are brought by the Watch, found wandering with no memory of family or home. A few simply appear, with no one able to explain how they came to be there. The House's policy has always been the same: no questions about before. The past is past.",
+          "spoiler": false
+        },
+        {
+          "label": "Alumni Networks",
+          "content": "Alumni form quiet networks throughout Venturia. They recognize each other by small signs — a particular way of folding napkins, certain phrases from old House songs, the habit of checking exits when entering a room. They help each other, keep each other's secrets, and understand without discussing it that some of them remember lives before the House that may or may not have been real.",
+          "spoiler": false
+        },
+        {
+          "label": "What the Institution Actually Knows",
+          "content": "Successive directors have quietly understood: the children who arrive are connected to Vallombrosa. Some wandered into the fog decades or centuries ago and emerged unchanged while time passed outside. Others may be born inside Vallombrosa and expelled or escaped. The institution knows far more than it tells residents.",
+          "spoiler": true
+        },
+        {
+          "label": "The Archive",
+          "content": "The Old Wing contains an unofficial archive — ostensibly records of current residents, but actually documentation of strange patterns in arrivals going back centuries. This is distinct from the hidden medical records at Viro's Respite and likely contains even more historically significant information.",
+          "spoiler": true
+        }
+      ],
+      "connections": [
+        {
+          "target_id": "noname",
+          "target_name": "Noname",
+          "relationship": "Raised here after her parents died; her father was himself a fog child raised here",
+          "spoiler": false
+        },
+        {
+          "target_id": "valentro",
+          "target_name": "Valentro",
+          "relationship": "Raised here after being orphaned",
+          "spoiler": false
+        },
+        {
+          "target_id": "orabella",
+          "target_name": "Orabella",
+          "relationship": "Appeared from Vallombrosa as a fog child and was raised here; began experiencing her dreams shortly after arrival",
+          "spoiler": false
+        },
+        {
+          "target_id": "viros_respite",
+          "target_name": "St. Viro's Respite",
+          "relationship": "Sister institution under St. Viro's Abbey oversight; shared resources and coordinated responses",
+          "spoiler": false
+        }
+      ],
+      "dm_notes": "The Liminal House archive is a goldmine for late Act One/Act Two investigation. It contains centuries of fog child records. Three PCs grew up here — this institution is deeply personal stakes territory. The pattern of fog child arrivals likely maps to historical events inside Vallombrosa."
+    },
+    {
+      "id": "salted_cup",
+      "type": "location",
+      "name": "The Salted Cup",
+      "aliases": [
+        "Salted Cup",
+        "The Bathhouse"
+      ],
+      "tags": [
+        "market_tiers",
+        "bathhouse",
+        "hot_springs",
+        "political",
+        "deals",
+        "discretion",
+        "social"
+      ],
+      "tier": "Market Tiers",
+      "tagline": "Where deals dissolve into steam",
+      "spoiler": false,
+      "summary": "A bathhouse complex built around hot springs that emerged after the curse. The public areas are respectable; the real purpose is the private chambers where the city's real business gets conducted.",
+      "details": [
+        {
+          "label": "Description",
+          "content": "The hot springs beneath Venturia emerged about a century after the curse — or perhaps they were always there. The Salted Cup was built around the largest, creating a bathhouse complex where the city's real business gets conducted. Public areas include warm pools, steam rooms, massage services, and a tea house.",
+          "spoiler": false
+        },
+        {
+          "label": "The Real Business",
+          "content": "The private chambers are where merchants negotiate contracts, guild representatives make arrangements, and political operators reach understandings. Tradition holds that nothing said here is ever written down, no names are spoken aloud, and all parties depart through different exits. The staff are famous for their discretion and their convenient inability to remember faces.",
+          "spoiler": false
+        },
+        {
+          "label": "The Deep Pools",
+          "content": "Regular clients develop elaborate codes — certain towel arrangements, specific drink orders, particular phrases — that grant access to increasingly exclusive areas. The deepest pools, nearest the springs' source, are reserved for those whose business requires absolute privacy. The water there is hot enough to be uncomfortable, which ensures conversations stay brief.",
+          "spoiler": false
+        }
+      ],
+      "connections": [],
+      "dm_notes": "A potential location for political investigation — the Salted Cup is where Venturia's power brokers make deals away from public scrutiny. The coded access system could be a puzzle for players trying to reach the deep pools. The hot springs appearing after the curse may have supernatural significance."
+    },
+    {
+      "id": "winecradle",
+      "type": "location",
+      "name": "The Winecradle",
+      "aliases": [
+        "Winecradle",
+        "Wine Merchants' Guild"
+      ],
+      "tags": [
+        "market_tiers",
+        "wine",
+        "guild",
+        "trade_network",
+        "ancient_cellars",
+        "merchant"
+      ],
+      "tier": "Market Tiers",
+      "tagline": "Bottling Venturia's impossible vintages",
+      "spoiler": false,
+      "summary": "Home of the Wine Merchants' Guild. Venturia's wines fetch premium prices everywhere — something in the soil produces results that shouldn't be possible. Below the public elegance, cellars extend deep into the hillside with bottles aging since before the curse.",
+      "details": [
+        {
+          "label": "Description",
+          "content": "Soaring ceilings, walls lined with bottles from across the known world, and a tasting room where the island's finest vintages are presented with appropriate ceremony. Venturia's wines fetch premium prices everywhere — something in the soil, the climate, the peculiar growing conditions produces results that shouldn't be possible.",
+          "spoiler": false
+        },
+        {
+          "label": "The Cellars",
+          "content": "Below the public elegance, cellars extend deep into the hillside, temperature-controlled by methods the Guild doesn't discuss. Some bottles have been aging since before the curse, their contents slowly becoming something that is no longer quite wine. These are never sold. Occasionally, one is given as a gift — to those who have proven themselves worthy.",
+          "spoiler": false
+        },
+        {
+          "label": "The Network",
+          "content": "Membership requires wealth, connections, and discretion. The wine trade generates substantial legitimate income, but the Winecradle's true value lies in its network — merchants across the known world who owe favors, exchange information, and understand that some bottles carry significance beyond their contents.",
+          "spoiler": false
+        }
+      ],
+      "connections": [],
+      "dm_notes": "The Winecradle's merchant network is a potential information source for the party — trade connections reaching beyond Seravalle. The pre-curse wines that have become 'no longer quite wine' could be a supernatural element worth exploring. The ancient cellars may extend into interesting places."
+    },
+    {
+      "id": "echoing_court",
+      "type": "location",
+      "name": "The Echoing Court",
+      "aliases": [
+        "Echoing Court"
+      ],
+      "tags": [
+        "market_tiers",
+        "public_forum",
+        "disputes",
+        "acoustics",
+        "rhetoric",
+        "social",
+        "advocacy"
+      ],
+      "tier": "Market Tiers",
+      "tagline": "Where words carry further than you intend",
+      "spoiler": false,
+      "summary": "A circular plaza with peculiar acoustics — whispers at the center carry clearly to the edges, while shouts from the perimeter arrive muffled. Venturia's venue for public dispute resolution, where reputation is won or lost.",
+      "details": [
+        {
+          "label": "Description",
+          "content": "The circular plaza has peculiar acoustics — a whisper at the center can be heard clearly at the edges, while shouts from the perimeter arrive muffled and indistinct. Whether this was intentional or simply Venturia being Venturia, the Echoing Court has become the city's venue for public dispute resolution.",
+          "spoiler": false
+        },
+        {
+          "label": "How It Works",
+          "content": "Anyone can bring a grievance to the Court. Both parties speak from the center, witnessed by whoever happens to be present. There are no judges — only the audience, whose reactions and gossip determine who 'won.' Those who argue poorly find their worst phrases repeated mockingly in taverns for weeks.",
+          "spoiler": false
+        },
+        {
+          "label": "Professional Advocates",
+          "content": "Professional advocates make careers here, mastering the acoustics and audience preferences. Some specialize in technical disputes, others in emotional appeals, still others in making an opponent look foolish without seeming cruel. The Court attracts spectators the way theaters attract audiences.",
+          "spoiler": false
+        }
+      ],
+      "connections": [],
+      "dm_notes": "The Echoing Court could be used for social encounters where the party needs to win public opinion — a skill challenge with real consequences. The peculiar acoustics may have supernatural properties worth investigating. An advocate NPC could be a useful ally or opponent."
+    },
+    {
+      "id": "penny_shrine",
+      "type": "location",
+      "name": "The Penny Shrine",
+      "aliases": [
+        "Penny Shrine"
+      ],
+      "tags": [
+        "harbor_district",
+        "shrine",
+        "garl_glittergold",
+        "prayers",
+        "offerings",
+        "hope"
+      ],
+      "tier": "Harbor District",
+      "tagline": "Prayers to whatever might be listening",
+      "spoiler": false,
+      "summary": "A modest shrine wedged between warehouses in the Harbor District, layered with centuries of offerings from sailors, travelers, and desperate people. Has no official deity, priesthood, or doctrine — just hope.",
+      "details": [
+        {
+          "label": "Description",
+          "content": "No official deity, no formal priesthood, no doctrine beyond hope. Wedged between warehouses in the Harbor District. A single room layered with centuries of accumulated offerings: coins from every nation, found objects left for luck, written prayers in dozens of languages, candles that are never allowed to all go out at once.",
+          "spoiler": false
+        },
+        {
+          "label": "Peculiarities",
+          "content": "Offerings sometimes rearrange overnight into patterns that might be meaningful. Certain prayers seem to be answered more reliably than others — nothing dramatic, but enough to sustain hope. The candles that have burned continuously sometimes flicker in unison, as if responding to something visitors cannot perceive.",
+          "spoiler": false
+        },
+        {
+          "label": "Roxy's Origin Story",
+          "content": "Roxy immediately tried to rob the Penny Shrine upon arriving in Venturia. Garl Glittergold himself appeared, amused by her audacity, and offered her the divine pact that granted her Arcane Trickster powers.",
+          "spoiler": false
+        }
+      ],
+      "connections": [
+        {
+          "target_id": "roxy",
+          "target_name": "Roxy",
+          "relationship": "Site of her attempted robbery and subsequent divine pact with Garl Glittergold",
+          "spoiler": false
+        }
+      ],
+      "dm_notes": "A warm, character-meaningful location. The candle behaviors and offering rearrangements could be subtle divine intervention — possibly Garl Glittergold's ongoing attention to a shrine he's claimed. A good location for character development scenes with Roxy."
+    },
+    {
+      "id": "vellum_hall",
+      "type": "location",
+      "name": "The Vellum Hall",
+      "aliases": [
+        "Vellum Hall",
+        "Public Library"
+      ],
+      "tags": [
+        "market_tiers",
+        "library",
+        "restricted_stacks",
+        "research",
+        "public",
+        "practical_knowledge"
+      ],
+      "tier": "Market Tiers",
+      "tagline": "Practical knowledge for practical people",
+      "spoiler": false,
+      "summary": "Venturia's public library, independent of VAVA and focused on useful knowledge rather than arcane theory. Open to any citizen. The Restricted Stacks — containing every banned book — are its open secret.",
+      "details": [
+        {
+          "label": "Description",
+          "content": "A converted merchant hall with good light and sturdy shelving. Collections cover navigation, medicine, law, engineering, trade practices, languages, and dozens of other practical subjects. Open to any citizen who treats the materials with respect.",
+          "spoiler": false
+        },
+        {
+          "label": "Value",
+          "content": "What makes it valuable is comprehensiveness. Librarians have spent generations collecting, copying, and preserving knowledge that working people actually need. A ship's captain can find charts. A merchant can research trade regulations. A healer can consult medical texts from across the known world.",
+          "spoiler": false
+        },
+        {
+          "label": "The Restricted Stacks",
+          "content": "Every book ever banned in Venturia is supposedly preserved there, accessible only to those on the Head Librarian's waiting list — which is long, slow-moving, and apparently determined by criteria no one has ever been able to articulate. Applicants wait years for access. Some die still waiting.",
+          "spoiler": false
+        }
+      ],
+      "connections": [],
+      "dm_notes": "A lower-barrier investigation resource than VAVA's restricted archives. The Restricted Stacks are a plot hook — what's been banned and why? The Head Librarian's mysterious access criteria could be an NPC with their own agenda about what knowledge gets released."
+    },
+    {
+      "id": "fog_wardens_garrison",
+      "type": "location",
+      "name": "The Fog Wardens' Garrison",
+      "aliases": [
+        "Fog Warden Post",
+        "The Garrison",
+        "Fog Wardens"
+      ],
+      "tags": [
+        "overlook",
+        "fog_wardens",
+        "vallombrosa_boundary",
+        "disappearances",
+        "supernatural",
+        "watchtower"
+      ],
+      "tier": "The Overlook",
+      "tagline": "Watching the boundary between the living and the lost",
+      "spoiler": false,
+      "summary": "A stone building and watchtower at the Overlook where Venturia ends and Vallombrosa's fog begins. Fog Wardens maintain the barriers, record those approaching the fog line, and document anything unusual.",
+      "details": [
+        {
+          "label": "Description",
+          "content": "Small — a stone building and watchtower at the Overlook, where the city ends and the Vallombrosa fog begins. The guards stationed here volunteered for the posting, which is considered either prestigious or disturbing depending on who you ask.",
+          "spoiler": false
+        },
+        {
+          "label": "The Logs",
+          "content": "The logs make for unsettling reading: lights moving in the mist that couldn't be torches, voices carrying from within the fog speaking unrecognized languages, the occasional figure visible just inside the boundary standing motionless for hours before fading. Measurements showing the fog line has moved — sometimes closer, sometimes farther — by inches or feet over years.",
+          "spoiler": false
+        },
+        {
+          "label": "Effects of Long Service",
+          "content": "Most rotations last only a few months. Longer exposure produces sleep difficulties, persistent feelings of being watched, dreams about places the dreamer has never been. Some guards request extensions anyway, claiming they need to understand something they almost glimpsed, or that the fog has started to seem beautiful in ways they can't explain.",
+          "spoiler": false
+        },
+        {
+          "label": "The Disappearance Site",
+          "content": "Marcus disappeared from his post at the garrison the same night Silas appeared there. This is the primary crime scene for the opening investigation. Other Fog Wardens may have witnessed something — or had their memories affected.",
+          "spoiler": false
+        },
+        {
+          "label": "Targeting Pattern",
+          "content": "The pattern of Fog Warden disappearances — Valentro's father earlier, Marcus most recently — suggests Vallombrosa is 'leaking' before Marcello's arrival, pulling people with knowledge of the boundary into the fog. Fog Wardens specifically may know something that makes them targets, or their proximity to the boundary makes them vulnerable.",
+          "spoiler": true
+        }
+      ],
+      "connections": [
+        {
+          "target_id": "noname",
+          "target_name": "Noname",
+          "relationship": "Her fiancé disappeared from this post; she may have incomplete memories of the night",
+          "spoiler": false
+        },
+        {
+          "target_id": "valentro",
+          "target_name": "Valentro",
+          "relationship": "Valentro's father disappeared from Fog Warden duty earlier — same pattern",
+          "spoiler": false
+        },
+        {
+          "target_id": "silas",
+          "target_name": "Silas",
+          "relationship": "Silas appeared at this location the same night Marcus disappeared",
+          "spoiler": true
+        },
+        {
+          "target_id": "marcus",
+          "target_name": "Marcus",
+          "relationship": "Marcus vanished from his post here — the primary crime scene",
+          "spoiler": false
+        },
+        {
+          "target_id": "vallombrosa",
+          "target_name": "Vallombrosa",
+          "relationship": "Watches the boundary between the city and the fog",
+          "spoiler": false
+        }
+      ],
+      "dm_notes": "The garrison logs are an investigation resource — players can find records there. The fog line movement measurements are subtle evidence of the prison weakening. Other Fog Wardens who were on duty that night are key witnesses — some may have had partial memory manipulation."
+    }
+  ]
+}

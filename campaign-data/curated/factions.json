@@ -1,0 +1,701 @@
+{
+  "schema_version": "1.1",
+  "category": "factions",
+  "entries": [
+    {
+      "id": "harbor_wardens",
+      "type": "faction",
+      "name": "The Harbor Wardens' Compact",
+      "aliases": [
+        "Harbor Wardens",
+        "The Compact",
+        "Harbor Wardens' Compact"
+      ],
+      "tags": [
+        "harbor_district",
+        "trade",
+        "maritime",
+        "guild",
+        "prosperity",
+        "port_security",
+        "teodor_vast"
+      ],
+      "spoiler": false,
+      "summary": "Controls everything flowing through Venturia's ports — fees, warehouses, merchants. Organized as a formal guild obsessed with protecting the city's prosperity, which they believe is a gift that must be guarded at any cost.",
+      "details": [
+        {
+          "label": "Function",
+          "content": "Every ship that docks pays fees to the Compact. Every warehouse operates under their watch. Every merchant who trades through Venturia eventually deals with them. Their public face is about maintaining trade relationships, ensuring quality goods, and protecting maritime commerce.",
+          "spoiler": false
+        },
+        {
+          "label": "Leadership",
+          "content": "Led by Lord-Admiral Teodor Vast, who also holds a Harbor-Lord seat on the Autumn Council. Teodor genuinely believes Venturia's unexplained prosperity is a gift that must be protected at any cost.",
+          "spoiler": false
+        },
+        {
+          "label": "Member Benefits",
+          "content": "Access to trade networks across the region, preferential rates on shipping and warehousing, legal protection for commercial disputes, and advance information on what's coming into the city. Members contribute a percentage of profits and occasionally perform favors for the organization's broader interests.",
+          "spoiler": false
+        },
+        {
+          "label": "Prosperity Tracking",
+          "content": "The Compact has been tracking patterns in Venturia's prosperity for decades. Ships that trade exclusively with Venturia experience better fortune on subsequent voyages, as though luck itself is contagious. Teodor has assembled two hundred years of records showing this effect and is convinced it's connected to whatever happened at Vallombrosa. They've found references to the di Errantes conducting unusual trade in exotic goods right before the tragedy.",
+          "spoiler": true
+        },
+        {
+          "label": "Crisis Response",
+          "content": "When Silas's activities disrupt trade, the Harbor Wardens tighten security and try to maintain normalcy at all costs. When Marcello arrives claiming the di Errante name, Teodor will be deeply conflicted — Marcello might understand the source of the city's fortune, but his presence disrupts the carefully maintained order.",
+          "spoiler": true
+        }
+      ],
+      "connections": [
+        {
+          "target_id": "teodor_vast",
+          "target_name": "Lord-Admiral Teodor Vast",
+          "relationship": "Faction leader and Harbor-Lord on the Autumn Council",
+          "spoiler": false
+        },
+        {
+          "target_id": "covenant_silver_scales",
+          "target_name": "The Covenant of Silver Scales",
+          "relationship": "Cooperate on commercial matters but compete for economic influence",
+          "spoiler": false
+        },
+        {
+          "target_id": "fog_wardens",
+          "target_name": "The Fog Wardens and Shadowed Wardens",
+          "relationship": "Fund generously because security is good for business, but chafe at regulations restricting trade",
+          "spoiler": false
+        }
+      ],
+      "dm_notes": "The Harbor Wardens' prosperity-tracking records are a potential investigation resource. The 'contagious luck' phenomenon is real and connected to the fey prison's influence. Teodor's terror about losing this prosperity makes him both a potential ally (he'll fund anything that works) and a potential obstacle (he'll resist anything that threatens the status quo)."
+    },
+    {
+      "id": "veil_court",
+      "type": "faction",
+      "name": "The Veil Court",
+      "aliases": [
+        "Veil Court"
+      ],
+      "tags": [
+        "semi_secret",
+        "masks",
+        "identity",
+        "performance",
+        "autumn_masquerade",
+        "theatrical",
+        "valeria_tessere",
+        "hall_of_reflected_faces"
+      ],
+      "spoiler": false,
+      "summary": "A semi-secret society preserving Venturia's traditions around masks, identity, and theatrical performance. Not officially recognized by the government, which is precisely how they prefer it. Organizes the annual Autumn Masquerade.",
+      "details": [
+        {
+          "label": "Function",
+          "content": "Organizes the annual Autumn Masquerade, maintains the guild of master maskmakers, sponsors theatrical productions, and serves as patrons for artists working in the 'veiled arts' — performance, disguise, transformation, and revelation.",
+          "spoiler": false
+        },
+        {
+          "label": "Leadership",
+          "content": "Led by Valeria Tessere, who appears perpetually in her late 40s despite records suggesting she should be considerably older. A former celebrated actress, she wears a different mask to every public appearance. Charismatic, politically astute, and genuinely passionate — but something slightly unsettling about how deeply she understands the city's fey-touched quirks.",
+          "spoiler": false
+        },
+        {
+          "label": "Member Benefits",
+          "content": "Access to exclusive theatrical spaces, invitations to private masked events, connections with artists across the region, training in the 'Art of Faces' (disguise, social reading, identity theory), and access to the Hall of Reflected Faces — a gallery of masks from every Autumn Masquerade going back nearly 300 years.",
+          "spoiler": false
+        },
+        {
+          "label": "Mask Magic Discovery",
+          "content": "Valeria's inner circle has discovered that when someone wears a mask during the Autumn Masquerade and genuinely commits to performing a different identity, reality itself becomes slightly more malleable. The Court has documented cases of temporary abilities, heightened intuition, or glimpses of impossible knowledge while in character. Valeria believes this is connected to whatever supernatural influence touches the city.",
+          "spoiler": true
+        },
+        {
+          "label": "The Mirror Phenomenon",
+          "content": "The Court has tracked reflections arriving late and discovered that during the Masquerade, mirrors sometimes show people wearing different masks than they're actually wearing — reflecting a truer or deeper identity. Valeria is convinced this is related to the di Errante tragedy.",
+          "spoiler": true
+        },
+        {
+          "label": "Crisis Response",
+          "content": "When Silas begins operations, the Veil Court notices immediately — the Masquerade feels different in ways Valeria can't articulate. She's terrified whatever Silas is doing might disrupt the ritual protections the annual celebration provides. When Marcello arrives, Valeria will recognize instantly that something profound has shifted in the city's supernatural architecture.",
+          "spoiler": true
+        }
+      ],
+      "connections": [
+        {
+          "target_id": "masquers_sodality",
+          "target_name": "The Masquers' Sodality",
+          "relationship": "The Sodality's maskmaking tradition is closely tied to the Veil Court's cultural mission",
+          "spoiler": false
+        },
+        {
+          "target_id": "amaranth_theater",
+          "target_name": "The Amaranth Theater",
+          "relationship": "Primary venue for Court-sponsored productions and the annual Tragedy of Vallombrosa",
+          "spoiler": false
+        }
+      ],
+      "dm_notes": "The Veil Court's mask magic discovery is mechanically real — the Masquerade does enhance identity-based supernatural effects. This connects directly to the Keeper of Faces' domain. Valeria's apparent age discrepancy might be explained by prolonged mask-wearing effects, or she might have fey heritage she doesn't fully understand. The Hall of Reflected Faces is a 300-year record of the Masquerade that could contain investigative clues."
+    },
+    {
+      "id": "abbey_of_saint_viro",
+      "type": "faction",
+      "name": "The Abbey of Saint Viro and the Faithful",
+      "aliases": [
+        "The Abbey",
+        "Abbey of Saint Viro",
+        "St. Viro's Abbey",
+        "The Faithful"
+      ],
+      "tags": [
+        "religion",
+        "charitable",
+        "hospitals",
+        "orphanages",
+        "saint_viro",
+        "protective_traditions",
+        "temple_authority",
+        "lucia_virosdottir"
+      ],
+      "spoiler": false,
+      "summary": "Venturia's primary religious institution, dedicated to Saint Viro who protected the valley before it became Vallombrosa. Operates hospitals, orphanages, and food distribution. Genuinely respected for doing difficult work without demanding recognition.",
+      "details": [
+        {
+          "label": "Mission",
+          "content": "Spiritual guidance, charitable works, education for children of families who can't afford private tutors, and maintaining the protective traditions Saint Viro established. They operate hospitals (including St. Viro's Respite), orphanages (coordinating with Liminal House), and provide food distribution to the poor.",
+          "spoiler": false
+        },
+        {
+          "label": "Leadership",
+          "content": "Led by Mother-Abbot Lucia Virosdottir (early 70s), who also holds a Temple Authority seat on the Autumn Council and currently serves as Council Chair. Forty years of service, rising through scholarship and pastoral work. Wise and compassionate but increasingly weary as the supernatural crisis challenges her understanding of faith.",
+          "spoiler": false
+        },
+        {
+          "label": "Member Benefits",
+          "content": "Access to the Abbey's charitable network, education in religious texts and protective rituals, spiritual counseling, historical preservation efforts, priority treatment at the Respite, and the Abbey's reputation for neutrality as mediators.",
+          "spoiler": false
+        },
+        {
+          "label": "The Restricted Records",
+          "content": "Lucia and her predecessor have been maintaining historical records that contradict the contradictory legends most Venturians believe about Vallombrosa. These contain testimony from people who witnessed the fog's arrival and documented accounts from the first generation after the tragedy. The Abbey knows the di Errante family made some kind of catastrophic bargain involving supernatural forces.",
+          "spoiler": true
+        },
+        {
+          "label": "Saint Viro's Ward Fragments",
+          "content": "The Abbey possesses three fragments of protective wards believed to be created by Saint Viro himself, designed to shield the valley from supernatural intrusion. These stopped functioning around the time of the di Errante tragedy. Lucia believes they're connected to three objects mentioned in the oldest fragmentary accounts, but she doesn't know what those objects are or where they're located.",
+          "spoiler": true
+        },
+        {
+          "label": "The Disappearance Patterns",
+          "content": "The Abbey has been tracking people who entered Vallombrosa's fog over centuries and never returned. They maintain a memorial wall with names and dates. Disappearances increased during certain periods and decreased during others in patterns that don't seem random. Lucia theorizes whatever is inside Vallombrosa occasionally becomes more or less active.",
+          "spoiler": true
+        },
+        {
+          "label": "Crisis Response",
+          "content": "When Silas's crisis begins, the Abbey mobilizes to protect civilians and provide sanctuary. Lucia recognizes the connection to Vallombrosa and begins quietly sharing historical knowledge with people she trusts. When Marcello arrives, she'll be one of the few who immediately understands the historical significance and potential danger.",
+          "spoiler": true
+        }
+      ],
+      "connections": [
+        {
+          "target_id": "lucia_virosdottir",
+          "target_name": "Mother-Abbot Lucia Virosdottir",
+          "relationship": "Abbey leader and Temple Authority Council Chair",
+          "spoiler": false
+        },
+        {
+          "target_id": "viros_respite",
+          "target_name": "St. Viro's Respite",
+          "relationship": "Abbey-operated healing institution",
+          "spoiler": false
+        },
+        {
+          "target_id": "liminal_house",
+          "target_name": "Liminal House",
+          "relationship": "Closely coordinated institution — founded by Abbey scholar-monk Aldric 400 years ago",
+          "spoiler": false
+        }
+      ],
+      "dm_notes": "The Abbey's restricted records, ward fragments, and disappearance tracking are three distinct investigation threads for different stages of the campaign. The ward fragments are a potential macguffin for Act Two/Three — finding or restoring Saint Viro's protections. Lucia's willingness to share knowledge increases as the crisis worsens, making her a natural ally who becomes more useful as trust develops."
+    },
+    {
+      "id": "vava",
+      "type": "faction",
+      "name": "The Venturian Academy of Veiled Arts",
+      "aliases": [
+        "VAVA",
+        "The Academy",
+        "Veiled Arts"
+      ],
+      "tags": [
+        "high_quarter",
+        "magic",
+        "academy",
+        "institution",
+        "veil_archive",
+        "forbidden_research",
+        "dorian_silvermarch",
+        "donor_pressure",
+        "surveillance"
+      ],
+      "spoiler": false,
+      "summary": "Venturia's prestigious magical institution. Officially forbidden from researching Vallombrosa or the city's fey-touched nature — not by written policy, but by the threat of wealthy donors pulling funding. The Archmagister sits on a sealed archive of two centuries of research he can't release.",
+      "details": [
+        {
+          "label": "Mission",
+          "content": "Advancing magical knowledge, training wizards and scholars, providing magical services to Venturia's government and citizens. Consultation on magical problems, enchantment services, and one of the finest magical libraries in the region.",
+          "spoiler": false
+        },
+        {
+          "label": "Leadership",
+          "content": "Archmagister Dorian Silvermarch, a high elf who has taught for nearly a century and served as Archmagister for forty years. Brilliant, charming, genuinely loves teaching — and privately convinced that understanding Venturia's fey-touched nature is the most important magical research question of the age. He also holds a seat on the Autumn Council.",
+          "spoiler": false
+        },
+        {
+          "label": "The Institutional Constraint",
+          "content": "VAVA is forbidden from researching Vallombrosa, the fog, or fey-touched quirks. This isn't written policy — it's enforced by wealthy donor families who don't want their children near dangerous supernatural research. Faculty who ignore this face demotion, funding loss, and career destruction. The message: study anything you want as long as it has nothing to do with why Venturia is the way it is.",
+          "spoiler": false
+        },
+        {
+          "label": "The Veil Archive",
+          "content": "Locked in the deepest restricted section, accessible only to the Archmagister with three separate keys held by different senior faculty. Contains two hundred years of research notes, experimental results, and theoretical work about Vallombrosa from VAVA's first century when such research was prestigious. Contents include detailed fog accounts, magical theory suggesting the fog boundary is constructed rather than spontaneous, and maps showing fey-touched effects intensify near Vallombrosa. Dorian has read every word.",
+          "spoiler": true
+        },
+        {
+          "label": "The Underground",
+          "content": "The prohibition creates an underground of secret researchers who can't let the questions go. VAVA has unofficial monitors — senior faculty who report suspicious activity, librarians tracking restricted text access, students who inform for better grades. The atmosphere of mutual surveillance breeds paranoia among those most committed to understanding Venturia's nature.",
+          "spoiler": true
+        },
+        {
+          "label": "Crisis Response",
+          "content": "Officially, the Academy maintains that supernatural manifestations are a security matter for the Watch. Unofficially, dozens of scholars are desperately studying these phenomena. Some want to capture The Bound as research subjects. Others conduct unauthorized divination. Dorian chooses selective blindness — as long as it's not public and doesn't endanger students, he won't crack down.",
+          "spoiler": true
+        },
+        {
+          "label": "Marcello Crisis",
+          "content": "Marcello's arrival creates VAVA's greatest crisis. Too dramatic to ignore, too academically fascinating to resist, too threatening for donors. Dorian faces impossible choices: maintain prohibition and lose scholars, relax rules and lose funding, or satisfy no one. The Veil Archive becomes critically relevant as the only comprehensive record of historical research into phenomena now actively manifesting.",
+          "spoiler": true
+        }
+      ],
+      "connections": [
+        {
+          "target_id": "dorian_silvermarch",
+          "target_name": "Archmagister Dorian Silvermarch",
+          "relationship": "Academy leader, Autumn Council member, keeper of the Veil Archive",
+          "spoiler": false
+        },
+        {
+          "target_id": "kryton",
+          "target_name": "Kryton Novelli",
+          "relationship": "Faculty member — brilliant but increasingly erratic",
+          "spoiler": false
+        },
+        {
+          "target_id": "roxy",
+          "target_name": "Roxy",
+          "relationship": "First-year student maintaining a facade of magical competence",
+          "spoiler": false
+        }
+      ],
+      "dm_notes": "VAVA's institutional politics are a campaign-long thread. The Veil Archive is a critical investigation resource that requires earning Dorian's trust or forcing his hand. The surveillance culture creates paranoia that could affect Kryton (secret research?) and Roxy (her powers aren't academic). The catastrophic historical incidents — the divination student who never woke, the transmutation professor who went mad, the memory cascade that killed two students — are usable as warnings or investigative leads."
+    },
+    {
+      "id": "covenant_silver_scales",
+      "type": "faction",
+      "name": "The Covenant of Silver Scales",
+      "aliases": [
+        "The Covenant",
+        "Silver Scales",
+        "Covenant of Silver Scales"
+      ],
+      "tags": [
+        "merchant",
+        "contracts",
+        "binding_magic",
+        "loren_asteri",
+        "registry_broken_oaths",
+        "di_errante_records",
+        "supernatural_oaths",
+        "high_quarter"
+      ],
+      "spoiler": false,
+      "summary": "Venturia's premier merchant association specializing in high-value commercial agreements, contract law, and complex business arrangements. Led by Loren Asteri — Car's father — who has discovered that contracts in Venturia sometimes carry supernatural weight.",
+      "details": [
+        {
+          "label": "Function",
+          "content": "Named for the silver scales of justice and silver coins of commerce. The people you go to when you need an unbreakable contract, a complicated partnership negotiated, or a commercial disagreement mediated. Unlike the Harbor Wardens who focus on maritime trade, the Covenant specializes in the legal and contractual infrastructure of commerce.",
+          "spoiler": false
+        },
+        {
+          "label": "Leadership",
+          "content": "Led by Loren Asteri (mid-40s), Car's father. Old money, self-made fortune, impeccably dressed, unfailingly polite, absolutely ruthless about upholding the letter of agreements. Has made studying contract magic and binding oaths a personal hobby alongside his commercial work.",
+          "spoiler": false
+        },
+        {
+          "label": "Supernatural Contract Binding",
+          "content": "Loren has documented cases where contracts in Venturia carry supernatural weight without intentional spell casting — especially agreements made within sight of Vallombrosa. Oath-breakers experience sudden financial disasters, souring relationships, or mild curses. The Covenant has been quietly exploiting this, ensuring important contracts are negotiated in high-binding locations without telling clients why.",
+          "spoiler": true
+        },
+        {
+          "label": "The Registry of Broken Oaths",
+          "content": "A confidential record of every significant contract breach in Venturia going back over a century. Contains embarrassing secrets about many powerful people and families. Loren has noticed supernatural consequences for oath-breaking have increased over the past fifty years — whatever magical influence affects Venturia is getting stronger.",
+          "spoiler": true
+        },
+        {
+          "label": "The di Errante Contract",
+          "content": "The Covenant has found fragmentary evidence that the di Errante family was negotiating a massive contract or agreement right before their tragedy. References to 'terms being finalized' and 'considerations of significant value changing hands,' but actual details have been lost or deliberately destroyed. Loren is obsessed with finding out what this agreement was.",
+          "spoiler": true
+        },
+        {
+          "label": "Crisis Response",
+          "content": "When Silas creates The Bound, the Covenant is disturbed because supernatural compulsion violates free agreement. Loren will try to determine if The Bound operate under twisted contracts or purely coercive magic. When Marcello arrives, Loren will immediately want to know what agreements the di Errante heir might be pursuing.",
+          "spoiler": true
+        }
+      ],
+      "connections": [
+        {
+          "target_id": "caravel",
+          "target_name": "Caravel \"Car\" Asteri",
+          "relationship": "Car is Loren's daughter; she rejected the family business but the connection remains",
+          "spoiler": false
+        },
+        {
+          "target_id": "covenant_archive",
+          "target_name": "The Covenant Archive",
+          "relationship": "The Archive is the Asteri family's institution — connected through Loren and his family's legal traditions",
+          "spoiler": false
+        },
+        {
+          "target_id": "harbor_wardens",
+          "target_name": "The Harbor Wardens' Compact",
+          "relationship": "Cooperate on commercial matters but compete for economic influence",
+          "spoiler": false
+        }
+      ],
+      "dm_notes": "The Covenant connects to campaign themes of binding oaths, fey contracts, and the Keeper of Faces. The di Errante contract fragments are critical plot material. Loren being Car's father creates personal stakes — the party has a family connection to one of Venturia's most politically powerful and knowledgeable NPCs, but accessing his resources means Car navigating family tension. The Registry of Broken Oaths is both investigation resource and political leverage."
+    },
+    {
+      "id": "fog_wardens",
+      "type": "faction",
+      "name": "The Fog Wardens and the Shadowed Wardens",
+      "aliases": [
+        "The Watch",
+        "City Watch",
+        "Fog Wardens",
+        "Shadowed Wardens",
+        "The Wardens"
+      ],
+      "tags": [
+        "law_enforcement",
+        "supernatural",
+        "containment_protocols",
+        "thora_ironmark",
+        "surveillance",
+        "shadowed_wardens",
+        "registry",
+        "fog_boundary"
+      ],
+      "spoiler": false,
+      "summary": "Venturia's law enforcement and security force. The visible Watch patrols streets and responds to problems. The secretive Shadowed Wardens handle supernatural threats. Most citizens only know about the regular Watch.",
+      "details": [
+        {
+          "label": "Structure",
+          "content": "Organized as a visible public force that patrols streets and responds to immediate problems, plus a much smaller covert division — the Shadowed Wardens — who handle supernatural threats specifically. The Fog Wardens patrol the boundary at the Overlook. Most citizens only know about the regular Watch.",
+          "spoiler": false
+        },
+        {
+          "label": "Leadership",
+          "content": "Captain-Commander Thora Ironmark (female half-orc, 40s). Rose through the ranks over twenty years. Tough, fair-minded, deeply protective of Venturia's citizens. Commands the Shadowed Wardens directly, which means she knows things about Venturia's supernatural nature that keep her up at night. Holds the Watch Commander seat on the Autumn Council.",
+          "spoiler": false
+        },
+        {
+          "label": "Supernatural Incident Records",
+          "content": "The Shadowed Wardens have maintained secret records of supernatural incidents for nearly two hundred years. Phenomena cluster around certain locations and times of year, particularly the Autumn Masquerade and near Vallombrosa's boundary. They've documented dozens of impossible abilities, reality bending, and supernatural creature appearances. They've tracked every disappearance into the fog.",
+          "spoiler": true
+        },
+        {
+          "label": "The Containment Protocols",
+          "content": "Procedures developed over generations for dealing with supernatural threats without public panic: methods for disposing of supernatural creatures, techniques for memory alteration or information suppression, and contingency plans for catastrophic scenarios including 'what to do if Vallombrosa's fog expands beyond current boundaries.' Thora is deeply uncomfortable with the memory manipulation protocols but understands why they exist.",
+          "spoiler": true
+        },
+        {
+          "label": "Registry of Supernatural Individuals",
+          "content": "A confidential registry of individuals displaying supernatural abilities or unusual connections to Venturia's fey-touched nature. Ostensibly for protection and monitoring, but Thora recognizes how easily it could be weaponized. She's trying to reform the Wardens toward protection over surveillance, facing resistance from traditionalists.",
+          "spoiler": true
+        },
+        {
+          "label": "Crisis Response",
+          "content": "When Silas's activities begin, the Watch is on the front lines — dealing with The Bound, protecting civilians from The Leaked, struggling with how much to share publicly. Thora will be looking for capable individuals like the PCs to handle threats the Watch can't. When Marcello arrives, Thora will have deep suspicions — the Wardens' historical records suggest the di Errantes were never entirely what they appeared.",
+          "spoiler": true
+        }
+      ],
+      "connections": [
+        {
+          "target_id": "thora_ironmark",
+          "target_name": "Captain-Commander Thora Ironmark",
+          "relationship": "Watch Commander and Autumn Council member",
+          "spoiler": false
+        },
+        {
+          "target_id": "fog_wardens_garrison",
+          "target_name": "The Fog Wardens' Garrison",
+          "relationship": "Primary Watch post at the Vallombrosa boundary",
+          "spoiler": false
+        },
+        {
+          "target_id": "noname",
+          "target_name": "Noname",
+          "relationship": "Fog Warden stationed at the Overlook; her fiancé disappeared from duty",
+          "spoiler": false
+        }
+      ],
+      "dm_notes": "Thora is the most likely early ally on the council — she needs help and isn't too proud to ask for it. The Containment Protocols' memory manipulation techniques echo the campaign's themes around stolen/altered memories. The supernatural registry could include PCs or their connections, creating tension. Thora's unauthorized operations are leverage the party can use as sword or olive branch."
+    },
+    {
+      "id": "liminal_house",
+      "type": "faction",
+      "name": "Liminal House",
+      "aliases": [
+        "The House",
+        "The Liminal House"
+      ],
+      "tags": [
+        "fog_children",
+        "institution",
+        "abbey_connection",
+        "information_suppression",
+        "del_varco",
+        "aldric",
+        "alumni_network",
+        "naming_convention"
+      ],
+      "spoiler": false,
+      "summary": "A 400-year-old institution caring for fog children — people who appear from Vallombrosa with no memories. Founded by Brother Aldric of St. Viro's Abbey. Three PCs grew up here. Operates under strict policies of not investigating children's origins.",
+      "details": [
+        {
+          "label": "Foundation",
+          "content": "Founded approximately 400 years ago by Brother Aldric, a scholar-monk at St. Viro's Abbey, after the first fog children began appearing. His reasoning: 'These children bear marks we do not fully understand. To house them within sacred walls might bring them peace, or it might invite what follows them into our sanctuary. Better they have their own place, watched over but separate.'",
+          "spoiler": false
+        },
+        {
+          "label": "Operating Principles",
+          "content": "Five principles established by Aldric: no investigation of origins, no records of arrival circumstances, teach practical skills for building futures, foster community bonds between residents, and maintain Abbey connection. Children receive the surname 'del Varco' (of the crossing/passage) until they choose their own.",
+          "spoiler": false
+        },
+        {
+          "label": "Population",
+          "content": "Shelters 30-40 children ages 5-18 at any time. Children arrive between ages 5-12, stay until age 18 or independent living. Arrivals are irregular — sometimes three in one month, then none for half a year. Directors have noticed patterns but can't predict arrivals.",
+          "spoiler": false
+        },
+        {
+          "label": "What They Actually Know",
+          "content": "Successive directors have quietly understood: the children are connected to Vallombrosa. Some wandered into the fog decades or centuries ago and emerged unchanged while time passed outside. Others may be born inside Vallombrosa and expelled or escaped. The institution knows far more than it tells residents.",
+          "spoiler": true
+        },
+        {
+          "label": "Reasons for Suppression",
+          "content": "The policy of non-investigation isn't just kindness — it's protective. Past attempts to investigate fog children's origins triggered disturbing reactions: children who recovered memories experienced psychological breaks, some began sleepwalking toward the fog boundary, others exhibited temporary supernatural abilities. The institution learned that some questions are dangerous to ask.",
+          "spoiler": true
+        }
+      ],
+      "connections": [
+        {
+          "target_id": "abbey_of_saint_viro",
+          "target_name": "The Abbey of Saint Viro",
+          "relationship": "Parent institution — the Abbey founded Liminal House and provides primary funding",
+          "spoiler": false
+        },
+        {
+          "target_id": "noname",
+          "target_name": "Noname",
+          "relationship": "Grew up here; her father was himself a fog child raised at the House",
+          "spoiler": false
+        },
+        {
+          "target_id": "valentro",
+          "target_name": "Valentro",
+          "relationship": "Raised here after being orphaned",
+          "spoiler": false
+        },
+        {
+          "target_id": "orabella",
+          "target_name": "Orabella",
+          "relationship": "Appeared from Vallombrosa as a fog child; raised here",
+          "spoiler": false
+        }
+      ],
+      "dm_notes": "The del Varco naming convention is a nice worldbuilding detail for fog child NPCs. The dangerous reactions to origin investigation (sleepwalking toward fog, temporary supernatural abilities) are usable in play if PCs push too hard on fog child backstories. The arrival pattern data — correlated with activity inside Vallombrosa — is a late-game investigation resource."
+    },
+    {
+      "id": "masquers_sodality",
+      "type": "faction",
+      "name": "The Masquers' Sodality",
+      "aliases": [
+        "Masquers' Sodality",
+        "Masquers",
+        "The Maskmakers"
+      ],
+      "tags": [
+        "guild",
+        "masks",
+        "craft",
+        "festival_committee",
+        "masquerade",
+        "market_tiers",
+        "third_floor"
+      ],
+      "spoiler": false,
+      "summary": "The master maskmakers of Venturia, founded shortly after the Tragedy of Vallombrosa transformed the Autumn Masquerade into a cultural institution. Three guild members sit on the Festival Committee. Their understanding of what masks mean in Venturia goes deeper than craft.",
+      "details": [
+        {
+          "label": "Organizational Role",
+          "content": "The Sodality's relationship with the Masquerade runs deeper than commerce. Three members sit on the Festival Committee overseeing the annual celebration. The Master of Revels who coordinates public festivities has been a senior Masquer for as long as anyone can remember. During Masquerade season, workshops run day and night.",
+          "spoiler": false
+        },
+        {
+          "label": "Connection to Veil Court",
+          "content": "The Veil Court maintains and sponsors the Sodality as part of their cultural preservation mission. Senior Masquers may have connections to both organizations, creating an overlap between the craft guild and the semi-secret society.",
+          "spoiler": false
+        },
+        {
+          "label": "PC Connection",
+          "content": "Caravel is an apprentice at the Sodality, giving the party insider access to the guild's workings and politics. Her friend died at the Autumn Masquerade — connected to the guild's deeper activities.",
+          "spoiler": false
+        }
+      ],
+      "connections": [
+        {
+          "target_id": "caravel",
+          "target_name": "Caravel \"Car\" Asteri",
+          "relationship": "Apprentice — the party's insider access to the guild",
+          "spoiler": false
+        },
+        {
+          "target_id": "veil_court",
+          "target_name": "The Veil Court",
+          "relationship": "The Court sponsors and maintains the Sodality as part of its cultural mission",
+          "spoiler": false
+        },
+        {
+          "target_id": "amaranth_theater",
+          "target_name": "The Amaranth Theater",
+          "relationship": "Provides masks and costumes for productions",
+          "spoiler": false
+        }
+      ],
+      "dm_notes": "The faction entry is intentionally lean — the location entry covers the workshop, hierarchy, third floor mystery, and Masquerade season dreams in detail. This entry focuses on the organizational/political role. Car's apprenticeship is the party's primary entry point into both the Sodality and, through it, the Veil Court."
+    },
+    {
+      "id": "covenant_archive",
+      "type": "faction",
+      "name": "The Covenant Archive",
+      "aliases": [
+        "Covenant Archive",
+        "The Archive"
+      ],
+      "tags": [
+        "legal",
+        "contracts",
+        "binding_agreements",
+        "asteri_family",
+        "high_quarter",
+        "deep_archive"
+      ],
+      "spoiler": false,
+      "summary": "A family-run legal institution handling binding contracts and formal agreements. In a city where promises carry unusual weight, this is not a minor business. Run by the Asteri family — Car's family.",
+      "details": [
+        {
+          "label": "Function",
+          "content": "Maintains Venturia's collection of witnessed contracts, binding agreements, and sworn oaths on specially prepared vellum. Citizens who want their promises to carry legal weight come here. The Archivists speak words in an old language before applying their seals. The Archive has never needed to pursue a breach through ordinary courts.",
+          "spoiler": false
+        },
+        {
+          "label": "Asteri Family Connection",
+          "content": "The Archive is run by the Asteri family. Car's father Loren Asteri also leads the Covenant of Silver Scales, connecting the Archive's legal traditions to the broader merchant association. Car rejected the family business in favor of the Masquers' Sodality.",
+          "spoiler": false
+        },
+        {
+          "label": "PC Access",
+          "content": "Car's family connection provides a potential entry point to the Archive's resources, but it comes with family tension — she left this world behind, and returning to ask for access means navigating that relationship.",
+          "spoiler": false
+        }
+      ],
+      "connections": [
+        {
+          "target_id": "caravel",
+          "target_name": "Caravel \"Car\" Asteri",
+          "relationship": "Car's family runs the Archive; she rejected it for the Masquers' Sodality",
+          "spoiler": false
+        },
+        {
+          "target_id": "covenant_silver_scales",
+          "target_name": "The Covenant of Silver Scales",
+          "relationship": "Connected through the Asteri family — Loren runs both the Silver Scales and the Archive",
+          "spoiler": false
+        }
+      ],
+      "dm_notes": "The faction entry is lean — the location entry covers the physical building, deep archive, and di Errante records. This focuses on the organizational and family connections. The Asteri family bridging both the Archive and the Silver Scales makes Car's family more politically significant than she probably realizes."
+    },
+    {
+      "id": "ferriers_confraternity",
+      "type": "faction",
+      "name": "The Ferriers' Confraternity",
+      "aliases": [
+        "Ferriers",
+        "Ferriers' Confraternity",
+        "The Gondoliers",
+        "Gondoliers' Confraternity"
+      ],
+      "tags": [
+        "guild",
+        "gondolas",
+        "canals",
+        "ancient",
+        "pre_curse",
+        "supernatural_water",
+        "old_maren",
+        "midnight_prohibition"
+      ],
+      "spoiler": false,
+      "summary": "Venturia's ancient guild of gondola ferriers, predating the curse itself. Every canal falls under their informal jurisdiction. Their Primo Navigante holds a seat on the Autumn Council. They know things about the city's waterways that no one else does.",
+      "details": [
+        {
+          "label": "Political Role",
+          "content": "The Confraternity holds an Autumn Council seat by ancient charter — the Primo Navigante represents their interests alongside the factions. Currently held by Old Maren. Their institutional continuity predating the curse gives them unique historical authority.",
+          "spoiler": false
+        },
+        {
+          "label": "Ancient Knowledge",
+          "content": "The Confraternity has mapped Venturia's canals for centuries, including waterways that shift, appear only at certain times, or lead to places that shouldn't exist. Their oldest records claim they were ferrying passengers when the di Errante estates still stood. Masters know every waterway including the ones that aren't supposed to exist.",
+          "spoiler": false
+        },
+        {
+          "label": "Canal Mapping",
+          "content": "Maren's predecessors documented changes in the canal system correlating with supernatural activity — canals that go still before someone disappears, new channels opening overnight near sites where The Bound manifest, tidal patterns in landlocked waterways matching no known moon cycle. Certain route sequences bring a gondola disturbingly close to somewhere that feels like neither Venturia nor the material plane.",
+          "spoiler": true
+        },
+        {
+          "label": "The Midnight Prohibition",
+          "content": "The Confraternity's refusal to ferry passengers after midnight before the Autumn Masquerade isn't superstition — the canals actually change during that period. Ferriers caught on the water have come back... different.",
+          "spoiler": true
+        }
+      ],
+      "connections": [
+        {
+          "target_id": "old_maren",
+          "target_name": "Primo Navigante Old Maren",
+          "relationship": "Confraternity leader and Autumn Council member",
+          "spoiler": false
+        },
+        {
+          "target_id": "tidekeepers_lodge",
+          "target_name": "The Tidekeeper's Lodge",
+          "relationship": "Sister guild — Tidekeepers guide ships in, Ferriers navigate the canals within",
+          "spoiler": false
+        }
+      ],
+      "dm_notes": "The Confraternity's canal maps are a unique investigation resource — supernatural waterway changes correlating with plot events. Old Maren's nephew Alessio (broke the midnight prohibition, came back different) is a hook for earning Maren's trust. The canals changing during Masquerade week is directly connected to the Keeper's influence — the prison boundary weakens during the Masquerade."
+    }
+  ]
+}
