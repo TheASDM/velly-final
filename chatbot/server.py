@@ -253,6 +253,7 @@ class Loremaster:
         headers = {"Content-Type": "application/json"}
         if OLLAMA_API_KEY:
             headers["Authorization"] = f"Bearer {OLLAMA_API_KEY}"
+        t0 = time.time()
         try:
             resp = http_requests.post(
                 f"{OLLAMA_URL}/api/embeddings",
@@ -261,9 +262,11 @@ class Loremaster:
                 timeout=10,
             )
             resp.raise_for_status()
-            return resp.json().get("embedding")
+            embedding = resp.json().get("embedding")
+            logging.info("  Embedding: %dms (%d dims)", int((time.time() - t0) * 1000), len(embedding) if embedding else 0)
+            return embedding
         except Exception as e:
-            logging.error("Embedding failed: %s", e)
+            logging.error("  Embedding FAILED (%dms): %s", int((time.time() - t0) * 1000), e)
             return None
 
     # ── RAG retrieval ────────────────────────────────────────────────────
@@ -271,11 +274,14 @@ class Loremaster:
     def retrieve(self, query, mode):
         store = self._vector_stores.get(mode)
         if not store:
+            logging.warning("  RAG: no vector store for mode=%s", mode)
             return [], []
         query_vec = self._embed_query(query)
         if not query_vec:
+            logging.warning("  RAG: embedding failed, skipping retrieval")
             return [], []
 
+        t0 = time.time()
         scored = []
         for entry in store:
             emb = entry.get("embedding")
@@ -284,6 +290,7 @@ class Loremaster:
             sim = cosine_similarity(query_vec, emb)
             scored.append((sim, entry))
         scored.sort(key=lambda x: x[0], reverse=True)
+        search_ms = int((time.time() - t0) * 1000)
 
         dm_mode = mode == "dm"
         auto_inject = []
@@ -315,6 +322,12 @@ class Loremaster:
                         "score": sim,
                     }
                 )
+
+        logging.info("  RAG search: %dms across %d entries", search_ms, len(scored))
+        for m in auto_inject:
+            logging.info("    AUTO-INJECT: %s (%s) score=%.3f", m["name"], m["source_file"], m["score"])
+        if additional:
+            logging.info("    + %d additional matches (best: %s score=%.3f)", len(additional), additional[0]["name"], additional[0]["score"])
 
         return auto_inject, additional
 
@@ -413,20 +426,28 @@ class Loremaster:
             "tools": self._tool_definitions(),
         }
 
+        logging.info("  Anthropic: calling %s (system prompt %d chars, %d messages)",
+                      ANTHROPIC_MODEL, len(system_prompt), len(messages))
+
         max_loops = 5
-        for _ in range(max_loops):
+        for loop_i in range(max_loops):
+            t0 = time.time()
             resp = http_requests.post(
                 "https://api.anthropic.com/v1/messages",
                 headers=self._anthropic_headers(),
                 json=payload,
                 timeout=120,
             )
+            api_ms = int((time.time() - t0) * 1000)
 
             if resp.status_code != 200:
-                logging.error("Anthropic API error: %d — %s", resp.status_code, resp.text[:300])
+                logging.error("  Anthropic API error (%dms): %d — %s", api_ms, resp.status_code, resp.text[:300])
                 return f"I'm having trouble responding right now. Please try again in a moment."
 
             result = resp.json()
+            usage = result.get("usage", {})
+            logging.info("  Anthropic response (%dms): stop=%s, input_tokens=%d, output_tokens=%d",
+                          api_ms, result.get("stop_reason"), usage.get("input_tokens", 0), usage.get("output_tokens", 0))
 
             if result.get("stop_reason") != "tool_use":
                 text_parts = [
@@ -434,7 +455,9 @@ class Loremaster:
                     for b in result.get("content", [])
                     if b.get("type") == "text"
                 ]
-                return "\n".join(text_parts) if text_parts else ""
+                response = "\n".join(text_parts) if text_parts else ""
+                logging.info("  Final response: %d chars", len(response))
+                return response
 
             # Handle tool calls
             tool_results = []
@@ -442,12 +465,14 @@ class Loremaster:
                 if block["type"] == "tool_use":
                     tool_name = block["name"]
                     tool_input = block["input"]
+                    logging.info("  Tool call [%d/%d]: %s(%s)", loop_i + 1, max_loops, tool_name, json.dumps(tool_input))
                     if tool_name == "lookup_entry":
                         tool_result = self.lookup_entry(
                             tool_input.get("name", ""), mode
                         )
                     else:
                         tool_result = f"Unknown tool: {tool_name}"
+                    logging.info("  Tool result: %d chars", len(tool_result))
                     tool_results.append(
                         {
                             "type": "tool_result",
@@ -460,12 +485,16 @@ class Loremaster:
             messages.append({"role": "user", "content": tool_results})
             payload["messages"] = messages
 
+        logging.warning("  Hit max tool loops (%d)", max_loops)
         return "I got lost in the archives. Could you try a simpler question?"
 
     # ── Main chat handler ────────────────────────────────────────────────
 
     def chat(self, message, conversation_history, mode):
         """Process a chat message. Returns (response_text, updated_history, mode)."""
+        t_start = time.time()
+        logging.info("── Chat request ── mode=%s, history=%d msgs", mode, len(conversation_history))
+        logging.info("  User: %s", message[:200] + ("..." if len(message) > 200 else ""))
 
         # Passphrase toggle
         if message.strip().lower() == DM_PASSPHRASE.lower():
@@ -480,6 +509,7 @@ class Loremaster:
                     "Ah... you speak the old words. The veil lifts. "
                     "You now see as the Maestro sees."
                 )
+            logging.info("  Passphrase: %s → %s", mode, new_mode)
             updated_history = conversation_history + [
                 {"role": "user", "content": message},
                 {"role": "assistant", "content": reply},
@@ -504,17 +534,23 @@ class Loremaster:
         try:
             rag_context = self.build_rag_context(message, mode)
         except Exception as e:
-            logging.error("RAG failed: %s", e)
+            logging.error("  RAG failed: %s", e)
 
         # Build the user message with RAG context
         user_content = message
         if rag_context:
             user_content = message + "\n\n" + rag_context
+            logging.info("  RAG context: %d chars injected", len(rag_context))
+        else:
+            logging.info("  RAG context: none")
 
         anthropic_messages.append({"role": "user", "content": user_content})
 
         # Call Anthropic
         response_text = self.call_anthropic(system_prompt, anthropic_messages, mode)
+
+        total_ms = int((time.time() - t_start) * 1000)
+        logging.info("── Done ── %dms total, response %d chars", total_ms, len(response_text))
 
         # Build updated history (without RAG injection — keep it clean)
         updated_history = conversation_history + [

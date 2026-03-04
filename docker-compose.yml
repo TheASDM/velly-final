@@ -44,7 +44,7 @@ services:
       ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY}
       ANTHROPIC_MODEL: ${ANTHROPIC_MODEL:-claude-haiku-4-5-20251001}
       OLLAMA_URL: ${OLLAMA_URL:-https://ai.raptornet.dev/ollama}
-      OLLAMA_API_KEY: ${OLLAMA_API_KEY:-}
+      OLLAMA_API_KEY: ${OLLAMA_API_KEY:-${OPENWEBUI_API_KEY:-}}
       DM_PASSPHRASE: ${DM_PASSPHRASE:-Prima Volta}
     volumes:
       # Campaign data files + vector stores (read-only)
