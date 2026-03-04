@@ -48,6 +48,7 @@ class LoreMasterChatbot {
     constructor() {
         this.chatApiUrl = window.LOREMASTER_API_URL || '/api/chat';
         this.conversationHistory = [];
+        this.mode = 'player';
         this.isOpen = false;
         this.isWaitingForResponse = false;
         this.loadHistory();
@@ -58,6 +59,7 @@ class LoreMasterChatbot {
         this.setupEventListeners();
         this.displayHistory();
         this.applyMobileLayout(false);
+        this.updateModeIndicator();
         if (this.conversationHistory.length === 0) {
             this.addSystemMessage('I am the Lore Master — your guide to the city of Venturia and the Valley of Shadows. Ask me about characters, locations, factions, past sessions, or house rules.');
         }
@@ -88,6 +90,7 @@ class LoreMasterChatbot {
             <div id="chatbot-widget" class="chatbot-collapsed">
                 <div class="chatbot-header">
                     <span>Lore Master</span>
+                    <span id="dm-mode-badge" style="display:none;margin-left:0.4rem;font-size:0.55rem;letter-spacing:0.1em;text-transform:uppercase;color:#0d0b11;background:#c9a84c;padding:0.1rem 0.35rem;border-radius:2px;font-weight:700;vertical-align:middle">DM</span>
                     <button id="chat-clear-btn" style="display:none;margin-left:auto;margin-right:0.5rem;background:none;border:none;cursor:pointer;font-size:0.7rem;letter-spacing:0.08em;color:rgba(212,165,116,0.45);padding:0;line-height:1;text-transform:uppercase;font-family:inherit" title="Start a new conversation">new chat</button>
                     <span class="toggle-icon">▼</span>
                 </div>
@@ -173,11 +176,29 @@ class LoreMasterChatbot {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 message: message,
-                conversationHistory: this.conversationHistory
+                conversationHistory: this.conversationHistory,
+                mode: this.mode
             })
         });
         if (!response.ok) throw new Error(`API error: ${response.status}`);
-        return await response.json();
+        const data = await response.json();
+        if (data.mode && data.mode !== this.mode) {
+            this.mode = data.mode;
+            this.updateModeIndicator();
+            saveToLocalStorage('loreMasterMode', this.mode);
+        }
+        return data;
+    }
+    updateModeIndicator() {
+        const widget = document.getElementById('chatbot-widget');
+        const badge = document.getElementById('dm-mode-badge');
+        if (this.mode === 'dm') {
+            widget.classList.add('dm-mode');
+            if (badge) badge.style.display = 'inline';
+        } else {
+            widget.classList.remove('dm-mode');
+            if (badge) badge.style.display = 'none';
+        }
     }
     addMessage(text, role) {
         const messagesContainer = document.getElementById('chat-messages');
@@ -231,17 +252,24 @@ class LoreMasterChatbot {
     }
     saveHistory() {
         saveToLocalStorage('loreMasterHistory', this.conversationHistory);
+        saveToLocalStorage('loreMasterMode', this.mode);
     }
     loadHistory() {
         const saved = loadFromLocalStorage('loreMasterHistory');
         if (saved && Array.isArray(saved)) {
             this.conversationHistory = saved;
         }
+        const savedMode = loadFromLocalStorage('loreMasterMode');
+        if (savedMode === 'dm' || savedMode === 'player') {
+            this.mode = savedMode;
+        }
     }
     clearHistory() {
         this.conversationHistory = [];
+        this.mode = 'player';
         this.saveHistory();
         this.displayHistory();
+        this.updateModeIndicator();
         this.addSystemMessage('Conversation cleared. How can I help you?');
     }
 }

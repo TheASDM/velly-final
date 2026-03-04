@@ -36,22 +36,18 @@ services:
       - dnd-network
     restart: unless-stopped
 
-  # Chatbot service - this is your custom Claude-powered lore assistant
+  # Chatbot service - Python/Flask RAG-powered lore assistant
   chatbot:
     build: ./chatbot
     container_name: dnd_chatbot
     environment:
-      # Anthropic (default)
       ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY}
       ANTHROPIC_MODEL: ${ANTHROPIC_MODEL:-claude-haiku-4-5-20251001}
-      # Set AI_PROVIDER=openwebui to use your local Open WebUI instead
-      AI_PROVIDER: ${AI_PROVIDER:-anthropic}
-      OPENWEBUI_URL: ${OPENWEBUI_URL:-}
-      OPENWEBUI_API_KEY: ${OPENWEBUI_API_KEY:-}
-      OPENWEBUI_MODEL: ${OPENWEBUI_MODEL:-llama3.2}
-      NODE_ENV: production
+      OLLAMA_URL: ${OLLAMA_URL:-https://ai.raptornet.dev/ollama}
+      OLLAMA_API_KEY: ${OLLAMA_API_KEY:-}
+      DM_PASSPHRASE: ${DM_PASSPHRASE:-Prima Volta}
     volumes:
-      # This lets the chatbot read your campaign data files
+      # Campaign data files + vector stores (read-only)
       - ./campaign-data:/app/data:ro
       # Writable volume for chat logs
       - ./logs:/app/logs

@@ -16,3 +16,10 @@ Thumbs.db
 
 # Chat logs (written by chatbot container at runtime)
 logs/*.log
+
+# Generated vector stores (large, rebuilt by build_vectors.py)
+campaign-data/vector_store.json
+campaign-data/vector_store_player.json
+
+# Node modules
+review-tool/node_modules/

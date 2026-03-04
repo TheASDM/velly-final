@@ -1,0 +1,198 @@
+{
+  "schema_version": "1.0",
+  "category": "house_rules",
+  "entries": [
+    {
+      "id": "resting_rules",
+      "type": "house_rule",
+      "name": "Resting Rules",
+      "aliases": ["rest", "short rest", "field rest", "long rest", "safe haven", "resting"],
+      "tags": ["house_rule", "rest", "short_rest", "field_rest", "long_rest", "safe_haven", "hit_dice", "exhaustion", "recovery", "mechanics"],
+      "spoiler": false,
+      "summary": "Custom three-tier resting system replacing standard D&D rests. Short Rests take 1 hour. Field Rests are 8 hours in unsafe locations with maximized hit dice but no Long Rest benefits. Long Rests require either sleeping in your own bed or establishing a Safe Haven over 3 consecutive quiet nights.",
+      "details": [
+        {
+          "label": "Short Rest",
+          "content": "1 hour. Roll as many hit dice as you like, one at a time. Requires a relatively safe location.",
+          "spoiler": false
+        },
+        {
+          "label": "Field Rest",
+          "content": "8 hours in a non-safe location. Automatically get maximum value for any rolled hit dice. Does not provide Long Rest benefits. This is the rest type players will use most often when adventuring away from Venturia or in dangerous areas.",
+          "spoiler": false
+        },
+        {
+          "label": "Long Rest — Option A: Sleep in Your Own Bed",
+          "content": "Sleep 8 consecutive hours in your permanent home or established residence in Venturia. Long Rest benefits granted immediately.",
+          "spoiler": false
+        },
+        {
+          "label": "Long Rest — Option B: Establish a Safe Haven",
+          "content": "Sleep 8 consecutive hours per night in the same location for 3 consecutive nights without actively adventuring (no combat, dangerous exploration, or strenuous activity). After the third night, you gain Long Rest benefits. You continue to gain them each consecutive night you sleep there, as long as you don't abandon the location for more than 48 hours.",
+          "spoiler": false
+        },
+        {
+          "label": "Long Rest Benefits",
+          "content": "Recover all HP, Mana, Hit Dice, etc. Recovery: 1 Exhaustion point recovered per Long Rest.",
+          "spoiler": false
+        },
+        {
+          "label": "Secure Locations — Always Allow Long Rests",
+          "content": "Your permanent home or established residence in Venturia. Registered inns and lodging houses in Venturia proper. Protected institutional spaces (VAVA dormitories, Abbey guest quarters, etc.). These always allow Long Rests after one 8-hour sleep.",
+          "spoiler": false
+        },
+        {
+          "label": "Viable Haven Locations — Can Become Safe Havens",
+          "content": "Friendly NPC homes in Venturia (with permission and while relationship remains intact). Rented properties, safehouses, or warehouses in Venturia or safe districts. Established camps in wilderness areas of Maeve outside hostile territories. Secured locations in settlements outside Vallombrosa. These require 3 consecutive quiet nights to establish.",
+          "spoiler": false
+        },
+        {
+          "label": "Forbidden Haven Locations — Cannot Become Safe Havens",
+          "content": "Any location within Vallombrosa's fog boundary. Active enemy territory or hostile faction strongholds. Dungeons, ruins, or locations with active supernatural threats. Any location where malevolent supernatural forces operate. No amount of time spent in these locations will establish a Safe Haven.",
+          "spoiler": false
+        },
+        {
+          "label": "Losing a Safe Haven",
+          "content": "A previously established safe haven is lost if: you abandon it for more than 48 consecutive hours, the location is destroyed or becomes inaccessible, enemies or hostile forces take control of the location, or the location shifts categories (e.g., Vallombrosa's fog expands to consume it). If lost, you must re-establish it through 3 consecutive quiet nights, or find a new location.",
+          "spoiler": false
+        }
+      ],
+      "connections": [
+        {
+          "target_id": "vallombrosa",
+          "target_name": "Vallombrosa",
+          "relationship": "All locations within Vallombrosa's fog boundary are Forbidden Haven Locations — Safe Havens cannot be established there regardless of time or effort.",
+          "spoiler": false
+        },
+        {
+          "target_id": "venturia",
+          "target_name": "Venturia",
+          "relationship": "Venturia proper contains most Secure Locations (homes, inns, institutional spaces) where Long Rests are available after a single 8-hour sleep.",
+          "spoiler": false
+        }
+      ],
+      "dm_notes": "This resting system is the backbone of resource tension. It makes Venturia feel like a genuine home base and makes venturing into dangerous territory costly. Players need to plan expeditions knowing they can't fully recover without returning to safety or committing 3 nights to establishing a haven. Vallombrosa being a Forbidden zone means the party will be grinding down as they explore deeper — Field Rests keep them alive but never fully recovered."
+    },
+    {
+      "id": "heroic_reactions",
+      "type": "house_rule",
+      "name": "Heroic Reactions",
+      "aliases": ["reactions", "interpose", "opportunity attack", "help action", "assess", "reaction"],
+      "tags": ["house_rule", "combat", "reactions", "interpose", "opportunity_attack", "help", "assess", "mechanics"],
+      "spoiler": false,
+      "summary": "Custom reaction system granting one reaction per round. Players choose between any spell/ability with a reaction component OR one of four heroic options: Interpose (body-block for an ally), Opportunity Attack (with disadvantage, player-only), Help (grant advantage with narrative justification), or Assess (learn enemy information with a DC 15 check).",
+      "details": [
+        {
+          "label": "Core Rule",
+          "content": "One (1) Reaction per Round. Choose any spell or ability with a reaction component, OR one of the following Heroic Reactions.",
+          "spoiler": false
+        },
+        {
+          "label": "Interpose",
+          "content": "When a creature within 10 feet would be struck, push them out of the way and become the target instead. You enter their space, moving them to an adjacent space of your choice.",
+          "spoiler": false
+        },
+        {
+          "label": "Opportunity Attack",
+          "content": "When an adjacent enemy willingly moves away, make a melee attack with disadvantage. Only heroes can make opportunity attacks — monsters cannot.",
+          "spoiler": false
+        },
+        {
+          "label": "Help",
+          "content": "Grant an ally advantage on a roll if you can explain how you help. Automatic advantage if help is straightforward and within the helper's skillset. Requires a check if the help is creative, risky, or outside the helper's normal expertise. Not allowed if there is no plausible way to help in the fiction. Limit: One Help reaction per roll.",
+          "spoiler": false
+        },
+        {
+          "label": "Assess",
+          "content": "Make a DC 15 skill check to learn about an enemy's weakness, ability, plans, environment, story, or other useful information. The DM answers honestly. Limited to reasonably discernible information, though combat may spark unexpected insights. Tie goes to the player. Limit: One Assess per player per combat encounter.",
+          "spoiler": false
+        }
+      ],
+      "connections": [],
+      "dm_notes": "Monsters not having opportunity attacks is a major shift — it means players can reposition freely, which makes combat more dynamic and encourages tactical movement. Interpose creates heroic moments and encourages protective play. Assess is the investigation-in-combat tool that rewards players who want to learn about enemies rather than just hit them. Help requiring narrative justification keeps it from being a free advantage button."
+    },
+    {
+      "id": "dying_rules",
+      "type": "house_rule",
+      "name": "Dying and Exhaustion",
+      "aliases": ["dying", "death", "death saves", "exhaustion", "dropping to zero", "0 hp"],
+      "tags": ["house_rule", "combat", "dying", "exhaustion", "death", "hit_points", "mechanics"],
+      "spoiler": false,
+      "summary": "Custom dying system replacing death saves. Dropping to 0 HP grants 1 Exhaustion and the Dying condition but no unconsciousness. Dying characters act normally but risk Exhaustion from actions and take heavy Exhaustion from incoming damage. Death occurs at 6 Exhaustion. Exhaustion subtracts 2x points from all D20 tests and reduces movement by 5 feet per point.",
+      "details": [
+        {
+          "label": "Dropping to 0 HP",
+          "content": "Gain 1 point of Exhaustion. Gain the Dying condition until you regain HP. No unconsciousness. No death saves.",
+          "spoiler": false
+        },
+        {
+          "label": "Dying Condition Effects",
+          "content": "You act normally on your turn (action, bonus action, movement). Concentration is broken. DC 10 Constitution Save or take 1 point of Exhaustion when taking an action or bonus action that does not heal you. Taking damage causes 2 points of Exhaustion (3 on a critical hit).",
+          "spoiler": false
+        },
+        {
+          "label": "Exhaustion Mechanics",
+          "content": "This system works in addition to the 2024 edition exhaustion mechanics. Subtract 2x Exhaustion points from all D20 tests. Movement reduced by 5 feet per point. A PC dies at 6 points of Exhaustion. Recovery: 1 Exhaustion point removed per Long Rest.",
+          "spoiler": false
+        }
+      ],
+      "connections": [
+        {
+          "target_id": "resting_rules",
+          "target_name": "Resting Rules",
+          "relationship": "Exhaustion recovery requires Long Rests (1 point per Long Rest), which are only available in Secure Locations or established Safe Havens — making exhaustion accumulated during expeditions a persistent threat.",
+          "spoiler": false
+        }
+      ],
+      "dm_notes": "This system keeps players in the fight when they drop to 0 — no more lying on the ground waiting for Healing Word. But it makes dropping genuinely dangerous because Exhaustion accumulates fast and is hard to remove without returning to safety. Combined with the resting rules, a player who drops multiple times during an expedition into Vallombrosa is in serious long-term trouble. The death spiral is real but slow enough to feel fair."
+    },
+    {
+      "id": "additional_rules",
+      "type": "house_rule",
+      "name": "Additional House Rules",
+      "aliases": ["pvp", "spell components", "group checks", "skill checks", "flanking", "nat 20", "nat 1", "spell scrolls"],
+      "tags": ["house_rule", "pvp", "spell_components", "group_checks", "skill_checks", "flanking", "natural_20", "natural_1", "spell_scrolls", "trance", "hp", "mechanics"],
+      "spoiler": false,
+      "summary": "Collection of additional house rules covering PvP restrictions, simplified spell components, group and individual skill check procedures, no flanking, HP calculation by level, natural 20/1 interpretations, and universal spell scroll usage.",
+      "details": [
+        {
+          "label": "Player vs Player Combat",
+          "content": "Direct PvP is not permitted except as part of in-world contests. PCs may attack or counter-attack each other to further the story; combat concludes once it serves its narrative purpose. A post-game private chat is required to ensure hostility stays with characters, not players.",
+          "spoiler": false
+        },
+        {
+          "label": "PvP Insight Checks",
+          "content": "Permitted. One player rolls Insight, the other rolls Deception (if lying) or Persuasion (if telling the truth). The roller decides which skill to use, and the table is not told which was rolled.",
+          "spoiler": false
+        },
+        {
+          "label": "Spell Components",
+          "content": "Only components with a gold cost are physically required. All other material components are assumed to be handled by a focus or component pouch.",
+          "spoiler": false
+        },
+        {
+          "label": "Group Checks",
+          "content": "Used for group activities only. Majority pass/fail determines outcome. A Natural 20 or Natural 1 counts as 2 successes or 2 failures respectively.",
+          "spoiler": false
+        },
+        {
+          "label": "Individual Checks",
+          "content": "Generally limited to 1 party member unless reasonable assistance is offered. With assistance, choose between one roll with Advantage OR each person rolls independently. If rolling with Advantage, the DM determines who rolls based on who does the heavy lifting.",
+          "spoiler": false
+        },
+        {
+          "label": "Untimed Skill Checks",
+          "content": "If there is no time limit and the PC is capable of the task, the check determines how long it takes and whether complications arise, not whether they succeed or fail.",
+          "spoiler": false
+        },
+        {
+          "label": "Miscellaneous Rules",
+          "content": "Trance resting must occur in the same general area for the full duration. No flanking. Max HP at odd levels, average or rolled at even levels. Natural 20 on a skill check means the best possible outcome, not an automatic success. Natural 1 on a skill check is an auto-fail even with high bonuses (Reliable Talent usually prevents this, but DM may impose consequences). Spell Scrolls: Anyone may attempt to use a spell scroll with a DC 12 Arcana check; the scroll is consumed regardless of success or failure.",
+          "spoiler": false
+        }
+      ],
+      "connections": [],
+      "dm_notes": "The PvP Insight rule is designed for this specific campaign where secrets and deception between PCs are thematic. The roller choosing their own skill and the table not knowing which was used preserves ambiguity — you never know for sure if someone is lying or telling the truth. Untimed skill checks remove binary pass/fail from non-dramatic situations and keep the game moving. No flanking keeps combat from being a positioning game and makes advantage feel earned."
+    }
+  ]
+}

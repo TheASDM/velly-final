@@ -1,16 +1,12 @@
-FROM node:18-alpine
+FROM python:3.11-slim
 
 WORKDIR /app
 
-# Copy package files first (Docker caching optimization)
-COPY package*.json ./
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
 
-# Install dependencies
-RUN npm install --omit=dev
-
-# Copy application code
-COPY . .
+COPY server.py .
 
 EXPOSE 3001
 
-CMD ["node", "index.js"]
+CMD ["gunicorn", "-b", "0.0.0.0:3001", "-w", "2", "--timeout", "120", "server:app"]
