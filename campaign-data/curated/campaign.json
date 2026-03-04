@@ -451,7 +451,7 @@
         },
         {
           "label": "Immediate Multi-PC Stakes",
-          "content": "Noname: her fiancé is missing, mysterious scarred man appeared in his place, her memory of the night is foggy (Silas manipulated it). Kryton: his friend disappeared the same night, feels responsible since he introduced Noname and Marcus. Orabella: actively caring for the comatose patient, trying to understand the supernatural scars — she's a fog child herself, so supernatural phenomena resonate differently for her. Lotan: his patron (the Keeper) can potentially identify the prisoner brands if shown or described. Party-wide: personal crisis affecting multiple members from session one.",
+          "content": "Noname: her fiancé is missing, mysterious scarred man appeared in his place, her memory of the night is foggy (Silas manipulated it). Kryton: his close friend Marcus disappeared the same night, driving his obsessive investigation. Orabella: actively caring for the comatose patient, trying to understand the supernatural scars — she's a fog child herself, so supernatural phenomena resonate differently for her. Lotan: his patron (the Keeper) can potentially identify the prisoner brands if shown or described. Party-wide: personal crisis affecting multiple members from session one.",
           "spoiler": true
         },
         {
@@ -493,7 +493,7 @@
         {
           "target_id": "kryton",
           "target_name": "Kryton Novelli",
-          "relationship": "His friend is the missing Fog Warden; introduced Noname and Marcus",
+          "relationship": "His close friend is the missing Fog Warden; feels guilt over the disappearance",
           "spoiler": true
         },
         {
@@ -609,11 +609,11 @@
         {
           "label": "Masks and Identity Cluster",
           "content": "Caravel: Masquers' Sodality apprentice, family tragedy at the Masquerade. Roxy: stole a mask to come to Venturia. Lotan: patron is the Keeper of Faces (domain: masks, identity). Perfect cluster for a campaign about stolen identity, Lorenzo's curse, appearance vs. reality.",
-          "spoiler": false
+          "spoiler": true
         },
         {
           "label": "Forgotten/Stolen Identity Cluster",
-          "content": "Kryton: sees tools as swords, muscle memory suggesting warrior past — exactly the kind of memory bleed the campaign uses. Orabella: memories returning that frighten her. Noname's father: no memory of life before appearing. Kryton: lost wizard knowledge and abilities. All tie directly to the campaign's memory manipulation and identity theft themes.",
+          "content": "Valentro: sees tools as swords, muscle memory suggesting warrior past — exactly the kind of memory bleed the campaign uses. Orabella: memories returning that frighten her. Noname's father: no memory of life before appearing. Kryton: lost wizard knowledge and abilities. All tie directly to the campaign's memory manipulation and identity theft themes.",
           "spoiler": false
         },
         {
@@ -623,7 +623,7 @@
         },
         {
           "label": "Pre-Campaign Timeline of Intersections",
-          "content": "Lotan meets Roxy (1 year before campaign). Caravel befriends Roxy (timing unclear). Noname and Orabella (childhood at Liminal House, current patient-healer relationship). Roxy discovers Kryton's secret (recent). Kryton introduced Noname to Marcus (past). Kryton taught at VAVA (connections to any PC students).",
+          "content": "Lotan meets Roxy (1 year before campaign). Caravel befriends Roxy (timing unclear). Noname and Orabella (childhood at Liminal House, current patient-healer relationship). Roxy discovers Kryton's secret (recent). Kryton is close friends with Marcus (past). Kryton taught at VAVA (connections to any PC students).",
           "spoiler": false
         }
       ],

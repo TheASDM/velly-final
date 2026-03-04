@@ -442,7 +442,7 @@
         "reality_distortion"
       ],
       "spoiler": false,
-      "summary": "Supernatural entities manifesting as the Pale Carnival spills through cracks in the Archfey's prison. NOT servants of the Keeper — they are contents of a degraded fey court crossing into the material plane without context or coherence. They escalate from atmosphere to Maskless fey to architectural overlap.",
+      "summary": "Supernatural entities and strange phenomena manifesting in Venturia with increasing frequency. They escalate from unsettling atmosphere to bizarre mimicking creatures to reality distortions that warp entire neighborhoods.",
       "details": [
         {
           "label": "Nature — Pale Carnival Spillage",
@@ -450,8 +450,8 @@
           "spoiler": true
         },
         {
-          "label": "Early Phase — Atmosphere Leaking",
-          "content": "The Carnival's atmosphere bleeding through. Animals that feel wrong have briefly passed through a reflection of the Pale Carnival and come back wearing their own faces awkwardly. Shadow wisps are trailing edges of masquerade costumes from the other side, present in Venturia without any body attached.",
+          "label": "Early Phase — Atmosphere",
+          "content": "Animals that feel wrong — wearing their own faces awkwardly, as if they briefly passed through somewhere else and came back slightly different. Shadow wisps trailing through alleys without any body attached. Unsettling but not dangerous.",
           "spoiler": false
         },
         {

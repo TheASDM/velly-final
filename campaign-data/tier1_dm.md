@@ -2,18 +2,18 @@
 
 ## Characters
 ### Player Characters
-**Lotan** (Kenny, Ken, Lotin) [pc] — Player: Kenny
-A pirate-descended Fighter/Warlock hybrid whose warlock pact was hijacked by a mysterious supernatural entity during the dream-contract finalization with a Kraken patron.
+**Lotan** (Kenny, Ken, Lotin) [pc] — Player: Kenny — he/him, late 30s to early 40s
+A Fighter/Warlock hybrid who sought patronage from a Kraken but pissed it off — the reason he's been stuck on land since arriving in Venturia. During the dream-contract finalization, a third entity hijacked the pact, and Lotan knows this entity is his true patron.
 Concept: Custom Fighter/Warlock hybrid (Eldritch Knight transitioning to Warlock). Descended from a previous Curse of Strahd character.
-Background: Pirate or pirate-pretender. Arrived in Venturia after sailing from abroad, having met Roxy on the journey.
-Warlock Pact: Lotan sought patronage from a Kraken. During the dream-contract finalization, a third party hijacked the pact, offering weaker immediate power but greater potential in exchange for…
+Background: Pirate or pirate-pretender. Arrived in Venturia after sailing from abroad, having met Roxy on the journey. He pissed off a Kraken — that's why he's been on land since arriving in the city.
+Warlock Pact: Lotan sought patronage from a Kraken but angered it in the process. During the dream-contract finalization, a third entity hijacked the pact, offering weaker immediate power but greater potential in exchange for…
 [SPOILER] True Patron Identity: The entity that hijacked Lotan's pact is the Keeper of Faces — the imprisoned Archfey who is one of the campaign's central supernatural forces. Lotan has a direct, personal connect…
 [SPOILER] Campaign Role: His patron connection provides built-in exposition delivery through dreams and visions, personal stakes in the Archfey's imprisonment, moral complexity about whether freeing his pa…
 Pre-Campaign Connection: Met Roxy one year before campaign start during her travel to Venturia. Showed her around the city and taught her about merchant areas.
 Connections: Roxy (Met on ship to Venturia; he guided her around the city when they arriv) | [SPOILER] The Keeper of Faces (Patron — an imprisoned Archfey who hijacked Lotan's warlock pact)
 [DM] Lotan's patron IS the Keeper of Faces, the imprisoned Archfey at the center of the campaign. The Keeper can recognize prisoner brands (like Silas's scars) and communicate through dreams. Moral complex…
 
-**Caravel "Car" Asteri** (Car, Car Asteri, Katelynn) [pc] — Player: Katelynn
+**Caravel "Car" Asteri** (Car, Car Asteri, Katelynn) [pc] — Player: Katelynn — they/them, he/him, she/her, age 19
 A Venturia native and Masquers' Sodality apprentice who is categorically opposed to secrets, having witnessed a friend's death following a secret deal at the Autumn Masquerade.
 Concept: Custom Masquerade Bard subclass. Born and raised in Venturia.
 Family: Parents run The Covenant Archive. She has a 'perfect' twin sister favored by her parents. Family are friends with the owners of The Burnt Quill. She rejected the family business.
@@ -25,39 +25,39 @@ Connection to Orabella: The theater star Orabella is infatuated with is the olde
 Connections: Roxy (Unlikely friendship despite opposing philosophies on secrets; Roxy cul) | Orabella (Indirect connection through the theater star Celina Cross, who is the ) | Celina Cross (Celina is the older sister of Car's friend who died at the Autumn Masq) | The Masquers' Sodality (Apprentice with the Masquers' Sodality) | The Covenant Archive (Parents run the Covenant Archive; she rejected the family business)
 [DM] The 'unknown third party' in the deal Car witnessed is a thread to develop. Her anti-secrets stance creates natural friction with Roxy and thematic resonance with the campaign's hidden truths. Her Mas…
 
-**Noname** (Amy, No-Nom-Eh, NoNomEh) [pc] — Player: Amy
+**Noname** (Amy, No-Nom-Eh, NoNomEh) [pc] — Player: Amy — she/her, age 24
 A Fog Warden Barbarian seeking treatment at Viro's Respite for foggy, unclear memories surrounding her fiancé's recent disappearance.
 Concept: Barbarian Fog Warden trying to calm her rage. Raised at Liminal House after her parents died young.
 Family Background: Her father was a 'fog child' — a person who appeared from Vallombrosa with no memories as a child and was raised by Liminal House. Noname herself also went to Liminal House after h…
 Inciting Incident: Her fiancé, a fellow Fog Warden, disappeared under mysterious circumstances. Her memory of the event is foggy and unclear. She is currently seeking treatment at Viro's Respite.
 [SPOILER] True Cause of Memory Issues: Silas manipulated Noname's memory during or after the incident where her fiancé disappeared. This was one of his first uses of his memory manipulation abilities in Venturia — crude…
 [SPOILER] Her Fiancé's Fate: Her fiancé (Marcus, a Fog Warden) disappeared the same night Silas appeared at the Fog Warden post. Marcus is also Kryton's close friend. His ultimate fate — dead, trapped in the p…
-Connections: Orabella (Childhood acquaintance at Liminal House; Orabella is now her healer at) | Valentro (Both raised at Liminal House; Valentro was present when Noname's fianc) | Kryton Novelli (Kryton introduced Noname to her fiancé (now disappeared) and feels gui) | Marcus (Her fiancé, a Fog Warden who disappeared under mysterious circumstance) | The Fog Wardens' Garrison (Fog Warden stationed at the Overlook)
+Connections: Orabella (Childhood acquaintance at Liminal House; Orabella is now her healer at) | Valentro (Both raised at Liminal House; Valentro was present when Noname's fianc) | Kryton Novelli (Kryton is close friends with Marcus; feels guilt over disappearance) | Marcus (Her fiancé, a Fog Warden who disappeared under mysterious circumstance) | The Fog Wardens' Garrison (Fog Warden stationed at the Overlook)
 [DM] Noname sits at the intersection of the Fog Warden disappearances, memory manipulation, and Liminal House themes. Her father being a fog child connects the campaign's deep history to the present. Her f…
 
-**Valentro** (Ren, Valen, Val) [pc] — Player: Ren
-An elf Ranger who works in the Tiered Gardens and is haunted by a strange incident where her gardening shears appeared to her as short swords — muscle memory from a past she cannot recall.
-Concept: Elf Ranger. Works in the Tiered Gardens with her mentor 'Strider' (way of the leaf). Raised at Liminal House after being orphaned.
-Family Loss: Her father was a Fog Warden who disappeared. Her mother died before her father's disappearance. She was raised at Liminal House.
-The Sword Moment: While gardening, her shears broke and she suddenly saw them as short swords — muscle memory or a forgotten identity surfacing. This may be evidence of memory bleed, a suppressed wa…
-Roxy's Knowledge of the Sword Moment: Roxy witnessed the sword incident and is now secretly training Valentro while knowing her secret. Roxy is using this knowledge as leverage while also providing genuine help.
-Roxy's Witness: Roxy is the only other person who knows about the sword moment. She approached Valentro afterward and offered training — partly genuine, partly to maintain access to a valuable sec…
+**Valentro** (Ren, Valen, Val) [pc] — Player: Ren — he/him, age 19
+An elf Ranger who works in the Tiered Gardens and is haunted by a strange incident where his gardening shears appeared to him as short swords — muscle memory from a past he cannot recall.
+Concept: Elf Ranger. Works in the Tiered Gardens with his mentor 'Strider' (way of the leaf). Raised at Liminal House after being orphaned.
+Family Loss: His father was a Fog Warden who disappeared. His mother died before his father's disappearance. He was raised at Liminal House.
+The Sword Moment: While gardening, his shears broke and he suddenly saw them as short swords — muscle memory or a forgotten identity surfacing. This may be evidence of memory bleed, a suppressed wa…
+Roxy's Knowledge of the Sword Moment: Roxy witnessed the sword incident and is now secretly training Valentro while knowing his secret. Roxy is using this knowledge as leverage while also providing genuine help.
+Roxy's Witness: Roxy is the only other person who knows about the sword moment. She approached Valentro afterward and offered to train him — partly genuine, partly to maintain access to a valuable sec…
 [SPOILER] True Nature of the Sword Moment: The sword moment likely represents memory bleed from a suppressed or stolen past identity. Could indicate: reincarnation of one of the original one-shot adventurers, a fog child wh…
 Connections: Noname (Both raised at Liminal House; Valentro was present at Noname's fiancé') | Orabella (Both raised at Liminal House, slightly less close than Noname and Orab) | Roxy (Roxy witnessed the sword incident and is now training Valentro — a rel) | Kryton Novelli (Kryton may know Valentro casually from frequenting the Tiered Gardens)
-[DM] Valentro's sword moment = memory bleed of same type as the campaign's broader memory manipulation themes. Her father's disappearance as a Fog Warden mirrors Noname's fiancé's disappearance — these two…
+[DM] Valentro's sword moment = memory bleed of same type as the campaign's broader memory manipulation themes. His father's disappearance as a Fog Warden mirrors Noname's fiancé's disappearance — these two…
 
-**Kryton Novelli** (Kryton, Shawn, Sean) [pc] — Player: Shawn
-A VAVA faculty member and former Wizard turned Warlock whose memories — including his wizard spell knowledge — were stolen. Bound to an unknown patron through a desperate ritual he believes he can control.
+**Kryton Novelli** (Kryton, Shawn, Sean) [pc] — Player: Shawn — he/him, age 40s
+A VAVA faculty member and former Wizard turned Warlock whose memories — including his wizard spell knowledge — were stolen. Bound to an unknown patron through a desperate ritual, he believes he can find a way to escape the pact.
 Concept: Mid-career VAVA faculty member, brilliant but increasingly erratic. Former Wizard who is now a Warlock. Has a gambling problem at The Undertow.
-The Disappearance: His close friend — a Fog Warden he introduced to Noname — disappeared the same night Silas appeared. Kryton investigated obsessively and discovered patterns in Fog Warden disappear…
-Memory Theft: Someone working through The Undertow stole Kryton's memories, including his wizard spell knowledge. He lost his magical abilities and much of his investigative findings.
-The Warlock Pact: Desperate to recover his abilities, Kryton gambled at The Undertow trying to win his memories back. Instead he won someone else's memory — a vision of a warlock tome and ritual. He…
-His Fatal Flaw: Kryton believes he can outsmart his patron and find loopholes in the contract. He doesn't understand that his patron is manipulating him toward something, that the pact is far more…
+The Disappearance: His close friend Marcus — a Fog Warden — disappeared the same night Silas appeared. Kryton asked questions at VAVA about the disappearance but got no answers. He investigated obsessively on his own and discovered patterns in Fog Warden disappearances and evidence of city-wide memory manipulation.
+Memory Theft: After getting no answers from VAVA about Marcus's disappearance, someone stole Kryton's memories — including his wizard spell knowledge — through The Undertow. He lost his magical abilities and much of his investigative findings.
+The Warlock Pact: After losing his memories and magic, Kryton had essentially given up. But gambling at The Undertow, he won someone else's memory — a vision of a warlock tome and ritual. He performed the ritual and bound himself to an unknown patron, regaining magical power through the pact.
+His Confidence: Kryton believes he can find a way to escape the pact — that there are loopholes in the contract if he's clever enough to find them. He's driven by the conviction that this arrangement is temporary and that he'll outsmart his patron eventually.
 [SPOILER] True Patron Identity: Kryton's patron is Tartuzi the sphinx — the same sphinx whose consultation with Lorenzo centuries ago led directly to her own enslavement as the Archfey's prison lock. She has been…
-Connections: Noname (Introduced Noname to her fiancé (the disappeared Fog Warden); feels pr) | [SPOILER] Silas (Kryton's investigation led him to discover patterns Silas is responsib) | [SPOILER] Tartuzi (His unknown warlock patron — a sphinx imprisoned for a millennium as t) | The Undertow (Regular gambling patron; the location where his memories were stolen a) | Marcus (Close friend — Kryton introduced Marcus to Noname. Marcus's disappeara) | Venturian Academy of Veiled Arts (Faculty member at VAVA)
-[DM] Kryton's patron IS Tartuzi. This creates a fascinating dynamic: his patron is simultaneously a victim (imprisoned for a millennium) and potentially dangerous (her agenda is unknown). His intellectual …
+Connections: Noname (Close friends with Marcus; feels guilt about disappearance) | [SPOILER] Silas (Kryton's investigation led him to discover patterns Silas is responsib) | [SPOILER] Tartuzi (His unknown warlock patron — a sphinx imprisoned for a millennium as t) | The Undertow (Regular gambling patron; the location where his memories were stolen a) | Marcus (Close friend. Marcus's disappearance drove Kryton's obsessive investigation.) | Venturian Academy of Veiled Arts (Faculty member at VAVA)
+[DM] Kryton's patron IS Tartuzi. This creates a fascinating dynamic: his patron is simultaneously a victim (imprisoned for a millennium) and potentially dangerous (her agenda is unknown). He genuinely believes he can escape the pact — his confidence is the tragic irony, because she's been playing this game for a thousand years. He asked questions at VAVA about Marcus's disappearance but got stonewalled. The memory theft happened through The Undertow — explore who or what orchestrates memory theft there.
 
-**Orabella** (Jennifer, Jen, Jenny) [pc] — Player: Jennifer
+**Orabella** (Jennifer, Jen, Jenny) [pc] — Player: Jennifer — she/her, age 24
 A fog child raised at Liminal House who now works as a cleric at St. Viro's Respite. She experiences vivid first-person dreams of being other people — dreams she believes are memories from lives she has lived.
 Concept: Cleric working at St. Viro's Respite. Fog child who appeared at Liminal House as a child with no memory of her life before.
 The Dreams: Shortly after arriving at Liminal House, Orabella began having vivid first-person dreams where she IS someone else — different body, different life, different circumstances. Always…
@@ -71,7 +71,7 @@ Investigation: Orabella is attempting to access hidden records kept by Viro's Re
 Connections: Noname (Childhood acquaintance at Liminal House; now Noname's healer at Viro's) | Valentro (Both raised at Liminal House, slightly less close; potential reconnect) | Caravel "Car" Asteri (Indirect connection through Celina Cross — the theater star is the old) | Celina Cross (Orabella is infatuated with this theater performer; attends her shows ) | Silas (Orabella is his caretaker while he is comatose; she is studying his un) | St. Viro's Respite (Works as a healer and cleric at St. Viro's Respite)
 [DM] Orabella has TOO MANY identities (opposite of other memory victims). Her struggle: which memories are actually hers? She sits at the exact center of the memory crisis — caring for Silas (memory manipu…
 
-**Roxanya** (Roxy, Danielle, Rox) [pc] — Player: Danielle
+**Roxanya** (Roxy, Danielle, Rox) [pc] — Player: Danielle — she/her, age 19
 A 19-year-old forest gnome raised by a community of Brownies who genuinely believed she was one of them until age 8. Now a VAVA student maintaining a facade of magical competence, a secret collector driven by a divine pact with Garl Glittergold, and on a desperate mission to save her people from the Binding — an ancient enslavement magic threatening brownie survival.
 Concept: Arcane Trickster Rogue. Forest gnome, 3ft tall, sun-tanned skin with freckles, wild curly red hair. Wears swashbuckler attire (adopted after meeting Lotan on the ship). Always has …
 Brownie Upbringing: Abandoned as an infant in the forests of Aminon, outside Hearthspire (north of the river on Eldoria mainland). Found by a rummage of Brownies and raised as one of their own. Until …
@@ -107,7 +107,7 @@ The Scars: The scars on his body are not natural wounds. They are supernatural b
 Connections: Orabella (Orabella is his caretaker at Viro's Respite; she is studying his scars) | [SPOILER] Noname (He manipulated Noname's memory of the night her fiancé disappeared; ap) | [SPOILER] The Keeper of Faces (Bears the Keeper's prisoner brands; his abilities derive from connecti) | [SPOILER] Tolomeo Lucente (Cultivated Tolomeo's trust over decades inside the prison, then murder) | [SPOILER] Tartuzi (Tartuzi always knew what Silas truly was but couldn't warn Tolomeo wit) | [SPOILER] Marcus (Silas swapped places with Marcus to escape the prison — Marcus was the)
 [DM] Silas's secondary agenda beyond scholarly research is still open. What specifically is he building toward that climaxes at the Masquerade? Does he create all Bound individuals, or primarily targeted o…
 
-**Celina Cross** (Isabella, Celina, Cross) [npc]
+**Celina Cross** (Isabella, Celina, Cross) [npc] — age 23
 A celebrated performer at the Amaranth Theater. Orabella is infatuated with her and attends her shows whenever possible. She is the older sister of Car's friend who died at the Autumn Masquerade.
 Public Identity: A star performer at the Amaranth Theater in the High Quarter. One of the most celebrated actors on the island. Orabella attends her performances regularly.
 Family Connection: She is the older sister of the friend Car witnessed making a secret deal before dying at the Autumn Masquerade. She may or may not know the full circumstances of her sibling's deat…
@@ -118,11 +118,11 @@ Connections: Orabella (Orabella is her devoted theater fan; the infatuation mirr
 
 **Marcus** (The Missing Fog Warden, Noname's Fiancé, Amy's Fiancé) [npc]
 A Fog Warden stationed at the Overlook and Noname's fiancé. He disappeared the same night the scarred stranger appeared at the fog line. His disappearance is one of the campaign's earliest personal mysteries.
-Who He Is: A Fog Warden who volunteered for the Overlook posting. Noname's fiancé. Close friend of Kryton Novelli — Kryton introduced Marcus to Noname.
+Who He Is: A Fog Warden who volunteered for the Overlook posting. Noname's fiancé. Close friend of Kryton Novelli.
 The Disappearance: Vanished the same night Silas appeared at the fog line. No body was found. The circumstances are unclear, and Noname's memory of the event has been tampered with.
 [SPOILER] His True Fate: Marcus is alive — trapped inside the fey prison that Silas escaped from. The prison operates on a conservation principle: what goes out must come in. Silas found a way to swap hims…
 [SPOILER] Rescue Implications: If the party learns Marcus is alive and imprisoned, rescuing him becomes a concrete, personal objective tied to the larger prison mystery. The same swap mechanics that put him in m…
-Connections: Noname (His fiancée — she is seeking treatment for foggy memories of the night) | Kryton Novelli (Close friend who introduced Marcus to Noname) | [SPOILER] Silas (Silas swapped places with Marcus to escape the prison — Marcus is the ) | [SPOILER] The Keeper of Faces (Marcus is now a prisoner in the Keeper's domain, the Reverie Solenne)
+Connections: Noname (His fiancée — she is seeking treatment for foggy memories of the night) | Kryton Novelli (Close friend whose obsessive investigation was driven by Marcus's disappearance) | [SPOILER] Silas (Silas swapped places with Marcus to escape the prison — Marcus is the ) | [SPOILER] The Keeper of Faces (Marcus is now a prisoner in the Keeper's domain, the Reverie Solenne)
 [DM] Marcus's fate is the most immediately personal stakes in the campaign — Noname wants her fiancé back, Kryton wants his friend back. The swap mechanism means getting Marcus out likely requires putting …
 
 **The Keeper of Faces** (The Archfey, Lotan's Patron, Keeper) [npc]
@@ -824,7 +824,7 @@ The campaign's actual opening event. On the same night, Fog Warden Marcus disapp
 [SPOILER] Immediate Multi-PC Stakes: Noname: her fiancé is missing, mysterious scarred man appeared in his place, her memory of the night is foggy (Silas manipulated it). Kryton: his friend disappeared the same night,…
 [SPOILER] Investigation Threads: The Fog Warden post — what happened that night, garrison logs, other witnesses. The scarred patient — who is he, where did the marks come from, why won't he wake. Orabella's memory…
 [SPOILER] Noname's Foggy Memory: Has direct cause: Silas manipulated Noname's memory during or after the incident. This was his first use of abilities in Venturia — crude and incomplete, which is why the memory is…
-Connections: [SPOILER] Silas Vane (The scarred comatose figure is Silas, freshly escaped from the Archfey) | [SPOILER] Marcus (The missing Fog Warden whose disappearance coincides with Silas's appe) | [SPOILER] Noname (Her fiancé is the missing man; her memory was manipulated by Silas) | [SPOILER] Orabella (Caring for the comatose Silas at St. Viro's Respite) | [SPOILER] Kryton Novelli (His friend is the missing Fog Warden; introduced Noname and Marcus) | [SPOILER] Lotan (His patron can potentially identify the prisoner brands)
+Connections: [SPOILER] Silas Vane (The scarred comatose figure is Silas, freshly escaped from the Archfey) | [SPOILER] Marcus (The missing Fog Warden whose disappearance coincides with Silas's appe) | [SPOILER] Noname (Her fiancé is the missing man; her memory was manipulated by Silas) | [SPOILER] Orabella (Caring for the comatose Silas at St. Viro's Respite) | [SPOILER] Kryton Novelli (His close friend is the missing Fog Warden; feels guilt over the disappearance) | [SPOILER] Lotan (His patron can potentially identify the prisoner brands)
 [DM] This opening immediately gives four PCs personal stakes in the central mystery without any forced exposition. The noble kidnapping investigation from the Unified Framework may still occur as a later A…
 
 **Session One Decision Framework** (Critical Questions, Pre-Campaign Decisions) [planning]

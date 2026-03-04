@@ -35,8 +35,10 @@
         "red_character",
         "kenny_character"
       ],
+      "pronouns": "he/him",
+      "age": "late 30s to early 40s",
       "spoiler": false,
-      "summary": "A pirate-descended Fighter/Warlock hybrid whose warlock pact was hijacked by a mysterious supernatural entity during the dream-contract finalization with a Kraken patron.",
+      "summary": "A Fighter/Warlock hybrid who sought patronage from a Kraken but pissed it off — the reason he's been stuck on land since arriving in Venturia. During the dream-contract finalization, a third entity hijacked the pact, and Lotan knows this entity is his true patron.",
       "details": [
         {
           "label": "Concept",
@@ -45,12 +47,12 @@
         },
         {
           "label": "Background",
-          "content": "Pirate or pirate-pretender. Arrived in Venturia after sailing from abroad, having met Roxy on the journey.",
+          "content": "Pirate or pirate-pretender. Arrived in Venturia after sailing from abroad, having met Roxy on the journey. He pissed off a Kraken — that's why he's been on land since arriving in the city.",
           "spoiler": false
         },
         {
           "label": "Warlock Pact",
-          "content": "Lotan sought patronage from a Kraken. During the dream-contract finalization, a third party hijacked the pact, offering weaker immediate power but greater potential in exchange for help freeing the entity from imprisonment.",
+          "content": "Lotan sought patronage from a Kraken but angered it in the process. During the dream-contract finalization, a third entity hijacked the pact, offering weaker immediate power but greater potential in exchange for help freeing it. Lotan knows this entity is his true patron and accepted the deal willingly.",
           "spoiler": false
         },
         {
@@ -130,6 +132,8 @@
         "androgynous",
         "katelynn_character"
       ],
+      "pronouns": "they/them, he/him, she/her",
+      "age": "19",
       "spoiler": false,
       "summary": "A Venturia native and Masquers' Sodality apprentice who is categorically opposed to secrets, having witnessed a friend's death following a secret deal at the Autumn Masquerade.",
       "details": [
@@ -239,6 +243,8 @@
         "rager",
         "amy_character"
       ],
+      "pronouns": "she/her",
+      "age": "24",
       "spoiler": false,
       "summary": "A Fog Warden Barbarian seeking treatment at Viro's Respite for foggy, unclear memories surrounding her fiancé's recent disappearance.",
       "details": [
@@ -284,7 +290,7 @@
         {
           "target_id": "kryton",
           "target_name": "Kryton Novelli",
-          "relationship": "Kryton introduced Noname to her fiancé (now disappeared) and feels guilt over the connection",
+          "relationship": "Kryton is close friends with Marcus (Noname's disappeared fiancé) and feels guilt over the disappearance",
           "spoiler": false
         },
         {
@@ -300,7 +306,7 @@
           "spoiler": false
         }
       ],
-      "dm_notes": "Noname sits at the intersection of the Fog Warden disappearances, memory manipulation, and Liminal House themes. Her father being a fog child connects the campaign's deep history to the present. Her foggy memory IS Silas's doing. Consider: Option C (mixed/conflicting memories) for maximum horror. Valentro's father also disappeared as a Fog Warden — the pattern of Fog Wardens being targeted should become apparent.",
+      "dm_notes": "Noname sits at the intersection of the Fog Warden disappearances, memory manipulation, and Liminal House themes. Her father being a fog child connects the campaign's deep history to the present. Her foggy memory IS Silas's doing. Consider: Option C (mixed/conflicting memories) for maximum horror. Valentro's father also disappeared as a Fog Warden — the pattern of Fog Wardens being targeted should become apparent. Kryton is close friends with Marcus but did NOT introduce them.",
       "player": "Amy"
     },
     {
@@ -336,37 +342,39 @@
         "short_swords",
         "ren_character"
       ],
+      "pronouns": "he/him",
+      "age": "19",
       "spoiler": false,
-      "summary": "An elf Ranger who works in the Tiered Gardens and is haunted by a strange incident where her gardening shears appeared to her as short swords — muscle memory from a past she cannot recall.",
+      "summary": "An elf Ranger who works in the Tiered Gardens and is haunted by a strange incident where his gardening shears appeared to him as short swords — muscle memory from a past he cannot recall.",
       "details": [
         {
           "label": "Concept",
-          "content": "Elf Ranger. Works in the Tiered Gardens with her mentor 'Strider' (way of the leaf). Raised at Liminal House after being orphaned.",
+          "content": "Elf Ranger. Works in the Tiered Gardens with his mentor 'Strider' (way of the leaf). Raised at Liminal House after being orphaned.",
           "spoiler": false
         },
         {
           "label": "Family Loss",
-          "content": "Her father was a Fog Warden who disappeared. Her mother died before her father's disappearance. She was raised at Liminal House.",
+          "content": "His father was a Fog Warden who disappeared. His mother died before his father's disappearance. He was raised at Liminal House.",
           "spoiler": false
         },
         {
           "label": "The Sword Moment",
-          "content": "While gardening, her shears broke and she suddenly saw them as short swords — muscle memory or a forgotten identity surfacing. This may be evidence of memory bleed, a suppressed warrior past, or reincarnation echoes.",
+          "content": "While gardening, his shears broke and he suddenly saw them as short swords — muscle memory or a forgotten identity surfacing. This may be evidence of memory bleed, a suppressed warrior past, or reincarnation echoes.",
           "spoiler": false
         },
         {
           "label": "Roxy's Knowledge of the Sword Moment",
-          "content": "Roxy witnessed the sword incident and is now secretly training Valentro while knowing her secret. Roxy is using this knowledge as leverage while also providing genuine help.",
+          "content": "Roxy witnessed the sword incident and is now secretly training Valentro while knowing his secret. Roxy is using this knowledge as leverage while also providing genuine help.",
           "spoiler": false
         },
         {
           "label": "Roxy's Witness",
-          "content": "Roxy is the only other person who knows about the sword moment. She approached Valentro afterward and offered training — partly genuine, partly to maintain access to a valuable secret.",
+          "content": "Roxy is the only other person who knows about the sword moment. She approached Valentro afterward and offered to train him — partly genuine, partly to maintain access to a valuable secret.",
           "spoiler": false
         },
         {
           "label": "True Nature of the Sword Moment",
-          "content": "The sword moment likely represents memory bleed from a suppressed or stolen past identity. Could indicate: reincarnation of one of the original one-shot adventurers, a fog child whose warrior past is surfacing, or a victim of memory manipulation whose true memories are fighting through. Her father's disappearance follows the same Fog Warden targeting pattern as Noname's fiancé.",
+          "content": "The sword moment likely represents memory bleed from a suppressed or stolen past identity. Could indicate: reincarnation of one of the original one-shot adventurers, a fog child whose warrior past is surfacing, or a victim of memory manipulation whose true memories are fighting through. His father's disappearance follows the same Fog Warden targeting pattern as Noname's fiancé.",
           "spoiler": true
         }
       ],
@@ -396,7 +404,7 @@
           "spoiler": false
         }
       ],
-      "dm_notes": "Valentro's sword moment = memory bleed of same type as the campaign's broader memory manipulation themes. Her father's disappearance as a Fog Warden mirrors Noname's fiancé's disappearance — these two should realize the pattern together. Roxy's training relationship is both genuine and strategic. Potential reincarnation hook for later campaign development.",
+      "dm_notes": "Valentro's sword moment = memory bleed of same type as the campaign's broader memory manipulation themes. His father's disappearance as a Fog Warden mirrors Noname's fiancé's disappearance — these two should realize the pattern together. Roxy's training relationship is both genuine and strategic. Potential reincarnation hook for later campaign development.",
       "player": "Ren"
     },
     {
@@ -442,8 +450,10 @@
         "gambler",
         "shawn_character"
       ],
+      "pronouns": "he/him",
+      "age": "40s",
       "spoiler": false,
-      "summary": "A VAVA faculty member and former Wizard turned Warlock whose memories — including his wizard spell knowledge — were stolen. Bound to an unknown patron through a desperate ritual he believes he can control.",
+      "summary": "A VAVA faculty member and former Wizard turned Warlock whose memories — including his wizard spell knowledge — were stolen. Bound to an unknown patron through a desperate ritual, he believes he can find a way to escape the pact.",
       "details": [
         {
           "label": "Concept",
@@ -452,22 +462,22 @@
         },
         {
           "label": "The Disappearance",
-          "content": "His close friend — a Fog Warden he introduced to Noname — disappeared the same night Silas appeared. Kryton investigated obsessively and discovered patterns in Fog Warden disappearances and evidence of city-wide memory manipulation.",
+          "content": "His close friend Marcus — a Fog Warden — disappeared the same night Silas appeared. Kryton asked questions at VAVA about the disappearance but got no answers. He investigated obsessively on his own and discovered patterns in Fog Warden disappearances and evidence of city-wide memory manipulation.",
           "spoiler": false
         },
         {
           "label": "Memory Theft",
-          "content": "Someone working through The Undertow stole Kryton's memories, including his wizard spell knowledge. He lost his magical abilities and much of his investigative findings.",
+          "content": "After getting no answers from VAVA about Marcus's disappearance, someone stole Kryton's memories — including his wizard spell knowledge — through The Undertow. He lost his magical abilities and much of his investigative findings.",
           "spoiler": false
         },
         {
           "label": "The Warlock Pact",
-          "content": "Desperate to recover his abilities, Kryton gambled at The Undertow trying to win his memories back. Instead he won someone else's memory — a vision of a warlock tome and ritual. He performed the ritual and bound himself to an unknown patron.",
+          "content": "After losing his memories and magic, Kryton had essentially given up. But gambling at The Undertow, he won someone else's memory — a vision of a warlock tome and ritual. He performed the ritual and bound himself to an unknown patron, regaining magical power through the pact.",
           "spoiler": false
         },
         {
-          "label": "His Fatal Flaw",
-          "content": "Kryton believes he can outsmart his patron and find loopholes in the contract. He doesn't understand that his patron is manipulating him toward something, that the pact is far more binding than he read, and that her agenda may unleash catastrophe.",
+          "label": "His Confidence",
+          "content": "Kryton believes he can find a way to escape the pact — that there are loopholes in the contract if he's clever enough to find them. He's driven by the conviction that this arrangement is temporary and that he'll outsmart his patron eventually.",
           "spoiler": false
         },
         {
@@ -480,7 +490,7 @@
         {
           "target_id": "noname",
           "target_name": "Noname",
-          "relationship": "Introduced Noname to her fiancé (the disappeared Fog Warden); feels profound guilt",
+          "relationship": "Close friends with Noname's fiancé Marcus; feels guilt about his disappearance",
           "spoiler": false
         },
         {
@@ -504,7 +514,7 @@
         {
           "target_id": "marcus",
           "target_name": "Marcus",
-          "relationship": "Close friend — Kryton introduced Marcus to Noname. Marcus's disappearance drove Kryton's obsessive investigation.",
+          "relationship": "Close friend. Marcus's disappearance drove Kryton's obsessive investigation.",
           "spoiler": false
         },
         {
@@ -514,7 +524,7 @@
           "spoiler": false
         }
       ],
-      "dm_notes": "Kryton's patron IS Tartuzi. This creates a fascinating dynamic: his patron is simultaneously a victim (imprisoned for a millennium) and potentially dangerous (her agenda is unknown). His intellectual arrogance is the perfect tragic flaw — he thinks he's outsmarting her but she's been playing this game for a thousand years. His warlock levels function normally; his wizard levels are inaccessible (memories stolen). The memory theft happened through The Undertow connection — explore who or what orchestrates memory theft there.",
+      "dm_notes": "Kryton's patron IS Tartuzi. This creates a fascinating dynamic: his patron is simultaneously a victim (imprisoned for a millennium) and potentially dangerous (her agenda is unknown). He genuinely believes he can escape the pact — his confidence is the tragic irony, because she's been playing this game for a thousand years. His warlock levels function normally; his wizard levels are inaccessible (memories stolen). He asked questions at VAVA about Marcus's disappearance but got stonewalled. The memory theft happened through The Undertow — explore who or what orchestrates memory theft there.",
       "player": "Shawn"
     },
     {
@@ -554,6 +564,8 @@
         "viros_healer",
         "jennifer_character"
       ],
+      "pronouns": "she/her",
+      "age": "24",
       "spoiler": false,
       "summary": "A fog child raised at Liminal House who now works as a cleric at St. Viro's Respite. She experiences vivid first-person dreams of being other people — dreams she believes are memories from lives she has lived.",
       "details": [
@@ -689,6 +701,8 @@
         "secret_master",
         "danielle_character"
       ],
+      "pronouns": "she/her",
+      "age": "19",
       "spoiler": false,
       "summary": "A 19-year-old forest gnome raised by a community of Brownies who genuinely believed she was one of them until age 8. Now a VAVA student maintaining a facade of magical competence, a secret collector driven by a divine pact with Garl Glittergold, and on a desperate mission to save her people from the Binding — an ancient enslavement magic threatening brownie survival.",
       "details": [
@@ -970,6 +984,7 @@
         "actress",
         "star"
       ],
+      "age": "23",
       "spoiler": false,
       "summary": "A celebrated performer at the Amaranth Theater. Orabella is infatuated with her and attends her shows whenever possible. She is the older sister of Car's friend who died at the Autumn Masquerade.",
       "details": [
@@ -1038,7 +1053,7 @@
       "details": [
         {
           "label": "Who He Is",
-          "content": "A Fog Warden who volunteered for the Overlook posting. Noname's fiancé. Close friend of Kryton Novelli — Kryton introduced Marcus to Noname.",
+          "content": "A Fog Warden who volunteered for the Overlook posting. Noname's fiancé. Close friend of Kryton Novelli.",
           "spoiler": false
         },
         {
@@ -1067,7 +1082,7 @@
         {
           "target_id": "kryton",
           "target_name": "Kryton Novelli",
-          "relationship": "Close friend who introduced Marcus to Noname",
+          "relationship": "Close friend whose obsessive investigation was driven by Marcus's disappearance",
           "spoiler": false
         },
         {
