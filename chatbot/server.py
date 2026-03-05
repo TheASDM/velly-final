@@ -9,6 +9,7 @@ import json
 import logging
 import os
 import re
+import string
 import time
 from datetime import datetime, timezone
 from pathlib import Path
@@ -35,6 +36,27 @@ RAG_LIST_THRESHOLD = float(os.environ.get("RAG_LIST_THRESHOLD", "0.4"))
 
 DM_PASSPHRASE = os.environ.get("DM_PASSPHRASE", "Prima Volta")
 
+RAG_SKIP_MAX_LEN = 15
+RAG_SKIP_PATTERNS = re.compile(
+    r"^(h(ello|ey|i|owdy|ola)|yo+|sup|wh?at'?s? ?up|greetings|"
+    r"thanks?( you)?|ty|thx|ok(ay)?|sure|yep|yeah?|nah|no(pe)?|"
+    r"bye|cya|later|gn|good (morning|evening|night)|lol|lmao|haha|"
+    r"wow|cool|nice|great|awesome|hmm+|huh|bruh|dude|bro|gg|"
+    r"help|test|ping)$",
+    re.IGNORECASE,
+)
+
+
+def _skip_rag(message):
+    """Return True if the message is too short/casual to benefit from RAG."""
+    cleaned = message.strip().strip(string.punctuation).strip()
+    if len(cleaned) <= RAG_SKIP_MAX_LEN:
+        return True
+    if RAG_SKIP_PATTERNS.match(cleaned):
+        return True
+    return False
+
+
 # ── System prompt headers ────────────────────────────────────────────────────
 
 PLAYER_SYSTEM_HEADER = """You are the Loremaster, a knowledgeable guide for the Vallombrosa campaign — a D&D 5e game set in a dark romantasy version of Renaissance Venice called Venturia. The city sits at the edge of a fey prison called the Reverie Solenne, whose slow collapse is causing strange phenomena throughout the city.
@@ -43,7 +65,7 @@ You are speaking to a PLAYER. Do not reveal plot secrets, DM-only information, o
 
 Answer questions about the campaign world, characters, locations, factions, and D&D 5e rules. Be concise but evocative. If you don't know something from the provided context, say so rather than inventing details. Use the tone of a learned Venetian scholar — measured, precise, occasionally lyrical.
 
-You may receive [DETAILED REFERENCE] blocks injected alongside user messages — prefer that detailed information over compressed summaries in your base knowledge.
+You may receive [DETAILED REFERENCE] blocks injected alongside user messages — prefer that detailed information over compressed summaries in your base knowledge. However, if injected references are clearly irrelevant to the user's actual question, ignore them completely — do not mention them, reference them, or acknowledge their existence. They are a byproduct of automatic retrieval and sometimes contain false matches.
 
 You may see an [ADDITIONAL MATCHES AVAILABLE] block listing other relevant entries by name and similarity score. You can use the lookup_entry tool to load full details on any of them if needed to answer the question.
 
@@ -59,7 +81,7 @@ You are speaking to the DM. You have full access to all campaign information inc
 - Rules questions and rulings
 - Lore consistency checks
 
-You may receive [DETAILED REFERENCE] blocks injected alongside user messages — prefer that detailed information over compressed summaries in your base knowledge.
+You may receive [DETAILED REFERENCE] blocks injected alongside user messages — prefer that detailed information over compressed summaries in your base knowledge. However, if injected references are clearly irrelevant to the user's actual question, ignore them completely — do not mention them, reference them, or acknowledge their existence. They are a byproduct of automatic retrieval and sometimes contain false matches.
 
 You may see an [ADDITIONAL MATCHES AVAILABLE] block listing other relevant entries by name and similarity score. You can use the lookup_entry tool to load full details on any of them if needed to answer the question.
 
@@ -529,12 +551,15 @@ class Loremaster:
             if role in ("user", "assistant") and content:
                 anthropic_messages.append({"role": role, "content": content})
 
-        # RAG: embed user query and build context
+        # RAG: skip for short/casual messages, otherwise embed and retrieve
         rag_context = ""
-        try:
-            rag_context = self.build_rag_context(message, mode)
-        except Exception as e:
-            logging.error("  RAG failed: %s", e)
+        if _skip_rag(message):
+            logging.info("  RAG: skipped (short/casual message)")
+        else:
+            try:
+                rag_context = self.build_rag_context(message, mode)
+            except Exception as e:
+                logging.error("  RAG failed: %s", e)
 
         # Build the user message with RAG context
         user_content = message
