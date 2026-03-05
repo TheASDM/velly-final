@@ -340,7 +340,7 @@ class Loremaster:
 
     # ── RAG retrieval ────────────────────────────────────────────────────
 
-    def retrieve(self, query, mode):
+    def retrieve(self, query, mode, rules=False):
         store = self._vector_stores.get(mode)
         if not store:
             logging.warning("  RAG: no vector store for mode=%s", mode)
@@ -350,7 +350,7 @@ class Loremaster:
         auto_inject = []
         injected_ids = set()
 
-        # Phase 1: keyword exact-match (names and aliases)
+        # Phase 1: keyword exact-match (names and aliases) — always searches ALL entries
         keyword_hits = self._keyword_match(query, mode)
         for entry in keyword_hits:
             full = self._find_entry(
@@ -389,6 +389,9 @@ class Loremaster:
         t0 = time.time()
         scored = []
         for entry in store:
+            # When rules is off, skip 5etools entries in vector search
+            if not rules and entry.get("source_file", "").startswith("5e-filtered/"):
+                continue
             emb = entry.get("embedding")
             if not emb:
                 continue
@@ -449,8 +452,8 @@ class Loremaster:
 
         return auto_inject, additional
 
-    def build_rag_context(self, query, mode):
-        auto_inject, additional = self.retrieve(query, mode)
+    def build_rag_context(self, query, mode, rules=False):
+        auto_inject, additional = self.retrieve(query, mode, rules)
         blocks = []
         for match in auto_inject:
             blocks.append(
@@ -608,10 +611,10 @@ class Loremaster:
 
     # ── Main chat handler ────────────────────────────────────────────────
 
-    def chat(self, message, conversation_history, mode):
-        """Process a chat message. Returns (response_text, updated_history, mode)."""
+    def chat(self, message, conversation_history, mode, rules=False):
+        """Process a chat message. Returns (response_text, updated_history, mode, rules)."""
         t_start = time.time()
-        logging.info("── Chat request ── mode=%s, history=%d msgs", mode, len(conversation_history))
+        logging.info("── Chat request ── mode=%s, rules=%s, history=%d msgs", mode, rules, len(conversation_history))
         logging.info("  User: %s", message[:200] + ("..." if len(message) > 200 else ""))
 
         # Passphrase toggle
@@ -632,12 +635,30 @@ class Loremaster:
                 {"role": "user", "content": message},
                 {"role": "assistant", "content": reply},
             ]
-            return reply, updated_history, new_mode
+            return reply, updated_history, new_mode, rules
+
+        # /rules toggle
+        cmd = message.strip().lower()
+        if cmd in ("/rules on", "/rules off"):
+            rules = cmd == "/rules on"
+            if rules:
+                reply = "Rules lookup enabled. I'll now include D&D 5e rules entries in my search results."
+            else:
+                reply = "Rules lookup disabled. I'll focus on campaign content only."
+            logging.info("  Rules toggle: %s", rules)
+            updated_history = conversation_history + [
+                {"role": "user", "content": message},
+                {"role": "assistant", "content": reply},
+            ]
+            return reply, updated_history, mode, rules
 
         # Build system prompt
         tier1 = self._tier1.get(mode, "")
         header = DM_SYSTEM_HEADER if mode == "dm" else PLAYER_SYSTEM_HEADER
-        system_prompt = header + tier1
+        system_prompt = header
+        if rules:
+            system_prompt += "The user has enabled rules lookup. You may receive D&D 5e rules references alongside campaign content.\n\n"
+        system_prompt += tier1
 
         # Build Anthropic messages from conversation history
         anthropic_messages = []
@@ -653,7 +674,7 @@ class Loremaster:
             logging.info("  RAG: skipped (short/casual message)")
         else:
             try:
-                rag_context = self.build_rag_context(message, mode)
+                rag_context = self.build_rag_context(message, mode, rules)
             except Exception as e:
                 logging.error("  RAG failed: %s", e)
 
@@ -679,7 +700,7 @@ class Loremaster:
             {"role": "assistant", "content": response_text},
         ]
 
-        return response_text, updated_history, mode
+        return response_text, updated_history, mode, rules
 
 
 # ── Logging ──────────────────────────────────────────────────────────────────
@@ -731,6 +752,7 @@ def chat():
     message = body.get("message", "")
     conversation_history = body.get("conversationHistory", [])
     mode = body.get("mode", "player")
+    rules = body.get("rules", False)
 
     if not message or not isinstance(message, str):
         return jsonify({"error": "Invalid message"}), 400
@@ -739,8 +761,8 @@ def chat():
         mode = "player"
 
     try:
-        response_text, updated_history, new_mode = engine.chat(
-            message, conversation_history, mode
+        response_text, updated_history, new_mode, new_rules = engine.chat(
+            message, conversation_history, mode, rules
         )
 
         write_log("user", message)
@@ -751,6 +773,7 @@ def chat():
                 "response": response_text,
                 "conversationHistory": updated_history,
                 "mode": new_mode,
+                "rules": new_rules,
             }
         )
     except Exception as e:

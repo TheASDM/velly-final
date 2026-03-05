@@ -49,6 +49,7 @@ class LoreMasterChatbot {
         this.chatApiUrl = window.LOREMASTER_API_URL || '/api/chat';
         this.conversationHistory = [];
         this.mode = 'player';
+        this.rules = false;
         this.isOpen = false;
         this.isWaitingForResponse = false;
         this.loadHistory();
@@ -177,7 +178,8 @@ class LoreMasterChatbot {
             body: JSON.stringify({
                 message: message,
                 conversationHistory: this.conversationHistory,
-                mode: this.mode
+                mode: this.mode,
+                rules: this.rules
             })
         });
         if (!response.ok) throw new Error(`API error: ${response.status}`);
@@ -186,6 +188,10 @@ class LoreMasterChatbot {
             this.mode = data.mode;
             this.updateModeIndicator();
             saveToLocalStorage('loreMasterMode', this.mode);
+        }
+        if (typeof data.rules === 'boolean' && data.rules !== this.rules) {
+            this.rules = data.rules;
+            saveToLocalStorage('loreMasterRules', this.rules);
         }
         return data;
     }
@@ -253,6 +259,7 @@ class LoreMasterChatbot {
     saveHistory() {
         saveToLocalStorage('loreMasterHistory', this.conversationHistory);
         saveToLocalStorage('loreMasterMode', this.mode);
+        saveToLocalStorage('loreMasterRules', this.rules);
     }
     loadHistory() {
         const saved = loadFromLocalStorage('loreMasterHistory');
@@ -263,10 +270,15 @@ class LoreMasterChatbot {
         if (savedMode === 'dm' || savedMode === 'player') {
             this.mode = savedMode;
         }
+        const savedRules = loadFromLocalStorage('loreMasterRules');
+        if (savedRules === true) {
+            this.rules = true;
+        }
     }
     clearHistory() {
         this.conversationHistory = [];
         this.mode = 'player';
+        this.rules = false;
         this.saveHistory();
         this.displayHistory();
         this.updateModeIndicator();
