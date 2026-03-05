@@ -201,6 +201,7 @@ class Loremaster:
     def __init__(self):
         self._tier1 = {"player": "", "dm": ""}
         self._vector_stores = {"player": None, "dm": None}
+        self._name_index = {"player": {}, "dm": {}}
         self._source_cache = {}
 
     # ── Data loading ─────────────────────────────────────────────────────
@@ -233,6 +234,52 @@ class Loremaster:
                 )
             except Exception as e:
                 logging.error("Failed to load %s: %s", filename, e)
+
+        self._build_name_index()
+
+    def _build_name_index(self):
+        """Build per-mode indexes mapping lowercased names/aliases to vector store entries."""
+        for mode, store in self._vector_stores.items():
+            if not store:
+                continue
+            index = {}
+            for entry in store:
+                name = entry.get("name", "")
+                source_file = entry.get("source_file", "")
+                names = set()
+                if name:
+                    names.add(name.lower())
+                # For curated entries, load source JSON to get aliases
+                if source_file.startswith("curated/"):
+                    source_data = self._load_source(source_file)
+                    if source_data:
+                        for src_entry in source_data.get("entries", []):
+                            if src_entry.get("name", "").lower() == name.lower():
+                                for alias in src_entry.get("aliases", []):
+                                    names.add(alias.lower())
+                                break
+                for n in names:
+                    index.setdefault(n, []).append(entry)
+            self._name_index[mode] = index
+            logging.info(
+                "Name index for %s: %d unique names/aliases", mode, len(index)
+            )
+
+    def _keyword_match(self, query, mode):
+        """Find vector store entries whose name/alias exactly matches a word or phrase in the query."""
+        index = self._name_index.get(mode, {})
+        if not index:
+            return []
+        words = query.lower().split()
+        matched = {}  # entry id -> vector store entry
+        # Check n-grams (1 to 4 words) to catch multi-word names
+        for n in range(1, min(5, len(words) + 1)):
+            for i in range(len(words) - n + 1):
+                phrase = " ".join(words[i : i + n])
+                if phrase in index:
+                    for entry in index[phrase]:
+                        matched.setdefault(entry["id"], entry)
+        return list(matched.values())
 
     def _load_source(self, source_file):
         if source_file in self._source_cache:
@@ -298,10 +345,46 @@ class Loremaster:
         if not store:
             logging.warning("  RAG: no vector store for mode=%s", mode)
             return [], []
+
+        dm_mode = mode == "dm"
+        auto_inject = []
+        injected_ids = set()
+
+        # Phase 1: keyword exact-match (names and aliases)
+        keyword_hits = self._keyword_match(query, mode)
+        for entry in keyword_hits:
+            full = self._find_entry(
+                entry["id"], entry["name"], entry["source_file"]
+            )
+            if full:
+                if full["type"] == "campaign":
+                    formatted = format_campaign_entry(full["entry"], dm_mode)
+                else:
+                    formatted = format_5etools_entry(full["entry"])
+                auto_inject.append(
+                    {
+                        "name": entry["name"],
+                        "source_file": entry["source_file"],
+                        "score": 1.0,
+                        "text": formatted,
+                    }
+                )
+                injected_ids.add(entry["id"])
+        if keyword_hits:
+            logging.info(
+                "  RAG keyword: %d exact name/alias matches",
+                len(keyword_hits),
+            )
+            for m in auto_inject:
+                logging.info(
+                    "    KEYWORD-INJECT: %s (%s)", m["name"], m["source_file"]
+                )
+
+        # Phase 2: vector similarity search
         query_vec = self._embed_query(query)
         if not query_vec:
-            logging.warning("  RAG: embedding failed, skipping retrieval")
-            return [], []
+            logging.warning("  RAG: embedding failed, skipping vector search")
+            return auto_inject, []
 
         t0 = time.time()
         scored = []
@@ -314,12 +397,12 @@ class Loremaster:
         scored.sort(key=lambda x: x[0], reverse=True)
         search_ms = int((time.time() - t0) * 1000)
 
-        dm_mode = mode == "dm"
-        auto_inject = []
         additional = []
-
+        vector_injected = 0
         for i, (sim, entry) in enumerate(scored):
-            if i < RAG_TOP_K and sim >= RAG_AUTO_THRESHOLD:
+            if entry["id"] in injected_ids:
+                continue
+            if vector_injected < RAG_TOP_K and sim >= RAG_AUTO_THRESHOLD:
                 full = self._find_entry(
                     entry["id"], entry["name"], entry["source_file"]
                 )
@@ -336,7 +419,9 @@ class Loremaster:
                             "text": formatted,
                         }
                     )
-            elif sim >= RAG_LIST_THRESHOLD:
+                    injected_ids.add(entry["id"])
+                    vector_injected += 1
+            elif sim >= RAG_LIST_THRESHOLD and entry["id"] not in injected_ids:
                 additional.append(
                     {
                         "name": entry["name"],
@@ -345,11 +430,22 @@ class Loremaster:
                     }
                 )
 
-        logging.info("  RAG search: %dms across %d entries", search_ms, len(scored))
+        logging.info("  RAG vector: %dms across %d entries", search_ms, len(scored))
         for m in auto_inject:
-            logging.info("    AUTO-INJECT: %s (%s) score=%.3f", m["name"], m["source_file"], m["score"])
+            if m["score"] < 1.0:
+                logging.info(
+                    "    AUTO-INJECT: %s (%s) score=%.3f",
+                    m["name"],
+                    m["source_file"],
+                    m["score"],
+                )
         if additional:
-            logging.info("    + %d additional matches (best: %s score=%.3f)", len(additional), additional[0]["name"], additional[0]["score"])
+            logging.info(
+                "    + %d additional matches (best: %s score=%.3f)",
+                len(additional),
+                additional[0]["name"],
+                additional[0]["score"],
+            )
 
         return auto_inject, additional
 
