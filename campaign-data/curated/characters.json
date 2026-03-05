@@ -1561,22 +1561,22 @@
         {
           "label": "Appearance and Manner",
           "content": "Tall, olive-skinned, fifties or so, with the easy posture of someone who has been comfortable in difficult rooms his entire life. Warm, curious, slightly theatrical. He collects things: masks, information, interesting people. His voice is unhurried and precise — a man who has learned that silence makes people fill space in interesting ways. Occasional dry humor, delivered completely straight.",
-          "spoiler": false
+          "spoiler": true
         },
         {
           "label": "The Business",
           "content": "His public-facing business — Volante & Associates — is a small spice and dye trade in the Market Tiers, deliberately unremarkable. Legitimate and profitable, but also useful cover for someone who prefers to move through the city without drawing attention. His real passion is the mask collection: fifty or more masks from a dozen craft traditions lining a narrow room in his warehouse.",
-          "spoiler": false
+          "spoiler": true
         },
         {
           "label": "The Roxy Connection",
           "content": "Roughly a year before the campaign, passing through the Aminon mainland, Aurelio encountered a young gnome who tried to pick his pocket, failed, and listened with genuine hunger while he talked about Venturia and VAVA. She stole one of his masks when she left — a sea-green enameled piece with silver brow-work. He found the theft more amusing than anything else. When he returned to the mainland later, he found she'd already left for Venturia. The rummage was struggling without their intermediary. Feeling somewhat responsible for planting the idea, he negotiated a fair work contract with three brownies including Pip.",
-          "spoiler": false
+          "spoiler": true
         },
         {
           "label": "The Hollow Bell Resolution",
           "content": "During Roxy's pre-campaign vignette, she broke into his warehouse expecting to find enslaved brownies and instead found Pip working a legitimate Covenant Archive-sealed contract. Aurelio arrived, recognized her, and laughed. He let her swap the stolen mask for one she chose from his collection. He gave her the Listener's Coin. He has a second item — a Vial of Borrowed Breath — that he'll give when he judges she's ready.",
-          "spoiler": false
+          "spoiler": true
         }
       ],
       "connections": [
@@ -1584,19 +1584,19 @@
           "target_id": "roxy",
           "target_name": "Roxanya",
           "relationship": "The gnome who stole his mask; now a genuine ally. He planted the idea of Venturia in her head and feels somewhat responsible.",
-          "spoiler": false
+          "spoiler": true
         },
         {
           "target_id": "masquers_sodality",
           "target_name": "The Masquers' Sodality",
           "relationship": "Connected to the Sodality through his mask collecting and trade",
-          "spoiler": false
+          "spoiler": true
         },
         {
           "target_id": "covenant_archive",
           "target_name": "The Covenant Archive",
           "relationship": "Uses the Archive for contract work, including the brownie work contract",
-          "spoiler": false
+          "spoiler": true
         }
       ],
       "dm_notes": "Aurelio is a genuine ally, not a villain or manipulator. He's the kind of person who would want to know about the brownie enslavement crisis if told. His connections to Masquers' Sodality, the Archive, and mainland trade routes make him a valuable resource for Roxy's mission and the broader campaign. The Vial of Borrowed Breath (inhale to copy the last voice heard for one hour) is a future session hook — he'll produce it when he decides she's ready. His collection of masks connects him naturally to the Veil Court's interests and the campaign's identity themes."
@@ -1620,7 +1620,7 @@
         "supernatural_knowledge"
       ],
       "spoiler": false,
-      "summary": "An ageless elf oracle who represents smaller mystery cults and oracle traditions in Venturia. Speaks in prophecy and riddles, unsettling even to allies. Knows far more than she reveals — possibly including the truth about the Archfey's imprisonment and Marcello's nature.",
+      "summary": "An ageless elf oracle who represents smaller mystery cults and oracle traditions in Venturia. Speaks in prophecy and riddles, unsettling even to allies. Knows far more than she reveals.",
       "details": [
         {
           "label": "Background",

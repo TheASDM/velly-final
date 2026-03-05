@@ -379,13 +379,13 @@
         "prophetic_notes",
         "compulsion"
       ],
-      "spoiler": false,
+      "spoiler": true,
       "summary": "Residents supernaturally compelled to fulfill specific purposes. There are TWO types that are visually indistinguishable: Silas's Bound (destructive tasks) and Tartuzi's Bound (delivering prophetic warnings). The party can't tell them apart until after confrontation — creating the campaign's most horrific recurring moral dilemma.",
       "details": [
         {
           "label": "Silas's Bound",
           "content": "People supernaturally compelled to fulfill purposes serving Silas's hidden agenda. NOT evil people who chose to serve him — they are victims. Appear completely normal until triggered, then display blank eyes, compelled state, single-minded focus. Tasked with destructive acts: arson, poisoning, sabotage, violence. Some are aware something is wrong and fight their urges.",
-          "spoiler": false
+          "spoiler": true
         },
         {
           "label": "Tartuzi's Bound",
@@ -405,7 +405,7 @@
         {
           "label": "Moral Complexity",
           "content": "The party must stop people who are supernaturally manipulated without killing innocents. They must develop methods for subduing and restraining rather than destroying. They must investigate causes rather than treating each incident as isolated. Over time, they might develop methods to distinguish the types or subdue non-lethally long enough to check for messages. This creates gameplay evolution.",
-          "spoiler": false
+          "spoiler": true
         }
       ],
       "connections": [
@@ -441,7 +441,7 @@
         "combat_encounters",
         "reality_distortion"
       ],
-      "spoiler": false,
+      "spoiler": true,
       "summary": "Supernatural entities and strange phenomena manifesting in Venturia with increasing frequency. They escalate from unsettling atmosphere to bizarre mimicking creatures to reality distortions that warp entire neighborhoods.",
       "details": [
         {
@@ -452,7 +452,7 @@
         {
           "label": "Early Phase — Atmosphere",
           "content": "Animals that feel wrong — wearing their own faces awkwardly, as if they briefly passed through somewhere else and came back slightly different. Shadow wisps trailing through alleys without any body attached. Unsettling but not dangerous.",
-          "spoiler": false
+          "spoiler": true
         },
         {
           "label": "Middle Phase — The Maskless",

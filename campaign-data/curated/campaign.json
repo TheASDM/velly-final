@@ -28,12 +28,12 @@
         {
           "label": "Key Difference from Strahd",
           "content": "Vallombrosa exists on the normal material plane, not a pocket dimension. Marcello can come and go freely — he chooses to be there. Players cannot simply escape by leaving the island, because leaving means abandoning Celina and other residents. Reality IS warped in subtle ways (strange time, unreliable memories, impossible architecture) but the setting remains material plane.",
-          "spoiler": false
+          "spoiler": true
         },
         {
           "label": "Core Tone",
           "content": "Mystery and the uncanny rather than overwhelming dread. Beautiful wrongness — the fog is eerie but hauntingly lovely, the fey-touched quirks are strange but not threatening. Makes space for romance, humor, beauty, and genuine human connection as essential contrasts that make dangerous moments matter. Marcello is an elegant predator, not an unstoppable horror. Victory should feel genuinely achievable.",
-          "spoiler": false
+          "spoiler": true
         },
         {
           "label": "Romantasy Subversion",
@@ -246,7 +246,7 @@
         "pacing",
         "celina"
       ],
-      "spoiler": false,
+      "spoiler": true,
       "summary": "Core principles for running Vallombrosa: Marcello is genuinely monstrous, Celina must be a complete person before plot relevance, flexible pacing through natural thresholds, tension from wrongness without overwhelming dread, beauty and horror coexist, and victory should feel achievable.",
       "details": [
         {
@@ -257,22 +257,22 @@
         {
           "label": "Celina Before Plot",
           "content": "Celina MUST be established as a complete person with her own life, personality, goals, dreams, and relationships BEFORE supernatural significance is revealed. Players should know and care about her as an individual. When Marcello's courtship begins, it should feel like violation of someone they're invested in. Every player should have meaningful reasons to oppose him based on genuine relationship with Celina.",
-          "spoiler": false
+          "spoiler": true
         },
         {
           "label": "Flexible Pacing",
           "content": "Thresholds happen when natural rather than on predetermined schedule. The campaign adapts to player choices and table dynamics. Session count estimates are progression markers, not deadlines.",
-          "spoiler": false
+          "spoiler": true
         },
         {
           "label": "Tone Balance",
           "content": "Tension from wrongness and violation without overwhelming dread. Beauty and horror coexist — autumn light through fog, elegant architecture hiding dark secrets. Romance, humor, and genuine connection are essential contrasts, not breaks from the 'real' story. The campaign should feel dangerous and mysterious but never hopeless.",
-          "spoiler": false
+          "spoiler": true
         },
         {
           "label": "Player Agency Is Sacred",
           "content": "Never take away meaningful player choice to serve narrative elegance. Tragedy and predetermined outcomes work when players have agency over HOW events unfold, not when railroaded into specific actions. Present options without dictating which is correct. Victory should feel earned through ingenuity and difficult decisions.",
-          "spoiler": false
+          "spoiler": true
         }
       ],
       "connections": [],
@@ -293,18 +293,18 @@
         "reincarnation",
         "session_zero"
       ],
-      "spoiler": false,
+      "spoiler": true,
       "summary": "Guidance for weaving player backstories into the campaign. All PCs are Venturia natives who grew up with Vallombrosa as landscape. Possible reincarnation connections to the original adventuring party. Early sessions establish personal investment before supernatural escalation.",
       "details": [
         {
           "label": "Session Zero Context",
           "content": "Players should know: they live in Venturia and grew up with Vallombrosa as part of their landscape. They have favorite legends but nobody believes any specific version. They don't know about the Archfey, the cosmic theft, Tartuzi, or that anyone from the tragedy still exists.",
-          "spoiler": false
+          "spoiler": true
         },
         {
           "label": "Backstory Integration",
           "content": "Weave personal stories into larger narrative as they emerge. Prophecy/oracle backgrounds create investment in understanding Tartuzi. Memory/identity themes resonate with Lorenzo's curse and reality warping. Fey bargain experience equips characters for understanding contract mechanics. Each character needs reasons for protecting Venturia beyond abstract heroism.",
-          "spoiler": false
+          "spoiler": true
         },
         {
           "label": "Reincarnation Possibility",
@@ -314,7 +314,7 @@
         {
           "label": "Celina Relationship Building",
           "content": "Early sessions must establish genuine relationships with Celina before her supernatural significance is revealed. Each PC needs personal connection to her — as friend, colleague, neighbor, confidant, or something else organic to their backstory. By Marcello's arrival, opposing him should feel personal.",
-          "spoiler": false
+          "spoiler": true
         }
       ],
       "connections": [],
@@ -583,13 +583,13 @@
         "themes",
         "liminal_house"
       ],
-      "spoiler": false,
+      "spoiler": true,
       "summary": "How the seven PCs interconnect and form thematic clusters that mirror the campaign's central concerns. These organic connections create natural party dynamics and investigation drivers.",
       "details": [
         {
           "label": "The Liminal House Hub",
           "content": "Three PCs connect through Liminal House: Noname (fog child's daughter, raised there after parents died), Orabella (fog child herself, raised there after appearing from Vallombrosa), Valentro (orphan, raised there after losing both parents). This institution has been dealing with fog children for centuries — exactly the population that manifests when Marcello transforms Vallombrosa. Liminal House likely has records going back generations and may know more about Vallombrosa's true nature than publicly admitted.",
-          "spoiler": false
+          "spoiler": true
         },
         {
           "label": "The Fog Warden Disappearances",
@@ -599,7 +599,7 @@
         {
           "label": "Secrets vs. Transparency",
           "content": "Roxy: obsessed with secrets (Garl's influence). Caravel: categorically opposed to secrets (blames them for friend's death). Natural party tension with room for growth. Perfect thematic resonance — the campaign's truth has been hidden for millennia, Marcello hides behind stolen identity, the Keeper was betrayed through hidden knowledge. Forces the party to grapple with whether some things should stay buried.",
-          "spoiler": false
+          "spoiler": true
         },
         {
           "label": "Supernatural Patron Connections",
@@ -614,17 +614,17 @@
         {
           "label": "Forgotten/Stolen Identity Cluster",
           "content": "Valentro: sees tools as swords, muscle memory suggesting warrior past — exactly the kind of memory bleed the campaign uses. Orabella: memories returning that frighten her. Noname's father: no memory of life before appearing. Kryton: lost wizard knowledge and abilities. All tie directly to the campaign's memory manipulation and identity theft themes.",
-          "spoiler": false
+          "spoiler": true
         },
         {
           "label": "The Tiered Gardens as Convergence Point",
           "content": "Valentro works there professionally. Marcus proposed to Noname there (Valentro witnessed). Kryton's 'sword moment' happened there (Roxy witnessed). Kryton frequents for peace and contemplation. This location is a natural recurring setting for character moments.",
-          "spoiler": false
+          "spoiler": true
         },
         {
           "label": "Pre-Campaign Timeline of Intersections",
           "content": "Lotan meets Roxy (1 year before campaign). Caravel befriends Roxy (timing unclear). Noname and Orabella (childhood at Liminal House, current patient-healer relationship). Roxy discovers Kryton's secret (recent). Kryton is close friends with Marcus (past). Kryton taught at VAVA (connections to any PC students).",
-          "spoiler": false
+          "spoiler": true
         }
       ],
       "connections": [
