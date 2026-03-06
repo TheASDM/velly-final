@@ -28,7 +28,7 @@ MAX_TOKENS = int(os.environ.get("MAX_TOKENS", "2048"))
 
 OLLAMA_URL = os.environ.get("OLLAMA_URL", "https://ai.raptornet.dev/ollama")
 OLLAMA_API_KEY = os.environ.get("OLLAMA_API_KEY", "")
-EMBEDDING_MODEL = os.environ.get("EMBEDDING_MODEL", "mxbai-embed-large:latest")
+EMBEDDING_MODEL = os.environ.get("EMBEDDING_MODEL", "nomic-embed-text:latest")
 
 RAG_TOP_K = int(os.environ.get("RAG_TOP_K", "3"))
 RAG_AUTO_THRESHOLD = float(os.environ.get("RAG_AUTO_THRESHOLD", "0.3"))

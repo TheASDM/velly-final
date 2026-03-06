@@ -407,23 +407,32 @@ def make_entry_id(entry: dict, category_key: str, filename: str, index: int) -> 
 # ── Embedding ────────────────────────────────────────────────────────────────
 
 
-def embed_text(text: str, ollama_url: str, api_key: str = "") -> Optional[list]:
+EMBED_MODEL = "nomic-embed-text:latest"
+
+
+def embed_text(text: str, ollama_url: str, api_key: str = "",
+               max_retries: int = 4) -> Optional[list]:
     """Call Ollama /api/embeddings and return the embedding vector."""
     headers = {"Content-Type": "application/json"}
     if api_key:
         headers["Authorization"] = f"Bearer {api_key}"
-    try:
-        resp = requests.post(
-            f"{ollama_url}/api/embeddings",
-            json={"model": "mxbai-embed-large:latest", "prompt": text},
-            headers=headers,
-            timeout=30,
-        )
-        resp.raise_for_status()
-        return resp.json().get("embedding")
-    except Exception as e:
-        print(f"  [ERROR] Embedding failed: {e}", file=sys.stderr)
-        return None
+    for attempt in range(max_retries):
+        try:
+            resp = requests.post(
+                f"{ollama_url}/api/embeddings",
+                json={"model": EMBED_MODEL, "prompt": text},
+                headers=headers,
+                timeout=30,
+            )
+            resp.raise_for_status()
+            return resp.json().get("embedding")
+        except Exception as e:
+            if attempt < max_retries - 1:
+                time.sleep(0.5 * (2 ** attempt))  # 0.5s, 1s, 2s
+            else:
+                print(f"  [ERROR] Embedding failed after {max_retries} attempts: {e}",
+                      file=sys.stderr)
+                return None
 
 
 # ── Loading ──────────────────────────────────────────────────────────────────
@@ -664,7 +673,7 @@ def main():
     try:
         test = requests.post(
             f"{args.ollama_url}/api/embeddings",
-            json={"model": "mxbai-embed-large:latest", "prompt": "test"},
+            json={"model": EMBED_MODEL, "prompt": "test"},
             headers=headers,
             timeout=10,
         )

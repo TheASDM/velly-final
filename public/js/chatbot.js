@@ -90,6 +90,7 @@ class LoreMasterChatbot {
         container.innerHTML = `
             <div id="chatbot-widget" class="chatbot-collapsed">
                 <div class="chatbot-header">
+                    <img src="/images/loremaster192x192.png" alt="" class="chatbot-avatar-header">
                     <span>Lore Master</span>
                     <span id="dm-mode-badge" style="display:none;margin-left:0.4rem;font-size:0.55rem;letter-spacing:0.1em;text-transform:uppercase;color:#0d0b11;background:#c9a84c;padding:0.1rem 0.35rem;border-radius:2px;font-weight:700;vertical-align:middle">DM</span>
                     <button id="chat-clear-btn" style="display:none;margin-left:auto;margin-right:0.5rem;background:none;border:none;cursor:pointer;font-size:0.7rem;letter-spacing:0.08em;color:rgba(212,165,116,0.45);padding:0;line-height:1;text-transform:uppercase;font-family:inherit" title="Start a new conversation">new chat</button>
@@ -209,14 +210,17 @@ class LoreMasterChatbot {
     addMessage(text, role) {
         const messagesContainer = document.getElementById('chat-messages');
         if (!messagesContainer) return;
-        const messageDiv = document.createElement('div');
-        messageDiv.className = `message ${role}`;
         if (role === 'assistant') {
-            messageDiv.innerHTML = renderMarkdown(text);
+            const wrapper = document.createElement('div');
+            wrapper.className = 'message-row assistant';
+            wrapper.innerHTML = `<img src="/images/loremaster192x192.png" alt="" class="chatbot-avatar"><div class="message assistant">${renderMarkdown(text)}</div>`;
+            messagesContainer.appendChild(wrapper);
         } else {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${role}`;
             messageDiv.textContent = text;
+            messagesContainer.appendChild(messageDiv);
         }
-        messagesContainer.appendChild(messageDiv);
         this.scrollToBottom();
     }
     addSystemMessage(text) {
