@@ -611,10 +611,10 @@ class Loremaster:
 
     # ── Main chat handler ────────────────────────────────────────────────
 
-    def chat(self, message, conversation_history, mode, rules=False):
-        """Process a chat message. Returns (response_text, updated_history, mode, rules)."""
+    def chat(self, message, conversation_history, mode, rules=False, vibe=None):
+        """Process a chat message. Returns (response_text, updated_history, mode, rules, vibe)."""
         t_start = time.time()
-        logging.info("── Chat request ── mode=%s, rules=%s, history=%d msgs", mode, rules, len(conversation_history))
+        logging.info("── Chat request ── mode=%s, rules=%s, vibe=%s, history=%d msgs", mode, rules, vibe, len(conversation_history))
         logging.info("  User: %s", message[:200] + ("..." if len(message) > 200 else ""))
 
         # Passphrase toggle
@@ -635,7 +635,7 @@ class Loremaster:
                 {"role": "user", "content": message},
                 {"role": "assistant", "content": reply},
             ]
-            return reply, updated_history, new_mode, rules
+            return reply, updated_history, new_mode, rules, vibe
 
         # /rules toggle
         cmd = message.strip().lower()
@@ -650,12 +650,38 @@ class Loremaster:
                 {"role": "user", "content": message},
                 {"role": "assistant", "content": reply},
             ]
-            return reply, updated_history, mode, rules
+            return reply, updated_history, mode, rules, vibe
+
+        # /yasqueen toggle
+        if cmd == "/yasqueen":
+            if vibe == "yasqueen":
+                vibe = None
+                reply = "Ugh fine, back to boring scholar mode I guess. *adjusts monocle*"
+            else:
+                vibe = "yasqueen"
+                reply = "OMG HIIII bestie!! Ok so like, I still know ALL the tea about Venturia and the Valley of Shadows, but now we're gonna spill it properly. Ask me anything queen!! 💅✨"
+            logging.info("  Vibe toggle: %s", vibe)
+            updated_history = conversation_history + [
+                {"role": "user", "content": message},
+                {"role": "assistant", "content": reply},
+            ]
+            return reply, updated_history, mode, rules, vibe
 
         # Build system prompt
         tier1 = self._tier1.get(mode, "")
         header = DM_SYSTEM_HEADER if mode == "dm" else PLAYER_SYSTEM_HEADER
         system_prompt = header
+        if vibe == "yasqueen":
+            system_prompt += (
+                "PERSONALITY OVERRIDE: You are still the Lore Master with all the same "
+                "knowledge, but you now talk like a Gen Z gossip queen. Use slang like "
+                "'bestie', 'no cap', 'slay', 'lowkey', 'highkey', 'the tea is', 'sis', "
+                "'periodt', 'vibe check', 'living rent-free', 'it's giving', 'main character energy', "
+                "'understood the assignment', 'caught in 4k'. Use emojis freely. Treat lore "
+                "reveals like juicy gossip. NPCs are people you're gossiping about. Battles "
+                "are drama. Political intrigue is tea. Stay accurate to the lore but deliver "
+                "it with maximum zoomer energy.\n\n"
+            )
         if rules:
             system_prompt += "The user has enabled rules lookup. You may receive D&D 5e rules references alongside campaign content.\n\n"
         system_prompt += tier1
@@ -700,7 +726,7 @@ class Loremaster:
             {"role": "assistant", "content": response_text},
         ]
 
-        return response_text, updated_history, mode, rules
+        return response_text, updated_history, mode, rules, vibe
 
 
 # ── Logging ──────────────────────────────────────────────────────────────────
@@ -753,6 +779,7 @@ def chat():
     conversation_history = body.get("conversationHistory", [])
     mode = body.get("mode", "player")
     rules = body.get("rules", False)
+    vibe = body.get("vibe", None)
 
     if not message or not isinstance(message, str):
         return jsonify({"error": "Invalid message"}), 400
@@ -761,8 +788,8 @@ def chat():
         mode = "player"
 
     try:
-        response_text, updated_history, new_mode, new_rules = engine.chat(
-            message, conversation_history, mode, rules
+        response_text, updated_history, new_mode, new_rules, new_vibe = engine.chat(
+            message, conversation_history, mode, rules, vibe
         )
 
         write_log("user", message)
@@ -774,6 +801,7 @@ def chat():
                 "conversationHistory": updated_history,
                 "mode": new_mode,
                 "rules": new_rules,
+                "vibe": new_vibe,
             }
         )
     except Exception as e:
