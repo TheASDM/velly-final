@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Lore Master — Valley of Shadows</title>
     <link rel="icon" type="image/png" href="/images/loremaster192x192.png">
     <link rel="manifest" href="/manifest.webmanifest">
@@ -68,6 +68,37 @@
         @media (max-width: 480px) {
             #chatbot-container {
                 padding: 0 0.5rem;
+            }
+        }
+
+        /* PWA standalone mode — fill the screen */
+        @media (display-mode: standalone) {
+            body {
+                min-height: 100dvh;
+                justify-content: flex-start;
+                padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+            }
+            .page-header { display: none; }
+            #chatbot-container {
+                flex: 1;
+                display: flex;
+                flex-direction: column;
+                max-width: 100%;
+                padding: 0;
+            }
+            #chatbot-widget {
+                flex: 1 !important;
+                max-height: none !important;
+                border: none !important;
+                border-top: none !important;
+            }
+            #chatbot-widget.chatbot-collapsed {
+                max-height: none !important;
+            }
+            #chat-messages {
+                min-height: 0 !important;
+                max-height: none !important;
+                flex: 1;
             }
         }
     </style>
