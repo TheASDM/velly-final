@@ -164,7 +164,10 @@ class LoreMasterChatbot {
         } catch (error) {
             console.error('Error sending message:', error);
             this.hideThinkingIndicator();
-            this.addSystemMessage('⚠️ Failed to get response from Lore Master. Please try again.');
+            const msg = error.message.includes('offline')
+                ? error.message
+                : 'Failed to get response from Lore Master. Please try again.';
+            this.addSystemMessage(msg);
         } finally {
             this.isWaitingForResponse = false;
             input.disabled = false;
@@ -173,6 +176,9 @@ class LoreMasterChatbot {
         }
     }
     async sendMessageToAPI(message) {
+        if (!navigator.onLine) {
+            throw new Error('You appear to be offline. The Lore Master requires a connection to consult the archives.');
+        }
         const response = await fetch(this.chatApiUrl, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },

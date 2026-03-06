@@ -1,0 +1,13 @@
+{
+  "name": "Lore Master — Valley of Shadows",
+  "short_name": "Lore Master",
+  "description": "RAG-powered D&D campaign lore assistant",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0a080e",
+  "theme_color": "#0a080e",
+  "icons": [
+    { "src": "/images/loremaster192x192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/images/loremaster512x512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}

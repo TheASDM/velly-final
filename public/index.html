@@ -5,6 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lore Master — Valley of Shadows</title>
     <link rel="icon" type="image/png" href="/images/loremaster192x192.png">
+    <link rel="manifest" href="/manifest.webmanifest">
+    <meta name="theme-color" content="#0a080e">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="apple-touch-icon" href="/images/loremaster192x192.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Crimson+Text:ital,wght@0,400;1,400&family=IM+Fell+English:ital@1&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/css/chatbot.css">
@@ -80,6 +85,9 @@
         document.addEventListener('DOMContentLoaded', () => {
             if (loreMaster) loreMaster.toggleWidget();
         });
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/sw.js');
+        }
     </script>
 </body>
 </html>
