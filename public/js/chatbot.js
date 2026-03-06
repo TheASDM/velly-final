@@ -214,13 +214,34 @@ class LoreMasterChatbot {
         }
         return data;
     }
+    getIconName() {
+        const yq = this.vibe === 'yasqueen';
+        const dm = this.mode === 'dm';
+        const r = this.rules;
+        if (yq && dm && r) return 'loremasterYasQueenDM5e';
+        if (yq && dm)      return 'loremasterYasQueenDM';
+        if (yq)            return 'loremasterYasQueen';
+        if (dm && r)       return 'loremaster5eDM';
+        if (dm)            return 'loremasterDM';
+        if (r)             return 'loremaster5e';
+        return 'loremaster';
+    }
+    updateIcons() {
+        const name = this.getIconName();
+        const src = `/images/${name}192x192.png`;
+        const headerAvatar = document.querySelector('.chatbot-avatar-header');
+        if (headerAvatar) headerAvatar.src = src;
+        document.querySelectorAll('.chatbot-avatar').forEach(img => img.src = src);
+    }
     updateRulesIndicator() {
         const badge = document.getElementById('rules-badge');
         if (badge) badge.style.display = this.rules ? 'inline' : 'none';
+        this.updateIcons();
     }
     updateVibeIndicator() {
         const badge = document.getElementById('vibe-badge');
         if (badge) badge.style.display = this.vibe ? 'inline' : 'none';
+        this.updateIcons();
     }
     updateModeIndicator() {
         const widget = document.getElementById('chatbot-widget');
@@ -232,6 +253,7 @@ class LoreMasterChatbot {
             widget.classList.remove('dm-mode');
             if (badge) badge.style.display = 'none';
         }
+        this.updateIcons();
     }
     addMessage(text, role) {
         const messagesContainer = document.getElementById('chat-messages');
@@ -239,7 +261,8 @@ class LoreMasterChatbot {
         if (role === 'assistant') {
             const wrapper = document.createElement('div');
             wrapper.className = 'message-row assistant';
-            wrapper.innerHTML = `<img src="/images/loremaster192x192.png" alt="" class="chatbot-avatar"><div class="message assistant">${renderMarkdown(text)}</div>`;
+            const iconName = this.getIconName();
+            wrapper.innerHTML = `<img src="/images/${iconName}192x192.png" alt="" class="chatbot-avatar"><div class="message assistant">${renderMarkdown(text)}</div>`;
             messagesContainer.appendChild(wrapper);
         } else {
             const messageDiv = document.createElement('div');

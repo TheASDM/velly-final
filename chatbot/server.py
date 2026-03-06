@@ -653,13 +653,12 @@ class Loremaster:
             return reply, updated_history, mode, rules, vibe
 
         # /yasqueen toggle
-        if cmd == "/yasqueen":
-            if vibe == "yasqueen":
-                vibe = None
-                reply = "Ugh fine, back to boring scholar mode I guess. *adjusts monocle*"
-            else:
-                vibe = "yasqueen"
+        if cmd in ("/yasqueen on", "/yasqueen off"):
+            vibe = "yasqueen" if cmd == "/yasqueen on" else None
+            if vibe:
                 reply = "OMG HIIII bestie!! Ok so like, I still know ALL the tea about Venturia and the Valley of Shadows, but now we're gonna spill it properly. Ask me anything queen!! 💅✨"
+            else:
+                reply = "Ugh fine, back to boring scholar mode I guess. *adjusts monocle*"
             logging.info("  Vibe toggle: %s", vibe)
             updated_history = conversation_history + [
                 {"role": "user", "content": message},
