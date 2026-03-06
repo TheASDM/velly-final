@@ -1,4 +1,4 @@
-const CACHE_NAME = 'loremaster-v2';
+const CACHE_NAME = 'loremaster-v3';
 const SHELL_ASSETS = [
     '/',
     '/index.html',
@@ -10,6 +10,7 @@ const SHELL_ASSETS = [
     '/images/loremaster5e192x192.png',
     '/images/loremaster5eDM192x192.png',
     '/images/loremasterYasQueen192x192.png',
+    '/images/loremasterYasQueen5e192x192.png',
     '/images/loremasterYasQueenDM192x192.png',
     '/images/loremasterYasQueenDM5e192x192.png'
 ];

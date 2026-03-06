@@ -220,6 +220,7 @@ class LoreMasterChatbot {
         const r = this.rules;
         if (yq && dm && r) return 'loremasterYasQueenDM5e';
         if (yq && dm)      return 'loremasterYasQueenDM';
+        if (yq && r)       return 'loremasterYasQueen5e';
         if (yq)            return 'loremasterYasQueen';
         if (dm && r)       return 'loremaster5eDM';
         if (dm)            return 'loremasterDM';
