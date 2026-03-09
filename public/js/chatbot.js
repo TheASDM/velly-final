@@ -218,9 +218,10 @@ class LoreMasterChatbot {
         const yq = this.vibe === 'yasqueen';
         const dm = this.mode === 'dm';
         const r = this.rules;
-        if (yq)  return 'loremasterYasQueen';
-        if (dm)  return 'loremasterDM';
-        if (r)   return 'loremaster5e';
+        if (yq)       return 'loremasterYasQueen';
+        if (dm && r)  return 'loremaster5eDM';
+        if (dm)       return 'loremasterDM';
+        if (r)        return 'loremaster5e';
         return 'loremaster';
     }
     updateIcons() {

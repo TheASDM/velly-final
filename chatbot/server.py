@@ -626,7 +626,6 @@ class Loremaster:
                 )
             else:
                 new_mode = "dm"
-                rules = False
                 vibe = None
                 reply = (
                     "Ah... you speak the old words. The veil lifts. "
@@ -639,16 +638,9 @@ class Loremaster:
             ]
             return reply, updated_history, new_mode, rules, vibe
 
-        # /rules toggle — only in normal player mode, disables yasqueen
+        # /rules toggle — works in player or DM mode, disables yasqueen
         cmd = message.strip().lower()
         if cmd in ("/rules on", "/rules off"):
-            if mode == "dm":
-                reply = "Rules lookup is only available in normal mode. Exit DM mode first."
-                updated_history = conversation_history + [
-                    {"role": "user", "content": message},
-                    {"role": "assistant", "content": reply},
-                ]
-                return reply, updated_history, mode, rules, vibe
             rules = cmd == "/rules on"
             if rules:
                 vibe = None
