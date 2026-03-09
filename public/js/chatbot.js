@@ -65,9 +65,9 @@ class LoreMasterChatbot {
         this.updateRulesIndicator();
         this.updateVibeIndicator();
         if (this.conversationHistory.length === 0) {
-            this.addSystemMessage('I am the Lore Master — your guide to the city of Venturia and the Valley of Shadows. Ask me about characters, locations, factions, past sessions, or house rules.');
+            this.addSystemMessage('I am Enzo — your guide to the city of Venturia and the Valley of Shadows. Ask me about characters, locations, factions, past sessions, or house rules.');
         }
-        console.log('Lore Master initialized');
+        console.log('Enzo initialized');
     }
     applyMobileLayout(isOpen) {
         if (window.innerWidth > 768) return;
@@ -94,7 +94,7 @@ class LoreMasterChatbot {
             <div id="chatbot-widget" class="chatbot-collapsed">
                 <div class="chatbot-header">
                     <img src="/images/loremaster192x192.png" alt="" class="chatbot-avatar-header">
-                    <span>Lore Master</span>
+                    <span>Enzo</span>
                     <span id="dm-mode-badge" style="display:none;margin-left:0.4rem;font-size:0.55rem;letter-spacing:0.1em;text-transform:uppercase;color:#0d0b11;background:#c9a84c;padding:0.1rem 0.35rem;border-radius:2px;font-weight:700;vertical-align:middle">DM</span>
                     <span id="rules-badge" style="display:none;margin-left:0.3rem;font-size:0.55rem;letter-spacing:0.1em;text-transform:uppercase;color:#e8dcc8;background:rgba(139,26,42,0.5);border:1px solid rgba(139,26,42,0.7);padding:0.1rem 0.35rem;border-radius:2px;font-weight:700;vertical-align:middle">5e</span>
                     <span id="vibe-badge" style="display:none;margin-left:0.3rem;font-size:0.55rem;letter-spacing:0.1em;text-transform:uppercase;color:#0d0b11;background:#e85d9b;padding:0.1rem 0.35rem;border-radius:2px;font-weight:700;vertical-align:middle">💅</span>
@@ -171,7 +171,7 @@ class LoreMasterChatbot {
             this.hideThinkingIndicator();
             const msg = error.message.includes('offline')
                 ? error.message
-                : 'Failed to get response from Lore Master. Please try again.';
+                : 'Failed to get response from Enzo. Please try again.';
             this.addSystemMessage(msg);
         } finally {
             this.isWaitingForResponse = false;
@@ -182,7 +182,7 @@ class LoreMasterChatbot {
     }
     async sendMessageToAPI(message) {
         if (!navigator.onLine) {
-            throw new Error('You appear to be offline. The Lore Master requires a connection to consult the archives.');
+            throw new Error('You appear to be offline. Enzo requires a connection to consult the archives.');
         }
         const response = await fetch(this.chatApiUrl, {
             method: 'POST',
@@ -218,13 +218,9 @@ class LoreMasterChatbot {
         const yq = this.vibe === 'yasqueen';
         const dm = this.mode === 'dm';
         const r = this.rules;
-        if (yq && dm && r) return 'loremasterYasQueenDM5e';
-        if (yq && dm)      return 'loremasterYasQueenDM';
-        if (yq && r)       return 'loremasterYasQueen5e';
-        if (yq)            return 'loremasterYasQueen';
-        if (dm && r)       return 'loremaster5eDM';
-        if (dm)            return 'loremasterDM';
-        if (r)             return 'loremaster5e';
+        if (yq)  return 'loremasterYasQueen';
+        if (dm)  return 'loremasterDM';
+        if (r)   return 'loremaster5e';
         return 'loremaster';
     }
     updateIcons() {

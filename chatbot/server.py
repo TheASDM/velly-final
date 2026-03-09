@@ -59,7 +59,7 @@ def _skip_rag(message):
 
 # ── System prompt headers ────────────────────────────────────────────────────
 
-PLAYER_SYSTEM_HEADER = """You are the Loremaster, a knowledgeable guide for the Vallombrosa campaign — a D&D 5e game set in a dark romantasy version of Renaissance Venice called Venturia. The city sits at the edge of a fey prison called the Reverie Solenne, whose slow collapse is causing strange phenomena throughout the city.
+PLAYER_SYSTEM_HEADER = """You are Enzo the Loremaster, a knowledgeable guide for the Vallombrosa campaign — a D&D 5e game set in a dark romantasy version of Renaissance Venice called Venturia. The city sits at the edge of a fey prison called the Reverie Solenne, whose slow collapse is causing strange phenomena throughout the city.
 
 You are speaking to a PLAYER. Do not reveal plot secrets, DM-only information, or any content marked [SPOILER]. If asked about something you know is a spoiler, deflect gracefully — say it hasn't been revealed yet, or suggest they ask their DM.
 
@@ -72,7 +72,7 @@ You may see an [ADDITIONAL MATCHES AVAILABLE] block listing other relevant entri
 ---
 """
 
-DM_SYSTEM_HEADER = """You are the Loremaster, a comprehensive campaign assistant for the Vallombrosa campaign — a D&D 5e game set in a dark romantasy version of Renaissance Venice called Venturia.
+DM_SYSTEM_HEADER = """You are Enzo the Loremaster, a comprehensive campaign assistant for the Vallombrosa campaign — a D&D 5e game set in a dark romantasy version of Renaissance Venice called Venturia.
 
 You are speaking to the DM. You have full access to all campaign information including spoilers, plot secrets, NPC motivations, and DM notes. Be direct and useful. Help with:
 - Session prep and encounter planning
@@ -617,7 +617,7 @@ class Loremaster:
         logging.info("── Chat request ── mode=%s, rules=%s, vibe=%s, history=%d msgs", mode, rules, vibe, len(conversation_history))
         logging.info("  User: %s", message[:200] + ("..." if len(message) > 200 else ""))
 
-        # Passphrase toggle
+        # Passphrase toggle — entering DM disables rules and yasqueen
         if message.strip().lower() == DM_PASSPHRASE.lower():
             if mode == "dm":
                 new_mode = "player"
@@ -626,6 +626,8 @@ class Loremaster:
                 )
             else:
                 new_mode = "dm"
+                rules = False
+                vibe = None
                 reply = (
                     "Ah... you speak the old words. The veil lifts. "
                     "You now see as the Maestro sees."
@@ -637,11 +639,19 @@ class Loremaster:
             ]
             return reply, updated_history, new_mode, rules, vibe
 
-        # /rules toggle
+        # /rules toggle — only in normal player mode, disables yasqueen
         cmd = message.strip().lower()
         if cmd in ("/rules on", "/rules off"):
+            if mode == "dm":
+                reply = "Rules lookup is only available in normal mode. Exit DM mode first."
+                updated_history = conversation_history + [
+                    {"role": "user", "content": message},
+                    {"role": "assistant", "content": reply},
+                ]
+                return reply, updated_history, mode, rules, vibe
             rules = cmd == "/rules on"
             if rules:
+                vibe = None
                 reply = "Rules lookup enabled. I'll now include D&D 5e rules entries in my search results."
             else:
                 reply = "Rules lookup disabled. I'll focus on campaign content only."
@@ -652,10 +662,18 @@ class Loremaster:
             ]
             return reply, updated_history, mode, rules, vibe
 
-        # /yasqueen toggle
+        # /yasqueen toggle — only in normal player mode, disables rules
         if cmd in ("/yasqueen on", "/yasqueen off"):
+            if mode == "dm":
+                reply = "Enzo's alter ego only comes out in normal mode, bestie. Exit DM mode first."
+                updated_history = conversation_history + [
+                    {"role": "user", "content": message},
+                    {"role": "assistant", "content": reply},
+                ]
+                return reply, updated_history, mode, rules, vibe
             vibe = "yasqueen" if cmd == "/yasqueen on" else None
             if vibe:
+                rules = False
                 reply = "OMG HIIII bestie!! Ok so like, I still know ALL the tea about Venturia and the Valley of Shadows, but now we're gonna spill it properly. Ask me anything queen!! 💅✨"
             else:
                 reply = "Ugh fine, back to boring scholar mode I guess. *adjusts monocle*"
@@ -672,7 +690,7 @@ class Loremaster:
         system_prompt = header
         if vibe == "yasqueen":
             system_prompt += (
-                "PERSONALITY OVERRIDE: You are still the Lore Master with all the same "
+                "PERSONALITY OVERRIDE: You are still Enzo the Lore Master with all the same "
                 "knowledge, but you now talk like a Gen Z gossip queen. Use slang like "
                 "'bestie', 'no cap', 'slay', 'lowkey', 'highkey', 'the tea is', 'sis', "
                 "'periodt', 'vibe check', 'living rent-free', 'it's giving', 'main character energy', "

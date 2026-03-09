@@ -1,4 +1,4 @@
-const CACHE_NAME = 'loremaster-v3';
+const CACHE_NAME = 'enzo-v1';
 const SHELL_ASSETS = [
     '/',
     '/index.html',
@@ -8,11 +8,7 @@ const SHELL_ASSETS = [
     '/images/loremaster512x512.png',
     '/images/loremasterDM192x192.png',
     '/images/loremaster5e192x192.png',
-    '/images/loremaster5eDM192x192.png',
-    '/images/loremasterYasQueen192x192.png',
-    '/images/loremasterYasQueen5e192x192.png',
-    '/images/loremasterYasQueenDM192x192.png',
-    '/images/loremasterYasQueenDM5e192x192.png'
+    '/images/loremasterYasQueen192x192.png'
 ];
 
 // Install: pre-cache app shell

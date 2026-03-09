@@ -1,6 +1,6 @@
 {
-  "name": "Lore Master — Valley of Shadows",
-  "short_name": "Lore Master",
+  "name": "Enzo — Valley of Shadows",
+  "short_name": "Enzo",
   "description": "RAG-powered D&D campaign lore assistant",
   "start_url": "/",
   "display": "standalone",
