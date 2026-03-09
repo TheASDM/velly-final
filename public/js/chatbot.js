@@ -97,7 +97,7 @@ class LoreMasterChatbot {
                     <span>Enzo</span>
                     <span id="dm-mode-badge" style="display:none;margin-left:0.4rem;font-size:0.55rem;letter-spacing:0.1em;text-transform:uppercase;color:#0d0b11;background:#c9a84c;padding:0.1rem 0.35rem;border-radius:2px;font-weight:700;vertical-align:middle">DM</span>
                     <span id="rules-badge" style="display:none;margin-left:0.3rem;font-size:0.55rem;letter-spacing:0.1em;text-transform:uppercase;color:#e8dcc8;background:rgba(139,26,42,0.5);border:1px solid rgba(139,26,42,0.7);padding:0.1rem 0.35rem;border-radius:2px;font-weight:700;vertical-align:middle">5e</span>
-                    <span id="vibe-badge" style="display:none;margin-left:0.3rem;font-size:0.55rem;letter-spacing:0.1em;text-transform:uppercase;color:#0d0b11;background:#e85d9b;padding:0.1rem 0.35rem;border-radius:2px;font-weight:700;vertical-align:middle">💅</span>
+                    <span id="vibe-badge" style="display:none;margin-left:0.3rem;font-size:0.55rem;letter-spacing:0.1em;text-transform:uppercase;padding:0.1rem 0.35rem;border-radius:2px;font-weight:700;vertical-align:middle">💅</span>
                     <button id="chat-clear-btn" style="display:none;margin-left:auto;margin-right:0.5rem;background:none;border:none;cursor:pointer;font-size:0.7rem;letter-spacing:0.08em;color:rgba(212,165,116,0.45);padding:0;line-height:1;text-transform:uppercase;font-family:inherit" title="Start a new conversation">new chat</button>
                     <span class="toggle-icon">▼</span>
                 </div>
@@ -216,9 +216,11 @@ class LoreMasterChatbot {
     }
     getIconName() {
         const yq = this.vibe === 'yasqueen';
+        const fab = this.vibe === 'fabio';
         const dm = this.mode === 'dm';
         const r = this.rules;
         if (yq)       return 'loremasterYasQueen';
+        if (fab)      return 'loremasterfabio';
         if (dm && r)  return 'loremaster5eDM';
         if (dm)       return 'loremasterDM';
         if (r)        return 'loremaster5e';
@@ -238,7 +240,18 @@ class LoreMasterChatbot {
     }
     updateVibeIndicator() {
         const badge = document.getElementById('vibe-badge');
-        if (badge) badge.style.display = this.vibe ? 'inline' : 'none';
+        if (badge) {
+            badge.style.display = this.vibe ? 'inline' : 'none';
+            if (this.vibe === 'fabio') {
+                badge.textContent = '🌹';
+                badge.style.color = '#0d0b11';
+                badge.style.background = '#c94c4c';
+            } else {
+                badge.textContent = '💅';
+                badge.style.color = '#0d0b11';
+                badge.style.background = '#e85d9b';
+            }
+        }
         this.updateIcons();
     }
     updateModeIndicator() {

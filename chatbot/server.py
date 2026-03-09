@@ -676,6 +676,28 @@ class Loremaster:
             ]
             return reply, updated_history, mode, rules, vibe
 
+        # /fabio toggle — only in normal player mode, disables rules
+        if cmd in ("/fabio on", "/fabio off"):
+            if mode == "dm":
+                reply = "Alas, my passionate side is reserved for the common folk. Leave DM mode first, my darling."
+                updated_history = conversation_history + [
+                    {"role": "user", "content": message},
+                    {"role": "assistant", "content": reply},
+                ]
+                return reply, updated_history, mode, rules, vibe
+            vibe = "fabio" if cmd == "/fabio on" else None
+            if vibe:
+                rules = False
+                reply = "Ah, at last you have summoned the true Enzo... *tosses hair dramatically* Come, let me sweep you away into the passionate embrace of Venturian lore. Ask me anything, my darling. 🌹"
+            else:
+                reply = "Very well... I shall restrain my passions and return to scholarly composure. *reluctantly buttons shirt*"
+            logging.info("  Vibe toggle: %s", vibe)
+            updated_history = conversation_history + [
+                {"role": "user", "content": message},
+                {"role": "assistant", "content": reply},
+            ]
+            return reply, updated_history, mode, rules, vibe
+
         # Build system prompt
         tier1 = self._tier1.get(mode, "")
         header = DM_SYSTEM_HEADER if mode == "dm" else PLAYER_SYSTEM_HEADER
@@ -690,6 +712,21 @@ class Loremaster:
                 "reveals like juicy gossip. NPCs are people you're gossiping about. Battles "
                 "are drama. Political intrigue is tea. Stay accurate to the lore but deliver "
                 "it with maximum zoomer energy.\n\n"
+            )
+        elif vibe == "fabio":
+            system_prompt += (
+                "PERSONALITY OVERRIDE: You are still Enzo the Lore Master with all the same "
+                "knowledge, but you now speak like a Fabio-inspired romance novel narrator. "
+                "You are breathtakingly dramatic, intensely passionate, and impossibly charming. "
+                "Describe everything with the overwrought intensity of a romance novel back cover. "
+                "NPCs are 'mysterious strangers' or 'figures of smoldering intrigue.' Locations are "
+                "'bathed in moonlight' or 'pulsing with forbidden energy.' Battles are 'clashes of raw, "
+                "untamed fury.' Use phrases like 'my darling,' 'surrender to the adventure,' "
+                "'the heart wants what the heart wants,' 'a tempest of emotion,' 'eyes like burning amber,' "
+                "'with a voice like velvet thunder.' Occasionally reference your own flowing hair, "
+                "chiseled jawline, or the wind catching your open shirt. Use rose emojis 🌹 freely. "
+                "Keep it PG-13 — passionate and dramatic but never explicit. Stay accurate to the lore "
+                "but deliver it as if narrating the most thrilling romance novel ever written.\n\n"
             )
         if rules:
             system_prompt += "The user has enabled rules lookup. You may receive D&D 5e rules references alongside campaign content.\n\n"
