@@ -47,6 +47,13 @@ function loadFromLocalStorage(key) {
 class LoreMasterChatbot {
     constructor() {
         this.chatApiUrl = window.LOREMASTER_API_URL || '/api/chat';
+        // Derive base URL for images — when embedded on wiki, resolve against loremaster origin
+        if (window.LOREMASTER_API_URL) {
+            const u = new URL(window.LOREMASTER_API_URL);
+            this.baseUrl = u.origin;
+        } else {
+            this.baseUrl = '';
+        }
         this.conversationHistory = [];
         this.mode = 'player';
         this.rules = false;
@@ -93,7 +100,7 @@ class LoreMasterChatbot {
         container.innerHTML = `
             <div id="chatbot-widget" class="chatbot-collapsed">
                 <div class="chatbot-header">
-                    <img src="/images/loremaster192x192.png" alt="" class="chatbot-avatar-header">
+                    <img src="${this.baseUrl}/images/loremaster192x192.png" alt="" class="chatbot-avatar-header">
                     <span>Enzo</span>
                     <span id="dm-mode-badge" style="display:none;margin-left:0.4rem;font-size:0.55rem;letter-spacing:0.1em;text-transform:uppercase;color:#0d0b11;background:#c9a84c;padding:0.1rem 0.35rem;border-radius:2px;font-weight:700;vertical-align:middle">DM</span>
                     <span id="rules-badge" style="display:none;margin-left:0.3rem;font-size:0.55rem;letter-spacing:0.1em;text-transform:uppercase;color:#e8dcc8;background:rgba(139,26,42,0.5);border:1px solid rgba(139,26,42,0.7);padding:0.1rem 0.35rem;border-radius:2px;font-weight:700;vertical-align:middle">5e</span>
@@ -228,7 +235,7 @@ class LoreMasterChatbot {
     }
     updateIcons() {
         const name = this.getIconName();
-        const src = `/images/${name}192x192.png`;
+        const src = `${this.baseUrl}/images/${name}192x192.png`;
         const headerAvatar = document.querySelector('.chatbot-avatar-header');
         if (headerAvatar) headerAvatar.src = src;
         document.querySelectorAll('.chatbot-avatar').forEach(img => img.src = src);
@@ -273,7 +280,7 @@ class LoreMasterChatbot {
             const wrapper = document.createElement('div');
             wrapper.className = 'message-row assistant';
             const iconName = this.getIconName();
-            wrapper.innerHTML = `<img src="/images/${iconName}192x192.png" alt="" class="chatbot-avatar"><div class="message assistant">${renderMarkdown(text)}</div>`;
+            wrapper.innerHTML = `<img src="${this.baseUrl}/images/${iconName}192x192.png" alt="" class="chatbot-avatar"><div class="message assistant">${renderMarkdown(text)}</div>`;
             messagesContainer.appendChild(wrapper);
         } else {
             const messageDiv = document.createElement('div');
@@ -360,6 +367,19 @@ class LoreMasterChatbot {
 let loreMaster;
 document.addEventListener('DOMContentLoaded', () => {
     loreMaster = new LoreMasterChatbot();
+
+    // Lock favicon — Wiki.js overwrites it dynamically, so fight back
+    const FAVICON_URL = window.LOREMASTER_FAVICON_URL;
+    if (FAVICON_URL) {
+        const enforceFavicon = () => {
+            let link = document.querySelector('link[rel="icon"]') || document.querySelector('link[rel="shortcut icon"]');
+            if (link && link.href !== FAVICON_URL) {
+                link.href = FAVICON_URL;
+            }
+        };
+        enforceFavicon();
+        new MutationObserver(enforceFavicon).observe(document.head, { childList: true, subtree: true, attributes: true, attributeFilter: ['href'] });
+    }
 });
 function clearChatHistory() {
     if (loreMaster) loreMaster.clearHistory();

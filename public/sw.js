@@ -1,4 +1,4 @@
-const CACHE_NAME = 'enzo-v3';
+const CACHE_NAME = 'enzo-v4';
 const SHELL_ASSETS = [
     '/',
     '/index.html',
