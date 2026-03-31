@@ -42,8 +42,7 @@ Campaign knowledge is organized into three tiers that balance context depth agai
 The hand-authored campaign files and 5etools reference data. Not consumed directly by the chatbot.
 
 - `campaign-data/curated/*.json` — 7 files, 88 entries (characters, locations, factions, government, lore, campaign events, house rules)
-- `campaign-data/5e-filtered/*.json` — 34 usable files, ~2,876 entries (spells, monsters, items, feats, classes, races, conditions, etc.)
-- `campaign-data/rules/*.json` — raw 5etools dump before filtering
+- `campaign-data/5e-filtered/*.json` — 34 files, ~2,876 entries (spells, monsters, items, feats, classes, races, conditions, etc.)
 
 **Campaign curated schema:**
 ```json
@@ -94,7 +93,7 @@ Each entry in the vector store:
   "name": "Lotan",
   "source_file": "curated/characters.json",
   "text_hash": "a1b2c3...",
-  "embedding": [0.123, -0.456, ...]  // 1024-dimensional (mxbai-embed-large)
+  "embedding": [0.123, -0.456, ...]  // 768-dimensional (nomic-embed-text)
 }
 ```
 
@@ -181,8 +180,8 @@ DM mode persists in `localStorage` across page reloads. Clearing the chat resets
 ### Data Pipeline
 | File | Purpose |
 |---|---|
+| `build_tiers.py` | Builds Tier 1 compressed markdown from curated + 5etools JSON |
 | `build_vectors.py` | Reads Tier 0 data, embeds via Ollama, outputs vector stores. Supports caching, `--force` rebuild |
-| `openwebui_pipe.py` | Alternative deployment as an OpenWebUI Pipe function (manifold: player/DM models) |
 
 ### Infrastructure
 | File | Purpose |
@@ -217,22 +216,11 @@ python3 build_vectors.py --ollama-url https://ai.raptornet.dev/ollama --api-key 
 **What it does:**
 1. Reads all `campaign-data/curated/*.json` (88 entries) and `campaign-data/5e-filtered/*.json` (~2,876 entries)
 2. Constructs text representations (campaign entries get name/aliases/summary/details; 5etools entries get type-specific formatting for spells, monsters, items, etc.)
-3. Embeds each via Ollama (`mxbai-embed-large:latest`, 1024 dimensions)
+3. Embeds each via Ollama (`nomic-embed-text:latest`)
 4. Saves to `campaign-data/vector_store.json` (DM, all entries) and `campaign-data/vector_store_player.json` (spoiler entries excluded)
 5. Caches by text hash — re-runs only embed entries whose text changed
 
 **Skipped 5etools files** (not useful for chat): `makebrew-creature.json`, `monsterfeatures.json`, `magicvariants.json`, `recipes.json`, `book-xphb.json`, `charcreationoptions.json`, `cultsboons.json`, `tables.json`
-
----
-
-## OpenWebUI Pipe (Alternative)
-
-`openwebui_pipe.py` is a standalone OpenWebUI function that provides the same RAG + tool calling pipeline as a selectable model inside OpenWebUI. It exposes two models:
-
-- **Loremaster (Player)** — player-safe, spoiler-filtered
-- **Loremaster (DM)** — full access including spoilers and DM notes
-
-To deploy: paste into OpenWebUI Admin > Functions > Add Function, configure Valves (API keys, data directory).
 
 ---
 
@@ -261,7 +249,9 @@ docker compose restart chatbot  # to reload new vector stores
 | `ANTHROPIC_MODEL` | No | `claude-haiku-4-5-20251001` | Claude model ID |
 | `OLLAMA_URL` | No | `https://ai.raptornet.dev/ollama` | Ollama embedding endpoint |
 | `OLLAMA_API_KEY` | No | — | Bearer token for Ollama/OpenWebUI |
+| `EMBEDDING_MODEL` | No | `nomic-embed-text:latest` | Ollama embedding model (must match build_vectors.py) |
 | `DM_PASSPHRASE` | No | `Prima Volta` | Passphrase to toggle DM mode |
+| `POSTGRES_PASSWORD` | Yes | — | PostgreSQL password |
 
 ---
 

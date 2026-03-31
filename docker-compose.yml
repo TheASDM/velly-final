@@ -6,10 +6,9 @@ services:
     image: postgres:15-alpine
     container_name: dnd_postgres
     environment:
-      # These credentials secure your database
-      POSTGRES_DB: wiki
-      POSTGRES_USER: wikijs
-      POSTGRES_PASSWORD: changeme_secure_password
+      POSTGRES_DB: ${POSTGRES_DB:-wiki}
+      POSTGRES_USER: ${POSTGRES_USER:-wikijs}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     volumes:
       # This ensures your wiki data persists even if the container restarts
       - postgres-data:/var/lib/postgresql/data
@@ -29,9 +28,9 @@ services:
       DB_TYPE: postgres
       DB_HOST: postgres
       DB_PORT: 5432
-      DB_USER: wikijs
-      DB_PASS: changeme_secure_password
-      DB_NAME: wiki
+      DB_USER: ${POSTGRES_USER:-wikijs}
+      DB_PASS: ${POSTGRES_PASSWORD}
+      DB_NAME: ${POSTGRES_DB:-wiki}
     networks:
       - dnd-network
     restart: unless-stopped

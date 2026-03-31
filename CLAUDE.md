@@ -54,7 +54,7 @@ Type the passphrase (default: `Prima Volta`, env: `DM_PASSPHRASE`) in chat to to
 | File | What It Does |
 |------|-------------|
 | `server.py` | Flask API. `Loremaster` class handles RAG pipeline, Anthropic tool calling, DM mode. Routes: `POST /api/chat`, `GET /health`. ~889 lines. |
-| `Dockerfile` | Python 3.11-slim, gunicorn with 2 workers, 120s timeout |
+| `Dockerfile` | Python 3.11-slim, gunicorn with 2 workers, 120s timeout, `--preload` (shared memory) |
 | `requirements.txt` | flask 3.1.0, requests 2.32.3, gunicorn 23.0.0 |
 
 ### Frontend — `public/`
@@ -152,10 +152,11 @@ python3 build_vectors.py --force
 3. **Vector stores are gitignored** — they're 62-63 MB each. Rebuild with `build_vectors.py` after cloning.
 4. **Tier 1 prompts must be rebuilt** after editing curated JSON or 5etools files. Run `build_tiers.py`.
 5. **Ollama endpoint** requires Bearer token (`OLLAMA_API_KEY`). Uses `nomic-embed-text:latest` for 1024-dim embeddings.
-6. **Gunicorn runs 2 workers** — each loads the full vector store into memory (~125 MB per worker).
-7. **No automated tests** — no test framework, no CI/CD. Test manually.
-8. **No rate limiting** on the `/api/chat` endpoint.
-9. **Conversation history is client-side only** (localStorage). Server is stateless.
+6. **Gunicorn uses `--preload`** — vector stores loaded once, shared across 2 workers.
+7. **Input validation** — messages capped at 4,000 chars, history capped at 40 messages (8,000 chars each), roles restricted to user/assistant.
+8. **No automated tests** — no test framework, no CI/CD. Test manually.
+9. **No rate limiting** on the `/api/chat` endpoint.
+10. **Conversation history is client-side only** (localStorage). Server is stateless.
 
 ### Campaign Data Schema
 Curated JSON files follow this structure:

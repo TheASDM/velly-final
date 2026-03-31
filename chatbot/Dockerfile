@@ -9,4 +9,4 @@ COPY server.py .
 
 EXPOSE 3001
 
-CMD ["gunicorn", "-b", "0.0.0.0:3001", "-w", "2", "--timeout", "120", "server:app"]
+CMD ["gunicorn", "-b", "0.0.0.0:3001", "-w", "2", "--timeout", "120", "--preload", "server:app"]

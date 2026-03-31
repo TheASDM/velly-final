@@ -830,8 +830,23 @@ def chat():
     if not message or not isinstance(message, str):
         return jsonify({"error": "Invalid message"}), 400
 
+    if len(message) > 4000:
+        return jsonify({"error": "Message too long"}), 400
+
     if mode not in ("player", "dm"):
         mode = "player"
+
+    # Validate and sanitize conversation history
+    if not isinstance(conversation_history, list):
+        conversation_history = []
+    else:
+        sanitized = []
+        for msg in conversation_history[-40:]:  # cap at 40 messages
+            if (isinstance(msg, dict)
+                    and msg.get("role") in ("user", "assistant")
+                    and isinstance(msg.get("content"), str)):
+                sanitized.append({"role": msg["role"], "content": msg["content"][:8000]})
+        conversation_history = sanitized
 
     try:
         response_text, updated_history, new_mode, new_rules, new_vibe = engine.chat(

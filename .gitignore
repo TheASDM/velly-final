@@ -22,4 +22,4 @@ campaign-data/vector_store.json
 campaign-data/vector_store_player.json
 
 # Node modules
-review-tool/node_modules/
+node_modules/
