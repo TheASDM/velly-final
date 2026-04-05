@@ -2,9 +2,9 @@
 title: Class Changes
 description: All Class Changes posts.
 published: true
-date: 2026-02-28T22:50:31.609Z
+date: 2026-04-05T20:59:18.577Z
 editor: markdown
-dateCreated: 2026-02-28T22:50:31.609Z
+dateCreated: 2026-04-05T20:59:18.577Z
 ---
 
 # Class Changes

@@ -1,0 +1,50 @@
+campaign-data/
+├── curated/                        # Hand-authored campaign entries (7 files, 88 entries)
+│   ├── campaign.json               # Timeline & major campaign events
+│   ├── characters.json             # Player characters & NPCs
+│   ├── factions.json               # Organizations & power groups
+│   ├── government.json             # Venturia's political structure
+│   ├── houserules.json             # Custom D&D 5e house rules
+│   ├── locations.json              # Venturia locations & places
+│   └── lore.json                   # World history & mythology
+│
+├── 5e-filtered/                    # Filtered 5etools reference data (34 files, ~2,876 entries)
+│   ├── actions.json
+│   ├── backgrounds.json
+│   ├── bastions.json
+│   ├── bestiary-xdmg.json
+│   ├── bestiary-xmm.json
+│   ├── bestiary-xphb.json
+│   ├── class-barbarian.json
+│   ├── class-bard.json
+│   ├── class-cleric.json
+│   ├── class-druid.json
+│   ├── class-fighter.json
+│   ├── class-monk.json
+│   ├── class-paladin.json
+│   ├── class-ranger.json
+│   ├── class-rogue.json
+│   ├── class-sorcerer.json
+│   ├── class-warlock.json
+│   ├── class-wizard.json
+│   ├── conditionsdiseases.json
+│   ├── decks.json
+│   ├── deities.json
+│   ├── feats.json
+│   ├── items-base.json
+│   ├── items.json
+│   ├── languages.json
+│   ├── loot.json
+│   ├── objects.json
+│   ├── optionalfeatures.json
+│   ├── races.json
+│   ├── senses.json
+│   ├── skills.json
+│   ├── spells-xphb.json
+│   ├── trapshazards.json
+│   └── variantrules.json
+│
+├── tier1_player.md                 # Compressed system prompt — player-safe (~80 KB)
+├── tier1_dm.md                     # Compressed system prompt — full DM access (~308 KB)
+├── vector_store.json               # DM vector embeddings (~62 MB, gitignored)
+└── vector_store_player.json        # Player vector embeddings (~63 MB, gitignored)

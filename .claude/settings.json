@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(find /Users/dustinamodeo/Documents/coding/projects/velly-final -name '.DS_Store' -not -path '*/.git/*' -delete)"
+    ]
+  }
+}
