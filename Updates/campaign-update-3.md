@@ -1,11 +1,11 @@
 ---
-title: Campaign Update #3 — 4/5/2026
-description: On cancellations, rebuilding character sheets from scratch, scheduling one-on-ones, and what's coming up next.
+title: Campaign Update #3 - 4/5/2026
+description: Our third update discusses cancellations, one on ones, and scheduling
 published: true
-date: 2026-04-05T00:00:00.000Z
+date: 2026-04-05T21:25:17.624Z
 tags: campaign-update, news, april-2026, one-on-ones, character-sheets
 editor: markdown
-dateCreated: 2026-04-05T00:00:00.000Z
+dateCreated: 2026-04-05T21:25:17.624Z
 ---
 
 # Campaign Update #3 — 4/5/2026
