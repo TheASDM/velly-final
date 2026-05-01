@@ -2,9 +2,10 @@
 title: Valley of Shadows — Codex
 description: Tales from Venturia & Vallombrosa. The living chronicle of the Valley of Shadows campaign.
 published: true
-date: 2026-04-05T20:59:18.572Z
+date: 2026-04-05T21:26:42.651Z
+tags: locations, character-hooks, market-tiers, religion, abbey, healing, fog-sickness
 editor: markdown
-dateCreated: 2026-02-25T00:00:00.000Z
+dateCreated: 2026-02-20T05:30:38.113Z
 ---
 
 <div style="text-align: center; padding: 3.5rem 2rem 2.75rem; margin-bottom: 2.5rem; border-bottom: 1px solid rgba(139,115,85,0.25);">
