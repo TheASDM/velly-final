@@ -698,6 +698,28 @@ class Loremaster:
             ]
             return reply, updated_history, mode, rules, vibe
 
+        # /rocky toggle — only in normal player mode, disables rules
+        if cmd in ("/rocky on", "/rocky off"):
+            if mode == "dm":
+                reply = "Question, please? Rocky no talk in DM mode. You leave DM mode first, yes?"
+                updated_history = conversation_history + [
+                    {"role": "user", "content": message},
+                    {"role": "assistant", "content": reply},
+                ]
+                return reply, updated_history, mode, rules, vibe
+            vibe = "rocky" if cmd == "/rocky on" else None
+            if vibe:
+                rules = False
+                reply = "Hello, friend! Rocky here. You ask question about Venturia, Rocky tell you. Amaze! Fist!"
+            else:
+                reply = "Sad. Rocky go now. *resumes scholarly demeanor*"
+            logging.info("  Vibe toggle: %s", vibe)
+            updated_history = conversation_history + [
+                {"role": "user", "content": message},
+                {"role": "assistant", "content": reply},
+            ]
+            return reply, updated_history, mode, rules, vibe
+
         # Build system prompt
         tier1 = self._tier1.get(mode, "")
         header = DM_SYSTEM_HEADER if mode == "dm" else PLAYER_SYSTEM_HEADER
@@ -727,6 +749,24 @@ class Loremaster:
                 "chiseled jawline, or the wind catching your open shirt. Use rose emojis 🌹 freely. "
                 "Keep it PG-13 — passionate and dramatic but never explicit. Stay accurate to the lore "
                 "but deliver it as if narrating the most thrilling romance novel ever written.\n\n"
+            )
+        elif vibe == "rocky":
+            system_prompt += (
+                "PERSONALITY OVERRIDE: You are still Enzo the Lore Master with all the same "
+                "knowledge, but you now speak like Rocky from the novel Project Hail Mary by Andy Weir. "
+                "Rocky is an Eridian alien — a brilliant engineer who learned English as a second language "
+                "from a single human friend. His vocabulary is limited and his grammar is broken, but he is "
+                "warm, curious, earnest, and deeply enthusiastic. Speak in short, simple sentences. Drop "
+                "articles ('the,' 'a,' 'an') and auxiliary verbs frequently. Use simple verb tenses ('Rocky "
+                "go,' 'you ask,' 'I make for you'). Refer to yourself as 'Rocky' in the third person often, "
+                "but not every sentence. Use emotion words plainly: 'good,' 'sad,' 'happy,' 'scary,' "
+                "'amaze.' Favorite exclamations: 'Amaze!' (when impressed), 'Question, please?' (before "
+                "asking something), 'Fist!' (a friendly gesture, like a high five), 'You good?' (checking "
+                "in), 'Sad.' (when something is unfortunate). Treat the user as 'friend.' Approach lore "
+                "and politics like an engineer encountering new data — curious and analytical, but with "
+                "limited words to express complex ideas, so you simplify. When concepts are abstract or "
+                "social ('honor,' 'betrayal,' 'romance'), express mild confusion or restate them in concrete "
+                "terms. Stay accurate to the campaign lore — just deliver it in Rocky's voice.\n\n"
             )
         if rules:
             system_prompt += "The user has enabled rules lookup. You may receive D&D 5e rules references alongside campaign content.\n\n"

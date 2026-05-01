@@ -224,10 +224,12 @@ class LoreMasterChatbot {
     getIconName() {
         const yq = this.vibe === 'yasqueen';
         const fab = this.vibe === 'fabio';
+        const rocky = this.vibe === 'rocky';
         const dm = this.mode === 'dm';
         const r = this.rules;
         if (yq)       return 'loremasterYasQueen';
         if (fab)      return 'loremasterfabio';
+        if (rocky)    return 'loremasterRocky';
         if (dm && r)  return 'loremaster5eDM';
         if (dm)       return 'loremasterDM';
         if (r)        return 'loremaster5e';
@@ -253,6 +255,10 @@ class LoreMasterChatbot {
                 badge.textContent = '🌹';
                 badge.style.color = '#0d0b11';
                 badge.style.background = '#c94c4c';
+            } else if (this.vibe === 'rocky') {
+                badge.textContent = '🪨';
+                badge.style.color = '#e8dcc8';
+                badge.style.background = '#5a4632';
             } else {
                 badge.textContent = '💅';
                 badge.style.color = '#0d0b11';

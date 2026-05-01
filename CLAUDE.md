@@ -183,6 +183,7 @@ Curated JSON files follow this structure:
 - `/rules on` / `/rules off` → toggle 5e rules emphasis
 - `/yasqueen on` / `/yasqueen off` → personality vibe mode
 - `/fabio on` / `/fabio off` → romance novel narrator vibe mode
+- `/rocky on` / `/rocky off` → Rocky-from-Project-Hail-Mary voice (broken English Eridian engineer)
 
 ### Wiki Embedding
 The chatbot widget can be embedded in Wiki.js pages:
