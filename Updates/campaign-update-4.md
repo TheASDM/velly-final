@@ -1,11 +1,11 @@
 ---
-title: Campaign Update #4 - 5/21/2026
+title: Campaign Update #4 — 5/21/2026
 description: Scheduling via Timeful, two asks before the next session, new maps of Eldryn and Venturia, the road to Session 1, and a few promises about honesty and player agency.
 published: true
-date: 2026-05-21T20:00:00.000Z
+date: 2026-05-22T01:53:35.786Z
 tags: campaign-update, news, may-2026, maps, scheduling, player-agency
 editor: markdown
-dateCreated: 2026-05-21T20:00:00.000Z
+dateCreated: 2026-05-22T01:26:17.270Z
 ---
 
 # Campaign Update #4 — 5/21/2026
