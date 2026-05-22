@@ -1,16 +1,16 @@
 ---
 title: Noname
-description: A human Barbarian Fog Warden raised at Liminal House — a patient at St. Viro's Respite, hunting for the memory of the night her fiancé vanished.
+description: An Orc Barbarian Fog Warden raised at Liminal House — a patient at St. Viro's Respite, hunting for the memory of the night her fiancé vanished.
 published: true
 date: 2026-05-22T00:00:00.000Z
-tags: characters, pcs, barbarian, human, fog-warden
+tags: characters, pcs, barbarian, orc, fog-warden
 editor: markdown
 dateCreated: 2026-05-22T00:00:00.000Z
 ---
 
 # Noname
 
-**Player:** Amy &nbsp;|&nbsp; **Class:** Barbarian — Fog Warden (Human) &nbsp;|&nbsp; **Age:** 24 &nbsp;|&nbsp; **Pronouns:** she/her &nbsp;|&nbsp; *"Looking for the night she can't remember."*
+**Player:** Amy &nbsp;|&nbsp; **Class:** Barbarian — Fog Warden (Orc) &nbsp;|&nbsp; **Age:** 24 &nbsp;|&nbsp; **Pronouns:** she/her &nbsp;|&nbsp; *"Looking for the night she can't remember."*
 
 <div style="text-align: center; margin: 1.5rem 0 2rem;">
 <img src="https://codex.valleyofshadows.wiki/images/noname-profile.png" alt="Noname" style="width: 280px; max-width: 80%; border-radius: 4px; box-shadow: 0 8px 32px rgba(0,0,0,0.7); border: 1px solid rgba(139,115,85,0.3);">
