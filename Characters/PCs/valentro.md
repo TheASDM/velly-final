@@ -1,9 +1,19 @@
+---
+title: Valentro
+description: An elf Ranger keeping the Tiered Gardens — orphaned and raised by Liminal House, training in the way of the leaf, and learning a swordfighter's reflexes he can't remember earning.
+published: true
+date: 2026-05-22T00:00:00.000Z
+tags: characters, pcs, ranger, elf, tiered-gardens, liminal-house
+editor: markdown
+dateCreated: 2026-05-22T00:00:00.000Z
+---
+
 # Valentro
 
 **Player:** Ren &nbsp;|&nbsp; **Class:** Ranger (Elf) &nbsp;|&nbsp; **Age:** 19 &nbsp;|&nbsp; **Pronouns:** he/him &nbsp;|&nbsp; *"A gardener with a soldier's hands."*
 
 <div style="text-align: center; margin: 1.5rem 0 2rem;">
-<img src="https://loremaster.valleyofshadows.wiki/images/valportrait.png" alt="Valentro" style="width: 280px; max-width: 80%; border-radius: 4px; box-shadow: 0 8px 32px rgba(0,0,0,0.7); border: 1px solid rgba(139,115,85,0.3);">
+<img src="https://codex.valleyofshadows.wiki/images/valportrait.png" alt="Valentro" style="width: 280px; max-width: 80%; border-radius: 4px; box-shadow: 0 8px 32px rgba(0,0,0,0.7); border: 1px solid rgba(139,115,85,0.3);">
 </div>
 
 Valentro keeps the [Tiered Gardens](/en/Venturia/Locations/tiered-gardens) — an elf Ranger trained in the way of the leaf under a mentor the gardeners call Strider. He was orphaned young: his mother died first, and then his father, a Fog Warden, simply disappeared. [Liminal House](/en/Venturia/Locations/liminal-house) raised him. He'd have called himself a quiet man with quiet work — until the day his shears snapped in his hands and, for a heartbeat, he saw two short swords instead, and moved like someone who knew how to use them.

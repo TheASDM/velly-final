@@ -1,9 +1,19 @@
+---
+title: Kryton Novelli
+description: A faculty mage at the Venturian Academy of Veiled Arts — a former Wizard turned Warlock by a pact won at a gambling table at The Undertow, convinced he can wriggle out of the deal.
+published: true
+date: 2026-05-22T00:00:00.000Z
+tags: characters, pcs, warlock, wizard, human, vava
+editor: markdown
+dateCreated: 2026-05-22T00:00:00.000Z
+---
+
 # Kryton Novelli
 
 **Player:** Shawn &nbsp;|&nbsp; **Class:** Warlock — formerly Wizard (Human) &nbsp;|&nbsp; **Age:** 40s &nbsp;|&nbsp; **Pronouns:** he/him &nbsp;|&nbsp; *"Certain he can outsmart his own pact."*
 
 <div style="text-align: center; margin: 1.5rem 0 2rem;">
-<img src="https://loremaster.valleyofshadows.wiki/images/kryton.png" alt="Kryton Novelli" style="width: 280px; max-width: 80%; border-radius: 4px; box-shadow: 0 8px 32px rgba(0,0,0,0.7); border: 1px solid rgba(139,115,85,0.3);">
+<img src="https://codex.valleyofshadows.wiki/images/kryton.png" alt="Kryton Novelli" style="width: 280px; max-width: 80%; border-radius: 4px; box-shadow: 0 8px 32px rgba(0,0,0,0.7); border: 1px solid rgba(139,115,85,0.3);">
 </div>
 
 Kryton Novelli is a fixture of the [Venturian Academy of Veiled Arts](/en/Venturia/Locations/vava) — a faculty mage in his middle years, brilliant and increasingly unsteady, with a standing tab and a worse habit at [The Undertow](/en/Venturia/Locations/the-undertow). He used to be a Wizard. The spells are gone now, along with most of what he'd learned and most of what he'd pieced together, taken straight out of his head. What he has instead is a Warlock's pact he won at a gambling table, a patron he can't name, and the stubborn belief that he's clever enough to wriggle out of the deal before it costs him.

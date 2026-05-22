@@ -1,9 +1,19 @@
+---
+title: Orabella
+description: A human Cleric of the Art domain at St. Viro's Respite — a fog child raised by Liminal House, dreaming first-person lives that aren't hers.
+published: true
+date: 2026-05-22T00:00:00.000Z
+tags: characters, pcs, cleric, human, viros-respite, liminal-house
+editor: markdown
+dateCreated: 2026-05-22T00:00:00.000Z
+---
+
 # Orabella
 
 **Player:** Jennifer &nbsp;|&nbsp; **Class:** Cleric — Art domain (Human) &nbsp;|&nbsp; **Age:** 24 &nbsp;|&nbsp; **Pronouns:** she/her &nbsp;|&nbsp; *"Dreaming other people's lives."*
 
 <div style="text-align: center; margin: 1.5rem 0 2rem;">
-<img src="https://loremaster.valleyofshadows.wiki/images/orabellaportrait.png" alt="Orabella" style="width: 280px; max-width: 80%; border-radius: 4px; box-shadow: 0 8px 32px rgba(0,0,0,0.7); border: 1px solid rgba(139,115,85,0.3);">
+<img src="https://codex.valleyofshadows.wiki/images/orabellaportrait.png" alt="Orabella" style="width: 280px; max-width: 80%; border-radius: 4px; box-shadow: 0 8px 32px rgba(0,0,0,0.7); border: 1px solid rgba(139,115,85,0.3);">
 </div>
 
 Orabella is a fog child — she walked out of Vallombrosa into [Liminal House](/en/Venturia/Locations/liminal-house) as a girl with no memory of any life before it. She's twenty-four now, a cleric at [St. Viro's Respite](/en/Venturia/Locations/viros-respite), and she has spent most of those years certain that the blank in her past isn't empty at all. She dreams, vividly and in the first person, of being other people: other bodies, other lives. The very first of those dreams was blood — on her hands, on her clothes — and she has never learned whose.

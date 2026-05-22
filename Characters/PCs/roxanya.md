@@ -1,9 +1,19 @@
+---
+title: 'Roxanya "Roxy"'
+description: A nineteen-year-old Forest Gnome Arcane Trickster — raised by Brownies, enrolled at the Academy on a lie, and pact-bound to Garl Glittergold after a failed robbery at the Penny Shrine.
+published: true
+date: 2026-05-22T00:00:00.000Z
+tags: characters, pcs, rogue, arcane-trickster, forest-gnome
+editor: markdown
+dateCreated: 2026-05-22T00:00:00.000Z
+---
+
 # Roxanya "Roxy"
 
 **Player:** Danielle &nbsp;|&nbsp; **Class:** Rogue — Arcane Trickster (Forest Gnome) &nbsp;|&nbsp; **Age:** 19 &nbsp;|&nbsp; **Pronouns:** she/her &nbsp;|&nbsp; *"Faking the magic, saving her people."*
 
 <div style="text-align: center; margin: 1.5rem 0 2rem;">
-<img src="https://loremaster.valleyofshadows.wiki/images/roxyportrait.png" alt="Roxanya 'Roxy'" style="width: 280px; max-width: 80%; border-radius: 4px; box-shadow: 0 8px 32px rgba(0,0,0,0.7); border: 1px solid rgba(139,115,85,0.3);">
+<img src="https://codex.valleyofshadows.wiki/images/roxyportrait.png" alt="Roxanya 'Roxy'" style="width: 280px; max-width: 80%; border-radius: 4px; box-shadow: 0 8px 32px rgba(0,0,0,0.7); border: 1px solid rgba(139,115,85,0.3);">
 </div>
 
 Roxanya — Roxy — is a nineteen-year-old forest gnome who didn't know she was a gnome until she was twelve, and didn't know she wasn't a Brownie until she was eight. Abandoned as an infant and raised by a rummage of Brownies as one of their own, she arrived in Venturia with a swashbuckler's coat, a taxidermy owl on her shoulder, and a secret: she's enrolled at the Academy on a lie, her magic isn't what she says it is, and she's here to save her people.
