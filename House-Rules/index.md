@@ -2,9 +2,9 @@
 title: House Rules
 description: All House Rules posts.
 published: true
-date: 2026-04-05T20:59:18.577Z
+date: 2026-05-22T01:24:41.689Z
 editor: markdown
-dateCreated: 2026-04-05T20:59:18.577Z
+dateCreated: 2026-05-22T01:24:41.689Z
 ---
 
 # House Rules
