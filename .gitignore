@@ -23,3 +23,6 @@ campaign-data/vector_store_player.json
 
 # Node modules
 node_modules/
+
+# Local archives (never intended for the repo)
+*.zip
