@@ -34,6 +34,6 @@ The faithful gain access to the Abbey's charitable network, instruction in relig
 ---
 
 ## Connections
-- **[Mother-Abbot Lucia Virosdottir](/en/Venturia/Government/lucia-virosdottir)** — Abbey leader and Temple Authority Council Chair.
+- **[Mother-Abbot Lucia Virosdottir](/en/Venturia/Characters-NPCs/lucia-virosdottir)** — Abbey leader and Temple Authority Council Chair.
 - **St. Viro's Respite** — The Abbey-run healing house.
-- **[Liminal House](/en/Venturia/Factions/liminal-house)** — A closely coordinated institution, founded four hundred years ago by the Abbey scholar-monk Aldric.
+- **[Liminal House](/en/Venturia/Locations/liminal-house)** — A closely coordinated institution, founded four hundred years ago by the Abbey scholar-monk Aldric.

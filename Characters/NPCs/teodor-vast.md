@@ -28,4 +28,4 @@ Blunt and relentlessly practical. To Teodor the crisis is first a commercial pro
 ## Connections
 - **[The Autumn Council](/en/Venturia/Government/autumn-council)** — Holds one of the two Harbor-Lord seats.
 - **[The Harbor Wardens' Compact](/en/Venturia/Factions/harbor-wardens)** — Their faction leader.
-- **[Constanza Marea](/en/Venturia/Government/constanza-marea)** — His fellow Harbor-Lord; the two deadlocked two years ago over a council vote, resolved by Vincen Tidecaller's compromise appointment.
+- **[Constanza Marea](/en/Venturia/Characters-NPCs/constanza-marea)** — His fellow Harbor-Lord; the two deadlocked two years ago over a council vote, resolved by Vincen Tidecaller's compromise appointment.

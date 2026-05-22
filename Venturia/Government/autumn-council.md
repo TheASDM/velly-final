@@ -32,14 +32,14 @@ Because the faction blocs must move together to pass anything, and the unaligned
 ---
 
 ## Members
-- **[Lord-Admiral Teodor Vast](/en/Venturia/Government/teodor-vast)** — Harbor-Lord
-- **[Constanza Marea](/en/Venturia/Government/constanza-marea)** — Harbor-Lord
-- **[Master Artisan Celeste Orion](/en/Venturia/Government/celeste-orion)** — Guild-Master
-- **[Guildmaster Vincenzo Copper](/en/Venturia/Government/vincenzo-copper)** — Guild-Master
-- **[Mother-Abbot Lucia Virosdottir](/en/Venturia/Government/lucia-virosdottir)** — Temple Authority, current Council Chair
-- **[Father Domenico of the Four Winds](/en/Venturia/Government/father-domenico)** — Temple Authority
-- **[Vincen Tidecaller](/en/Venturia/Government/vincen-tidecaller)** — Master of the Tidekeeper's Lodge
-- **[Archmagister Dorian Silvermarch](/en/Venturia/Government/dorian-silvermarch)** — Archmagister of VAVA
-- **[Primo Navigante Old Maren](/en/Venturia/Government/old-maren)** — Ferriers' Confraternity
-- **[Captain-Commander Thora Ironmark](/en/Venturia/Government/thora-ironmark)** — Watch Commander of the Fog Wardens
+- **[Lord-Admiral Teodor Vast](/en/Venturia/Characters-NPCs/teodor-vast)** — Harbor-Lord
+- **[Constanza Marea](/en/Venturia/Characters-NPCs/constanza-marea)** — Harbor-Lord
+- **[Master Artisan Celeste Orion](/en/Venturia/Characters-NPCs/celeste-orion)** — Guild-Master
+- **[Guildmaster Vincenzo Copper](/en/Venturia/Characters-NPCs/vincenzo-copper)** — Guild-Master
+- **[Mother-Abbot Lucia Virosdottir](/en/Venturia/Characters-NPCs/lucia-virosdottir)** — Temple Authority, current Council Chair
+- **[Father Domenico of the Four Winds](/en/Venturia/Characters-NPCs/father-domenico)** — Temple Authority
+- **[Vincen Tidecaller](/en/Venturia/Characters-NPCs/vincen-tidecaller)** — Master of the Tidekeeper's Lodge
+- **[Archmagister Dorian Silvermarch](/en/Venturia/Characters-NPCs/dorian-silvermarch)** — Archmagister of VAVA
+- **[Primo Navigante Old Maren](/en/Venturia/Characters-NPCs/old-maren)** — Ferriers' Confraternity
+- **[Captain-Commander Thora Ironmark](/en/Venturia/Characters-NPCs/thora-ironmark)** — Watch Commander of the Fog Wardens
 - *The Signore of Venturia* — honorary seat, vacant

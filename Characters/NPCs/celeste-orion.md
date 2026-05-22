@@ -28,4 +28,4 @@ The chamber's loudest voice for the city's laborers. With the disappearances fal
 ## Connections
 - **[The Autumn Council](/en/Venturia/Government/autumn-council)** — Holds one of the two Guild-Master seats.
 - **The Binding Crafts Guild** — The building trades she leads.
-- **[Liminal House](/en/Venturia/Factions/liminal-house)** — Her parent was a Liminal House foundling.
+- **[Liminal House](/en/Venturia/Locations/liminal-house)** — Her parent was a Liminal House foundling.

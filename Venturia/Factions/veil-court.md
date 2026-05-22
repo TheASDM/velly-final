@@ -34,5 +34,5 @@ Members gain entry to exclusive theatrical spaces and private masked events, con
 ---
 
 ## Connections
-- **[The Masquers' Sodality](/en/Venturia/Factions/masquers-sodality)** — Their maskmaking tradition is closely tied to the Court's cultural mission.
+- **[The Masquers' Sodality](/en/Venturia/Locations/masquers-sodality)** — Their maskmaking tradition is closely tied to the Court's cultural mission.
 - **The Amaranth Theater** — The principal venue for Court-sponsored productions and the annual *Tragedy of Vallombrosa*.

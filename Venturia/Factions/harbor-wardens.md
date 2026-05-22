@@ -34,6 +34,6 @@ Members gain access to regional trade networks, preferential shipping and wareho
 ---
 
 ## Connections
-- **[Lord-Admiral Teodor Vast](/en/Venturia/Government/teodor-vast)** — Faction leader and Harbor-Lord on the Council.
+- **[Lord-Admiral Teodor Vast](/en/Venturia/Characters-NPCs/teodor-vast)** — Faction leader and Harbor-Lord on the Council.
 - **[The Covenant of Silver Scales](/en/Venturia/Factions/covenant-silver-scales)** — Cooperate on commercial matters, compete for economic influence.
 - **[The Fog Wardens and the Shadowed Wardens](/en/Venturia/Factions/fog-wardens)** — Generously funded by the Compact, since security is good for business — though its trade-restricting rules chafe.

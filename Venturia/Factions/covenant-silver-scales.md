@@ -35,5 +35,5 @@ Members gain access to the Covenant's negotiators and arbitrators, the weight of
 
 ## Connections
 - **[Caravel "Car" Asteri](/en/Venturia/Characters-PCs/caravel-asteri)** — Loren's child, who rejected the family business; the tie remains.
-- **[The Covenant Archive](/en/Venturia/Factions/covenant-archive)** — The Asteri family's own institution, bound up with their legal traditions.
+- **[The Covenant Archive](/en/Venturia/Locations/covenant-archive)** — The Asteri family's own institution, bound up with their legal traditions.
 - **[The Harbor Wardens' Compact](/en/Venturia/Factions/harbor-wardens)** — Cooperate on commercial matters, compete for economic influence.

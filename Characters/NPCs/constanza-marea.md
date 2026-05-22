@@ -28,4 +28,4 @@ A dealmaker. Where others stake out positions, Constanza looks for the trade tha
 ## Connections
 - **[The Autumn Council](/en/Venturia/Government/autumn-council)** — Holds one of the two Harbor-Lord seats.
 - **The Warehouse Consortium** — Her family's enterprise and power base in the Harbor District.
-- **[Teodor Vast](/en/Venturia/Government/teodor-vast)** — Her fellow Harbor-Lord; their deadlock two years ago led to Vincen Tidecaller's compromise appointment.
+- **[Teodor Vast](/en/Venturia/Characters-NPCs/teodor-vast)** — Her fellow Harbor-Lord; their deadlock two years ago led to Vincen Tidecaller's compromise appointment.

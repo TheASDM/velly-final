@@ -27,4 +27,4 @@ Dorian votes with cautious pragmatism, favoring measured investigation and oppos
 
 ## Connections
 - **[The Autumn Council](/en/Venturia/Government/autumn-council)** — Archmagister's seat.
-- **[The Venturian Academy of Veiled Arts](/en/Venturia/Factions/vava)** — Academy leader and keeper of its archives.
+- **[The Venturian Academy of Veiled Arts](/en/Venturia/Locations/vava)** — Academy leader and keeper of its archives.
