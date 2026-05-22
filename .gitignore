@@ -17,8 +17,9 @@ Thumbs.db
 # Chat logs (written by chatbot container at runtime)
 logs/*.log
 
-# Generated vector stores (large, rebuilt by build_vectors.py)
+# Generated vector store (large, rebuilt by build_vectors.py)
 campaign-data/vector_store.json
+# Legacy split-mode store from before the player-only refactor
 campaign-data/vector_store_player.json
 
 # Node modules
