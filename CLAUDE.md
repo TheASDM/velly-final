@@ -201,6 +201,7 @@ dateCreated: 2026-05-22T00:00:00.000Z
 - `/yasqueen on` / `/yasqueen off` → personality vibe mode
 - `/fabio on` / `/fabio off` → romance novel narrator vibe mode
 - `/rocky on` / `/rocky off` → Rocky-from-Project-Hail-Mary voice (broken English Eridian engineer)
+- `/brainstorm on` / `/brainstorm off` → character-development partner mode (replaces the factual system prompt entirely, runs at temperature 0.7 for creative range)
 
 ### Wiki Embedding
 The chatbot widget can be embedded in Wiki.js pages:
