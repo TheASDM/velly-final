@@ -23,6 +23,8 @@ dateCreated: 2026-02-20T05:30:38.113Z
 <a href="/en/Class-Changes/index" style="font-size: 0.68rem; letter-spacing: 0.35em; text-transform: uppercase; color: #8b7355; text-decoration: none;">Class Changes</a>
 <a href="/en/House-Rules/index" style="font-size: 0.68rem; letter-spacing: 0.35em; text-transform: uppercase; color: #8b7355; text-decoration: none;">House Rules</a>
 <a href="/en/Venturia/index" style="font-size: 0.68rem; letter-spacing: 0.35em; text-transform: uppercase; color: #8b7355; text-decoration: none;">Venturia</a>
+<a href="https://loremaster.valleyofshadows.wiki/" target="_blank" rel="noopener" style="font-size: 0.68rem; letter-spacing: 0.35em; text-transform: uppercase; color: #8b7355; text-decoration: none;">Loremaster</a>
+<a href="https://reference.valleyofshadows.wiki/enzo/" target="_blank" rel="noopener" style="font-size: 0.68rem; letter-spacing: 0.35em; text-transform: uppercase; color: #8b7355; text-decoration: none;">Using Enzo</a>
 </div>
 
 </div>
