@@ -2,7 +2,7 @@
 title: CLAUDE
 description: 
 published: true
-date: 2026-05-22T14:17:06.035Z
+date: 2026-05-22T14:18:11.444Z
 tags: 
 editor: markdown
 dateCreated: 2026-05-01T22:26:10.048Z
@@ -119,7 +119,7 @@ Defined in `.env` (never committed). See `.env.example` for the template.
 | `OLLAMA_URL` | No | `https://ai.raptornet.dev/ollama` | Embedding endpoint |
 | `OLLAMA_API_KEY` | No | — | Bearer token for Ollama/OpenWebUI |
 | `EMBEDDING_MODEL` | No | `nomic-embed-text:latest` | Must match `build_vectors.py` |
-| `DM_PASSPHRASE` | No | `Prima Volta` | Passphrase to toggle DM mode |
+| `DM_PASSPHRASE` | No | `REDACTED` | Passphrase to toggle DM mode |
 | `POSTGRES_DB` | No | `wiki` | Wiki.js database name |
 | `POSTGRES_USER` | No | `wikijs` | Wiki.js database user |
 | `POSTGRES_PASSWORD` | Yes | — | **Change before first deploy** |
