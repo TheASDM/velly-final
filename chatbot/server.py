@@ -546,6 +546,11 @@ class Loremaster:
             "messages": messages,
             "tools": self._tool_definitions(),
         }
+        # Player mode: clamp creativity so the bot states facts instead of
+        # confidently inferring spoilers from non-spoiler context. DM mode
+        # keeps the default (1.0) so it stays useful for brainstorming.
+        if mode != "dm":
+            payload["temperature"] = 0.2
 
         logging.info("  Anthropic: calling %s (system prompt %d chars, %d messages)",
                       ANTHROPIC_MODEL, len(system_prompt), len(messages))
