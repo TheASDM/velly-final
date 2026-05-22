@@ -1,8 +1,8 @@
 ---
 title: ARCHITECTURE
 description: 
-published: true
-date: 2026-05-22T14:13:22.687Z
+published: false
+date: 2026-05-22T14:18:41.686Z
 tags: 
 editor: markdown
 dateCreated: 2026-03-04T04:23:30.551Z
