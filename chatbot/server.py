@@ -202,10 +202,18 @@ class Loremaster:
 
         auto_inject = []
         injected_ids = set()
+        injected_page_ids = set()  # dedup so multiple chunks of one page only inject once
 
         # Phase 1: keyword exact-match (names and aliases)
+        # If a name has multiple chunks, keyword match returns them all — keep one.
         keyword_hits = self._keyword_match(query)
+        keyword_by_page: dict = {}
         for entry in keyword_hits:
+            pid = entry.get("page_id", entry.get("id"))
+            # Prefer chunk_index 0 (head of page) for keyword/lookup-style hits.
+            if pid not in keyword_by_page or entry.get("chunk_index", 0) < keyword_by_page[pid].get("chunk_index", 0):
+                keyword_by_page[pid] = entry
+        for entry in keyword_by_page.values():
             auto_inject.append({
                 "name": entry["name"],
                 "source_file": entry.get("source_file", ""),
@@ -213,8 +221,12 @@ class Loremaster:
                 "text": entry.get("text", ""),
             })
             injected_ids.add(entry["id"])
+            injected_page_ids.add(entry.get("page_id", entry.get("id")))
         if keyword_hits:
-            logging.info("  RAG keyword: %d exact name/alias matches", len(keyword_hits))
+            logging.info(
+                "  RAG keyword: %d exact name/alias matches → %d unique pages",
+                len(keyword_hits), len(keyword_by_page),
+            )
             for m in auto_inject:
                 logging.info("    KEYWORD-INJECT: %s (%s)", m["name"], m["source_file"])
 
@@ -243,6 +255,10 @@ class Loremaster:
         for sim, entry in scored:
             if entry["id"] in injected_ids:
                 continue
+            pid = entry.get("page_id", entry.get("id"))
+            # Dedup by page_id: don't inject two chunks of the same page.
+            if pid in injected_page_ids:
+                continue
             if vector_injected < RAG_TOP_K and sim >= RAG_AUTO_THRESHOLD:
                 auto_inject.append({
                     "name": entry["name"],
@@ -251,8 +267,9 @@ class Loremaster:
                     "text": entry.get("text", ""),
                 })
                 injected_ids.add(entry["id"])
+                injected_page_ids.add(pid)
                 vector_injected += 1
-            elif sim >= RAG_LIST_THRESHOLD and entry["id"] not in injected_ids:
+            elif sim >= RAG_LIST_THRESHOLD:
                 additional.append({
                     "name": entry["name"],
                     "source_file": entry.get("source_file", ""),
@@ -297,21 +314,31 @@ class Loremaster:
     # ── Tool: lookup_entry ───────────────────────────────────────────────
 
     def lookup_entry(self, name):
-        """Find a vector store entry by exact name/alias match, return its full text."""
+        """Find a page by exact name/alias match. Long pages are stored as
+        multiple chunks in the vector store — this reassembles all chunks of
+        the matching page into a single full-text response."""
         name_lower = name.lower().strip()
         entries = self._name_index.get(name_lower)
-        if entries:
-            # If multiple, prefer campaign over 5etools
-            entries = sorted(
-                entries,
-                key=lambda e: not e.get("source_file", "").startswith("5e-filtered/"),
-            )
-            return entries[0].get("text", "")
-        # Fall back to substring search if exact match misses
-        for entry in self._vector_store or []:
-            if name_lower in entry.get("name", "").lower():
-                return entry.get("text", "")
-        return f"No entry found matching '{name}'. Try a different name or spelling."
+        if not entries:
+            # Fall back to substring search if exact match misses
+            entries = [e for e in (self._vector_store or [])
+                       if name_lower in e.get("name", "").lower()]
+        if not entries:
+            return f"No entry found matching '{name}'. Try a different name or spelling."
+
+        # Prefer campaign content if there's overlap with 5etools
+        campaign = [e for e in entries if e.get("is_campaign", True)
+                    or not e.get("source_file", "").startswith("5e-filtered/")]
+        chosen = campaign or entries
+
+        # Pick the page_id of the first match and reassemble all its chunks.
+        page_id = chosen[0].get("page_id") or chosen[0].get("id")
+        chunks = [e for e in (self._vector_store or [])
+                  if e.get("page_id", e.get("id")) == page_id]
+        if not chunks:
+            return chosen[0].get("text", "")
+        chunks.sort(key=lambda e: e.get("chunk_index", 0))
+        return "\n\n".join(c.get("text", "") for c in chunks if c.get("text"))
 
     # ── Anthropic API ────────────────────────────────────────────────────
 

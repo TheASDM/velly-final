@@ -397,11 +397,69 @@ def embed_text(text: str, ollama_url: str, api_key: str = "",
                 return None
 
 
+# ── Chunking ─────────────────────────────────────────────────────────────────
+
+# Target chunk size — well under nomic-embed-text's 8192-token context (~24K
+# chars), with headroom for embedding-time tokenization overhead.
+CHUNK_MAX_CHARS = 6000
+
+
+def chunk_text(text: str, max_chars: int = CHUNK_MAX_CHARS) -> list[str]:
+    """Split text into chunks of at most max_chars, breaking on paragraph
+    boundaries when possible. Returns [text] unchanged if short enough.
+    """
+    if len(text) <= max_chars:
+        return [text]
+    paras = re.split(r"\n\n+", text)
+    chunks: list[str] = []
+    current = ""
+    for p in paras:
+        if current and len(current) + 2 + len(p) > max_chars:
+            chunks.append(current.strip())
+            current = p
+        else:
+            current = current + "\n\n" + p if current else p
+    if current.strip():
+        chunks.append(current.strip())
+    # Hard-split any remaining oversized chunk (a single paragraph > max_chars)
+    final: list[str] = []
+    for chunk in chunks:
+        if len(chunk) <= max_chars:
+            final.append(chunk)
+            continue
+        for i in range(0, len(chunk), max_chars):
+            final.append(chunk[i:i + max_chars])
+    return final
+
+
 # ── Loading ──────────────────────────────────────────────────────────────────
 
 
+def _emit_chunks(page_id: str, name: str, aliases: list, source_file: str,
+                 text: str, is_campaign: bool) -> list[dict]:
+    """Split text into chunks, return one vector store entry per chunk."""
+    chunks = chunk_text(text)
+    total = len(chunks)
+    out: list[dict] = []
+    for i, chunk in enumerate(chunks):
+        eid = page_id if total == 1 else f"{page_id}_chunk_{i}"
+        out.append({
+            "id": eid,
+            "page_id": page_id,
+            "chunk_index": i,
+            "chunk_total": total,
+            "name": name,
+            "aliases": aliases,
+            "source_file": source_file,
+            "text": chunk,
+            "is_campaign": is_campaign,
+        })
+    return out
+
+
 def load_wiki_entries() -> list[dict]:
-    """Walk wiki content dirs, return one entry per published .md file."""
+    """Walk wiki content dirs, return one or more entries per published page
+    (long pages chunked into multiple vector store entries)."""
     entries: list[dict] = []
     for rel_dir in WIKI_DIRS:
         full_dir = WIKI_ROOT / rel_dir
@@ -421,19 +479,15 @@ def load_wiki_entries() -> list[dict]:
             text = wiki_page_text(meta, body)
             if not text or len(text) < 20:
                 continue
-            entry_id = f"wiki_{rel_dir.replace('/', '_')}_{fpath.stem}".lower()
-            entry_id = re.sub(r"[^a-z0-9_-]", "_", entry_id)
+            page_id = f"wiki_{rel_dir.replace('/', '_')}_{fpath.stem}".lower()
+            page_id = re.sub(r"[^a-z0-9_-]", "_", page_id)
             aliases = meta.get("aliases") or []
             if isinstance(aliases, str):
                 aliases = [a.strip() for a in aliases.split(",") if a.strip()]
-            entries.append({
-                "id": entry_id,
-                "name": meta.get("title") or fpath.stem,
-                "aliases": aliases,
-                "source_file": str(fpath.relative_to(WIKI_ROOT)),
-                "text": text,
-                "is_campaign": True,
-            })
+            name = meta.get("title") or fpath.stem
+            source_file = str(fpath.relative_to(WIKI_ROOT))
+            entries.extend(_emit_chunks(page_id, name, aliases, source_file,
+                                          text, is_campaign=True))
     # Also include home.md if published
     home_path = WIKI_ROOT / "home.md"
     if home_path.exists():
@@ -443,20 +497,22 @@ def load_wiki_entries() -> list[dict]:
             if meta.get("published") is not False:
                 text = wiki_page_text(meta, body)
                 if text and len(text) >= 20:
-                    entries.append({
-                        "id": "wiki_home",
-                        "name": meta.get("title") or "Home",
-                        "source_file": "home.md",
-                        "text": text,
-                        "is_campaign": True,
-                    })
+                    entries.extend(_emit_chunks(
+                        "wiki_home",
+                        meta.get("title") or "Home",
+                        [],
+                        "home.md",
+                        text,
+                        is_campaign=True,
+                    ))
         except Exception:
             pass
     return entries
 
 
 def load_5etools_entries() -> list[dict]:
-    """Load all 5etools entries with text representations."""
+    """Load all 5etools entries with text representations. Long entries
+    (rare — e.g. lengthy class descriptions) get chunked."""
     entries: list[dict] = []
     skip_files = {"makebrew-creature.json", "monsterfeatures.json",
                   "magicvariants.json", "recipes.json", "book-xphb.json",
@@ -481,13 +537,15 @@ def load_5etools_entries() -> list[dict]:
                 text = fivetools_entry_text(entry, key, fpath.name)
                 if not text or len(text) < 20:
                     continue
-                entries.append({
-                    "id": make_entry_id(entry, key, fpath.name, i),
-                    "name": entry.get("name", ""),
-                    "source_file": f"5e-filtered/{fpath.name}",
-                    "text": text,
-                    "is_campaign": False,
-                })
+                page_id = make_entry_id(entry, key, fpath.name, i)
+                entries.extend(_emit_chunks(
+                    page_id,
+                    entry.get("name", ""),
+                    [],
+                    f"5e-filtered/{fpath.name}",
+                    text,
+                    is_campaign=False,
+                ))
     return entries
 
 
@@ -540,6 +598,9 @@ def build_store(entries: list[dict], output_path: Path, ollama_url: str,
         if old and old.get("text_hash") == h and old.get("embedding"):
             results.append({
                 "id": eid,
+                "page_id": entry.get("page_id", eid),
+                "chunk_index": entry.get("chunk_index", 0),
+                "chunk_total": entry.get("chunk_total", 1),
                 "name": entry["name"],
                 "aliases": entry.get("aliases", []),
                 "source_file": entry["source_file"],
@@ -565,24 +626,36 @@ def build_store(entries: list[dict], output_path: Path, ollama_url: str,
     print(f"{'=' * 60}\n")
 
     failed = 0
-    for entry, h in progress_iter(to_embed, len(to_embed), desc="Embedding"):
-        embedding = embed_text(entry["text"], ollama_url, api_key)
-        if embedding is None:
-            failed += 1
-            continue
-        results.append({
-            "id": entry["id"],
-            "name": entry["name"],
-            "aliases": entry.get("aliases", []),
-            "source_file": entry["source_file"],
-            "text": entry["text"],
-            "embedding": embedding,
-            "text_hash": h,
-        })
+    interrupted = False
+    try:
+        for entry, h in progress_iter(to_embed, len(to_embed), desc="Embedding"):
+            embedding = embed_text(entry["text"], ollama_url, api_key)
+            if embedding is None:
+                failed += 1
+                continue
+            results.append({
+                "id": entry["id"],
+                "page_id": entry.get("page_id", entry["id"]),
+                "chunk_index": entry.get("chunk_index", 0),
+                "chunk_total": entry.get("chunk_total", 1),
+                "name": entry["name"],
+                "aliases": entry.get("aliases", []),
+                "source_file": entry["source_file"],
+                "text": entry["text"],
+                "embedding": embedding,
+                "text_hash": h,
+            })
+    except KeyboardInterrupt:
+        interrupted = True
+        print("\n  Interrupted — saving partial progress…", file=sys.stderr)
 
     results.sort(key=lambda x: x["id"])
     with open(output_path, "w") as f:
         json.dump(results, f, separators=(",", ":"))
+
+    if interrupted:
+        print(f"  Saved {len(results)} entries to {output_path} before exit.")
+        sys.exit(130)  # standard exit code for Ctrl-C
 
     elapsed = time.time() - start
     print(f"\n  {len(results)} entries: {cached} cached, {new_count} new, "
@@ -620,9 +693,11 @@ def main():
     wiki = load_wiki_entries()
     rules = load_5etools_entries()
     all_entries = wiki + rules
-    print(f"  Wiki:    {len(wiki)} pages")
-    print(f"  5etools: {len(rules)} entries")
-    print(f"  Total:   {len(all_entries)} entries")
+    wiki_pages = len({e["page_id"] for e in wiki})
+    rules_pages = len({e["page_id"] for e in rules})
+    print(f"  Wiki:    {wiki_pages} pages → {len(wiki)} chunks")
+    print(f"  5etools: {rules_pages} entries → {len(rules)} chunks")
+    print(f"  Total:   {len(all_entries)} chunks to embed")
 
     # Quick connectivity check
     print(f"\nChecking Ollama at {args.ollama_url}...")
