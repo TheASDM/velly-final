@@ -650,11 +650,29 @@ def build_store(entries: list[dict], output_path: Path, ollama_url: str,
         print("\n  Interrupted — saving partial progress…", file=sys.stderr)
 
     results.sort(key=lambda x: x["id"])
-    with open(output_path, "w") as f:
-        json.dump(results, f, separators=(",", ":"))
+
+    # Atomic write: tmp file in same dir, then rename. On PermissionError
+    # falling back to /tmp so the work isn't lost.
+    actual_path = output_path
+    tmp_path = output_path.with_suffix(output_path.suffix + ".tmp")
+    try:
+        with open(tmp_path, "w") as f:
+            json.dump(results, f, separators=(",", ":"))
+        os.replace(tmp_path, output_path)
+    except PermissionError as e:
+        # Couldn't write next to the original — dump to /tmp so the user
+        # can chown and mv it.
+        import tempfile
+        fallback = Path(tempfile.gettempdir()) / output_path.name
+        with open(fallback, "w") as f:
+            json.dump(results, f, separators=(",", ":"))
+        actual_path = fallback
+        print(f"\n  [WARN] Could not write to {output_path}: {e}", file=sys.stderr)
+        print(f"  [WARN] Saved {len(results)} entries to {fallback} instead.", file=sys.stderr)
+        print(f"  [WARN] Fix the original file's permissions and `mv {fallback} {output_path}`.", file=sys.stderr)
 
     if interrupted:
-        print(f"  Saved {len(results)} entries to {output_path} before exit.")
+        print(f"  Saved {len(results)} entries to {actual_path} before exit.")
         sys.exit(130)  # standard exit code for Ctrl-C
 
     elapsed = time.time() - start
