@@ -31,13 +31,13 @@ Her father was a fog child — one of those who appeared out of Vallombrosa as a
 ---
 
 ## What Brought Her to Viro's
-Her fiancé, a fellow Fog Warden named Marcus, disappeared under circumstances she can't fully reconstruct. Her memory of that night is foggy and unclear — and that fog is the reason she's now at St. Viro's Respite, hunting for what she's missing.
+Her fiancé, a fellow Fog Warden named Maruk Grommarg, disappeared under circumstances she can't fully reconstruct. Her memory of that night is foggy and unclear — and that fog is the reason she's now at St. Viro's Respite, hunting for what she's missing.
 
 ---
 
 ## Ties
 - **[Orabella](/en/Venturia/Characters-PCs/orabella)** — A childhood acquaintance from Liminal House, now her healer at Viro's Respite.
-- **[Valentro](/en/Venturia/Characters-PCs/valentro)** — Also raised at Liminal House; he was in the Tiered Gardens the night Marcus proposed.
-- **[Kryton Novelli](/en/Venturia/Characters-PCs/kryton-novelli)** — A close friend of Marcus, who carries his own guilt over the disappearance.
-- **Marcus** — Her missing fiancé, a Fog Warden who vanished.
+- **[Valentro](/en/Venturia/Characters-PCs/valentro)** — Also raised at Liminal House; he was in the Tiered Gardens the night Maruk proposed.
+- **[Kryton Novelli](/en/Venturia/Characters-PCs/kryton-novelli)** — A close friend of Maruk, who carries his own guilt over the disappearance.
+- **[Maruk Grommarg](/en/Venturia/Characters-NPCs/maruk-grommarg)** — Her missing fiancé, a Fog Warden who vanished.
 - **[The Fog Wardens' Garrison](/en/Venturia/Locations/fog-wardens-garrison)** — Her post, stationed at the Overlook.

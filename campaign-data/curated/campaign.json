@@ -442,21 +442,21 @@
         "investigation"
       ],
       "spoiler": true,
-      "summary": "The campaign's actual opening event. On the same night, Fog Warden Marcus disappears from his post and a scarred, comatose figure (Silas) appears at the same location. Multiple PCs have immediate personal stakes. This replaces the noble kidnapping hook as the session one inciting incident.",
+      "summary": "The campaign's actual opening event. On the same night, Fog Warden Maruk disappears from his post and a scarred, comatose figure (Silas) appears at the same location. Multiple PCs have immediate personal stakes. This replaces the noble kidnapping hook as the session one inciting incident.",
       "details": [
         {
           "label": "The Night It Happens",
-          "content": "Same night: Marcus (Noname's fiancé, Kryton's close friend, active Fog Warden) disappears from his post. A figure wrapped in tattered clothes, body covered in strange supernatural scars, appears at the same location, collapses, and slips into a coma. He's brought to St. Viro's Respite under Orabella's care. The scars are the Archfey's prisoner brands marking Silas as property of the Keeper of Faces.",
+          "content": "Same night: Maruk (Noname's fiancé, Kryton's close friend, active Fog Warden) disappears from his post. A figure wrapped in tattered clothes, body covered in strange supernatural scars, appears at the same location, collapses, and slips into a coma. He's brought to St. Viro's Respite under Orabella's care. The scars are the Archfey's prisoner brands marking Silas as property of the Keeper of Faces.",
           "spoiler": true
         },
         {
           "label": "Immediate Multi-PC Stakes",
-          "content": "Noname: her fiancé is missing, mysterious scarred man appeared in his place, her memory of the night is foggy (Silas manipulated it). Kryton: his close friend Marcus disappeared the same night, driving his obsessive investigation. Orabella: actively caring for the comatose patient, trying to understand the supernatural scars — she's a fog child herself, so supernatural phenomena resonate differently for her. Lotan: his patron (the Keeper) can potentially identify the prisoner brands if shown or described. Party-wide: personal crisis affecting multiple members from session one.",
+          "content": "Noname: her fiancé is missing, mysterious scarred man appeared in his place, her memory of the night is foggy (Silas manipulated it). Kryton: his close friend Maruk disappeared the same night, driving his obsessive investigation. Orabella: actively caring for the comatose patient, trying to understand the supernatural scars — she's a fog child herself, so supernatural phenomena resonate differently for her. Lotan: his patron (the Keeper) can potentially identify the prisoner brands if shown or described. Party-wide: personal crisis affecting multiple members from session one.",
           "spoiler": true
         },
         {
           "label": "Investigation Threads",
-          "content": "The Fog Warden post — what happened that night, garrison logs, other witnesses. The scarred patient — who is he, where did the marks come from, why won't he wake. Orabella's memory — why is it foggy, can magic restore it, what's been blocked. The missing fiancé — where did Marcus go, is he alive. The scars themselves — patterns suggest brands not wounds, faint magical energy, Lotan's Keeper patron might recognize them as prisoner marks.",
+          "content": "The Fog Warden post — what happened that night, garrison logs, other witnesses. The scarred patient — who is he, where did the marks come from, why won't he wake. Orabella's memory — why is it foggy, can magic restore it, what's been blocked. The missing fiancé — where did Maruk go, is he alive. The scars themselves — patterns suggest brands not wounds, faint magical energy, Lotan's Keeper patron might recognize them as prisoner marks.",
           "spoiler": true
         },
         {
@@ -474,7 +474,7 @@
         },
         {
           "target_id": "marcus",
-          "target_name": "Marcus",
+          "target_name": "Maruk Grommarg",
           "relationship": "The missing Fog Warden whose disappearance coincides with Silas's appearance",
           "spoiler": true
         },
@@ -509,7 +509,7 @@
           "spoiler": true
         }
       ],
-      "dm_notes": "This opening immediately gives four PCs personal stakes in the central mystery without any forced exposition. The noble kidnapping investigation from the Unified Framework may still occur as a later Act One thread once Silas wakes and begins operating, but THIS is the session one hook. Open questions: what does Orabella believe about the comatose man (thinks he IS Marcus, knows Marcus was replaced, or conflicting memories)? Where is the real Marcus? When does Silas wake (recommended sessions 3-5)?"
+      "dm_notes": "This opening immediately gives four PCs personal stakes in the central mystery without any forced exposition. The noble kidnapping investigation from the Unified Framework may still occur as a later Act One thread once Silas wakes and begins operating, but THIS is the session one hook. Open questions: what does Orabella believe about the comatose man (thinks he IS Maruk, knows Maruk was replaced, or conflicting memories)? Where is the real Maruk? When does Silas wake (recommended sessions 3-5)?"
     },
     {
       "id": "session_one_decisions",
@@ -533,11 +533,11 @@
       "details": [
         {
           "label": "Noname's Memory State",
-          "content": "Option A: She thinks Marcus IS the scarred comatose man (doesn't remember clearly, devastated and confused). Option B: She knows Marcus disappeared and was replaced (memory of HOW is foggy). Option C: Mixed memory state — conflicting memories, can't reconcile which is true (most horror-inducing, mirrors the dual-memory residents in Act Two).",
+          "content": "Option A: She thinks Maruk IS the scarred comatose man (doesn't remember clearly, devastated and confused). Option B: She knows Maruk disappeared and was replaced (memory of HOW is foggy). Option C: Mixed memory state — conflicting memories, can't reconcile which is true (most horror-inducing, mirrors the dual-memory residents in Act Two).",
           "spoiler": true
         },
         {
-          "label": "Marcus's Fate",
+          "label": "Maruk's Fate",
           "content": "Option A: Dead (killed by Silas, permanent loss). Option B: Trapped in the weakening prison (exchanged places with Silas, potentially recoverable). Option C: Transformed/changed (used as material for first Bound, alive but not himself). Option D: Imprisoned by Silas somewhere (kept for information, potentially discoverable).",
           "spoiler": true
         },
@@ -565,7 +565,7 @@
           "spoiler": true
         }
       ],
-      "dm_notes": "These decisions interact with each other — Orabella's memory state affects what the party knows going in, Marcus's fate determines whether there's a rescue mission or a grief arc, Silas's awakening timing controls pacing. Decide the memory state and Marcus's fate before session one. Silas timing can be adjusted based on how investigation plays at the table."
+      "dm_notes": "These decisions interact with each other — Orabella's memory state affects what the party knows going in, Maruk's fate determines whether there's a rescue mission or a grief arc, Silas's awakening timing controls pacing. Decide the memory state and Maruk's fate before session one. Silas timing can be adjusted based on how investigation plays at the table."
     },
     {
       "id": "pc_connection_web",
@@ -593,7 +593,7 @@
         },
         {
           "label": "The Fog Warden Disappearances",
-          "content": "Two PCs lost Fog Wardens: Noname's fiancé Marcus (recent, same night as Silas), Valentro's father (earlier). Both were people who should know better than to enter the fog. Pattern suggests Vallombrosa was already 'leaking' before Marcello's arrival — pulling people in before the main transformation. Fog Wardens specifically are being targeted or drawn in.",
+          "content": "Two PCs lost Fog Wardens: Noname's fiancé Maruk (recent, same night as Silas), Valentro's father (earlier). Both were people who should know better than to enter the fog. Pattern suggests Vallombrosa was already 'leaking' before Marcello's arrival — pulling people in before the main transformation. Fog Wardens specifically are being targeted or drawn in.",
           "spoiler": true
         },
         {
@@ -618,12 +618,12 @@
         },
         {
           "label": "The Tiered Gardens as Convergence Point",
-          "content": "Valentro works there professionally. Marcus proposed to Noname there (Valentro witnessed). Kryton's 'sword moment' happened there (Roxy witnessed). Kryton frequents for peace and contemplation. This location is a natural recurring setting for character moments.",
+          "content": "Valentro works there professionally. Maruk proposed to Noname there (Valentro witnessed). Kryton's 'sword moment' happened there (Roxy witnessed). Kryton frequents for peace and contemplation. This location is a natural recurring setting for character moments.",
           "spoiler": true
         },
         {
           "label": "Pre-Campaign Timeline of Intersections",
-          "content": "Lotan meets Roxy (1 year before campaign). Caravel befriends Roxy (timing unclear). Noname and Orabella (childhood at Liminal House, current patient-healer relationship). Roxy discovers Kryton's secret (recent). Kryton is close friends with Marcus (past). Kryton taught at VAVA (connections to any PC students).",
+          "content": "Lotan meets Roxy (1 year before campaign). Caravel befriends Roxy (timing unclear). Noname and Orabella (childhood at Liminal House, current patient-healer relationship). Roxy discovers Kryton's secret (recent). Kryton is close friends with Maruk (past). Kryton taught at VAVA (connections to any PC students).",
           "spoiler": true
         }
       ],

@@ -138,8 +138,8 @@
         },
         {
           "target_id": "marcus",
-          "target_name": "Marcus",
-          "relationship": "Marcus is now imprisoned somewhere within Vallombrosa's fog",
+          "target_name": "Maruk Grommarg",
+          "relationship": "Maruk is now imprisoned somewhere within Vallombrosa's fog",
           "spoiler": true
         }
       ],
@@ -1119,12 +1119,12 @@
         },
         {
           "label": "The Disappearance Site",
-          "content": "Marcus disappeared from his post at the garrison the same night Silas appeared there. This is the primary crime scene for the opening investigation. Other Fog Wardens may have witnessed something — or had their memories affected.",
+          "content": "Maruk disappeared from his post at the garrison the same night Silas appeared there. This is the primary crime scene for the opening investigation. Other Fog Wardens may have witnessed something — or had their memories affected.",
           "spoiler": false
         },
         {
           "label": "Targeting Pattern",
-          "content": "The pattern of Fog Warden disappearances — Valentro's father earlier, Marcus most recently — suggests Vallombrosa is 'leaking' before Marcello's arrival, pulling people with knowledge of the boundary into the fog. Fog Wardens specifically may know something that makes them targets, or their proximity to the boundary makes them vulnerable.",
+          "content": "The pattern of Fog Warden disappearances — Valentro's father earlier, Maruk most recently — suggests Vallombrosa is 'leaking' before Marcello's arrival, pulling people with knowledge of the boundary into the fog. Fog Wardens specifically may know something that makes them targets, or their proximity to the boundary makes them vulnerable.",
           "spoiler": true
         }
       ],
@@ -1144,13 +1144,13 @@
         {
           "target_id": "silas",
           "target_name": "Silas",
-          "relationship": "Silas appeared at this location the same night Marcus disappeared",
+          "relationship": "Silas appeared at this location the same night Maruk disappeared",
           "spoiler": true
         },
         {
           "target_id": "marcus",
-          "target_name": "Marcus",
-          "relationship": "Marcus vanished from his post here — the primary crime scene",
+          "target_name": "Maruk Grommarg",
+          "relationship": "Maruk vanished from his post here — the primary crime scene",
           "spoiler": false
         },
         {

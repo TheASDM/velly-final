@@ -270,7 +270,7 @@
         },
         {
           "label": "Her Fiancé's Fate",
-          "content": "Her fiancé (Marcus, a Fog Warden) disappeared the same night Silas appeared at the Fog Warden post. Marcus is also Kryton's close friend. His ultimate fate — dead, trapped in the prison, transformed, or imprisoned by Silas — is an unresolved campaign question.",
+          "content": "Her fiancé (Maruk, a Fog Warden) disappeared the same night Silas appeared at the Fog Warden post. Maruk is also Kryton's close friend. His ultimate fate — dead, trapped in the prison, transformed, or imprisoned by Silas — is an unresolved campaign question.",
           "spoiler": true
         }
       ],
@@ -290,12 +290,12 @@
         {
           "target_id": "kryton",
           "target_name": "Kryton Novelli",
-          "relationship": "Kryton is close friends with Marcus (Noname's disappeared fiancé) and feels guilt over the disappearance",
+          "relationship": "Kryton is close friends with Maruk (Noname's disappeared fiancé) and feels guilt over the disappearance",
           "spoiler": false
         },
         {
           "target_id": "marcus",
-          "target_name": "Marcus",
+          "target_name": "Maruk Grommarg",
           "relationship": "Her fiancé, a Fog Warden who disappeared under mysterious circumstances. Her memory of the event is foggy and unclear.",
           "spoiler": false
         },
@@ -306,7 +306,7 @@
           "spoiler": false
         }
       ],
-      "dm_notes": "Noname sits at the intersection of the Fog Warden disappearances, memory manipulation, and Liminal House themes. Her father being a fog child connects the campaign's deep history to the present. Her foggy memory IS Silas's doing. Consider: Option C (mixed/conflicting memories) for maximum horror. Valentro's father also disappeared as a Fog Warden — the pattern of Fog Wardens being targeted should become apparent. Kryton is close friends with Marcus but did NOT introduce them.",
+      "dm_notes": "Noname sits at the intersection of the Fog Warden disappearances, memory manipulation, and Liminal House themes. Her father being a fog child connects the campaign's deep history to the present. Her foggy memory IS Silas's doing. Consider: Option C (mixed/conflicting memories) for maximum horror. Valentro's father also disappeared as a Fog Warden — the pattern of Fog Wardens being targeted should become apparent. Kryton is close friends with Maruk but did NOT introduce them.",
       "player": "Amy"
     },
     {
@@ -462,12 +462,12 @@
         },
         {
           "label": "The Disappearance",
-          "content": "His close friend Marcus — a Fog Warden — disappeared the same night Silas appeared. Kryton asked questions at VAVA about the disappearance but got no answers. He investigated obsessively on his own and discovered patterns in Fog Warden disappearances and evidence of city-wide memory manipulation.",
+          "content": "His close friend Maruk — a Fog Warden — disappeared the same night Silas appeared. Kryton asked questions at VAVA about the disappearance but got no answers. He investigated obsessively on his own and discovered patterns in Fog Warden disappearances and evidence of city-wide memory manipulation.",
           "spoiler": false
         },
         {
           "label": "Memory Theft",
-          "content": "After getting no answers from VAVA about Marcus's disappearance, someone stole Kryton's memories — including his wizard spell knowledge — through The Undertow. He lost his magical abilities and much of his investigative findings.",
+          "content": "After getting no answers from VAVA about Maruk's disappearance, someone stole Kryton's memories — including his wizard spell knowledge — through The Undertow. He lost his magical abilities and much of his investigative findings.",
           "spoiler": false
         },
         {
@@ -490,7 +490,7 @@
         {
           "target_id": "noname",
           "target_name": "Noname",
-          "relationship": "Close friends with Noname's fiancé Marcus; feels guilt about his disappearance",
+          "relationship": "Close friends with Noname's fiancé Maruk; feels guilt about his disappearance",
           "spoiler": false
         },
         {
@@ -513,8 +513,8 @@
         },
         {
           "target_id": "marcus",
-          "target_name": "Marcus",
-          "relationship": "Close friend. Marcus's disappearance drove Kryton's obsessive investigation.",
+          "target_name": "Maruk Grommarg",
+          "relationship": "Close friend. Maruk's disappearance drove Kryton's obsessive investigation.",
           "spoiler": false
         },
         {
@@ -524,7 +524,7 @@
           "spoiler": false
         }
       ],
-      "dm_notes": "Kryton's patron IS Tartuzi. This creates a fascinating dynamic: his patron is simultaneously a victim (imprisoned for a millennium) and potentially dangerous (her agenda is unknown). He genuinely believes he can escape the pact — his confidence is the tragic irony, because she's been playing this game for a thousand years. His warlock levels function normally; his wizard levels are inaccessible (memories stolen). He asked questions at VAVA about Marcus's disappearance but got stonewalled. The memory theft happened through The Undertow — explore who or what orchestrates memory theft there.",
+      "dm_notes": "Kryton's patron IS Tartuzi. This creates a fascinating dynamic: his patron is simultaneously a victim (imprisoned for a millennium) and potentially dangerous (her agenda is unknown). He genuinely believes he can escape the pact — his confidence is the tragic irony, because she's been playing this game for a thousand years. His warlock levels function normally; his wizard levels are inaccessible (memories stolen). He asked questions at VAVA about Maruk's disappearance but got stonewalled. The memory theft happened through The Undertow — explore who or what orchestrates memory theft there.",
       "player": "Shawn"
     },
     {
@@ -753,7 +753,7 @@
         },
         {
           "label": "Strategic Relationships",
-          "content": "Roxy's friendships have strategic dimensions. She befriended Caravel specifically for access to the Archive and mask guilds (ironic: Caravel hates secrets, Roxy collects them). She witnessed Valentro's sword incident in the Gardens and offered to train him, partly to maintain leverage. She observed Noname's situation with Marcus's disappearance but may not have actually met her directly ('have we actually met???'). When not in classes, she follows and observes people, collecting secrets and building an information network.",
+          "content": "Roxy's friendships have strategic dimensions. She befriended Caravel specifically for access to the Archive and mask guilds (ironic: Caravel hates secrets, Roxy collects them). She witnessed Valentro's sword incident in the Gardens and offered to train him, partly to maintain leverage. She observed Noname's situation with Maruk's disappearance but may not have actually met her directly ('have we actually met???'). When not in classes, she follows and observes people, collecting secrets and building an information network.",
           "spoiler": false
         },
         {
@@ -951,8 +951,8 @@
         },
         {
           "target_id": "marcus",
-          "target_name": "Marcus",
-          "relationship": "Silas swapped places with Marcus to escape the prison — Marcus was the counterweight required by the prison's conservation principle",
+          "target_name": "Maruk Grommarg",
+          "relationship": "Silas swapped places with Maruk to escape the prison — Maruk was the counterweight required by the prison's conservation principle",
           "spoiler": true
         }
       ],
@@ -1034,8 +1034,11 @@
     {
       "id": "marcus",
       "type": "npc",
-      "name": "Marcus",
+      "name": "Maruk Grommarg",
       "aliases": [
+        "Maruk",
+        "Marcus",
+        "Grommarg",
         "The Missing Fog Warden",
         "Noname's Fiancé",
         "Amy's Fiancé"
@@ -1063,12 +1066,12 @@
         },
         {
           "label": "His True Fate",
-          "content": "Marcus is alive — trapped inside the fey prison that Silas escaped from. The prison operates on a conservation principle: what goes out must come in. Silas found a way to swap himself with Marcus, using him as the counterweight for his own escape. Marcus is now imprisoned in the Reverie Solenne, bearing whatever that entails for a mortal mind in a fey prison.",
+          "content": "Maruk is alive — trapped inside the fey prison that Silas escaped from. The prison operates on a conservation principle: what goes out must come in. Silas found a way to swap himself with Maruk, using him as the counterweight for his own escape. Maruk is now imprisoned in the Reverie Solenne, bearing whatever that entails for a mortal mind in a fey prison.",
           "spoiler": true
         },
         {
           "label": "Rescue Implications",
-          "content": "If the party learns Marcus is alive and imprisoned, rescuing him becomes a concrete, personal objective tied to the larger prison mystery. The same swap mechanics that put him in may be required to get him out — raising the question of who or what takes his place.",
+          "content": "If the party learns Maruk is alive and imprisoned, rescuing him becomes a concrete, personal objective tied to the larger prison mystery. The same swap mechanics that put him in may be required to get him out — raising the question of who or what takes his place.",
           "spoiler": true
         }
       ],
@@ -1082,24 +1085,24 @@
         {
           "target_id": "kryton",
           "target_name": "Kryton Novelli",
-          "relationship": "Close friend whose obsessive investigation was driven by Marcus's disappearance",
+          "relationship": "Close friend whose obsessive investigation was driven by Maruk's disappearance",
           "spoiler": false
         },
         {
           "target_id": "silas",
           "target_name": "Silas",
-          "relationship": "Silas swapped places with Marcus to escape the prison — Marcus is the counterweight for Silas's freedom",
+          "relationship": "Silas swapped places with Maruk to escape the prison — Maruk is the counterweight for Silas's freedom",
           "spoiler": true
         },
         {
           "target_id": "keeper_of_faces",
           "target_name": "The Keeper of Faces",
-          "relationship": "Marcus is now a prisoner in the Keeper's domain, the Reverie Solenne",
+          "relationship": "Maruk is now a prisoner in the Keeper's domain, the Reverie Solenne",
           "spoiler": true
         }
       ],
-      "dm_notes": "Marcus's fate is the most immediately personal stakes in the campaign — Noname wants her fiancé back, Kryton wants his friend back. The swap mechanism means getting Marcus out likely requires putting someone or something else in. Does Marcus retain his sanity in the prison? How long can a mortal mind survive in a fey court? Is the Keeper aware of him, indifferent to him, or interested in him? These are open questions. The rescue attempt could be a major late-campaign objective.",
-      "dm_future_ideas": "What condition is Marcus in when/if found? Has the prison changed him? Does he have information about the prison's interior that the party needs? Could he have encountered Tolomeo's traces or learned something from Tartuzi? The swap mechanism could become a recurring problem — every rescue requires a trade."
+      "dm_notes": "Maruk's fate is the most immediately personal stakes in the campaign — Noname wants her fiancé back, Kryton wants his friend back. The swap mechanism means getting Maruk out likely requires putting someone or something else in. Does Maruk retain his sanity in the prison? How long can a mortal mind survive in a fey court? Is the Keeper aware of him, indifferent to him, or interested in him? These are open questions. The rescue attempt could be a major late-campaign objective.",
+      "dm_future_ideas": "What condition is Maruk in when/if found? Has the prison changed him? Does he have information about the prison's interior that the party needs? Could he have encountered Tolomeo's traces or learned something from Tartuzi? The swap mechanism could become a recurring problem — every rescue requires a trade."
     },
     {
       "id": "keeper_of_faces",

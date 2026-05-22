@@ -26,7 +26,7 @@ A mid-career VAVA faculty member — gifted, erratic, and in too deep at The Und
 ---
 
 ## The Disappearance
-His close friend Marcus, a Fog Warden, vanished the same night Silas appeared. Kryton asked questions at VAVA and got nothing back, so he investigated on his own — obsessively — and began to find patterns: Fog Wardens going missing, and signs that memory itself was being tampered with across the city.
+His close friend Maruk, a Fog Warden, vanished the same night Silas appeared. Kryton asked questions at VAVA and got nothing back, so he investigated on his own — obsessively — and began to find patterns: Fog Wardens going missing, and signs that memory itself was being tampered with across the city.
 
 ---
 
@@ -36,7 +36,7 @@ For his trouble, someone took his memories — including the wizard's craft he'd
 ---
 
 ## Ties
-- **[Noname](/en/Venturia/Characters-PCs/noname)** — He was close to her missing fiancé, Marcus, and feels the guilt of it.
-- **Marcus** — The friend whose disappearance set everything in motion.
+- **[Noname](/en/Venturia/Characters-PCs/noname)** — He was close to her missing fiancé, Maruk, and feels the guilt of it.
+- **[Maruk Grommarg](/en/Venturia/Characters-NPCs/maruk-grommarg)** — The friend whose disappearance set everything in motion.
 - **[The Undertow](/en/Venturia/Locations/the-undertow)** — Where his memories were taken, and where he won the ritual that made him a Warlock.
 - **[Venturian Academy of Veiled Arts](/en/Venturia/Locations/vava)** — His employer, and the first place his questions went unanswered.
