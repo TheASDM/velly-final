@@ -1,3 +1,13 @@
+---
+title: Lorenzo di Errante
+description: A name from a thousand years past — the younger di Errante brother of legend, lost with his house in the catastrophe that raised the fog over Vallombrosa.
+published: true
+date: 2026-05-22T00:00:00.000Z
+tags: characters, npcs, di-errante, historical, legendary, vallombrosa
+editor: markdown
+dateCreated: 2026-05-22T00:00:00.000Z
+---
+
 <!-- DM NOTE (not rendered): Lorenzo is the campaign's deepest historical villain. This page is deliberately surface-only. Do NOT add the bargain, the crime, the Keeper, or Tartuzi to the public page. -->
 # Lorenzo di Errante
 

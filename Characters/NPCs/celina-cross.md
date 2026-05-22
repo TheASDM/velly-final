@@ -1,3 +1,13 @@
+---
+title: Celina Cross
+description: The reigning star of the Amaranth Theater in the High Quarter — and the elder sibling of the friend Caravel lost at the Autumn Masquerade.
+published: true
+date: 2026-05-22T00:00:00.000Z
+tags: characters, npcs, performer, amaranth-theater, high-quarter
+editor: markdown
+dateCreated: 2026-05-22T00:00:00.000Z
+---
+
 # Celina Cross
 
 **Role:** Star performer, the Amaranth Theater &nbsp;|&nbsp; **Quarter:** High Quarter &nbsp;|&nbsp; *"The Amaranth's brightest."*

@@ -1,3 +1,13 @@
+---
+title: Silas
+description: A comatose stranger covered in deliberate scars, taken in at St. Viro's Respite the night Maruk Grommarg vanished from the fog line.
+published: true
+date: 2026-05-22T00:00:00.000Z
+tags: characters, npcs, comatose, viros-respite, mystery, scarred-patient, fog-line
+editor: markdown
+dateCreated: 2026-05-22T00:00:00.000Z
+---
+
 # Silas
 
 **Status:** Comatose — St. Viro's Respite &nbsp;|&nbsp; **First seen:** The night Maruk vanished &nbsp;|&nbsp; *"The scarred stranger."*

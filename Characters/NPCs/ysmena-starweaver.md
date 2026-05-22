@@ -1,3 +1,13 @@
+---
+title: High Oracle Ysmena Starweaver
+description: An ageless elf oracle who speaks for the city's smaller mystery cults — cryptic, divisive, and accurate often enough that dismissing her is dangerous.
+published: true
+date: 2026-05-22T00:00:00.000Z
+tags: characters, npcs, oracle, elf, mystery-cults, temple-authority
+editor: markdown
+dateCreated: 2026-05-22T00:00:00.000Z
+---
+
 # High Oracle Ysmena Starweaver
 
 **Role:** High Oracle &nbsp;|&nbsp; **Affiliation:** Mystery cults &amp; oracle traditions &nbsp;|&nbsp; *"Answers the question you haven't asked yet."*

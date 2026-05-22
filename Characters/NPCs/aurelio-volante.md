@@ -1,3 +1,13 @@
+---
+title: Aurelio Volante
+description: A merchant and mask collector in the Market Tiers, proprietor of Volante & Associates — easy in difficult rooms, with a wider collection of stories than spices.
+published: true
+date: 2026-05-22T00:00:00.000Z
+tags: characters, npcs, merchant, mask-collector, market-tiers, masquers-sodality
+editor: markdown
+dateCreated: 2026-05-22T00:00:00.000Z
+---
+
 # Aurelio Volante
 
 **Role:** Mask collector & merchant &nbsp;|&nbsp; **Trade:** Volante &amp; Associates, the Market Tiers &nbsp;|&nbsp; *"Collects masks, and stories."*

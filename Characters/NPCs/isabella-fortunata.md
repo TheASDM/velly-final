@@ -1,3 +1,13 @@
+---
+title: Isabella Fortunata
+description: The legendary figure at the heart of The Tragedy of Vallombrosa, restaged every Autumn Masquerade at the Amaranth — and the woman around whom the di Errante story turns.
+published: true
+date: 2026-05-22T00:00:00.000Z
+tags: characters, npcs, legendary, di-errante, tragedy-of-vallombrosa, amaranth-theater
+editor: markdown
+dateCreated: 2026-05-22T00:00:00.000Z
+---
+
 <!-- DM NOTE (not rendered): Isabella's true significance (and her tie to Celina Cross) is campaign-secret. Keep this page to the staged-legend surface only. Canon alias is "Isabella Fortuna" — confirm the surname before publishing. -->
 # Isabella Fortunata
 

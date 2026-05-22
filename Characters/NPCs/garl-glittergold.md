@@ -1,3 +1,13 @@
+---
+title: Garl Glittergold
+description: The chief deity of gnomes — patron of trickery, illusion, gem-cutting, and protection of his people, said to outwit his enemies rather than overpower them.
+published: true
+date: 2026-05-22T00:00:00.000Z
+tags: characters, npcs, deity, gnomes, trickery, illusion, protection
+editor: markdown
+dateCreated: 2026-05-22T00:00:00.000Z
+---
+
 # Garl Glittergold
 
 **Type:** Deity &nbsp;|&nbsp; **Portfolio:** Trickery, illusion, protection, gems &nbsp;|&nbsp; *"The Watchful Protector."*

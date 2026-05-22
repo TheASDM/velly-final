@@ -1,3 +1,13 @@
+---
+title: Tolomeo Lucente
+description: A scholar and explorer who surfaces only in the margins of old records — remembered, where he is remembered at all, for chasing knowledge others left alone.
+published: true
+date: 2026-05-22T00:00:00.000Z
+tags: characters, npcs, historical, scholar, explorer
+editor: markdown
+dateCreated: 2026-05-22T00:00:00.000Z
+---
+
 <!-- DM NOTE (not rendered): Everything substantive about Tolomeo (the Tartuzi pact, the prison, Silas's betrayal) is campaign-secret. This is a footnote-only placeholder. -->
 # Tolomeo Lucente
 

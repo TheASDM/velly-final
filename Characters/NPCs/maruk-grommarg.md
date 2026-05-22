@@ -1,3 +1,13 @@
+---
+title: Maruk Grommarg
+description: A Fog Warden who volunteered for the Overlook posting and Noname's missing fiancé — vanished the same night a scarred stranger appeared at the fog line.
+published: true
+date: 2026-05-22T00:00:00.000Z
+tags: characters, npcs, fog-warden, missing, orc, overlook
+editor: markdown
+dateCreated: 2026-05-22T00:00:00.000Z
+---
+
 # Maruk Grommarg
 
 **Role:** Fog Warden, the Overlook &nbsp;|&nbsp; **Status:** Missing &nbsp;|&nbsp; *"Vanished at the fog line."*

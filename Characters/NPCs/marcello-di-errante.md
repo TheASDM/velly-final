@@ -1,3 +1,13 @@
+---
+title: Marcello di Errante
+description: A figure from the legend of Vallombrosa, surviving in the Amaranth Theater's annual restaging of The Tragedy — and in a thousand years of contradictory tales.
+published: true
+date: 2026-05-22T00:00:00.000Z
+tags: characters, npcs, di-errante, historical, legendary, tragedy-of-vallombrosa
+editor: markdown
+dateCreated: 2026-05-22T00:00:00.000Z
+---
+
 # Marcello di Errante
 
 **House:** di Errante &nbsp;|&nbsp; **Era:** ~1,000 years past &nbsp;|&nbsp; *"A name out of the Tragedy."*
