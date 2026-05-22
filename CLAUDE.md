@@ -1,3 +1,13 @@
+---
+title: CLAUDE
+description: 
+published: true
+date: 2026-05-22T14:17:06.035Z
+tags: 
+editor: markdown
+dateCreated: 2026-05-01T22:26:10.048Z
+---
+
 # CLAUDE.md — Velly-Final Project Guide
 
 ## What This Is
@@ -44,7 +54,7 @@ See `ARCHITECTURE.md` for the full diagram and data flow. Key points:
 
 ### DM Mode
 
-Type the passphrase (default: `Prima Volta`, env: `DM_PASSPHRASE`) in chat to toggle. DM mode uses the full tier1 system prompt (308 KB with spoilers) and unfiltered vector store. Persists in localStorage.
+Type the passphrase (env: `DM_PASSPHRASE`) in chat to toggle. DM mode uses the full tier1 system prompt (308 KB with spoilers) and unfiltered vector store. Persists in localStorage.
 
 ---
 
