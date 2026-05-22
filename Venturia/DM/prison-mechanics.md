@@ -1,7 +1,7 @@
 ---
 title: The Prison Mechanics — Why It's Collapsing Now
 description: Three simultaneous drains compounding to breaking — the original theft, the collapsed domain, and the fanes as continuous pipeline. DM-only.
-published: true
+published: false
 date: 2026-05-22T00:00:00.000Z
 tags: dm-only, spoilers, lore, mechanism, prison, keeper-of-faces, fanes
 editor: markdown

@@ -1,7 +1,7 @@
 ---
 title: The Impossible Choice
 description: The endgame dilemma — defeating Marcello frees the Archfey behind him. Four possible resolutions, none clean. DM-only.
-published: true
+published: false
 date: 2026-05-22T00:00:00.000Z
 tags: dm-only, spoilers, lore, endgame, marcello, keeper-of-faces, dilemma
 editor: markdown

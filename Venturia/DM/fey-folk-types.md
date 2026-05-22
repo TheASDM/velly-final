@@ -1,7 +1,7 @@
 ---
 title: The Three Fey Folk Types
 description: The three kinds of fey connected to the Pale Carnival — Brownies (household covenant), Carnival Fey (court citizens), and the Maskless (lost identities). DM-only.
-published: true
+published: false
 date: 2026-05-22T00:00:00.000Z
 tags: dm-only, spoilers, lore, fey, taxonomy, brownies, maskless, pale-carnival
 editor: markdown

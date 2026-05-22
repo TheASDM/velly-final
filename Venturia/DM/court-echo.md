@@ -1,7 +1,7 @@
 ---
 title: The Court's Echo in Venturia
 description: How Venturia's institutions unconsciously mirror the Reverie Solenne's structure — and why Marcello's arrival feels so "right" to the city. DM-only.
-published: true
+published: false
 date: 2026-05-22T00:00:00.000Z
 tags: dm-only, spoilers, lore, cosmology, reverie-solenne, autumn-council, marcello
 editor: markdown

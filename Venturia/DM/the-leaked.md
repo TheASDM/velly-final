@@ -1,7 +1,7 @@
 ---
 title: The Leaked
 description: Supernatural entities and phenomena spilling through the failing prison from the Pale Carnival — escalating from unsettling atmosphere to mimicking creatures to architectural overlap. DM-only.
-published: true
+published: false
 date: 2026-05-22T00:00:00.000Z
 tags: dm-only, spoilers, lore, antagonist, pale-carnival, maskless, escalation
 editor: markdown

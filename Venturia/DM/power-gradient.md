@@ -1,7 +1,7 @@
 ---
 title: Marcello's Power Gradient
 description: Marcello's stolen power runs on a geographic gradient — limited in Venturia, stronger in Vallombrosa, near-absolute at the original binding site. DM-only.
-published: true
+published: false
 date: 2026-05-22T00:00:00.000Z
 tags: dm-only, spoilers, lore, marcello, antagonist, power, geography
 editor: markdown

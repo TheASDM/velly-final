@@ -1,7 +1,7 @@
 ---
 title: The Ancient Tragedy of Vallombrosa
 description: The true history beneath the city's legends — Lorenzo di Errante's bargain with the Keeper of Faces, the cosmic theft staged on his wedding day, and the curse that created Vallombrosa. DM-only.
-published: true
+published: false
 date: 2026-05-22T00:00:00.000Z
 tags: dm-only, spoilers, lore, history, ancient-tragedy, di-errante, keeper-of-faces
 editor: markdown

@@ -1,7 +1,7 @@
 ---
 title: The Bound
 description: Residents supernaturally compelled to fulfill specific purposes — two indistinguishable types (Silas's destructive Bound and Tartuzi's prophetic Bound), producing the campaign's most horrific recurring dilemma. DM-only.
-published: true
+published: false
 date: 2026-05-22T00:00:00.000Z
 tags: dm-only, spoilers, lore, antagonist, silas, tartuzi, moral-dilemma
 editor: markdown

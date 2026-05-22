@@ -1,7 +1,7 @@
 ---
 title: The False Memory Mechanism
 description: The pacing clock for Marcello's reality-rewriting after he claims Vallombrosa — Vallombrosans gain false lifetimes, Venturians forget the transformation over roughly one month. DM-only.
-published: true
+published: false
 date: 2026-05-22T00:00:00.000Z
 tags: dm-only, spoilers, lore, mechanism, memory, marcello, pacing
 editor: markdown

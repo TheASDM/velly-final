@@ -1,7 +1,7 @@
 ---
 title: The Reverie Solenne and the Pale Carnival
 description: The Keeper of Faces' fey court — once a celebration of chosen identity, now a hollow masquerade running on ritual momentum after its sovereign's imprisonment. DM-only.
-published: true
+published: false
 date: 2026-05-22T00:00:00.000Z
 tags: dm-only, spoilers, lore, cosmology, fey, reverie-solenne, pale-carnival, keeper-of-faces
 editor: markdown

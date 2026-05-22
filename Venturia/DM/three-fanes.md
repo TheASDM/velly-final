@@ -1,7 +1,7 @@
 ---
 title: 'The Three Fanes: Mirror, Compass, Hourglass'
 description: The objects from the original binding ritual now anchoring both the Archfey's prison and Marcello's stolen power. Destroying them makes him mortal — and accelerates the prison's collapse. DM-only.
-published: true
+published: false
 date: 2026-05-22T00:00:00.000Z
 tags: dm-only, spoilers, lore, artifacts, fanes, marcello, binding-ritual
 editor: markdown

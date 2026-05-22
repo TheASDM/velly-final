@@ -1,7 +1,7 @@
 ---
 title: Vallombrosa's Transformation
 description: When Marcello claims the di Errante estates — Vallombrosa transforms from cursed dead zone into eerie town with a population of false-memory residents. The hinge between Act One and Act Two. DM-only.
-published: true
+published: false
 date: 2026-05-22T00:00:00.000Z
 tags: dm-only, spoilers, lore, mechanism, marcello, vallombrosa, act-transition
 editor: markdown
