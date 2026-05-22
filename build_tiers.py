@@ -1,22 +1,224 @@
 #!/usr/bin/env python3
 """
-Step 1 — Build tier1_player.md and tier1_dm.md from curated campaign data
-         and filtered 5etools JSON.
+Step 1 — Build tier1.md from wiki content + 5etools JSON.
+
+The wiki markdown is now the source of truth for campaign content. This script
+walks the wiki content directories, reads frontmatter + body, and generates a
+single tier1.md the chatbot uses as its base system prompt.
+
+DM-only content (Venturia/DM/, any file with `published: false`) is excluded.
 """
 
+from __future__ import annotations
+
 import json
-import os
 import re
 import sys
 from pathlib import Path
 
 ROOT         = Path(__file__).parent
-CURATED_DIR  = ROOT / "campaign-data" / "curated"
+WIKI_ROOT    = ROOT
 FILTERED_DIR = ROOT / "campaign-data" / "5e-filtered"
-PLAYER_OUT   = ROOT / "campaign-data" / "tier1_player.md"
-DM_OUT       = ROOT / "campaign-data" / "tier1_dm.md"
+TIER1_OUT    = ROOT / "campaign-data" / "tier1.md"
 
-# ── 5etools text helpers ─────────────────────────────────────────────────────
+# Wiki content directories to include, mapped to (top-section, subsection).
+# Subsection is None if the directory should render as a flat list.
+WIKI_SECTIONS = [
+    ("Characters/PCs",      ("Characters", "Player Characters")),
+    ("Characters/NPCs",     ("Characters", "NPCs")),
+    ("Venturia/Locations",  ("Locations",  None)),
+    ("Venturia/Factions",   ("Factions",   None)),
+    ("Venturia/Government", ("Government", None)),
+    ("Venturia/Lore",       ("Lore",       None)),
+    ("Articles",            ("Articles",   None)),
+    ("Class-Changes",       ("Class Changes", None)),
+    ("House-Rules",         ("House Rules",   None)),
+    ("Updates",             ("Updates",    None)),
+]
+
+# ── Frontmatter parser (no pyyaml dep) ────────────────────────────────────────
+
+
+def parse_frontmatter(content: str) -> tuple[dict, str]:
+    """Parse minimal YAML frontmatter. Returns (metadata, body)."""
+    if not content.startswith("---\n"):
+        return {}, content
+    end = content.find("\n---\n", 4)
+    if end == -1:
+        end = content.find("\n---", 4)  # trailing close without newline
+        if end == -1:
+            return {}, content
+        body_start = end + 4
+    else:
+        body_start = end + 5
+
+    yaml_block = content[4:end]
+    body = content[body_start:].lstrip("\n")
+
+    metadata: dict = {}
+    current_list_key: str | None = None
+
+    for raw in yaml_block.split("\n"):
+        if not raw.strip() or raw.lstrip().startswith("#"):
+            continue
+        # List item under current key
+        stripped = raw.lstrip()
+        if stripped.startswith("- "):
+            value = stripped[2:].strip()
+            value = _unquote(value)
+            if current_list_key:
+                metadata.setdefault(current_list_key, []).append(value)
+            continue
+        # key: value
+        if ":" in raw:
+            key, _, val = raw.partition(":")
+            key = key.strip()
+            val = val.strip()
+            if val:
+                current_list_key = None
+                metadata[key] = _coerce(_unquote(val))
+            else:
+                # Empty value — likely a list or block scalar follows
+                current_list_key = key
+                metadata.setdefault(key, [])
+    return metadata, body
+
+
+def _unquote(val: str) -> str:
+    if len(val) >= 2 and val[0] == val[-1] and val[0] in ("'", '"'):
+        return val[1:-1]
+    return val
+
+
+def _coerce(val):
+    if val in ("true", "True"):
+        return True
+    if val in ("false", "False"):
+        return False
+    return val
+
+
+# ── Wiki page loading ────────────────────────────────────────────────────────
+
+
+def slug_from_path(path: Path) -> str:
+    """Filename without .md extension."""
+    return path.stem
+
+
+def load_wiki_pages(rel_dir: str) -> list[dict]:
+    """Load all .md pages under WIKI_ROOT/rel_dir (non-recursive)."""
+    full_dir = WIKI_ROOT / rel_dir
+    if not full_dir.exists():
+        return []
+    pages = []
+    for path in sorted(full_dir.glob("*.md")):
+        try:
+            raw = path.read_text(encoding="utf-8")
+        except Exception as e:
+            print(f"  WARN: {path}: {e}", file=sys.stderr)
+            continue
+        meta, body = parse_frontmatter(raw)
+        # Skip unpublished pages (drafts / DM-only safety net)
+        if meta.get("published") is False:
+            continue
+        # Skip index pages — they're navigation, not content
+        if path.stem == "index":
+            continue
+        title = meta.get("title") or _first_heading(body) or path.stem
+        description = meta.get("description", "")
+        tags = meta.get("tags", "")
+        aliases = meta.get("aliases", [])
+        if isinstance(aliases, str):
+            aliases = [a.strip() for a in aliases.split(",") if a.strip()]
+        pages.append({
+            "slug": slug_from_path(path),
+            "title": title,
+            "description": description,
+            "tags": tags,
+            "aliases": aliases,
+            "body": body,
+            "path": str(path.relative_to(WIKI_ROOT)),
+        })
+    return pages
+
+
+def _first_heading(body: str) -> str | None:
+    """Pull the first `# Heading` line from body markdown."""
+    for line in body.splitlines():
+        line = line.strip()
+        if line.startswith("# "):
+            return line[2:].strip()
+    return None
+
+
+# ── Tier1 compression for a wiki page ────────────────────────────────────────
+
+
+def compress_wiki_page(page: dict) -> str:
+    """Compress a wiki page to a tier1 block: title, description, snippet, tags."""
+    title = page["title"]
+    desc  = page["description"] or ""
+    tags  = page["tags"] or ""
+    body  = page["body"]
+    aliases = page.get("aliases") or []
+
+    parts = []
+    alias_s = f" ({', '.join(aliases[:4])})" if aliases else ""
+    parts.append(f"**{title}**{alias_s}")
+    if desc:
+        parts.append(desc)
+
+    snippet = _body_snippet(body, max_chars=600)
+    if snippet:
+        parts.append(snippet)
+
+    if tags:
+        parts.append(f"Tags: {tags}")
+    return "\n".join(parts)
+
+
+def _body_snippet(body: str, max_chars: int = 600) -> str:
+    """First section of body content, stripped of HTML/markdown noise, capped."""
+    # Drop HTML comments (DM NOTE blocks, TODOs)
+    body = re.sub(r"<!--.*?-->", "", body, flags=re.DOTALL)
+    # Drop HTML div/img blocks (portrait banners)
+    body = re.sub(r"<div[^>]*>.*?</div>", "", body, flags=re.DOTALL)
+    # Drop standalone img tags
+    body = re.sub(r"<img[^>]*>", "", body)
+    # Process line by line — easier than chained regexes
+    out_lines = []
+    for raw in body.splitlines():
+        line = raw.strip()
+        if not line:
+            out_lines.append("")
+            continue
+        if line.startswith(">"):
+            continue
+        if line.startswith("# "):
+            continue
+        # Skip subsection headings — they're navigation, not content prose
+        if line.startswith("## ") or line.startswith("### "):
+            continue
+        # Skip meta lines: a line built from **X:** segments separated by |
+        if re.match(r"^\*\*[^:*]+:\*\*", line) and "|" in line:
+            continue
+        if line.startswith("---"):
+            continue
+        out_lines.append(raw)
+    body = "\n".join(out_lines)
+    # Collapse runs of blank lines
+    body = re.sub(r"\n{3,}", "\n\n", body).strip()
+    if len(body) <= max_chars:
+        return body
+    cut = body[:max_chars]
+    last_period = cut.rfind(". ")
+    if last_period > max_chars * 0.5:
+        cut = cut[:last_period + 1]
+    return cut.rstrip() + "…"
+
+
+# ── 5etools helpers (preserved from previous build_tiers.py) ─────────────────
 
 SCHOOL = {
     "A": "Abj", "C": "Con", "D": "Div", "E": "Enc",
@@ -24,24 +226,20 @@ SCHOOL = {
     "T": "Tra", "P": "Psy",
 }
 
+
 def clean_tags(text: str) -> str:
-    """Strip 5etools {@tag ...} markup, keeping visible text."""
     if not isinstance(text, str):
         return ""
-    # {@atk mw} → "Melee Weapon Attack:", {@h} → "Hit:"
-    text = re.sub(r'\{@atk [^}]+\}', 'Attack:', text)
-    text = re.sub(r'\{@h\}', 'Hit:', text)
-    text = re.sub(r'\{@recharge (\d+)\}', r'(Recharge \1-6)', text)
-    # {@tag content|extra} → content
-    text = re.sub(r'\{@\w+\s([^|}]+)[^}]*\}', r'\1', text)
-    # {@tag} with no content → remove
-    text = re.sub(r'\{@\w+\}', '', text)
+    text = re.sub(r"\{@atk [^}]+\}", "Attack:", text)
+    text = re.sub(r"\{@h\}", "Hit:", text)
+    text = re.sub(r"\{@recharge (\d+)\}", r"(Recharge \1-6)", text)
+    text = re.sub(r"\{@\w+\s([^|}]+)[^}]*\}", r"\1", text)
+    text = re.sub(r"\{@\w+\}", "", text)
     return text.strip()
 
-def extract_text(obj, budget=160) -> str:
-    """Recursively extract plain text from a 5etools entries value."""
-    parts = []
 
+def extract_text(obj, budget=160) -> str:
+    parts: list[str] = []
     def _walk(o):
         if isinstance(o, str):
             parts.append(clean_tags(o))
@@ -59,60 +257,39 @@ def extract_text(obj, budget=160) -> str:
                 for item in o.get("items", []):
                     _walk(item)
             elif t == "table":
-                pass  # skip tables
+                pass
             else:
                 for e in o.get("entries", []):
                     _walk(e)
-
     _walk(obj)
     result = " ".join(p for p in parts if p)
-    result = re.sub(r'\s+', ' ', result).strip()
+    result = re.sub(r"\s+", " ", result).strip()
     if len(result) > budget:
         result = result[:budget - 1] + "…"
     return result
 
 
-# ── 5etools entry compressors ─────────────────────────────────────────────────
-
-def fmt_spell(e: dict) -> str:
-    lvl    = e.get("level", 0)
-    lvl_s  = "C" if lvl == 0 else str(lvl)
-    school = SCHOOL.get(e.get("school", "?"), e.get("school", "?"))
-    conc   = "[C]" if e.get("concentration") else ""
-    rit    = "[R]" if e.get("ritual") else ""
-    flags  = "".join(filter(None, [conc, rit]))
-    flags  = " " + flags if flags else ""
-    name   = e.get("name", "?")
-    desc   = extract_text(e.get("entries", []), 100)
-    return f"**{name}** ({lvl_s}/{school}{flags}) — {desc}"
+def fmt_condition(e: dict) -> str:
+    return f"**{e.get('name', '?')}** — {extract_text(e.get('entries', []), 120)}"
 
 
-def fmt_monster(e: dict) -> str:
-    name  = e.get("name", "?")
-    cr    = e.get("cr", "?")
-    if isinstance(cr, dict):
-        cr = cr.get("cr", "?")
-    mtype = e.get("type", "?")
-    if isinstance(mtype, dict):
-        mtype = mtype.get("type", "?")
-    ac    = e.get("ac", [0])
-    ac_v  = ac[0] if isinstance(ac[0], int) else ac[0].get("ac", "?") if isinstance(ac[0], dict) else "?"
-    hp    = e.get("hp", {})
-    hp_v  = hp.get("average", hp.get("special", "?"))
-    return f"**{name}** ({str(mtype).title()} CR {cr}) AC {ac_v}, HP {hp_v}"
+def fmt_action(e: dict) -> str:
+    return f"**{e.get('name', '?')}** — {extract_text(e.get('entries', []), 100)}"
 
 
-def fmt_item(e: dict) -> str:
-    name    = e.get("name", "?")
-    rarity  = e.get("rarity", "unknown")
-    attune  = " attune" if e.get("reqAttune") else ""
-    desc    = extract_text(e.get("entries", []), 80)
-    return f"**{name}** ({rarity}{attune}) — {desc}"
+def fmt_background(e: dict) -> str:
+    name = e.get("name", "?")
+    skills = []
+    for s in e.get("skillProficiencies", [{}]):
+        skills += [k.title() for k, v in s.items() if v is True and k != "_"]
+    desc = extract_text(e.get("entries", []), 80)
+    sk = ", ".join(skills[:3]) if skills else "—"
+    return f"**{name}** (Skills: {sk}) — {desc}"
 
 
 def fmt_feat(e: dict) -> str:
-    name  = e.get("name", "?")
-    desc  = extract_text(e.get("entries", []), 100)
+    name = e.get("name", "?")
+    desc = extract_text(e.get("entries", []), 100)
     prereqs = e.get("prerequisite", [])
     req_parts = []
     for p in prereqs:
@@ -130,186 +307,10 @@ def fmt_feat(e: dict) -> str:
     return f"**{name}**{req} — {desc}"
 
 
-def fmt_background(e: dict) -> str:
-    name   = e.get("name", "?")
-    skills = []
-    for s in e.get("skillProficiencies", [{}]):
-        skills += [k.title() for k, v in s.items() if v is True and k != "_"]
-    desc   = extract_text(e.get("entries", []), 80)
-    sk     = ", ".join(skills[:3]) if skills else "—"
-    return f"**{name}** (Skills: {sk}) — {desc}"
-
-
-def fmt_condition(e: dict) -> str:
-    name  = e.get("name", "?")
-    desc  = extract_text(e.get("entries", []), 120)
-    return f"**{name}** — {desc}"
-
-
-def fmt_action(e: dict) -> str:
-    name  = e.get("name", "?")
-    desc  = extract_text(e.get("entries", []), 100)
-    return f"**{name}** — {desc}"
-
-
-def fmt_optfeature(e: dict) -> str:
-    name  = e.get("name", "?")
-    ft    = e.get("featureType", [])
-    ft    = "/".join(ft) if isinstance(ft, list) else ft
-    desc  = extract_text(e.get("entries", []), 80)
-    tag   = f" [{ft}]" if ft else ""
-    return f"**{name}**{tag} — {desc}"
-
-
-def fmt_variantrule(e: dict) -> str:
-    name  = e.get("name", "?")
-    ruleEntries = e.get("entries", [])
-    desc  = extract_text(ruleEntries, 100)
-    return f"**{name}** — {desc}"
-
-
-# ── Class compressor ──────────────────────────────────────────────────────────
-
-def build_class_section(filtered_dir: Path) -> str:
-    """Build a compressed class section from all class-*.json files."""
-    lines = []
-    for path in sorted(filtered_dir.glob("class-*.json")):
-        with open(path, encoding="utf-8") as f:
-            data = json.load(f)
-
-        classes   = data.get("class", [])
-        subclasses = data.get("subclass", [])
-        features   = data.get("classFeature", [])
-        scfeatures = data.get("subclassFeature", [])
-
-        if not classes:
-            continue
-
-        cls = classes[0]
-        cname = cls.get("name", path.stem)
-        hd    = cls.get("hd", {}).get("faces", "?")
-        saves = [s.upper() for s in cls.get("proficiency", [])[:2]]
-        saves_s = ", ".join(saves) if saves else "—"
-        cast_ab = cls.get("spellcastingAbility", "")
-        cast_s  = f" | Spell: {cast_ab.upper()}" if cast_ab else ""
-
-        lines.append(f"\n### {cname}")
-        lines.append(f"d{hd} hit die | Saves: {saves_s}{cast_s}")
-
-        # subclass names
-        sc_names = sorted({sc.get("name", "?") for sc in subclasses})
-        if sc_names:
-            lines.append("**Subclasses:** " + ", ".join(sc_names))
-
-        # key class features at notable levels only (1, 2, 3, 5, 7, 11, 17, 20)
-        NOTABLE = {1, 2, 3, 5, 7, 11, 17, 20}
-        by_level: dict[int, list[str]] = {}
-        for feat in features:
-            lvl  = feat.get("level", 0)
-            if lvl not in NOTABLE:
-                continue
-            fname = feat.get("name", "?")
-            by_level.setdefault(lvl, []).append(fname)
-
-        if by_level:
-            feat_parts = []
-            for lvl in sorted(by_level):
-                names = ", ".join(by_level[lvl])
-                feat_parts.append(f"Lv{lvl}: {names}")
-            lines.append("**Features:** " + " | ".join(feat_parts))
-
-    return "\n".join(lines)
-
-
-# ── Curated entry compressor ──────────────────────────────────────────────────
-
-def compress_curated(entry: dict, mode: str) -> str:
-    """Compress a curated entry to a tight multi-line block."""
-    name    = entry.get("name", entry.get("id", "?"))
-    aliases = entry.get("aliases", [])
-    etype   = entry.get("type", "")
-    player  = entry.get("player", "")
-    tagline = entry.get("tagline", "")
-    summary = entry.get("summary", "")
-
-    DETAIL_LEN = 120 if mode == "player" else 180
-    REL_LEN    = 50  if mode == "player" else 70
-    DM_NOTE_LEN = 200
-
-    alias_s  = f" ({', '.join(aliases[:3])})" if aliases else ""
-    type_s   = f" [{etype}]" if etype else ""
-    player_s = f" — Player: {player}" if player else ""
-
-    header = f"**{name}**{alias_s}{type_s}{player_s}"
-    if tagline:
-        header += f" — {tagline}"
-
-    parts = [header]
-    if summary:
-        parts.append(summary)
-
-    # Details
-    for d in entry.get("details", []):
-        is_spoiler = d.get("spoiler", False)
-        if is_spoiler and mode == "player":
-            continue
-        label   = d.get("label", "")
-        content = d.get("content", "")
-        if not content:
-            continue
-        snippet = content[:DETAIL_LEN] + ("…" if len(content) > DETAIL_LEN else "")
-        line    = f"{label}: {snippet}" if label else snippet
-        if is_spoiler and mode == "dm":
-            parts.append(f"[SPOILER] {line}")
-        else:
-            parts.append(line)
-
-    # Connections
-    conn_lines = []
-    for c in entry.get("connections", []):
-        is_spoiler = c.get("spoiler", False)
-        if is_spoiler and mode == "player":
-            continue
-        target = c.get("target_name", "")
-        rel    = c.get("relationship", "")
-        if not target:
-            continue
-        snippet = f"{target} ({rel[:REL_LEN]})" if rel else target
-        if is_spoiler and mode == "dm":
-            conn_lines.append(f"[SPOILER] {snippet}")
-        else:
-            conn_lines.append(snippet)
-
-    if conn_lines:
-        parts.append("Connections: " + " | ".join(conn_lines[:6]))
-
-    # DM notes (DM only)
-    if mode == "dm":
-        dm = entry.get("dm_notes", "")
-        if dm:
-            parts.append(f"[DM] {dm[:DM_NOTE_LEN]}{'…' if len(dm) > DM_NOTE_LEN else ''}")
-
-    return "\n".join(parts)
-
-
-# ── Load helpers ─────────────────────────────────────────────────────────────
-
-def load_curated() -> dict[str, list]:
-    """Return {category: [entry, ...]} for all curated files."""
-    result = {}
-    for path in sorted(CURATED_DIR.glob("*.json")):
-        try:
-            data = json.loads(path.read_text(encoding="utf-8"))
-            cat  = data.get("category", path.stem)
-            result[cat] = data.get("entries", [])
-        except Exception as e:
-            print(f"  WARN: {path.name}: {e}", file=sys.stderr)
-    return result
-
-
 def load_filtered(key: str) -> list:
-    """Return merged list of all entries for a given top-level key across filtered files."""
     entries = []
+    if not FILTERED_DIR.exists():
+        return entries
     for path in sorted(FILTERED_DIR.glob("*.json")):
         try:
             data = json.loads(path.read_text(encoding="utf-8"))
@@ -319,94 +320,103 @@ def load_filtered(key: str) -> list:
     return entries
 
 
-# ── Build one tier file ────────────────────────────────────────────────────────
+def build_class_section() -> str:
+    lines = []
+    if not FILTERED_DIR.exists():
+        return ""
+    for path in sorted(FILTERED_DIR.glob("class-*.json")):
+        try:
+            data = json.loads(path.read_text(encoding="utf-8"))
+        except Exception:
+            continue
+        classes = data.get("class", [])
+        subclasses = data.get("subclass", [])
+        features = data.get("classFeature", [])
+        if not classes:
+            continue
+        cls = classes[0]
+        cname = cls.get("name", path.stem)
+        hd = cls.get("hd", {}).get("faces", "?")
+        saves = [s.upper() for s in cls.get("proficiency", [])[:2]]
+        saves_s = ", ".join(saves) if saves else "—"
+        cast_ab = cls.get("spellcastingAbility", "")
+        cast_s = f" | Spell: {cast_ab.upper()}" if cast_ab else ""
 
-def build_tier(mode: str) -> str:
-    """Build the full tier markdown for 'player' or 'dm'."""
-    curated  = load_curated()
-    sections = []
+        lines.append(f"\n### {cname}")
+        lines.append(f"d{hd} hit die | Saves: {saves_s}{cast_s}")
 
-    title = "Player Reference" if mode == "player" else "DM Reference (Full)"
-    sections.append(f"# Vallombrosa Campaign — {title}\n")
+        sc_names = sorted({sc.get("name", "?") for sc in subclasses})
+        if sc_names:
+            lines.append("**Subclasses:** " + ", ".join(sc_names))
 
-    # ── Campaign lore ─────────────────────────────────────────────────────────
+        NOTABLE = {1, 2, 3, 5, 7, 11, 17, 20}
+        by_level: dict[int, list[str]] = {}
+        for feat in features:
+            lvl = feat.get("level", 0)
+            if lvl in NOTABLE:
+                by_level.setdefault(lvl, []).append(feat.get("name", "?"))
+        if by_level:
+            feat_parts = []
+            for lvl in sorted(by_level):
+                feat_parts.append(f"Lv{lvl}: {', '.join(by_level[lvl])}")
+            lines.append("**Features:** " + " | ".join(feat_parts))
+    return "\n".join(lines)
 
-    # Characters
-    pcs  = [e for e in curated.get("characters", []) if e.get("type") == "pc"]
-    npcs = [e for e in curated.get("characters", []) if e.get("type") != "pc"]
-    if mode == "player":
-        # skip entries that are entirely spoiler
-        pcs  = [e for e in pcs  if not e.get("spoiler")]
-        npcs = [e for e in npcs if not e.get("spoiler")]
 
-    if pcs or npcs:
-        sections.append("## Characters")
-        if pcs:
-            sections.append("### Player Characters")
-            for e in pcs:
-                sections.append(compress_curated(e, mode))
+# ── Build tier1 ──────────────────────────────────────────────────────────────
+
+
+def build_tier1() -> str:
+    sections: list[str] = []
+    sections.append("# Vallombrosa Campaign — Codex Reference\n")
+    sections.append(
+        "This is Enzo's base knowledge: a compressed view of every published "
+        "wiki page. Use the lookup_entry tool to retrieve full content for any "
+        "named entry.\n"
+    )
+
+    # Group wiki pages by top-section
+    grouped: dict[str, dict[str | None, list[dict]]] = {}
+    for rel_dir, (top, sub) in WIKI_SECTIONS:
+        pages = load_wiki_pages(rel_dir)
+        if not pages:
+            continue
+        grouped.setdefault(top, {}).setdefault(sub, []).extend(pages)
+
+    # Also include the top-level home.md if present
+    home_path = WIKI_ROOT / "home.md"
+    if home_path.exists():
+        try:
+            raw = home_path.read_text(encoding="utf-8")
+            meta, body = parse_frontmatter(raw)
+            if meta.get("published") is not False:
+                title = meta.get("title") or _first_heading(body) or "Home"
+                desc = meta.get("description", "")
+                if desc:
+                    sections.append(f"## {title}\n{desc}\n")
+        except Exception:
+            pass
+
+    # Emit in stable order
+    for top in ["Characters", "Locations", "Factions", "Government", "Lore",
+                "Articles", "Class Changes", "House Rules", "Updates"]:
+        if top not in grouped:
+            continue
+        sections.append(f"## {top}")
+        subs = grouped[top]
+        # Stable subsection order: PCs first if present
+        sub_order = sorted(subs.keys(), key=lambda x: (x != "Player Characters", x or ""))
+        for sub in sub_order:
+            if sub:
+                sections.append(f"### {sub}")
+            for page in subs[sub]:
+                sections.append(compress_wiki_page(page))
                 sections.append("")
-        if npcs:
-            sections.append("### NPCs")
-            for e in npcs:
-                sections.append(compress_curated(e, mode))
-                sections.append("")
 
-    # Locations
-    locs = curated.get("locations", [])
-    if mode == "player":
-        locs = [e for e in locs if not e.get("spoiler")]
-    if locs:
-        sections.append("## Locations")
-        for e in locs:
-            sections.append(compress_curated(e, mode))
-            sections.append("")
-
-    # Factions
-    factions = curated.get("factions", [])
-    if mode == "player":
-        factions = [e for e in factions if not e.get("spoiler")]
-    if factions:
-        sections.append("## Factions")
-        for e in factions:
-            sections.append(compress_curated(e, mode))
-            sections.append("")
-
-    # Government
-    gov = curated.get("government", [])
-    if mode == "player":
-        gov = [e for e in gov if not e.get("spoiler")]
-    if gov:
-        sections.append("## Government")
-        for e in gov:
-            sections.append(compress_curated(e, mode))
-            sections.append("")
-
-    # Lore
-    lore = curated.get("lore", [])
-    if mode == "player":
-        lore = [e for e in lore if not e.get("spoiler")]
-    if lore:
-        sections.append("## Lore")
-        for e in lore:
-            sections.append(compress_curated(e, mode))
-            sections.append("")
-
-    # Campaign meta (DM gets all; player gets non-spoiler)
-    campaign = curated.get("campaign", [])
-    if mode == "player":
-        campaign = [e for e in campaign if not e.get("spoiler")]
-    if campaign:
-        sections.append("## Campaign Notes")
-        for e in campaign:
-            sections.append(compress_curated(e, mode))
-            sections.append("")
-
-    # ── 5e Quick Reference ────────────────────────────────────────────────────
+    # ── 5e Quick Reference ───────────────────────────────────────────────────
     sections.append("---\n")
     sections.append("# D&D 5e Quick Reference (2024 — XPHB/XDMG/XMM)\n")
 
-    # Conditions
     conditions = load_filtered("condition") + load_filtered("status")
     if conditions:
         sections.append("## Conditions & Statuses")
@@ -414,7 +424,6 @@ def build_tier(mode: str) -> str:
             sections.append(fmt_condition(e))
         sections.append("")
 
-    # Actions
     actions = load_filtered("action")
     if actions:
         sections.append("## Actions")
@@ -422,7 +431,6 @@ def build_tier(mode: str) -> str:
             sections.append(fmt_action(e))
         sections.append("")
 
-    # Backgrounds
     backgrounds = load_filtered("background")
     if backgrounds:
         sections.append("## Backgrounds")
@@ -430,7 +438,6 @@ def build_tier(mode: str) -> str:
             sections.append(fmt_background(e))
         sections.append("")
 
-    # Feats
     feats = load_filtered("feat")
     if feats:
         sections.append("## Feats")
@@ -438,122 +445,28 @@ def build_tier(mode: str) -> str:
             sections.append(fmt_feat(e))
         sections.append("")
 
-    # Classes (multi-line per class)
-    cls_section = build_class_section(FILTERED_DIR)
+    cls_section = build_class_section()
     if cls_section.strip():
         sections.append("## Classes")
         sections.append(cls_section)
         sections.append("")
-
-    # Optional features — DM tier only (too granular for player quick-ref)
-    if mode == "dm":
-        optfeats = load_filtered("optionalfeature")
-        if optfeats:
-            sections.append("## Optional Features (Invocations, Maneuvers, etc.)")
-            for e in sorted(optfeats, key=lambda x: x.get("name", "")):
-                sections.append(fmt_optfeature(e))
-            sections.append("")
-
-    # Spells — DM tier only; player can reference PHB directly
-    if mode == "dm":
-        spells = load_filtered("spell")
-        if spells:
-            sections.append("## Spells")
-            by_level: dict[int, list] = {}
-            for e in spells:
-                lvl = e.get("level", 0)
-                by_level.setdefault(lvl, []).append(e)
-            for lvl in sorted(by_level):
-                lvl_label = "Cantrips" if lvl == 0 else f"Level {lvl}"
-                sections.append(f"\n### {lvl_label}")
-                for e in sorted(by_level[lvl], key=lambda x: x.get("name", "")):
-                    lvl_s  = "C" if e.get("level", 0) == 0 else str(e.get("level", 0))
-                    school = SCHOOL.get(e.get("school", "?"), e.get("school", "?"))
-                    conc   = "[C]" if e.get("concentration") else ""
-                    rit    = "[R]" if e.get("ritual") else ""
-                    flags  = "".join(filter(None, [conc, rit]))
-                    flags  = " " + flags if flags else ""
-                    desc   = extract_text(e.get("entries", []), 70)
-                    sections.append(f"**{e['name']}** ({lvl_s}/{school}{flags}) — {desc}")
-            sections.append("")
-
-    # Monsters — DM tier only (too large for player reference)
-    if mode == "dm":
-        monsters = load_filtered("monster")
-        if monsters:
-            sections.append("## Monsters")
-            by_type: dict[str, list] = {}
-            for e in monsters:
-                mtype = e.get("type", "unknown")
-                if isinstance(mtype, dict):
-                    mtype = mtype.get("type", "unknown")
-                by_type.setdefault(str(mtype).title(), []).append(e)
-            for mtype in sorted(by_type):
-                sections.append(f"\n### {mtype}")
-                for e in sorted(by_type[mtype], key=lambda x: x.get("name", "")):
-                    sections.append(fmt_monster(e))
-            sections.append("")
-
-    # Magic items — DM tier only (player can ask the chatbot about specific items)
-    if mode == "dm":
-        ITEM_SKIP_RARITIES_DM = {"none"}
-        skip_rarities = ITEM_SKIP_RARITIES_DM
-        items = load_filtered("item")
-    else:
-        items = []
-    if items:
-        sections.append("## Magic Items")
-        rarity_order = ["uncommon", "rare", "very rare", "legendary", "artifact", "unknown (magic)", "varies"]
-        by_rarity: dict[str, list] = {}
-        for e in items:
-            r = e.get("rarity", "unknown").lower()
-            if r in skip_rarities:
-                continue
-            by_rarity.setdefault(r, []).append(e)
-        for r in rarity_order:
-            if r not in by_rarity:
-                continue
-            sections.append(f"\n### {r.title()}")
-            for e in sorted(by_rarity[r], key=lambda x: x.get("name", "")):
-                sections.append(fmt_item(e))
-        for r, entries in sorted(by_rarity.items()):
-            if r in rarity_order:
-                continue
-            sections.append(f"\n### {r.title()}")
-            for e in sorted(entries, key=lambda x: x.get("name", "")):
-                sections.append(fmt_item(e))
-        sections.append("")
-
-    # Variant rules (DM only — they're mostly optional rules)
-    if mode == "dm":
-        rules = load_filtered("variantrule")
-        if rules:
-            sections.append("## Variant Rules")
-            for e in sorted(rules, key=lambda x: x.get("name", "")):
-                sections.append(fmt_variantrule(e))
-            sections.append("")
 
     return "\n".join(sections)
 
 
 # ── Main ─────────────────────────────────────────────────────────────────────
 
+
 def token_estimate(text: str) -> int:
     return len(text) // 4
 
 
 def main():
-    print("Building tier1_player.md …")
-    player_text = build_tier("player")
-    PLAYER_OUT.write_text(player_text, encoding="utf-8")
-    ptokens = token_estimate(player_text)
-    print(f"  → {PLAYER_OUT.name}  {len(player_text):,} chars  ~{ptokens:,} tokens")
-
-    print("Building tier1_dm.md …")
-    dm_text = build_tier("dm")
-    DM_OUT.write_text(dm_text, encoding="utf-8")
-    dtokens = token_estimate(dm_text)
-    print(f"  → {DM_OUT.name}  {len(dm_text):,} chars  ~{dtokens:,} tokens")
+    print("Building tier1.md from wiki content + 5e reference …")
+    text = build_tier1()
+    TIER1_OUT.write_text(text, encoding="utf-8")
+    tokens = token_estimate(text)
+    print(f"  → {TIER1_OUT.name}  {len(text):,} chars  ~{tokens:,} tokens")
 
 
 if __name__ == "__main__":

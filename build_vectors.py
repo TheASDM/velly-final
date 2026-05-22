@@ -2,15 +2,17 @@
 """
 build_vectors.py — Step 2: Vector Store Builder
 
-Reads Tier 2 JSON files (campaign-data/curated/ + campaign-data/5e-filtered/),
-embeds them via Ollama (mxbai-embed-large:latest), and writes vector_store.json
-and vector_store_player.json.
+Reads wiki markdown (the source of truth for campaign content) plus the
+filtered 5etools JSON, embeds entries via Ollama (nomic-embed-text:latest), and
+writes a single campaign-data/vector_store.json.
 
 Usage:
     python build_vectors.py
-    python build_vectors.py --mode player
-    python build_vectors.py --force --batch-size 5
+    python build_vectors.py --force
     python build_vectors.py --ollama-url http://localhost:11434
+
+Player-only — there's no DM mode anymore. DM content (Venturia/DM/, any
+`published: false` page) is excluded.
 """
 
 from __future__ import annotations
@@ -29,31 +31,128 @@ import requests
 
 # ── Paths ────────────────────────────────────────────────────────────────────
 
-BASE_DIR = Path(__file__).resolve().parent
-DATA_DIR = BASE_DIR / "campaign-data"
-CURATED_DIR = DATA_DIR / "curated"
-RULES_DIR = DATA_DIR / "5e-filtered"
-OUTPUT_DM = DATA_DIR / "vector_store.json"
-OUTPUT_PLAYER = DATA_DIR / "vector_store_player.json"
+BASE_DIR     = Path(__file__).resolve().parent
+WIKI_ROOT    = BASE_DIR
+RULES_DIR    = BASE_DIR / "campaign-data" / "5e-filtered"
+OUTPUT_PATH  = BASE_DIR / "campaign-data" / "vector_store.json"
 
-# ── 5etools tag stripping ────────────────────────────────────────────────────
+# Wiki content directories included for embedding (DM/ excluded by omission).
+WIKI_DIRS = [
+    "Characters/PCs",
+    "Characters/NPCs",
+    "Venturia/Locations",
+    "Venturia/Factions",
+    "Venturia/Government",
+    "Venturia/Lore",
+    "Articles",
+    "Class-Changes",
+    "House-Rules",
+    "Updates",
+]
 
-# Matches {@tag content|source|display} → extracts display or content
+# ── Frontmatter parser (shared format with build_tiers.py) ───────────────────
+
+
+def parse_frontmatter(content: str) -> tuple[dict, str]:
+    """Parse minimal YAML frontmatter. Returns (metadata, body)."""
+    if not content.startswith("---\n"):
+        return {}, content
+    end = content.find("\n---\n", 4)
+    if end == -1:
+        end = content.find("\n---", 4)
+        if end == -1:
+            return {}, content
+        body_start = end + 4
+    else:
+        body_start = end + 5
+    yaml_block = content[4:end]
+    body = content[body_start:].lstrip("\n")
+    metadata: dict = {}
+    current_list_key: str | None = None
+    for raw in yaml_block.split("\n"):
+        if not raw.strip() or raw.lstrip().startswith("#"):
+            continue
+        stripped = raw.lstrip()
+        if stripped.startswith("- "):
+            value = stripped[2:].strip()
+            value = _unquote(value)
+            if current_list_key:
+                metadata.setdefault(current_list_key, []).append(value)
+            continue
+        if ":" in raw:
+            key, _, val = raw.partition(":")
+            key = key.strip()
+            val = val.strip()
+            if val:
+                current_list_key = None
+                metadata[key] = _coerce(_unquote(val))
+            else:
+                current_list_key = key
+                metadata.setdefault(key, [])
+    return metadata, body
+
+
+def _unquote(val: str) -> str:
+    if len(val) >= 2 and val[0] == val[-1] and val[0] in ("'", '"'):
+        return val[1:-1]
+    return val
+
+
+def _coerce(val):
+    if val in ("true", "True"):
+        return True
+    if val in ("false", "False"):
+        return False
+    return val
+
+
+# ── Wiki page → embeddable text ──────────────────────────────────────────────
+
+
+def wiki_page_text(meta: dict, body: str) -> str:
+    """Build the text that gets embedded for a wiki page."""
+    parts = []
+    title = meta.get("title", "")
+    desc = meta.get("description", "")
+    tags = meta.get("tags", "")
+    aliases = meta.get("aliases") or []
+    if isinstance(aliases, str):
+        aliases = [a.strip() for a in aliases.split(",") if a.strip()]
+
+    if title:
+        parts.append(f"{title}.")
+    if aliases:
+        parts.append(f"Also known as: {', '.join(aliases)}.")
+    if tags:
+        parts.append(f"Tags: {tags}.")
+    if desc:
+        parts.append(desc)
+
+    # Clean body: drop HTML comments, div blocks, blockquote warnings, h1
+    cleaned = re.sub(r"<!--.*?-->", "", body, flags=re.DOTALL)
+    cleaned = re.sub(r"<div[^>]*>.*?</div>", "", cleaned, flags=re.DOTALL)
+    cleaned = re.sub(r"<img[^>]*>", "", cleaned)
+    cleaned = "\n".join(l for l in cleaned.splitlines() if not l.strip().startswith(">"))
+    cleaned = re.sub(r"^#\s+[^\n]+\n", "", cleaned, count=1)
+    cleaned = re.sub(r"\n---+\n", "\n", cleaned)
+    cleaned = re.sub(r"\n{3,}", "\n\n", cleaned).strip()
+    if cleaned:
+        parts.append(cleaned)
+    return "\n".join(parts)
+
+
+# ── 5etools tag stripping & flattening (preserved) ───────────────────────────
+
 _5E_TAG_RE = re.compile(r"\{@\w+\s+([^}|]+?)(?:\|[^}]*)?\}")
 
 
 def strip_5e_tags(text: str) -> str:
-    """Strip 5etools {@tag ...} markup, keeping the human-readable part."""
     if not isinstance(text, str):
         return str(text)
     return _5E_TAG_RE.sub(r"\1", text)
 
 
-# ── 5etools recursive entry flattener ────────────────────────────────────────
-
-
 def flatten_entries(entries, depth: int = 0) -> str:
-    """Recursively flatten 5etools 'entries' arrays into plain text."""
     if entries is None:
         return ""
     if isinstance(entries, str):
@@ -71,16 +170,11 @@ def flatten_entries(entries, depth: int = 0) -> str:
 
 
 def _flatten_entry_object(obj: dict, depth: int) -> str:
-    """Handle a single 5etools entry object."""
     parts = []
     entry_type = obj.get("type", "")
-
-    # Named section header
     name = obj.get("name", "")
     if name:
         parts.append(f"{strip_5e_tags(name)}.")
-
-    # Content fields in priority order
     if "entries" in obj:
         parts.append(flatten_entries(obj["entries"], depth + 1))
     if "headerEntries" in obj:
@@ -88,110 +182,47 @@ def _flatten_entry_object(obj: dict, depth: int) -> str:
     if "items" in obj and isinstance(obj["items"], list):
         for item in obj["items"]:
             parts.append(flatten_entries(item, depth + 1))
-
-    # Table rows
     if entry_type == "table":
         cols = obj.get("colLabels", [])
         if cols:
             parts.append("Columns: " + ", ".join(strip_5e_tags(c) for c in cols) + ".")
         for row in obj.get("rows", []):
             if isinstance(row, list):
-                parts.append(
-                    " | ".join(strip_5e_tags(str(cell)) for cell in row)
-                )
-
-    # Inline entries
+                parts.append(" | ".join(strip_5e_tags(str(cell)) for cell in row))
     if "entry" in obj:
         parts.append(flatten_entries(obj["entry"], depth + 1))
-
     return " ".join(p for p in parts if p)
 
 
-# ── Campaign lore text construction ──────────────────────────────────────────
-
-
-def campaign_entry_text(entry: dict, include_spoilers: bool = True) -> str:
-    """Build embeddable text for a campaign curated entry."""
-    parts = []
-
-    name = entry.get("name", "")
-    parts.append(f"{name}.")
-
-    aliases = entry.get("aliases", [])
-    if aliases:
-        parts.append(f"Also known as: {', '.join(aliases)}.")
-
-    tags = entry.get("tags", [])
-    if tags:
-        parts.append(f"Tags: {', '.join(tags)}.")
-
-    summary = entry.get("summary", "")
-    if summary:
-        parts.append(summary)
-
-    for detail in entry.get("details", []):
-        if not include_spoilers and detail.get("spoiler"):
-            continue
-        label = detail.get("label", "")
-        content = detail.get("content", "")
-        if label and content:
-            parts.append(f"{label}: {content}")
-        elif content:
-            parts.append(content)
-
-    for conn in entry.get("connections", []):
-        if not include_spoilers and conn.get("spoiler"):
-            continue
-        target = conn.get("target_name", "")
-        rel = conn.get("relationship", "")
-        if target and rel:
-            parts.append(f"Connection to {target}: {rel}")
-
-    if include_spoilers:
-        dm_notes = entry.get("dm_notes", "")
-        if dm_notes:
-            parts.append(f"DM Notes: {dm_notes}")
-
-    return " ".join(parts)
-
-
-# ── 5etools entry text construction ──────────────────────────────────────────
+# ── 5etools per-type text builders (preserved) ───────────────────────────────
 
 
 def _monster_text(entry: dict) -> str:
-    """Build text for a bestiary monster entry."""
     parts = [f"{entry['name']}."]
-
     if "type" in entry:
         t = entry["type"]
         type_str = t if isinstance(t, str) else t.get("type", str(t))
         parts.append(f"Type: {type_str}.")
-
     size = entry.get("size", [])
     if size:
         size_map = {"T": "Tiny", "S": "Small", "M": "Medium", "L": "Large",
                      "H": "Huge", "G": "Gargantuan"}
         parts.append("Size: " + ", ".join(size_map.get(s, s) for s in size) + ".")
-
     if "cr" in entry:
         cr = entry["cr"]
         cr_str = str(cr) if not isinstance(cr, dict) else cr.get("cr", str(cr))
         parts.append(f"CR {cr_str}.")
-
     for stat in ("str", "dex", "con", "int", "wis", "cha"):
         val = entry.get(stat)
         if val is not None:
             parts.append(f"{stat.upper()} {val}")
-
     hp = entry.get("hp", {})
     if isinstance(hp, dict) and "average" in hp:
         parts.append(f"HP {hp['average']}.")
-
     ac = entry.get("ac", [])
     if ac:
         ac_val = ac[0] if isinstance(ac[0], int) else ac[0].get("ac", ac[0])
         parts.append(f"AC {ac_val}.")
-
     speed = entry.get("speed", {})
     if isinstance(speed, dict):
         speed_parts = []
@@ -199,12 +230,9 @@ def _monster_text(entry: dict) -> str:
             speed_parts.append(f"{k} {v}" if k != "walk" else str(v))
         if speed_parts:
             parts.append(f"Speed: {', '.join(speed_parts)}.")
-
     langs = entry.get("languages", [])
     if langs:
         parts.append(f"Languages: {', '.join(langs)}.")
-
-    # Actions, spellcasting, traits
     for section_key in ("trait", "action", "reaction", "legendary", "bonus",
                          "spellcasting", "mythic"):
         section = entry.get(section_key, [])
@@ -217,202 +245,136 @@ def _monster_text(entry: dict) -> str:
                     text = f"{n}: {he} {e}".strip() if n else f"{he} {e}".strip()
                     if text:
                         parts.append(text)
-
     return " ".join(parts)
 
 
 def _spell_text(entry: dict) -> str:
-    """Build text for a spell entry."""
     parts = [f"{entry['name']}."]
-
     level = entry.get("level", 0)
     school_map = {"A": "Abjuration", "C": "Conjuration", "D": "Divination",
                   "E": "Enchantment", "V": "Evocation", "I": "Illusion",
                   "N": "Necromancy", "T": "Transmutation"}
     school = school_map.get(entry.get("school", ""), entry.get("school", ""))
-    if level == 0:
-        parts.append(f"{school} cantrip.")
-    else:
-        parts.append(f"Level {level} {school}.")
-
+    parts.append(f"{school} cantrip." if level == 0 else f"Level {level} {school}.")
     time_list = entry.get("time", [])
-    if time_list:
+    if time_list and isinstance(time_list[0], dict):
         t = time_list[0]
-        if isinstance(t, dict):
-            parts.append(f"Casting time: {t.get('number', '')} {t.get('unit', '')}.")
-
+        parts.append(f"Casting time: {t.get('number', '')} {t.get('unit', '')}.")
     rng = entry.get("range", {})
     if isinstance(rng, dict):
         dist = rng.get("distance", {})
         if isinstance(dist, dict):
-            amt = dist.get("amount", "")
-            unit = dist.get("type", "")
-            parts.append(f"Range: {amt} {unit}.".strip())
-
+            parts.append(f"Range: {dist.get('amount', '')} {dist.get('type', '')}.".strip())
     comps = entry.get("components", {})
     if isinstance(comps, dict):
         comp_parts = []
-        if comps.get("v"):
-            comp_parts.append("V")
-        if comps.get("s"):
-            comp_parts.append("S")
+        if comps.get("v"): comp_parts.append("V")
+        if comps.get("s"): comp_parts.append("S")
         if comps.get("m"):
             m = comps["m"]
             mat_text = m if isinstance(m, str) else m.get("text", str(m))
             comp_parts.append(f"M ({strip_5e_tags(mat_text)})")
         parts.append(f"Components: {', '.join(comp_parts)}.")
-
     dur = entry.get("duration", [])
-    if dur:
+    if dur and isinstance(dur[0], dict):
         d = dur[0]
-        if isinstance(d, dict):
-            dtype = d.get("type", "")
-            if dtype == "instant":
-                parts.append("Duration: Instantaneous.")
-            elif dtype == "timed":
-                amt = d.get("duration", {}).get("amount", "")
-                unit = d.get("duration", {}).get("type", "")
-                conc = "Concentration, " if d.get("concentration") else ""
-                parts.append(f"Duration: {conc}{amt} {unit}.")
-
+        dtype = d.get("type", "")
+        if dtype == "instant":
+            parts.append("Duration: Instantaneous.")
+        elif dtype == "timed":
+            amt = d.get("duration", {}).get("amount", "")
+            unit = d.get("duration", {}).get("type", "")
+            conc = "Concentration, " if d.get("concentration") else ""
+            parts.append(f"Duration: {conc}{amt} {unit}.")
     entries = flatten_entries(entry.get("entries", []))
-    if entries:
-        parts.append(entries)
-
+    if entries: parts.append(entries)
     higher = flatten_entries(entry.get("entriesHigherLevel", []))
-    if higher:
-        parts.append(f"At higher levels: {higher}")
-
+    if higher: parts.append(f"At higher levels: {higher}")
     return " ".join(parts)
 
 
 def _class_text(entry: dict, category_key: str) -> str:
-    """Build text for class, subclass, classFeature, subclassFeature."""
     parts = [f"{entry['name']}."]
-
     cls = entry.get("className", "")
-    if cls:
-        parts.append(f"Class: {cls}.")
-
+    if cls: parts.append(f"Class: {cls}.")
     subcls = entry.get("subclassShortName", "")
-    if subcls:
-        parts.append(f"Subclass: {subcls}.")
-
+    if subcls: parts.append(f"Subclass: {subcls}.")
     level = entry.get("level")
-    if level:
-        parts.append(f"Level: {level}.")
-
-    # Class-specific fields
+    if level: parts.append(f"Level: {level}.")
     if category_key == "class":
         hd = entry.get("hd", {})
         if isinstance(hd, dict):
             parts.append(f"Hit Die: d{hd.get('faces', '?')}.")
         profs = entry.get("startingProficiencies", {})
         armor = profs.get("armor", [])
-        if armor:
-            parts.append(f"Armor proficiencies: {', '.join(str(a) for a in armor)}.")
+        if armor: parts.append(f"Armor proficiencies: {', '.join(str(a) for a in armor)}.")
         weapons = profs.get("weapons", [])
-        if weapons:
-            parts.append(f"Weapon proficiencies: {', '.join(str(w) for w in weapons)}.")
-
+        if weapons: parts.append(f"Weapon proficiencies: {', '.join(str(w) for w in weapons)}.")
     entries = flatten_entries(entry.get("entries", []))
-    if entries:
-        parts.append(entries)
-
+    if entries: parts.append(entries)
     return " ".join(parts)
 
 
 def _item_text(entry: dict) -> str:
-    """Build text for an item entry."""
     parts = [f"{entry['name']}."]
-
     rarity = entry.get("rarity", "")
-    if rarity and rarity != "none":
-        parts.append(f"Rarity: {rarity}.")
-
+    if rarity and rarity != "none": parts.append(f"Rarity: {rarity}.")
     item_type = entry.get("type", "")
-    if item_type:
-        parts.append(f"Type: {item_type}.")
-
+    if item_type: parts.append(f"Type: {item_type}.")
     weight = entry.get("weight")
-    if weight:
-        parts.append(f"Weight: {weight} lb.")
-
-    if entry.get("reqAttune"):
-        parts.append("Requires attunement.")
-
+    if weight: parts.append(f"Weight: {weight} lb.")
+    if entry.get("reqAttune"): parts.append("Requires attunement.")
     entries = flatten_entries(entry.get("entries", []))
-    if entries:
-        parts.append(entries)
-
+    if entries: parts.append(entries)
     return " ".join(parts)
 
 
 def _generic_text(entry: dict) -> str:
-    """Fallback text for any 5etools entry with a name."""
     parts = [f"{entry['name']}."]
     entries = flatten_entries(entry.get("entries", []))
-    if entries:
-        parts.append(entries)
+    if entries: parts.append(entries)
     return " ".join(parts)
 
 
 def fivetools_entry_text(entry: dict, category_key: str, filename: str) -> str:
-    """Build embeddable text for a 5etools entry based on its type."""
     if "name" not in entry:
         return ""
-
     if "bestiary" in filename:
         return _monster_text(entry)
     if "spell" in filename:
         return _spell_text(entry)
     if filename.startswith("class-") or category_key in ("class", "subclass",
-                                                          "classFeature",
-                                                          "subclassFeature"):
+                                                           "classFeature",
+                                                           "subclassFeature"):
         return _class_text(entry, category_key)
     if filename in ("items.json", "items-base.json") or category_key in ("item", "itemGroup"):
         return _item_text(entry)
-
     return _generic_text(entry)
 
 
-# ── Entry ID generation ──────────────────────────────────────────────────────
-
-
 def make_entry_id(entry: dict, category_key: str, filename: str, index: int) -> str:
-    """Generate a stable unique ID for a 5etools entry."""
     name = entry.get("name", f"entry_{index}")
     source = entry.get("source", "")
-    # For class features, include class and level to avoid collisions
     cls = entry.get("className", "")
     subcls = entry.get("subclassShortName", "")
     level = entry.get("level", "")
-
     parts = [filename.replace(".json", ""), category_key, name]
-    if cls:
-        parts.append(cls)
-    if subcls:
-        parts.append(subcls)
-    if level:
-        parts.append(str(level))
-    if source:
-        parts.append(source)
-    # Always include index to guarantee uniqueness
+    if cls: parts.append(cls)
+    if subcls: parts.append(subcls)
+    if level: parts.append(str(level))
+    if source: parts.append(source)
     parts.append(str(index))
-
     raw = "_".join(parts)
     return re.sub(r"[^a-zA-Z0-9_-]", "_", raw).lower()
 
 
 # ── Embedding ────────────────────────────────────────────────────────────────
 
-
 EMBED_MODEL = "nomic-embed-text:latest"
 
 
 def embed_text(text: str, ollama_url: str, api_key: str = "",
                max_retries: int = 4) -> Optional[list]:
-    """Call Ollama /api/embeddings and return the embedding vector."""
     headers = {"Content-Type": "application/json"}
     if api_key:
         headers["Authorization"] = f"Bearer {api_key}"
@@ -428,7 +390,7 @@ def embed_text(text: str, ollama_url: str, api_key: str = "",
             return resp.json().get("embedding")
         except Exception as e:
             if attempt < max_retries - 1:
-                time.sleep(0.5 * (2 ** attempt))  # 0.5s, 1s, 2s
+                time.sleep(0.5 * (2 ** attempt))
             else:
                 print(f"  [ERROR] Embedding failed after {max_retries} attempts: {e}",
                       file=sys.stderr)
@@ -438,77 +400,94 @@ def embed_text(text: str, ollama_url: str, api_key: str = "",
 # ── Loading ──────────────────────────────────────────────────────────────────
 
 
-def load_campaign_entries() -> list[dict]:
-    """Load all campaign curated entries with text representations."""
-    entries = []
-    for fpath in sorted(CURATED_DIR.glob("*.json")):
-        category = fpath.stem  # e.g. "characters", "locations"
-        with open(fpath) as f:
-            data = json.load(f)
-        for entry in data.get("entries", []):
-            raw_id = entry.get("id", entry.get("name", "").lower().replace(" ", "_"))
-            # Prefix with category to avoid cross-file ID collisions
-            entry_id = f"{category}_{raw_id}"
-            text_dm = campaign_entry_text(entry, include_spoilers=True)
-            text_player = campaign_entry_text(entry, include_spoilers=False)
-            spoiler = entry.get("spoiler", False)
-
+def load_wiki_entries() -> list[dict]:
+    """Walk wiki content dirs, return one entry per published .md file."""
+    entries: list[dict] = []
+    for rel_dir in WIKI_DIRS:
+        full_dir = WIKI_ROOT / rel_dir
+        if not full_dir.exists():
+            continue
+        for fpath in sorted(full_dir.glob("*.md")):
+            if fpath.stem == "index":
+                continue
+            try:
+                raw = fpath.read_text(encoding="utf-8")
+            except Exception as e:
+                print(f"  WARN: {fpath}: {e}", file=sys.stderr)
+                continue
+            meta, body = parse_frontmatter(raw)
+            if meta.get("published") is False:
+                continue
+            text = wiki_page_text(meta, body)
+            if not text or len(text) < 20:
+                continue
+            entry_id = f"wiki_{rel_dir.replace('/', '_')}_{fpath.stem}".lower()
+            entry_id = re.sub(r"[^a-z0-9_-]", "_", entry_id)
+            aliases = meta.get("aliases") or []
+            if isinstance(aliases, str):
+                aliases = [a.strip() for a in aliases.split(",") if a.strip()]
             entries.append({
                 "id": entry_id,
-                "name": entry.get("name", ""),
-                "source_file": f"curated/{fpath.name}",
-                "text": text_dm,
-                "text_player": text_player,
-                "spoiler": spoiler,
+                "name": meta.get("title") or fpath.stem,
+                "aliases": aliases,
+                "source_file": str(fpath.relative_to(WIKI_ROOT)),
+                "text": text,
                 "is_campaign": True,
             })
+    # Also include home.md if published
+    home_path = WIKI_ROOT / "home.md"
+    if home_path.exists():
+        try:
+            raw = home_path.read_text(encoding="utf-8")
+            meta, body = parse_frontmatter(raw)
+            if meta.get("published") is not False:
+                text = wiki_page_text(meta, body)
+                if text and len(text) >= 20:
+                    entries.append({
+                        "id": "wiki_home",
+                        "name": meta.get("title") or "Home",
+                        "source_file": "home.md",
+                        "text": text,
+                        "is_campaign": True,
+                    })
+        except Exception:
+            pass
     return entries
 
 
 def load_5etools_entries() -> list[dict]:
     """Load all 5etools entries with text representations."""
-    entries = []
-
-    # Files to skip — not useful for embedding
+    entries: list[dict] = []
     skip_files = {"makebrew-creature.json", "monsterfeatures.json",
                   "magicvariants.json", "recipes.json", "book-xphb.json",
                   "charcreationoptions.json", "cultsboons.json", "tables.json"}
-
+    if not RULES_DIR.exists():
+        return entries
     for fpath in sorted(RULES_DIR.glob("*.json")):
         if fpath.name in skip_files:
             continue
-
-        with open(fpath) as f:
-            data = json.load(f)
-
+        try:
+            with open(fpath) as f:
+                data = json.load(f)
+        except Exception as e:
+            print(f"  WARN: {fpath}: {e}", file=sys.stderr)
+            continue
         for key, value in data.items():
-            if key.startswith("_"):
+            if key.startswith("_") or not isinstance(value, list):
                 continue
-            if not isinstance(value, list):
-                continue
-
             for i, entry in enumerate(value):
-                if not isinstance(entry, dict):
+                if not isinstance(entry, dict) or "name" not in entry:
                     continue
-                if "name" not in entry:
-                    continue
-
                 text = fivetools_entry_text(entry, key, fpath.name)
                 if not text or len(text) < 20:
                     continue
-
-                entry_id = make_entry_id(entry, key, fpath.name, i)
-
                 entries.append({
-                    "id": entry_id,
+                    "id": make_entry_id(entry, key, fpath.name, i),
                     "name": entry.get("name", ""),
                     "source_file": f"5e-filtered/{fpath.name}",
                     "text": text,
-                    "text_player": text,  # 5etools entries are never spoilers
-                    "spoiler": False,
                     "is_campaign": False,
                 })
-
     return entries
 
 
@@ -516,11 +495,13 @@ def load_5etools_entries() -> list[dict]:
 
 
 def load_existing_store(path: Path) -> dict[str, dict]:
-    """Load existing vector store as {id: entry_dict}."""
     if not path.exists():
         return {}
-    with open(path) as f:
-        data = json.load(f)
+    try:
+        with open(path) as f:
+            data = json.load(f)
+    except Exception:
+        return {}
     return {e["id"]: e for e in data}
 
 
@@ -528,16 +509,11 @@ def text_hash(text: str) -> str:
     return hashlib.md5(text.encode()).hexdigest()
 
 
-# ── Progress helper ──────────────────────────────────────────────────────────
-
 try:
     from tqdm import tqdm
-
     def progress_iter(iterable, total, desc=""):
         return tqdm(iterable, total=total, desc=desc, ncols=80)
-
 except ImportError:
-
     def progress_iter(iterable, total, desc=""):
         count = 0
         for item in iterable:
@@ -547,43 +523,28 @@ except ImportError:
             yield item
 
 
-# ── Main build ───────────────────────────────────────────────────────────────
-
-
-def build_store(
-    entries: list[dict],
-    output_path: Path,
-    ollama_url: str,
-    api_key: str = "",
-    force: bool = False,
-    text_key: str = "text",
-) -> None:
-    """Build or update the vector store for a list of entries."""
+def build_store(entries: list[dict], output_path: Path, ollama_url: str,
+                api_key: str = "", force: bool = False) -> None:
     start = time.time()
-
     existing = {} if force else load_existing_store(output_path)
     existing_ids = set(existing.keys())
     new_ids = {e["id"] for e in entries}
 
-    # Classify entries
     cached = 0
     to_embed = []
     results = []
-
     for entry in entries:
         eid = entry["id"]
-        h = text_hash(entry[text_key])
+        h = text_hash(entry["text"])
         old = existing.get(eid)
-
         if old and old.get("text_hash") == h and old.get("embedding"):
-            # Cached — keep existing embedding
             results.append({
                 "id": eid,
                 "name": entry["name"],
+                "aliases": entry.get("aliases", []),
                 "source_file": entry["source_file"],
-                "text": entry[text_key],
+                "text": entry["text"],
                 "embedding": old["embedding"],
-                "spoiler": entry["spoiler"],
                 "text_hash": h,
             })
             cached += 1
@@ -603,26 +564,23 @@ def build_store(
     print(f"  Deleted:       {len(deleted)}")
     print(f"{'=' * 60}\n")
 
-    # Embed new/changed entries
     failed = 0
     for entry, h in progress_iter(to_embed, len(to_embed), desc="Embedding"):
-        embedding = embed_text(entry[text_key], ollama_url, api_key)
+        embedding = embed_text(entry["text"], ollama_url, api_key)
         if embedding is None:
             failed += 1
             continue
         results.append({
             "id": entry["id"],
             "name": entry["name"],
+            "aliases": entry.get("aliases", []),
             "source_file": entry["source_file"],
-            "text": entry[text_key],
+            "text": entry["text"],
             "embedding": embedding,
-            "spoiler": entry["spoiler"],
             "text_hash": h,
         })
 
-    # Sort by id for stable output
     results.sort(key=lambda x: x["id"])
-
     with open(output_path, "w") as f:
         json.dump(results, f, separators=(",", ":"))
 
@@ -634,20 +592,16 @@ def build_store(
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Build vector store for D&D chatbot")
+    parser = argparse.ArgumentParser(description="Build vector store for the chatbot")
     parser.add_argument("--ollama-url", default="https://ai.raptornet.dev/ollama",
                         help="Ollama server URL (include /ollama for OpenWebUI proxy)")
     parser.add_argument("--api-key", default=os.environ.get("OPENWEBUI_API_KEY", ""),
                         help="Bearer token for Ollama (default: $OPENWEBUI_API_KEY)")
-    parser.add_argument("--mode", choices=["player", "dm", "both"], default="both",
-                        help="Which store to build")
-    parser.add_argument("--batch-size", type=int, default=1,
-                        help="Entries per sequential batch (unused — sequential by default)")
     parser.add_argument("--force", action="store_true",
                         help="Ignore cache and re-embed everything")
     args = parser.parse_args()
 
-    # Try loading from .env if no key found
+    # Load API key from .env if not in environment
     if not args.api_key:
         env_file = BASE_DIR / ".env"
         if env_file.exists():
@@ -657,12 +611,12 @@ def main():
                     break
 
     print("Loading entries...")
-    campaign = load_campaign_entries()
+    wiki = load_wiki_entries()
     rules = load_5etools_entries()
-    all_entries = campaign + rules
-    print(f"  Campaign: {len(campaign)} entries")
-    print(f"  5etools:  {len(rules)} entries")
-    print(f"  Total:    {len(all_entries)} entries")
+    all_entries = wiki + rules
+    print(f"  Wiki:    {len(wiki)} pages")
+    print(f"  5etools: {len(rules)} entries")
+    print(f"  Total:   {len(all_entries)} entries")
 
     # Quick connectivity check
     print(f"\nChecking Ollama at {args.ollama_url}...")
@@ -685,27 +639,8 @@ def main():
         print("  Cannot proceed without Ollama. Exiting.", file=sys.stderr)
         sys.exit(1)
 
-    if args.mode in ("dm", "both"):
-        build_store(
-            all_entries,
-            OUTPUT_DM,
-            args.ollama_url,
-            api_key=args.api_key,
-            force=args.force,
-            text_key="text",
-        )
-
-    if args.mode in ("player", "both"):
-        # Player store: exclude entries where spoiler is True
-        player_entries = [e for e in all_entries if not e["spoiler"]]
-        build_store(
-            player_entries,
-            OUTPUT_PLAYER,
-            args.ollama_url,
-            api_key=args.api_key,
-            force=args.force,
-            text_key="text_player",
-        )
+    build_store(all_entries, OUTPUT_PATH, args.ollama_url,
+                api_key=args.api_key, force=args.force)
 
     print("\nDone!")
 

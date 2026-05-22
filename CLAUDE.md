@@ -36,25 +36,37 @@ The chatbot uses a three-tier data pipeline (raw JSON → compressed markdown �
 
 ## Architecture
 
-See `ARCHITECTURE.md` for the full diagram and data flow. Key points:
+The chatbot is **player-only**. DM material lives at `Venturia/DM/` (and any `published: false` page) and is excluded from everything the chatbot sees. A separate DM-facing chatbot is planned.
 
-### Three-Tier Data Pipeline
+### Data Pipeline — Wiki as Source of Truth
 
-- **Tier 0** (raw): `campaign-data/curated/*.json` (7 files, 88 entries) + `campaign-data/5e-filtered/*.json` (34 files, ~2,876 entries)
-- **Tier 1** (system prompts): `campaign-data/tier1_player.md` (~80 KB) and `campaign-data/tier1_dm.md` (~308 KB) — built by `build_tiers.py`
-- **Tier 2** (vectors): `campaign-data/vector_store*.json` (~62-63 MB each) — built by `build_vectors.py` via Ollama embeddings
+The wiki markdown files **are** the source of truth for campaign content. Two build scripts read the wiki and the 5etools reference data, producing the artifacts the chatbot loads:
+
+- **Source**: wiki markdown under `Characters/`, `Venturia/Locations/`, `Venturia/Factions/`, `Venturia/Government/`, `Venturia/Lore/`, `Articles/`, `Class-Changes/`, `House-Rules/`, `Updates/`, plus `home.md`. `Venturia/DM/` and any `published: false` page are excluded. The 5etools JSON in `campaign-data/5e-filtered/` is still the source for D&D rules data.
+- **Tier 1** (system prompt): `campaign-data/tier1.md` — compressed summaries of every published wiki page, built by `build_tiers.py`.
+- **Tier 2** (vector store): `campaign-data/vector_store.json` — embeddings (one entry per wiki page + one per 5etools entry), built by `build_vectors.py` via Ollama.
+
+`campaign-data/curated/*.json` is **legacy**; it's no longer read by anything and can be deleted once the new pipeline is verified.
 
 ### Per-Message Flow
 
-1. Frontend POSTs `{message, conversationHistory, mode, rules, vibe}` to `/api/chat`
-2. Backend embeds query via Ollama → cosine similarity against vector store → top 3 auto-injected as context
-3. Anthropic API call with tier1 system prompt + RAG context + `lookup_entry` tool
-4. Tool loop (max 5 iterations) if Claude wants to look up specific entries
-5. Response returned to frontend, history stored in localStorage
+1. Frontend POSTs `{message, conversationHistory, rules, vibe}` to `/api/chat`
+2. Backend embeds query via Ollama → cosine similarity against `vector_store.json` → top 3 auto-injected as context, plus any keyword (name/alias) exact matches.
+3. Anthropic API call with `tier1.md` as system prompt + RAG context + `lookup_entry` tool (temperature 0.2).
+4. Tool loop (max 5 iterations) if Claude wants to look up specific entries by name/alias.
+5. Response returned to frontend, history stored in localStorage.
 
-### DM Mode
+### Rebuilding After Wiki Changes
 
-Type the passphrase (env: `DM_PASSPHRASE`) in chat to toggle. DM mode uses the full tier1 system prompt (308 KB with spoilers) and unfiltered vector store. Persists in localStorage.
+Anytime you change wiki content and want Enzo to reflect it:
+
+```bash
+python3 build_tiers.py          # rebuild tier1.md (fast, no network)
+python3 build_vectors.py         # rebuild vector_store.json (slower, hits Ollama)
+docker compose restart chatbot   # gunicorn reloads with the new data
+```
+
+`build_vectors.py` caches by text hash, so subsequent runs only re-embed pages that actually changed.
 
 ---
 
@@ -63,7 +75,7 @@ Type the passphrase (env: `DM_PASSPHRASE`) in chat to toggle. DM mode uses the f
 ### Backend — `chatbot/`
 | File | What It Does |
 |------|-------------|
-| `server.py` | Flask API. `Loremaster` class handles RAG pipeline, Anthropic tool calling, DM mode. Routes: `POST /api/chat`, `GET /health`. ~889 lines. |
+| `server.py` | Flask API. `Loremaster` class handles RAG pipeline, Anthropic tool calling. Single mode (player). Loads `tier1.md` and `vector_store.json` at startup. `lookup_entry` matches against in-memory name/alias index. Routes: `POST /api/chat`, `GET /health`. |
 | `Dockerfile` | Python 3.11-slim, gunicorn with 2 workers, 120s timeout, `--preload` (shared memory) |
 | `requirements.txt` | flask 3.1.0, requests 2.32.3, gunicorn 23.0.0 |
 
@@ -80,8 +92,8 @@ Type the passphrase (env: `DM_PASSPHRASE`) in chat to toggle. DM mode uses the f
 ### Data Pipeline
 | File | What It Does |
 |------|-------------|
-| `build_tiers.py` | Tier 0 → Tier 1. Compresses curated + 5etools JSON into markdown system prompts |
-| `build_vectors.py` | Tier 0 → Tier 2. Embeds all entries via Ollama, outputs vector stores. Supports `--force` and `--batch-size` flags. Caches by text hash |
+| `build_tiers.py` | Walks wiki content + 5etools JSON, compresses into `tier1.md` (single output, ~80 KB). Excludes `Venturia/DM/` and `published: false`. Fast, no network. |
+| `build_vectors.py` | Walks wiki content + 5etools JSON, embeds each entry via Ollama into `vector_store.json`. Caches by text hash; `--force` re-embeds all. Same exclusions as `build_tiers.py`. |
 
 ### Infrastructure
 | File | What It Does |
@@ -100,11 +112,10 @@ Type the passphrase (env: `DM_PASSPHRASE`) in chat to toggle. DM mode uses the f
 ### Campaign Data — `campaign-data/`
 | Path | What It Contains |
 |------|-----------------|
-| `curated/` | 7 hand-authored JSON files: characters, locations, factions, government, lore, campaign, houserules |
-| `5e-filtered/` | 34 5etools JSON files: spells, monsters, items, feats, classes, races, conditions, etc. |
-| `tier1_player.md` | Player system prompt (spoilers stripped) |
-| `tier1_dm.md` | DM system prompt (full access) |
-| `vector_store*.json` | Generated embeddings (gitignored, ~62-63 MB each) |
+| `5e-filtered/` | 34 5etools JSON files: spells, monsters, items, feats, classes, races, conditions, etc. — still source data for D&D rules. |
+| `tier1.md` | Generated system prompt (~80 KB). Built by `build_tiers.py` from wiki + 5etools. |
+| `vector_store.json` | Generated embeddings (gitignored). Built by `build_vectors.py`. One entry per wiki page + one per 5etools entry. |
+| `curated/` | **Legacy** — no longer read. Safe to delete once new pipeline is verified working in prod. |
 
 ---
 
@@ -119,7 +130,7 @@ Defined in `.env` (never committed). See `.env.example` for the template.
 | `OLLAMA_URL` | No | `https://ai.raptornet.dev/ollama` | Embedding endpoint |
 | `OLLAMA_API_KEY` | No | — | Bearer token for Ollama/OpenWebUI |
 | `EMBEDDING_MODEL` | No | `nomic-embed-text:latest` | Must match `build_vectors.py` |
-| `DM_PASSPHRASE` | No | `REDACTED` | Passphrase to toggle DM mode |
+| `TEMPERATURE` | No | `0.2` | Anthropic API temperature for chat responses. Lower = more factual. |
 | `POSTGRES_DB` | No | `wiki` | Wiki.js database name |
 | `POSTGRES_USER` | No | `wikijs` | Wiki.js database user |
 | `POSTGRES_PASSWORD` | Yes | — | **Change before first deploy** |
@@ -138,12 +149,12 @@ docker compose up -d --build chatbot
 # Frontend/static changes (CSS, JS, HTML, images)
 docker compose restart nginx
 
-# Campaign data changes (curated JSON or 5etools JSON)
-python3 build_tiers.py          # rebuild system prompts
-python3 build_vectors.py        # rebuild vector stores (uses cache)
-docker compose restart chatbot  # reload new data
+# Wiki content changes (after editing pages on main or pulling from origin)
+python3 build_tiers.py          # rebuild tier1.md (fast)
+python3 build_vectors.py        # rebuild vector_store.json (uses cache; only re-embeds changed pages)
+docker compose restart chatbot  # gunicorn reloads with the new data
 
-# Force full vector rebuild
+# Force full vector rebuild (rare — when embedding model or chunking changes)
 python3 build_vectors.py --force
 ```
 
@@ -157,39 +168,35 @@ python3 build_vectors.py --force
 - Commit messages follow `type: description` (feat, fix, chore, etc.)
 
 ### Known Constraints
-1. **Never use `<p>` tags in Wiki.js custom HTML** — `files/css.css` overrides `<p>` color. Use `<div>` instead.
-2. **CORS is split** — nginx handles OPTIONS → 204, Flask handles response headers on actual requests. Do NOT add `add_header` directives to the proxy block.
-3. **Vector stores are gitignored** — they're 62-63 MB each. Rebuild with `build_vectors.py` after cloning.
-4. **Tier 1 prompts must be rebuilt** after editing curated JSON or 5etools files. Run `build_tiers.py`.
-5. **Ollama endpoint** requires Bearer token (`OLLAMA_API_KEY`). Uses `nomic-embed-text:latest` for 1024-dim embeddings.
-6. **Gunicorn uses `--preload`** — vector stores loaded once, shared across 2 workers.
-7. **Input validation** — messages capped at 4,000 chars, history capped at 40 messages (8,000 chars each), roles restricted to user/assistant.
-8. **No automated tests** — no test framework, no CI/CD. Test manually.
-9. **No rate limiting** on the `/api/chat` endpoint.
-10. **Conversation history is client-side only** (localStorage). Server is stateless.
+1. **Wiki frontmatter is the structured-data interface** — `title`, `description`, `tags`, `published`, and optional `aliases` (as a YAML list) drive the chatbot's understanding of each page. Pages with `published: false` are hidden from both Wiki.js and the chatbot.
+2. **`Venturia/DM/` is invisible to the player chatbot** — the build scripts skip the entire directory. Put any DM-only content there.
+3. **Never use `<p>` tags in Wiki.js custom HTML** — `files/css.css` overrides `<p>` color. Use `<div>` instead.
+4. **CORS is split** — nginx handles OPTIONS → 204, Flask handles response headers on actual requests. Do NOT add `add_header` directives to the proxy block.
+5. **Vector store is gitignored** — ~60 MB. Rebuild with `build_vectors.py` after cloning.
+6. **Rebuild tier1 + vectors after wiki changes**, then `docker compose restart chatbot`.
+7. **Ollama endpoint** requires Bearer token (`OLLAMA_API_KEY`). Uses `nomic-embed-text:latest`.
+8. **Gunicorn uses `--preload`** — tier1 and vector store loaded once, shared across 2 workers.
+9. **Input validation** — messages capped at 4,000 chars, history capped at 40 messages (8,000 chars each), roles restricted to user/assistant.
+10. **No automated tests** — no test framework, no CI/CD. Test manually.
+11. **Conversation history is client-side only** (localStorage). Server is stateless.
 
-### Campaign Data Schema
-Curated JSON files follow this structure:
-```json
-{
-  "schema_version": "1.1",
-  "category": "characters",
-  "entries": [{
-    "id": "unique-id",
-    "name": "Display Name",
-    "aliases": ["Alt Name"],
-    "tags": ["pc", "fighter"],
-    "spoiler": false,
-    "summary": "One-line description",
-    "details": [{ "label": "Background", "content": "...", "spoiler": false }],
-    "connections": [{ "target_id": "other", "target_name": "Other", "relationship": "...", "spoiler": true }],
-    "dm_notes": "DM-only secrets"
-  }]
-}
+### Wiki page frontmatter the chatbot reads
+```yaml
+---
+title: Maruk Grommarg
+description: A Fog Warden who volunteered for the Overlook posting and Noname's missing fiancé...
+published: true              # set to false to hide from chatbot + Wiki.js
+date: 2026-05-22T00:00:00.000Z
+tags: characters, npcs, fog-warden, missing, orc, overlook
+aliases:                     # optional — lets the chatbot match the old name
+  - Marcus
+editor: markdown
+dateCreated: 2026-05-22T00:00:00.000Z
+---
 ```
 
 ### Frontend Chat Commands
-- Type the DM passphrase → toggle DM mode
+
 - `/rules on` / `/rules off` → toggle 5e rules emphasis
 - `/yasqueen on` / `/yasqueen off` → personality vibe mode
 - `/fabio on` / `/fabio off` → romance novel narrator vibe mode
@@ -210,6 +217,6 @@ The chatbot widget can be embedded in Wiki.js pages:
 
 - **SSL certificates** — mounted at deploy time in `ssl/`, gitignored
 - **Chat logs** — written at runtime to `logs/chat.log`, gitignored
-- **Vector stores** — generated artifacts, gitignored (rebuild with `build_vectors.py`)
+- **Vector store** — generated artifact `campaign-data/vector_store.json`, gitignored (rebuild with `build_vectors.py`)
 - **Wiki.js content** — lives in PostgreSQL, not in this repo (except article markdown files used by `publish.js`)
 - **Node modules** — `publish.js` has no dependencies beyond Node stdlib

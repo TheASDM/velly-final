@@ -1,8 +1,11 @@
 """
 Loremaster Chatbot — Python/Flask backend with RAG pipeline.
 
-Replaces the Node.js chatbot with vector-search-augmented responses,
-tool calling (lookup_entry), and DM mode toggling via passphrase.
+Player-only. Wiki markdown is the source of truth for campaign content;
+tier1.md and vector_store.json are regenerated from wiki + 5etools by
+build_tiers.py and build_vectors.py. DM mode has been removed — DM
+material is a separate concern (planned: a sibling chatbot fed from
+Venturia/DM/).
 """
 
 import json
@@ -34,7 +37,7 @@ RAG_TOP_K = int(os.environ.get("RAG_TOP_K", "3"))
 RAG_AUTO_THRESHOLD = float(os.environ.get("RAG_AUTO_THRESHOLD", "0.3"))
 RAG_LIST_THRESHOLD = float(os.environ.get("RAG_LIST_THRESHOLD", "0.4"))
 
-DM_PASSPHRASE = os.environ.get("DM_PASSPHRASE", "Prima Volta")
+TEMPERATURE = float(os.environ.get("TEMPERATURE", "0.2"))
 
 RAG_SKIP_MAX_LEN = 15
 RAG_SKIP_PATTERNS = re.compile(
@@ -57,9 +60,9 @@ def _skip_rag(message):
     return False
 
 
-# ── System prompt headers ────────────────────────────────────────────────────
+# ── System prompt ────────────────────────────────────────────────────────────
 
-PLAYER_SYSTEM_HEADER = """You are Enzo the Loremaster, a reference assistant for the Vallombrosa campaign — a D&D 5e game set in a dark romantasy version of Renaissance Venice called Venturia. The city sits at the edge of a fey prison called the Reverie Solenne, whose slow collapse is causing strange phenomena throughout the city.
+SYSTEM_HEADER = """You are Enzo the Loremaster, a reference assistant for the Vallombrosa campaign — a D&D 5e game set in a dark romantasy version of Renaissance Venice called Venturia. The city sits at the edge of a fey prison called the Reverie Solenne, whose slow collapse is causing strange phenomena throughout the city.
 
 You are speaking to a PLAYER. Your role is to surface facts from the campaign codex — not to interpret, dramatize, or speculate.
 
@@ -70,78 +73,12 @@ FACTUAL TONE — STRICT:
 - If something is not explicitly in the codex, say "I don't have information about that" or "That isn't recorded in the codex" — do not guess, hedge, or offer a plausible-sounding fill-in.
 - Be plain and concise. Quote or paraphrase facts directly. Let the player draw their own conclusions.
 
-SPOILERS:
-- Do not reveal plot secrets, DM-only information, or any content marked [SPOILER]. If asked about something you know is a spoiler, say it hasn't been revealed yet, or suggest they ask their DM. Never paraphrase or hint at spoiler content.
-
 You may receive [DETAILED REFERENCE] blocks injected alongside user messages — prefer that detailed information over compressed summaries in your base knowledge. However, if injected references are clearly irrelevant to the user's actual question, ignore them completely — do not mention them, reference them, or acknowledge their existence. They are a byproduct of automatic retrieval and sometimes contain false matches.
 
 You may see an [ADDITIONAL MATCHES AVAILABLE] block listing other relevant entries by name and similarity score. You can use the lookup_entry tool to load full details on any of them if needed to answer the question.
 
 ---
 """
-
-DM_SYSTEM_HEADER = """You are Enzo the Loremaster, a comprehensive campaign assistant for the Vallombrosa campaign — a D&D 5e game set in a dark romantasy version of Renaissance Venice called Venturia.
-
-You are speaking to the DM. You have full access to all campaign information including spoilers, plot secrets, NPC motivations, and DM notes. Be direct and useful. Help with:
-- Session prep and encounter planning
-- NPC motivations and connections
-- Plot threads and how they connect
-- Rules questions and rulings
-- Lore consistency checks
-
-You may receive [DETAILED REFERENCE] blocks injected alongside user messages — prefer that detailed information over compressed summaries in your base knowledge. However, if injected references are clearly irrelevant to the user's actual question, ignore them completely — do not mention them, reference them, or acknowledge their existence. They are a byproduct of automatic retrieval and sometimes contain false matches.
-
-You may see an [ADDITIONAL MATCHES AVAILABLE] block listing other relevant entries by name and similarity score. You can use the lookup_entry tool to load full details on any of them if needed to answer the question.
-
----
-"""
-
-# ── 5etools tag stripping ────────────────────────────────────────────────────
-
-_5E_TAG_RE = re.compile(r"\{@\w+\s+([^}|]+?)(?:\|[^}]*)?\}")
-
-
-def strip_5e_tags(text):
-    if not isinstance(text, str):
-        return str(text)
-    return _5E_TAG_RE.sub(r"\1", text)
-
-
-def flatten_entries(entries, depth=0):
-    if entries is None:
-        return ""
-    if isinstance(entries, str):
-        return strip_5e_tags(entries)
-    if isinstance(entries, dict):
-        parts = []
-        name = entries.get("name", "")
-        if name:
-            parts.append(f"{strip_5e_tags(name)}.")
-        if "entries" in entries:
-            parts.append(flatten_entries(entries["entries"], depth + 1))
-        if "headerEntries" in entries:
-            parts.append(flatten_entries(entries["headerEntries"], depth + 1))
-        if "items" in entries and isinstance(entries["items"], list):
-            for item in entries["items"]:
-                parts.append(flatten_entries(item, depth + 1))
-        if entries.get("type") == "table":
-            cols = entries.get("colLabels", [])
-            if cols:
-                parts.append(
-                    "Columns: " + ", ".join(strip_5e_tags(c) for c in cols) + "."
-                )
-            for row in entries.get("rows", []):
-                if isinstance(row, list):
-                    parts.append(
-                        " | ".join(strip_5e_tags(str(cell)) for cell in row)
-                    )
-        if "entry" in entries:
-            parts.append(flatten_entries(entries["entry"], depth + 1))
-        return " ".join(p for p in parts if p)
-    if isinstance(entries, list):
-        parts = [flatten_entries(item, depth) for item in entries]
-        return " ".join(p for p in parts if p)
-    return str(entries)
 
 
 # ── Math helpers ─────────────────────────────────────────────────────────────
@@ -156,50 +93,6 @@ def cosine_similarity(a, b):
     return dot / (norm_a * norm_b)
 
 
-# ── Formatters ───────────────────────────────────────────────────────────────
-
-
-def format_campaign_entry(entry, dm_mode=False):
-    parts = [f"Name: {entry.get('name', 'Unknown')}"]
-    aliases = entry.get("aliases", [])
-    if aliases:
-        parts.append(f"Also known as: {', '.join(aliases)}")
-    summary = entry.get("summary", "")
-    if summary:
-        parts.append(f"Summary: {summary}")
-    for detail in entry.get("details", []):
-        if not dm_mode and detail.get("spoiler"):
-            continue
-        label = detail.get("label", "")
-        content = detail.get("content", "")
-        if label and content:
-            parts.append(f"{label}: {content}")
-    for conn in entry.get("connections", []):
-        if not dm_mode and conn.get("spoiler"):
-            continue
-        target = conn.get("target_name", "")
-        rel = conn.get("relationship", "")
-        if target and rel:
-            parts.append(f"Connected to {target}: {rel}")
-    if dm_mode:
-        dm_notes = entry.get("dm_notes", "")
-        if dm_notes:
-            parts.append(f"DM Notes: {dm_notes}")
-    return "\n".join(parts)
-
-
-def format_5etools_entry(entry):
-    parts = [f"Name: {entry.get('name', 'Unknown')}"]
-    for field in ("type", "rarity", "school", "level", "cr"):
-        val = entry.get(field)
-        if val is not None:
-            parts.append(f"{field.capitalize()}: {val}")
-    entries_text = flatten_entries(entry.get("entries", []))
-    if entries_text:
-        parts.append(entries_text)
-    return "\n".join(parts)
-
-
 # ── Loremaster Engine ────────────────────────────────────────────────────────
 
 
@@ -207,122 +100,68 @@ class Loremaster:
     """Core RAG + Anthropic engine, loaded once at startup."""
 
     def __init__(self):
-        self._tier1 = {"player": "", "dm": ""}
-        self._vector_stores = {"player": None, "dm": None}
-        self._name_index = {"player": {}, "dm": {}}
-        self._source_cache = {}
+        self._tier1 = ""
+        self._vector_store = None
+        self._name_index = {}
 
     # ── Data loading ─────────────────────────────────────────────────────
 
     def load(self):
-        """Preload tier1 and vector stores at startup."""
-        for mode, filename in [
-            ("player", "tier1_player.md"),
-            ("dm", "tier1_dm.md"),
-        ]:
-            path = DATA_DIR / filename
-            try:
-                self._tier1[mode] = path.read_text()
-                logging.info("Loaded %s (%d chars)", filename, len(self._tier1[mode]))
-            except Exception as e:
-                logging.error("Failed to load %s: %s", filename, e)
+        """Preload tier1 and vector store at startup."""
+        tier1_path = DATA_DIR / "tier1.md"
+        try:
+            self._tier1 = tier1_path.read_text()
+            logging.info("Loaded tier1.md (%d chars)", len(self._tier1))
+        except Exception as e:
+            logging.error("Failed to load tier1.md: %s", e)
+            self._tier1 = ""
 
-        for mode, filename in [
-            ("player", "vector_store_player.json"),
-            ("dm", "vector_store.json"),
-        ]:
-            path = DATA_DIR / filename
-            try:
-                with open(path) as f:
-                    self._vector_stores[mode] = json.load(f)
-                logging.info(
-                    "Loaded %s (%d entries)",
-                    filename,
-                    len(self._vector_stores[mode]),
-                )
-            except Exception as e:
-                logging.error("Failed to load %s: %s", filename, e)
+        vector_path = DATA_DIR / "vector_store.json"
+        try:
+            with open(vector_path) as f:
+                self._vector_store = json.load(f)
+            logging.info(
+                "Loaded vector_store.json (%d entries)",
+                len(self._vector_store),
+            )
+        except Exception as e:
+            logging.error("Failed to load vector_store.json: %s", e)
+            self._vector_store = []
 
         self._build_name_index()
 
     def _build_name_index(self):
-        """Build per-mode indexes mapping lowercased names/aliases to vector store entries."""
-        for mode, store in self._vector_stores.items():
-            if not store:
-                continue
-            index = {}
-            for entry in store:
-                name = entry.get("name", "")
-                source_file = entry.get("source_file", "")
-                names = set()
-                if name:
-                    names.add(name.lower())
-                # For curated entries, load source JSON to get aliases
-                if source_file.startswith("curated/"):
-                    source_data = self._load_source(source_file)
-                    if source_data:
-                        for src_entry in source_data.get("entries", []):
-                            if src_entry.get("name", "").lower() == name.lower():
-                                for alias in src_entry.get("aliases", []):
-                                    names.add(alias.lower())
-                                break
-                for n in names:
-                    index.setdefault(n, []).append(entry)
-            self._name_index[mode] = index
-            logging.info(
-                "Name index for %s: %d unique names/aliases", mode, len(index)
-            )
+        """Map lowercased names AND aliases to vector store entries."""
+        index = {}
+        for entry in self._vector_store or []:
+            names = set()
+            name = entry.get("name", "")
+            if name:
+                names.add(name.lower())
+            for alias in entry.get("aliases", []) or []:
+                if alias:
+                    names.add(alias.lower())
+            for n in names:
+                index.setdefault(n, []).append(entry)
+        self._name_index = index
+        logging.info(
+            "Name index: %d unique names/aliases across %d entries",
+            len(index), len(self._vector_store or []),
+        )
 
-    def _keyword_match(self, query, mode):
-        """Find vector store entries whose name/alias exactly matches a word or phrase in the query."""
-        index = self._name_index.get(mode, {})
-        if not index:
+    def _keyword_match(self, query):
+        """Find vector store entries whose name/alias matches an n-gram in the query."""
+        if not self._name_index:
             return []
         words = query.lower().split()
-        matched = {}  # entry id -> vector store entry
-        # Check n-grams (1 to 4 words) to catch multi-word names
+        matched = {}
         for n in range(1, min(5, len(words) + 1)):
             for i in range(len(words) - n + 1):
                 phrase = " ".join(words[i : i + n])
-                if phrase in index:
-                    for entry in index[phrase]:
+                if phrase in self._name_index:
+                    for entry in self._name_index[phrase]:
                         matched.setdefault(entry["id"], entry)
         return list(matched.values())
-
-    def _load_source(self, source_file):
-        if source_file in self._source_cache:
-            return self._source_cache[source_file]
-        path = DATA_DIR / source_file
-        try:
-            with open(path) as f:
-                data = json.load(f)
-            self._source_cache[source_file] = data
-            return data
-        except Exception as e:
-            logging.error("Failed to load source %s: %s", source_file, e)
-            return None
-
-    def _find_entry(self, entry_id, entry_name, source_file):
-        data = self._load_source(source_file)
-        if data is None:
-            return None
-        if source_file.startswith("curated/"):
-            for entry in data.get("entries", []):
-                if entry.get("name", "").lower() == entry_name.lower():
-                    return {"type": "campaign", "entry": entry}
-                if entry.get("id", "") in entry_id:
-                    return {"type": "campaign", "entry": entry}
-        else:
-            for key, value in data.items():
-                if key.startswith("_") or not isinstance(value, list):
-                    continue
-                for entry in value:
-                    if (
-                        isinstance(entry, dict)
-                        and entry.get("name", "").lower() == entry_name.lower()
-                    ):
-                        return {"type": "5etools", "entry": entry}
-        return None
 
     # ── Embedding ────────────────────────────────────────────────────────
 
@@ -340,53 +179,44 @@ class Loremaster:
             )
             resp.raise_for_status()
             embedding = resp.json().get("embedding")
-            logging.info("  Embedding: %dms (%d dims)", int((time.time() - t0) * 1000), len(embedding) if embedding else 0)
+            logging.info(
+                "  Embedding: %dms (%d dims)",
+                int((time.time() - t0) * 1000),
+                len(embedding) if embedding else 0,
+            )
             return embedding
         except Exception as e:
-            logging.error("  Embedding FAILED (%dms): %s", int((time.time() - t0) * 1000), e)
+            logging.error(
+                "  Embedding FAILED (%dms): %s",
+                int((time.time() - t0) * 1000), e,
+            )
             return None
 
     # ── RAG retrieval ────────────────────────────────────────────────────
 
-    def retrieve(self, query, mode, rules=False):
-        store = self._vector_stores.get(mode)
+    def retrieve(self, query, rules=False):
+        store = self._vector_store or []
         if not store:
-            logging.warning("  RAG: no vector store for mode=%s", mode)
+            logging.warning("  RAG: no vector store loaded")
             return [], []
 
-        dm_mode = mode == "dm"
         auto_inject = []
         injected_ids = set()
 
-        # Phase 1: keyword exact-match (names and aliases) — always searches ALL entries
-        keyword_hits = self._keyword_match(query, mode)
+        # Phase 1: keyword exact-match (names and aliases)
+        keyword_hits = self._keyword_match(query)
         for entry in keyword_hits:
-            full = self._find_entry(
-                entry["id"], entry["name"], entry["source_file"]
-            )
-            if full:
-                if full["type"] == "campaign":
-                    formatted = format_campaign_entry(full["entry"], dm_mode)
-                else:
-                    formatted = format_5etools_entry(full["entry"])
-                auto_inject.append(
-                    {
-                        "name": entry["name"],
-                        "source_file": entry["source_file"],
-                        "score": 1.0,
-                        "text": formatted,
-                    }
-                )
-                injected_ids.add(entry["id"])
+            auto_inject.append({
+                "name": entry["name"],
+                "source_file": entry.get("source_file", ""),
+                "score": 1.0,
+                "text": entry.get("text", ""),
+            })
+            injected_ids.add(entry["id"])
         if keyword_hits:
-            logging.info(
-                "  RAG keyword: %d exact name/alias matches",
-                len(keyword_hits),
-            )
+            logging.info("  RAG keyword: %d exact name/alias matches", len(keyword_hits))
             for m in auto_inject:
-                logging.info(
-                    "    KEYWORD-INJECT: %s (%s)", m["name"], m["source_file"]
-                )
+                logging.info("    KEYWORD-INJECT: %s (%s)", m["name"], m["source_file"])
 
         # Phase 2: vector similarity search
         query_vec = self._embed_query(query)
@@ -410,58 +240,42 @@ class Loremaster:
 
         additional = []
         vector_injected = 0
-        for i, (sim, entry) in enumerate(scored):
+        for sim, entry in scored:
             if entry["id"] in injected_ids:
                 continue
             if vector_injected < RAG_TOP_K and sim >= RAG_AUTO_THRESHOLD:
-                full = self._find_entry(
-                    entry["id"], entry["name"], entry["source_file"]
-                )
-                if full:
-                    if full["type"] == "campaign":
-                        formatted = format_campaign_entry(full["entry"], dm_mode)
-                    else:
-                        formatted = format_5etools_entry(full["entry"])
-                    auto_inject.append(
-                        {
-                            "name": entry["name"],
-                            "source_file": entry["source_file"],
-                            "score": sim,
-                            "text": formatted,
-                        }
-                    )
-                    injected_ids.add(entry["id"])
-                    vector_injected += 1
+                auto_inject.append({
+                    "name": entry["name"],
+                    "source_file": entry.get("source_file", ""),
+                    "score": sim,
+                    "text": entry.get("text", ""),
+                })
+                injected_ids.add(entry["id"])
+                vector_injected += 1
             elif sim >= RAG_LIST_THRESHOLD and entry["id"] not in injected_ids:
-                additional.append(
-                    {
-                        "name": entry["name"],
-                        "source_file": entry["source_file"],
-                        "score": sim,
-                    }
-                )
+                additional.append({
+                    "name": entry["name"],
+                    "source_file": entry.get("source_file", ""),
+                    "score": sim,
+                })
 
         logging.info("  RAG vector: %dms across %d entries", search_ms, len(scored))
         for m in auto_inject:
             if m["score"] < 1.0:
                 logging.info(
                     "    AUTO-INJECT: %s (%s) score=%.3f",
-                    m["name"],
-                    m["source_file"],
-                    m["score"],
+                    m["name"], m["source_file"], m["score"],
                 )
         if additional:
             logging.info(
                 "    + %d additional matches (best: %s score=%.3f)",
-                len(additional),
-                additional[0]["name"],
-                additional[0]["score"],
+                len(additional), additional[0]["name"], additional[0]["score"],
             )
 
         return auto_inject, additional
 
-    def build_rag_context(self, query, mode, rules=False):
-        auto_inject, additional = self.retrieve(query, mode, rules)
+    def build_rag_context(self, query, rules=False):
+        auto_inject, additional = self.retrieve(query, rules)
         blocks = []
         for match in auto_inject:
             blocks.append(
@@ -482,36 +296,21 @@ class Loremaster:
 
     # ── Tool: lookup_entry ───────────────────────────────────────────────
 
-    def lookup_entry(self, name, mode):
-        dm_mode = mode == "dm"
+    def lookup_entry(self, name):
+        """Find a vector store entry by exact name/alias match, return its full text."""
         name_lower = name.lower().strip()
-
-        curated_dir = DATA_DIR / "curated"
-        if curated_dir.exists():
-            for fpath in curated_dir.glob("*.json"):
-                data = self._load_source(f"curated/{fpath.name}")
-                if not data:
-                    continue
-                for entry in data.get("entries", []):
-                    entry_name = entry.get("name", "").lower()
-                    entry_aliases = [a.lower() for a in entry.get("aliases", [])]
-                    if name_lower == entry_name or name_lower in entry_aliases:
-                        return format_campaign_entry(entry, dm_mode)
-
-        rules_dir = DATA_DIR / "5e-filtered"
-        if rules_dir.exists():
-            for fpath in rules_dir.glob("*.json"):
-                data = self._load_source(f"5e-filtered/{fpath.name}")
-                if not data:
-                    continue
-                for key, value in data.items():
-                    if key.startswith("_") or not isinstance(value, list):
-                        continue
-                    for entry in value:
-                        if isinstance(entry, dict):
-                            if entry.get("name", "").lower() == name_lower:
-                                return format_5etools_entry(entry)
-
+        entries = self._name_index.get(name_lower)
+        if entries:
+            # If multiple, prefer campaign over 5etools
+            entries = sorted(
+                entries,
+                key=lambda e: not e.get("source_file", "").startswith("5e-filtered/"),
+            )
+            return entries[0].get("text", "")
+        # Fall back to substring search if exact match misses
+        for entry in self._vector_store or []:
+            if name_lower in entry.get("name", "").lower():
+                return entry.get("text", "")
         return f"No entry found matching '{name}'. Try a different name or spelling."
 
     # ── Anthropic API ────────────────────────────────────────────────────
@@ -546,22 +345,20 @@ class Loremaster:
             }
         ]
 
-    def call_anthropic(self, system_prompt, messages, mode):
+    def call_anthropic(self, system_prompt, messages):
         payload = {
             "model": ANTHROPIC_MODEL,
             "max_tokens": MAX_TOKENS,
             "system": system_prompt,
             "messages": messages,
             "tools": self._tool_definitions(),
+            "temperature": TEMPERATURE,
         }
-        # Player mode: clamp creativity so the bot states facts instead of
-        # confidently inferring spoilers from non-spoiler context. DM mode
-        # keeps the default (1.0) so it stays useful for brainstorming.
-        if mode != "dm":
-            payload["temperature"] = 0.2
 
-        logging.info("  Anthropic: calling %s (system prompt %d chars, %d messages)",
-                      ANTHROPIC_MODEL, len(system_prompt), len(messages))
+        logging.info(
+            "  Anthropic: calling %s (system %d chars, %d messages, temp=%.2f)",
+            ANTHROPIC_MODEL, len(system_prompt), len(messages), TEMPERATURE,
+        )
 
         max_loops = 5
         for loop_i in range(max_loops):
@@ -575,18 +372,23 @@ class Loremaster:
             api_ms = int((time.time() - t0) * 1000)
 
             if resp.status_code != 200:
-                logging.error("  Anthropic API error (%dms): %d — %s", api_ms, resp.status_code, resp.text[:300])
-                return f"I'm having trouble responding right now. Please try again in a moment."
+                logging.error(
+                    "  Anthropic API error (%dms): %d — %s",
+                    api_ms, resp.status_code, resp.text[:300],
+                )
+                return "I'm having trouble responding right now. Please try again in a moment."
 
             result = resp.json()
             usage = result.get("usage", {})
-            logging.info("  Anthropic response (%dms): stop=%s, input_tokens=%d, output_tokens=%d",
-                          api_ms, result.get("stop_reason"), usage.get("input_tokens", 0), usage.get("output_tokens", 0))
+            logging.info(
+                "  Anthropic response (%dms): stop=%s, input_tokens=%d, output_tokens=%d",
+                api_ms, result.get("stop_reason"),
+                usage.get("input_tokens", 0), usage.get("output_tokens", 0),
+            )
 
             if result.get("stop_reason") != "tool_use":
                 text_parts = [
-                    b["text"]
-                    for b in result.get("content", [])
+                    b["text"] for b in result.get("content", [])
                     if b.get("type") == "text"
                 ]
                 response = "\n".join(text_parts) if text_parts else ""
@@ -599,21 +401,20 @@ class Loremaster:
                 if block["type"] == "tool_use":
                     tool_name = block["name"]
                     tool_input = block["input"]
-                    logging.info("  Tool call [%d/%d]: %s(%s)", loop_i + 1, max_loops, tool_name, json.dumps(tool_input))
+                    logging.info(
+                        "  Tool call [%d/%d]: %s(%s)",
+                        loop_i + 1, max_loops, tool_name, json.dumps(tool_input),
+                    )
                     if tool_name == "lookup_entry":
-                        tool_result = self.lookup_entry(
-                            tool_input.get("name", ""), mode
-                        )
+                        tool_result = self.lookup_entry(tool_input.get("name", ""))
                     else:
                         tool_result = f"Unknown tool: {tool_name}"
                     logging.info("  Tool result: %d chars", len(tool_result))
-                    tool_results.append(
-                        {
-                            "type": "tool_result",
-                            "tool_use_id": block["id"],
-                            "content": tool_result,
-                        }
-                    )
+                    tool_results.append({
+                        "type": "tool_result",
+                        "tool_use_id": block["id"],
+                        "content": tool_result,
+                    })
 
             messages.append({"role": "assistant", "content": result["content"]})
             messages.append({"role": "user", "content": tool_results})
@@ -624,35 +425,18 @@ class Loremaster:
 
     # ── Main chat handler ────────────────────────────────────────────────
 
-    def chat(self, message, conversation_history, mode, rules=False, vibe=None):
-        """Process a chat message. Returns (response_text, updated_history, mode, rules, vibe)."""
+    def chat(self, message, conversation_history, rules=False, vibe=None):
+        """Process a chat message. Returns (response_text, updated_history, rules, vibe)."""
         t_start = time.time()
-        logging.info("── Chat request ── mode=%s, rules=%s, vibe=%s, history=%d msgs", mode, rules, vibe, len(conversation_history))
+        logging.info(
+            "── Chat request ── rules=%s, vibe=%s, history=%d msgs",
+            rules, vibe, len(conversation_history),
+        )
         logging.info("  User: %s", message[:200] + ("..." if len(message) > 200 else ""))
 
-        # Passphrase toggle — entering DM disables rules and yasqueen
-        if message.strip().lower() == DM_PASSPHRASE.lower():
-            if mode == "dm":
-                new_mode = "player"
-                reply = (
-                    "The veil descends once more. You see only what the players see."
-                )
-            else:
-                new_mode = "dm"
-                vibe = None
-                reply = (
-                    "Ah... you speak the old words. The veil lifts. "
-                    "You now see as the Maestro sees."
-                )
-            logging.info("  Passphrase: %s → %s", mode, new_mode)
-            updated_history = conversation_history + [
-                {"role": "user", "content": message},
-                {"role": "assistant", "content": reply},
-            ]
-            return reply, updated_history, new_mode, rules, vibe
-
-        # /rules toggle — works in player or DM mode, disables yasqueen
         cmd = message.strip().lower()
+
+        # /rules toggle
         if cmd in ("/rules on", "/rules off"):
             rules = cmd == "/rules on"
             if rules:
@@ -665,17 +449,10 @@ class Loremaster:
                 {"role": "user", "content": message},
                 {"role": "assistant", "content": reply},
             ]
-            return reply, updated_history, mode, rules, vibe
+            return reply, updated_history, rules, vibe
 
-        # /yasqueen toggle — only in normal player mode, disables rules
+        # /yasqueen toggle
         if cmd in ("/yasqueen on", "/yasqueen off"):
-            if mode == "dm":
-                reply = "Enzo's alter ego only comes out in normal mode, bestie. Exit DM mode first."
-                updated_history = conversation_history + [
-                    {"role": "user", "content": message},
-                    {"role": "assistant", "content": reply},
-                ]
-                return reply, updated_history, mode, rules, vibe
             vibe = "yasqueen" if cmd == "/yasqueen on" else None
             if vibe:
                 rules = False
@@ -687,17 +464,10 @@ class Loremaster:
                 {"role": "user", "content": message},
                 {"role": "assistant", "content": reply},
             ]
-            return reply, updated_history, mode, rules, vibe
+            return reply, updated_history, rules, vibe
 
-        # /fabio toggle — only in normal player mode, disables rules
+        # /fabio toggle
         if cmd in ("/fabio on", "/fabio off"):
-            if mode == "dm":
-                reply = "Alas, my passionate side is reserved for the common folk. Leave DM mode first, my darling."
-                updated_history = conversation_history + [
-                    {"role": "user", "content": message},
-                    {"role": "assistant", "content": reply},
-                ]
-                return reply, updated_history, mode, rules, vibe
             vibe = "fabio" if cmd == "/fabio on" else None
             if vibe:
                 rules = False
@@ -709,17 +479,10 @@ class Loremaster:
                 {"role": "user", "content": message},
                 {"role": "assistant", "content": reply},
             ]
-            return reply, updated_history, mode, rules, vibe
+            return reply, updated_history, rules, vibe
 
-        # /rocky toggle — only in normal player mode, disables rules
+        # /rocky toggle
         if cmd in ("/rocky on", "/rocky off"):
-            if mode == "dm":
-                reply = "Question, please? Rocky no talk in DM mode. You leave DM mode first, yes?"
-                updated_history = conversation_history + [
-                    {"role": "user", "content": message},
-                    {"role": "assistant", "content": reply},
-                ]
-                return reply, updated_history, mode, rules, vibe
             vibe = "rocky" if cmd == "/rocky on" else None
             if vibe:
                 rules = False
@@ -731,12 +494,10 @@ class Loremaster:
                 {"role": "user", "content": message},
                 {"role": "assistant", "content": reply},
             ]
-            return reply, updated_history, mode, rules, vibe
+            return reply, updated_history, rules, vibe
 
         # Build system prompt
-        tier1 = self._tier1.get(mode, "")
-        header = DM_SYSTEM_HEADER if mode == "dm" else PLAYER_SYSTEM_HEADER
-        system_prompt = header
+        system_prompt = SYSTEM_HEADER
         if vibe == "yasqueen":
             system_prompt += (
                 "PERSONALITY OVERRIDE: You are still Enzo the Lore Master with all the same "
@@ -783,7 +544,7 @@ class Loremaster:
             )
         if rules:
             system_prompt += "The user has enabled rules lookup. You may receive D&D 5e rules references alongside campaign content.\n\n"
-        system_prompt += tier1
+        system_prompt += self._tier1
 
         # Build Anthropic messages from conversation history
         anthropic_messages = []
@@ -793,17 +554,16 @@ class Loremaster:
             if role in ("user", "assistant") and content:
                 anthropic_messages.append({"role": role, "content": content})
 
-        # RAG: skip for short/casual messages, otherwise embed and retrieve
+        # RAG
         rag_context = ""
         if _skip_rag(message):
             logging.info("  RAG: skipped (short/casual message)")
         else:
             try:
-                rag_context = self.build_rag_context(message, mode, rules)
+                rag_context = self.build_rag_context(message, rules)
             except Exception as e:
                 logging.error("  RAG failed: %s", e)
 
-        # Build the user message with RAG context
         user_content = message
         if rag_context:
             user_content = message + "\n\n" + rag_context
@@ -813,19 +573,16 @@ class Loremaster:
 
         anthropic_messages.append({"role": "user", "content": user_content})
 
-        # Call Anthropic
-        response_text = self.call_anthropic(system_prompt, anthropic_messages, mode)
+        response_text = self.call_anthropic(system_prompt, anthropic_messages)
 
         total_ms = int((time.time() - t_start) * 1000)
         logging.info("── Done ── %dms total, response %d chars", total_ms, len(response_text))
 
-        # Build updated history (without RAG injection — keep it clean)
         updated_history = conversation_history + [
             {"role": "user", "content": message},
             {"role": "assistant", "content": response_text},
         ]
-
-        return response_text, updated_history, mode, rules, vibe
+        return response_text, updated_history, rules, vibe
 
 
 # ── Logging ──────────────────────────────────────────────────────────────────
@@ -876,7 +633,6 @@ def chat():
     body = request.get_json(silent=True) or {}
     message = body.get("message", "")
     conversation_history = body.get("conversationHistory", [])
-    mode = body.get("mode", "player")
     rules = body.get("rules", False)
     vibe = body.get("vibe", None)
 
@@ -886,15 +642,12 @@ def chat():
     if len(message) > 4000:
         return jsonify({"error": "Message too long"}), 400
 
-    if mode not in ("player", "dm"):
-        mode = "player"
-
     # Validate and sanitize conversation history
     if not isinstance(conversation_history, list):
         conversation_history = []
     else:
         sanitized = []
-        for msg in conversation_history[-40:]:  # cap at 40 messages
+        for msg in conversation_history[-40:]:
             if (isinstance(msg, dict)
                     and msg.get("role") in ("user", "assistant")
                     and isinstance(msg.get("content"), str)):
@@ -902,30 +655,27 @@ def chat():
         conversation_history = sanitized
 
     try:
-        response_text, updated_history, new_mode, new_rules, new_vibe = engine.chat(
-            message, conversation_history, mode, rules, vibe
+        response_text, updated_history, new_rules, new_vibe = engine.chat(
+            message, conversation_history, rules, vibe
         )
 
         write_log("user", message)
         write_log("assistant", response_text)
 
-        return jsonify(
-            {
-                "response": response_text,
-                "conversationHistory": updated_history,
-                "mode": new_mode,
-                "rules": new_rules,
-                "vibe": new_vibe,
-            }
-        )
+        # Always report mode=player for frontend compatibility (DM mode is gone)
+        return jsonify({
+            "response": response_text,
+            "conversationHistory": updated_history,
+            "mode": "player",
+            "rules": new_rules,
+            "vibe": new_vibe,
+        })
     except Exception as e:
         logging.exception("Chat handler error")
-        return jsonify(
-            {
-                "error": "Failed to get response from the Loremaster",
-                "details": str(e),
-            }
-        ), 500
+        return jsonify({
+            "error": "Failed to get response from the Loremaster",
+            "details": str(e),
+        }), 500
 
 
 @app.route("/health", methods=["GET"])
@@ -936,7 +686,7 @@ def health():
 # ── Startup ──────────────────────────────────────────────────────────────────
 
 engine.load()
-logging.info("Loremaster ready — passphrase: %s", DM_PASSPHRASE)
+logging.info("Loremaster ready (player-only)")
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=3001, debug=False)
