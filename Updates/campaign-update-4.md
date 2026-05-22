@@ -2,7 +2,7 @@
 title: Campaign Update #4 — 5/21/2026
 description: Scheduling via Timeful, two asks before the next session, new maps of Eldryn and Venturia, the road to Session 1, and a few promises about honesty and player agency.
 published: true
-date: 2026-05-22T12:20:44.275Z
+date: 2026-05-22T12:36:47.675Z
 tags: campaign-update, news, may-2026, maps, scheduling, player-agency
 editor: markdown
 dateCreated: 2026-05-22T01:26:17.270Z
@@ -36,7 +36,7 @@ I have finished the map of the greater world of **Eldryn** post-Great Reunion. T
 
 I have also finished the top-down view of the entirety of **Venturia**. This one gives a better sense of where things are in relation to one another than the other. I'll be making about 8 more that feature different portions of the districts with detailed street views. Feel free to start placing your character's home and favorite places into the map in your head canon, and fill me in as you do — I'll make it so. There's more residential areas to the east that are a bit more spread out, if anyone wouldn't be a city dweller.
 
-![Top-down view of Venturia](https://codex.valleyofshadows.wiki/images/TopDownFinalCompressed.jpg)
+![Top-down view of Venturia](/public/images/topdownfinalcompressed.jpg)
 
 ---
 
