@@ -595,8 +595,11 @@ def main():
     parser = argparse.ArgumentParser(description="Build vector store for the chatbot")
     parser.add_argument("--ollama-url", default="https://ai.raptornet.dev/ollama",
                         help="Ollama server URL (include /ollama for OpenWebUI proxy)")
-    parser.add_argument("--api-key", default=os.environ.get("OPENWEBUI_API_KEY", ""),
-                        help="Bearer token for Ollama (default: $OPENWEBUI_API_KEY)")
+    parser.add_argument(
+        "--api-key",
+        default=os.environ.get("OLLAMA_API_KEY") or os.environ.get("OPENWEBUI_API_KEY") or "",
+        help="Bearer token for Ollama (default: $OLLAMA_API_KEY or $OPENWEBUI_API_KEY)",
+    )
     parser.add_argument("--force", action="store_true",
                         help="Ignore cache and re-embed everything")
     args = parser.parse_args()
@@ -606,8 +609,11 @@ def main():
         env_file = BASE_DIR / ".env"
         if env_file.exists():
             for line in env_file.read_text().splitlines():
-                if line.startswith("OPENWEBUI_API_KEY="):
-                    args.api_key = line.split("=", 1)[1].strip().strip("'\"")
+                for key in ("OLLAMA_API_KEY=", "OPENWEBUI_API_KEY="):
+                    if line.startswith(key):
+                        args.api_key = line.split("=", 1)[1].strip().strip("'\"")
+                        break
+                if args.api_key:
                     break
 
     print("Loading entries...")
