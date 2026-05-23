@@ -16,7 +16,7 @@ dateCreated: 2026-05-22T00:00:00.000Z
 <img src="https://codex.valleyofshadows.wiki/images/noname-profile.png" alt="Noname" style="width: 280px; max-width: 80%; border-radius: 4px; box-shadow: 0 8px 32px rgba(0,0,0,0.7); border: 1px solid rgba(139,115,85,0.3);">
 </div>
 
-Noname is a Fog Warden — twenty-four, built for rage and trying to master it. She came up at [Liminal House](/en/Venturia/Locations/liminal-house), the home for the city's orphans and its fog children, after her parents died young; her own father had been one of those fog children, a person who walked out of Vallombrosa as a child with no past to speak of. Now she's a patient at [St. Viro's Respite](/en/Venturia/Locations/viros-respite), not for a wound anyone can see, but because her memory of the night her fiancé vanished has gone soft and grey at the edges — and she means to get it back.
+Noname is a Fog Warden — twenty-four, built for rage and trying to master it. She came up at [Liminal House](/en/Venturia/Locations/liminal-house), the home for the city's orphans and its fog children, after her parents died young; her own father had been one of those fog children, a person who walked out of [Vallombrosa](/en/Venturia/Locations/vallombrosa) as a child with no past to speak of. Now she's a patient at [St. Viro's Respite](/en/Venturia/Locations/viros-respite), not for a wound anyone can see, but because her memory of the night her fiancé vanished has gone soft and grey at the edges — and she means to get it back.
 
 ---
 

@@ -12,7 +12,7 @@ dateCreated: 2026-02-23T23:57:28.300Z
 
 **Tier:** The Overlook &nbsp;|&nbsp; *"Watching the boundary between the living and the lost"*
 
-The garrison is small — a stone building and watchtower at the Overlook, where the city ends and the Vallombrosa fog begins. The guards stationed here volunteered for the posting, which is considered either prestigious or disturbing depending on who you ask.
+The garrison is small — a stone building and watchtower at the Overlook, where the city ends and the [Vallombrosa](/en/Venturia/Locations/vallombrosa) fog begins. The guards stationed here volunteered for the posting, which is considered either prestigious or disturbing depending on who you ask.
 
 Their duties are simple: maintain the barriers, record the names of anyone who approaches the fog line, and document anything unusual.
 

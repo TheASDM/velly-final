@@ -12,7 +12,7 @@ dateCreated: 2026-05-22T00:00:00.000Z
 
 **Type:** World history &nbsp;|&nbsp; **Era:** Before the Great Reunion &nbsp;|&nbsp; *"Five thousand years sealed behind the Shroud."*
 
-For nearly five thousand years, the landmass of Eldoria was sealed away from the wider world of Eldyrin by a catastrophe of its own making. Its rulers fabricated nine false gods to wrest power from the true pantheon, and the spiritual energy of millions, redirected toward deities who did not exist, caused the continents to seal themselves behind impassable fog. This is the world in which Vallombrosa sits.
+For nearly five thousand years, the landmass of Eldoria was sealed away from the wider world of Eldyrin by a catastrophe of its own making. Its rulers fabricated nine false gods to wrest power from the true pantheon, and the spiritual energy of millions, redirected toward deities who did not exist, caused the continents to seal themselves behind impassable fog. This is the world in which [Vallombrosa](/en/Venturia/Locations/vallombrosa) sits.
 
 ---
 
