@@ -16,7 +16,7 @@ dateCreated: 2026-05-22T00:00:00.000Z
 
 > *"These manifestations are a security matter and a spiritual one."*
 
-Archmagister of the Venturian Academy of Veiled Arts and an Autumn Council member. A high elf nearing two centuries — middle-aged by elven reckoning — he has taught at VAVA for close to a hundred years and led it for forty, a rare scholar who is both genuinely brilliant and genuinely liked, able to make obscure magical theory feel alive.
+Archmagister of the [Venturian Academy of Veiled Arts](/en/Venturia/Locations/vava) and an Autumn Council member. A high elf nearing two centuries — middle-aged by elven reckoning — he has taught at VAVA for close to a hundred years and led it for forty, a rare scholar who is both genuinely brilliant and genuinely liked, able to make obscure magical theory feel alive.
 
 ---
 

@@ -29,5 +29,5 @@ Cryptic to the point of vertigo, and occasionally terrifying when a prophecy tak
 ---
 
 ## Connections
-- **Mother-Abbot Lucia Virosdottir** — A fellow Temple Authority figure who tolerates her but is uneasy with her methods.
-- **Father Domenico of the Four Winds** — A fellow Temple Authority figure; he wants action, she offers riddles.
+- **[Mother-Abbot Lucia Virosdottir](/en/Venturia/Characters-NPCs/lucia-virosdottir)** — A fellow Temple Authority figure who tolerates her but is uneasy with her methods.
+- **[Father Domenico of the Four Winds](/en/Venturia/Characters-NPCs/father-domenico)** — A fellow Temple Authority figure; he wants action, she offers riddles.

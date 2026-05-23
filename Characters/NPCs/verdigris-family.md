@@ -19,7 +19,7 @@ The family that has controlled the Mirrorwrights' guild for five generations. Ol
 ---
 
 ## The Guild
-The Verdigris run the Mirrorwright's Court in the Market Tiers, where most of what they make is ordinary looking-glass and a precious few are "true mirrors" that reflect honestly despite the city's peculiarities. Their word carries weight in any matter touching mirrors, reflection, or identity.
+The Verdigris run the [Mirrorwright's Court](/en/Venturia/Locations/mirrorwrights-court) in the Market Tiers, where most of what they make is ordinary looking-glass and a precious few are "true mirrors" that reflect honestly despite the city's peculiarities. Their word carries weight in any matter touching mirrors, reflection, or identity.
 
 ---
 
@@ -31,5 +31,5 @@ The Verdigris run the Mirrorwright's Court in the Market Tiers, where most of wh
 ---
 
 ## Connections
-- **The Mirrorwright's Court** — The family's guild workshop in the Market Tiers.
-- **[Guildmaster Vincenzo Copper](/en/Venturia/Government/vincenzo-copper)** — The Mirrorwrights fall under his Metals Guild; Cosimo Verdigris was his mentor.
+- **[The Mirrorwright's Court](/en/Venturia/Locations/mirrorwrights-court)** — The family's guild workshop in the Market Tiers.
+- **[Guildmaster Vincenzo Copper](/en/Venturia/Characters-NPCs/vincenzo-copper)** — The Mirrorwrights fall under his Metals Guild; Cosimo Verdigris was his mentor.

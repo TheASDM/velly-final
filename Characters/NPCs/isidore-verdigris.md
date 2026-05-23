@@ -27,4 +27,4 @@ A genuinely skilled mirror-maker who chafes at the elder Verdigris's conservatis
 ## Connections
 - **[The Verdigris Family](/en/Venturia/Characters-NPCs/verdigris-family)** — The heir.
 - **[Cosimo Verdigris](/en/Venturia/Characters-NPCs/cosimo-verdigris)** — His father, whose caution he resents.
-- **The Mirrorwright's Court** — The family's guild workshop.
+- **[The Mirrorwright's Court](/en/Venturia/Locations/mirrorwrights-court)** — The family's guild workshop.

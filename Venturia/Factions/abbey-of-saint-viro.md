@@ -19,7 +19,7 @@ Venturia's foremost religious institution, dedicated to Saint Viro — who, in t
 ---
 
 ## What They Do
-Spiritual guidance, charity, and education for children whose families can't afford tutors, alongside the upkeep of the protective traditions Saint Viro established. The Abbey operates hospitals — among them St. Viro's Respite — coordinates orphan care with Liminal House, and distributes food to the poor.
+Spiritual guidance, charity, and education for children whose families can't afford tutors, alongside the upkeep of the protective traditions Saint Viro established. The Abbey operates hospitals — among them [St. Viro's Respite](/en/Venturia/Locations/viros-respite) — coordinates orphan care with [Liminal House](/en/Venturia/Locations/liminal-house), and distributes food to the poor.
 
 ---
 
@@ -35,5 +35,5 @@ The faithful gain access to the Abbey's charitable network, instruction in relig
 
 ## Connections
 - **[Mother-Abbot Lucia Virosdottir](/en/Venturia/Characters-NPCs/lucia-virosdottir)** — Abbey leader and Temple Authority Council Chair.
-- **St. Viro's Respite** — The Abbey-run healing house.
+- **[St. Viro's Respite](/en/Venturia/Locations/viros-respite)** — The Abbey-run healing house.
 - **[Liminal House](/en/Venturia/Locations/liminal-house)** — A closely coordinated institution, founded four hundred years ago by the Abbey scholar-monk Aldric.

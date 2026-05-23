@@ -37,5 +37,5 @@ Children believe the frightening versions completely. Teenagers call it all supe
 ---
 
 ## See Also
-- **The Amaranth Theater** — Home of the annual *Tragedy of Vallombrosa*.
+- **[The Amaranth Theater](/en/Venturia/Locations/amaranth-theater)** — Home of the annual *Tragedy of Vallombrosa*.
 - **[Vallombrosa](/en/Venturia/Locations/vallombrosa)** — The forbidden fog-zone the legends concern.
