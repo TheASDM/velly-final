@@ -27,4 +27,4 @@ A voice for caution rooted in long memory. Vincen warns that the strangeness in 
 
 ## Connections
 - **[The Autumn Council](/en/Venturia/Government/autumn-council)** — Master of the Tidekeeper's Lodge; the compromise appointment after the Teodor–Constanza deadlock.
-- **The Tidekeeper's Lodge** — The order he leads.
+- **[The Tidekeeper's Lodge](/en/Venturia/Locations/tidekeepers-lodge)** — The order he leads.

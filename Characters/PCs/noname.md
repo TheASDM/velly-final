@@ -31,7 +31,7 @@ Her father was a fog child — one of those who appeared out of Vallombrosa as a
 ---
 
 ## What Brought Her to Viro's
-Her fiancé, a fellow Fog Warden named Maruk Grommarg, disappeared under circumstances she can't fully reconstruct. Her memory of that night is foggy and unclear — and that fog is the reason she's now at St. Viro's Respite, hunting for what she's missing.
+Her fiancé, a fellow Fog Warden named [Maruk Grommarg](/en/Venturia/Characters-NPCs/maruk-grommarg), disappeared under circumstances she can't fully reconstruct. Her memory of that night is foggy and unclear — and that fog is the reason she's now at St. Viro's Respite, hunting for what she's missing.
 
 ---
 

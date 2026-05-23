@@ -28,4 +28,4 @@ She offers the city sanctuary, care for the afflicted, and the Abbey's scholarsh
 ## Connections
 - **[The Autumn Council](/en/Venturia/Government/autumn-council)** — Temple Authority seat; current Council Chair.
 - **[The Abbey of Saint Viro and the Faithful](/en/Venturia/Factions/abbey-of-saint-viro)** — She leads the Abbey as Mother-Abbot.
-- **St. Viro's Respite** — The Respite operates under the Abbey's oversight.
+- **[St. Viro's Respite](/en/Venturia/Locations/viros-respite)** — The Respite operates under the Abbey's oversight.

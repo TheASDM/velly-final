@@ -26,5 +26,5 @@ A respected guild elder and a mentor to Guildmaster Vincenzo Copper, under whose
 
 ## Connections
 - **[The Verdigris Family](/en/Venturia/Characters-NPCs/verdigris-family)** — Its patriarch.
-- **[Guildmaster Vincenzo Copper](/en/Venturia/Government/vincenzo-copper)** — A former mentee; the Mirrorwrights fall under his Metals Guild.
-- **The Mirrorwright's Court** — The family's guild workshop.
+- **[Guildmaster Vincenzo Copper](/en/Venturia/Characters-NPCs/vincenzo-copper)** — A former mentee; the Mirrorwrights fall under his Metals Guild.
+- **[The Mirrorwright's Court](/en/Venturia/Locations/mirrorwrights-court)** — The family's guild workshop.

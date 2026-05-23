@@ -25,5 +25,5 @@ As the city tells and stages it, the Tragedy of Vallombrosa is her story above a
 ---
 
 ## Connections
-- **The Amaranth Theater** — Where her story is staged each Autumn Masquerade as *The Tragedy of Vallombrosa*.
+- **[The Amaranth Theater](/en/Venturia/Locations/amaranth-theater)** — Where her story is staged each Autumn Masquerade as *The Tragedy of Vallombrosa*.
 - **[Vallombrosa](/en/Venturia/Locations/vallombrosa)** — The lost estate where the Tragedy is set.

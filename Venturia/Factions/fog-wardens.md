@@ -31,5 +31,5 @@ Captain-Commander Thora Ironmark, a half-orc veteran who rose through the ranks 
 
 ## Connections
 - **[Captain-Commander Thora Ironmark](/en/Venturia/Characters-NPCs/thora-ironmark)** — Watch Commander and Autumn Council member.
-- **The Fog Wardens' Garrison** — The Watch's primary post at the Vallombrosa boundary.
+- **[The Fog Wardens' Garrison](/en/Venturia/Locations/fog-wardens-garrison)** — The Watch's primary post at the Vallombrosa boundary.
 - **[Noname](/en/Venturia/Characters-PCs/noname)** — A Fog Warden stationed at the Overlook.
