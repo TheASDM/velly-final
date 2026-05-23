@@ -36,7 +36,7 @@ Roxy's people are vanishing. A binding magic exists that can enslave a Brownie u
 ---
 
 ## The Lie She Lives
-Roxy doesn't actually have the training she claims. When she first arrived, she tried to rob the [Penny Shrine](/en/Venturia/Locations/penny-shrine) — and Garl Glittergold himself appeared, amused enough to offer her a divine pact: power in exchange for the occasional favor, and an abiding obsession with Vallombrosa, secrets, and hidden things. Her magic is a god's gift, not a scholar's study, and she keeps up the appearance of an ordinary Academy student by whatever means necessary. She can't even sleep in her dorm — eighteen years outdoors won't allow it — so she slips out each night to the [Tiered Gardens](/en/Venturia/Locations/tiered-gardens).
+Roxy doesn't actually have the training she claims. When she first arrived, she tried to rob the [Penny Shrine](/en/Venturia/Locations/penny-shrine) — and Garl Glittergold himself appeared, amused enough to offer her a divine pact: power in exchange for the occasional favor, and an abiding obsession with [Vallombrosa](/en/Venturia/Locations/vallombrosa), secrets, and hidden things. Her magic is a god's gift, not a scholar's study, and she keeps up the appearance of an ordinary Academy student by whatever means necessary. She can't even sleep in her dorm — eighteen years outdoors won't allow it — so she slips out each night to the [Tiered Gardens](/en/Venturia/Locations/tiered-gardens).
 
 ---
 

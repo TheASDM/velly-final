@@ -11,7 +11,7 @@ dateCreated: 2026-05-22T00:00:00.000Z
 <!-- DM NOTE (not rendered): Canon states most citizens do NOT know the Shadowed Wardens exist, and their real work (supernatural containment, memory-alteration protocols, the secret incident records and supernatural registry) is all withheld here. If the public-facing wiki should not name the Shadowed Wardens at all, cut the page subtitle's mention and the second paragraph of "What They Do." -->
 # The Fog Wardens and the Shadowed Wardens
 
-**Type:** Law enforcement &amp; security &nbsp;|&nbsp; **Posting:** The Overlook, at the Vallombrosa boundary &nbsp;|&nbsp; **Leader:** Captain-Commander Thora Ironmark &nbsp;|&nbsp; *"The Watch at the fog line."*
+**Type:** Law enforcement &amp; security &nbsp;|&nbsp; **Posting:** The Overlook, at the [Vallombrosa](/en/Venturia/Locations/vallombrosa) boundary &nbsp;|&nbsp; **Leader:** Captain-Commander Thora Ironmark &nbsp;|&nbsp; *"The Watch at the fog line."*
 
 <!-- TODO: banner — supply a filename to add -->
 
