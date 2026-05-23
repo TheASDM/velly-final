@@ -8,7 +8,7 @@ editor: markdown
 dateCreated: 2026-05-22T00:00:00.000Z
 ---
 
-<!-- DM NOTE (not rendered): Everything substantive about Tolomeo (the Tartuzi pact, the prison, Silas's betrayal) is campaign-secret. This is a footnote-only placeholder. -->
+<!-- DM NOTE (not rendered): Everything substantive about Tolomeo (the Tartuzi pact, the prison, the betrayal) is campaign-secret. This is a footnote-only placeholder. -->
 # Tolomeo Lucente
 
 **Era:** Historical &nbsp;|&nbsp; **Remembered as:** A scholar and explorer &nbsp;|&nbsp; *"A name in old records."*
