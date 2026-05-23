@@ -26,7 +26,7 @@ A mid-career VAVA faculty member — gifted, erratic, and in too deep at The Und
 ---
 
 ## The Disappearance
-His close friend Maruk, a Fog Warden, vanished the same night Silas appeared. Kryton asked questions at VAVA and got nothing back, so he investigated on his own — obsessively — and began to find patterns: Fog Wardens going missing, and signs that memory itself was being tampered with across the city.
+His close friend Maruk, a Fog Warden, vanished the same night a scarred stranger appeared at the fog line. Kryton asked questions at VAVA and got nothing back, so he investigated on his own — obsessively — and began to find patterns: Fog Wardens going missing, and signs that memory itself was being tampered with across the city.
 
 ---
 

@@ -26,4 +26,4 @@ Maruk vanished the same night a scarred stranger appeared at the fog line below 
 ## Connections
 - **[Noname](/en/Venturia/Characters-PCs/noname)** — His fiancée, now seeking treatment for her clouded memory of the night he disappeared.
 - **[Kryton Novelli](/en/Venturia/Characters-PCs/kryton-novelli)** — A close friend, whose own search for answers began with Maruk's disappearance.
-- **[Silas](/en/Venturia/Characters-NPCs/silas)** — The scarred stranger who appeared at the fog line the same night.
+- **A scarred stranger** — Appeared at the fog line the same night Maruk vanished. Currently comatose at St. Viro's Respite; no one has named him.

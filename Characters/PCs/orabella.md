@@ -31,7 +31,7 @@ Not long after she came to Liminal House, the dreams began: vivid, first-person,
 ---
 
 ## Her Work
-Orabella tends two of the Respite's most difficult cases: Noname, a childhood acquaintance whose memory of her fiancé's disappearance has gone to fog, and Silas, a scarred, comatose stranger who arrived the same night that fiancé vanished. Between shifts, she's trying to reach the records Viro's and Liminal House keep out of sight.
+Orabella tends two of the Respite's most difficult cases: Noname, a childhood acquaintance whose memory of her fiancé's disappearance has gone to fog, and a scarred, comatose stranger who arrived the same night that fiancé vanished — no one has yet given him a name. Between shifts, she's trying to reach the records Viro's and Liminal House keep out of sight.
 
 ---
 
@@ -42,7 +42,7 @@ She's devoted to the theater, and especially to one performer — Celina Cross �
 
 ## Ties
 - **[Noname](/en/Venturia/Characters-PCs/noname)** — A childhood acquaintance from Liminal House, now her patient.
-- **Silas** — The comatose man in her care, whose strange scars she's been studying.
+- **A scarred patient** — The unnamed comatose man in her care, whose strange scars she's been studying.
 - **[Caravel "Car" Asteri](/en/Venturia/Characters-PCs/caravel-asteri)** — An indirect tie through Celina Cross, who is the elder sister of the friend Car lost at the Autumn Masquerade.
 - **[Valentro](/en/Venturia/Characters-PCs/valentro)** — Another child of Liminal House, though never especially close.
 - **Celina Cross** — The performer she's devoted to.
