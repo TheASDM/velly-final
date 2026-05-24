@@ -5,7 +5,56 @@
  * and produces a static site at _site/. Preserves the existing /en/... URL
  * convention so internal links keep working.
  */
+const fs = require("fs");
+const path = require("path");
+
+// Tiny .env reader so templates can reference build-time vars (e.g.
+// NEXT_SESSION_DATE) without pulling in dotenv as a dep. Silently no-ops
+// when .env is missing — production builds set env vars directly.
+(function loadDotEnv() {
+  try {
+    const text = fs.readFileSync(path.join(__dirname, ".env"), "utf8");
+    for (const raw of text.split("\n")) {
+      const m = raw.match(/^\s*([A-Z_][A-Z0-9_]*)\s*=\s*(.*?)\s*$/);
+      if (!m) continue;
+      if (process.env[m[1]] !== undefined) continue; // existing env wins
+      process.env[m[1]] = m[2].replace(/^["']|["']$/g, "");
+    }
+  } catch (e) { /* .env optional */ }
+})();
+
+// Format an ISO date string ("2026-06-07" or "2026-06-07T19:00") for the
+// top-bar chip. Returns null when missing or already in the past.
+function formatNextSession(iso) {
+  if (!iso) return null;
+  const d = new Date(iso.length === 10 ? iso + "T00:00:00" : iso);
+  if (Number.isNaN(d.getTime())) return null;
+  // Consider sessions "past" once the session date has fully elapsed
+  // (allow same-day display until midnight local time).
+  const endOfDay = new Date(d); endOfDay.setHours(23, 59, 59, 999);
+  if (endOfDay.getTime() < Date.now()) return null;
+
+  const days   = ["SUN","MON","TUE","WED","THU","FRI","SAT"];
+  const months = ["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"];
+  let display = `${days[d.getDay()]} ${months[d.getMonth()]} ${d.getDate()}`;
+  if (iso.length > 10) {
+    let h = d.getHours();
+    const m = d.getMinutes();
+    const ampm = h >= 12 ? "PM" : "AM";
+    h = h % 12 || 12;
+    display += ` · ${h}${m ? ":" + String(m).padStart(2, "0") : ""}${ampm}`;
+  }
+  return { iso, display };
+}
+
 module.exports = function (eleventyConfig) {
+  // Expose next session date to all templates as `nextSession` (object
+  // with { iso, display }) or `null` when unset/past.
+  eleventyConfig.addGlobalData("nextSession", () =>
+    formatNextSession(process.env.NEXT_SESSION_DATE)
+  );
+
+
   // ── Static asset passthroughs ────────────────────────────────────────
   eleventyConfig.addPassthroughCopy("images");
   eleventyConfig.addPassthroughCopy("files");

@@ -258,12 +258,62 @@
   .vos-quest-btn .vos-quest-spark { color: var(--vos-gold-bright); margin-right: 0.45rem; }
   .vos-quest-label-short { display: none; }
 
+  /* Next session chip — pill indicator sourced from NEXT_SESSION_DATE in
+     .env, baked in at build time. Auto-hidden when unset or past. */
+  .vos-next-session {
+    display: inline-flex; align-items: baseline; gap: 0.55rem;
+    padding: 0.45rem 0.85rem;
+    font-family: 'Cinzel', Georgia, serif;
+    font-size: 0.7rem; letter-spacing: 0.22em; text-transform: uppercase;
+    background: linear-gradient(180deg, rgba(13,11,17,0.85), rgba(7,6,10,0.95));
+    border: 1px solid rgba(212, 165, 116, 0.35);
+    border-radius: 999px;
+    margin-right: 0.5rem;
+    white-space: nowrap;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.45), inset 0 1px 0 rgba(212,165,116,0.08);
+  }
+  .vos-next-session-label { color: var(--vos-gold-dim); font-size: 0.6rem; letter-spacing: 0.3em; }
+  .vos-next-session-date  { color: var(--vos-gold-bright); font-weight: 700; }
+
+  /* Enzo button — ghost treatment, gold border, sits to the left of the
+     Foundry CTA so the Foundry button stays the primary action. */
+  .vos-enzo-btn {
+    position: relative;
+    background: transparent;
+    color: var(--vos-gold-bright) !important;
+    font-family: 'Cinzel', Georgia, serif;
+    font-size: 0.78rem; font-weight: 700;
+    letter-spacing: 0.24em; text-transform: uppercase;
+    padding: 0.62rem 1.05rem !important;
+    border-radius: 4px;
+    border: 1px solid rgba(212, 165, 116, 0.55) !important;
+    margin-left: 0.25rem;
+    white-space: nowrap;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.7);
+    transition: background 0.18s ease, color 0.18s ease, border-color 0.18s, box-shadow 0.18s;
+  }
+  .vos-enzo-btn:hover {
+    color: var(--vos-cream) !important;
+    background: rgba(212, 165, 116, 0.08);
+    border-color: var(--vos-gold-bright) !important;
+    box-shadow: 0 4px 16px rgba(212, 165, 116, 0.18);
+  }
+  .vos-enzo-btn .vos-enzo-spark { color: var(--vos-gold-bright); margin-right: 0.4rem; }
+  .vos-enzo-label-short { display: none; }
+
   @media (max-width: 1023px) {
     .vos-topnav { padding: 0 0.6rem; gap: 0.4rem; }
     .vos-hamburger { display: inline-flex; }
     .vos-topnav .vos-logo-wordmark { height: 40px; }
     .vos-topnav-search { width: clamp(140px, 36vw, 220px); margin: 0 0.4rem 0 0; }
     .vos-quest-btn { font-size: 0.62rem; padding: 0.4rem 0.85rem !important; margin-left: 0.25rem; letter-spacing: 0.18em; }
+    .vos-enzo-btn { font-size: 0.62rem; padding: 0.4rem 0.75rem !important; letter-spacing: 0.18em; }
+    .vos-next-session { font-size: 0.6rem; padding: 0.35rem 0.65rem; margin-right: 0.3rem; }
+    .vos-next-session-label { display: none; }
+  }
+  @media (max-width: 820px) {
+    /* Cramped — hide the chip on smaller tablets/phones to save space */
+    .vos-next-session { display: none; }
   }
   @media (max-width: 700px) {
     .vos-topnav .vos-logo-wordmark { height: 34px; }
@@ -271,6 +321,10 @@
   @media (max-width: 600px) {
     .vos-quest-label-full { display: none; }
     .vos-quest-label-short { display: inline; }
+    /* Enzo collapses to just the spark icon to save space */
+    .vos-enzo-label-full, .vos-enzo-label-short { display: none; }
+    .vos-enzo-btn .vos-enzo-spark { margin-right: 0; }
+    .vos-enzo-btn { padding: 0.4rem 0.55rem !important; }
   }
 
   /* Pagefind overrides — match the gold/dark palette and float the
@@ -607,6 +661,15 @@
   <div class="vos-topnav-search">
     <div id="vos-search"></div>
   </div>
+  {%- if nextSession %}
+  <div class="vos-next-session" title="Next session: {{ nextSession.iso }}">
+    <span class="vos-next-session-label">Next Session</span>
+    <span class="vos-next-session-date">{{ nextSession.display }}</span>
+  </div>
+  {%- endif %}
+  <a class="vos-enzo-btn" href="https://loremaster.valleyofshadows.wiki/" target="_blank" rel="noopener" title="Open Enzo — the campaign chatbot (new tab)">
+    <span class="vos-enzo-spark">✦</span><span class="vos-enzo-label-full">Enzo</span><span class="vos-enzo-label-short">Enzo</span>
+  </a>
   <a class="vos-quest-btn" href="https://valleyofshadows.quest/" target="_blank" rel="noopener" title="Open the private Foundry server">
     <span class="vos-quest-spark">✦</span><span class="vos-quest-label-full">Play on Foundry</span><span class="vos-quest-label-short">Play</span>
   </a>

@@ -1,6 +1,6 @@
 ---
 title: Orabella
-description: A human Cleric of the Art domain at St. Viro's Respite — a fog child raised by Liminal House, dreaming first-person lives that aren't hers.
+description: A human Cleric of the Art domain at St. Viro's Respite — a fog child raised by Liminal House, haunted by vivid first-person dreams she can't explain and hopes to find answers about.
 published: true
 date: 2026-05-22T00:00:00.000Z
 tags: characters, pcs, cleric, human, viros-respite, liminal-house
@@ -20,7 +20,7 @@ dateCreated: 2026-05-22T00:00:00.000Z
 <div><span style="color: #8b7355; letter-spacing: 0.18em; text-transform: uppercase; font-size: 0.7rem; font-weight: 600;">Age</span> &nbsp;&middot;&nbsp; 24</div>
 <div><span style="color: #8b7355; letter-spacing: 0.18em; text-transform: uppercase; font-size: 0.7rem; font-weight: 600;">Pronouns</span> &nbsp;&middot;&nbsp; she/her</div>
 </div>
-<div style="margin-top: 1.25rem; padding-left: 1rem; border-left: 2px solid rgba(212, 165, 116, 0.4); font-style: italic; color: rgba(212, 165, 116, 0.9); font-family: 'IM Fell English', Georgia, serif; font-size: 1rem;">"Dreaming other people's lives."</div>
+<div style="margin-top: 1.25rem; padding-left: 1rem; border-left: 2px solid rgba(212, 165, 116, 0.4); font-style: italic; color: rgba(212, 165, 116, 0.9); font-family: 'IM Fell English', Georgia, serif; font-size: 1rem;">"Dreams I can't explain, and no one will."</div>
 </div>
 
 <div style="flex-shrink: 0;">
@@ -29,7 +29,7 @@ dateCreated: 2026-05-22T00:00:00.000Z
 
 </div>
 
-Orabella is a fog child — she walked out of [Vallombrosa](/en/Venturia/Locations/vallombrosa) into [Liminal House](/en/Venturia/Locations/liminal-house) as a girl with no memory of any life before it. She's twenty-four now, a cleric at [St. Viro's Respite](/en/Venturia/Locations/viros-respite), and she has spent most of those years certain that the blank in her past isn't empty at all. She dreams, vividly and in the first person, of being other people: other bodies, other lives. The very first of those dreams was blood — on her hands, on her clothes — and she has never learned whose.
+Orabella is a fog child — she walked out of [Vallombrosa](/en/Venturia/Locations/vallombrosa) into [Liminal House](/en/Venturia/Locations/liminal-house) as a girl with no memory of any life before it. She's twenty-four now, a cleric at [St. Viro's Respite](/en/Venturia/Locations/viros-respite), and she has spent most of those years sleeping uneasily. The dreams come vivid and first-person, in bodies that don't feel like hers — and the very first of them was blood, on her hands and on her clothes, with no name attached. What any of it means, she doesn't know. She hopes to find out.
 
 ---
 
@@ -39,7 +39,7 @@ A Cleric at St. Viro's Respite. A fog child who arrived at Liminal House with no
 ---
 
 ## The Dreams
-Not long after she came to Liminal House, the dreams began: vivid, first-person, and real in a way ordinary dreams aren't — each one a life that isn't hers, lived from the inside. She believes they mean she has been within Vallombrosa itself, and that what she sees are lives she has actually lived. When she started asking what they meant, the staff of Liminal House and the clergy at Viro's shut the questions down — which only made her more determined to find the answers herself.
+Not long after she came to Liminal House, the dreams began: vivid, first-person, and real in a way ordinary dreams aren't. She doesn't claim to know what they are or what they mean. When she started asking, the staff of Liminal House and the clergy at Viro's shut the questions down — which only made her more determined to find the answers herself.
 
 ---
 

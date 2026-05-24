@@ -12,8 +12,8 @@ dateCreated: 2026-05-23T00:00:00.000Z
 
 - **[Caravel "Car" Asteri](/en/Venturia/Characters/PCs/caravel-asteri)** — Satyr Masquerade Bard. Venturia-born, finished with secrets, tied to the Covenant Archive family they walked away from.
 - **[Kryton Novelli](/en/Venturia/Characters/PCs/kryton-novelli)** — Human Warlock (former Wizard). A faculty mage at VAVA who won a pact at a gambling table and is convinced he can wriggle out of the deal.
-- **[Lotan](/en/Venturia/Characters/PCs/lotan)** — Tiefling Fighter/Warlock. Stranded ashore in Venturia, bound to a stranger who slipped into a Kraken's bargain.
+- **[Lotan](/en/Venturia/Characters/PCs/lotan)** — Tiefling Fighter/Warlock. Stranded ashore in Venturia after going looking for a Kraken and managing to offend it. What happened after, no one is sure.
 - **[Noname](/en/Venturia/Characters/PCs/noname)** — Orc Barbarian Fog Warden. Raised at Liminal House. A patient at St. Viro's Respite, hunting the memory of the night her fiancé vanished.
-- **[Orabella](/en/Venturia/Characters/PCs/orabella)** — Human Cleric of Art. A fog child raised by Liminal House, dreaming first-person lives that aren't hers.
+- **[Orabella](/en/Venturia/Characters/PCs/orabella)** — Human Cleric of Art. A fog child raised by Liminal House, haunted by vivid first-person dreams she can't explain and hopes to find answers about.
 - **[Roxanya "Roxy"](/en/Venturia/Characters/PCs/roxanya)** — Forest Gnome Arcane Trickster. Raised by Brownies, enrolled at the Academy on a lie, pact-bound to Garl Glittergold after a failed robbery.
 - **[Valentro](/en/Venturia/Characters/PCs/valentro)** — Elf Ranger. Keeps the Tiered Gardens, raised at Liminal House, learning a swordfighter's reflexes he can't remember earning.

@@ -1,6 +1,6 @@
 ---
 title: Lotan
-description: A Tiefling Fighter/Warlock stranded ashore in Venturia — bound to a stranger who slipped into a Kraken's bargain, and to the gnome he met on the crossing.
+description: A Tiefling Fighter/Warlock stranded ashore in Venturia — he went looking for a Kraken, managed to offend it, and no one is sure what happened after.
 published: true
 date: 2026-05-22T00:00:00.000Z
 tags: characters, pcs, fighter, warlock, tiefling
@@ -20,7 +20,7 @@ dateCreated: 2026-05-22T00:00:00.000Z
 <div><span style="color: #8b7355; letter-spacing: 0.18em; text-transform: uppercase; font-size: 0.7rem; font-weight: 600;">Age</span> &nbsp;&middot;&nbsp; Late 30s–40s</div>
 <div><span style="color: #8b7355; letter-spacing: 0.18em; text-transform: uppercase; font-size: 0.7rem; font-weight: 600;">Pronouns</span> &nbsp;&middot;&nbsp; he/him</div>
 </div>
-<div style="margin-top: 1.25rem; padding-left: 1rem; border-left: 2px solid rgba(212, 165, 116, 0.4); font-style: italic; color: rgba(212, 165, 116, 0.9); font-family: 'IM Fell English', Georgia, serif; font-size: 1rem;">"Stuck on land, bound to a stranger."</div>
+<div style="margin-top: 1.25rem; padding-left: 1rem; border-left: 2px solid rgba(212, 165, 116, 0.4); font-style: italic; color: rgba(212, 165, 116, 0.9); font-family: 'IM Fell English', Georgia, serif; font-size: 1rem;">"Stuck on land. The sea is no longer safe."</div>
 </div>
 
 <div style="flex-shrink: 0;">
@@ -29,7 +29,7 @@ dateCreated: 2026-05-22T00:00:00.000Z
 
 </div>
 
-Lotan came to Venturia by sea and hasn't been able to leave it. A pirate — or near enough — somewhere in his late thirties or forties, he sails into the city's story already owing forces larger than himself: a Kraken he went looking for and managed to offend, and a stranger who slipped into the bargain at the last possible moment. He carries an Eldritch Knight's discipline and a Warlock's borrowed fire, and the easy manner of a man who has talked his way off worse decks than this one.
+Lotan came to Venturia by sea and hasn't been able to leave it. A pirate — or near enough — somewhere in his late thirties or forties, he sails into the city's story already owing forces larger than himself: he went looking for a Kraken, managed to offend it, and what happened after is not a story he tells. He carries an Eldritch Knight's discipline and a Warlock's borrowed fire, and the easy manner of a man who has talked his way off worse decks than this one.
 
 ---
 
@@ -39,9 +39,9 @@ A custom Fighter/Warlock hybrid — an Eldritch Knight drifting toward the Warlo
 ---
 
 ## The Pact
-Lotan went into deep water looking for a patron and found a Kraken willing to deal — then angered it before the ink was dry. During the dream in which the contract was meant to be finalized, a third entity reached in and took the bargain for itself: less power now, in exchange for the promise of more later, and one condition — help free it. Lotan knows that this entity, not the Kraken, is his true patron, and he accepted the deal with his eyes open.
+Lotan went into deep water looking for a patron and found a Kraken willing to deal — then offended it before the bargain was sealed. What happened after, no one is sure. He came back with a Warlock's borrowed fire and a debt he won't talk about, and the sea has not been safe for him since.
 
-Whatever he still owes the Kraken is also why he's been ashore since the day he arrived. The sea is no longer safe for him.
+That's the reason he's been ashore since the day he arrived in Venturia.
 
 ---
 
