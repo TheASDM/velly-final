@@ -39,7 +39,7 @@ Every campaign map, from the continent down to the parchment plan of a single in
   </a>
 
   <a class="vos-map-tile" href="/en/Venturia/Maps/venturia-quadrants/">
-    <div class="vos-map-tile-art" style="background-image: url('/images/maps/OfficialFinalCompressed.jpg'); background-position: top left;"></div>
+    <div class="vos-map-tile-art" style="background-image: url('/images/maps/nw.jpg'); background-position: center;"></div>
     <div class="vos-map-tile-body">
       <span class="vos-map-tile-title">Venturia — Quadrants</span>
       <span class="vos-map-tile-desc">Four high-resolution tiles (NW/NE/SW/SE) stitched into one deep-zoom canvas. Sign-readable detail.</span>
