@@ -10,7 +10,12 @@ dateCreated: 2026-02-21T06:35:10.793Z
 
 # The Fey-Touch: Venturia's Subtle Strangeness
 
-[![quirks2.png](https://valleyofshadows.wiki/uploads/images/gallery/2026-01/scaled-1680-/quirks2.png)](https://valleyofshadows.wiki/uploads/images/gallery/2026-01/quirks2.png)
+<figure style="margin: 0 0 2.25rem; padding: 0; border-radius: 6px; overflow: hidden; border: 1px solid rgba(212, 165, 116, 0.4); box-shadow: 0 14px 44px rgba(0, 0, 0, 0.7); background: #0a0a0d;">
+  <img src="/images/quirks.png" alt="Venturia's subtle strangeness — masks, mirrors, and the small wrongnesses no one mentions." style="display: block; width: 100%; height: auto;">
+  <figcaption style="padding: 0.75rem 1.1rem; background: linear-gradient(180deg, rgba(13, 11, 17, 0.95), rgba(7, 6, 10, 0.98)); border-top: 1px solid rgba(212, 165, 116, 0.18); font-family: 'IM Fell English', Georgia, serif; font-style: italic; color: rgba(212, 165, 116, 0.78); font-size: 0.92rem; text-align: center; letter-spacing: 0.02em;">
+    Venturia's quiet wrongnesses — the things every local treats as ordinary.
+  </figcaption>
+</figure>
 
 These are things everyone in Venturia experiences but considers completely normal. Residents don't think of themselves as fey-touched or supernaturally influenced — they simply think Venturia has character and local color that makes it distinctive.
 

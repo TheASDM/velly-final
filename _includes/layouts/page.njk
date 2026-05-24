@@ -327,6 +327,125 @@
     .vos-enzo-btn { padding: 0.4rem 0.55rem !important; }
   }
 
+  /* ── Map viewer (OpenSeadragon container) ──────────────────────────────
+     Gold-bordered deep-zoom viewer used by every page under Venturia/Maps/
+     and by the embedded map snippets on VAVA / Liminal House / Respite. */
+  .vos-map-viewer-wrap {
+    position: relative;
+    margin: 1.5rem 0 2rem;
+    border-radius: 6px;
+    overflow: hidden;
+    border: 1px solid rgba(212, 165, 116, 0.45);
+    background:
+      radial-gradient(ellipse 80% 60% at 50% 50%, rgba(20, 18, 24, 0.6), rgba(7, 6, 10, 0.95)),
+      #060509;
+    box-shadow: 0 14px 44px rgba(0, 0, 0, 0.7);
+  }
+  .vos-map-viewer {
+    width: 100%;
+    height: 70vh; min-height: 420px; max-height: 820px;
+    background: #060509;
+  }
+  .vos-map-viewer-wrap.is-tall .vos-map-viewer { height: 85vh; max-height: 1100px; }
+  /* OSD canvas — hide the focus ring */
+  .vos-map-viewer .openseadragon-canvas:focus { outline: none; }
+  /* OSD default controls — make them feel a bit more at home with the
+     gold/dark theme. The img-based controls live in span.zoom-in etc. */
+  .vos-map-viewer .navigator {
+    border: 1px solid rgba(212, 165, 116, 0.5) !important;
+    background: rgba(7, 6, 10, 0.85) !important;
+  }
+
+  .vos-map-toolbar {
+    display: flex; flex-wrap: wrap; gap: 0.6rem;
+    padding: 0.65rem 0.9rem;
+    background: linear-gradient(180deg, rgba(13, 11, 17, 0.95), rgba(7, 6, 10, 0.98));
+    border-top: 1px solid rgba(212, 165, 116, 0.18);
+    align-items: center;
+  }
+  .vos-map-toolbar-caption {
+    flex: 1; min-width: 180px;
+    font-family: 'IM Fell English', Georgia, serif;
+    font-style: italic;
+    font-size: 0.85rem;
+    color: rgba(212, 165, 116, 0.75);
+    line-height: 1.4;
+  }
+  .vos-map-action {
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    padding: 0.4rem 0.8rem;
+    background: transparent;
+    color: var(--vos-gold-bright);
+    font-family: 'Cinzel', Georgia, serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.22em; text-transform: uppercase;
+    border: 1px solid rgba(212, 165, 116, 0.4);
+    border-radius: 3px;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s, color 0.15s;
+  }
+  .vos-map-action:hover {
+    color: var(--vos-cream);
+    background: rgba(212, 165, 116, 0.08);
+    border-color: var(--vos-gold-bright);
+    border-bottom: 1px solid var(--vos-gold-bright);
+  }
+
+  /* Tile-grid: the index page that lists all maps as cards. */
+  .vos-map-tiles {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+    margin: 1.5rem 0 2.5rem;
+  }
+  @media (min-width: 720px) {
+    .vos-map-tiles { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (min-width: 1100px) {
+    .vos-map-tiles { grid-template-columns: repeat(3, 1fr); }
+  }
+  .vos-map-tile {
+    display: block;
+    text-decoration: none;
+    border: 1px solid rgba(212, 165, 116, 0.25);
+    border-radius: 6px;
+    overflow: hidden;
+    background: rgba(13, 11, 17, 0.6);
+    transition: transform 0.25s ease, border-color 0.2s, box-shadow 0.2s;
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.55);
+  }
+  .vos-map-tile:hover {
+    transform: translateY(-4px);
+    border-color: rgba(212, 165, 116, 0.7);
+    box-shadow: 0 14px 38px rgba(0, 0, 0, 0.7), 0 0 18px rgba(212, 165, 116, 0.18);
+  }
+  .vos-map-tile-art {
+    width: 100%; aspect-ratio: 4 / 3;
+    background-size: cover; background-position: center;
+    background-color: #0a0a0d;
+  }
+  .vos-map-tile-body {
+    padding: 0.85rem 1rem 1.1rem;
+    border-top: 1px solid rgba(139, 115, 85, 0.18);
+  }
+  .vos-map-tile-title {
+    display: block;
+    font-family: 'Cinzel', Georgia, serif;
+    font-size: 0.95rem;
+    letter-spacing: 0.06em;
+    color: var(--vos-cream);
+    margin-bottom: 0.35rem;
+  }
+  .vos-map-tile-desc {
+    display: block;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-style: italic;
+    font-size: 0.82rem;
+    line-height: 1.4;
+    color: rgba(212, 165, 116, 0.75);
+  }
+
   /* Pagefind overrides — match the gold/dark palette and float the
      results panel below the input so it doesn't expand the nav. */
   .pagefind-ui {
@@ -877,6 +996,7 @@ window.addEventListener('DOMContentLoaded', () => {
         { kind: 'tree', slug: 'Venturia/Government',  title: 'Government' },
         { kind: 'tree', slug: 'Venturia/Locations',   title: 'Locations' },
         { kind: 'tree', slug: 'Venturia/Lore',        title: 'Lore' },
+        { kind: 'tree', slug: 'Venturia/Maps',        title: 'Maps' },
         { kind: 'tree', slug: 'Session-Chronicles',   title: 'Session Chronicles' }
       ]
     },

@@ -48,3 +48,14 @@ The senior healers speak carefully about their practice. They've learned that so
 - Former sufferer of fog sickness who still has lingering effects
 - Abbey initiate who served their mandatory rotation here
 - Someone whose family member never fully recovered
+
+---
+
+## Grounds
+
+The Respite shares its grounds with [Liminal House](/en/Venturia/Locations/liminal-house/), the orphanage on the western half. Several of Viro's longest-serving patients were raised next door before they were admitted here.
+
+{% set map = { slug: "viros-loc", src: "/images/maps/liminal-respiteparchment_upscayl_5x_upscayl-standard-4x.png", caption: "St. Viro's Respite (right) and Liminal House (left) — joined by the chapel garden." } %}
+{% include "partials/map-viewer.njk" %}
+
+The standalone [map page](/en/Venturia/Maps/liminal-respite/) opens this same viewer with more room to work.

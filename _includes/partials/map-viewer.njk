@@ -1,0 +1,91 @@
+{# ── Reusable map viewer (OpenSeadragon deep-zoom) ─────────────────────
+   Usage from any .md page or partial:
+
+     {% set map = { slug: 'eldryn', src: '/images/maps/EldrynFinalMap.jpg',
+                    caption: 'Eldryn — the known world.', tall: false } %}
+     {% include 'partials/map-viewer.njk' %}
+
+   For multi-image mosaics (e.g. the 4 NW/NE/SW/SE quadrants stitched into
+   one viewer), pass `mosaic: [{url}, {url}, …]` plus `mosaicRows: 2`.
+
+   The OpenSeadragon library is loaded from cdnjs on demand (cached after
+   first visit). Library is only injected once per page even when several
+   viewers appear on the same page.
+─────────────────────────────────────────────────────────────────────── #}
+<div class="vos-map-viewer-wrap{% if map.tall %} is-tall{% endif %}">
+  <div class="vos-map-viewer" id="osd-{{ map.slug }}" role="img" aria-label="{{ map.caption | default('Campaign map') }}"></div>
+  <div class="vos-map-toolbar">
+    {%- if map.caption %}
+    <div class="vos-map-toolbar-caption">{{ map.caption | safe }}</div>
+    {%- endif %}
+    {%- if map.mosaic %}
+    {%- for u in map.mosaic %}
+    <a class="vos-map-action" href="{{ u }}" target="_blank" rel="noopener" title="Open quadrant {{ loop.index }} original in a new tab">Quadrant {{ loop.index }}</a>
+    {%- endfor %}
+    {%- else %}
+    <a class="vos-map-action" href="{{ map.src }}" target="_blank" rel="noopener" title="Open the original image in a new tab">Open Original</a>
+    {%- endif %}
+    <button type="button" class="vos-map-action" data-osd-fullscreen="osd-{{ map.slug }}">Fullscreen</button>
+    <button type="button" class="vos-map-action" data-osd-home="osd-{{ map.slug }}">Reset</button>
+  </div>
+</div>
+
+<script>
+  // Load OpenSeadragon once per page, then queue viewer inits until ready.
+  (function () {
+    if (window.__vosOsdQueue) return window.__vosOsdQueue.push(initThis);
+    window.__vosOsdQueue = [initThis];
+
+    function initThis() {
+      const opts = {
+        id: "osd-{{ map.slug }}",
+        prefixUrl: "https://cdnjs.cloudflare.com/ajax/libs/openseadragon/4.1.0/images/",
+        showNavigator: true,
+        navigatorPosition: "BOTTOM_RIGHT",
+        navigatorHeight: "120px",
+        navigatorWidth: "160px",
+        visibilityRatio: 0.6,
+        constrainDuringPan: true,
+        minZoomImageRatio: 0.5,
+        maxZoomPixelRatio: 4,
+        animationTime: 0.6,
+        gestureSettingsTouch: { pinchRotate: false },
+        {%- if map.mosaic %}
+        collectionMode: true,
+        collectionRows: {{ map.mosaicRows | default(2) }},
+        collectionTileSize: 1000,
+        collectionTileMargin: 12,
+        tileSources: [
+          {%- for u in map.mosaic %}
+          { type: "image", url: "{{ u }}" }{% if not loop.last %},{% endif %}
+          {%- endfor %}
+        ],
+        {%- else %}
+        tileSources: { type: "image", url: "{{ map.src }}" },
+        {%- endif %}
+      };
+      const viewer = OpenSeadragon(opts);
+      // Wire toolbar buttons
+      document.querySelectorAll('[data-osd-fullscreen="osd-{{ map.slug }}"]').forEach(b => {
+        b.addEventListener('click', () => viewer.setFullScreen(true));
+      });
+      document.querySelectorAll('[data-osd-home="osd-{{ map.slug }}"]').forEach(b => {
+        b.addEventListener('click', () => viewer.viewport.goHome(false));
+      });
+    }
+
+    function flushQueue() {
+      const q = window.__vosOsdQueue; window.__vosOsdQueue = { push: fn => fn() };
+      q.forEach(fn => { try { fn(); } catch (e) { console.error('OSD init failed', e); } });
+    }
+    if (window.OpenSeadragon) { flushQueue(); return; }
+    if (window.__vosOsdLoading) return;
+    window.__vosOsdLoading = true;
+    const s = document.createElement('script');
+    s.src = 'https://cdnjs.cloudflare.com/ajax/libs/openseadragon/4.1.0/openseadragon.min.js';
+    s.async = true;
+    s.onload = flushQueue;
+    s.onerror = () => console.error('Failed to load OpenSeadragon from cdnjs');
+    document.head.appendChild(s);
+  })();
+</script>
