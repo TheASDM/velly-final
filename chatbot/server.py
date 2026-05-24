@@ -1193,13 +1193,12 @@ def generate_image():
         "size": image_size,
         "n": 1,
     }
-    # gpt-image-1 supports a `quality` knob (low/medium/high/auto). Older
-    # dall-e models don't, so only include it when we look like gpt-image-*.
+    # gpt-image-1 supports a `quality` knob (low/medium/high/auto) and
+    # always returns b64_json (it rejects response_format entirely). Older
+    # dall-e-* models don't take `quality` but DO return URLs by default —
+    # we fetch those URLs further down so persistence still works.
     if image_model.startswith("gpt-image"):
         payload["quality"] = image_quality
-        # Ask explicitly for base64 — required for filesystem persistence.
-        # The API returns b64 by default for gpt-image-1 but URL for DALL·E.
-        payload["response_format"] = "b64_json"
 
     try:
         r = http_requests.post(
