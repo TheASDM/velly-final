@@ -1,0 +1,610 @@
+[
+  {
+    "url": "/",
+    "title": "Valley of Shadows — Codex"
+  },
+  {
+    "url": "/en/Archive/index",
+    "title": "All Posts"
+  },
+  {
+    "url": "/en/Articles/building-a-character-for-long-form-play",
+    "title": "Building a Character for Long-Form Play"
+  },
+  {
+    "url": "/en/Articles/extended-point-buy",
+    "title": "Why We Use Extended Point Buy"
+  },
+  {
+    "url": "/en/Articles/index",
+    "title": "Articles"
+  },
+  {
+    "url": "/en/Articles/languages-of-vallombrosa",
+    "title": "Languages of Vallombrosa"
+  },
+  {
+    "url": "/en/Articles/using-ai-to-develop-your-character",
+    "title": "Using AI to Develop Your Character’s Backstory - A Guide to Collaboration, Not Automation"
+  },
+  {
+    "url": "/en/Articles/using-enzo",
+    "title": "Using Enzo, the Loremaster"
+  },
+  {
+    "url": "/en/Articles/valley-of-shadows-framework",
+    "title": "The Valley of Shadows Framework"
+  },
+  {
+    "url": "/en/Articles/what-im-working",
+    "title": "What I'm Working On"
+  },
+  {
+    "url": "/en/Class-Changes/2024-phb-overview",
+    "title": "2024 Player's Handbook — Full Overview"
+  },
+  {
+    "url": "/en/Class-Changes/barbarian",
+    "title": "Barbarian — 2024 Class Changes"
+  },
+  {
+    "url": "/en/Class-Changes/bard",
+    "title": "Bard — 2024 Class Changes"
+  },
+  {
+    "url": "/en/Class-Changes/cleric",
+    "title": "Cleric — 2024 Class Changes"
+  },
+  {
+    "url": "/en/Class-Changes/index",
+    "title": "Class Changes"
+  },
+  {
+    "url": "/en/Class-Changes/rogue",
+    "title": "Rogue — 2024 Class Changes"
+  },
+  {
+    "url": "/en/Class-Changes/warlock",
+    "title": "Warlock — 2024 Class Changes"
+  },
+  {
+    "url": "/en/Class-Changes/wizard",
+    "title": "Wizard — 2024 Class Changes"
+  },
+  {
+    "url": "/en/House-Rules/encumbrance",
+    "title": "Encumbrance & Inventory Slots"
+  },
+  {
+    "url": "/en/House-Rules/index",
+    "title": "House Rules"
+  },
+  {
+    "url": "/en/House-Rules/point-buy",
+    "title": "Point Buy — Official Rules"
+  },
+  {
+    "url": "/en/House-Rules/simplification",
+    "title": "House Rules: Simplification the Autistic Way"
+  },
+  {
+    "url": "/en/Updates/campaign-update-1",
+    "title": "Bi-Weekly Campaign Update #1 - February 11th thru February 24th"
+  },
+  {
+    "url": "/en/Updates/campaign-update-2",
+    "title": "Bi-Weekly Campaign Update #2 — February 25th thru March 11th"
+  },
+  {
+    "url": "/en/Updates/campaign-update-3",
+    "title": "Campaign Update #3 - 4/5/2026"
+  },
+  {
+    "url": "/en/Updates/campaign-update-4",
+    "title": "Campaign Update #4 — 5/21/2026"
+  },
+  {
+    "url": "/en/Updates/index",
+    "title": "Updates"
+  },
+  {
+    "url": "/en/Venturia/Characters/NPCs/aurelio-volante",
+    "title": "Aurelio Volante"
+  },
+  {
+    "url": "/en/Venturia/Characters/NPCs/celeste-orion",
+    "title": "Master Artisan Celeste Orion"
+  },
+  {
+    "url": "/en/Venturia/Characters/NPCs/celina-cross",
+    "title": "Celina Cross"
+  },
+  {
+    "url": "/en/Venturia/Characters/NPCs/constanza-marea",
+    "title": "Constanza Marea"
+  },
+  {
+    "url": "/en/Venturia/Characters/NPCs/cosimo-verdigris",
+    "title": "Cosimo Verdigris"
+  },
+  {
+    "url": "/en/Venturia/Characters/NPCs/dorian-silvermarch",
+    "title": "Archmagister Dorian Silvermarch"
+  },
+  {
+    "url": "/en/Venturia/Characters/NPCs/father-domenico",
+    "title": "Father Domenico of the Four Winds"
+  },
+  {
+    "url": "/en/Venturia/Characters/NPCs/garl-glittergold",
+    "title": "Garl Glittergold"
+  },
+  {
+    "url": "/en/Venturia/Characters/NPCs/index",
+    "title": "NPCs"
+  },
+  {
+    "url": "/en/Venturia/Characters/NPCs/isabella-fortunata",
+    "title": "Isabella Fortunata"
+  },
+  {
+    "url": "/en/Venturia/Characters/NPCs/isidore-verdigris",
+    "title": "Isidore Verdigris"
+  },
+  {
+    "url": "/en/Venturia/Characters/NPCs/lorenzo-di-errante",
+    "title": "Lorenzo di Errante"
+  },
+  {
+    "url": "/en/Venturia/Characters/NPCs/lucia-virosdottir",
+    "title": "Mother-Abbot Lucia Virosdottir"
+  },
+  {
+    "url": "/en/Venturia/Characters/NPCs/marcello-di-errante",
+    "title": "Marcello di Errante"
+  },
+  {
+    "url": "/en/Venturia/Characters/NPCs/maruk-grommarg",
+    "title": "Maruk Grommarg"
+  },
+  {
+    "url": "/en/Venturia/Characters/NPCs/old-maren",
+    "title": "Primo Navigante Old Maren"
+  },
+  {
+    "url": "/en/Venturia/Characters/NPCs/teodor-vast",
+    "title": "Lord-Admiral Teodor Vast"
+  },
+  {
+    "url": "/en/Venturia/Characters/NPCs/thalia-verdigris",
+    "title": "Thalia Verdigris"
+  },
+  {
+    "url": "/en/Venturia/Characters/NPCs/thora-ironmark",
+    "title": "Captain-Commander Thora Ironmark"
+  },
+  {
+    "url": "/en/Venturia/Characters/NPCs/tolomeo-lucente",
+    "title": "Tolomeo Lucente"
+  },
+  {
+    "url": "/en/Venturia/Characters/NPCs/verdigris-family",
+    "title": "The Verdigris Family"
+  },
+  {
+    "url": "/en/Venturia/Characters/NPCs/vincen-tidecaller",
+    "title": "Vincen Tidecaller"
+  },
+  {
+    "url": "/en/Venturia/Characters/NPCs/vincenzo-copper",
+    "title": "Guildmaster Vincenzo Copper"
+  },
+  {
+    "url": "/en/Venturia/Characters/NPCs/ysmena-starweaver",
+    "title": "High Oracle Ysmena Starweaver"
+  },
+  {
+    "url": "/en/Venturia/Characters/PCs/caravel-asteri",
+    "title": "Caravel \"Car\" Asteri"
+  },
+  {
+    "url": "/en/Venturia/Characters/PCs/index",
+    "title": "Player Characters"
+  },
+  {
+    "url": "/en/Venturia/Characters/PCs/kryton-novelli",
+    "title": "Kryton Novelli"
+  },
+  {
+    "url": "/en/Venturia/Characters/PCs/lotan",
+    "title": "Lotan"
+  },
+  {
+    "url": "/en/Venturia/Characters/PCs/noname",
+    "title": "Noname"
+  },
+  {
+    "url": "/en/Venturia/Characters/PCs/orabella",
+    "title": "Orabella"
+  },
+  {
+    "url": "/en/Venturia/Characters/PCs/roxanya",
+    "title": "Roxanya \"Roxy\""
+  },
+  {
+    "url": "/en/Venturia/Characters/PCs/valentro",
+    "title": "Valentro"
+  },
+  {
+    "url": "/en/Venturia/Characters/index",
+    "title": "Characters"
+  },
+  {
+    "url": "/en/Venturia/College-of-the-Masquerade-Bard/car-masquerade-forms",
+    "title": "Car: Masquerade Forms"
+  },
+  {
+    "url": "/en/Venturia/College-of-the-Masquerade-Bard/index",
+    "title": "College of the Masquerade Bard"
+  },
+  {
+    "url": "/en/Venturia/Creatures/Celestials/empyrean-iota",
+    "title": "Empyrean Iota"
+  },
+  {
+    "url": "/en/Venturia/Creatures/Celestials/giant-eagle",
+    "title": "Giant Eagle"
+  },
+  {
+    "url": "/en/Venturia/Creatures/Celestials/giant-owl",
+    "title": "Giant Owl"
+  },
+  {
+    "url": "/en/Venturia/Creatures/Celestials/sphinx-of-wonder",
+    "title": "Sphinx of Wonder"
+  },
+  {
+    "url": "/en/Venturia/Creatures/Fey/blink-dog",
+    "title": "Blink Dog"
+  },
+  {
+    "url": "/en/Venturia/Creatures/Fey/bugbear-warrior",
+    "title": "Bugbear Warrior"
+  },
+  {
+    "url": "/en/Venturia/Creatures/Fey/bullywug-warrior",
+    "title": "Bullywug Warrior"
+  },
+  {
+    "url": "/en/Venturia/Creatures/Fey/dryad",
+    "title": "Dryad"
+  },
+  {
+    "url": "/en/Venturia/Creatures/Fey/faerie-dragon",
+    "title": "Faerie Dragon (Youth)"
+  },
+  {
+    "url": "/en/Venturia/Creatures/Fey/fairy",
+    "title": "Fairy"
+  },
+  {
+    "url": "/en/Venturia/Creatures/Fey/goblin-minion",
+    "title": "Goblin Minion"
+  },
+  {
+    "url": "/en/Venturia/Creatures/Fey/goblin-warrior",
+    "title": "Goblin Warrior"
+  },
+  {
+    "url": "/en/Venturia/Creatures/Fey/hobgoblin-warrior",
+    "title": "Hobgoblin Warrior"
+  },
+  {
+    "url": "/en/Venturia/Creatures/Fey/pixie",
+    "title": "Pixie"
+  },
+  {
+    "url": "/en/Venturia/Creatures/Fey/quickling",
+    "title": "Quickling"
+  },
+  {
+    "url": "/en/Venturia/Creatures/Fey/satyr",
+    "title": "Satyr"
+  },
+  {
+    "url": "/en/Venturia/Creatures/Fey/sprite",
+    "title": "Sprite"
+  },
+  {
+    "url": "/en/Venturia/Creatures/Fey/worg",
+    "title": "Worg"
+  },
+  {
+    "url": "/en/Venturia/Creatures/Fiends/abyssal-wretch",
+    "title": "Abyssal Wretch"
+  },
+  {
+    "url": "/en/Venturia/Creatures/Fiends/dretch",
+    "title": "Dretch"
+  },
+  {
+    "url": "/en/Venturia/Creatures/Fiends/gnoll-warrior",
+    "title": "Gnoll Warrior"
+  },
+  {
+    "url": "/en/Venturia/Creatures/Fiends/imp",
+    "title": "Imp"
+  },
+  {
+    "url": "/en/Venturia/Creatures/Fiends/larva",
+    "title": "Larva"
+  },
+  {
+    "url": "/en/Venturia/Creatures/Fiends/lemure",
+    "title": "Lemure"
+  },
+  {
+    "url": "/en/Venturia/Creatures/Fiends/manes",
+    "title": "Manes"
+  },
+  {
+    "url": "/en/Venturia/Creatures/Fiends/maw-demon",
+    "title": "Maw Demon"
+  },
+  {
+    "url": "/en/Venturia/Creatures/Fiends/nupperibo",
+    "title": "Nupperibo"
+  },
+  {
+    "url": "/en/Venturia/Creatures/Fiends/quasit",
+    "title": "Quasit"
+  },
+  {
+    "url": "/en/Venturia/Creatures/Fiends/vargouille",
+    "title": "Vargouille"
+  },
+  {
+    "url": "/en/Venturia/Creatures/Humanoids/acolyte",
+    "title": "Acolyte"
+  },
+  {
+    "url": "/en/Venturia/Creatures/Humanoids/apprentice",
+    "title": "Apprentice"
+  },
+  {
+    "url": "/en/Venturia/Creatures/Humanoids/bandit",
+    "title": "Bandit"
+  },
+  {
+    "url": "/en/Venturia/Creatures/Humanoids/commoner",
+    "title": "Commoner"
+  },
+  {
+    "url": "/en/Venturia/Creatures/Humanoids/cultist",
+    "title": "Cultist"
+  },
+  {
+    "url": "/en/Venturia/Creatures/Humanoids/drow-warrior",
+    "title": "Drow Warrior"
+  },
+  {
+    "url": "/en/Venturia/Creatures/Humanoids/duergar",
+    "title": "Duergar"
+  },
+  {
+    "url": "/en/Venturia/Creatures/Humanoids/grimlock",
+    "title": "Grimlock"
+  },
+  {
+    "url": "/en/Venturia/Creatures/Humanoids/guard",
+    "title": "Guard"
+  },
+  {
+    "url": "/en/Venturia/Creatures/Humanoids/jackalwere",
+    "title": "Jackalwere"
+  },
+  {
+    "url": "/en/Venturia/Creatures/Humanoids/kenku",
+    "title": "Kenku"
+  },
+  {
+    "url": "/en/Venturia/Creatures/Humanoids/lizardfolk-warrior",
+    "title": "Lizardfolk Warrior"
+  },
+  {
+    "url": "/en/Venturia/Creatures/Humanoids/orc-warrior",
+    "title": "Orc Warrior"
+  },
+  {
+    "url": "/en/Venturia/Creatures/Humanoids/performer",
+    "title": "Performer"
+  },
+  {
+    "url": "/en/Venturia/Creatures/Humanoids/sahuagin",
+    "title": "Sahuagin"
+  },
+  {
+    "url": "/en/Venturia/Creatures/Humanoids/scout",
+    "title": "Scout"
+  },
+  {
+    "url": "/en/Venturia/Creatures/Humanoids/soldier",
+    "title": "Soldier"
+  },
+  {
+    "url": "/en/Venturia/Creatures/Humanoids/spy",
+    "title": "Spy"
+  },
+  {
+    "url": "/en/Venturia/Creatures/Humanoids/thug",
+    "title": "Thug"
+  },
+  {
+    "url": "/en/Venturia/Creatures/Humanoids/tribal-warrior",
+    "title": "Tribal Warrior"
+  },
+  {
+    "url": "/en/Venturia/Creatures/celestials",
+    "title": "Car's Masquerade Forms: Celestials"
+  },
+  {
+    "url": "/en/Venturia/Creatures/fey",
+    "title": "Car's Masquerade Forms: Fey"
+  },
+  {
+    "url": "/en/Venturia/Creatures/fiends",
+    "title": "Car's Masquerade Forms: Fiends"
+  },
+  {
+    "url": "/en/Venturia/Creatures/humanoids",
+    "title": "Car's Masquerade Forms: Humanoids"
+  },
+  {
+    "url": "/en/Venturia/Creatures/index",
+    "title": "Creatures"
+  },
+  {
+    "url": "/en/Venturia/Culture/index",
+    "title": "Culture"
+  },
+  {
+    "url": "/en/Venturia/Culture/venturia-vernacular",
+    "title": "Venturian Vernacular"
+  },
+  {
+    "url": "/en/Venturia/Culture/venturian-quirks-and-traditions",
+    "title": "Venturia: The Quirks and Traditions"
+  },
+  {
+    "url": "/en/Venturia/Factions/abbey-of-saint-viro",
+    "title": "The Abbey of Saint Viro and the Faithful"
+  },
+  {
+    "url": "/en/Venturia/Factions/covenant-silver-scales",
+    "title": "The Covenant of Silver Scales"
+  },
+  {
+    "url": "/en/Venturia/Factions/fog-wardens",
+    "title": "The Fog Wardens and the Shadowed Wardens"
+  },
+  {
+    "url": "/en/Venturia/Factions/harbor-wardens",
+    "title": "The Harbor Wardens' Compact"
+  },
+  {
+    "url": "/en/Venturia/Factions/index",
+    "title": "Factions"
+  },
+  {
+    "url": "/en/Venturia/Factions/veil-court",
+    "title": "The Veil Court"
+  },
+  {
+    "url": "/en/Venturia/Government/autumn-council",
+    "title": "The Autumn Council"
+  },
+  {
+    "url": "/en/Venturia/Government/index",
+    "title": "Government"
+  },
+  {
+    "url": "/en/Venturia/Locations/amaranth-theater",
+    "title": "The Amaranth Theater"
+  },
+  {
+    "url": "/en/Venturia/Locations/burnt-quill",
+    "title": "The Burnt Quill"
+  },
+  {
+    "url": "/en/Venturia/Locations/covenant-archive",
+    "title": "The Covenant Archive"
+  },
+  {
+    "url": "/en/Venturia/Locations/echoing-court",
+    "title": "The Echoing Court"
+  },
+  {
+    "url": "/en/Venturia/Locations/ferriers-confraternity",
+    "title": "The Ferriers' Confraternity"
+  },
+  {
+    "url": "/en/Venturia/Locations/fog-wardens-garrison",
+    "title": "The Fog Wardens' Garrison"
+  },
+  {
+    "url": "/en/Venturia/Locations/index",
+    "title": "Locations"
+  },
+  {
+    "url": "/en/Venturia/Locations/liminal-house",
+    "title": "The Liminal House"
+  },
+  {
+    "url": "/en/Venturia/Locations/masquers-sodality",
+    "title": "The Masquers' Sodality"
+  },
+  {
+    "url": "/en/Venturia/Locations/mirrorwrights-court",
+    "title": "The Mirrorwright's Court"
+  },
+  {
+    "url": "/en/Venturia/Locations/penny-shrine",
+    "title": "The Penny Shrine"
+  },
+  {
+    "url": "/en/Venturia/Locations/salted-cup",
+    "title": "The Salted Cup"
+  },
+  {
+    "url": "/en/Venturia/Locations/the-undertow",
+    "title": "The Undertow"
+  },
+  {
+    "url": "/en/Venturia/Locations/tidekeepers-lodge",
+    "title": "The Tidekeeper's Lodge"
+  },
+  {
+    "url": "/en/Venturia/Locations/tiered-gardens",
+    "title": "The Tiered Gardens"
+  },
+  {
+    "url": "/en/Venturia/Locations/vallombrosa",
+    "title": "Vallombrosa"
+  },
+  {
+    "url": "/en/Venturia/Locations/vava",
+    "title": "Venturia Academy of Veiled Arts"
+  },
+  {
+    "url": "/en/Venturia/Locations/vellum-hall",
+    "title": "The Vellum Hall"
+  },
+  {
+    "url": "/en/Venturia/Locations/venturia-map",
+    "title": "Map of Venturia"
+  },
+  {
+    "url": "/en/Venturia/Locations/viros-respite",
+    "title": "Viro's Respite"
+  },
+  {
+    "url": "/en/Venturia/Locations/winecradle",
+    "title": "The Winecradle"
+  },
+  {
+    "url": "/en/Venturia/Lore/eldoria-history",
+    "title": "Pre-Great Reunion History of Eldoria"
+  },
+  {
+    "url": "/en/Venturia/Lore/index",
+    "title": "Lore"
+  },
+  {
+    "url": "/en/Venturia/Lore/legends-of-vallombrosa",
+    "title": "The Legends of Vallombrosa"
+  },
+  {
+    "url": "/en/Venturia/index",
+    "title": "Venturia"
+  }
+]
