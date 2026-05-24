@@ -219,8 +219,10 @@
       align-items: stretch !important;
     }
     #chat-input {
-      min-height: 280px !important;
-      height: 280px !important;
+      /* height (no !important) so the user's resize-drag wins over the
+         default. min-height keeps it from collapsing too small. */
+      min-height: 60px !important;
+      height: 140px;
       line-height: 1.5 !important;
       resize: vertical !important;
       white-space: pre-wrap !important;
@@ -237,7 +239,7 @@
     }
     #chat-messages {
       min-height: 220px !important;
-      max-height: calc(90vh - 52px - 360px) !important;
+      max-height: calc(90vh - 52px - 220px) !important;
     }
   }
 </style>
@@ -334,7 +336,7 @@
     ta.id = 'chat-input';
     ta.placeholder = old.placeholder || '';
     ta.setAttribute('autocomplete', 'off');
-    ta.rows = 12;
+    ta.rows = 5;
     old.parentNode.replaceChild(ta, old);
     ta.addEventListener('keydown', (e) => {
       if (e.key === 'Enter' && !e.shiftKey) {

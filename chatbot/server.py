@@ -788,6 +788,8 @@ def generate_image():
     openai_key = os.environ.get("OPENAI_KEY", "")
     image_model = os.environ.get("IMAGE_MODEL", "gpt-image-1")
     style_prefix = os.environ.get("IMAGE_STYLE_PROMPT", "").strip()
+    image_quality = os.environ.get("IMAGE_QUALITY", "high")
+    image_size = os.environ.get("IMAGE_SIZE", "1024x1024")
 
     if not openai_key:
         return jsonify({
@@ -796,6 +798,17 @@ def generate_image():
 
     full_prompt = (style_prefix + "\n\n" + prompt).strip() if style_prefix else prompt
 
+    payload = {
+        "model": image_model,
+        "prompt": full_prompt,
+        "size": image_size,
+        "n": 1,
+    }
+    # gpt-image-1 supports a `quality` knob (low/medium/high/auto). Older
+    # dall-e models don't, so only include it when we look like gpt-image-*.
+    if image_model.startswith("gpt-image"):
+        payload["quality"] = image_quality
+
     try:
         r = http_requests.post(
             "https://api.openai.com/v1/images/generations",
@@ -803,13 +816,8 @@ def generate_image():
                 "Authorization": f"Bearer {openai_key}",
                 "Content-Type": "application/json",
             },
-            json={
-                "model": image_model,
-                "prompt": full_prompt,
-                "size": "1024x1024",
-                "n": 1,
-            },
-            timeout=180,
+            json=payload,
+            timeout=540,
         )
         if r.status_code >= 400:
             logging.warning("OpenAI image gen %s: %s", r.status_code, r.text[:300])
