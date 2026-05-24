@@ -27,6 +27,7 @@ docker-compose.yml
 files/wiki-nav.html
 files/css.css
 README.md
+SITE.md
 
 # Local junk
 .txt

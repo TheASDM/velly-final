@@ -1,6 +1,6 @@
 ---
 title: What I'm Working On
-description: Your DM is working on specific skills: being silly to lower the table's risk, grounding your comedy as the straight man, using feeling questions to draw you in, letting silence breathe, staying in-scene, and building distinct NPC voices. 
+description: "Your DM is working on specific skills: being silly to lower the table's risk, grounding your comedy as the straight man, using feeling questions to draw you in, letting silence breathe, staying in-scene, and building distinct NPC voices."
 published: true
 date: 2026-02-21T08:00:52.715Z
 tags: dm-philosophy, player-resources, immersion, table-culture, psychological-safety

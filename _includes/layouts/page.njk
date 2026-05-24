@@ -24,6 +24,15 @@
   }
   *, *::before, *::after { box-sizing: border-box; }
   html, body { margin: 0; padding: 0; background: var(--vos-bg); color: var(--vos-text-body); }
+
+  /* Themed scrollbars — gold-on-dark instead of the default OS chrome */
+  * { scrollbar-width: thin; scrollbar-color: rgba(139, 115, 85, 0.45) transparent; }
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: rgba(139, 115, 85, 0.35); border-radius: 4px; border: 1px solid rgba(13, 11, 17, 0.6); }
+  ::-webkit-scrollbar-thumb:hover { background: rgba(212, 165, 116, 0.55); }
+  ::-webkit-scrollbar-corner { background: transparent; }
+  iframe { color-scheme: dark; }
   body {
     font-family: 'Crimson Text', Georgia, serif;
     font-size: 17px;

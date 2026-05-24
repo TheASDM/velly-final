@@ -35,10 +35,17 @@ services:
       - dnd-network
     restart: unless-stopped
 
-  # Chatbot service - Python/Flask RAG-powered lore assistant
+  # Chatbot service - Python/Flask RAG-powered lore assistant + Eleventy codex
+  # The same container now runs both the gunicorn API (:3001 internal) and the
+  # Eleventy --serve dev server for the static codex site (:8080 internal,
+  # mapped to :8088 on the host).
   chatbot:
-    build: ./chatbot
+    build:
+      context: .
+      dockerfile: chatbot/Dockerfile
     container_name: dnd_chatbot
+    ports:
+      - "8088:8080"
     environment:
       ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY}
       ANTHROPIC_MODEL: ${ANTHROPIC_MODEL:-claude-haiku-4-5-20251001}
@@ -50,6 +57,11 @@ services:
       - ./campaign-data:/app/data:ro
       # Writable volume for chat logs
       - ./logs:/app/logs
+      # Repo mounted in for Eleventy to read markdown/templates live
+      - .:/site
+      # Anonymous volume keeps the image's node_modules visible under the
+      # bind mount above
+      - /site/node_modules
     networks:
       - dnd-network
     restart: unless-stopped
