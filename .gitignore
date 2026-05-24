@@ -27,3 +27,11 @@ node_modules/
 
 # Local archives (never intended for the repo)
 *.zip
+
+# Eleventy / Node
+node_modules/
+_site/
+.eleventy.cache/
+
+# macOS Finder duplicates ("file 2.json" style)
+"* 2.*"

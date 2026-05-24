@@ -1,0 +1,35 @@
+# Exclude non-content folders + repo-meta files from Eleventy's input scan.
+node_modules
+_site
+.astro
+.git
+.claude
+campaign-data
+chatbot
+nginx
+public
+ssl
+logs
+images
+
+# Top-level repo docs that aren't wiki content
+ARCHITECTURE.md
+CLAUDE.md
+audit.md
+campaign-data-structure.txt
+package.json
+package-lock.json
+build_tiers.py
+build_vectors.py
+build_sitemap.py
+publish.js
+docker-compose.yml
+files/wiki-nav.html
+files/css.css
+README.md
+
+# Local junk
+.txt
+*.zip
+__pycache__
+*.tmp.json
