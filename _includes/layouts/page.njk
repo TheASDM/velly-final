@@ -185,6 +185,9 @@
       drop-shadow(0 0 14px rgba(212, 165, 116, 0.18));
     transition: filter 0.3s, transform 0.4s ease;
   }
+  /* Mobile logo (vallombrosa-logo.png) is hidden by default; the
+     phone breakpoint below swaps it in for the wider smalltitle.png. */
+  .vos-logo-mobile { display: none; }
   .vos-topnav .vos-logo:hover .vos-logo-wordmark {
     transform: scale(1.03);
     filter:
@@ -318,13 +321,23 @@
   @media (max-width: 700px) {
     .vos-topnav .vos-logo-wordmark { height: 34px; }
   }
-  @media (max-width: 600px) {
-    .vos-quest-label-full { display: none; }
-    .vos-quest-label-short { display: inline; }
-    /* Enzo collapses to just the spark icon to save space */
-    .vos-enzo-label-full, .vos-enzo-label-short { display: none; }
-    .vos-enzo-btn .vos-enzo-spark { margin-right: 0; }
-    .vos-enzo-btn { padding: 0.4rem 0.55rem !important; }
+  /* Phone-only: swap the wider wordmark for the compact vallombrosa
+     monogram, drop the Foundry CTA (you can't play Foundry on a phone),
+     and let the ENZO button keep its full label so it reads as a real
+     button rather than just a spark icon. Tablets (≥768) keep Foundry. */
+  @media (max-width: 767px) {
+    .vos-logo-desktop { display: none; }
+    .vos-logo-mobile { display: block; }
+    .vos-topnav .vos-logo-wordmark { height: 42px; }
+    .vos-quest-btn { display: none !important; }
+    .vos-enzo-label-full { display: inline !important; }
+    .vos-enzo-label-short { display: none !important; }
+    .vos-enzo-btn .vos-enzo-spark { margin-right: 0.4rem !important; }
+    .vos-enzo-btn {
+      font-size: 0.7rem !important;
+      padding: 0.5rem 0.9rem !important;
+      letter-spacing: 0.22em !important;
+    }
   }
 
   /* ── Map viewer (OpenSeadragon container) ──────────────────────────────
@@ -774,7 +787,8 @@
 <nav class="vos-topnav">
   <button class="vos-hamburger" id="vos-hamburger" aria-label="Open menu" type="button">☰</button>
   <a href="/" class="vos-logo" aria-label="Valley of Shadows home">
-    <img src="/images/smalltitle.png" alt="Valley of Shadows" class="vos-logo-wordmark">
+    <img src="/images/smalltitle.png" alt="Valley of Shadows" class="vos-logo-wordmark vos-logo-desktop">
+    <img src="/images/vallombrosa-logo.png" alt="Valley of Shadows" class="vos-logo-wordmark vos-logo-mobile">
   </a>
   <div class="vos-topnav-spacer"></div>
   <div class="vos-topnav-search">
