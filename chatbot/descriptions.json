@@ -1,0 +1,277 @@
+{
+  "_meta": {
+    "purpose": "Physical-description grounding map for the Art Studio / Enzo prompt enhancer. Keyed by canonical name; 'aliases' help the grounder match nicknames and bare surnames; 'desc' is the short visual string to inject. Groups expand into the visual descriptions of their member entries at lookup time.",
+    "sources": "Locations + council NPCs from wiki text (campaign canon). PCs and the remaining NPCs derived from the actual portrait art in /images/character-art/. Pure visual detail only.",
+    "corrections_applied": [
+      "Noname is an ORC (the old campaign-data export said human).",
+      "Noname's missing fiancé is Maruk Grommarg, an ORC (the old export called him 'Marcus')."
+    ],
+    "alias_policy": "Only specific, identifying aliases — proper-noun-likes, distinctive titles, and obvious nicknames. Bare profession words ('the cleric', 'the wizard') are excluded because they cause false positives when prompts mention those concepts generically."
+  },
+
+  "locations": {
+    "Venturia": {
+      "aliases": ["the city", "the masked city"],
+      "desc": "Coastal Gothic-Renaissance city rising in stone tiers up the cliffs of Seravalle island; canals threading every level, masked crowds, autumn light, faint sea-fog at the edges."
+    },
+    "Vallombrosa": {
+      "aliases": ["the dead estate", "the fog estate", "the forbidden estate"],
+      "desc": "Forbidden fog-drowned estate at the city's edge; grey perpetual mist, half-glimpsed dead manor grounds, unnaturally still — beautiful and wrong."
+    },
+    "Venturian Academy of Veiled Arts": {
+      "aliases": ["VAVA", "the Academy", "Venturia Academy of Veiled Arts", "the Academy of Veiled Arts"],
+      "desc": "Autumn-colored spires rising from the High Quarter; candlelit arched windows that glow even at midday; dreamlike scholarship rendered in stone."
+    },
+    "The Ferriers' Confraternity": {
+      "aliases": ["the Ferriers", "Ferriers' Confraternity", "the Confraternity"],
+      "desc": "Ancient waterbound gondola-guild hall reachable only by canal; weathered, secretive, hung with old charts of waterways that don't appear on official maps."
+    },
+    "The Amaranth Theater": {
+      "aliases": ["Amaranth Theater", "the Amaranth", "the opera house"],
+      "desc": "Vast opera house crowning the High Quarter, visible across the city; gilded thousand-seat hall with supernaturally perfect acoustics; deep red and gold."
+    },
+    "The Tidekeeper's Lodge": {
+      "aliases": ["Tidekeeper's Lodge", "the Lodge", "Tidekeepers Lodge"],
+      "desc": "Weathered salt-stained timber building with green-copper roofing at the end of the longest pier; interior papered floor-to-ceiling with aging navigational charts."
+    },
+    "The Mirrorwright's Court": {
+      "aliases": ["Mirrorwright's Court", "the Mirrorwright Court", "the Mirrorwrights"],
+      "desc": "Converted upper-tier warehouse turned maze of silvering workshops; glass, silver, and mercury; dim and close, smelling of metal and secrets."
+    },
+    "The Covenant Archive": {
+      "aliases": ["Covenant Archive", "the Archive", "the Covenant"],
+      "desc": "Windowless building of black stone in the High Quarter; gray-robed archivists, shelves of vellum contracts, an oppressive hush; older than the city."
+    },
+    "The Masquers' Sodality": {
+      "aliases": ["Masquers' Sodality", "the Sodality", "the Masquers"],
+      "desc": "Maskmakers' guildhall in the Market Tiers; walls of masks from painted leather dominos to elaborate sculptural pieces; workshop clutter and fine craft."
+    },
+    "The Undertow": {
+      "aliases": ["Undertow", "the gambling den"],
+      "desc": "Hidden gambling den built into the harbor cliffs, entered by sea-cave at low tide; flickering lantern light over gaming tables; smuggler's-cove damp and shadow."
+    },
+    "St. Viro's Respite": {
+      "aliases": ["Viro's", "St. Viro's", "Saint Viro's Respite", "the Respite", "St Viros Respite"],
+      "desc": "Sprawl of connected charity-hospital buildings in the middle Market Tiers, marked with the Abbey's silver-hand symbol; clean, austere, candle-and-incense."
+    },
+    "The Burnt Quill": {
+      "aliases": ["Burnt Quill", "the printworks"],
+      "desc": "Converted textile mill turned printworks; ink-stained windows, presses clattering dawn to past midnight, the smell of paper and chemicals over the whole block."
+    },
+    "The Tiered Gardens": {
+      "aliases": ["Tiered Gardens", "the Gardens"],
+      "desc": "Cascading hillside terraces of cultivated greenery between the Market Tiers and High Quarter; winding paths and stairs, part working farm and part living artwork, autumn foliage."
+    },
+    "Liminal House": {
+      "aliases": ["the Liminal House", "the orphanage", "the House"],
+      "desc": "Rambling centuries-old compound in the lower Market Tiers; buildings grafted together until the architecture loses track of where one ends and the next begins; worn, institutional."
+    },
+    "The Salted Cup": {
+      "aliases": ["Salted Cup", "the bathhouse"],
+      "desc": "Bathhouse complex built over the city's hot springs; steam, warm stone pools, private alcoves; dim, luxurious, conspiratorial."
+    },
+    "The Winecradle": {
+      "aliases": ["Winecradle", "the tasting house"],
+      "desc": "Grand tasting house with soaring ceilings and walls of bottles from across the known world; ceremonial, warm-lit, opulent."
+    },
+    "The Echoing Court": {
+      "aliases": ["Echoing Court", "the Court"],
+      "desc": "Circular open plaza with uncanny acoustics, ringed by tiered stone; a public stage-space under autumn light, prone to gathering crowds."
+    },
+    "The Penny Shrine": {
+      "aliases": ["Penny Shrine", "the shrine"],
+      "desc": "Single cramped room wedged between Harbor District warehouses, layered with centuries of coins, candles, found offerings, and scrawled prayers; humble, cluttered, devotional."
+    },
+    "The Vellum Hall": {
+      "aliases": ["Vellum Hall", "the library"],
+      "desc": "Converted merchant hall turned public library; good natural light, sturdy shelving of practical books; plain and well-kept."
+    },
+    "The Fog Wardens' Garrison": {
+      "aliases": ["Fog Wardens' Garrison", "the Garrison", "the Overlook", "Fog Wardens Garrison"],
+      "desc": "Small stone watch-building and tower at the Overlook, where the city ends and the Vallombrosa fog begins; spare, cold, lonely."
+    }
+  },
+
+  "player_characters": {
+    "Lotan": {
+      "aliases": ["Lo", "Lot", "Kenny", "the tiefling pirate"],
+      "desc": "Red-skinned tiefling man, late 30s-40s; large curved dark ram horns, black hair pulled back, salt-and-pepper beard, pointed ears; muscular; loose white shirt under a brown leather jerkin; easy roguish grin. A pirate's bearing."
+    },
+    "Caravel \"Car\" Asteri": {
+      "aliases": ["Car", "Caravel", "Asteri", "Car Asteri", "Caravel Asteri", "the masquerade bard"],
+      "desc": "Androgynous young satyr, 19; curled chestnut-auburn hair, curving ram horns, pointed ears, fine delicate features; slim; dark high-collared coat; almost always holding or wearing an ornate mask, amid a maskmaker's workshop."
+    },
+    "Noname": {
+      "aliases": ["No-name", "No Name", "the orc fog warden"],
+      "desc": "Orc woman, 24; green skin, small lower tusks, strong features, dark hair drawn back in braids; athletic, powerful build; dark layered leather Fog Warden's coat and armor; guarded and intense."
+    },
+    "Valentro": {
+      "aliases": ["Valen", "Val", "the gardener-ranger"],
+      "desc": "Young elf man, 19; tousled dirty-blond shoulder-length hair, light stubble, blue eyes, pointed ears; lean; a weathered green cloak over leather, bow and quiver across his back; a faint arcane mark on the back of one hand; warm and quiet."
+    },
+    "Kryton Novelli": {
+      "aliases": ["Kryton", "Novelli", "Professor Novelli", "the VAVA faculty mage"],
+      "desc": "Human man, 40s; dark hair greying at the temples and swept back, a grey-flecked beard, sharp blue eyes (often lit with crackling blue arcane light); navy high-collared scholar's coat with wands and vials at the breast; staff and a glowing tome. Brilliant and frayed."
+    },
+    "Orabella": {
+      "aliases": ["Bella", "Ora", "the Cleric of Art"],
+      "desc": "Human woman, 24; short tousled dark hair, blue eyes, fair-skinned; blue-and-cream hooded cleric's robes; carries a staff topped with a glowing blue orb, often with a book and a painter's things to hand. Gentle, watchful."
+    },
+    "Roxanya \"Roxy\"": {
+      "aliases": ["Roxy", "Roxanya", "Rox", "the gnome arcane trickster"],
+      "desc": "Forest gnome woman, 19; about three feet tall, sun-tanned and freckled, wild curly red-orange hair in twin buns, green eyes, pointed ears, a bright grin; layered brown leather swashbuckler's garb with feathers; a taxidermy owl perched on her arm."
+    }
+  },
+
+  "npcs": {
+    "Lord-Admiral Teodor Vast": {
+      "aliases": ["Teodor", "Vast", "Lord-Admiral Vast", "Lord Admiral Vast", "the Lord-Admiral", "Admiral Vast"],
+      "desc": "Human man, late 50s; commanding, weathered features, silver-streaked black hair; fine fleet-owner's clothes worn with an affected sailor's plainness."
+    },
+    "Constanza Marea": {
+      "aliases": ["Constanza", "Marea", "Madame Marea"],
+      "desc": "Human woman, early 40s; sharp, composed merchant-aristocrat of the Harbor District; elegantly dressed, poised and watchful."
+    },
+    "Master Artisan Celeste Orion": {
+      "aliases": ["Celeste", "Orion", "Master Orion", "Celeste Orion", "Master Artisan Orion"],
+      "desc": "Human woman, mid-50s; calloused hands and ink-stained fingers; practical guild-master's dress; sturdy and no-nonsense."
+    },
+    "Guildmaster Vincenzo Copper": {
+      "aliases": ["Vincenzo", "Copper", "Vincenzo Copper", "Guildmaster Copper"],
+      "desc": "Dwarf man, middle-aged by dwarf standards; elaborate beard jewelry; rich, conservative metals-guild attire; stout and dignified."
+    },
+    "Mother-Abbot Lucia Virosdottir": {
+      "aliases": ["Lucia", "Virosdottir", "Mother-Abbot", "Mother Lucia", "Mother Abbot Lucia", "Mother Abbot", "Lucia Virosdottir"],
+      "desc": "Human woman, early 70s; slight frame but commanding presence; abbey vestments bearing the silver-hand symbol; austere and devout."
+    },
+    "Father Domenico of the Four Winds": {
+      "aliases": ["Domenico", "Father Domenico", "Father of the Four Winds"],
+      "desc": "Human man, late 30s; weather-worn and restless; the bearing of a former ship's chaplain, in plain travel-priest's garb."
+    },
+    "Vincen Tidecaller": {
+      "aliases": ["Vincen", "Tidecaller", "the Tidekeeper"],
+      "desc": "Human man, 60s; a permanent horizon-squint; weathered, plain Tidekeeper's clothing; quiet and watchful."
+    },
+    "Captain-Commander Thora Ironmark": {
+      "aliases": ["Thora", "Ironmark", "Captain-Commander", "Captain Commander Ironmark", "Thora Ironmark", "the Captain-Commander"],
+      "desc": "Half-orc woman, 40s; scarred and imposing; a decorated Watch uniform; direct, hard-standing, soldierly."
+    },
+    "Primo Navigante Old Maren": {
+      "aliases": ["Maren", "Old Maren", "Primo Navigante", "Primo Maren"],
+      "desc": "Human woman of uncertain age — sixty or eighty, the canal light hides it; deliberate and unreadable; weathered ferrier's dress; eerily still."
+    },
+    "Archmagister Dorian Silvermarch": {
+      "aliases": ["Dorian", "Silvermarch", "Archmagister", "Archmagister Silvermarch", "Dorian Silvermarch"],
+      "desc": "High-elf man appearing middle-aged by elven standards (near two centuries old); refined VAVA academic robes; brilliant, warm, faintly weary."
+    },
+    "Aurelio Volante": {
+      "aliases": ["Aurelio", "Volante"],
+      "desc": "Tall olive-skinned man, fifties; easy confident posture, slightly theatrical; well-traveled merchant's dress with a collector's air, a fine mask often near at hand."
+    },
+    "Celina Cross": {
+      "aliases": ["Celina", "Cross", "the performer"],
+      "desc": "Human woman, ~23; striking, with dark wavy upswept hair and a jeweled silver mask pushed up onto her brow; a deep-blue and silver embroidered low-necked gown, jewels at ear and throat; lit by warm stage light. Magnetic."
+    },
+    "Maruk Grommarg": {
+      "aliases": ["Maruk", "Grommarg", "Marcus", "Noname's fiancé", "the missing fiancé"],
+      "desc": "Orc man; dark grey-green skin, a heavy muscular build, prominent lower tusks, a scar across the face, short dark hair, pointed ears; worn dark leather Fog Warden's armor with a shoulder pauldron; grim and steadfast."
+    },
+    "Garl Glittergold": {
+      "aliases": ["Garl", "Glittergold", "the gnome god"],
+      "desc": "Gnome deity, resplendent in gold; a round genial face and broad golden beard, a tall jeweled crown and ornate gold robes; a gem-cutter's hands wreathed in floating multicolored gemstones. Warm, sly, radiant."
+    },
+    "Isabella Fortunata": {
+      "aliases": ["Isabella", "Fortunata", "Isabella Fortuna", "the lost beloved"],
+      "desc": "Human woman, young; soft auburn hair pinned up, fair and luminous; a pale ethereal gown of lace and tulle; haloed in warm golden light against a dreamlike ballroom-garden. A tragic-romance figure."
+    },
+    "Lorenzo di Errante": {
+      "aliases": ["Lorenzo", "di Errante", "Lorenzo Errante", "Lorenzo dError"],
+      "desc": "Fey-touched man; pale greenish skin, dark hair swept back, sharp features with a single prominent lower fang, pointed ears; a dark high-collared doublet; a candlelit manor behind him. Lean and haunted — drawn as kin to Marcello, the resemblance deliberate."
+    },
+    "Marcello di Errante": {
+      "aliases": ["Marcello", "Marcello Errante", "Lord di Errante", "Lord Marcello"],
+      "desc": "Fey-touched nobleman; pale grey-green skin, long dark swept-back hair, pointed ears, handsome aristocratic features; ornate dark-and-crimson noble attire; an opulent candlelit interior. Composed and lordly — visually mirrors Lorenzo."
+    },
+    "Tolomeo Lucente": {
+      "aliases": ["Tolomeo", "Lucente", "TL", "Tolomeo Lucent", "the explorer"],
+      "desc": "Human man, 40s; dark hair, dark beard, weathered; a deep-red explorer's doublet over leather, a satchel and map-case; holding a brass navigational instrument among charts and instruments. A scholar-adventurer."
+    },
+    "High Oracle Ysmena Starweaver": {
+      "aliases": ["Ysmena", "Starweaver", "High Oracle", "Ysmena Starweaver", "the Oracle", "Oracle Starweaver"],
+      "desc": "Ageless elf woman; pale lavender-tinged skin, pale near-white eyes, long dark hair, pointed ears; a midnight-blue veil and a star-spangled gown, a silver circlet; haloed by drifting constellations. Cryptic and otherworldly."
+    },
+    "Cosimo Verdigris": {
+      "aliases": ["Cosimo", "Master Verdigris", "the elder Verdigris", "Cosimo Verde"],
+      "desc": "Human man, 70s; silver-white hair and a full beard; dark green and black embroidered guild robes; at work among mirrors in a candlelit workshop. Distinguished and guarded."
+    },
+    "Isidore Verdigris": {
+      "aliases": ["Isidore"],
+      "desc": "Human man, 40s; dark hair, a neat dark beard, sharp handsome features; a dark green-black craftsman's doublet; handling an ornate copper-framed mirror amid a mirror-workshop. Ambitious and restless."
+    },
+    "Thalia Verdigris": {
+      "aliases": ["Thalia"],
+      "desc": "Human woman, 20s; dark hair pinned up with jewels, warm tan skin, a bright smile; an emerald-and-gold gown with mirror-shard jewelry; amid chandelier-lit society. Charming and polished."
+    },
+    "Silas": {
+      "aliases": ["the scarred stranger", "the scarred patient", "the comatose stranger", "the comatose patient", "the scarred man"],
+      "desc": "Human man, 40s — the same dark hair, dark beard, and weathered features as Tolomeo Lucente, but his face and body are mapped with old scars and burns and brand-like prisoner markings. The comatose stranger at St. Viro's."
+    },
+    "The Keeper of Faces": {
+      "aliases": ["Keeper of Faces", "the Keeper", "the masked god", "the Archfey of masks"],
+      "desc": "An imprisoned Archfey of masks with no single true face — a tall figure built of overlapping, shifting masks over a blank pale visage; autumn-and-bone palette, glamour like candlelight on water."
+    },
+    "Tartuzi": {
+      "aliases": ["the Lock", "the sphinx", "the broken sphinx"],
+      "desc": "A great volcanic sphinx — a woman's face, a lion's body, broad wings — her hide cracked basalt and cooling stone, soot and ash all over her, lava-like veins glowing through cuts that run across her whole body, set in a volcanic chamber. Present day: she looks defeated and exhausted, her fires guttered low, ashen and dimmed — fused into her prison for a thousand years."
+    },
+    "Tartuzi (in her prime)": {
+      "aliases": ["young Tartuzi", "ancient Tartuzi", "Tartuzi regal", "Tartuzi the Lock in her prime", "Tartuzi unbroken", "the Lock in her prime"],
+      "desc": "A great volcanic sphinx — a woman's face, a lion's body, broad wings — her hide cracked basalt, soot and ash like a mantle, lava-like veins blazing bright through the cuts across her body. Regal, powerful, fearsome and unbroken — depicted in her prime, before the imprisonment."
+    }
+  },
+
+  "groups": {
+    "The Party": {
+      "aliases": ["the party", "the PCs", "the player characters", "the adventurers", "the heroes", "the seven", "the group"],
+      "members": ["Lotan", "Caravel \"Car\" Asteri", "Noname", "Valentro", "Kryton Novelli", "Orabella", "Roxanya \"Roxy\""]
+    },
+    "The Autumn Council": {
+      "aliases": ["the Autumn Council", "the council", "Autumn Council", "the seven seats"],
+      "members": [
+        "Lord-Admiral Teodor Vast",
+        "Constanza Marea",
+        "Master Artisan Celeste Orion",
+        "Guildmaster Vincenzo Copper",
+        "Mother-Abbot Lucia Virosdottir",
+        "Father Domenico of the Four Winds",
+        "Vincen Tidecaller"
+      ]
+    },
+    "The Fog Children": {
+      "aliases": ["the fog children", "fog children", "the children of Vallombrosa", "the Liminal House children"],
+      "members": ["Noname", "Orabella", "Valentro"]
+    },
+    "The di Errante Brothers": {
+      "aliases": ["the di Errante brothers", "the Errante brothers", "the di Errantes", "the Errantes", "Lorenzo and Marcello"],
+      "members": ["Lorenzo di Errante", "Marcello di Errante"]
+    },
+    "The Verdigris Family": {
+      "aliases": ["the Verdigris family", "the Verdigris", "House Verdigris", "Family Verdigris"],
+      "members": ["Cosimo Verdigris", "Isidore Verdigris", "Thalia Verdigris"]
+    },
+    "The Fog Wardens (known)": {
+      "aliases": ["the known fog wardens", "Noname and Maruk"],
+      "members": ["Noname", "Maruk Grommarg"]
+    },
+    "The Tolomeo Echo": {
+      "aliases": ["Tolomeo and Silas", "Silas and Tolomeo", "the twinned faces"],
+      "members": ["Tolomeo Lucente", "Silas"]
+    }
+  },
+
+  "_notes": {
+    "tartuzi_two_states": "Tartuzi has two keyed entries. Bare 'Tartuzi' grounds to the present-day defeated look; reference 'Tartuzi (in her prime)' (or aliases like 'ancient Tartuzi') in the prompt to ground the regal historical look. The grounder matches by name, so you choose the state by what you type.",
+    "silas_echo": "Silas is intentionally built to share Tolomeo Lucente's face, scarred and burned. The 'The Tolomeo Echo' group exists so prompts about their resemblance pull both descriptions at once.",
+    "groups_expansion": "Group entries are matched by their name/aliases like any other entry, but at injection time the grounder expands them into the concatenated descriptions of their members. 'Draw the party in the Salted Cup' pulls all 7 PC descriptions plus the bathhouse setting in one go."
+  }
+}

@@ -887,36 +887,171 @@ ENHANCE_TEMPERATURE = float(os.environ.get("ENHANCE_TEMPERATURE", "0.6"))
 ENHANCE_MAX_TOKENS = int(os.environ.get("ENHANCE_MAX_TOKENS", "900"))
 ENHANCE_TIMEOUT_S = int(os.environ.get("ENHANCE_TIMEOUT_S", "30"))
 ENHANCE_MAX_ENTITIES = int(os.environ.get("ENHANCE_MAX_ENTITIES", "6"))
-ENHANCE_ENTITY_CHARS = int(os.environ.get("ENHANCE_ENTITY_CHARS", "1400"))
+ENHANCE_ENTITY_CHARS = int(os.environ.get("ENHANCE_ENTITY_CHARS", "3000"))
+
+# Hand-curated visual-description grounding for the art enhancer. Lives in
+# the repo at chatbot/descriptions.json; the container bind-mounts the repo
+# at /site so we read straight from there. Falls back to (none) when the
+# file is missing or malformed — RAG keyword matching still works without
+# it, the result is just less specific.
+DESCRIPTIONS_FILE = Path(os.environ.get(
+    "ART_DESCRIPTIONS_FILE",
+    "/site/chatbot/descriptions.json",
+))
+
+# Aliases shorter than this rarely identify a unique entity (e.g. "lo",
+# "tl", "rox"); we still let them through, but the loader excludes
+# obviously generic single-character or numeric strings.
+ALIAS_MIN_LEN = 2
+
+
+def _flatten_descriptions(raw):
+    """Build a {lowercase_phrase: (canonical_name, desc_string)} index from
+    the descriptions.json schema. Groups are expanded so a match on
+    "the party" returns the concatenated descriptions of all members.
+    """
+    if not isinstance(raw, dict):
+        return {}
+    name_to_desc = {}      # canonical_name → desc
+    name_to_aliases = {}   # canonical_name → [alias, ...]
+
+    for canon, payload in (raw.get("locations") or {}).items():
+        if isinstance(payload, str):
+            name_to_desc[canon] = payload
+            name_to_aliases[canon] = []
+        elif isinstance(payload, dict):
+            name_to_desc[canon] = payload.get("desc", "")
+            name_to_aliases[canon] = list(payload.get("aliases") or [])
+
+    for section in ("player_characters", "npcs"):
+        for canon, payload in (raw.get(section) or {}).items():
+            if isinstance(payload, dict):
+                name_to_desc[canon] = payload.get("desc", "")
+                name_to_aliases[canon] = list(payload.get("aliases") or [])
+
+    # Groups expand into the concatenated member descs at index-build time.
+    # Each group entry maps its aliases (and canonical name) to a string
+    # that lists every member's visual description in order.
+    group_index = {}
+    for canon, payload in (raw.get("groups") or {}).items():
+        if not isinstance(payload, dict):
+            continue
+        member_names = payload.get("members") or []
+        parts = []
+        for m in member_names:
+            d = name_to_desc.get(m)
+            if d:
+                parts.append(f"- {m}: {d}")
+        if not parts:
+            continue
+        combined = (
+            f"Group reference — {canon}. The named members and their "
+            "individual visual descriptions are:\n" + "\n".join(parts)
+        )
+        group_index[canon] = (canon, combined)
+        for alias in (payload.get("aliases") or []):
+            if alias and len(alias) >= ALIAS_MIN_LEN:
+                group_index[alias.lower()] = (canon, combined)
+
+    # Locations + PCs + NPCs: each canonical name AND every alias maps to
+    # the canonical name and its desc. Canonical name wins on collision.
+    index = {}
+    for canon, desc in name_to_desc.items():
+        if not desc:
+            continue
+        for key in [canon] + name_to_aliases.get(canon, []):
+            if not key or len(key) < ALIAS_MIN_LEN:
+                continue
+            k = key.lower()
+            # First-write wins, so collisions resolve to the entry whose
+            # canonical name appears earliest in the JSON file.
+            index.setdefault(k, (canon, desc))
+
+    # Group entries last so they overwrite — if someone wrote a group alias
+    # that collides with a single-entity alias, the group wins (it includes
+    # more context and is the more useful match).
+    index.update(group_index)
+    return index
+
+
+def _load_descriptions_index():
+    """Read descriptions.json and return its flattened lookup index, or {}
+    on any failure. Called on every request so live edits don't require a
+    container restart — the file is small (~10 KB)."""
+    try:
+        with open(DESCRIPTIONS_FILE, "r", encoding="utf-8") as f:
+            raw = json.load(f)
+        return _flatten_descriptions(raw)
+    except FileNotFoundError:
+        return {}
+    except Exception:
+        logging.exception("Failed to load %s", DESCRIPTIONS_FILE)
+        return {}
+
+
+def _match_descriptions(prompt, index):
+    """Scan the prompt for n-gram matches against the descriptions index.
+    Returns a list of {name, text, source} dicts (shape compatible with
+    the RAG matches), newest match first, deduped by canonical name.
+    """
+    if not index:
+        return []
+    words = re.findall(r"[\w'\"]+", prompt.lower())
+    matched, seen = [], set()
+    # Walk n-grams 1..5 like _keyword_match does.
+    for n in range(min(5, len(words)), 0, -1):
+        for i in range(len(words) - n + 1):
+            phrase = " ".join(words[i:i + n])
+            hit = index.get(phrase)
+            if not hit:
+                continue
+            canon, desc = hit
+            if canon in seen:
+                continue
+            seen.add(canon)
+            matched.append({
+                "name": canon,
+                "text": desc,
+                "source_file": "descriptions.json",
+                "page_id": f"desc:{canon}",
+            })
+    return matched
 
 
 def _extract_campaign_entities(prompt):
-    """Find wiki entities (characters/locations/factions/lore) named in the
-    user's prompt. 5e rules entries are filtered out — they're useless for
-    image prompts. Returns up to ENHANCE_MAX_ENTITIES unique pages.
+    """Find named campaign entities in the prompt for art grounding.
+
+    Two-stage match:
+      1. Hand-curated descriptions.json (preferred — pure visual detail)
+      2. RAG vector-store name index (fallback for entities not yet
+         covered by descriptions.json)
+    The two pools are merged, deduped, and capped at ENHANCE_MAX_ENTITIES.
     """
-    if not engine or not getattr(engine, "_name_index", None):
-        return []
-    matched = engine._keyword_match(prompt)
-    # Drop 5e reference entries (spells, monsters, items, etc.) — they
-    # match too aggressively (e.g. a prompt mentioning "fire" could pull
-    # every fire spell) and add nothing to image prompts.
-    matched = [
-        m for m in matched
-        if not m.get("source_file", "").startswith("5e-filtered/")
-    ]
-    # Dedupe by page so we don't get the same character three times when
-    # their wiki page was chunked into multiple vector entries.
-    seen, unique = set(), []
-    for m in matched:
-        pid = m.get("page_id", m["id"])
-        if pid in seen:
-            continue
-        seen.add(pid)
-        unique.append(m)
-        if len(unique) >= ENHANCE_MAX_ENTITIES:
-            break
-    return unique
+    matched = []
+
+    # Stage 1: hand-curated descriptions
+    desc_index = _load_descriptions_index()
+    matched.extend(_match_descriptions(prompt, desc_index))
+
+    # Stage 2: RAG keyword match (filtered to wiki entries only — 5e rules
+    # noise is useless for image prompts)
+    if engine and getattr(engine, "_name_index", None):
+        # Skip RAG hits for any canonical name that's already in our
+        # descriptions.json match list — they'd just duplicate context.
+        seen_canon = {m["name"].lower() for m in matched}
+        rag_seen_pages = set()
+        for m in engine._keyword_match(prompt):
+            if m.get("source_file", "").startswith("5e-filtered/"):
+                continue
+            page_id = m.get("page_id", m["id"])
+            if page_id in rag_seen_pages:
+                continue
+            rag_seen_pages.add(page_id)
+            if (m.get("name") or "").lower() in seen_canon:
+                continue
+            matched.append(m)
+
+    return matched[:ENHANCE_MAX_ENTITIES]
 
 
 def _enhance_image_prompt(raw_prompt, style_key, matched_entries):
