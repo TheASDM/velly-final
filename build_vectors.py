@@ -38,8 +38,8 @@ OUTPUT_PATH  = BASE_DIR / "campaign-data" / "vector_store.json"
 
 # Wiki content directories included for embedding (DM/ excluded by omission).
 WIKI_DIRS = [
-    "Characters/PCs",
-    "Characters/NPCs",
+    "Venturia/Characters/PCs",
+    "Venturia/Characters/NPCs",
     "Venturia/Locations",
     "Venturia/Factions",
     "Venturia/Government",

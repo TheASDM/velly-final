@@ -24,8 +24,8 @@ TIER1_OUT    = ROOT / "campaign-data" / "tier1.md"
 # Wiki content directories to include, mapped to (top-section, subsection).
 # Subsection is None if the directory should render as a flat list.
 WIKI_SECTIONS = [
-    ("Characters/PCs",      ("Characters", "Player Characters")),
-    ("Characters/NPCs",     ("Characters", "NPCs")),
+    ("Venturia/Characters/PCs",      ("Characters", "Player Characters")),
+    ("Venturia/Characters/NPCs",     ("Characters", "NPCs")),
     ("Venturia/Locations",  ("Locations",  None)),
     ("Venturia/Factions",   ("Factions",   None)),
     ("Venturia/Government", ("Government", None)),
