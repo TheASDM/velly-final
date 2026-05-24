@@ -12,7 +12,9 @@ dateCreated: 2026-05-22T00:00:00.000Z
 
 **Seat:** Harbor-Lord &nbsp;|&nbsp; **Faction:** Harbor Wardens' Compact &nbsp;|&nbsp; **Race:** Human &nbsp;|&nbsp; **Age:** Late 50s &nbsp;|&nbsp; *"Pay whoever needs paying — but solve it."*
 
-<!-- TODO: portrait — supply a filename to add -->
+<div style="text-align: center; margin: 1.5rem 0 2rem;">
+<img src="https://codex.valleyofshadows.wiki/images/character-art/teodor.png" alt="Lord-Admiral Teodor Vast" style="width: 280px; max-width: 80%; border-radius: 4px; box-shadow: 0 8px 32px rgba(0,0,0,0.7); border: 1px solid rgba(139,115,85,0.3);">
+</div>
 
 > *"We're debating theology while ships sit idle in harbor."*
 

@@ -13,7 +13,9 @@ dateCreated: 2026-05-22T00:00:00.000Z
 **Family:** Verdigris &nbsp;|&nbsp; **Role:** Youngest &nbsp;|&nbsp; **Age:** 20s &nbsp;|&nbsp; *"Wears her mirrors as jewelry."*
 
 <!-- DM NOTE (not rendered): Secret material at /en/Venturia/DM/verdigris-family. Public page is surface-only. -->
-<!-- TODO: portrait — supply a filename to add -->
+<div style="text-align: center; margin: 1.5rem 0 2rem;">
+<img src="https://codex.valleyofshadows.wiki/images/character-art/thalia.png" alt="Thalia Verdigris" style="width: 280px; max-width: 80%; border-radius: 4px; box-shadow: 0 8px 32px rgba(0,0,0,0.7); border: 1px solid rgba(139,115,85,0.3);">
+</div>
 
 The youngest Verdigris — a charming socialite who wears mirrors as jewelry and is, beneath the polish, genuinely gifted with reflection magic. The family's brightest social asset, and the one her father watches most closely.
 

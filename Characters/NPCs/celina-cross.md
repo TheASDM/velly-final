@@ -12,7 +12,9 @@ dateCreated: 2026-05-22T00:00:00.000Z
 
 **Role:** Star performer, the Amaranth Theater &nbsp;|&nbsp; **Quarter:** High Quarter &nbsp;|&nbsp; *"The Amaranth's brightest."*
 
-<!-- TODO: portrait — supply a filename to add -->
+<div style="text-align: center; margin: 1.5rem 0 2rem;">
+<img src="https://codex.valleyofshadows.wiki/images/character-art/celina.png" alt="Celina Cross" style="width: 280px; max-width: 80%; border-radius: 4px; box-shadow: 0 8px 32px rgba(0,0,0,0.7); border: 1px solid rgba(139,115,85,0.3);">
+</div>
 
 One of the most celebrated performers on Seravalle, and the reigning star of the Amaranth Theater in the High Quarter. To watch her work is to watch someone vanish into another person entirely.
 

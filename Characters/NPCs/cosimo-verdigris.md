@@ -13,7 +13,9 @@ dateCreated: 2026-05-22T00:00:00.000Z
 **Family:** Verdigris &nbsp;|&nbsp; **Role:** Patriarch &amp; guild elder &nbsp;|&nbsp; **Age:** 70s &nbsp;|&nbsp; *"Keeps his theories locked away."*
 
 <!-- DM NOTE (not rendered): Secret material at /en/Venturia/DM/verdigris-family. Public page is surface-only. -->
-<!-- TODO: portrait — supply a filename to add -->
+<div style="text-align: center; margin: 1.5rem 0 2rem;">
+<img src="https://codex.valleyofshadows.wiki/images/character-art/cosimo.png" alt="Cosimo Verdigris" style="width: 280px; max-width: 80%; border-radius: 4px; box-shadow: 0 8px 32px rgba(0,0,0,0.7); border: 1px solid rgba(139,115,85,0.3);">
+</div>
 
 The patriarch of the Verdigris and an elder of the Mirrorwrights' guild — a respected old craftsman who has spent a lifetime fascinated by a single question: why Venturia's mirrors behave the way they do. He has theories. He keeps them to himself.
 

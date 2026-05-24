@@ -13,7 +13,7 @@ dateCreated: 2026-05-22T00:00:00.000Z
 **Player:** Kenny &nbsp;|&nbsp; **Class:** Fighter / Warlock (Tiefling) &nbsp;|&nbsp; **Age:** Late 30s–40s &nbsp;|&nbsp; **Pronouns:** he/him &nbsp;|&nbsp; *"Stuck on land, bound to a stranger."*
 
 <div style="text-align: center; margin: 1.5rem 0 2rem;">
-<img src="https://codex.valleyofshadows.wiki/images/LotanProfile2.png" alt="Lotan" style="width: 280px; max-width: 80%; border-radius: 4px; box-shadow: 0 8px 32px rgba(0,0,0,0.7); border: 1px solid rgba(139,115,85,0.3);">
+<img src="https://codex.valleyofshadows.wiki/images/character-art/lotan.png" alt="Lotan" style="width: 280px; max-width: 80%; border-radius: 4px; box-shadow: 0 8px 32px rgba(0,0,0,0.7); border: 1px solid rgba(139,115,85,0.3);">
 </div>
 
 Lotan came to Venturia by sea and hasn't been able to leave it. A pirate — or near enough — somewhere in his late thirties or forties, he sails into the city's story already owing forces larger than himself: a Kraken he went looking for and managed to offend, and a stranger who slipped into the bargain at the last possible moment. He carries an Eldritch Knight's discipline and a Warlock's borrowed fire, and the easy manner of a man who has talked his way off worse decks than this one.
