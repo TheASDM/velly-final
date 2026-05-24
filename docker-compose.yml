@@ -61,6 +61,9 @@ services:
       - ./campaign-data:/app/data:ro
       # Writable volume for chat logs
       - ./logs:/app/logs
+      # Art Studio gallery — persisted images + manifest. Survives container
+      # rebuilds. Created on first generation if it doesn't exist on the host.
+      - ./generated-art:/app/generated-art
       # Repo mounted in for Eleventy to read markdown/templates live.
       # Eleventy + Pagefind live in /opt/eleventy (baked into the image),
       # so no anonymous-volume shadow is needed for /site/node_modules.

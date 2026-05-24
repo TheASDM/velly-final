@@ -29,6 +29,7 @@ WIKI_ROOTS = [
     ("House-Rules",         "/en/House-Rules"),
     ("Updates",             "/en/Updates"),
     ("Session-Chronicles",  "/en/Session-Chronicles"),
+    ("Tools",               "/en/Tools"),
     ("Archive",             "/en/Archive"),
 ]
 SKIP_DIR_NAMES = {"DM", "images"}

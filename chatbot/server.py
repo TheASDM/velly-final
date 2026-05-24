@@ -8,17 +8,20 @@ material is a separate concern (planned: a sibling chatbot fed from
 Venturia/DM/).
 """
 
+import base64
+import fcntl
 import json
 import logging
 import os
 import re
+import secrets
 import string
 import time
 from datetime import datetime, timezone
 from pathlib import Path
 
 import requests as http_requests
-from flask import Flask, jsonify, request
+from flask import Flask, abort, jsonify, request, send_from_directory
 
 # ── Configuration ────────────────────────────────────────────────────────────
 
@@ -38,6 +41,97 @@ RAG_AUTO_THRESHOLD = float(os.environ.get("RAG_AUTO_THRESHOLD", "0.3"))
 RAG_LIST_THRESHOLD = float(os.environ.get("RAG_LIST_THRESHOLD", "0.4"))
 
 TEMPERATURE = float(os.environ.get("TEMPERATURE", "0.2"))
+
+# ── Art Studio configuration ──────────────────────────────────────────────────
+# Generated images are persisted on a docker-mounted volume so they survive
+# container rebuilds and can be served as a shared gallery to the codex site.
+GALLERY_DIR = Path(os.environ.get("GALLERY_DIR", "/app/generated-art"))
+GALLERY_IMAGES_DIR = GALLERY_DIR / "images"
+GALLERY_MANIFEST = GALLERY_DIR / "gallery.json"
+GALLERY_MAX_ENTRIES = int(os.environ.get("GALLERY_MAX_ENTRIES", "2000"))
+GALLERY_PAGE_LIMIT = int(os.environ.get("GALLERY_PAGE_LIMIT", "60"))
+
+# Style preset keys are stable strings sent from the UI; the corresponding
+# prompt prefix is prepended to the user prompt at generation time. Keep
+# these tight — overly long prefixes eat into the user's prompt budget on
+# gpt-image-1 (which accepts up to ~4000 chars total).
+ART_STYLE_PRESETS = {
+    "valley": {
+        "label": "Valley of Shadows (House Style)",
+        "description": "The campaign's signature look: candlelit Gothic-Renaissance, autumn-saturated, fog-shrouded, gold and ink.",
+        "prefix": (
+            "In the Valley of Shadows house style: a dark Venetian fantasy "
+            "scene, gothic-renaissance architecture, candlelit, autumn-"
+            "saturated reds and ambers and deep browns, soft fog, masks "
+            "and gold filigree, painterly rendering, IM Fell English book-"
+            "plate aesthetic, deep cinematic blacks, restrained palette."
+        ),
+    },
+    "cinematic": {
+        "label": "Cinematic",
+        "description": "Anamorphic film still — dramatic lighting, shallow depth of field, color-graded.",
+        "prefix": (
+            "Cinematic still, anamorphic 2.39:1 framing, dramatic key light "
+            "and deep shadows, shallow depth of field, film grain, color "
+            "graded like a high-budget moody fantasy production."
+        ),
+    },
+    "illustrated": {
+        "label": "Illustrated",
+        "description": "Hand-painted, like a high-end fantasy book illustration.",
+        "prefix": (
+            "Hand-painted fantasy book illustration, rich painterly textures, "
+            "expressive linework, ink and gouache, the look of a Folio "
+            "Society or vintage Dragonlance interior plate."
+        ),
+    },
+    "watercolor": {
+        "label": "Watercolor & Parchment",
+        "description": "Soft watercolor wash on antique parchment, delicate ink linework.",
+        "prefix": (
+            "Soft watercolor wash on aged parchment, delicate sepia ink "
+            "outlines, gentle pigment bleeds, the look of an illuminated "
+            "manuscript or a Renaissance natural-philosophy plate."
+        ),
+    },
+    "ink": {
+        "label": "Ink & Woodcut",
+        "description": "High-contrast woodcut/etching, monochromatic with gold accents.",
+        "prefix": (
+            "Dark fantasy ink illustration in the style of a 16th-century "
+            "woodcut, heavy black linework, sharp contrast, etched cross-"
+            "hatching, monochromatic with restrained gold accents."
+        ),
+    },
+    "photoreal": {
+        "label": "Photorealistic",
+        "description": "Like a still from a prestige historical-fantasy production.",
+        "prefix": (
+            "Photorealistic, 50mm prime, naturalistic candlelight or moon-"
+            "light, fine detail in skin and fabric, the texture of a still "
+            "from a prestige historical-fantasy production."
+        ),
+    },
+    "sketch": {
+        "label": "Concept Sketch",
+        "description": "Quick exploratory pencil-on-parchment with atmospheric value.",
+        "prefix": (
+            "Loose exploratory concept sketch in graphite and sepia, on "
+            "aged parchment, light atmospheric value washes, expressive "
+            "energetic lines, room for the imagination to fill in."
+        ),
+    },
+    "stained-glass": {
+        "label": "Stained Glass",
+        "description": "Lead-cames and jewel tones — like the chapel windows of St. Viro's.",
+        "prefix": (
+            "Cathedral stained-glass composition, bold black lead cames, "
+            "luminous jewel tones, simplified forms, the look of the "
+            "chapel windows of a Venturian cathedral."
+        ),
+    },
+}
+DEFAULT_STYLE_KEY = "valley"
 
 RAG_SKIP_MAX_LEN = 15
 RAG_SKIP_PATTERNS = re.compile(
@@ -691,6 +785,90 @@ def write_log(role, text):
         logging.error("Log write failed: %s", e)
 
 
+# ── Art Studio gallery storage ───────────────────────────────────────────────
+# All persistence lives behind a manifest file + an images directory on the
+# mounted volume. Concurrent writes between gunicorn workers are serialized
+# with fcntl.flock — the manifest is small (one JSON list, ~200 bytes per
+# entry) so reading/writing it whole is fine well past 10k entries.
+
+def _ensure_gallery_dirs():
+    GALLERY_IMAGES_DIR.mkdir(parents=True, exist_ok=True)
+
+
+def _load_manifest():
+    """Read the manifest. Returns [] if missing or malformed."""
+    try:
+        with open(GALLERY_MANIFEST, "r", encoding="utf-8") as f:
+            data = json.load(f)
+        return data if isinstance(data, list) else []
+    except (FileNotFoundError, json.JSONDecodeError):
+        return []
+
+
+def _write_manifest_atomic(entries):
+    """Replace the manifest atomically so a crash mid-write can't corrupt it."""
+    _ensure_gallery_dirs()
+    tmp = GALLERY_MANIFEST.with_suffix(".json.tmp")
+    with open(tmp, "w", encoding="utf-8") as f:
+        json.dump(entries, f, separators=(",", ":"))
+    os.replace(tmp, GALLERY_MANIFEST)
+
+
+def _save_gallery_entry(image_bytes, prompt, full_prompt, style_key, created_by, model):
+    """Persist a generated image + append to the manifest.
+
+    Returns the new manifest entry on success, or None on disk failure
+    (in which case the caller should still return the image to the client —
+    persistence is a "nice to have," not a hard requirement).
+    """
+    try:
+        _ensure_gallery_dirs()
+        now = datetime.now(timezone.utc)
+        slug = now.strftime("%Y%m%d-%H%M%S") + "-" + secrets.token_hex(4)
+        filename = f"{slug}.png"
+        path = GALLERY_IMAGES_DIR / filename
+        with open(path, "wb") as f:
+            f.write(image_bytes)
+
+        entry = {
+            "id": slug,
+            "filename": filename,
+            "created_at": now.isoformat(),
+            "prompt": prompt[:1000],
+            "full_prompt": full_prompt[:2000],
+            "style": style_key,
+            "created_by": (created_by or "").strip()[:64] or None,
+            "model": model,
+        }
+
+        # Append under a coarse lock so concurrent workers don't trample
+        # each other's manifests. We re-read inside the lock to pick up any
+        # entries another worker wrote since we last loaded.
+        with open(GALLERY_MANIFEST.parent / ".manifest.lock", "a+") as lock:
+            try:
+                fcntl.flock(lock.fileno(), fcntl.LOCK_EX)
+                entries = _load_manifest()
+                entries.append(entry)
+                # Trim to the cap, keeping most recent.
+                if len(entries) > GALLERY_MAX_ENTRIES:
+                    overflow = entries[: len(entries) - GALLERY_MAX_ENTRIES]
+                    entries = entries[-GALLERY_MAX_ENTRIES:]
+                    # Best-effort cleanup of expired image files.
+                    for old in overflow:
+                        try:
+                            (GALLERY_IMAGES_DIR / old["filename"]).unlink()
+                        except OSError:
+                            pass
+                _write_manifest_atomic(entries)
+            finally:
+                fcntl.flock(lock.fileno(), fcntl.LOCK_UN)
+
+        return entry
+    except Exception:
+        logging.exception("Failed to persist gallery entry")
+        return None
+
+
 # ── Flask app ────────────────────────────────────────────────────────────────
 
 app = Flask(__name__)
@@ -772,10 +950,17 @@ def chat():
 
 @app.route("/api/generate-image", methods=["POST"])
 def generate_image():
-    """Generate an image via OpenAI's images API and return base64/url.
+    """Generate an image via OpenAI's images API + persist to the gallery.
+
+    Request body:
+        prompt      — required, the user's free-text description (<=3500 chars)
+        style       — optional, key into ART_STYLE_PRESETS (default "valley")
+        created_by  — optional, free-text attribution (<=64 chars), saved
+                      to the gallery manifest only — never sent to OpenAI
 
     Driven by env: OPENAI_KEY (required), IMAGE_MODEL (default gpt-image-1),
-    IMAGE_STYLE_PROMPT (optional — prepended to every prompt).
+    IMAGE_STYLE_PROMPT (legacy fallback — used only when no style key is
+    provided AND the legacy chatbot widget is calling).
     """
     body = request.get_json(silent=True) or {}
     prompt = body.get("prompt", "")
@@ -785,9 +970,19 @@ def generate_image():
     if len(prompt) > 3500:
         return jsonify({"error": "Prompt too long (max 3500 chars)"}), 400
 
+    style_key = (body.get("style") or "").strip().lower() or None
+    if style_key and style_key not in ART_STYLE_PRESETS:
+        return jsonify({
+            "error": f"Unknown style '{style_key}'. See /api/art-styles."
+        }), 400
+
+    created_by = body.get("created_by", "")
+    if not isinstance(created_by, str):
+        created_by = ""
+
     openai_key = os.environ.get("OPENAI_KEY", "")
     image_model = os.environ.get("IMAGE_MODEL", "gpt-image-1")
-    style_prefix = os.environ.get("IMAGE_STYLE_PROMPT", "").strip()
+    legacy_style_prefix = os.environ.get("IMAGE_STYLE_PROMPT", "").strip()
     image_quality = os.environ.get("IMAGE_QUALITY", "high")
     image_size = os.environ.get("IMAGE_SIZE", "1024x1024")
 
@@ -795,6 +990,19 @@ def generate_image():
         return jsonify({
             "error": "Image generation not configured — OPENAI_KEY missing in server env"
         }), 503
+
+    # Resolve the style prefix. Explicit `style` from the body wins; if none
+    # provided, fall back to the legacy env var so existing /art chatbot
+    # callers keep working unchanged.
+    if style_key:
+        style_prefix = ART_STYLE_PRESETS[style_key]["prefix"]
+        style_label = style_key
+    elif legacy_style_prefix:
+        style_prefix = legacy_style_prefix
+        style_label = "legacy"
+    else:
+        style_prefix = ""
+        style_label = None
 
     full_prompt = (style_prefix + "\n\n" + prompt).strip() if style_prefix else prompt
 
@@ -808,6 +1016,9 @@ def generate_image():
     # dall-e models don't, so only include it when we look like gpt-image-*.
     if image_model.startswith("gpt-image"):
         payload["quality"] = image_quality
+        # Ask explicitly for base64 — required for filesystem persistence.
+        # The API returns b64 by default for gpt-image-1 but URL for DALL·E.
+        payload["response_format"] = "b64_json"
 
     try:
         r = http_requests.post(
@@ -828,15 +1039,128 @@ def generate_image():
 
         data = r.json()
         item = (data.get("data") or [{}])[0]
-        return jsonify({
-            "url": item.get("url"),
-            "b64": item.get("b64_json"),
+        b64 = item.get("b64_json")
+        url = item.get("url")
+
+        # If we got a URL but no b64 (older DALL·E models), fetch the bytes so
+        # we can persist them. Best effort — if this fails we still return the
+        # URL to the client.
+        image_bytes = None
+        if b64:
+            try:
+                image_bytes = base64.b64decode(b64)
+            except (ValueError, TypeError):
+                logging.warning("Could not decode b64 image data")
+        elif url:
+            try:
+                img_resp = http_requests.get(url, timeout=60)
+                if img_resp.status_code == 200:
+                    image_bytes = img_resp.content
+            except Exception:
+                logging.warning("Could not fetch image URL for persistence")
+
+        gallery_entry = None
+        if image_bytes:
+            gallery_entry = _save_gallery_entry(
+                image_bytes=image_bytes,
+                prompt=prompt,
+                full_prompt=full_prompt,
+                style_key=style_label,
+                created_by=created_by,
+                model=image_model,
+            )
+
+        response = {
+            "url": url,
+            "b64": b64,
             "prompt": full_prompt,
             "model": image_model,
-        })
+            "style": style_label,
+        }
+        if gallery_entry:
+            response["gallery"] = {
+                "id": gallery_entry["id"],
+                "image_url": f"/api/gallery/image/{gallery_entry['filename']}",
+                "created_at": gallery_entry["created_at"],
+            }
+        return jsonify(response)
     except Exception as e:
         logging.exception("Image generation error")
         return jsonify({"error": "Image generation failed", "details": str(e)}), 500
+
+
+@app.route("/api/art-styles", methods=["GET"])
+def art_styles():
+    """Return the list of style presets the Art Studio UI can show."""
+    return jsonify({
+        "default": DEFAULT_STYLE_KEY,
+        "styles": [
+            {
+                "key": key,
+                "label": preset["label"],
+                "description": preset["description"],
+            }
+            for key, preset in ART_STYLE_PRESETS.items()
+        ],
+    })
+
+
+@app.route("/api/gallery", methods=["GET"])
+def list_gallery():
+    """List gallery entries, most-recent first.
+
+    Query params:
+        limit   — max entries to return (default 60, capped at 200)
+        offset  — pagination offset (default 0)
+    """
+    try:
+        limit = int(request.args.get("limit", GALLERY_PAGE_LIMIT))
+    except (TypeError, ValueError):
+        limit = GALLERY_PAGE_LIMIT
+    try:
+        offset = int(request.args.get("offset", 0))
+    except (TypeError, ValueError):
+        offset = 0
+    limit = max(1, min(limit, 200))
+    offset = max(0, offset)
+
+    entries = list(reversed(_load_manifest()))  # newest first
+    page = entries[offset:offset + limit]
+
+    # Don't leak `full_prompt` (it includes the style prefix; not useful to
+    # the UI and longer than necessary). Return public-safe fields only.
+    public = [
+        {
+            "id": e["id"],
+            "image_url": f"/api/gallery/image/{e['filename']}",
+            "prompt": e.get("prompt", ""),
+            "style": e.get("style"),
+            "created_by": e.get("created_by"),
+            "created_at": e.get("created_at"),
+            "model": e.get("model"),
+        }
+        for e in page
+    ]
+    return jsonify({
+        "total": len(entries),
+        "offset": offset,
+        "limit": limit,
+        "entries": public,
+    })
+
+
+@app.route("/api/gallery/image/<path:filename>", methods=["GET"])
+def gallery_image(filename):
+    """Serve a single persisted gallery image."""
+    # send_from_directory does its own safe-path validation against ..
+    # and absolute-path tricks, so this is safe to expose.
+    if not GALLERY_IMAGES_DIR.exists():
+        abort(404)
+    return send_from_directory(
+        GALLERY_IMAGES_DIR,
+        filename,
+        max_age=3600,
+    )
 
 
 @app.route("/health", methods=["GET"])

@@ -1032,6 +1032,7 @@ window.addEventListener('DOMContentLoaded', () => {
       label: 'Tools',
       defaultOpen: false,
       children: [
+        { kind: 'internal', url: '/en/Tools/art/', title: 'Art Studio' },
         { kind: 'external', url: 'https://loremaster.valleyofshadows.wiki/', title: 'Loremaster (Enzo)' },
         { kind: 'external', url: 'https://reference.valleyofshadows.wiki/enzo/', title: 'Using Enzo' }
       ]
@@ -1151,10 +1152,17 @@ window.addEventListener('DOMContentLoaded', () => {
       return `<a class="vos-page vos-page-external" href="${child.url}" target="_blank" rel="noopener">${child.title}</a>`;
     }
 
+    function renderInternalChild(child) {
+      const active = child.url.replace(/\/$/, '') === here ? ' vos-active' : '';
+      return `<a class="vos-page${active}" href="${child.url}">${child.title}</a>`;
+    }
+
     function renderGroup(group) {
-      const body = group.children.map(c =>
-        c.kind === 'tree' ? renderTreeChild(c) : renderExternalChild(c)
-      ).join('');
+      const body = group.children.map(c => {
+        if (c.kind === 'tree')     return renderTreeChild(c);
+        if (c.kind === 'internal') return renderInternalChild(c);
+        return renderExternalChild(c);
+      }).join('');
       return `<div class="vos-group" data-group-id="${group.id}">
         <button class="vos-group-head" type="button">
           <span class="vos-group-chevron">▸</span>${group.label}
