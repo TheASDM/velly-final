@@ -42,7 +42,7 @@ Every campaign map, from the continent down to the parchment plan of a single in
     <div class="vos-map-tile-art" style="background-image: url('/images/maps/OfficialFinalCompressed.jpg'); background-position: top left;"></div>
     <div class="vos-map-tile-body">
       <span class="vos-map-tile-title">Venturia — Quadrants</span>
-      <span class="vos-map-tile-desc">Four 90 MB tiles (NW/NE/SW/SE) stitched into one deep-zoom canvas. Sign-readable detail.</span>
+      <span class="vos-map-tile-desc">Four high-resolution tiles (NW/NE/SW/SE) stitched into one deep-zoom canvas. Sign-readable detail.</span>
     </div>
   </a>
 
@@ -73,4 +73,4 @@ Every campaign map, from the continent down to the parchment plan of a single in
 - **Fullscreen** maximizes the viewer for desktop browsing.
 - **Open Original** opens the source file in a new tab — useful for printing or downloading at full resolution.
 
-Some of the highest-detail maps (the Quadrants, VAVA, and Liminal/Respite) are very large files. The viewer streams them on demand, but a slow connection will notice the load. The compressed Eldryn and Official Venturia maps are best for casual browsing.
+Every map is served as a compressed JPEG sized for the viewer — pages load briskly even on the highest-detail quadrants. The Open Original link in each viewer's toolbar pulls the source file in a new tab for printing or download.

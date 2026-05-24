@@ -12,7 +12,7 @@ dateCreated: 2026-05-24T00:00:00.000Z
 
 A parchment rendering of the linked grounds of Liminal House and St. Viro's Respite — the orphanage that took in the fog children and the sanitarium that treats those for whom the fog never quite let go. Several party members were raised within these walls; one is currently a patient.
 
-{% set map = { slug: "liminal-respite", src: "/images/maps/liminal-respiteparchment_upscayl_5x_upscayl-standard-4x.png", caption: "Liminal House (left) and St. Viro's Respite (right) — orphanage and sanitarium, joined by the chapel garden." } %}
+{% set map = { slug: "liminal-respite", src: "/images/maps/liminal-respiteparchment_upscayl_5x_upscayl-standard-4x.jpg", caption: "Liminal House (left) and St. Viro's Respite (right) — orphanage and sanitarium, joined by the chapel garden." } %}
 {% include "partials/map-viewer.njk" %}
 
 ---

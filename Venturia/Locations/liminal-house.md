@@ -50,7 +50,7 @@ They help each other when they can. They keep each other's secrets. And they und
 
 A parchment-style plan of Liminal House alongside its neighbor, [St. Viro's Respite](/en/Venturia/Locations/viros-respite/). The orphanage occupies the left half of the grounds; the chapel garden joins it to the Respite on the right.
 
-{% set map = { slug: "liminal-loc", src: "/images/maps/liminal-respiteparchment_upscayl_5x_upscayl-standard-4x.png", caption: "Liminal House and St. Viro's Respite — orphanage and sanitarium, joined by the chapel garden." } %}
+{% set map = { slug: "liminal-loc", src: "/images/maps/liminal-respiteparchment_upscayl_5x_upscayl-standard-4x.jpg", caption: "Liminal House and St. Viro's Respite — orphanage and sanitarium, joined by the chapel garden." } %}
 {% include "partials/map-viewer.njk" %}
 
 The standalone [map page](/en/Venturia/Maps/liminal-respite/) opens this same viewer with more room to work.

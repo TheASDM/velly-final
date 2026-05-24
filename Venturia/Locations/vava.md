@@ -37,7 +37,7 @@ Students and faculty alike are recognized throughout the city by their distincti
 
 Pinch or scroll to zoom — every faculty hall, the five-floor library, and the courtyards between them are labeled at full resolution. The standalone [VAVA map page](/en/Venturia/Maps/vava/) opens this same viewer with more room to work.
 
-{% set map = { slug: "vava-loc", src: "/images/maps/vava_upscayl_5x_upscayl-standard-4x.png", caption: "VAVA — Veiled Tower, Binding Hall, Glamour Courts, and the Library's five floors." } %}
+{% set map = { slug: "vava-loc", src: "/images/maps/vava_upscayl_5x_upscayl-standard-4x.jpg", caption: "VAVA — Veiled Tower, Binding Hall, Glamour Courts, and the Library's five floors." } %}
 {% include "partials/map-viewer.njk" %}
 
 ---
