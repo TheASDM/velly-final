@@ -632,6 +632,13 @@ def build_store(entries: list[dict], output_path: Path, ollama_url: str,
             embedding = embed_text(entry["text"], ollama_url, api_key)
             if embedding is None:
                 failed += 1
+                preview = entry["text"][:160].replace("\n", " ")
+                print(
+                    f"  [FAILED] id={entry['id']} name={entry.get('name', '?')!r} "
+                    f"source={entry.get('source_file', '?')} chars={len(entry['text'])}\n"
+                    f"           preview: {preview!r}",
+                    file=sys.stderr,
+                )
                 continue
             results.append({
                 "id": entry["id"],
