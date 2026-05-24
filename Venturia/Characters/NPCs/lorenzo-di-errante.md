@@ -41,4 +41,4 @@ He belongs to the same lost generation of the di Errante house, and to the same 
 
 ## Connections
 - **[Vallombrosa](/en/Venturia/Locations/vallombrosa)** — The di Errante estate lost to the fog.
-- **[Marcello di Errante](/en/Venturia/Characters-NPCs/marcello-di-errante)** — Named as his brother in the surviving tellings.
+- **[Marcello di Errante](/en/Venturia/Characters/NPCs/marcello-di-errante)** — Named as his brother in the surviving tellings.

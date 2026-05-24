@@ -42,4 +42,4 @@ Deliberate in everything — her words, her silences, the unnerving beat she lea
 ## Connections
 - **[The Autumn Council](/en/Venturia/Government/autumn-council)** — Primo Navigante's seat.
 - **[The Ferriers' Confraternity](/en/Venturia/Locations/ferriers-confraternity)** — The canal order she leads.
-- **[Vincen Tidecaller](/en/Venturia/Characters-NPCs/vincen-tidecaller)** — The council member whose long-view caution most often aligns with hers.
+- **[Vincen Tidecaller](/en/Venturia/Characters/NPCs/vincen-tidecaller)** — The council member whose long-view caution most often aligns with hers.

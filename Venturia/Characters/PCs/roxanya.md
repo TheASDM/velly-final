@@ -54,7 +54,7 @@ Roxy doesn't actually have the training she claims. When she first arrived, she 
 ---
 
 ## Ties
-- **[Lotan](/en/Venturia/Characters-PCs/lotan)** — Met on the voyage to Venturia; her first guide to the city, and possibly her most genuine friendship.
-- **[Garl Glittergold](/en/Venturia/Characters-NPCs/garl-glittergold)** — Her divine patron, met over a failed robbery at the [Penny Shrine](/en/Venturia/Locations/penny-shrine).
-- **[Caravel "Car" Asteri](/en/Venturia/Characters-PCs/caravel-asteri)**, **[Valentro](/en/Venturia/Characters-PCs/valentro)**, **[Kryton Novelli](/en/Venturia/Characters-PCs/kryton-novelli)** — Threads in the web of acquaintances she's built across the Academy and the city.
+- **[Lotan](/en/Venturia/Characters/PCs/lotan)** — Met on the voyage to Venturia; her first guide to the city, and possibly her most genuine friendship.
+- **[Garl Glittergold](/en/Venturia/Characters/NPCs/garl-glittergold)** — Her divine patron, met over a failed robbery at the [Penny Shrine](/en/Venturia/Locations/penny-shrine).
+- **[Caravel "Car" Asteri](/en/Venturia/Characters/PCs/caravel-asteri)**, **[Valentro](/en/Venturia/Characters/PCs/valentro)**, **[Kryton Novelli](/en/Venturia/Characters/PCs/kryton-novelli)** — Threads in the web of acquaintances she's built across the Academy and the city.
 - **[Venturian Academy of Veiled Arts](/en/Venturia/Locations/vava)** — Where she's enrolled, and where she's keeping up appearances.

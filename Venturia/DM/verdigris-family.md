@@ -49,11 +49,11 @@ Cosimo uses Noname's fiancé to further his own ends, feeding him information gl
 - **A "sister steals one of her sister's mirrors" beat** jenred_ wants to write in — tied to the obsession thread above.
 - **Cosimo's survival:** Dustin's preference is that Cosimo survives the one-shot if possible — "but if the dude dies, the dude dies."
 - **Consequences:** jenred_ noted the Verdigris don't face real consequences for their actions *within* this one-shot.
-- **"Noname's fiancé"** here is the one-shot's version, with his Undertow ties deliberately kept vague; reconcile against campaign canon (**[Maruk Grommarg](/en/Venturia/Characters-NPCs/maruk-grommarg)**) before linking the two.
+- **"Noname's fiancé"** here is the one-shot's version, with his Undertow ties deliberately kept vague; reconcile against campaign canon (**[Maruk Grommarg](/en/Venturia/Characters/NPCs/maruk-grommarg)**) before linking the two.
 
 ---
 
 ## Connections
 - **[The Undertow](/en/Venturia/Locations/the-undertow)** — Buyer of the family's memory-extraction mirrors.
-- **[Noname](/en/Venturia/Characters-PCs/noname)** &amp; her fiancé (**[Maruk Grommarg](/en/Venturia/Characters-NPCs/maruk-grommarg)** in campaign canon) — Cosimo's instrument; Thalia's fixation.
-- **[Guildmaster Vincenzo Copper](/en/Venturia/Characters-NPCs/vincenzo-copper)** — The Metals Guild elder Cosimo mentored; a clean public face over a compromised guild.
+- **[Noname](/en/Venturia/Characters/PCs/noname)** &amp; her fiancé (**[Maruk Grommarg](/en/Venturia/Characters/NPCs/maruk-grommarg)** in campaign canon) — Cosimo's instrument; Thalia's fixation.
+- **[Guildmaster Vincenzo Copper](/en/Venturia/Characters/NPCs/vincenzo-copper)** — The Metals Guild elder Cosimo mentored; a clean public face over a compromised guild.

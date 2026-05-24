@@ -51,4 +51,4 @@ He sailed into Venturia from abroad and has stayed on land ever since. On the cr
 ---
 
 ## Ties
-- **[Roxanya "Roxy"](/en/Venturia/Characters-PCs/roxanya)** — Met on the voyage to Venturia; he was her first guide to the city, and the friendship stuck.
+- **[Roxanya "Roxy"](/en/Venturia/Characters/PCs/roxanya)** — Met on the voyage to Venturia; he was her first guide to the city, and the friendship stuck.

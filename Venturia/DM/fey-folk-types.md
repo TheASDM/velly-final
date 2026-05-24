@@ -37,4 +37,4 @@ What happens when a fey loses its identity entirely in the fractured Carnival. T
 ## Connections
 - **[The Reverie Solenne](/en/Venturia/DM/reverie-solenne)** — All three types originate from or were shaped by the Keeper's court.
 - **[The Leaked](/en/Venturia/DM/the-leaked)** — Carnival Fey and especially the Maskless are what leaks through as the prison degrades.
-- **[Roxanya](/en/Venturia/Characters-PCs/roxanya)** — Her mission to save the brownies is unknowingly about protecting sacred covenant fey.
+- **[Roxanya](/en/Venturia/Characters/PCs/roxanya)** — Her mission to save the brownies is unknowingly about protecting sacred covenant fey.

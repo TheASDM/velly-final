@@ -49,7 +49,7 @@ While he was working, his gardening shears broke, and for an instant he saw them
 ---
 
 ## Ties
-- **[Roxanya "Roxy"](/en/Venturia/Characters-PCs/roxanya)** — The only witness to the sword moment; now his trainer.
-- **[Noname](/en/Venturia/Characters-PCs/noname)** — Raised alongside him at Liminal House; he was present the night her fiancé proposed in the Gardens.
-- **[Orabella](/en/Venturia/Characters-PCs/orabella)** — Another of Liminal House's children, though they were never especially close.
-- **[Kryton Novelli](/en/Venturia/Characters-PCs/kryton-novelli)** — A face he may know in passing from the Gardens.
+- **[Roxanya "Roxy"](/en/Venturia/Characters/PCs/roxanya)** — The only witness to the sword moment; now his trainer.
+- **[Noname](/en/Venturia/Characters/PCs/noname)** — Raised alongside him at Liminal House; he was present the night her fiancé proposed in the Gardens.
+- **[Orabella](/en/Venturia/Characters/PCs/orabella)** — Another of Liminal House's children, though they were never especially close.
+- **[Kryton Novelli](/en/Venturia/Characters/PCs/kryton-novelli)** — A face he may know in passing from the Gardens.

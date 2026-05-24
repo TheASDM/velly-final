@@ -49,7 +49,7 @@ Car watched family friends strike a bargain with someone they didn't know. The f
 ---
 
 ## Ties
-- **[Roxanya "Roxy"](/en/Venturia/Characters-PCs/roxanya)** — An unlikely friendship, given that Roxy collects the very secrets Car despises.
-- **[Orabella](/en/Venturia/Characters-PCs/orabella)** — An indirect link through the stage: the performer Orabella adores, Celina Cross, is the elder sister of the friend Car lost at the Masquerade.
+- **[Roxanya "Roxy"](/en/Venturia/Characters/PCs/roxanya)** — An unlikely friendship, given that Roxy collects the very secrets Car despises.
+- **[Orabella](/en/Venturia/Characters/PCs/orabella)** — An indirect link through the stage: the performer Orabella adores, Celina Cross, is the elder sister of the friend Car lost at the Masquerade.
 - **[The Masquers' Sodality](/en/Venturia/Locations/masquers-sodality)** — Car's apprenticeship and entry into the city's mask-and-theater world.
 - **[The Covenant Archive](/en/Venturia/Locations/covenant-archive)** — The family business Car was raised in and rejected.

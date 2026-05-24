@@ -42,6 +42,6 @@ She is the elder sister of the young person who died at an Autumn Masquerade —
 ---
 
 ## Connections
-- **[Orabella](/en/Venturia/Characters-PCs/orabella)** — A devoted admirer who attends her performances whenever she can.
-- **[Caravel "Car" Asteri](/en/Venturia/Characters-PCs/caravel-asteri)** — Celina's younger sibling was the friend Car lost at the Autumn Masquerade.
+- **[Orabella](/en/Venturia/Characters/PCs/orabella)** — A devoted admirer who attends her performances whenever she can.
+- **[Caravel "Car" Asteri](/en/Venturia/Characters/PCs/caravel-asteri)** — Celina's younger sibling was the friend Car lost at the Autumn Masquerade.
 - **[The Amaranth Theater](/en/Venturia/Locations/amaranth-theater)** — Her stage and home in the High Quarter.

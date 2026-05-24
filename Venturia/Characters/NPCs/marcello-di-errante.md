@@ -41,4 +41,4 @@ A thousand years ago, the di Errante were the most powerful noble house on Serav
 ## Connections
 - **[Vallombrosa](/en/Venturia/Locations/vallombrosa)** — The lost di Errante estate, now the forbidden fog-zone at the city's edge.
 - **[The Amaranth Theater](/en/Venturia/Locations/amaranth-theater)** — Where *The Tragedy of Vallombrosa* is staged each Autumn Masquerade.
-- **[Lorenzo di Errante](/en/Venturia/Characters-NPCs/lorenzo-di-errante)** — Named as his brother in the surviving tellings.
+- **[Lorenzo di Errante](/en/Venturia/Characters/NPCs/lorenzo-di-errante)** — Named as his brother in the surviving tellings.

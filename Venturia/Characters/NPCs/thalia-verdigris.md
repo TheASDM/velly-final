@@ -40,6 +40,6 @@ A fixture of the city's social scene, and talented enough with reflection that h
 ---
 
 ## Connections
-- **[The Verdigris Family](/en/Venturia/Characters-NPCs/verdigris-family)** — Its youngest member.
-- **[Cosimo Verdigris](/en/Venturia/Characters-NPCs/cosimo-verdigris)** — Her father, who worries about the attention her talents might draw.
+- **[The Verdigris Family](/en/Venturia/Characters/NPCs/verdigris-family)** — Its youngest member.
+- **[Cosimo Verdigris](/en/Venturia/Characters/NPCs/cosimo-verdigris)** — Her father, who worries about the attention her talents might draw.
 - **[The Mirrorwright's Court](/en/Venturia/Locations/mirrorwrights-court)** — The family's guild workshop.
