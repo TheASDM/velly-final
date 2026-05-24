@@ -204,9 +204,15 @@
   }
 
   /* ── Enzo floating widget ───────────────────────────────────────────
-     Positioning comes from chatbot.css (fixed bottom-right). We only
-     bump z-index so it floats above the sidebar and search banner. */
+     Positioning comes from chatbot.css (fixed bottom-right). We bump
+     z-index so it floats above the sidebar, and on desktop widen the
+     widget + grow the message area to roughly 12 lines of chat. Mobile
+     is left to chatbot.css's defaults. */
   #chatbot-container { z-index: 1200 !important; }
+  @media (min-width: 769px) {
+    #chatbot-widget { width: 520px !important; max-height: 86vh !important; }
+    #chat-messages { min-height: 460px !important; max-height: calc(86vh - 52px - 62px) !important; }
+  }
 </style>
 </head>
 <body>
