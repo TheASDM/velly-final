@@ -12,7 +12,9 @@ dateCreated: 2026-05-22T00:00:00.000Z
 
 **Seat:** Primo Navigante, Ferriers' Confraternity &nbsp;|&nbsp; **Race:** Human &nbsp;|&nbsp; **Age:** Uncertain &nbsp;|&nbsp; *"It starts underneath."*
 
-<!-- TODO: portrait — supply a filename to add -->
+<div style="text-align: center; margin: 1.5rem 0 2rem;">
+<img src="https://codex.valleyofshadows.wiki/images/character-art/mareen.png" alt="Primo Navigante Old Maren" style="width: 280px; max-width: 80%; border-radius: 4px; box-shadow: 0 8px 32px rgba(0,0,0,0.7); border: 1px solid rgba(139,115,85,0.3);">
+</div>
 
 > *"The water knows. It's been restless for months."*
 

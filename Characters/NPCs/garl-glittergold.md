@@ -12,7 +12,9 @@ dateCreated: 2026-05-22T00:00:00.000Z
 
 **Type:** Deity &nbsp;|&nbsp; **Portfolio:** Trickery, illusion, protection, gems &nbsp;|&nbsp; *"The Watchful Protector."*
 
-<!-- TODO: portrait / holy symbol — supply a filename to add -->
+<div style="text-align: center; margin: 1.5rem 0 2rem;">
+<img src="https://codex.valleyofshadows.wiki/images/character-art/garl.png" alt="Garl Glittergold" style="width: 280px; max-width: 80%; border-radius: 4px; box-shadow: 0 8px 32px rgba(0,0,0,0.7); border: 1px solid rgba(139,115,85,0.3);">
+</div>
 
 The chief deity of gnomes — a god of trickery, illusion, gem-cutting, and the protection of his people, who is said to outwit his enemies rather than overpower them. Where gnomes travel, his name travels with them.
 

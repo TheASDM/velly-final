@@ -12,7 +12,9 @@ dateCreated: 2026-05-22T00:00:00.000Z
 
 **Seat:** Harbor-Lord &nbsp;|&nbsp; **Bloc:** Warehouse Consortium &nbsp;|&nbsp; **Race:** Human &nbsp;|&nbsp; **Age:** Early 40s &nbsp;|&nbsp; *"Everyone wants power and money. Fine — let's trade."*
 
-<!-- TODO: portrait — supply a filename to add -->
+<div style="text-align: center; margin: 1.5rem 0 2rem;">
+<img src="https://codex.valleyofshadows.wiki/images/character-art/constanza.png" alt="Constanza Marea" style="width: 280px; max-width: 80%; border-radius: 4px; box-shadow: 0 8px 32px rgba(0,0,0,0.7); border: 1px solid rgba(139,115,85,0.3);">
+</div>
 
 > *"What does everyone need to feel safe enough to let commerce resume?"*
 

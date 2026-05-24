@@ -13,6 +13,11 @@ dateCreated: 2026-05-22T00:00:00.000Z
 
 **House:** di Errante &nbsp;|&nbsp; **Era:** ~1,000 years past &nbsp;|&nbsp; *"The younger brother of the Tragedy."*
 
+
+<div style="text-align: center; margin: 1.5rem 0 2rem;">
+<img src="https://codex.valleyofshadows.wiki/images/character-art/lorenzo.png" alt="Lorenzo di Errante" style="width: 280px; max-width: 80%; border-radius: 4px; box-shadow: 0 8px 32px rgba(0,0,0,0.7); border: 1px solid rgba(139,115,85,0.3);">
+</div>
+
 Another name out of the legend of Vallombrosa — in most tellings, the younger di Errante brother. As with all of that story, what the city remembers contradicts itself, and none of it can be trusted.
 
 ---

@@ -13,7 +13,7 @@ dateCreated: 2026-05-22T00:00:00.000Z
 **Player:** Katelynn &nbsp;|&nbsp; **Class:** Bard — Masquerade (Satyr) &nbsp;|&nbsp; **Age:** 19 &nbsp;|&nbsp; **Pronouns:** they/them · he/him · she/her &nbsp;|&nbsp; *"Done with secrets."*
 
 <div style="text-align: center; margin: 1.5rem 0 2rem;">
-<img src="https://codex.valleyofshadows.wiki/images/car-profile.png" alt="Caravel 'Car' Asteri" style="width: 280px; max-width: 80%; border-radius: 4px; box-shadow: 0 8px 32px rgba(0,0,0,0.7); border: 1px solid rgba(139,115,85,0.3);">
+<img src="https://codex.valleyofshadows.wiki/images/character-art/car.png" alt="Caravel 'Car' Asteri" style="width: 280px; max-width: 80%; border-radius: 4px; box-shadow: 0 8px 32px rgba(0,0,0,0.7); border: 1px solid rgba(139,115,85,0.3);">
 </div>
 
 Caravel — Car to anyone who knows them — is nineteen, Venturia-born, and finished with secrets. The child of the family that keeps the [Covenant Archive](/en/Venturia/Locations/covenant-archive), raised beside a twin sister their parents preferred and a family business they walked away from, Car found their own road into the city's masks and music as an apprentice of the [Masquers' Sodality](/en/Venturia/Locations/masquers-sodality). The reason they hate secrets is simple and unhealed: a family friend made a quiet deal, and the next night Car found the body.

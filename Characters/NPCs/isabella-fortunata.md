@@ -13,6 +13,11 @@ dateCreated: 2026-05-22T00:00:00.000Z
 
 **Era:** Legendary &nbsp;|&nbsp; **Known as:** The heart of the Tragedy &nbsp;|&nbsp; *"The woman the story is about."*
 
+
+<div style="text-align: center; margin: 1.5rem 0 2rem;">
+<img src="https://codex.valleyofshadows.wiki/images/character-art/isabella.png" alt="Isabella Fortunata" style="width: 280px; max-width: 80%; border-radius: 4px; box-shadow: 0 8px 32px rgba(0,0,0,0.7); border: 1px solid rgba(139,115,85,0.3);">
+</div>
+
 The figure at the center of *The Tragedy of Vallombrosa* — the woman whose story the Amaranth restages every Autumn Masquerade, and around whom the whole legend of the di Errante turns. Whether she was ever a real person, and what truly became of her, is exactly the sort of thing the contradictory legends disagree about.
 
 ---

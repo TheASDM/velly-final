@@ -12,7 +12,9 @@ dateCreated: 2026-05-22T00:00:00.000Z
 
 **Seat:** Master of the Tidekeeper's Lodge &nbsp;|&nbsp; **Race:** Human &nbsp;|&nbsp; **Age:** 60s &nbsp;|&nbsp; *"It's older than your warehouses and your trade routes."*
 
-<!-- TODO: portrait — supply a filename to add -->
+<div style="text-align: center; margin: 1.5rem 0 2rem;">
+<img src="https://codex.valleyofshadows.wiki/images/character-art/Vincen.png" alt="Vincen Tidecaller" style="width: 280px; max-width: 80%; border-radius: 4px; box-shadow: 0 8px 32px rgba(0,0,0,0.7); border: 1px solid rgba(139,115,85,0.3);">
+</div>
 
 > *"The fog moves wrong. Something's waking that was sleeping."*
 

@@ -12,7 +12,9 @@ dateCreated: 2026-05-22T00:00:00.000Z
 
 **Seat:** Archmagister of VAVA &nbsp;|&nbsp; **Race:** High elf &nbsp;|&nbsp; **Age:** ~2 centuries &nbsp;|&nbsp; *"A matter for the Watch and the Abbey."*
 
-<!-- TODO: portrait — supply a filename to add -->
+<div style="text-align: center; margin: 1.5rem 0 2rem;">
+<img src="https://codex.valleyofshadows.wiki/images/character-art/dorian.png" alt="Archmagister Dorian Silvermarch" style="width: 280px; max-width: 80%; border-radius: 4px; box-shadow: 0 8px 32px rgba(0,0,0,0.7); border: 1px solid rgba(139,115,85,0.3);">
+</div>
 
 > *"These manifestations are a security matter and a spiritual one."*
 

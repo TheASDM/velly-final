@@ -12,6 +12,11 @@ dateCreated: 2026-05-22T00:00:00.000Z
 
 **House:** di Errante &nbsp;|&nbsp; **Era:** ~1,000 years past &nbsp;|&nbsp; *"A name out of the Tragedy."*
 
+
+<div style="text-align: center; margin: 1.5rem 0 2rem;">
+<img src="https://codex.valleyofshadows.wiki/images/character-art/marcello.png" alt="Marcello di Errante" style="width: 280px; max-width: 80%; border-radius: 4px; box-shadow: 0 8px 32px rgba(0,0,0,0.7); border: 1px solid rgba(139,115,85,0.3);">
+</div>
+
 A figure from the legend of Vallombrosa, named in the tellings of the di Errante story — the one that ended the great house and left the fog behind. Like everything about that night, the truth of him is buried under a thousand years of contradictory tales.
 
 ---
