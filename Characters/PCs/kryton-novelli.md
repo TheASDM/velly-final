@@ -8,12 +8,25 @@ editor: markdown
 dateCreated: 2026-05-22T00:00:00.000Z
 ---
 
-# Kryton Novelli
+<div style="display: flex; gap: 2rem; align-items: flex-start; margin: 0 0 2.5rem; padding: 1.5rem 1.75rem; background: linear-gradient(135deg, rgba(20, 18, 24, 0.55) 0%, rgba(36, 28, 18, 0.4) 100%); border: 1px solid rgba(139, 115, 85, 0.35); border-radius: 6px; box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6); flex-wrap: wrap;">
 
-**Player:** Shawn &nbsp;|&nbsp; **Class:** Warlock — formerly Wizard (Human) &nbsp;|&nbsp; **Age:** 40s &nbsp;|&nbsp; **Pronouns:** he/him &nbsp;|&nbsp; *"Certain he can outsmart his own pact."*
+<div style="flex: 1; min-width: 240px;">
+<div style="font-family: 'Cinzel', Georgia, serif; font-size: 2rem; letter-spacing: 0.08em; color: #d4a574; line-height: 1.1; margin-bottom: 0.75rem; text-transform: uppercase;">Kryton Novelli</div>
+<div style="height: 1px; background: linear-gradient(90deg, rgba(212, 165, 116, 0.7), rgba(139, 115, 85, 0.2) 60%, transparent); margin-bottom: 1.25rem;"></div>
 
-<div style="text-align: center; margin: 1.5rem 0 2rem;">
-<img src="https://codex.valleyofshadows.wiki/images/character-art/kryton.png" alt="Kryton Novelli" style="width: 280px; max-width: 80%; border-radius: 4px; box-shadow: 0 8px 32px rgba(0,0,0,0.7); border: 1px solid rgba(139,115,85,0.3);">
+<div style="font-family: Georgia, serif; font-size: 0.95rem; color: #e8dcc8; line-height: 1.85;">
+<div><span style="color: #8b7355; letter-spacing: 0.18em; text-transform: uppercase; font-size: 0.7rem; font-weight: 600;">Player</span> &nbsp;&middot;&nbsp; Shawn</div>
+<div><span style="color: #8b7355; letter-spacing: 0.18em; text-transform: uppercase; font-size: 0.7rem; font-weight: 600;">Class</span> &nbsp;&middot;&nbsp; Warlock — formerly Wizard (Human)</div>
+<div><span style="color: #8b7355; letter-spacing: 0.18em; text-transform: uppercase; font-size: 0.7rem; font-weight: 600;">Age</span> &nbsp;&middot;&nbsp; 40s</div>
+<div><span style="color: #8b7355; letter-spacing: 0.18em; text-transform: uppercase; font-size: 0.7rem; font-weight: 600;">Pronouns</span> &nbsp;&middot;&nbsp; he/him</div>
+</div>
+<div style="margin-top: 1.25rem; padding-left: 1rem; border-left: 2px solid rgba(212, 165, 116, 0.4); font-style: italic; color: rgba(212, 165, 116, 0.9); font-family: 'IM Fell English', Georgia, serif; font-size: 1rem;">"Certain he can outsmart his own pact."</div>
+</div>
+
+<div style="flex-shrink: 0;">
+<img src="https://codex.valleyofshadows.wiki/images/character-art/kryton.png" alt="Kryton Novelli" style="width: 240px; max-width: 100%; border-radius: 4px; box-shadow: 0 10px 36px rgba(0, 0, 0, 0.8); border: 1px solid rgba(139, 115, 85, 0.5);">
+</div>
+
 </div>
 
 Kryton Novelli is a fixture of the [Venturian Academy of Veiled Arts](/en/Venturia/Locations/vava) — a faculty mage in his middle years, brilliant and increasingly unsteady, with a standing tab and a worse habit at [The Undertow](/en/Venturia/Locations/the-undertow). He used to be a Wizard. The spells are gone now, along with most of what he'd learned and most of what he'd pieced together, taken straight out of his head. What he has instead is a Warlock's pact he won at a gambling table, a patron he can't name, and the stubborn belief that he's clever enough to wriggle out of the deal before it costs him.
