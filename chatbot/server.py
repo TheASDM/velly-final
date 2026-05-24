@@ -814,7 +814,10 @@ def _write_manifest_atomic(entries):
     os.replace(tmp, GALLERY_MANIFEST)
 
 
-def _save_gallery_entry(image_bytes, prompt, full_prompt, style_key, created_by, model):
+def _save_gallery_entry(
+    image_bytes, prompt, full_prompt, style_key, created_by, model,
+    enhanced_prompt=None, grounded_in=None,
+):
     """Persist a generated image + append to the manifest.
 
     Returns the new manifest entry on success, or None on disk failure
@@ -835,7 +838,9 @@ def _save_gallery_entry(image_bytes, prompt, full_prompt, style_key, created_by,
             "filename": filename,
             "created_at": now.isoformat(),
             "prompt": prompt[:1000],
-            "full_prompt": full_prompt[:2000],
+            "enhanced_prompt": (enhanced_prompt or "")[:2000] or None,
+            "grounded_in": list(grounded_in or [])[:8],
+            "full_prompt": full_prompt[:2400],
             "style": style_key,
             "created_by": (created_by or "").strip()[:64] or None,
             "model": model,
@@ -867,6 +872,156 @@ def _save_gallery_entry(image_bytes, prompt, full_prompt, style_key, created_by,
     except Exception:
         logging.exception("Failed to persist gallery entry")
         return None
+
+
+# ── Image-prompt enhancement (Haiku as image-prompt engineer) ────────────────
+# Takes the user's raw prompt + any campaign entities they named (resolved
+# against the RAG name/alias index) and lets Haiku rewrite it into a vivid,
+# specific image prompt that keeps named characters/locations faithful to
+# their canonical descriptions. Falls back to the raw prompt if Anthropic
+# is unreachable or returns an error — image generation never depends on
+# the enhancement step succeeding.
+
+ENHANCE_MODEL = os.environ.get("ENHANCE_MODEL", ANTHROPIC_MODEL)
+ENHANCE_TEMPERATURE = float(os.environ.get("ENHANCE_TEMPERATURE", "0.6"))
+ENHANCE_MAX_TOKENS = int(os.environ.get("ENHANCE_MAX_TOKENS", "900"))
+ENHANCE_TIMEOUT_S = int(os.environ.get("ENHANCE_TIMEOUT_S", "30"))
+ENHANCE_MAX_ENTITIES = int(os.environ.get("ENHANCE_MAX_ENTITIES", "6"))
+ENHANCE_ENTITY_CHARS = int(os.environ.get("ENHANCE_ENTITY_CHARS", "1400"))
+
+
+def _extract_campaign_entities(prompt):
+    """Find wiki entities (characters/locations/factions/lore) named in the
+    user's prompt. 5e rules entries are filtered out — they're useless for
+    image prompts. Returns up to ENHANCE_MAX_ENTITIES unique pages.
+    """
+    if not engine or not getattr(engine, "_name_index", None):
+        return []
+    matched = engine._keyword_match(prompt)
+    # Drop 5e reference entries (spells, monsters, items, etc.) — they
+    # match too aggressively (e.g. a prompt mentioning "fire" could pull
+    # every fire spell) and add nothing to image prompts.
+    matched = [
+        m for m in matched
+        if not m.get("source_file", "").startswith("5e-filtered/")
+    ]
+    # Dedupe by page so we don't get the same character three times when
+    # their wiki page was chunked into multiple vector entries.
+    seen, unique = set(), []
+    for m in matched:
+        pid = m.get("page_id", m["id"])
+        if pid in seen:
+            continue
+        seen.add(pid)
+        unique.append(m)
+        if len(unique) >= ENHANCE_MAX_ENTITIES:
+            break
+    return unique
+
+
+def _enhance_image_prompt(raw_prompt, style_key, matched_entries):
+    """Ask Haiku to rewrite the user's prompt into a vivid image prompt,
+    weaving in the canonical descriptions of any named campaign entities.
+
+    Returns a dict {prompt, grounded_in[]} on success, or the raw prompt
+    string when Anthropic is unavailable. Never raises.
+    """
+    fallback = {"prompt": raw_prompt, "grounded_in": []}
+    if not ANTHROPIC_API_KEY:
+        return fallback
+
+    grounded_in = []
+    entity_blocks = []
+    for m in matched_entries:
+        name = m.get("name") or "Unknown"
+        grounded_in.append(name)
+        snippet = (m.get("text") or "")[:ENHANCE_ENTITY_CHARS]
+        entity_blocks.append(f"### {name}\n{snippet}")
+    entity_section = (
+        "\n\n".join(entity_blocks) if entity_blocks
+        else "(none named — invent nothing about Vallombrosa beyond the player's words)"
+    )
+
+    style_label = ART_STYLE_PRESETS.get(style_key or "", {}).get("label") or "(no style preset)"
+
+    system = (
+        "You are an image-prompt engineer for VALLOMBROSA, a dark Venetian "
+        "fantasy D&D campaign set in the city of Venturia. Your job is to "
+        "take a player's rough description and turn it into a single vivid, "
+        "specific prompt for OpenAI's gpt-image model.\n\n"
+        "ABSOLUTE RULES:\n"
+        "1. Output ONLY the final image-prompt text. No preamble, no "
+        "headings, no quotes around the output, no commentary.\n"
+        "2. 3-7 sentences. Be specific about subject, composition, lighting, "
+        "atmosphere, key visual details, but DO NOT exceed 8 sentences.\n"
+        "3. If a player names a CHARACTER or LOCATION listed in the "
+        "CAMPAIGN ENTITIES section, faithfully weave their canonical "
+        "visual details (appearance, distinctive features, setting) into "
+        "the prompt. Stay true to the page — do NOT invent new physical "
+        "traits, races, ages, or items not in the source.\n"
+        "4. DO NOT prepend a style description (e.g. 'cinematic,' "
+        "'watercolor', 'illustrated'). The system prepends a style "
+        "separately. Describe only the scene itself.\n"
+        "5. If the prompt is unsafe, sexual, or violent in a way that "
+        "image safety filters would refuse, soften it while preserving "
+        "creative intent. If you can't soften it without losing meaning, "
+        "output the player's prompt verbatim and let OpenAI's filter "
+        "handle it.\n"
+        "6. Never mention this rewriting process. Never say things like "
+        "'in the style of' or 'inspired by'. Just describe the image.\n"
+    )
+
+    user_msg = (
+        f"PLAYER'S DESCRIPTION:\n{raw_prompt}\n\n"
+        f"CHOSEN STYLE (for context only — do NOT mention it in output): "
+        f"{style_label}\n\n"
+        f"CAMPAIGN ENTITIES (for grounding):\n{entity_section}\n\n"
+        f"Rewrite the description as a single vivid image-generation "
+        f"prompt now."
+    )
+
+    payload = {
+        "model": ENHANCE_MODEL,
+        "max_tokens": ENHANCE_MAX_TOKENS,
+        "temperature": ENHANCE_TEMPERATURE,
+        "system": system,
+        "messages": [{"role": "user", "content": user_msg}],
+    }
+
+    try:
+        r = http_requests.post(
+            "https://api.anthropic.com/v1/messages",
+            headers={
+                "x-api-key": ANTHROPIC_API_KEY,
+                "anthropic-version": "2023-06-01",
+                "content-type": "application/json",
+            },
+            json=payload,
+            timeout=ENHANCE_TIMEOUT_S,
+        )
+        if r.status_code != 200:
+            logging.warning(
+                "Prompt enhancement %d: %s", r.status_code, r.text[:200]
+            )
+            return fallback
+        data = r.json()
+        for block in data.get("content") or []:
+            if block.get("type") == "text":
+                text = (block.get("text") or "").strip()
+                # Strip a wrapping pair of quotes if Haiku ignored rule #1.
+                if len(text) > 2 and text[0] in '"“' and text[-1] in '"”':
+                    text = text[1:-1].strip()
+                if text:
+                    logging.info(
+                        "  Prompt enhanced: %d → %d chars, grounded in %s",
+                        len(raw_prompt), len(text),
+                        ", ".join(grounded_in) or "nothing",
+                    )
+                    return {"prompt": text, "grounded_in": grounded_in}
+        return fallback
+    except Exception:
+        logging.exception("Prompt enhancement crashed")
+        return fallback
 
 
 # ── Flask app ────────────────────────────────────────────────────────────────
@@ -980,6 +1135,14 @@ def generate_image():
     if not isinstance(created_by, str):
         created_by = ""
 
+    # `enhance` defaults to True — Haiku rewrites the prompt and grounds any
+    # named campaign entities in their canonical descriptions. Clients can
+    # opt out by passing enhance: false (useful when they've already
+    # hand-crafted a polished prompt and don't want it touched).
+    enhance = body.get("enhance", True)
+    if not isinstance(enhance, bool):
+        enhance = bool(enhance)
+
     openai_key = os.environ.get("OPENAI_KEY", "")
     image_model = os.environ.get("IMAGE_MODEL", "gpt-image-1")
     legacy_style_prefix = os.environ.get("IMAGE_STYLE_PROMPT", "").strip()
@@ -1004,7 +1167,25 @@ def generate_image():
         style_prefix = ""
         style_label = None
 
-    full_prompt = (style_prefix + "\n\n" + prompt).strip() if style_prefix else prompt
+    # Have Haiku turn the raw prompt into a vivid scene description,
+    # weaving in canonical descriptions for any named campaign entities.
+    # Falls back to the raw prompt on any failure.
+    enhanced_prompt = None
+    grounded_in = []
+    if enhance:
+        matched = _extract_campaign_entities(prompt)
+        result = _enhance_image_prompt(prompt, style_key, matched)
+        if isinstance(result, dict):
+            enhanced_prompt = result.get("prompt")
+            grounded_in = result.get("grounded_in") or []
+
+    # The text we actually send to OpenAI is: style prefix + enhanced (or
+    # raw) prompt. Keep the original raw prompt around for the gallery so
+    # human readers see what the player typed, not the rewrite.
+    image_prompt_body = enhanced_prompt or prompt
+    full_prompt = (
+        style_prefix + "\n\n" + image_prompt_body
+    ).strip() if style_prefix else image_prompt_body
 
     payload = {
         "model": image_model,
@@ -1068,12 +1249,17 @@ def generate_image():
                 style_key=style_label,
                 created_by=created_by,
                 model=image_model,
+                enhanced_prompt=enhanced_prompt,
+                grounded_in=grounded_in,
             )
 
         response = {
             "url": url,
             "b64": b64,
             "prompt": full_prompt,
+            "raw_prompt": prompt,
+            "enhanced_prompt": enhanced_prompt,
+            "grounded_in": grounded_in,
             "model": image_model,
             "style": style_label,
         }
@@ -1134,6 +1320,8 @@ def list_gallery():
             "id": e["id"],
             "image_url": f"/api/gallery/image/{e['filename']}",
             "prompt": e.get("prompt", ""),
+            "enhanced_prompt": e.get("enhanced_prompt"),
+            "grounded_in": e.get("grounded_in") or [],
             "style": e.get("style"),
             "created_by": e.get("created_by"),
             "created_at": e.get("created_at"),

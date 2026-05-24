@@ -180,6 +180,110 @@ dateCreated: 2026-05-24T00:00:00.000Z
   font-size: 0.92rem;
 }
 
+/* "Let Enzo refine my prompt" checkbox row ─────────────────────────── */
+.vos-art-enhance-toggle {
+  display: flex; gap: 0.8rem; align-items: flex-start;
+  cursor: pointer;
+  padding: 0.85rem 0.9rem;
+  background: rgba(7, 6, 10, 0.55);
+  border: 1px solid var(--art-border);
+  border-radius: 5px;
+  transition: border-color 0.15s, background 0.15s;
+}
+.vos-art-enhance-toggle:hover { border-color: var(--art-border-strong); }
+.vos-art-enhance-toggle input[type="checkbox"] {
+  flex: 0 0 auto;
+  width: 1.05rem; height: 1.05rem; margin: 0.2rem 0 0;
+  accent-color: var(--art-gold);
+}
+.vos-art-enhance-text {
+  display: flex; flex-direction: column; gap: 0.2rem;
+}
+.vos-art-enhance-text strong {
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--art-gold);
+  font-weight: 700;
+}
+.vos-art-enhance-text em {
+  font-family: 'Crimson Text', Georgia, serif;
+  font-style: italic;
+  font-size: 0.85rem;
+  color: rgba(232, 220, 200, 0.72);
+  line-height: 1.35;
+}
+
+/* "How Enzo saw it" disclosure ─────────────────────────────────────── */
+.vos-art-details {
+  margin-top: 0.9rem;
+  text-align: left;
+  border-top: 1px dashed rgba(139, 115, 85, 0.25);
+  padding-top: 0.7rem;
+}
+.vos-art-details > summary {
+  cursor: pointer;
+  list-style: none;
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.62rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--art-gold-dim);
+  padding: 0.2rem 0;
+}
+.vos-art-details > summary::-webkit-details-marker { display: none; }
+.vos-art-details > summary::before {
+  content: '▸';
+  display: inline-block;
+  margin-right: 0.45rem;
+  transition: transform 0.18s;
+  color: var(--art-gold);
+  font-size: 0.72rem;
+}
+.vos-art-details[open] > summary::before { transform: rotate(90deg); }
+.vos-art-details > summary:hover { color: var(--art-gold); }
+.vos-art-enhanced {
+  margin: 0.55rem 0 0;
+  padding: 0.7rem 0.9rem;
+  background: rgba(13, 11, 17, 0.6);
+  border-left: 2px solid rgba(212, 165, 116, 0.45);
+  border-radius: 0 3px 3px 0;
+  font-family: 'Crimson Text', Georgia, serif;
+  font-style: italic;
+  color: rgba(232, 220, 200, 0.85);
+  font-size: 0.92rem;
+  line-height: 1.5;
+  white-space: pre-wrap;
+}
+
+/* Grounded-entity chips (gallery cards + lightbox) ─────────────────── */
+.vos-art-grounded {
+  display: flex; flex-wrap: wrap; gap: 0.3rem;
+  margin-top: 0.45rem;
+}
+.vos-art-grounded-chip {
+  display: inline-flex; align-items: center;
+  padding: 0.18rem 0.55rem;
+  background: rgba(212, 165, 116, 0.12);
+  color: var(--art-gold);
+  border: 1px solid rgba(212, 165, 116, 0.35);
+  border-radius: 999px;
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.55rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.vos-art-grounded-chip::before {
+  content: '✦';
+  margin-right: 0.3rem;
+  font-size: 0.6rem;
+  color: var(--art-gold);
+  opacity: 0.85;
+}
+
 /* Gallery grid ─────────────────────────────────────────────────────── */
 .vos-art-gallery-head {
   display: flex; align-items: baseline; justify-content: space-between; gap: 1rem;
@@ -360,6 +464,15 @@ Generate campaign art with Enzo's image model and contribute to the shared playe
       <label class="vos-art-field-label" for="vos-art-name">Created by <span style="opacity:0.6">(optional)</span></label>
       <input id="vos-art-name" class="vos-art-name" type="text" maxlength="64" placeholder="Your name or handle">
     </div>
+    <div class="vos-art-field" style="flex: 1 1 320px; align-self: end;">
+      <label class="vos-art-enhance-toggle" for="vos-art-enhance">
+        <input id="vos-art-enhance" type="checkbox" checked>
+        <span class="vos-art-enhance-text">
+          <strong>Let Enzo refine my prompt</strong>
+          <em>Names of campaign characters / locations get expanded into their canonical descriptions, and the prompt is rewritten for image quality.</em>
+        </span>
+      </label>
+    </div>
   </div>
 
   <div class="vos-art-actions">
@@ -370,6 +483,10 @@ Generate campaign art with Enzo's image model and contribute to the shared playe
   <div id="vos-art-latest" class="vos-art-latest">
     <img id="vos-art-latest-img" alt="Most recent generation">
     <div id="vos-art-latest-caption" class="vos-art-latest-caption"></div>
+    <details id="vos-art-latest-details" class="vos-art-details" style="display:none;">
+      <summary>How Enzo saw it</summary>
+      <div id="vos-art-latest-enhanced" class="vos-art-enhanced"></div>
+    </details>
   </div>
 </section>
 
@@ -397,19 +514,24 @@ Generate campaign art with Enzo's image model and contribute to the shared playe
   const STYLE_KEY = 'velly.artStudio.lastStyle';
 
   const $ = (id) => document.getElementById(id);
-  const promptEl   = $('vos-art-prompt');
-  const nameEl     = $('vos-art-name');
-  const stylesEl   = $('vos-art-styles');
-  const generateEl = $('vos-art-generate');
-  const statusEl   = $('vos-art-status');
-  const latestEl   = $('vos-art-latest');
-  const latestImg  = $('vos-art-latest-img');
-  const latestCap  = $('vos-art-latest-caption');
-  const galleryEl  = $('vos-art-gallery');
-  const countEl    = $('vos-art-gallery-count');
-  const lightbox   = $('vos-art-lightbox');
-  const lightImg   = $('vos-art-lightbox-img');
-  const lightCap   = $('vos-art-lightbox-caption');
+  const promptEl       = $('vos-art-prompt');
+  const nameEl         = $('vos-art-name');
+  const stylesEl       = $('vos-art-styles');
+  const enhanceEl      = $('vos-art-enhance');
+  const generateEl     = $('vos-art-generate');
+  const statusEl       = $('vos-art-status');
+  const latestEl       = $('vos-art-latest');
+  const latestImg      = $('vos-art-latest-img');
+  const latestCap      = $('vos-art-latest-caption');
+  const latestDetails  = $('vos-art-latest-details');
+  const latestEnhanced = $('vos-art-latest-enhanced');
+  const galleryEl      = $('vos-art-gallery');
+  const countEl        = $('vos-art-gallery-count');
+  const lightbox       = $('vos-art-lightbox');
+  const lightImg       = $('vos-art-lightbox-img');
+  const lightCap       = $('vos-art-lightbox-caption');
+
+  const ENHANCE_KEY = 'velly.artStudio.enhance';
 
   let selectedStyle = null;
   let defaultStyle = 'valley';
@@ -419,6 +541,15 @@ Generate campaign art with Enzo's image model and contribute to the shared playe
     const lastName = localStorage.getItem(NAME_KEY);
     if (lastName) nameEl.value = lastName;
   } catch (e) {}
+
+  try {
+    const lastEnhance = localStorage.getItem(ENHANCE_KEY);
+    if (lastEnhance === '0') enhanceEl.checked = false;
+  } catch (e) {}
+
+  enhanceEl.addEventListener('change', () => {
+    try { localStorage.setItem(ENHANCE_KEY, enhanceEl.checked ? '1' : '0'); } catch (e) {}
+  });
 
   nameEl.addEventListener('change', () => {
     try { localStorage.setItem(NAME_KEY, nameEl.value); } catch (e) {}
@@ -498,6 +629,17 @@ Generate campaign art with Enzo's image model and contribute to the shared playe
       const meta = document.createElement('div');
       meta.className = 'vos-art-card-meta';
       meta.textContent = e.prompt || '(no prompt recorded)';
+      if (e.grounded_in && e.grounded_in.length) {
+        const chips = document.createElement('div');
+        chips.className = 'vos-art-grounded';
+        e.grounded_in.slice(0, 3).forEach(name => {
+          const chip = document.createElement('span');
+          chip.className = 'vos-art-grounded-chip';
+          chip.textContent = name;
+          chips.appendChild(chip);
+        });
+        meta.appendChild(chips);
+      }
       const byline = document.createElement('span');
       byline.className = 'vos-art-card-byline';
       const who = e.created_by ? `By ${e.created_by}` : 'Anonymous';
@@ -526,7 +668,21 @@ Generate campaign art with Enzo's image model and contribute to the shared playe
     lightImg.src = API_BASE + e.image_url;
     lightImg.alt = e.prompt || '';
     const who = e.created_by ? `By ${escapeHtml(e.created_by)}` : 'Anonymous';
-    lightCap.innerHTML = `${escapeHtml(e.prompt || '(no prompt recorded)')}<div class="vos-art-lightbox-byline">${who} · ${fmtRel(e.created_at)}</div>`;
+    let html = escapeHtml(e.prompt || '(no prompt recorded)');
+    if (e.grounded_in && e.grounded_in.length) {
+      const chips = e.grounded_in.map(n =>
+        `<span class="vos-art-grounded-chip">${escapeHtml(n)}</span>`
+      ).join('');
+      html += `<div class="vos-art-grounded" style="justify-content:center;margin-top:0.55rem;">${chips}</div>`;
+    }
+    if (e.enhanced_prompt && e.enhanced_prompt !== e.prompt) {
+      html += `<details class="vos-art-details" style="margin-top:0.8rem;">
+        <summary>How Enzo saw it</summary>
+        <div class="vos-art-enhanced">${escapeHtml(e.enhanced_prompt)}</div>
+      </details>`;
+    }
+    html += `<div class="vos-art-lightbox-byline">${who} · ${fmtRel(e.created_at)}</div>`;
+    lightCap.innerHTML = html;
     lightbox.classList.add('is-open');
     lightbox.setAttribute('aria-hidden', 'false');
   }
@@ -558,8 +714,13 @@ Generate campaign art with Enzo's image model and contribute to the shared playe
     }
     generateEl.disabled = true;
     generateEl.textContent = 'Generating…';
-    setStatus('Composing — this takes 30–90 seconds.');
+    const enhance = !!enhanceEl.checked;
+    setStatus(enhance
+      ? 'Composing — Enzo is refining your prompt, then drawing. 30–90 seconds.'
+      : 'Composing — this takes 30–90 seconds.');
     latestEl.classList.remove('is-shown');
+    latestDetails.style.display = 'none';
+    latestEnhanced.innerHTML = '';
 
     try {
       const res = await fetch(API_BASE + '/api/generate-image', {
@@ -569,6 +730,7 @@ Generate campaign art with Enzo's image model and contribute to the shared playe
           prompt,
           style: selectedStyle,
           created_by: nameEl.value.trim(),
+          enhance,
         }),
       });
       if (!res.ok) {
@@ -584,12 +746,27 @@ Generate campaign art with Enzo's image model and contribute to the shared playe
       if (src) {
         latestImg.src = src;
         latestImg.alt = prompt;
-        latestCap.textContent = data.gallery
+        let captionHtml = data.gallery
           ? 'Saved to the shared gallery below.'
           : '(could not save to gallery — image shown locally only)';
+        if (data.grounded_in && data.grounded_in.length) {
+          const chips = data.grounded_in.map(n =>
+            `<span class="vos-art-grounded-chip">${escapeHtml(n)}</span>`
+          ).join('');
+          captionHtml += `<div class="vos-art-grounded" style="justify-content:center;margin-top:0.5rem;">${chips}</div>`;
+        }
+        latestCap.innerHTML = captionHtml;
+        if (data.enhanced_prompt && data.enhanced_prompt !== prompt) {
+          latestEnhanced.textContent = data.enhanced_prompt;
+          latestDetails.style.display = 'block';
+        }
         latestEl.classList.add('is-shown');
       }
-      setStatus('Done. The shared gallery refreshed below.');
+      let doneMsg = 'Done. The shared gallery refreshed below.';
+      if (data.grounded_in && data.grounded_in.length) {
+        doneMsg = `Done — grounded in ${data.grounded_in.join(', ')}.`;
+      }
+      setStatus(doneMsg);
       promptEl.value = '';
       // Give the server a beat to finish flushing the manifest, then refresh.
       setTimeout(loadGallery, 250);
