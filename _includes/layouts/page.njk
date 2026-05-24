@@ -185,9 +185,9 @@
       drop-shadow(0 0 14px rgba(212, 165, 116, 0.18));
     transition: filter 0.3s, transform 0.4s ease;
   }
-  /* Mobile logo (vallombrosa-logo.png) is hidden by default; the
-     phone breakpoint below swaps it in for the wider smalltitle.png. */
-  .vos-logo-mobile { display: none; }
+  /* Mobile/desktop logo swap is handled by the <picture> element in the
+     header (only one of the two PNGs is fetched, never both). The
+     selected <img> still picks up .vos-logo-wordmark for sizing. */
   .vos-topnav .vos-logo:hover .vos-logo-wordmark {
     transform: scale(1.03);
     filter:
@@ -326,8 +326,6 @@
      and let the ENZO button keep its full label so it reads as a real
      button rather than just a spark icon. Tablets (≥768) keep Foundry. */
   @media (max-width: 767px) {
-    .vos-logo-desktop { display: none; }
-    .vos-logo-mobile { display: block; }
     .vos-topnav .vos-logo-wordmark { height: 42px; }
     .vos-quest-btn { display: none !important; }
     .vos-enzo-label-full { display: inline !important; }
@@ -787,8 +785,10 @@
 <nav class="vos-topnav">
   <button class="vos-hamburger" id="vos-hamburger" aria-label="Open menu" type="button">☰</button>
   <a href="/" class="vos-logo" aria-label="Valley of Shadows home">
-    <img src="/images/smalltitle.png" alt="Valley of Shadows" class="vos-logo-wordmark vos-logo-desktop">
-    <img src="/images/vallombrosa-logo.png" alt="Valley of Shadows" class="vos-logo-wordmark vos-logo-mobile">
+    <picture>
+      <source media="(max-width: 767px)" srcset="/images/vallombrosa-logo.png">
+      <img src="/images/smalltitle.png" alt="Valley of Shadows" class="vos-logo-wordmark">
+    </picture>
   </a>
   <div class="vos-topnav-spacer"></div>
   <div class="vos-topnav-search">
