@@ -9,13 +9,23 @@ dateCreated: 2026-05-22T00:00:00.000Z
 ---
 
 <!-- DM NOTE (not rendered): Lorenzo is the campaign's deepest historical villain. This page is deliberately surface-only. Do NOT add the bargain, the crime, the Keeper, or Tartuzi to the public page. -->
-# Lorenzo di Errante
+<div style="display: flex; gap: 2rem; align-items: flex-start; margin: 0 0 2.5rem; padding: 1.5rem 1.75rem; background: linear-gradient(135deg, rgba(20, 18, 24, 0.55) 0%, rgba(36, 28, 18, 0.4) 100%); border: 1px solid rgba(139, 115, 85, 0.35); border-radius: 6px; box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6); flex-wrap: wrap;">
 
-**House:** di Errante &nbsp;|&nbsp; **Era:** ~1,000 years past &nbsp;|&nbsp; *"The younger brother of the Tragedy."*
+<div style="flex: 1; min-width: 240px;">
+<div style="font-family: 'Cinzel', Georgia, serif; font-size: 2rem; letter-spacing: 0.08em; color: #d4a574; line-height: 1.1; margin-bottom: 0.75rem; text-transform: uppercase;">Lorenzo di Errante</div>
+<div style="height: 1px; background: linear-gradient(90deg, rgba(212, 165, 116, 0.7), rgba(139, 115, 85, 0.2) 60%, transparent); margin-bottom: 1.25rem;"></div>
 
+<div style="font-family: Georgia, serif; font-size: 0.95rem; color: #e8dcc8; line-height: 1.85;">
+<div><span style="color: #8b7355; letter-spacing: 0.18em; text-transform: uppercase; font-size: 0.7rem; font-weight: 600;">House</span> &nbsp;&middot;&nbsp; di Errante</div>
+<div><span style="color: #8b7355; letter-spacing: 0.18em; text-transform: uppercase; font-size: 0.7rem; font-weight: 600;">Era</span> &nbsp;&middot;&nbsp; ~1,000 years past</div>
+</div>
+<div style="margin-top: 1.25rem; padding-left: 1rem; border-left: 2px solid rgba(212, 165, 116, 0.4); font-style: italic; color: rgba(212, 165, 116, 0.9); font-family: 'IM Fell English', Georgia, serif; font-size: 1rem;">"The younger brother of the Tragedy."</div>
+</div>
 
-<div style="text-align: center; margin: 1.5rem 0 2rem;">
-<img src="https://codex.valleyofshadows.wiki/images/character-art/lorenzo.png" alt="Lorenzo di Errante" style="width: 280px; max-width: 80%; border-radius: 4px; box-shadow: 0 8px 32px rgba(0,0,0,0.7); border: 1px solid rgba(139,115,85,0.3);">
+<div style="flex-shrink: 0;">
+<img src="https://codex.valleyofshadows.wiki/images/character-art/lorenzo.png" alt="Lorenzo di Errante" style="width: 240px; max-width: 100%; border-radius: 4px; box-shadow: 0 10px 36px rgba(0, 0, 0, 0.8); border: 1px solid rgba(139, 115, 85, 0.5);">
+</div>
+
 </div>
 
 Another name out of the legend of Vallombrosa — in most tellings, the younger di Errante brother. As with all of that story, what the city remembers contradicts itself, and none of it can be trusted.
