@@ -820,6 +820,16 @@ Generate campaign art with Enzo's image model and contribute to the shared playe
 
   const ENHANCE_KEY = 'velly.artStudio.enhance';
 
+  // The top nav has `backdrop-filter`, which creates a stacking context.
+  // Our lightbox sits inside <article> inside <main>, where its z-index
+  // only competes within the article's context — so it ends up rendered
+  // below the nav even with z-index 2000. Hoisting it directly under
+  // <body> puts it in the same stacking context as the nav, where its
+  // z-index actually wins.
+  if (lightbox && lightbox.parentNode !== document.body) {
+    document.body.appendChild(lightbox);
+  }
+
   let selectedStyle = null;
   let defaultStyle = 'valley';
 
