@@ -95,31 +95,31 @@
   "player_characters": {
     "Lotan": {
       "aliases": ["Lo", "Lot", "Kenny", "the tiefling pirate"],
-      "desc": "Red-skinned tiefling man, late 30s-40s; large curved dark ram horns, black hair pulled back, salt-and-pepper beard, pointed ears; muscular; loose white shirt under a brown leather jerkin; easy roguish grin. A pirate's bearing."
+      "desc": "Tiefling man (he/him), late 30s–40s; red skin; chunky, broad-shouldered build; large curved dark ram horns sweeping back from his temples, black hair pulled back, salt-and-pepper beard, pointed ears; loose white shirt under a brown leather jerkin; easy roguish grin. A pirate's bearing."
     },
     "Caravel \"Car\" Asteri": {
       "aliases": ["Car", "Caravel", "Asteri", "Car Asteri", "Caravel Asteri", "the masquerade bard"],
-      "desc": "Androgynous young satyr, 19; curled chestnut-auburn hair, curving ram horns, pointed ears, fine delicate features; slim; dark high-collared coat; almost always holding or wearing an ornate mask, amid a maskmaker's workshop."
+      "desc": "Satyr, 19; androgynous and slightly feminine-leaning; pale/fair skin; curled chestnut-auburn hair, curving ram horns, pointed ears, fine delicate features; slim build; dark high-collared coat; almost always holding or wearing an ornate mask, amid a maskmaker's workshop."
     },
     "Noname": {
       "aliases": ["No-name", "No Name", "the orc fog warden"],
-      "desc": "Orc woman, 24; green skin, small lower tusks, strong features, dark hair drawn back in braids; athletic, powerful build; dark layered leather Fog Warden's coat and armor; guarded and intense."
+      "desc": "Orc woman (she/her), 24; green skin; athletic, powerful build; small lower tusks, strong features, dark hair drawn back in braids; dark layered leather Fog Warden's coat and armor; guarded and intense."
     },
     "Valentro": {
       "aliases": ["Valen", "Val", "the gardener-ranger"],
-      "desc": "Young elf man, 19; tousled dirty-blond shoulder-length hair, light stubble, blue eyes, pointed ears; lean; a weathered green cloak over leather, bow and quiver across his back; a faint arcane mark on the back of one hand; warm and quiet."
+      "desc": "Elf man (he/him), 19; fair/pale skin; thin, lean build; tousled blonde shoulder-length hair, light stubble, blue eyes, pointed ears; a weathered green cloak over leather, bow and quiver across his back; a faint arcane mark on the back of one hand; warm and quiet."
     },
     "Kryton Novelli": {
       "aliases": ["Kryton", "Novelli", "Professor Novelli", "the VAVA faculty mage"],
-      "desc": "Human man, 40s; dark hair greying at the temples and swept back, a grey-flecked beard, sharp blue eyes (often lit with crackling blue arcane light); navy high-collared scholar's coat with wands and vials at the breast; staff and a glowing tome. Brilliant and frayed."
+      "desc": "Human man (he/him), 40s; pale/white skin; dark hair greying to grey-and-black, swept back; a grey-flecked beard; sharp blue eyes often lit with crackling blue arcane light; navy high-collared scholar's coat with wands and vials at the breast; staff and a glowing tome. Brilliant and frayed."
     },
     "Orabella": {
       "aliases": ["Bella", "Ora", "the Cleric of Art"],
-      "desc": "Human woman, 24; short tousled dark hair, blue eyes, fair-skinned; blue-and-cream hooded cleric's robes; carries a staff topped with a glowing blue orb, often with a book and a painter's things to hand. Gentle, watchful."
+      "desc": "Human woman (she/her), 24; fair skin; slender, thin build; short tousled brunette hair, blue eyes; blue-and-cream hooded cleric's robes; carries a staff topped with a glowing blue orb, often with a book and a painter's things to hand. Gentle, watchful."
     },
     "Roxanya \"Roxy\"": {
       "aliases": ["Roxy", "Roxanya", "Rox", "the gnome arcane trickster"],
-      "desc": "Forest gnome woman, 19; about three feet tall, sun-tanned and freckled, wild curly red-orange hair in twin buns, green eyes, pointed ears, a bright grin; layered brown leather swashbuckler's garb with feathers; a taxidermy owl perched on her arm."
+      "desc": "Forest gnome woman (she/her), 19; about three feet tall; fair skin with freckles; wild curly red hair in twin buns, green eyes, pointed ears, a bright grin; layered brown leather swashbuckler's garb with feathers; a taxidermy owl perched on her arm."
     }
   },
 
