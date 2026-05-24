@@ -8,6 +8,10 @@ editor: markdown
 dateCreated: 2026-05-23T00:00:00.000Z
 ---
 
+<div style="margin: 0 0 2rem; border-radius: 6px; overflow: hidden; box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6); border: 1px solid rgba(139, 115, 85, 0.35);">
+<img src="https://codex.valleyofshadows.wiki/images/locations/vallombrosa.png" alt="Vallombrosa" style="width: 100%; height: auto; display: block;">
+</div>
+
 # Vallombrosa
 
 **Tier:** Outside the city &nbsp;|&nbsp; **Status:** Forbidden &nbsp;|&nbsp; *"The valley of shadows."*
@@ -49,9 +53,9 @@ What everyone agrees on: the family ended that night, the estate was abandoned, 
 ## Connections
 
 - **[The Legends of Vallombrosa](/en/Venturia/Lore/legends-of-vallombrosa)** — The catalogue of contradictory stories the city tells about what happened.
-- **[Lorenzo di Errante](/en/Venturia/Characters-NPCs/lorenzo-di-errante)** — A di Errante name remembered from the legend.
-- **[Marcello di Errante](/en/Venturia/Characters-NPCs/marcello-di-errante)** — A di Errante name remembered from the legend.
-- **[Isabella Fortunata](/en/Venturia/Characters-NPCs/isabella-fortunata)** — The woman at the heart of the Tragedy.
+- **[Lorenzo di Errante](/en/Venturia/Characters/NPCs/lorenzo-di-errante)** — A di Errante name remembered from the legend.
+- **[Marcello di Errante](/en/Venturia/Characters/NPCs/marcello-di-errante)** — A di Errante name remembered from the legend.
+- **[Isabella Fortunata](/en/Venturia/Characters/NPCs/isabella-fortunata)** — The woman at the heart of the Tragedy.
 - **[The Fog Wardens and the Shadowed Wardens](/en/Venturia/Factions/fog-wardens)** — Patrol the boundary.
 - **[The Fog Wardens' Garrison](/en/Venturia/Locations/fog-wardens-garrison)** — Their post below the Overlook.
 - **[Liminal House](/en/Venturia/Locations/liminal-house)** — Takes in the rare fog children who walk out.
