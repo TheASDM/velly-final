@@ -215,7 +215,22 @@
   .vos-enzo-footer p {
     color: var(--vos-text); font-style: italic; margin: 0 0 1rem;
   }
-  #chatbot-container { min-height: 480px; }
+  /* Override chatbot.css's floating-dock positioning so the widget renders
+     inline at the bottom of the article instead of fixed mid-viewport. */
+  .vos-enzo-footer #chatbot-container {
+    position: static !important;
+    bottom: auto !important;
+    right: auto !important;
+    width: 100%;
+  }
+  .vos-enzo-footer #chatbot-widget {
+    width: 100% !important;
+    max-width: 100% !important;
+    max-height: none !important;
+  }
+  .vos-enzo-footer #chatbot-widget.chatbot-collapsed {
+    max-height: 52px !important;
+  }
 </style>
 </head>
 <body>
