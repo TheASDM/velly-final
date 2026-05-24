@@ -383,19 +383,8 @@ def build_tier1() -> str:
             continue
         grouped.setdefault(top, {}).setdefault(sub, []).extend(pages)
 
-    # Also include the top-level home.md if present
-    home_path = WIKI_ROOT / "home.md"
-    if home_path.exists():
-        try:
-            raw = home_path.read_text(encoding="utf-8")
-            meta, body = parse_frontmatter(raw)
-            if meta.get("published") is not False:
-                title = meta.get("title") or _first_heading(body) or "Home"
-                desc = meta.get("description", "")
-                if desc:
-                    sections.append(f"## {title}\n{desc}\n")
-        except Exception:
-            pass
+    # home.md is intentionally excluded — it's a presentational landing page
+    # with no lore content, just inline CSS and tile markup.
 
     # Emit in stable order
     for top in ["Characters", "Locations", "Factions", "Government", "Lore",

@@ -128,8 +128,10 @@ def wiki_page_text(meta: dict, body: str) -> str:
     if desc:
         parts.append(desc)
 
-    # Clean body: drop HTML comments, div blocks, blockquote warnings, h1
+    # Clean body: drop HTML comments, style/script blocks, div blocks, images
     cleaned = re.sub(r"<!--.*?-->", "", body, flags=re.DOTALL)
+    cleaned = re.sub(r"<style\b[^>]*>.*?</style>", "", cleaned, flags=re.DOTALL | re.IGNORECASE)
+    cleaned = re.sub(r"<script\b[^>]*>.*?</script>", "", cleaned, flags=re.DOTALL | re.IGNORECASE)
     cleaned = re.sub(r"<div[^>]*>.*?</div>", "", cleaned, flags=re.DOTALL)
     cleaned = re.sub(r"<img[^>]*>", "", cleaned)
     cleaned = "\n".join(l for l in cleaned.splitlines() if not l.strip().startswith(">"))
@@ -488,25 +490,9 @@ def load_wiki_entries() -> list[dict]:
             source_file = str(fpath.relative_to(WIKI_ROOT))
             entries.extend(_emit_chunks(page_id, name, aliases, source_file,
                                           text, is_campaign=True))
-    # Also include home.md if published
-    home_path = WIKI_ROOT / "home.md"
-    if home_path.exists():
-        try:
-            raw = home_path.read_text(encoding="utf-8")
-            meta, body = parse_frontmatter(raw)
-            if meta.get("published") is not False:
-                text = wiki_page_text(meta, body)
-                if text and len(text) >= 20:
-                    entries.extend(_emit_chunks(
-                        "wiki_home",
-                        meta.get("title") or "Home",
-                        [],
-                        "home.md",
-                        text,
-                        is_campaign=True,
-                    ))
-        except Exception:
-            pass
+    # home.md is intentionally excluded — it's a presentational landing page
+    # (inline CSS/markup, no lore content) so embedding it just pollutes the
+    # vector store with style noise the chatbot would never need to surface.
     return entries
 
 
