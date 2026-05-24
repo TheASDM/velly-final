@@ -203,34 +203,10 @@
     .vos-sidebar.vos-open { transform: translateX(0); box-shadow: 4px 0 20px rgba(0,0,0,0.6); }
   }
 
-  /* ── Enzo footer embed ──────────────────────────────────────────────── */
-  .vos-enzo-footer {
-    margin-top: 4rem; padding-top: 2rem;
-    border-top: 1px solid var(--vos-border);
-  }
-  .vos-enzo-footer h2 {
-    color: var(--vos-gold-bright); font-family: 'Cinzel', Georgia, serif;
-    font-size: 1.25rem; letter-spacing: 0.08em; margin-bottom: 0.25rem;
-  }
-  .vos-enzo-footer p {
-    color: var(--vos-text); font-style: italic; margin: 0 0 1rem;
-  }
-  /* Override chatbot.css's floating-dock positioning so the widget renders
-     inline at the bottom of the article instead of fixed mid-viewport. */
-  .vos-enzo-footer #chatbot-container {
-    position: static !important;
-    bottom: auto !important;
-    right: auto !important;
-    width: 100%;
-  }
-  .vos-enzo-footer #chatbot-widget {
-    width: 100% !important;
-    max-width: 100% !important;
-    max-height: none !important;
-  }
-  .vos-enzo-footer #chatbot-widget.chatbot-collapsed {
-    max-height: 52px !important;
-  }
+  /* ── Enzo floating widget ───────────────────────────────────────────
+     Positioning comes from chatbot.css (fixed bottom-right). We only
+     bump z-index so it floats above the sidebar and search banner. */
+  #chatbot-container { z-index: 1200 !important; }
 </style>
 </head>
 <body>
@@ -305,14 +281,11 @@
     {%- endif -%}
   {%- endif -%}
 
-  <section class="vos-enzo-footer">
-    <h2>Ask Enzo</h2>
-    <p>Enzo is the campaign's loremaster — ask anything about Venturia, the rules, or the characters.</p>
-    <div id="chatbot-container"></div>
-  </section>
 </main>
 
+<!-- Enzo floating chat widget, fixed at viewport bottom-right per chatbot.css -->
 <link rel="stylesheet" href="https://loremaster.valleyofshadows.wiki/css/chatbot.css">
+<div id="chatbot-container"></div>
 <script>window.LOREMASTER_API_URL = 'https://loremaster.valleyofshadows.wiki/api/chat';</script>
 <script src="https://loremaster.valleyofshadows.wiki/js/chatbot.js" defer></script>
 
