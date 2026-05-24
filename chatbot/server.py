@@ -770,6 +770,67 @@ def chat():
         }), 500
 
 
+@app.route("/api/generate-image", methods=["POST"])
+def generate_image():
+    """Generate an image via OpenAI's images API and return base64/url.
+
+    Driven by env: OPENAI_KEY (required), IMAGE_MODEL (default gpt-image-1),
+    IMAGE_STYLE_PROMPT (optional — prepended to every prompt).
+    """
+    body = request.get_json(silent=True) or {}
+    prompt = body.get("prompt", "")
+    if not prompt or not isinstance(prompt, str):
+        return jsonify({"error": "Invalid prompt"}), 400
+    prompt = prompt.strip()
+    if len(prompt) > 3500:
+        return jsonify({"error": "Prompt too long (max 3500 chars)"}), 400
+
+    openai_key = os.environ.get("OPENAI_KEY", "")
+    image_model = os.environ.get("IMAGE_MODEL", "gpt-image-1")
+    style_prefix = os.environ.get("IMAGE_STYLE_PROMPT", "").strip()
+
+    if not openai_key:
+        return jsonify({
+            "error": "Image generation not configured — OPENAI_KEY missing in server env"
+        }), 503
+
+    full_prompt = (style_prefix + "\n\n" + prompt).strip() if style_prefix else prompt
+
+    try:
+        r = http_requests.post(
+            "https://api.openai.com/v1/images/generations",
+            headers={
+                "Authorization": f"Bearer {openai_key}",
+                "Content-Type": "application/json",
+            },
+            json={
+                "model": image_model,
+                "prompt": full_prompt,
+                "size": "1024x1024",
+                "n": 1,
+            },
+            timeout=180,
+        )
+        if r.status_code >= 400:
+            logging.warning("OpenAI image gen %s: %s", r.status_code, r.text[:300])
+            return jsonify({
+                "error": "Image generation failed",
+                "details": r.text[:300],
+            }), r.status_code
+
+        data = r.json()
+        item = (data.get("data") or [{}])[0]
+        return jsonify({
+            "url": item.get("url"),
+            "b64": item.get("b64_json"),
+            "prompt": full_prompt,
+            "model": image_model,
+        })
+    except Exception as e:
+        logging.exception("Image generation error")
+        return jsonify({"error": "Image generation failed", "details": str(e)}), 500
+
+
 @app.route("/health", methods=["GET"])
 def health():
     return jsonify({"status": "ok", "service": "loremaster"})

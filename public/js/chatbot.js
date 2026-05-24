@@ -161,6 +161,49 @@ class LoreMasterChatbot {
         const message = input.value.trim();
         if (!message) return;
         if (this.isWaitingForResponse) return;
+
+        // /art <prompt> — generate an image via OpenAI and render it inline.
+        if (/^\/art(\s|$)/i.test(message)) {
+            const artPrompt = message.replace(/^\/art\s*/i, '').trim();
+            if (!artPrompt) {
+                this.addSystemMessage('Usage: /art <description>');
+                return;
+            }
+            input.value = '';
+            this.addMessage(message, 'user');
+            this.isWaitingForResponse = true;
+            input.disabled = true;
+            sendBtn.disabled = true;
+            this.showThinkingIndicator();
+            try {
+                const url = this.chatApiUrl.replace(/\/api\/chat$/, '/api/generate-image');
+                const resp = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ prompt: artPrompt }),
+                });
+                this.hideThinkingIndicator();
+                const data = await resp.json().catch(() => ({}));
+                if (!resp.ok) {
+                    const detail = data.details || data.error || `HTTP ${resp.status}`;
+                    throw new Error(detail);
+                }
+                const src = data.b64 ? `data:image/png;base64,${data.b64}` : data.url;
+                if (!src) throw new Error('Image returned no data');
+                this.addImageMessage(src, artPrompt);
+            } catch (error) {
+                console.error('Image gen error:', error);
+                this.hideThinkingIndicator();
+                this.addSystemMessage('Image generation failed: ' + error.message);
+            } finally {
+                this.isWaitingForResponse = false;
+                input.disabled = false;
+                sendBtn.disabled = false;
+                input.focus();
+            }
+            return;
+        }
+
         input.value = '';
         this.addMessage(message, 'user');
         this.isWaitingForResponse = true;
@@ -186,6 +229,19 @@ class LoreMasterChatbot {
             sendBtn.disabled = false;
             input.focus();
         }
+    }
+    addImageMessage(src, caption) {
+        const messagesContainer = document.getElementById('chat-messages');
+        if (!messagesContainer) return;
+        const wrapper = document.createElement('div');
+        wrapper.className = 'message-row assistant';
+        const iconName = this.getIconName();
+        const safeCaption = caption.replace(/[<>&"']/g, c => ({
+            '<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;', "'": '&#39;',
+        }[c]));
+        wrapper.innerHTML = `<img src="${this.baseUrl}/images/${iconName}192x192.png" alt="" class="chatbot-avatar"><div class="message assistant"><img src="${src}" alt="${safeCaption}" style="max-width:100%;border-radius:6px;display:block;margin-bottom:0.5rem"><em style="opacity:0.7;font-size:0.85em">${safeCaption}</em></div>`;
+        messagesContainer.appendChild(wrapper);
+        this.scrollToBottom();
     }
     async sendMessageToAPI(message) {
         if (!navigator.onLine) {

@@ -52,6 +52,10 @@ services:
       OLLAMA_URL: ${OLLAMA_URL:-https://ai.raptornet.dev/ollama}
       OLLAMA_API_KEY: ${OLLAMA_API_KEY:-${OPENWEBUI_API_KEY:-}}
       TEMPERATURE: ${TEMPERATURE:-0.2}
+      # OpenAI image generation (used by the /art slash command)
+      OPENAI_KEY: ${OPENAI_KEY:-}
+      IMAGE_MODEL: ${IMAGE_MODEL:-gpt-image-1}
+      IMAGE_STYLE_PROMPT: ${IMAGE_STYLE_PROMPT:-}
     volumes:
       # Campaign data files + vector stores (read-only)
       - ./campaign-data:/app/data:ro

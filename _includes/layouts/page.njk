@@ -212,7 +212,12 @@
   #chatbot-container { z-index: 1200 !important; }
   @media (min-width: 769px) {
     #chatbot-widget { width: 560px !important; max-height: 90vh !important; }
-    .chat-input-area { align-items: stretch !important; }
+    /* Stack textarea above the send button so SEND stays normal-sized. */
+    .chat-input-area {
+      flex-direction: column !important;
+      gap: 0.5rem !important;
+      align-items: stretch !important;
+    }
     #chat-input {
       min-height: 280px !important;
       height: 280px !important;
@@ -220,11 +225,19 @@
       resize: vertical !important;
       white-space: pre-wrap !important;
       word-wrap: break-word !important;
+      /* Border was removed in chatbot.css because the input shared an edge
+         with the button; restore it now that the button sits below. */
+      border-right: 1px solid rgba(201, 168, 76, 0.2) !important;
+      width: 100% !important;
     }
-    .chat-input-area #chat-send-btn { padding: 0.5rem 1.5rem !important; }
+    .chat-input-area #chat-send-btn {
+      align-self: flex-end !important;
+      padding: 0.55rem 1.6rem !important;
+      height: auto !important;
+    }
     #chat-messages {
       min-height: 220px !important;
-      max-height: calc(90vh - 52px - 320px) !important;
+      max-height: calc(90vh - 52px - 360px) !important;
     }
   }
 </style>
