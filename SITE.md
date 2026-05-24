@@ -50,7 +50,7 @@ see the page rendered with the new layout.
   (Pagefind is the standard choice).
 - **Deployment.** Pick a host (Cloudflare Pages, Netlify, Vercel) and wire
   up auto-deploy on push to `main`. Then flip
-  `codex.valleyofshadows.wiki` DNS over.
+  `valleyofshadows.wiki` DNS over.
 - **Decommissioning Wiki.js.** Once the static site is live and verified,
   the `dnd_wiki` and `dnd_postgres` containers in `docker-compose.yml` can
   come down. The `wiki` git branch becomes unused.

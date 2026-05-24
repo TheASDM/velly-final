@@ -9,7 +9,7 @@ dateCreated: 2026-02-23T23:57:34.419Z
 ---
 
 <div style="margin: 0 0 2rem; border-radius: 6px; overflow: hidden; box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6); border: 1px solid rgba(139, 115, 85, 0.35);">
-<img src="https://codex.valleyofshadows.wiki/images/locations/salted-cup.png" alt="The Salted Cup" style="width: 100%; height: auto; display: block;">
+<img src="/images/locations/salted-cup.png" alt="The Salted Cup" style="width: 100%; height: auto; display: block;">
 </div>
 
 # The Salted Cup

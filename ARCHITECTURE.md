@@ -14,7 +14,7 @@ dateCreated: 2026-03-04T04:23:30.551Z
 
 A D&D 5e campaign assistant with two faces:
 
-1. **Campaign Wiki** — Wiki.js at `codex.valleyofshadows.wiki` (port 3000)
+1. **Campaign Wiki** — Wiki.js at `valleyofshadows.wiki` (port 3000)
 2. **Loremaster Chatbot** — RAG-powered AI chatbot at `loremaster.valleyofshadows.wiki` (port 8080), also embeddable in the wiki
 
 The chatbot uses a three-tier data pipeline to give Claude deep knowledge of both the homebrew Vallombrosa campaign and D&D 5e rules, with vector search for relevant context retrieval on every message.

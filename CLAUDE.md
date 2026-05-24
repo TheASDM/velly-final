@@ -14,7 +14,7 @@ dateCreated: 2026-05-01T22:26:10.048Z
 
 A D&D 5e campaign system with two parts:
 
-1. **Campaign Wiki** (Wiki.js) — `codex.valleyofshadows.wiki` on port 3000
+1. **Campaign Wiki** (Wiki.js) — `valleyofshadows.wiki` on port 3000
 2. **RAG Chatbot** ("Enzo") — `loremaster.valleyofshadows.wiki` on port 8080, also embeddable in the wiki
 
 The chatbot uses a three-tier data pipeline (raw JSON → compressed markdown → vector embeddings) to give Claude context about the homebrew Vallombrosa campaign and D&D 5e rules.

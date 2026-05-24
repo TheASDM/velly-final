@@ -23,7 +23,7 @@ dateCreated: 2026-05-22T00:00:00.000Z
 </div>
 
 <div style="flex-shrink: 0;">
-<img src="https://codex.valleyofshadows.wiki/images/character-art/dorian.png" alt="Archmagister Dorian Silvermarch" style="width: 240px; max-width: 100%; border-radius: 4px; box-shadow: 0 10px 36px rgba(0, 0, 0, 0.8); border: 1px solid rgba(139, 115, 85, 0.5);">
+<img src="/images/character-art/dorian.png" alt="Archmagister Dorian Silvermarch" style="width: 240px; max-width: 100%; border-radius: 4px; box-shadow: 0 10px 36px rgba(0, 0, 0, 0.8); border: 1px solid rgba(139, 115, 85, 0.5);">
 </div>
 
 </div>

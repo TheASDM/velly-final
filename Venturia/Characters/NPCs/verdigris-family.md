@@ -26,15 +26,15 @@ dateCreated: 2026-05-22T00:00:00.000Z
 
 <div style="display: flex; gap: 0.75rem; flex-shrink: 0; flex-wrap: wrap; justify-content: center; max-width: 100%;">
 <div style="text-align: center;">
-<img src="https://codex.valleyofshadows.wiki/images/character-art/cosimo.png" alt="Cosimo Verdigris" style="width: 130px; max-width: 100%; border-radius: 4px; box-shadow: 0 6px 20px rgba(0, 0, 0, 0.7); border: 1px solid rgba(139, 115, 85, 0.4);">
+<img src="/images/character-art/cosimo.png" alt="Cosimo Verdigris" style="width: 130px; max-width: 100%; border-radius: 4px; box-shadow: 0 6px 20px rgba(0, 0, 0, 0.7); border: 1px solid rgba(139, 115, 85, 0.4);">
 <div style="font-size: 0.75rem; color: #8b7355; margin-top: 0.4rem; font-style: italic; letter-spacing: 0.05em;">Cosimo</div>
 </div>
 <div style="text-align: center;">
-<img src="https://codex.valleyofshadows.wiki/images/character-art/isidore.png" alt="Isidore Verdigris" style="width: 130px; max-width: 100%; border-radius: 4px; box-shadow: 0 6px 20px rgba(0, 0, 0, 0.7); border: 1px solid rgba(139, 115, 85, 0.4);">
+<img src="/images/character-art/isidore.png" alt="Isidore Verdigris" style="width: 130px; max-width: 100%; border-radius: 4px; box-shadow: 0 6px 20px rgba(0, 0, 0, 0.7); border: 1px solid rgba(139, 115, 85, 0.4);">
 <div style="font-size: 0.75rem; color: #8b7355; margin-top: 0.4rem; font-style: italic; letter-spacing: 0.05em;">Isidore</div>
 </div>
 <div style="text-align: center;">
-<img src="https://codex.valleyofshadows.wiki/images/character-art/thalia.png" alt="Thalia Verdigris" style="width: 130px; max-width: 100%; border-radius: 4px; box-shadow: 0 6px 20px rgba(0, 0, 0, 0.7); border: 1px solid rgba(139, 115, 85, 0.4);">
+<img src="/images/character-art/thalia.png" alt="Thalia Verdigris" style="width: 130px; max-width: 100%; border-radius: 4px; box-shadow: 0 6px 20px rgba(0, 0, 0, 0.7); border: 1px solid rgba(139, 115, 85, 0.4);">
 <div style="font-size: 0.75rem; color: #8b7355; margin-top: 0.4rem; font-style: italic; letter-spacing: 0.05em;">Thalia</div>
 </div>
 </div>
@@ -42,11 +42,11 @@ dateCreated: 2026-05-22T00:00:00.000Z
 </div>
 
 <div style="text-align: center;">
-<img src="https://codex.valleyofshadows.wiki/images/character-art/isidore.png" alt="Isidore Verdigris" style="width: 180px; max-width: 100%; border-radius: 4px; box-shadow: 0 8px 32px rgba(0,0,0,0.7); border: 1px solid rgba(139,115,85,0.3);">
+<img src="/images/character-art/isidore.png" alt="Isidore Verdigris" style="width: 180px; max-width: 100%; border-radius: 4px; box-shadow: 0 8px 32px rgba(0,0,0,0.7); border: 1px solid rgba(139,115,85,0.3);">
 <div style="font-size: 0.85rem; color: #8b7355; margin-top: 0.5rem; font-style: italic; letter-spacing: 0.05em;">Isidore</div>
 </div>
 <div style="text-align: center;">
-<img src="https://codex.valleyofshadows.wiki/images/character-art/thalia.png" alt="Thalia Verdigris" style="width: 180px; max-width: 100%; border-radius: 4px; box-shadow: 0 8px 32px rgba(0,0,0,0.7); border: 1px solid rgba(139,115,85,0.3);">
+<img src="/images/character-art/thalia.png" alt="Thalia Verdigris" style="width: 180px; max-width: 100%; border-radius: 4px; box-shadow: 0 8px 32px rgba(0,0,0,0.7); border: 1px solid rgba(139,115,85,0.3);">
 <div style="font-size: 0.85rem; color: #8b7355; margin-top: 0.5rem; font-style: italic; letter-spacing: 0.05em;">Thalia</div>
 </div>
 </div>

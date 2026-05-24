@@ -9,7 +9,7 @@ Four Docker services behind a single `docker-compose.yml`:
 ```
 Internet
   │
-  ├─ codex.valleyofshadows.wiki ──→ Wiki.js (port 3000, container: dnd_wiki)
+  ├─ valleyofshadows.wiki ──→ Wiki.js (port 3000, container: dnd_wiki)
   │                                    └─ PostgreSQL 15 (container: dnd_postgres)
   │
   └─ loremaster.valleyofshadows.wiki ──→ nginx (port 8080, container: dnd_nginx)
