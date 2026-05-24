@@ -4,8 +4,9 @@
   (with Wiki.js's built-in navigation disabled in the same panel).
 
   - Top bar: static links to the major sections + Loremaster + Using Enzo.
-  - Sidebar: dynamic collapsible tree fetched from /sitemap.xml on every page
-    load. Any new page that lands in the sitemap appears automatically.
+  - Sidebar: dynamic collapsible tree fetched from /images/sitemap.json on
+    every page load. Run `python3 build_sitemap.py` after adding pages, commit
+    and push — the next page load picks the new tree up.
 -->
 
 <style>
@@ -148,7 +149,7 @@
     sidebar.classList.toggle('vos-open');
   });
 
-  // ── Title-case a URL slug ────────────────────────────────────────────
+  // ── Title-case folder names (for tree section headers, which aren't pages) ──
   function titleCase(slug) {
     return slug
       .replace(/-/g, ' ')
@@ -160,30 +161,27 @@
       .replace(/\b\w/g, c => c.toUpperCase());
   }
 
-  // ── Build sidebar tree from sitemap.xml ──────────────────────────────
+  // ── Build sidebar tree from images/sitemap.json ──────────────────────
   async function buildSidebar() {
     try {
-      const r = await fetch('/sitemap.xml', { credentials: 'same-origin' });
-      if (!r.ok) throw new Error('sitemap.xml ' + r.status);
-      const xml = new DOMParser().parseFromString(await r.text(), 'application/xml');
-      const locs = [...xml.querySelectorAll('loc')].map(l => l.textContent);
+      const r = await fetch('/images/sitemap.json', { credentials: 'same-origin' });
+      if (!r.ok) throw new Error('sitemap.json ' + r.status);
+      const entries = await r.json();
 
       // Build a nested tree from URL paths
       const tree = {};
-      for (const fullUrl of locs) {
-        let path;
-        try { path = new URL(fullUrl).pathname; } catch { continue; }
-        path = path.replace(/^\/+en\/+/, '').replace(/\/$/, '');
-        if (!path) continue;
-        // Skip DM-only branch (Wiki.js may publish it for admins; hide regardless)
-        if (/^Venturia\/DM(\/|$)/i.test(path)) continue;
-        const parts = path.split('/');
+      for (const e of entries) {
+        let p = e.url.replace(/^\/+en\/+/, '').replace(/^\/+/, '').replace(/\/$/, '');
+        if (!p || p === '') continue; // skip home itself (top-bar has it)
+        if (/^Venturia\/DM(\/|$)/i.test(p)) continue;
+        const parts = p.split('/');
         let node = tree;
         for (let i = 0; i < parts.length; i++) {
           const key = parts[i];
           if (i === parts.length - 1) {
             node[key] = node[key] || { _children: {} };
-            node[key]._url = fullUrl;
+            node[key]._url = e.url;
+            node[key]._title = e.title;
             node[key]._isPage = true;
           } else {
             node[key] = node[key] || { _children: {} };
@@ -208,7 +206,7 @@
 
           if (key === 'index') {
             // Render the section's own index page as a top-level link
-            const active = url && new URL(url).pathname.replace(/\/$/, '') === here ? 'vos-active' : '';
+            const active = url && url.replace(/\/$/, '') === here ? 'vos-active' : '';
             html += `<a class="vos-page ${active}" href="${url}" style="font-style:italic;opacity:0.85;">overview →</a>`;
             continue;
           }
@@ -220,8 +218,9 @@
               <div class="vos-pages">${render(child._children, depth + 1)}</div>
             </div>`;
           } else if (child._isPage && url) {
-            const active = new URL(url).pathname.replace(/\/$/, '') === here ? 'vos-active' : '';
-            html += `<a class="vos-page ${active}" href="${url}">${titleCase(key)}</a>`;
+            const active = url.replace(/\/$/, '') === here ? 'vos-active' : '';
+            const title = child._title || titleCase(key);
+            html += `<a class="vos-page ${active}" href="${url}">${title}</a>`;
           }
         }
         return html;
@@ -250,7 +249,7 @@
         if (first) first.classList.add('vos-open');
       }
     } catch (e) {
-      sidebar.innerHTML = '<div style="color:var(--vos-gold-dim);font-size:0.78rem;line-height:1.5;">Couldn\'t build the sidebar tree (sitemap.xml unreachable). Wiki.js Admin → General → enable Sitemap.</div>';
+      sidebar.innerHTML = '<div style="color:var(--vos-gold-dim);font-size:0.78rem;line-height:1.5;">Couldn\'t load sidebar tree. Run <code>python3 build_sitemap.py</code> on the repo, commit, and push so /images/sitemap.json appears as a wiki asset.</div>';
       console.error('vos-sidebar build failed:', e);
     }
   }
