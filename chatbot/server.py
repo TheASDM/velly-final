@@ -53,18 +53,51 @@ GALLERY_PAGE_LIMIT = int(os.environ.get("GALLERY_PAGE_LIMIT", "60"))
 
 # Style preset keys are stable strings sent from the UI; the corresponding
 # prompt prefix is prepended to the user prompt at generation time. Keep
-# these tight — overly long prefixes eat into the user's prompt budget on
-# gpt-image-1 (which accepts up to ~4000 chars total).
+# these tight — overly long prefixes eat into the user's prompt budget
+# (OpenAI's gpt-image accepts ~4000 chars total per request).
+#
+# The three "valley-*" presets are the campaign's house look — a Reign-style
+# (TV show) cinematic period drama: rich fantasy costumes, contemporary
+# editorial gloss, soft romantic lighting, jewel-tone color grade. Each
+# variant tunes the prefix for a different subject type (portrait vs. wider
+# scene vs. environmental establishing shot) so the model frames the image
+# appropriately. Everything below the valley group is an alternative look
+# the player can opt into.
 ART_STYLE_PRESETS = {
-    "valley": {
-        "label": "Valley of Shadows (House Style)",
-        "description": "The campaign's signature look: candlelit Gothic-Renaissance, autumn-saturated, fog-shrouded, gold and ink.",
+    "valley-portrait": {
+        "label": "Valley of Shadows — Portrait",
+        "description": "House style for character portraits — Reign-TV period drama with editorial gloss.",
         "prefix": (
-            "In the Valley of Shadows house style: a dark Venetian fantasy "
-            "scene, gothic-renaissance architecture, candlelit, autumn-"
-            "saturated reds and ambers and deep browns, soft fog, masks "
-            "and gold filigree, painterly rendering, IM Fell English book-"
-            "plate aesthetic, deep cinematic blacks, restrained palette."
+            "Cinematic character portrait in the lush, romantic style of a "
+            "modern period drama like the TV show Reign — rich period "
+            "fantasy costume with a contemporary editorial gloss. Soft "
+            "romantic lighting, shallow depth of field, soft photographic "
+            "focus, dewy modern beauty styling, jewel-tone color grade. "
+            "Portrait format."
+        ),
+    },
+    "valley-scene": {
+        "label": "Valley of Shadows — Scene",
+        "description": "House style for narrative/action moments — wider framing, multiple subjects, atmospheric staging.",
+        "prefix": (
+            "Cinematic narrative scene in the lush, romantic style of a "
+            "modern period drama like the TV show Reign — rich period "
+            "fantasy costuming with a contemporary editorial gloss, "
+            "atmospheric staging, mid-ground emphasis, soft photographic "
+            "focus with selective depth of field, jewel-tone color grade, "
+            "warm dramatic lighting. Widescreen composition."
+        ),
+    },
+    "valley-place": {
+        "label": "Valley of Shadows — Place",
+        "description": "House style for locations, architecture, and landscapes — atmospheric establishing shots.",
+        "prefix": (
+            "Cinematic establishing shot in the lush, romantic style of a "
+            "modern period drama like the TV show Reign — atmospheric "
+            "historical-fantasy architecture or landscape, golden-hour or "
+            "candlelit lighting, soft photographic focus with rich material "
+            "and texture detail, jewel-tone color grade, painterly depth. "
+            "Widescreen environmental composition."
         ),
     },
     "cinematic": {
@@ -131,7 +164,7 @@ ART_STYLE_PRESETS = {
         ),
     },
 }
-DEFAULT_STYLE_KEY = "valley"
+DEFAULT_STYLE_KEY = "valley-portrait"
 
 RAG_SKIP_MAX_LEN = 15
 RAG_SKIP_PATTERNS = re.compile(
@@ -1248,7 +1281,7 @@ def generate_image():
         created_by  — optional, free-text attribution (<=64 chars), saved
                       to the gallery manifest only — never sent to OpenAI
 
-    Driven by env: OPENAI_KEY (required), IMAGE_MODEL (default gpt-image-1),
+    Driven by env: OPENAI_KEY (required), IMAGE_MODEL (default gpt-image-2),
     IMAGE_STYLE_PROMPT (legacy fallback — used only when no style key is
     provided AND the legacy chatbot widget is calling).
     """
@@ -1279,7 +1312,7 @@ def generate_image():
         enhance = bool(enhance)
 
     openai_key = os.environ.get("OPENAI_KEY", "")
-    image_model = os.environ.get("IMAGE_MODEL", "gpt-image-1")
+    image_model = os.environ.get("IMAGE_MODEL", "gpt-image-2")
     legacy_style_prefix = os.environ.get("IMAGE_STYLE_PROMPT", "").strip()
     image_quality = os.environ.get("IMAGE_QUALITY", "high")
     image_size = os.environ.get("IMAGE_SIZE", "1024x1024")

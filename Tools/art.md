@@ -165,13 +165,113 @@ dateCreated: 2026-05-24T00:00:00.000Z
   text-align: center;
 }
 .vos-art-latest.is-shown { display: block; }
-.vos-art-latest img {
-  max-width: 100%;
-  height: auto;
+
+/* The frame holds either the finished image OR the pending placeholder.
+   Aspect-ratio is locked to 1:1 because we always request 1024×1024 —
+   reserves the layout space the moment the user submits so nothing
+   jumps when the image arrives. */
+.vos-art-latest-frame {
+  position: relative;
+  width: 100%;
+  max-width: 720px;
+  margin: 0 auto;
+  aspect-ratio: 1 / 1;
   border-radius: 4px;
-  box-shadow: 0 10px 36px rgba(0, 0, 0, 0.75);
+  overflow: hidden;
   border: 1px solid var(--art-border);
+  box-shadow: 0 10px 36px rgba(0, 0, 0, 0.75);
+  background: #060509;
 }
+.vos-art-latest-frame img {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: contain;
+  display: block;
+  opacity: 0;
+  transition: opacity 0.35s ease;
+  background: #060509;
+}
+.vos-art-latest.has-image .vos-art-latest-frame img { opacity: 1; }
+
+/* Pending placeholder — shown the moment the user submits. The shimmer
+   sweep moves under a darkening gradient, the prompt text floats centered,
+   a slow gold pulse confirms work is happening. Replaced by the image
+   once it arrives. */
+.vos-art-latest-pending {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 0.85rem;
+  padding: 1.5rem 1.8rem;
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 50%, rgba(20, 18, 24, 0.35), rgba(7, 6, 10, 0.85));
+  opacity: 1;
+  transition: opacity 0.35s ease;
+}
+.vos-art-latest.has-image .vos-art-latest-pending { opacity: 0; pointer-events: none; }
+.vos-art-latest-pending::before {
+  /* Slow gold shimmer sweep — the visual heartbeat of "still working". */
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(115deg,
+    transparent 30%,
+    rgba(212, 165, 116, 0.10) 50%,
+    transparent 70%);
+  background-size: 250% 100%;
+  animation: vos-art-shimmer 3.2s ease-in-out infinite;
+  pointer-events: none;
+}
+@keyframes vos-art-shimmer {
+  0%   { background-position: 200% 50%; }
+  100% { background-position: -100% 50%; }
+}
+.vos-art-latest-spinner {
+  font-size: 2.4rem;
+  color: var(--art-gold);
+  text-shadow: 0 0 14px rgba(212, 165, 116, 0.55);
+  animation: vos-art-spin 2.8s linear infinite, vos-art-pulse 1.6s ease-in-out infinite;
+}
+@keyframes vos-art-spin { from { transform: rotate(0); } to { transform: rotate(360deg); } }
+@keyframes vos-art-pulse {
+  0%, 100% { opacity: 0.65; text-shadow: 0 0 10px rgba(212, 165, 116, 0.35); }
+  50%      { opacity: 1.0;  text-shadow: 0 0 22px rgba(212, 165, 116, 0.85); }
+}
+.vos-art-latest-pending-prompt {
+  font-family: 'Crimson Text', Georgia, serif;
+  font-style: italic;
+  font-size: 1rem;
+  line-height: 1.45;
+  color: rgba(232, 220, 200, 0.9);
+  max-width: 36rem;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.9);
+  /* Truncate long prompts so the placeholder stays tidy. */
+  display: -webkit-box;
+  -webkit-line-clamp: 5;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.vos-art-latest-pending-status {
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.6rem;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: rgba(212, 165, 116, 0.65);
+}
+.vos-art-latest-pending-status::after {
+  /* Trailing dots animate to underline that it's actively working. */
+  content: '';
+  display: inline-block;
+  width: 1.5em;
+  text-align: left;
+  animation: vos-art-dots 1.5s steps(4, end) infinite;
+}
+@keyframes vos-art-dots {
+  0%       { content: ''; }
+  25%      { content: '.'; }
+  50%      { content: '..'; }
+  75%, 100%{ content: '...'; }
+}
+
 .vos-art-latest-caption {
   margin-top: 0.7rem;
   font-family: 'Crimson Text', Georgia, serif;
@@ -448,7 +548,7 @@ Generate campaign art with Enzo's image model and contribute to the shared playe
   <div class="vos-art-field">
     <label class="vos-art-field-label" for="vos-art-prompt">Description</label>
     <textarea id="vos-art-prompt" class="vos-art-prompt" rows="4"
-              placeholder="A masked masquerader on the bridge above the Echoing Court, autumn leaves on the canal, candlelight from the windows above…"
+              placeholder="A masked masquerader on the bridge above the Echoing Court, autumn leaves on the canal, candlelight from the windows above…  (press Enter to generate, Shift+Enter for a new line)"
               maxlength="3000"></textarea>
   </div>
 
@@ -480,8 +580,15 @@ Generate campaign art with Enzo's image model and contribute to the shared playe
     <div id="vos-art-status" class="vos-art-status" role="status" aria-live="polite"></div>
   </div>
 
-  <div id="vos-art-latest" class="vos-art-latest">
-    <img id="vos-art-latest-img" alt="Most recent generation">
+  <div id="vos-art-latest" class="vos-art-latest" aria-live="polite">
+    <div class="vos-art-latest-frame">
+      <img id="vos-art-latest-img" alt="">
+      <div class="vos-art-latest-pending" id="vos-art-latest-pending">
+        <div class="vos-art-latest-spinner" aria-hidden="true">✦</div>
+        <div class="vos-art-latest-pending-prompt" id="vos-art-latest-pending-prompt"></div>
+        <div class="vos-art-latest-pending-status" id="vos-art-latest-pending-status">Composing</div>
+      </div>
+    </div>
     <div id="vos-art-latest-caption" class="vos-art-latest-caption"></div>
     <details id="vos-art-latest-details" class="vos-art-details" style="display:none;">
       <summary>How Enzo saw it</summary>
@@ -514,22 +621,24 @@ Generate campaign art with Enzo's image model and contribute to the shared playe
   const STYLE_KEY = 'velly.artStudio.lastStyle';
 
   const $ = (id) => document.getElementById(id);
-  const promptEl       = $('vos-art-prompt');
-  const nameEl         = $('vos-art-name');
-  const stylesEl       = $('vos-art-styles');
-  const enhanceEl      = $('vos-art-enhance');
-  const generateEl     = $('vos-art-generate');
-  const statusEl       = $('vos-art-status');
-  const latestEl       = $('vos-art-latest');
-  const latestImg      = $('vos-art-latest-img');
-  const latestCap      = $('vos-art-latest-caption');
-  const latestDetails  = $('vos-art-latest-details');
-  const latestEnhanced = $('vos-art-latest-enhanced');
-  const galleryEl      = $('vos-art-gallery');
-  const countEl        = $('vos-art-gallery-count');
-  const lightbox       = $('vos-art-lightbox');
-  const lightImg       = $('vos-art-lightbox-img');
-  const lightCap       = $('vos-art-lightbox-caption');
+  const promptEl         = $('vos-art-prompt');
+  const nameEl           = $('vos-art-name');
+  const stylesEl         = $('vos-art-styles');
+  const enhanceEl        = $('vos-art-enhance');
+  const generateEl       = $('vos-art-generate');
+  const statusEl         = $('vos-art-status');
+  const latestEl         = $('vos-art-latest');
+  const latestImg        = $('vos-art-latest-img');
+  const latestCap        = $('vos-art-latest-caption');
+  const latestDetails    = $('vos-art-latest-details');
+  const latestEnhanced   = $('vos-art-latest-enhanced');
+  const pendingPromptEl  = $('vos-art-latest-pending-prompt');
+  const pendingStatusEl  = $('vos-art-latest-pending-status');
+  const galleryEl        = $('vos-art-gallery');
+  const countEl          = $('vos-art-gallery-count');
+  const lightbox         = $('vos-art-lightbox');
+  const lightImg         = $('vos-art-lightbox-img');
+  const lightCap         = $('vos-art-lightbox-caption');
 
   const ENHANCE_KEY = 'velly.artStudio.enhance';
 
@@ -701,7 +810,56 @@ Generate campaign art with Enzo's image model and contribute to the shared playe
     statusEl.classList.toggle('is-error', !!isError);
   }
 
-  generateEl.addEventListener('click', async () => {
+  /** Show the latest-preview frame in its pending state. The image
+   *  element is kept blank; the placeholder is visible with the prompt
+   *  overlaid and the shimmer/spinner animations running. */
+  function showPending(promptText, enhance) {
+    latestImg.removeAttribute('src');
+    latestImg.alt = '';
+    latestCap.innerHTML = '';
+    latestDetails.style.display = 'none';
+    latestEnhanced.innerHTML = '';
+    pendingPromptEl.textContent = promptText;
+    pendingStatusEl.textContent = enhance ? 'Enzo is composing' : 'Composing';
+    latestEl.classList.remove('has-image');
+    latestEl.classList.add('is-shown');
+    // Make sure the frame is in view for short pages so the user can see
+    // their submission landed somewhere visible.
+    latestEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  /** Promote the pending frame to the finished state — sets the image
+   *  source, fills the caption, and fades the placeholder out via the
+   *  .has-image class. */
+  function showImage(src, prompt, data) {
+    latestImg.src = src;
+    latestImg.alt = prompt;
+    let captionHtml = data.gallery
+      ? 'Saved to the shared gallery below.'
+      : '(could not save to gallery — image shown locally only)';
+    if (data.grounded_in && data.grounded_in.length) {
+      const chips = data.grounded_in.map(n =>
+        `<span class="vos-art-grounded-chip">${escapeHtml(n)}</span>`
+      ).join('');
+      captionHtml += `<div class="vos-art-grounded" style="justify-content:center;margin-top:0.5rem;">${chips}</div>`;
+    }
+    latestCap.innerHTML = captionHtml;
+    if (data.enhanced_prompt && data.enhanced_prompt !== prompt) {
+      latestEnhanced.textContent = data.enhanced_prompt;
+      latestDetails.style.display = 'block';
+    }
+    latestEl.classList.add('has-image');
+  }
+
+  /** Clear the placeholder on failure so a failed run doesn't leave a
+   *  dead pending frame on the page. */
+  function clearPending() {
+    latestEl.classList.remove('is-shown', 'has-image');
+    latestImg.removeAttribute('src');
+    pendingPromptEl.textContent = '';
+  }
+
+  async function generate() {
     const prompt = promptEl.value.trim();
     if (!prompt) {
       setStatus('Add a description first.', true);
@@ -716,11 +874,9 @@ Generate campaign art with Enzo's image model and contribute to the shared playe
     generateEl.textContent = 'Generating…';
     const enhance = !!enhanceEl.checked;
     setStatus(enhance
-      ? 'Composing — Enzo is refining your prompt, then drawing. 30–90 seconds.'
-      : 'Composing — this takes 30–90 seconds.');
-    latestEl.classList.remove('is-shown');
-    latestDetails.style.display = 'none';
-    latestEnhanced.innerHTML = '';
+      ? 'Enzo is refining your prompt, then drawing. 30–90 seconds.'
+      : 'Drawing. 30–90 seconds.');
+    showPending(prompt, enhance);
 
     try {
       const res = await fetch(API_BASE + '/api/generate-image', {
@@ -739,28 +895,14 @@ Generate campaign art with Enzo's image model and contribute to the shared playe
       }
       const data = await res.json();
       let src = null;
-      if (data.b64)       src = 'data:image/png;base64,' + data.b64;
+      if (data.b64)         src = 'data:image/png;base64,' + data.b64;
       else if (data.gallery) src = API_BASE + data.gallery.image_url;
-      else if (data.url)  src = data.url;
+      else if (data.url)    src = data.url;
 
       if (src) {
-        latestImg.src = src;
-        latestImg.alt = prompt;
-        let captionHtml = data.gallery
-          ? 'Saved to the shared gallery below.'
-          : '(could not save to gallery — image shown locally only)';
-        if (data.grounded_in && data.grounded_in.length) {
-          const chips = data.grounded_in.map(n =>
-            `<span class="vos-art-grounded-chip">${escapeHtml(n)}</span>`
-          ).join('');
-          captionHtml += `<div class="vos-art-grounded" style="justify-content:center;margin-top:0.5rem;">${chips}</div>`;
-        }
-        latestCap.innerHTML = captionHtml;
-        if (data.enhanced_prompt && data.enhanced_prompt !== prompt) {
-          latestEnhanced.textContent = data.enhanced_prompt;
-          latestDetails.style.display = 'block';
-        }
-        latestEl.classList.add('is-shown');
+        showImage(src, prompt, data);
+      } else {
+        clearPending();
       }
       let doneMsg = 'Done. The shared gallery refreshed below.';
       if (data.grounded_in && data.grounded_in.length) {
@@ -772,10 +914,22 @@ Generate campaign art with Enzo's image model and contribute to the shared playe
       setTimeout(loadGallery, 250);
     } catch (e) {
       console.error(e);
+      clearPending();
       setStatus('Generation failed: ' + e.message, true);
     } finally {
       generateEl.disabled = false;
       generateEl.textContent = 'Generate';
+    }
+  }
+
+  generateEl.addEventListener('click', generate);
+
+  // Enter submits, Shift+Enter inserts a newline — same pattern as the
+  // chatbot widget so it feels consistent across the site.
+  promptEl.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      if (!generateEl.disabled) generate();
     }
   });
 
