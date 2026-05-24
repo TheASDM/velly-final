@@ -23,12 +23,13 @@ OUT = ROOT / "images" / "sitemap.json"
 # Wiki content directories whose .md files become wiki pages.
 # DM/ excluded — those are unpublished campaign secrets.
 WIKI_ROOTS = [
-    ("Venturia",        "/en/Venturia"),
-    ("Articles",        "/en/Articles"),
-    ("Class-Changes",   "/en/Class-Changes"),
-    ("House-Rules",     "/en/House-Rules"),
-    ("Updates",         "/en/Updates"),
-    ("Archive",         "/en/Archive"),
+    ("Venturia",            "/en/Venturia"),
+    ("Articles",            "/en/Articles"),
+    ("Class-Changes",       "/en/Class-Changes"),
+    ("House-Rules",         "/en/House-Rules"),
+    ("Updates",             "/en/Updates"),
+    ("Session-Chronicles",  "/en/Session-Chronicles"),
+    ("Archive",             "/en/Archive"),
 ]
 SKIP_DIR_NAMES = {"DM", "images"}
 

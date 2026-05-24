@@ -7,6 +7,10 @@
 {% if description %}<meta name="description" content="{{ description }}">{% endif %}
 {% if tags %}<meta name="keywords" content="{{ tags }}">{% endif %}
 
+<link rel="icon" type="image/png" href="/images/masklogosquare.png">
+<link rel="apple-touch-icon" href="/images/masklogosquare.png">
+<meta name="theme-color" content="#0d0b11">
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&family=IM+Fell+English:ital@0;1&display=swap" rel="stylesheet">
@@ -14,22 +18,33 @@
 <link href="/pagefind/pagefind-ui.css" rel="stylesheet">
 
 <style>
+  /* ── Tokens ─────────────────────────────────────────────────────────── */
   :root {
     --vos-gold-bright: #d4a574;
+    --vos-gold: #c9a84c;
     --vos-gold-dim: #8b7355;
+    --vos-gold-faint: rgba(212, 165, 116, 0.08);
     --vos-cream: #e8dcc8;
     --vos-text: #c9b896;
     --vos-text-body: #d4c7ad;
     --vos-bg: #0d0b11;
-    --vos-bg-panel: rgba(13, 11, 17, 0.97);
-    --vos-border: rgba(139, 115, 85, 0.3);
+    --vos-bg-deep: #07060a;
+    --vos-bg-panel: rgba(13, 11, 17, 0.92);
+    --vos-bg-panel-solid: rgba(10, 8, 14, 0.97);
+    --vos-border: rgba(139, 115, 85, 0.28);
+    --vos-border-strong: rgba(212, 165, 116, 0.45);
     --vos-quest: #a0322a;
     --vos-quest-bright: #d44d3f;
-  }
-  *, *::before, *::after { box-sizing: border-box; }
-  html, body { margin: 0; padding: 0; background: var(--vos-bg); color: var(--vos-text-body); }
+    --vos-shadow: 0 24px 80px rgba(0, 0, 0, 0.7);
 
-  /* Themed scrollbars — gold-on-dark instead of the default OS chrome */
+    --vos-nav-w: 300px;
+    --vos-top-h: 68px;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: var(--vos-bg-deep); color: var(--vos-text-body); }
+
+  /* Themed scrollbars */
   * { scrollbar-width: thin; scrollbar-color: rgba(139, 115, 85, 0.45) transparent; }
   ::-webkit-scrollbar { width: 8px; height: 8px; }
   ::-webkit-scrollbar-track { background: transparent; }
@@ -37,31 +52,70 @@
   ::-webkit-scrollbar-thumb:hover { background: rgba(212, 165, 116, 0.55); }
   ::-webkit-scrollbar-corner { background: transparent; }
   iframe { color-scheme: dark; }
+
   body {
     font-family: 'Crimson Text', Georgia, serif;
     font-size: 17px;
     line-height: 1.65;
-    padding-top: 52px;
+    padding-top: var(--vos-top-h);
+    min-height: 100vh;
+    position: relative;
   }
   @media (min-width: 1024px) {
-    body { padding-left: 280px; }
+    body { padding-left: var(--vos-nav-w); }
   }
 
-  /* Headings — Cinzel display caps for h1/h2, lighter for sub */
-  h1, h2 { font-family: 'Cinzel', Georgia, serif; color: var(--vos-gold-bright); letter-spacing: 0.06em; line-height: 1.2; }
-  h1 { font-size: 2.2rem; margin: 2rem 0 1rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--vos-border); }
-  h2 { font-size: 1.5rem; margin: 2rem 0 0.75rem; }
-  h3 { font-family: 'Cinzel', Georgia, serif; color: var(--vos-cream); font-size: 1.15rem; letter-spacing: 0.04em; margin: 1.5rem 0 0.5rem; }
-  h4, h5, h6 { color: var(--vos-cream); }
-  hr { border: none; border-top: 1px solid var(--vos-border); margin: 2rem 0; }
+  /* ── Masquerade backdrop ─────────────────────────────────────────────
+     Fixed full-viewport image, dimmed and blurred, sitting behind the
+     content. A vignette + radial wash on top keeps text legible. */
+  .vos-backdrop {
+    position: fixed; inset: 0; z-index: -2; pointer-events: none;
+    background:
+      radial-gradient(ellipse 60% 40% at 50% 0%, rgba(212, 165, 116, 0.08), transparent 70%),
+      radial-gradient(ellipse 80% 60% at 50% 100%, rgba(13, 11, 17, 0.85), transparent 70%),
+      linear-gradient(180deg, rgba(7, 6, 10, 0.78) 0%, rgba(7, 6, 10, 0.94) 100%),
+      url('/images/masqueradebackground.png') center/cover no-repeat fixed,
+      var(--vos-bg-deep);
+    filter: saturate(0.85);
+  }
+  .vos-backdrop::after {
+    content: '';
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 90% 60% at 50% 50%, transparent 0%, rgba(7, 6, 10, 0.55) 100%);
+  }
 
-  a { color: var(--vos-gold-bright); text-decoration: none; border-bottom: 1px solid transparent; transition: border-color 0.15s; }
-  a:hover { border-bottom-color: var(--vos-gold-bright); }
+  /* ── Typography ──────────────────────────────────────────────────────── */
+  h1, h2 { font-family: 'Cinzel', Georgia, serif; color: var(--vos-gold-bright); letter-spacing: 0.06em; line-height: 1.2; }
+  h1 {
+    font-size: 2.4rem; margin: 2rem 0 1.25rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--vos-border);
+    position: relative;
+  }
+  h1::after {
+    content: '✦';
+    position: absolute; left: 0; bottom: -0.55rem;
+    background: var(--vos-bg-deep); padding-right: 0.5rem;
+    color: var(--vos-gold-dim); font-size: 0.8rem;
+  }
+  h2 { font-size: 1.55rem; margin: 2.25rem 0 0.85rem; }
+  h3 { font-family: 'Cinzel', Georgia, serif; color: var(--vos-cream); font-size: 1.18rem; letter-spacing: 0.04em; margin: 1.5rem 0 0.5rem; }
+  h4, h5, h6 { color: var(--vos-cream); }
+  hr {
+    border: none;
+    height: 16px; margin: 2.5rem 0;
+    background: center/contain no-repeat url('/images/masqueradeline.png');
+    opacity: 0.55;
+  }
+
+  a { color: var(--vos-gold-bright); text-decoration: none; border-bottom: 1px solid transparent; transition: border-color 0.15s, color 0.15s; }
+  a:hover { border-bottom-color: var(--vos-gold-bright); color: #e8c084; }
 
   blockquote { border-left: 3px solid var(--vos-gold-dim); margin: 1.5rem 0; padding: 0.5rem 1.25rem; color: var(--vos-text); font-style: italic; }
 
-  code { background: rgba(212, 165, 116, 0.1); color: var(--vos-cream); padding: 0.1rem 0.4rem; border-radius: 3px; font-size: 0.92em; }
-  pre { background: rgba(13, 11, 17, 0.6); border: 1px solid var(--vos-border); border-radius: 4px; padding: 1rem; overflow-x: auto; }
+  code { background: rgba(212, 165, 116, 0.12); color: var(--vos-cream); padding: 0.1rem 0.4rem; border-radius: 3px; font-size: 0.92em; }
+  pre { background: rgba(13, 11, 17, 0.65); border: 1px solid var(--vos-border); border-radius: 4px; padding: 1rem; overflow-x: auto; }
   pre code { background: none; padding: 0; }
 
   table { border-collapse: collapse; margin: 1.5rem 0; width: 100%; }
@@ -70,60 +124,157 @@
 
   img { max-width: 100%; height: auto; }
 
-  main.vos-content { max-width: 820px; margin: 0 auto; padding: 2rem 1.5rem 6rem; }
-  main.vos-content article { font-family: 'Crimson Text', Georgia, serif; }
+  main.vos-content {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 2.25rem 1.75rem 7rem;
+    position: relative;
+    z-index: 1;
+  }
 
-  /* ── Top bar ───────────────────────────────────────────────────────── */
+  /* ── Top bar ──────────────────────────────────────────────────────────
+     Logo + search + the red Foundry CTA. Three layered backgrounds:
+     a warm radial wash up top, a deep panel base, and a thin filigree
+     hairline at the bottom edge for depth. The wordmark + mask sit on
+     the left, the Foundry button on the far right. */
   .vos-topnav {
     position: fixed; top: 0; left: 0; right: 0; z-index: 1100;
-    background: var(--vos-bg-panel); border-bottom: 1px solid var(--vos-border);
-    padding: 0.55rem 1.5rem;
-    display: flex; align-items: center; gap: 0.25rem;
+    height: var(--vos-top-h);
+    background:
+      radial-gradient(ellipse 70% 100% at 20% 0%, rgba(212, 165, 116, 0.10), transparent 70%),
+      linear-gradient(180deg, rgba(20, 16, 24, 0.98) 0%, rgba(10, 8, 14, 0.98) 100%);
+    box-shadow: 0 6px 28px rgba(0, 0, 0, 0.55);
+    padding: 0 1.5rem;
+    display: flex; align-items: center; gap: 0.65rem;
     font-family: 'Cinzel', Georgia, serif;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
   }
-  .vos-topnav .vos-logo { font-weight: 600; color: var(--vos-gold-bright); font-size: 0.78rem; letter-spacing: 0.32em; text-transform: uppercase; margin-right: 1.5rem; text-decoration: none; border-bottom: none; white-space: nowrap; }
-  .vos-topnav a:hover { color: var(--vos-gold-bright); }
-  .vos-hamburger { display: none; cursor: pointer; color: var(--vos-gold-bright); font-size: 1.3rem; padding: 0 0.5rem; user-select: none; }
+  /* Bottom filigree hairline — a soft gold gradient line with a glow,
+     reads as a delicate edge instead of a hard border. */
+  .vos-topnav::after {
+    content: '';
+    position: absolute; left: 0; right: 0; bottom: -1px; height: 2px;
+    pointer-events: none;
+    background: linear-gradient(90deg,
+      transparent 0%,
+      rgba(139, 115, 85, 0.4) 12%,
+      rgba(212, 165, 116, 0.85) 50%,
+      rgba(139, 115, 85, 0.4) 88%,
+      transparent 100%);
+    box-shadow: 0 1px 8px rgba(212, 165, 116, 0.25);
+  }
+  /* A subtle dark gradient just below the bar so the page reads as
+     starting "under" the top nav rather than colliding with it. */
+  .vos-topnav::before {
+    content: '';
+    position: absolute; left: 0; right: 0; top: 100%; height: 24px;
+    pointer-events: none;
+    background: linear-gradient(180deg, rgba(7, 6, 10, 0.65), transparent);
+  }
 
-  /* ── Search slot inside the top nav ─────────────────────────────────── */
-  .vos-topnav-search {
-    flex: 1; max-width: 640px;
-    margin: 0 1rem;
+  .vos-topnav .vos-logo {
     display: flex; align-items: center;
+    margin-right: 1rem; text-decoration: none; border-bottom: none; white-space: nowrap;
+    transition: filter 0.3s;
+  }
+  .vos-topnav .vos-logo-wordmark {
+    height: 52px; width: auto; display: block;
+    filter:
+      drop-shadow(0 3px 10px rgba(0, 0, 0, 0.7))
+      drop-shadow(0 0 14px rgba(212, 165, 116, 0.18));
+    transition: filter 0.3s, transform 0.4s ease;
+  }
+  .vos-topnav .vos-logo:hover .vos-logo-wordmark {
+    transform: scale(1.03);
+    filter:
+      drop-shadow(0 3px 10px rgba(0, 0, 0, 0.75))
+      drop-shadow(0 0 22px rgba(212, 165, 116, 0.4));
+  }
+  .vos-hamburger {
+    display: none; cursor: pointer; color: var(--vos-gold-bright); background: none; border: none;
+    font-size: 1.4rem; padding: 0.4rem 0.6rem; user-select: none;
+    border-radius: 3px;
+  }
+  .vos-hamburger:hover { background: rgba(212, 165, 116, 0.08); }
+
+  /* Spacer pushes everything after it to the right */
+  .vos-topnav-spacer { flex: 1; }
+
+  /* Search — compact, sits to the LEFT of the Foundry button on the right */
+  .vos-topnav-search {
+    width: clamp(220px, 32vw, 360px);
+    margin: 0 0.65rem 0 0;
+    display: flex; align-items: center; position: relative;
   }
   .vos-topnav-search #vos-search { width: 100%; }
 
-  /* The big red Foundry button */
+  /* Foundry CTA — dark charcoal + gold filigree, gold text, warm shimmer
+     pass on hover. Sits on the right of the top bar as the primary CTA. */
   .vos-quest-btn {
-    background: linear-gradient(180deg, var(--vos-quest-bright), var(--vos-quest));
-    color: #fff !important;
+    position: relative; overflow: hidden;
+    background:
+      linear-gradient(180deg, #1f1a14 0%, #14110d 100%);
+    color: var(--vos-gold-bright) !important;
     font-family: 'Cinzel', Georgia, serif;
-    font-size: 0.72rem; font-weight: 600;
-    letter-spacing: 0.22em; text-transform: uppercase;
-    padding: 0.55rem 1.1rem !important;
+    font-size: 0.78rem; font-weight: 700;
+    letter-spacing: 0.24em; text-transform: uppercase;
+    padding: 0.65rem 1.25rem !important;
     border-radius: 4px;
-    box-shadow: 0 2px 8px rgba(212, 77, 63, 0.35), inset 0 1px 0 rgba(255,255,255,0.15);
-    border: 1px solid rgba(255,255,255,0.12) !important;
-    margin-left: 0.75rem;
+    box-shadow:
+      0 4px 14px rgba(0, 0, 0, 0.55),
+      inset 0 1px 0 rgba(212, 165, 116, 0.18),
+      inset 0 -1px 0 rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(212, 165, 116, 0.55) !important;
+    margin-left: 0.5rem;
     white-space: nowrap;
-    transition: transform 0.15s, box-shadow 0.15s;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.7);
+    transition: transform 0.18s ease, box-shadow 0.18s ease, color 0.18s, border-color 0.18s;
+  }
+  .vos-quest-btn::before {
+    content: '';
+    position: absolute; top: 0; left: -120%; width: 60%; height: 100%;
+    background: linear-gradient(110deg,
+      transparent 0%,
+      rgba(212, 165, 116, 0.0) 30%,
+      rgba(212, 165, 116, 0.35) 50%,
+      rgba(212, 165, 116, 0.0) 70%,
+      transparent 100%);
+    transition: left 0.6s ease;
+    pointer-events: none;
   }
   .vos-quest-btn:hover {
     transform: translateY(-1px);
-    box-shadow: 0 4px 14px rgba(212, 77, 63, 0.55), inset 0 1px 0 rgba(255,255,255,0.2);
-    border-bottom: 1px solid rgba(255,255,255,0.12) !important;
-    color: #fff !important;
+    color: var(--vos-cream) !important;
+    border-color: var(--vos-gold-bright) !important;
+    box-shadow:
+      0 6px 22px rgba(0, 0, 0, 0.7),
+      0 0 22px rgba(212, 165, 116, 0.28),
+      inset 0 1px 0 rgba(212, 165, 116, 0.28),
+      inset 0 -1px 0 rgba(0, 0, 0, 0.55);
+    border-bottom: 1px solid var(--vos-gold-bright) !important;
   }
-  .vos-quest-btn .vos-quest-spark { color: rgba(255, 220, 180, 0.95); margin-right: 0.4rem; }
+  .vos-quest-btn:hover::before { left: 130%; }
+  .vos-quest-btn .vos-quest-spark { color: var(--vos-gold-bright); margin-right: 0.45rem; }
+  .vos-quest-label-short { display: none; }
 
   @media (max-width: 1023px) {
-    .vos-topnav { padding: 0.55rem 0.75rem; gap: 0.5rem; }
-    .vos-hamburger { display: inline-block; }
-    .vos-topnav-search { margin: 0 0.5rem; }
-    .vos-quest-btn { font-size: 0.62rem; padding: 0.4rem 0.7rem !important; margin-left: 0.25rem; }
+    .vos-topnav { padding: 0 0.6rem; gap: 0.4rem; }
+    .vos-hamburger { display: inline-flex; }
+    .vos-topnav .vos-logo-wordmark { height: 40px; }
+    .vos-topnav-search { width: clamp(140px, 36vw, 220px); margin: 0 0.4rem 0 0; }
+    .vos-quest-btn { font-size: 0.62rem; padding: 0.4rem 0.85rem !important; margin-left: 0.25rem; letter-spacing: 0.18em; }
+  }
+  @media (max-width: 700px) {
+    .vos-topnav .vos-logo-wordmark { height: 34px; }
+  }
+  @media (max-width: 600px) {
+    .vos-quest-label-full { display: none; }
+    .vos-quest-label-short { display: inline; }
   }
 
-  /* Pagefind UI override — make it match the gold/dark palette */
+  /* Pagefind overrides — match the gold/dark palette and float the
+     results panel below the input so it doesn't expand the nav. */
   .pagefind-ui {
     --pagefind-ui-primary: var(--vos-gold-bright);
     --pagefind-ui-text: var(--vos-text-body);
@@ -136,36 +287,254 @@
   }
   .pagefind-ui__search-input {
     font-family: 'Crimson Text', Georgia, serif !important;
-    font-size: 0.95rem !important;
-    background: rgba(13, 11, 17, 0.6) !important;
+    font-size: 1rem !important;
+    background:
+      linear-gradient(180deg, rgba(7, 6, 10, 0.7), rgba(13, 11, 17, 0.55)) !important;
     color: var(--vos-cream) !important;
-    padding: 0.45rem 0.75rem !important;
-    height: 36px !important;
+    padding: 0.5rem 0.95rem 0.5rem 2.25rem !important;
+    height: 40px !important;
+    border: 1px solid var(--vos-border) !important;
+    border-radius: 4px !important;
+    box-shadow:
+      inset 0 1px 4px rgba(0, 0, 0, 0.6),
+      0 0 0 1px rgba(212, 165, 116, 0) !important;
+    transition: border-color 0.2s, box-shadow 0.2s !important;
   }
-  .pagefind-ui__search-input::placeholder { color: var(--vos-gold-dim); }
-  /* Results panel — float below the input so it doesn't expand the nav */
+  .pagefind-ui__search-input:focus {
+    border-color: var(--vos-gold-bright) !important;
+    box-shadow:
+      inset 0 1px 4px rgba(0, 0, 0, 0.6),
+      0 0 0 1px rgba(212, 165, 116, 0.4),
+      0 0 18px rgba(212, 165, 116, 0.15) !important;
+  }
+  .pagefind-ui__search-input::placeholder { color: var(--vos-gold-dim); font-style: italic; }
   .vos-topnav-search .pagefind-ui__drawer {
     position: absolute !important;
     top: 100% !important; left: 0; right: 0;
-    background: var(--vos-bg-panel);
+    background: var(--vos-bg-panel-solid);
     border: 1px solid var(--vos-border);
     border-top: none;
     max-height: 70vh; overflow-y: auto;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.6);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.7);
     z-index: 1099;
   }
-  .vos-topnav-search { position: relative; }
   .pagefind-ui__result-link { color: var(--vos-gold-bright) !important; font-family: 'Cinzel', Georgia, serif; }
   .pagefind-ui__result-excerpt { color: var(--vos-text) !important; }
-  .pagefind-ui__result-tags, .pagefind-ui__filter-name, .pagefind-ui__message {
-    color: var(--vos-text) !important;
+  .pagefind-ui__result-tags, .pagefind-ui__filter-name, .pagefind-ui__message { color: var(--vos-text) !important; }
+
+  /* ── Sidebar ──────────────────────────────────────────────────────────
+     Mask glyph at top, three collapsible groups, single Chronicle link
+     pinned at the bottom. Each group's open/closed state persists in
+     localStorage under `vosNavOpen`. */
+  .vos-sidebar {
+    position: fixed; top: var(--vos-top-h); left: 0; bottom: 0;
+    width: var(--vos-nav-w); z-index: 1000;
+    background: linear-gradient(180deg, rgba(13, 11, 17, 0.96) 0%, rgba(10, 8, 14, 0.98) 100%);
+    border-right: 1px solid var(--vos-border);
+    /* Outer sidebar doesn't scroll — brand + footer stay pinned, only
+       the middle tree area scrolls. */
+    overflow: hidden;
+    display: flex; flex-direction: column;
+    font-family: 'Crimson Text', Georgia, serif;
+    transition: transform 0.3s ease;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
   }
 
-  /* ── Auto-index list ───────────────────────────────────────────────── */
+  /* Brand mark at the top of the sidebar — large emblem, generous padding,
+     warm radial glow behind it. */
+  .vos-sidebar-brand {
+    display: flex; flex-direction: column; align-items: center;
+    padding: 1.6rem 1rem 1.4rem;
+    border-bottom: 1px solid var(--vos-border);
+    text-decoration: none; border: none;
+    background:
+      radial-gradient(ellipse 90% 70% at 50% 35%, rgba(212, 165, 116, 0.12), transparent 70%);
+    position: relative;
+  }
+  .vos-sidebar-brand::after {
+    content: '';
+    position: absolute; left: 12%; right: 12%; bottom: 0; height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(212, 165, 116, 0.45), transparent);
+  }
+  .vos-sidebar-mark {
+    width: 168px; height: 168px; max-width: 80%;
+    object-fit: contain;
+    filter:
+      drop-shadow(0 8px 22px rgba(0, 0, 0, 0.85))
+      drop-shadow(0 0 18px rgba(212, 165, 116, 0.18));
+    transition: transform 0.5s ease, filter 0.5s ease;
+  }
+  .vos-sidebar-brand:hover .vos-sidebar-mark {
+    transform: scale(1.04);
+    filter:
+      drop-shadow(0 10px 28px rgba(0, 0, 0, 0.9))
+      drop-shadow(0 0 24px rgba(212, 165, 116, 0.35));
+  }
+  .vos-sidebar-tagline {
+    margin-top: 0.85rem;
+    font-family: 'IM Fell English', Georgia, serif;
+    font-style: italic;
+    font-size: 0.78rem;
+    color: var(--vos-gold-dim);
+    letter-spacing: 0.08em;
+    text-align: center;
+  }
+
+  /* Brand + footer don't shrink; the tree area scrolls on its own. */
+  .vos-sidebar-brand { flex-shrink: 0; }
+  .vos-sidebar-footer-spacer { flex-shrink: 0; }
+  .vos-sidebar-tree {
+    flex: 1 1 0;
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding: 1rem 0.9rem;
+  }
+  .vos-sidebar-tree::-webkit-scrollbar { width: 6px; }
+  .vos-sidebar-tree::-webkit-scrollbar-thumb { background: rgba(139, 115, 85, 0.3); border-radius: 3px; }
+  .vos-sidebar-loading {
+    color: var(--vos-gold-dim);
+    font-size: 0.78rem; letter-spacing: 0.1em;
+    text-align: center; padding: 1rem;
+    font-style: italic;
+  }
+
+  /* Group (top-level collapsible: Our Campaign / Player Resources / Tools) */
+  .vos-group { margin: 0.4rem 0 1.1rem; }
+  .vos-group-head {
+    display: flex; align-items: center; cursor: pointer; user-select: none;
+    color: var(--vos-gold-bright);
+    font-family: 'Cinzel', Georgia, serif;
+    letter-spacing: 0.22em; text-transform: uppercase;
+    font-size: 0.7rem; font-weight: 600;
+    padding: 0.5rem 0.4rem;
+    border-bottom: 1px solid var(--vos-border);
+    transition: color 0.15s, border-color 0.15s;
+    background: none; border-left: none; border-right: none; border-top: none; width: 100%; text-align: left;
+  }
+  .vos-group-head:hover { color: var(--vos-cream); border-bottom-color: var(--vos-border-strong); }
+  .vos-group-chevron {
+    display: inline-block; width: 0.85rem;
+    transition: transform 0.25s ease;
+    color: var(--vos-gold-dim);
+    font-size: 0.7rem; margin-right: 0.45rem;
+  }
+  .vos-group.vos-open > .vos-group-head .vos-group-chevron { transform: rotate(90deg); color: var(--vos-gold-bright); }
+  .vos-group-body { display: none; padding: 0.45rem 0 0.3rem 0.35rem; }
+  .vos-group.vos-open > .vos-group-body { display: block; }
+
+  /* Section (nested under a group: e.g. Venturia → Locations) */
+  .vos-section { margin: 0.15rem 0 0.4rem; }
+  .vos-section-title {
+    display: flex; align-items: center; cursor: pointer; user-select: none;
+    color: var(--vos-cream);
+    font-family: 'Cinzel', Georgia, serif;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    font-size: 0.7rem;
+    padding: 0.4rem 0.3rem;
+    border-radius: 3px;
+    transition: color 0.15s, background 0.15s;
+  }
+  .vos-section-title:hover { color: var(--vos-gold-bright); background: rgba(212, 165, 116, 0.05); }
+  .vos-section-chevron {
+    display: inline-block; width: 0.8rem;
+    transition: transform 0.25s ease;
+    color: var(--vos-gold-dim);
+    font-size: 0.65rem; margin-right: 0.4rem;
+  }
+  .vos-section.vos-open > .vos-section-title .vos-section-chevron { transform: rotate(90deg); color: var(--vos-gold-bright); }
+  .vos-pages {
+    display: none;
+    padding: 0.25rem 0 0.4rem 0.6rem;
+    border-left: 1px solid rgba(139, 115, 85, 0.25);
+    margin-left: 0.55rem;
+  }
+  .vos-section.vos-open > .vos-pages { display: block; }
+
+  /* Leaf pages */
+  .vos-page {
+    display: block;
+    color: var(--vos-text);
+    padding: 0.32rem 0.55rem;
+    font-size: 0.88rem; line-height: 1.35;
+    border-radius: 3px; border-bottom: none;
+    transition: color 0.15s, background 0.15s, padding 0.15s;
+  }
+  .vos-page:hover {
+    color: var(--vos-gold-bright);
+    background: rgba(212, 165, 116, 0.06);
+    border-bottom: none;
+  }
+  .vos-page.vos-active {
+    color: var(--vos-gold-bright);
+    background: rgba(212, 165, 116, 0.12);
+    border-left: 2px solid var(--vos-gold-bright);
+    padding-left: 0.7rem;
+  }
+  .vos-page-overview {
+    font-family: 'IM Fell English', Georgia, serif;
+    font-style: italic;
+    color: var(--vos-gold-dim);
+    font-size: 0.82rem;
+    opacity: 0.9;
+  }
+  .vos-page-overview::before { content: '↗ '; margin-right: 0.15rem; }
+
+  /* External link badge */
+  .vos-page-external::after {
+    content: '↗';
+    margin-left: 0.4rem;
+    color: var(--vos-gold-dim);
+    font-size: 0.75rem;
+  }
+
+  /* Chronicle pinned footer */
+  .vos-sidebar-footer {
+    flex-shrink: 0;
+    padding: 0.9rem 0.9rem 1.3rem;
+    border-top: 1px solid var(--vos-border);
+    background:
+      radial-gradient(ellipse 80% 60% at 50% 100%, rgba(212, 165, 116, 0.06), transparent 70%);
+  }
+  .vos-chronicle-link {
+    display: flex; align-items: center; justify-content: center; gap: 0.65rem;
+    padding: 0.7rem 0.5rem;
+    color: var(--vos-gold-bright);
+    font-family: 'Cinzel', Georgia, serif;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    font-size: 0.74rem; font-weight: 600;
+    border: 1px solid var(--vos-border-strong);
+    border-radius: 3px;
+    text-decoration: none;
+    transition: background 0.2s, color 0.2s, border-color 0.2s;
+  }
+  .vos-chronicle-link:hover {
+    background: rgba(212, 165, 116, 0.1);
+    color: var(--vos-cream);
+    border-color: var(--vos-gold-bright);
+    border-bottom: 1px solid var(--vos-gold-bright);
+  }
+  .vos-chronicle-glyph { font-size: 0.9rem; color: var(--vos-gold-dim); }
+  .vos-chronicle-link:hover .vos-chronicle-glyph { color: var(--vos-gold-bright); }
+
+  @media (max-width: 1023px) {
+    .vos-sidebar { transform: translateX(-100%); width: min(320px, 88vw); }
+    .vos-sidebar.vos-open { transform: translateX(0); box-shadow: 4px 0 28px rgba(0,0,0,0.7); }
+    .vos-sidebar-backdrop {
+      position: fixed; inset: var(--vos-top-h) 0 0 0; z-index: 999;
+      background: rgba(7, 6, 10, 0.55);
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.25s ease;
+    }
+    .vos-sidebar-backdrop.vos-open { opacity: 1; pointer-events: auto; }
+  }
+
+  /* ── Auto-index list (when a *index.md page renders) ─────────────────── */
   .vos-auto-index { margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--vos-border); }
   .vos-auto-index h2.vos-auto-index-title {
     color: var(--vos-gold-bright); font-family: 'Cinzel', Georgia, serif;
-    font-size: 1.35rem; letter-spacing: 0.06em; margin-top: 0;
+    font-size: 1.4rem; letter-spacing: 0.06em; margin-top: 0;
   }
   .vos-auto-index .vos-auto-sub { margin: 1.5rem 0; }
   .vos-auto-index .vos-auto-sub > h3 {
@@ -181,54 +550,35 @@
   .vos-auto-index li { padding: 0.15rem 0; }
   .vos-auto-index li a { font-size: 1rem; }
 
-  /* ── Sidebar ────────────────────────────────────────────────────────── */
-  .vos-sidebar {
-    position: fixed; top: 52px; left: 0; bottom: 0; width: 280px; z-index: 1000;
-    background: var(--vos-bg-panel); border-right: 1px solid var(--vos-border);
-    overflow-y: auto; padding: 1.5rem 1rem 3rem;
-    font-family: 'Crimson Text', Georgia, serif;
-    transition: transform 0.3s ease;
-  }
-  .vos-section { margin-bottom: 0.4rem; }
-  .vos-section-title { display: flex; align-items: center; cursor: pointer; user-select: none; color: var(--vos-gold-bright); font-family: 'Cinzel', Georgia, serif; letter-spacing: 0.18em; text-transform: uppercase; font-size: 0.72rem; padding: 0.55rem 0.25rem; border-bottom: 1px solid rgba(139, 115, 85, 0.15); }
-  .vos-section-title::before { content: '▸'; margin-right: 0.5rem; opacity: 0.7; transition: transform 0.2s; font-size: 0.7rem; }
-  .vos-section.vos-open > .vos-section-title::before { transform: rotate(90deg); }
-  .vos-pages { display: none; padding: 0.4rem 0 0.5rem 0.7rem; border-left: 1px solid rgba(139, 115, 85, 0.12); margin-left: 0.6rem; }
-  .vos-section.vos-open > .vos-pages { display: block; }
-  .vos-page { display: block; color: var(--vos-text); padding: 0.32rem 0.25rem; font-size: 0.85rem; line-height: 1.35; border-radius: 3px; border-bottom: none; }
-  .vos-page:hover { color: var(--vos-gold-bright); background: rgba(212, 165, 116, 0.05); }
-  .vos-page.vos-active { color: var(--vos-gold-bright); background: rgba(212, 165, 116, 0.1); border-left: 2px solid var(--vos-gold-bright); padding-left: 0.5rem; margin-left: -0.5rem; }
-  @media (max-width: 1023px) {
-    .vos-sidebar { transform: translateX(-100%); }
-    .vos-sidebar.vos-open { transform: translateX(0); box-shadow: 4px 0 20px rgba(0,0,0,0.6); }
-  }
-
-  /* ── Enzo floating widget ───────────────────────────────────────────
-     Positioning comes from chatbot.css (fixed bottom-right). Bump
-     z-index so it floats above the sidebar. On desktop widen the
-     widget and replace the single-line input with a 12-line textarea
-     (the swap happens in JS below). Mobile keeps chatbot.css defaults.
-     Scoped to the codex layout — the standalone Enzo page is untouched. */
+  /* ── Enzo widget container fix ────────────────────────────────────────
+     Float above the sidebar, but pin it firmly bottom-right so it can't
+     drift over the centered logo on the home page. */
   #chatbot-container { z-index: 1200 !important; }
+
+  /* When Enzo is collapsed to the pill, the OUTER container shrinks too
+     so the floating layer doesn't reserve a 560px box. */
+  #chatbot-container.vos-enzo-pill { width: auto; }
+
+  /* Desktop widget sizing — widen panel + give the input room. The
+     collapsed-state height override below uses !important to win against
+     these so the pill actually shrinks. */
   @media (min-width: 769px) {
-    #chatbot-widget { width: 560px !important; max-height: 90vh !important; }
-    /* Stack textarea above the send button so SEND stays normal-sized. */
+    #chatbot-widget {
+      width: 560px;
+      max-height: 86vh;
+    }
     .chat-input-area {
       flex-direction: column !important;
       gap: 0.5rem !important;
       align-items: stretch !important;
     }
     #chat-input {
-      /* height (no !important) so the user's resize-drag wins over the
-         default. min-height keeps it from collapsing too small. */
       min-height: 60px !important;
-      height: 140px;
+      height: 130px;
       line-height: 1.5 !important;
       resize: vertical !important;
       white-space: pre-wrap !important;
       word-wrap: break-word !important;
-      /* Border was removed in chatbot.css because the input shared an edge
-         with the button; restore it now that the button sits below. */
       border-right: 1px solid rgba(201, 168, 76, 0.2) !important;
       width: 100% !important;
     }
@@ -238,27 +588,46 @@
       height: auto !important;
     }
     #chat-messages {
-      min-height: 220px !important;
-      max-height: calc(90vh - 52px - 220px) !important;
+      min-height: 200px !important;
+      max-height: calc(86vh - 52px - 220px) !important;
     }
   }
 </style>
 </head>
 <body>
 
+<div class="vos-backdrop" aria-hidden="true"></div>
+
 <nav class="vos-topnav">
-  <span class="vos-hamburger" id="vos-hamburger">☰</span>
-  <a href="/" class="vos-logo">Valley of Shadows</a>
+  <button class="vos-hamburger" id="vos-hamburger" aria-label="Open menu" type="button">☰</button>
+  <a href="/" class="vos-logo" aria-label="Valley of Shadows home">
+    <img src="/images/smalltitle.png" alt="Valley of Shadows" class="vos-logo-wordmark">
+  </a>
+  <div class="vos-topnav-spacer"></div>
   <div class="vos-topnav-search">
     <div id="vos-search"></div>
   </div>
   <a class="vos-quest-btn" href="https://valleyofshadows.quest/" target="_blank" rel="noopener" title="Open the private Foundry server">
-    <span class="vos-quest-spark">✦</span>Play on Foundry
+    <span class="vos-quest-spark">✦</span><span class="vos-quest-label-full">Play on Foundry</span><span class="vos-quest-label-short">Play</span>
   </a>
 </nav>
 
-<aside class="vos-sidebar" id="vos-sidebar">
-  <div style="color:var(--vos-gold-dim);font-size:0.75rem;letter-spacing:0.1em;">Loading…</div>
+<div class="vos-sidebar-backdrop" id="vos-sidebar-backdrop" aria-hidden="true"></div>
+
+<aside class="vos-sidebar" id="vos-sidebar" aria-label="Site navigation">
+  <a href="/" class="vos-sidebar-brand" aria-label="Valley of Shadows home">
+    <img src="/images/topnav.png" alt="" class="vos-sidebar-mark">
+    <div class="vos-sidebar-tagline">Tales from the Valley</div>
+  </a>
+  <div class="vos-sidebar-tree" id="vos-sidebar-tree">
+    <div class="vos-sidebar-loading">Gathering the threads…</div>
+  </div>
+  <div class="vos-sidebar-footer">
+    <a href="/en/Archive/" class="vos-chronicle-link" id="vos-chronicle">
+      <span class="vos-chronicle-glyph">✦</span>
+      <span>The Chronicle</span>
+    </a>
+  </div>
 </aside>
 
 <main class="vos-content">
@@ -298,19 +667,88 @@
       </section>
     {%- endif -%}
   {%- endif -%}
-
 </main>
 
-<!-- Enzo floating chat widget, fixed at viewport bottom-right per chatbot.css -->
-<link rel="stylesheet" href="https://loremaster.valleyofshadows.wiki/css/chatbot.css">
+<!-- ── Enzo floating chat widget ──────────────────────────────────────
+     Production: load the real CSS + JS from the deployed loremaster
+     origin so the wiki stays in sync with the standalone chatbot app.
+     Local preview (localhost / 127.0.0.1): inject a visual-only stub
+     that mirrors the production widget's DOM and uses /css/chatbot.css
+     (passthrough from public/css). The stub doesn't call /api/chat —
+     it's there so design changes can be screenshotted without booting
+     the chatbot backend. -->
 <div id="chatbot-container"></div>
-<script>window.LOREMASTER_API_URL = 'https://loremaster.valleyofshadows.wiki/api/chat';</script>
-<script src="https://loremaster.valleyofshadows.wiki/js/chatbot.js" defer></script>
 <script>
-// After chatbot.js renders #chat-input as a single-line <input>, swap it for
-// a wrapping <textarea> so messages can be multi-line on the floating widget.
-// Enter sends; Shift+Enter inserts a newline. The send button keeps working
-// because it looks the input up by id, and id matches.
+(function () {
+  const isLocal = ['localhost', '127.0.0.1', ''].includes(location.hostname);
+
+  // Always include the chatbot stylesheet — local stub uses it too.
+  const cssHref = isLocal
+    ? '/css/chatbot.css'
+    : 'https://loremaster.valleyofshadows.wiki/css/chatbot.css';
+  const css = document.createElement('link');
+  css.rel = 'stylesheet';
+  css.href = cssHref;
+  document.head.appendChild(css);
+
+  if (!isLocal) {
+    // Production path: wire the real chatbot.
+    window.LOREMASTER_API_URL = 'https://loremaster.valleyofshadows.wiki/api/chat';
+    const js = document.createElement('script');
+    js.src = 'https://loremaster.valleyofshadows.wiki/js/chatbot.js';
+    js.defer = true;
+    document.body.appendChild(js);
+    return;
+  }
+
+  // Local stub: render the widget shell so we can screenshot the layout.
+  // Reads/writes the same `loreMasterOpen` localStorage key the real
+  // script uses, so the pill/expanded state persists across local reloads.
+  function readPref() {
+    try { return JSON.parse(localStorage.getItem('loreMasterOpen')); } catch (e) { return null; }
+  }
+  function writePref(v) {
+    try { localStorage.setItem('loreMasterOpen', JSON.stringify(v)); } catch (e) {}
+  }
+
+  const startOpen = readPref() === true;
+  const c = document.getElementById('chatbot-container');
+  c.innerHTML = `
+    <div id="chatbot-widget" class="${startOpen ? '' : 'chatbot-collapsed'}">
+      <div class="chatbot-header" id="vos-stub-header">
+        <img src="/images/maskicon2.png" alt="" class="chatbot-avatar-header">
+        <span>Enzo</span>
+        <span class="toggle-icon">▼</span>
+      </div>
+      <div class="chatbot-body">
+        <div id="chat-messages">
+          <div class="message system">Enzo — preview stub. Local layout only; chat is wired in production.</div>
+          <div class="message-row assistant">
+            <img src="/images/maskicon2.png" alt="" class="chatbot-avatar">
+            <div class="message assistant">I am Enzo — your guide to the city of Venturia and the Valley of Shadows. Ask me about characters, locations, factions, past sessions, or house rules.</div>
+          </div>
+        </div>
+        <div class="chat-input-area">
+          <textarea id="chat-input" placeholder="Ask about NPCs, lore, locations..." rows="5"></textarea>
+          <button id="chat-send-btn">Send</button>
+        </div>
+      </div>
+    </div>
+  `;
+
+  const widget = document.getElementById('chatbot-widget');
+  const header = document.getElementById('vos-stub-header');
+  header.addEventListener('click', () => {
+    const open = widget.classList.toggle('chatbot-collapsed');
+    writePref(!open); // class on = collapsed, so flip for "open"
+  });
+})();
+</script>
+<script>
+// After chatbot.js renders #chat-input as a single-line <input>, swap it
+// for a wrapping <textarea> so messages can be multi-line. Enter sends,
+// Shift+Enter inserts a newline. The send button still finds the element
+// by id, so it keeps working.
 (function () {
   function swap() {
     const old = document.getElementById('chat-input');
@@ -335,6 +773,7 @@
 })();
 </script>
 
+<!-- ── Pagefind site search ─────────────────────────────────────────── -->
 <script src="/pagefind/pagefind-ui.js"></script>
 <script>
 window.addEventListener('DOMContentLoaded', () => {
@@ -349,48 +788,143 @@ window.addEventListener('DOMContentLoaded', () => {
 });
 </script>
 
+<!-- ── Sidebar tree builder ───────────────────────────────────────────
+     Builds the grouped sidebar from the flat sitemap.json. Nav groups
+     are hard-coded below; each group references one or more sitemap
+     subtrees (or external links). State persists per-user in
+     localStorage under `vosNavOpen`. The current page's group + section
+     auto-expand so context is always visible. -->
 <script>
 (function () {
   const here = location.pathname.replace(/\/$/, '');
-  document.querySelectorAll('.vos-topnav a').forEach(a => {
-    const href = a.getAttribute('href');
-    if (!href || href.startsWith('http')) return;
-    const base = href.replace(/\/$/, '');
-    if (base && here.startsWith(base)) a.classList.add('vos-active');
-  });
-  const sidebar = document.getElementById('vos-sidebar');
-  document.getElementById('vos-hamburger').addEventListener('click', () => sidebar.classList.toggle('vos-open'));
+  const STORE = 'vosNavOpen';
 
-  function titleCase(slug) {
-    return slug.replace(/-/g, ' ').replace(/\bdm\b/i, 'DM').replace(/\bpcs\b/i, 'PCs').replace(/\bnpcs\b/i, 'NPCs').replace(/\bvava\b/i, 'VAVA').replace(/\bphb\b/i, 'PHB').replace(/\b\w/g, c => c.toUpperCase());
+  const NAV_GROUPS = [
+    {
+      id: 'campaign',
+      label: 'Our Campaign',
+      defaultOpen: true,
+      // Venturia's subdirectories surfaced directly here (no intermediate
+      // "Valley of Shadows" wrapper). Creatures + College-of-the-Masquerade-Bard
+      // live under Player Resources, so they're not listed here.
+      children: [
+        { kind: 'tree', slug: 'Venturia/Characters',  title: 'Characters' },
+        { kind: 'tree', slug: 'Venturia/Culture',     title: 'Culture' },
+        { kind: 'tree', slug: 'Venturia/Factions',    title: 'Factions' },
+        { kind: 'tree', slug: 'Venturia/Government',  title: 'Government' },
+        { kind: 'tree', slug: 'Venturia/Locations',   title: 'Locations' },
+        { kind: 'tree', slug: 'Venturia/Lore',        title: 'Lore' },
+        { kind: 'tree', slug: 'Session-Chronicles',   title: 'Session Chronicles' }
+      ]
+    },
+    {
+      id: 'resources',
+      label: 'Player Resources',
+      defaultOpen: false,
+      children: [
+        { kind: 'tree', slug: 'Updates', title: 'Campaign Updates' },
+        { kind: 'tree', slug: 'Articles', title: 'Articles & Guides' },
+        { kind: 'tree', slug: 'House-Rules', title: 'House Rules' },
+        { kind: 'tree', slug: 'Class-Changes', title: 'Class Changes' },
+        { kind: 'tree', slug: 'Venturia/Creatures', title: 'Bestiary (5e Creatures)' },
+        { kind: 'tree', slug: 'Venturia/College-of-the-Masquerade-Bard', title: 'Masquerade Bard College' }
+      ]
+    },
+    {
+      id: 'tools',
+      label: 'Tools',
+      defaultOpen: false,
+      children: [
+        { kind: 'external', url: 'https://loremaster.valleyofshadows.wiki/', title: 'Loremaster (Enzo)' },
+        { kind: 'external', url: 'https://reference.valleyofshadows.wiki/enzo/', title: 'Using Enzo' }
+      ]
+    }
+  ];
+
+  function loadOpen() {
+    try { return JSON.parse(localStorage.getItem(STORE)) || {}; } catch (e) { return {}; }
+  }
+  function saveOpen(state) {
+    try { localStorage.setItem(STORE, JSON.stringify(state)); } catch (e) {}
   }
 
+  const TITLE_FIXUPS = { dm: 'DM', pcs: 'PCs', npcs: 'NPCs', vava: 'VAVA', phb: 'PHB' };
+  function titleCase(slug) {
+    return slug.replace(/-/g, ' ').replace(/\b\w+\b/g, (w) =>
+      TITLE_FIXUPS[w.toLowerCase()] || w[0].toUpperCase() + w.slice(1)
+    );
+  }
+
+  // Hamburger
+  const sidebar = document.getElementById('vos-sidebar');
+  const sidebarBackdrop = document.getElementById('vos-sidebar-backdrop');
+  const closeSidebar = () => { sidebar.classList.remove('vos-open'); sidebarBackdrop.classList.remove('vos-open'); };
+  const openSidebar  = () => { sidebar.classList.add('vos-open');    sidebarBackdrop.classList.add('vos-open'); };
+  document.getElementById('vos-hamburger').addEventListener('click', () => {
+    sidebar.classList.contains('vos-open') ? closeSidebar() : openSidebar();
+  });
+  sidebarBackdrop.addEventListener('click', closeSidebar);
+
+  // Highlight Chronicle if we're on the Archive
+  if (here.startsWith('/en/Archive')) {
+    document.getElementById('vos-chronicle').classList.add('vos-active');
+  }
+
+  // Fetch sitemap and build the tree
   fetch('/images/sitemap.json').then(r => r.json()).then(entries => {
-    const tree = {};
+    const root = {};
     for (const e of entries) {
       let p = e.url.replace(/^\/+en\/+/, '').replace(/^\/+/, '').replace(/\/$/, '');
       if (!p) continue;
       if (/^Venturia\/DM(\/|$)/i.test(p)) continue;
+      if (/^Archive(\/|$)/i.test(p)) continue; // pinned in footer
       const parts = p.split('/');
-      let node = tree;
+      let node = root;
       parts.forEach((key, i) => {
-        if (i === parts.length - 1) { node[key] = node[key] || { _children: {} }; node[key]._url = e.url; node[key]._title = e.title; node[key]._isPage = true; }
-        else { node[key] = node[key] || { _children: {} }; node = node[key]._children; }
+        if (!node[key]) node[key] = { _children: {} };
+        if (i === parts.length - 1) {
+          node[key]._url = e.url;
+          node[key]._title = e.title;
+          node[key]._isPage = true;
+        } else {
+          node = node[key]._children;
+        }
       });
     }
-    function render(children) {
-      const keys = Object.keys(children).sort((a, b) => a === 'index' ? -1 : b === 'index' ? 1 : a.localeCompare(b));
+
+    function nodeAt(slug) {
+      const parts = slug.split('/');
+      let node = root;
+      for (let i = 0; i < parts.length; i++) {
+        const key = parts[i];
+        if (!node[key]) return null;
+        if (i === parts.length - 1) return node[key];
+        node = node[key]._children;
+      }
+      return null;
+    }
+
+    function renderChildren(children, excludeKeys) {
+      const keys = Object.keys(children)
+        .filter(k => !(excludeKeys || []).includes(k))
+        .sort((a, b) => a === 'index' ? -1 : b === 'index' ? 1 : a.localeCompare(b));
       let html = '';
       for (const key of keys) {
         const child = children[key];
         const hasChildren = Object.keys(child._children).length > 0;
         if (key === 'index') {
           const active = child._url && child._url.replace(/\/$/, '') === here ? 'vos-active' : '';
-          html += `<a class="vos-page ${active}" href="${child._url}" style="font-style:italic;opacity:0.85;">overview →</a>`;
+          html += `<a class="vos-page vos-page-overview ${active}" href="${child._url}">index</a>`;
           continue;
         }
         if (hasChildren) {
-          html += `<div class="vos-section"><div class="vos-section-title">${titleCase(key)}</div><div class="vos-pages">${render(child._children)}</div></div>`;
+          const sectionId = 'sec-' + (child._url || key).replace(/[^a-z0-9]/gi, '-');
+          html += `<div class="vos-section" data-section-id="${sectionId}">
+            <div class="vos-section-title">
+              <span class="vos-section-chevron">▸</span>${titleCase(key)}
+            </div>
+            <div class="vos-pages">${renderChildren(child._children, [])}</div>
+          </div>`;
         } else if (child._isPage && child._url) {
           const active = child._url.replace(/\/$/, '') === here ? 'vos-active' : '';
           html += `<a class="vos-page ${active}" href="${child._url}">${child._title || titleCase(key)}</a>`;
@@ -398,19 +932,96 @@ window.addEventListener('DOMContentLoaded', () => {
       }
       return html;
     }
-    sidebar.innerHTML = render(tree);
-    sidebar.querySelectorAll('.vos-section-title').forEach(el => el.addEventListener('click', () => el.parentElement.classList.toggle('vos-open')));
-    const active = sidebar.querySelector('.vos-page.vos-active');
+
+    function renderTreeChild(child) {
+      const node = nodeAt(child.slug);
+      if (!node) return '';
+      const sectionId = 'sec-' + child.slug.replace(/[^a-z0-9]/gi, '-');
+      const overviewUrl = node._isPage ? node._url : null;
+      const childHtml = renderChildren(node._children, child.excludeChildren);
+      const overviewLink = overviewUrl
+        ? `<a class="vos-page vos-page-overview${overviewUrl.replace(/\/$/, '') === here ? ' vos-active' : ''}" href="${overviewUrl}">index</a>`
+        : '';
+      return `<div class="vos-section" data-section-id="${sectionId}">
+        <div class="vos-section-title">
+          <span class="vos-section-chevron">▸</span>${child.title}
+        </div>
+        <div class="vos-pages">${overviewLink}${childHtml}</div>
+      </div>`;
+    }
+
+    function renderExternalChild(child) {
+      return `<a class="vos-page vos-page-external" href="${child.url}" target="_blank" rel="noopener">${child.title}</a>`;
+    }
+
+    function renderGroup(group) {
+      const body = group.children.map(c =>
+        c.kind === 'tree' ? renderTreeChild(c) : renderExternalChild(c)
+      ).join('');
+      return `<div class="vos-group" data-group-id="${group.id}">
+        <button class="vos-group-head" type="button">
+          <span class="vos-group-chevron">▸</span>${group.label}
+        </button>
+        <div class="vos-group-body">${body}</div>
+      </div>`;
+    }
+
+    const sidebarTree = document.getElementById('vos-sidebar-tree');
+    sidebarTree.innerHTML = NAV_GROUPS.map(renderGroup).join('');
+
+    // Apply saved + default open states for groups
+    const open = loadOpen();
+    sidebarTree.querySelectorAll('.vos-group').forEach(g => {
+      const id = g.dataset.groupId;
+      const groupDef = NAV_GROUPS.find(x => x.id === id);
+      const isOpen = id in open ? !!open[id] : !!(groupDef && groupDef.defaultOpen);
+      g.classList.toggle('vos-open', isOpen);
+    });
+
+    // Apply saved open states for sections (default closed unless contains active)
+    sidebarTree.querySelectorAll('.vos-section').forEach(s => {
+      const id = s.dataset.sectionId;
+      if (id in open && open[id]) s.classList.add('vos-open');
+    });
+
+    // Auto-expand the path containing the active page
+    const active = sidebarTree.querySelector('.vos-page.vos-active');
     if (active) {
       let p = active.parentElement;
-      while (p && p !== sidebar) { if (p.classList && p.classList.contains('vos-section')) p.classList.add('vos-open'); p = p.parentElement; }
+      while (p && p !== sidebarTree) {
+        if (p.classList && (p.classList.contains('vos-section') || p.classList.contains('vos-group'))) {
+          p.classList.add('vos-open');
+        }
+        p = p.parentElement;
+      }
       setTimeout(() => active.scrollIntoView({ block: 'center' }), 50);
-    } else {
-      const first = sidebar.querySelector('.vos-section');
-      if (first) first.classList.add('vos-open');
     }
+
+    // Wire group toggles (save to localStorage)
+    sidebarTree.querySelectorAll('.vos-group-head').forEach(head => {
+      head.addEventListener('click', () => {
+        const group = head.parentElement;
+        const id = group.dataset.groupId;
+        group.classList.toggle('vos-open');
+        const state = loadOpen();
+        state[id] = group.classList.contains('vos-open');
+        saveOpen(state);
+      });
+    });
+    // Wire section toggles
+    sidebarTree.querySelectorAll('.vos-section-title').forEach(title => {
+      title.addEventListener('click', () => {
+        const section = title.parentElement;
+        const id = section.dataset.sectionId;
+        section.classList.toggle('vos-open');
+        const state = loadOpen();
+        state[id] = section.classList.contains('vos-open');
+        saveOpen(state);
+      });
+    });
   }).catch(e => {
-    sidebar.innerHTML = '<div style="color:var(--vos-gold-dim);font-size:0.78rem;">Sidebar unavailable. Run <code>python3 build_sitemap.py</code> then rebuild.</div>';
+    document.getElementById('vos-sidebar-tree').innerHTML =
+      '<div class="vos-sidebar-loading">Sidebar unavailable. Run <code>python3 build_sitemap.py</code> and rebuild.</div>';
     console.error(e);
   });
 })();

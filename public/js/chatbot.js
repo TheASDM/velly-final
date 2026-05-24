@@ -68,7 +68,14 @@ class LoreMasterChatbot {
         this.createWidget();
         this.setupEventListeners();
         this.displayHistory();
-        this.applyMobileLayout(false);
+        // Apply restored open/closed state from localStorage
+        const widget = document.getElementById('chatbot-widget');
+        if (widget && this.isOpen) {
+            widget.classList.remove('chatbot-collapsed');
+            const clearBtn = document.getElementById('chat-clear-btn');
+            if (clearBtn) clearBtn.style.display = 'inline';
+        }
+        this.applyMobileLayout(this.isOpen);
         this.updateModeIndicator();
         this.updateRulesIndicator();
         this.updateVibeIndicator();
@@ -155,6 +162,7 @@ class LoreMasterChatbot {
             if (clearBtn) clearBtn.style.display = 'none';
             this.applyMobileLayout(false);
         }
+        saveToLocalStorage('loreMasterOpen', this.isOpen);
     }
     async handleSendMessage() {
         const input = document.getElementById('chat-input');
@@ -440,6 +448,10 @@ class LoreMasterChatbot {
         const savedArt = loadFromLocalStorage('loreMasterArtMode');
         if (savedArt === true) {
             this.artMode = true;
+        }
+        const savedOpen = loadFromLocalStorage('loreMasterOpen');
+        if (savedOpen === true || savedOpen === false) {
+            this.isOpen = savedOpen;
         }
     }
     updateArtIndicator() {

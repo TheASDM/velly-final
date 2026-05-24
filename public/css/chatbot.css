@@ -27,24 +27,69 @@
                 opacity    0.25s ease;
 }
 
-/* Collapsed state */
+/* ── Collapsed state: compact "Enzo ▴" pill ──────────────────────────
+   When collapsed, the widget shrinks to a small horizontal pill with
+   just the avatar, the word "Enzo", and an up-arrow. `!important` on
+   max-height/width keeps the pill compact even when an embedding page
+   (e.g. the codex layout) widens the expanded widget. */
 #chatbot-widget.chatbot-collapsed {
-    max-height: 52px;
+    width: auto !important;
+    max-width: 180px;
+    min-width: 0;
+    max-height: 48px !important;
     overflow: hidden;
+    border-radius: 999px;
+    border-top-width: 1px;
+    transition:
+        max-height 0.3s cubic-bezier(0.4,0,0.2,1),
+        max-width  0.3s cubic-bezier(0.4,0,0.2,1),
+        border-radius 0.25s ease,
+        opacity    0.25s ease,
+        box-shadow 0.25s ease;
+    box-shadow:
+        0 12px 28px rgba(0, 0, 0, 0.6),
+        0 0 0 1px rgba(201, 168, 76, 0.18),
+        0 0 18px rgba(201, 168, 76, 0.12);
+}
+#chatbot-widget.chatbot-collapsed:hover {
+    box-shadow:
+        0 14px 32px rgba(0, 0, 0, 0.65),
+        0 0 0 1px rgba(201, 168, 76, 0.32),
+        0 0 24px rgba(201, 168, 76, 0.22);
 }
 
-/* Collapsed on mobile: subtle tab on right edge */
+/* Pill header: tighter padding, no bottom border, all rounded */
+#chatbot-widget.chatbot-collapsed .chatbot-header {
+    padding: 0 0.85rem 0 0.5rem;
+    height: 48px;
+    border-bottom: none;
+    border-radius: 999px;
+    gap: 0.5rem;
+    justify-content: flex-start;
+}
+#chatbot-widget.chatbot-collapsed .chatbot-avatar-header {
+    width: 32px; height: 32px;
+    margin-right: 0;
+}
+/* Hide every badge + "new chat" button when pilled — pill stays minimal */
+#chatbot-widget.chatbot-collapsed #chat-clear-btn,
+#chatbot-widget.chatbot-collapsed #dm-mode-badge,
+#chatbot-widget.chatbot-collapsed #rules-badge,
+#chatbot-widget.chatbot-collapsed #vibe-badge,
+#chatbot-widget.chatbot-collapsed #art-badge {
+    display: none !important;
+}
+/* Arrow points UP when pilled ("expand"), DOWN when open ("collapse"). */
+#chatbot-widget.chatbot-collapsed .toggle-icon {
+    transform: rotate(180deg);
+    margin-left: auto;
+}
+
+/* Collapsed on mobile: same pill, just smaller. The container in
+   chatbot.js handles right-alignment so the pill hugs the screen edge. */
 @media (max-width: 768px) {
     #chatbot-widget.chatbot-collapsed {
-        opacity: 0.7;
-        border-radius: 8px 0 0 8px;
-        border-top-color: rgba(201, 168, 76, 0.25);
-        border-right: none;
-        transition: opacity 0.25s ease;
-    }
-    #chatbot-widget.chatbot-collapsed:hover,
-    #chatbot-widget.chatbot-collapsed:active {
-        opacity: 0.85;
+        max-width: 170px;
     }
 }
 
@@ -88,9 +133,8 @@
     transition: transform 0.3s ease;
     line-height: 1;
 }
-#chatbot-widget:not(.chatbot-collapsed) .toggle-icon {
-    transform: rotate(180deg);
-}
+/* Expanded: arrow points down (▾, default). Collapsed-state pill rule
+   below rotates it 180° so it visually becomes an up-arrow. */
 
 /* ── Body ── */
 .chatbot-body {
@@ -267,15 +311,11 @@
     #chatbot-container {
         bottom: 0.75rem;
         right: 0.75rem;
-        /* no left — container hugs the right so it doesn't block nav when collapsed */
     }
+    /* Expanded: fill the screen */
     #chatbot-widget {
-        /* Fill the screen when expanded */
         width: calc(100vw - 1.5rem);
     }
-    /* When collapsed, shrink to just the header so nav button is fully accessible */
-    #chatbot-widget.chatbot-collapsed {
-        width: auto;
-        min-width: 160px;
-    }
+    /* Collapsed: pill rules from the top of this file already apply.
+       width:auto !important + max-width: 170px keeps the pill compact. */
 }
