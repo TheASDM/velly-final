@@ -4,12 +4,14 @@
   "private": true,
   "description": "Static site build for the Valley of Shadows campaign wiki. Reads the markdown directly from Venturia/, Articles/, etc. and builds a styled site that replaces Wiki.js.",
   "scripts": {
-    "dev": "eleventy --serve --port=8080",
-    "build": "eleventy",
+    "dev": "eleventy && npm run search && eleventy --serve --port=8080",
+    "build": "eleventy && npm run search",
+    "search": "pagefind --site _site --output-subdir pagefind",
     "clean": "rm -rf _site",
     "sitemap": "python3 build_sitemap.py"
   },
   "devDependencies": {
-    "@11ty/eleventy": "^3.0.0"
+    "@11ty/eleventy": "^3.0.0",
+    "pagefind": "^1.1.0"
   }
 }
