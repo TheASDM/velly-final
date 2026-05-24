@@ -22,7 +22,9 @@ dateCreated: 2026-05-22T00:00:00.000Z
 <div style="margin-top: 1.25rem; padding-left: 1rem; border-left: 2px solid rgba(212, 165, 116, 0.4); font-style: italic; color: rgba(212, 165, 116, 0.9); font-family: 'IM Fell English', Georgia, serif; font-size: 1rem;">"Eleven seats, and rarely a majority."</div>
 </div>
 
-
+<div style="flex-shrink: 0;">
+<img src="https://codex.valleyofshadows.wiki/images/government/autumn-council.png" alt="The Autumn Council" style="width: 240px; max-width: 100%; border-radius: 4px; box-shadow: 0 10px 36px rgba(0, 0, 0, 0.8); border: 1px solid rgba(139, 115, 85, 0.5);">
+</div>
 
 </div>
 
@@ -46,14 +48,14 @@ Because the faction blocs must move together to pass anything, and the unaligned
 ---
 
 ## Members
-- **[Lord-Admiral Teodor Vast](/en/Venturia/Characters-NPCs/teodor-vast)** — Harbor-Lord
-- **[Constanza Marea](/en/Venturia/Characters-NPCs/constanza-marea)** — Harbor-Lord
-- **[Master Artisan Celeste Orion](/en/Venturia/Characters-NPCs/celeste-orion)** — Guild-Master
-- **[Guildmaster Vincenzo Copper](/en/Venturia/Characters-NPCs/vincenzo-copper)** — Guild-Master
-- **[Mother-Abbot Lucia Virosdottir](/en/Venturia/Characters-NPCs/lucia-virosdottir)** — Temple Authority, current Council Chair
-- **[Father Domenico of the Four Winds](/en/Venturia/Characters-NPCs/father-domenico)** — Temple Authority
-- **[Vincen Tidecaller](/en/Venturia/Characters-NPCs/vincen-tidecaller)** — Master of the Tidekeeper's Lodge
-- **[Archmagister Dorian Silvermarch](/en/Venturia/Characters-NPCs/dorian-silvermarch)** — Archmagister of VAVA
-- **[Primo Navigante Old Maren](/en/Venturia/Characters-NPCs/old-maren)** — Ferriers' Confraternity
-- **[Captain-Commander Thora Ironmark](/en/Venturia/Characters-NPCs/thora-ironmark)** — Watch Commander of the Fog Wardens
+- **[Lord-Admiral Teodor Vast](/en/Venturia/Characters/NPCs/teodor-vast)** — Harbor-Lord
+- **[Constanza Marea](/en/Venturia/Characters/NPCs/constanza-marea)** — Harbor-Lord
+- **[Master Artisan Celeste Orion](/en/Venturia/Characters/NPCs/celeste-orion)** — Guild-Master
+- **[Guildmaster Vincenzo Copper](/en/Venturia/Characters/NPCs/vincenzo-copper)** — Guild-Master
+- **[Mother-Abbot Lucia Virosdottir](/en/Venturia/Characters/NPCs/lucia-virosdottir)** — Temple Authority, current Council Chair
+- **[Father Domenico of the Four Winds](/en/Venturia/Characters/NPCs/father-domenico)** — Temple Authority
+- **[Vincen Tidecaller](/en/Venturia/Characters/NPCs/vincen-tidecaller)** — Master of the Tidekeeper's Lodge
+- **[Archmagister Dorian Silvermarch](/en/Venturia/Characters/NPCs/dorian-silvermarch)** — Archmagister of VAVA
+- **[Primo Navigante Old Maren](/en/Venturia/Characters/NPCs/old-maren)** — Ferriers' Confraternity
+- **[Captain-Commander Thora Ironmark](/en/Venturia/Characters/NPCs/thora-ironmark)** — Watch Commander of the Fog Wardens
 - *The Signore of Venturia* — honorary seat, vacant

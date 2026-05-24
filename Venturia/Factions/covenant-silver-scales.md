@@ -22,7 +22,9 @@ dateCreated: 2026-05-22T00:00:00.000Z
 <div style="margin-top: 1.25rem; padding-left: 1rem; border-left: 2px solid rgba(212, 165, 116, 0.4); font-style: italic; color: rgba(212, 165, 116, 0.9); font-family: 'IM Fell English', Georgia, serif; font-size: 1rem;">"An unbreakable agreement."</div>
 </div>
 
-
+<div style="flex-shrink: 0;">
+<img src="https://codex.valleyofshadows.wiki/images/factions/covenant-silver-scales.png" alt="The Covenant of Silver Scales" style="width: 240px; max-width: 100%; border-radius: 4px; box-shadow: 0 10px 36px rgba(0, 0, 0, 0.8); border: 1px solid rgba(139, 115, 85, 0.5);">
+</div>
 
 </div>
 
@@ -48,6 +50,6 @@ Members gain access to the Covenant's negotiators and arbitrators, the weight of
 ---
 
 ## Connections
-- **[Caravel "Car" Asteri](/en/Venturia/Characters-PCs/caravel-asteri)** — Loren's child, who rejected the family business; the tie remains.
+- **[Caravel "Car" Asteri](/en/Venturia/Characters/PCs/caravel-asteri)** — Loren's child, who rejected the family business; the tie remains.
 - **[The Covenant Archive](/en/Venturia/Locations/covenant-archive)** — The Asteri family's own institution, bound up with their legal traditions.
 - **[The Harbor Wardens' Compact](/en/Venturia/Factions/harbor-wardens)** — Cooperate on commercial matters, compete for economic influence.

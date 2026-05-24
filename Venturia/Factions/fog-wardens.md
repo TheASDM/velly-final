@@ -23,7 +23,9 @@ dateCreated: 2026-05-22T00:00:00.000Z
 <div style="margin-top: 1.25rem; padding-left: 1rem; border-left: 2px solid rgba(212, 165, 116, 0.4); font-style: italic; color: rgba(212, 165, 116, 0.9); font-family: 'IM Fell English', Georgia, serif; font-size: 1rem;">"The Watch at the fog line."</div>
 </div>
 
-
+<div style="flex-shrink: 0;">
+<img src="https://codex.valleyofshadows.wiki/images/factions/fog-wardens.png" alt="The Fog Wardens and the Shadowed Wardens" style="width: 240px; max-width: 100%; border-radius: 4px; box-shadow: 0 10px 36px rgba(0, 0, 0, 0.8); border: 1px solid rgba(139, 115, 85, 0.5);">
+</div>
 
 </div>
 
@@ -44,6 +46,6 @@ Captain-Commander Thora Ironmark, a half-orc veteran who rose through the ranks 
 ---
 
 ## Connections
-- **[Captain-Commander Thora Ironmark](/en/Venturia/Characters-NPCs/thora-ironmark)** — Watch Commander and Autumn Council member.
+- **[Captain-Commander Thora Ironmark](/en/Venturia/Characters/NPCs/thora-ironmark)** — Watch Commander and Autumn Council member.
 - **[The Fog Wardens' Garrison](/en/Venturia/Locations/fog-wardens-garrison)** — The Watch's primary post at the Vallombrosa boundary.
-- **[Noname](/en/Venturia/Characters-PCs/noname)** — A Fog Warden stationed at the Overlook.
+- **[Noname](/en/Venturia/Characters/PCs/noname)** — A Fog Warden stationed at the Overlook.

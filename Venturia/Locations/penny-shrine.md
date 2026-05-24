@@ -8,6 +8,10 @@ editor: markdown
 dateCreated: 2026-02-23T23:57:33.417Z
 ---
 
+<div style="margin: 0 0 2rem; border-radius: 6px; overflow: hidden; box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6); border: 1px solid rgba(139, 115, 85, 0.35);">
+<img src="https://codex.valleyofshadows.wiki/images/locations/penny-shrine.png" alt="The Penny Shrine" style="width: 100%; height: auto; display: block;">
+</div>
+
 # The Penny Shrine
 
 **Tier:** Harbor District &nbsp;|&nbsp; *"Prayers to whatever might be listening"*
