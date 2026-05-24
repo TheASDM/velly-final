@@ -204,14 +204,28 @@
   }
 
   /* ── Enzo floating widget ───────────────────────────────────────────
-     Positioning comes from chatbot.css (fixed bottom-right). We bump
-     z-index so it floats above the sidebar, and on desktop widen the
-     widget + grow the message area to roughly 12 lines of chat. Mobile
-     is left to chatbot.css's defaults. */
+     Positioning comes from chatbot.css (fixed bottom-right). Bump
+     z-index so it floats above the sidebar. On desktop widen the
+     widget and replace the single-line input with a 12-line textarea
+     (the swap happens in JS below). Mobile keeps chatbot.css defaults.
+     Scoped to the codex layout — the standalone Enzo page is untouched. */
   #chatbot-container { z-index: 1200 !important; }
   @media (min-width: 769px) {
-    #chatbot-widget { width: 520px !important; max-height: 86vh !important; }
-    #chat-messages { min-height: 460px !important; max-height: calc(86vh - 52px - 62px) !important; }
+    #chatbot-widget { width: 560px !important; max-height: 90vh !important; }
+    .chat-input-area { align-items: stretch !important; }
+    #chat-input {
+      min-height: 280px !important;
+      height: 280px !important;
+      line-height: 1.5 !important;
+      resize: vertical !important;
+      white-space: pre-wrap !important;
+      word-wrap: break-word !important;
+    }
+    .chat-input-area #chat-send-btn { padding: 0.5rem 1.5rem !important; }
+    #chat-messages {
+      min-height: 220px !important;
+      max-height: calc(90vh - 52px - 320px) !important;
+    }
   }
 </style>
 </head>
@@ -294,6 +308,34 @@
 <div id="chatbot-container"></div>
 <script>window.LOREMASTER_API_URL = 'https://loremaster.valleyofshadows.wiki/api/chat';</script>
 <script src="https://loremaster.valleyofshadows.wiki/js/chatbot.js" defer></script>
+<script>
+// After chatbot.js renders #chat-input as a single-line <input>, swap it for
+// a wrapping <textarea> so messages can be multi-line on the floating widget.
+// Enter sends; Shift+Enter inserts a newline. The send button keeps working
+// because it looks the input up by id, and id matches.
+(function () {
+  function swap() {
+    const old = document.getElementById('chat-input');
+    if (!old || old.tagName === 'TEXTAREA') return !!old;
+    const ta = document.createElement('textarea');
+    ta.id = 'chat-input';
+    ta.placeholder = old.placeholder || '';
+    ta.setAttribute('autocomplete', 'off');
+    ta.rows = 12;
+    old.parentNode.replaceChild(ta, old);
+    ta.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        const btn = document.getElementById('chat-send-btn');
+        if (btn) btn.click();
+      }
+    });
+    return true;
+  }
+  const t = setInterval(() => { if (swap()) clearInterval(t); }, 100);
+  setTimeout(() => clearInterval(t), 10000);
+})();
+</script>
 
 <script src="/pagefind/pagefind-ui.js" onerror="document.getElementById('vos-search-fallback').hidden=false;"></script>
 <script>
