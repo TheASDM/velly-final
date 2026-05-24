@@ -469,15 +469,23 @@ dateCreated: 2026-05-24T00:00:00.000Z
   position: fixed; inset: 0; z-index: 2000;
   background: rgba(5, 4, 8, 0.94);
   display: none;
-  align-items: center; justify-content: center;
+  /* The modal itself scrolls — anchoring to flex-start ensures long
+     content (image + caption + expanded "How Enzo saw it" details) is
+     reachable instead of being clipped to 90vh. */
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
   padding: 2rem;
   backdrop-filter: blur(6px);
 }
-.vos-art-lightbox.is-open { display: flex; }
+.vos-art-lightbox.is-open {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+}
 .vos-art-lightbox-inner {
   position: relative;
+  margin: auto;            /* centers vertically while content < viewport */
   max-width: min(94vw, 1400px);
-  max-height: 90vh;
   display: flex; flex-direction: column;
   align-items: center;
   gap: 0.85rem;
@@ -534,6 +542,154 @@ dateCreated: 2026-05-24T00:00:00.000Z
   border-radius: 6px;
   background: rgba(7, 6, 10, 0.4);
 }
+
+/* DM mode — discrete row at the bottom of the page. Idle = a single
+   small link; active = a pill showing "DM mode" with an exit affordance.
+   The passphrase prompt expands inline only on click; nothing about the
+   surface should hint that delete is possible until DM toggles it. */
+.vos-art-dm-row {
+  margin: 1.5rem 0 0.5rem;
+  text-align: right;
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.62rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+}
+.vos-art-dm-link {
+  background: none; border: none;
+  color: rgba(139, 115, 85, 0.55);
+  cursor: pointer;
+  padding: 0.4rem 0.6rem;
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  border-radius: 3px;
+  transition: color 0.15s, background 0.15s;
+}
+.vos-art-dm-link:hover { color: var(--art-gold); background: rgba(212, 165, 116, 0.06); }
+
+.vos-art-dm-prompt {
+  display: none;
+  margin-top: 0.65rem;
+  padding: 0.65rem 0.8rem;
+  background: rgba(7, 6, 10, 0.65);
+  border: 1px solid var(--art-border);
+  border-radius: 4px;
+  text-align: left;
+  font-family: 'Crimson Text', Georgia, serif;
+  text-transform: none;
+  letter-spacing: 0;
+}
+.vos-art-dm-prompt.is-open { display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap; }
+.vos-art-dm-prompt input {
+  flex: 1; min-width: 180px;
+  background: rgba(7, 6, 10, 0.85);
+  border: 1px solid var(--art-border);
+  border-radius: 3px;
+  color: var(--vos-cream);
+  font-family: inherit;
+  font-size: 0.92rem;
+  padding: 0.4rem 0.55rem;
+}
+.vos-art-dm-prompt input:focus {
+  outline: none;
+  border-color: var(--art-border-strong);
+  box-shadow: 0 0 0 3px rgba(212, 165, 116, 0.12);
+}
+.vos-art-dm-prompt button {
+  background: linear-gradient(180deg, #e6c08a 0%, #c9a371 100%);
+  color: #0d0b11;
+  border: 1px solid rgba(255,255,255,0.18);
+  border-radius: 3px;
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.65rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  padding: 0.45rem 0.9rem;
+  cursor: pointer;
+}
+.vos-art-dm-prompt-msg {
+  flex: 1 1 100%;
+  font-size: 0.8rem;
+  font-style: italic;
+  color: rgba(212, 165, 116, 0.6);
+  margin-top: 0.2rem;
+}
+.vos-art-dm-prompt-msg.is-error { color: #d8645c; }
+
+/* Active-DM pill replaces the link once a valid passphrase is held. */
+.vos-art-dm-pill {
+  display: none;
+  align-items: center; gap: 0.5rem;
+  padding: 0.35rem 0.7rem;
+  background: rgba(212, 165, 116, 0.12);
+  color: var(--art-gold);
+  border: 1px solid var(--art-border-strong);
+  border-radius: 999px;
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.6rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+}
+.vos-art-dm-pill.is-active { display: inline-flex; }
+.vos-art-dm-pill::before { content: '✦'; }
+.vos-art-dm-exit {
+  background: none; border: none; padding: 0;
+  color: rgba(212, 165, 116, 0.7);
+  font: inherit;
+  letter-spacing: inherit;
+  cursor: pointer;
+  text-transform: uppercase;
+  border-left: 1px solid rgba(212, 165, 116, 0.3);
+  padding-left: 0.5rem;
+  margin-left: 0.2rem;
+}
+.vos-art-dm-exit:hover { color: var(--vos-cream); }
+
+/* Delete buttons — visible only when body.is-dm-mode. The card variant
+   sits in the top-right of each tile; the lightbox variant lives next
+   to the close button. Both are red-tinged so they read as destructive
+   without overpowering the gold theme. */
+.vos-art-delete {
+  position: absolute;
+  top: 0.5rem; right: 0.5rem;
+  z-index: 5;
+  display: none;
+  width: 1.9rem; height: 1.9rem;
+  border-radius: 50%;
+  background: rgba(10, 8, 12, 0.85);
+  border: 1px solid rgba(180, 50, 50, 0.55);
+  color: #ff8780;
+  font-size: 1rem;
+  line-height: 1;
+  cursor: pointer;
+  align-items: center; justify-content: center;
+  transition: background 0.15s, color 0.15s, transform 0.15s;
+}
+body.is-dm-mode .vos-art-delete { display: inline-flex; }
+.vos-art-delete:hover {
+  background: rgba(120, 30, 30, 0.7);
+  color: #fff;
+  transform: scale(1.06);
+}
+.vos-art-delete[disabled] { opacity: 0.5; cursor: progress; }
+
+.vos-art-lightbox-delete {
+  position: absolute; top: -2.4rem; right: 3rem;
+  display: none;
+  background: transparent;
+  color: #ff8780;
+  border: 1px solid rgba(180, 50, 50, 0.55);
+  border-radius: 50%;
+  width: 2.1rem; height: 2.1rem;
+  font-size: 1.1rem;
+  line-height: 1;
+  cursor: pointer;
+  align-items: center; justify-content: center;
+  transition: background 0.15s, color 0.15s;
+}
+body.is-dm-mode .vos-art-lightbox-delete { display: inline-flex; }
+.vos-art-lightbox-delete:hover { background: rgba(180, 50, 50, 0.2); color: #fff; }
 </style>
 
 # Art Studio
@@ -604,8 +760,22 @@ Generate campaign art with Enzo's image model and contribute to the shared playe
 
 <div id="vos-art-gallery" class="vos-art-gallery"></div>
 
+<div class="vos-art-dm-row">
+  <span id="vos-art-dm-pill" class="vos-art-dm-pill">
+    <span>DM mode</span>
+    <button id="vos-art-dm-exit" class="vos-art-dm-exit" type="button">exit</button>
+  </span>
+  <button id="vos-art-dm-link" class="vos-art-dm-link" type="button" aria-expanded="false">DM access</button>
+  <div id="vos-art-dm-prompt" class="vos-art-dm-prompt">
+    <input id="vos-art-dm-input" type="password" autocomplete="current-password" placeholder="DM passphrase" aria-label="DM passphrase">
+    <button id="vos-art-dm-submit" type="button">unlock</button>
+    <div id="vos-art-dm-msg" class="vos-art-dm-prompt-msg" role="status" aria-live="polite"></div>
+  </div>
+</div>
+
 <div id="vos-art-lightbox" class="vos-art-lightbox" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="vos-art-lightbox-caption">
   <div class="vos-art-lightbox-inner">
+    <button class="vos-art-lightbox-delete" id="vos-art-lightbox-delete" type="button" aria-label="Delete this image (DM)" title="Delete this image">×</button>
     <button class="vos-art-lightbox-close" type="button" aria-label="Close lightbox">×</button>
     <img id="vos-art-lightbox-img" alt="">
     <div id="vos-art-lightbox-caption" class="vos-art-lightbox-caption"></div>
@@ -639,6 +809,14 @@ Generate campaign art with Enzo's image model and contribute to the shared playe
   const lightbox         = $('vos-art-lightbox');
   const lightImg         = $('vos-art-lightbox-img');
   const lightCap         = $('vos-art-lightbox-caption');
+  const lightDelete      = $('vos-art-lightbox-delete');
+  const dmPill           = $('vos-art-dm-pill');
+  const dmLink           = $('vos-art-dm-link');
+  const dmPromptEl       = $('vos-art-dm-prompt');
+  const dmInput          = $('vos-art-dm-input');
+  const dmSubmit         = $('vos-art-dm-submit');
+  const dmMsg            = $('vos-art-dm-msg');
+  const dmExit           = $('vos-art-dm-exit');
 
   const ENHANCE_KEY = 'velly.artStudio.enhance';
 
@@ -725,11 +903,26 @@ Generate campaign art with Enzo's image model and contribute to the shared playe
       const card = document.createElement('a');
       card.className = 'vos-art-card';
       card.href = API_BASE + e.image_url;
+      card.dataset.entryId = e.id;
       card.dataset.entry = JSON.stringify(e);
       card.addEventListener('click', (evt) => {
         evt.preventDefault();
         openLightbox(e);
       });
+      // Delete button (CSS-hidden unless body.is-dm-mode). Stop propagation
+      // so clicking it doesn't also trigger the lightbox open.
+      const del = document.createElement('button');
+      del.type = 'button';
+      del.className = 'vos-art-delete';
+      del.title = 'Delete (DM)';
+      del.setAttribute('aria-label', 'Delete this image');
+      del.textContent = '✕';
+      del.addEventListener('click', (evt) => {
+        evt.preventDefault();
+        evt.stopPropagation();
+        deleteEntry(e, del);
+      });
+      card.appendChild(del);
       const img = document.createElement('img');
       img.loading = 'lazy';
       img.alt = e.prompt || 'Gallery piece';
@@ -773,7 +966,9 @@ Generate campaign art with Enzo's image model and contribute to the shared playe
   loadGallery();
 
   // ── Lightbox ────────────────────────────────────────────────────────
+  let currentLightboxEntry = null;
   function openLightbox(e) {
+    currentLightboxEntry = e;
     lightImg.src = API_BASE + e.image_url;
     lightImg.alt = e.prompt || '';
     const who = e.created_by ? `By ${escapeHtml(e.created_by)}` : 'Anonymous';
@@ -794,12 +989,19 @@ Generate campaign art with Enzo's image model and contribute to the shared playe
     lightCap.innerHTML = html;
     lightbox.classList.add('is-open');
     lightbox.setAttribute('aria-hidden', 'false');
+    // Scroll the lightbox back to top so the image is visible whenever a
+    // new entry is opened, even after the previous one scrolled down.
+    lightbox.scrollTop = 0;
   }
   function closeLightbox() {
     lightbox.classList.remove('is-open');
     lightbox.setAttribute('aria-hidden', 'true');
     lightImg.src = '';
+    currentLightboxEntry = null;
   }
+  lightDelete.addEventListener('click', () => {
+    if (currentLightboxEntry) deleteEntry(currentLightboxEntry, lightDelete);
+  });
   lightbox.addEventListener('click', (e) => { if (e.target === lightbox) closeLightbox(); });
   lightbox.querySelector('.vos-art-lightbox-close').addEventListener('click', closeLightbox);
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeLightbox(); });
@@ -809,6 +1011,123 @@ Generate campaign art with Enzo's image model and contribute to the shared playe
     statusEl.textContent = text || '';
     statusEl.classList.toggle('is-error', !!isError);
   }
+
+  // ── DM mode ─────────────────────────────────────────────────────────
+  // The DM passphrase is held in sessionStorage so it survives reloads
+  // within a tab but evaporates when the tab closes. Every delete request
+  // re-sends the passphrase via the X-DM-Passphrase header; a stale or
+  // server-changed value returns 403 and we drop back to player mode.
+  const DM_KEY = 'velly.artStudio.dm';
+
+  function getDM() {
+    try { return sessionStorage.getItem(DM_KEY) || ''; } catch (e) { return ''; }
+  }
+  function setDM(value) {
+    try {
+      if (value) sessionStorage.setItem(DM_KEY, value);
+      else sessionStorage.removeItem(DM_KEY);
+    } catch (e) {}
+    document.body.classList.toggle('is-dm-mode', !!value);
+    dmPill.classList.toggle('is-active', !!value);
+    dmLink.style.display = value ? 'none' : '';
+  }
+  // Restore mode on page load.
+  if (getDM()) setDM(getDM());
+
+  function setDmMsg(text, isError) {
+    dmMsg.textContent = text || '';
+    dmMsg.classList.toggle('is-error', !!isError);
+  }
+
+  dmLink.addEventListener('click', () => {
+    const open = dmPromptEl.classList.toggle('is-open');
+    dmLink.setAttribute('aria-expanded', String(open));
+    if (open) {
+      dmInput.value = '';
+      setDmMsg('');
+      setTimeout(() => dmInput.focus(), 50);
+    }
+  });
+
+  async function tryUnlock() {
+    const candidate = dmInput.value.trim();
+    if (!candidate) { setDmMsg('Enter a passphrase.', true); return; }
+    dmSubmit.disabled = true;
+    try {
+      const res = await fetch(API_BASE + '/api/dm-check', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ passphrase: candidate }),
+      });
+      if (res.status === 503) {
+        setDmMsg('DM mode is not configured on this server.', true);
+        return;
+      }
+      if (!res.ok) {
+        setDmMsg('That passphrase did not match.', true);
+        return;
+      }
+      setDM(candidate);
+      dmPromptEl.classList.remove('is-open');
+      dmLink.setAttribute('aria-expanded', 'false');
+      setDmMsg('');
+      // Re-render the gallery to expose delete buttons on existing cards.
+      loadGallery();
+    } catch (e) {
+      setDmMsg('Could not verify — try again.', true);
+    } finally {
+      dmSubmit.disabled = false;
+    }
+  }
+  dmSubmit.addEventListener('click', tryUnlock);
+  dmInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') { e.preventDefault(); tryUnlock(); }
+    if (e.key === 'Escape') { dmPromptEl.classList.remove('is-open'); }
+  });
+  dmExit.addEventListener('click', () => {
+    setDM('');
+    setDmMsg('');
+    closeLightbox();
+    loadGallery();
+  });
+
+  async function deleteEntry(entry, sourceButton) {
+    const passphrase = getDM();
+    if (!passphrase) return;
+    const ok = confirm(
+      `Delete this image?\n\n"${entry.prompt || '(no prompt)'}"\n\n` +
+      `This is permanent — the PNG and its manifest entry are removed from the server.`
+    );
+    if (!ok) return;
+    if (sourceButton) sourceButton.disabled = true;
+    try {
+      const res = await fetch(API_BASE + '/api/gallery/' + encodeURIComponent(entry.id), {
+        method: 'DELETE',
+        headers: { 'X-DM-Passphrase': passphrase },
+      });
+      if (res.status === 403) {
+        // Stale passphrase — drop back to player mode.
+        setDM('');
+        alert('Server rejected the passphrase. DM mode disabled.');
+        return;
+      }
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.error || `HTTP ${res.status}`);
+      }
+      // Optimistic UI removal of the lightbox + card before the reload.
+      closeLightbox();
+      const card = galleryEl.querySelector(`[data-entry-id="${entry.id}"]`);
+      if (card) card.remove();
+      // Then re-sync from the server so counts and pagination stay honest.
+      setTimeout(loadGallery, 150);
+    } catch (e) {
+      alert('Delete failed: ' + e.message);
+      if (sourceButton) sourceButton.disabled = false;
+    }
+  }
+
+  // ────────────────────────────────────────────────────────────────────
 
   /** Show the latest-preview frame in its pending state. The image
    *  element is kept blank; the placeholder is visible with the prompt

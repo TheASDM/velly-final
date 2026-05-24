@@ -51,6 +51,12 @@ GALLERY_MANIFEST = GALLERY_DIR / "gallery.json"
 GALLERY_MAX_ENTRIES = int(os.environ.get("GALLERY_MAX_ENTRIES", "2000"))
 GALLERY_PAGE_LIMIT = int(os.environ.get("GALLERY_PAGE_LIMIT", "60"))
 
+# DM passphrase gates the gallery delete endpoint. When unset, the delete
+# route is disabled entirely — you can still purge images by editing files
+# on the host directly (see README). Match is case-insensitive and ignores
+# surrounding whitespace so "prima volta" and " Prima Volta " both work.
+DM_PASSPHRASE = os.environ.get("DM_PASSPHRASE", "").strip()
+
 # Style preset keys are stable strings sent from the UI; the corresponding
 # prompt prefix is prepended to the user prompt at generation time. Keep
 # these tight — overly long prefixes eat into the user's prompt budget
@@ -1516,6 +1522,95 @@ def gallery_image(filename):
         filename,
         max_age=3600,
     )
+
+
+def _extract_passphrase():
+    """Pull a DM passphrase candidate from the request — header takes
+    precedence, then JSON body. Returns the trimmed string (possibly empty)."""
+    header = request.headers.get("X-DM-Passphrase", "")
+    if header:
+        return header.strip()
+    body = request.get_json(silent=True) or {}
+    return (body.get("passphrase") or "").strip()
+
+
+def _check_dm_passphrase(candidate):
+    """Constant-time compare of the candidate against DM_PASSPHRASE.
+    Returns False when DM mode is disabled (env unset) so we never
+    accidentally allow blank passwords."""
+    if not DM_PASSPHRASE:
+        return False
+    if not candidate:
+        return False
+    import hmac
+    return hmac.compare_digest(
+        DM_PASSPHRASE.lower(), candidate.strip().lower()
+    )
+
+
+@app.route("/api/dm-check", methods=["POST"])
+def dm_check():
+    """Lightweight passphrase validator the UI hits when a DM is logging
+    in. Returns 200 on match, 403 otherwise. 503 if DM mode is disabled
+    on this server (env var unset) so the UI can hide the toggle entirely.
+    """
+    if not DM_PASSPHRASE:
+        return jsonify({"error": "DM mode not configured on this server"}), 503
+    if _check_dm_passphrase(_extract_passphrase()):
+        return jsonify({"ok": True}), 200
+    return jsonify({"error": "Invalid passphrase"}), 403
+
+
+@app.route("/api/gallery/<gallery_id>", methods=["DELETE"])
+def gallery_delete(gallery_id):
+    """Delete one gallery entry — DM-only.
+
+    Removes both the PNG on disk and the manifest entry, under the same
+    file lock that guards manifest writes so a concurrent /api/generate-image
+    can't corrupt the JSON. Returns 403 on bad/missing passphrase,
+    404 if no entry has that id, 200 on success.
+
+    The passphrase is accepted via X-DM-Passphrase header (preferred —
+    keeps it out of URLs and access logs) or a JSON body {"passphrase": ...}.
+    """
+    if not DM_PASSPHRASE:
+        return jsonify({"error": "DM mode not configured on this server"}), 503
+    if not _check_dm_passphrase(_extract_passphrase()):
+        return jsonify({"error": "Forbidden"}), 403
+
+    # Sanity-check the id shape — the manifest uses
+    # YYYYMMDD-HHMMSS-<8 hex chars> so reject anything else without
+    # touching the filesystem.
+    if not re.fullmatch(r"[0-9]{8}-[0-9]{6}-[0-9a-f]{6,16}", gallery_id):
+        return jsonify({"error": "Bad id"}), 400
+
+    try:
+        _ensure_gallery_dirs()
+        with open(GALLERY_MANIFEST.parent / ".manifest.lock", "a+") as lock:
+            try:
+                fcntl.flock(lock.fileno(), fcntl.LOCK_EX)
+                entries = _load_manifest()
+                target = next((e for e in entries if e.get("id") == gallery_id), None)
+                if not target:
+                    return jsonify({"error": "Not found"}), 404
+                kept = [e for e in entries if e.get("id") != gallery_id]
+                _write_manifest_atomic(kept)
+                # Best-effort image cleanup. If the file is already gone
+                # the manifest has still been pruned, which is what matters.
+                try:
+                    (GALLERY_IMAGES_DIR / target["filename"]).unlink()
+                except (OSError, KeyError):
+                    pass
+                return jsonify({
+                    "ok": True,
+                    "deleted_id": gallery_id,
+                    "remaining": len(kept),
+                }), 200
+            finally:
+                fcntl.flock(lock.fileno(), fcntl.LOCK_UN)
+    except Exception:
+        logging.exception("Gallery delete failed for %s", gallery_id)
+        return jsonify({"error": "Delete failed"}), 500
 
 
 @app.route("/health", methods=["GET"])
