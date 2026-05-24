@@ -30,4 +30,4 @@ EXPOSE 3001 8080
 # Run the chatbot API (gunicorn:3001) and the codex site (Eleventy :8080)
 # together. npm run dev does an initial Eleventy build, runs Pagefind to
 # generate the search index under _site/pagefind, then starts the serve.
-CMD ["sh", "-c", "gunicorn -b 0.0.0.0:3001 -w 2 --timeout 120 --preload server:app & cd /site && npm run dev"]
+CMD ["sh", "-c", "gunicorn -b 0.0.0.0:3001 -w 2 --timeout 300 --preload server:app & cd /site && npm run dev"]

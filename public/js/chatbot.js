@@ -58,6 +58,7 @@ class LoreMasterChatbot {
         this.mode = 'player';
         this.rules = false;
         this.vibe = null;
+        this.artMode = false;
         this.isOpen = false;
         this.isWaitingForResponse = false;
         this.loadHistory();
@@ -71,6 +72,7 @@ class LoreMasterChatbot {
         this.updateModeIndicator();
         this.updateRulesIndicator();
         this.updateVibeIndicator();
+        this.updateArtIndicator();
         if (this.conversationHistory.length === 0) {
             this.addSystemMessage('I am Enzo — your guide to the city of Venturia and the Valley of Shadows. Ask me about characters, locations, factions, past sessions, or house rules.');
         }
@@ -162,11 +164,33 @@ class LoreMasterChatbot {
         if (!message) return;
         if (this.isWaitingForResponse) return;
 
-        // /art <prompt> — generate an image via OpenAI and render it inline.
-        if (/^\/art(\s|$)/i.test(message)) {
-            const artPrompt = message.replace(/^\/art\s*/i, '').trim();
+        // /art on / /art off — toggle persistent art mode like other slash commands
+        if (/^\/art\s+on\s*$/i.test(message)) {
+            input.value = '';
+            this.artMode = true;
+            this.saveHistory();
+            this.updateArtIndicator();
+            this.addSystemMessage('🎨 Art mode on. Send any description and I will generate an image of it (this can take 30–90 seconds). Type /art off to go back to normal chat.');
+            input.focus();
+            return;
+        }
+        if (/^\/art\s+off\s*$/i.test(message)) {
+            input.value = '';
+            this.artMode = false;
+            this.saveHistory();
+            this.updateArtIndicator();
+            this.addSystemMessage('Art mode off. Back to your regular conversation with Enzo.');
+            input.focus();
+            return;
+        }
+
+        // /art <prompt> — one-shot image generation, no mode change
+        // OR any message while in art mode — treat it as the image prompt.
+        const oneShotMatch = /^\/art\s+/i.test(message);
+        if (oneShotMatch || this.artMode) {
+            const artPrompt = oneShotMatch ? message.replace(/^\/art\s+/i, '').trim() : message;
             if (!artPrompt) {
-                this.addSystemMessage('Usage: /art <description>');
+                this.addSystemMessage('Usage: /art <description>, or /art on to enter art mode.');
                 return;
             }
             input.value = '';
@@ -394,6 +418,7 @@ class LoreMasterChatbot {
         saveToLocalStorage('loreMasterMode', this.mode);
         saveToLocalStorage('loreMasterRules', this.rules);
         saveToLocalStorage('loreMasterVibe', this.vibe);
+        saveToLocalStorage('loreMasterArtMode', this.artMode);
     }
     loadHistory() {
         const saved = loadFromLocalStorage('loreMasterHistory');
@@ -412,17 +437,49 @@ class LoreMasterChatbot {
         if (savedVibe) {
             this.vibe = savedVibe;
         }
+        const savedArt = loadFromLocalStorage('loreMasterArtMode');
+        if (savedArt === true) {
+            this.artMode = true;
+        }
+    }
+    updateArtIndicator() {
+        // Inject/remove a 🎨 badge in the header next to the others
+        const header = document.querySelector('.chatbot-header');
+        let badge = document.getElementById('art-badge');
+        if (!header) return;
+        if (this.artMode) {
+            if (!badge) {
+                badge = document.createElement('span');
+                badge.id = 'art-badge';
+                badge.style.cssText = 'margin-left:0.3rem;font-size:0.55rem;letter-spacing:0.1em;text-transform:uppercase;color:#0d0b11;background:#d4a574;padding:0.1rem 0.35rem;border-radius:2px;font-weight:700;vertical-align:middle';
+                badge.textContent = '🎨 ART';
+                const toggleIcon = header.querySelector('.toggle-icon');
+                header.insertBefore(badge, toggleIcon);
+            }
+            badge.style.display = 'inline';
+        } else if (badge) {
+            badge.style.display = 'none';
+        }
+        // Update the placeholder so it's obvious you're sending image prompts
+        const input = document.getElementById('chat-input');
+        if (input) {
+            input.placeholder = this.artMode
+                ? 'Describe the image you want…'
+                : 'Ask about NPCs, lore, locations…';
+        }
     }
     clearHistory() {
         this.conversationHistory = [];
         this.mode = 'player';
         this.rules = false;
         this.vibe = null;
+        this.artMode = false;
         this.saveHistory();
         this.displayHistory();
         this.updateModeIndicator();
         this.updateRulesIndicator();
         this.updateVibeIndicator();
+        this.updateArtIndicator();
         this.addSystemMessage('Conversation cleared. How can I help you?');
     }
 }
