@@ -57,11 +57,10 @@ services:
       - ./campaign-data:/app/data:ro
       # Writable volume for chat logs
       - ./logs:/app/logs
-      # Repo mounted in for Eleventy to read markdown/templates live
+      # Repo mounted in for Eleventy to read markdown/templates live.
+      # Eleventy + Pagefind live in /opt/eleventy (baked into the image),
+      # so no anonymous-volume shadow is needed for /site/node_modules.
       - .:/site
-      # Anonymous volume keeps the image's node_modules visible under the
-      # bind mount above
-      - /site/node_modules
     networks:
       - dnd-network
     restart: unless-stopped
