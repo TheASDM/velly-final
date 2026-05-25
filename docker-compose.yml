@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   # PostgreSQL database - this stores all your Wiki.js content
   postgres:
@@ -35,17 +33,14 @@ services:
       - dnd-network
     restart: unless-stopped
 
-  # Chatbot service - Python/Flask RAG-powered lore assistant + Eleventy codex
-  # The same container now runs both the gunicorn API (:3001 internal) and the
-  # Eleventy --serve dev server for the static codex site (:8080 internal,
-  # mapped to :8088 on the host).
+  # Chatbot service - Python/Flask RAG-powered lore assistant + Eleventy build
+  # The container builds the static codex into /site/_site at startup, then
+  # runs the gunicorn API on :3001 internal. nginx serves _site and proxies API.
   chatbot:
     build:
       context: .
       dockerfile: chatbot/Dockerfile
     container_name: dnd_chatbot
-    ports:
-      - "8088:8080"
     environment:
       ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY}
       ANTHROPIC_MODEL: ${ANTHROPIC_MODEL:-claude-haiku-4-5-20251001}
@@ -74,7 +69,7 @@ services:
       # Art Studio gallery — persisted images + manifest. Survives container
       # rebuilds. Created on first generation if it doesn't exist on the host.
       - ./generated-art:/app/generated-art
-      # Repo mounted in for Eleventy to read markdown/templates live.
+      # Repo mounted in for Eleventy to read markdown/templates and write _site.
       # Eleventy + Pagefind live in /opt/eleventy (baked into the image),
       # so no anonymous-volume shadow is needed for /site/node_modules.
       - .:/site
@@ -92,8 +87,8 @@ services:
       # Nginx config tells it how to route different URLs
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./nginx/conf.d:/etc/nginx/conf.d:ro
-      # Lore Master chatbot page and assets
-      - ./public:/usr/share/nginx/html:ro
+      # Built Eleventy PWA. The chatbot container writes /site/_site.
+      - .:/site:ro
     depends_on:
       - wikijs
       - chatbot

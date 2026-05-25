@@ -25,9 +25,8 @@ ENV PATH=/opt/eleventy/node_modules/.bin:$PATH
 WORKDIR /app
 COPY chatbot/server.py .
 
-EXPOSE 3001 8080
+EXPOSE 3001
 
-# Run the chatbot API (gunicorn:3001) and the codex site (Eleventy :8080)
-# together. npm run dev does an initial Eleventy build, runs Pagefind to
-# generate the search index under _site/pagefind, then starts the serve.
-CMD ["sh", "-c", "gunicorn -b 0.0.0.0:3001 -w 2 --timeout 300 --preload server:app & cd /site && npm run dev"]
+# Build the Eleventy codex into /site/_site, then run the Flask API.
+# nginx serves the static build and proxies /api/* back to this container.
+CMD ["sh", "-c", "cd /site && npm run build && cd /app && exec gunicorn -b 0.0.0.0:3001 -w 2 --timeout 300 --preload server:app"]
