@@ -121,6 +121,47 @@ module.exports = function (eleventyConfig) {
       .replace(/-/g, " ")
       .replace(/\b\w+\b/g, (w) => TITLE_FIXUPS[w.toLowerCase()] || w[0].toUpperCase() + w.slice(1));
 
+  eleventyConfig.addFilter("wikiBreadcrumbs", (currentUrl, currentTitle) => {
+    if (!currentUrl || typeof currentUrl !== "string") return [];
+    if (!currentUrl.startsWith("/en/")) return [];
+
+    const clean = currentUrl.replace(/\/$/, "");
+    const parts = clean.replace(/^\/en\/?/, "").split("/").filter(Boolean);
+    if (!parts.length) return [];
+
+    const crumbs = [{ title: "Wiki", url: "/en/Venturia/" }];
+    let build = "/en";
+    let start = 0;
+
+    // Venturia is the wiki home in the app, so avoid a redundant
+    // Wiki > Venturia breadcrumb on every city page.
+    if (parts[0] === "Venturia") {
+      build = "/en/Venturia";
+      start = 1;
+      if (parts.length === 1) {
+        crumbs[0] = { title: currentTitle || "Wiki", url: null };
+        return crumbs;
+      }
+    }
+
+    for (let i = start; i < parts.length; i++) {
+      const part = parts[i];
+      build += `/${part}`;
+      const isLast = i === parts.length - 1;
+      crumbs.push({
+        title: isLast ? (currentTitle || titleCaseSlug(part)) : titleCaseSlug(part),
+        url: isLast ? null : `${build}/`,
+      });
+    }
+
+    return crumbs;
+  });
+
+  eleventyConfig.addFilter("wikiParentCrumb", (crumbs) => {
+    if (!Array.isArray(crumbs) || crumbs.length < 2) return null;
+    return crumbs[crumbs.length - 2];
+  });
+
   eleventyConfig.addFilter("descendantTree", (allPages, currentUrl) => {
     if (!currentUrl) return { direct: [], subcategories: [] };
     let prefix = currentUrl;

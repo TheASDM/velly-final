@@ -1048,6 +1048,80 @@
     color: rgba(232, 220, 200, 0.88);
     font-size: clamp(1rem, 1.4vw, 1.08rem);
   }
+  .vos-wiki-navrail {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: center;
+    gap: 0.75rem;
+    margin: 0 0 clamp(0.75rem, 1.4vw, 1rem);
+  }
+  .vos-wiki-up {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 38px;
+    padding: 0.45rem 0.7rem;
+    border: 1px solid rgba(212, 165, 116, 0.26);
+    border-radius: 999px;
+    background: rgba(13, 11, 17, 0.62);
+    color: var(--vos-gold-bright);
+    font-family: 'Cinzel', Georgia, serif;
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    line-height: 1;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .vos-wiki-up:hover {
+    color: var(--vos-cream);
+    border-color: rgba(212, 165, 116, 0.54);
+    background: rgba(212, 165, 116, 0.1);
+  }
+  .vos-wiki-breadcrumbs {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .vos-wiki-breadcrumbs::-webkit-scrollbar { display: none; }
+  .vos-wiki-breadcrumbs li {
+    display: inline-flex;
+    align-items: center;
+    min-width: 0;
+    flex: 0 0 auto;
+    color: rgba(212, 199, 173, 0.58);
+    font-family: 'Cinzel', Georgia, serif;
+    font-size: 0.62rem;
+    letter-spacing: 0.11em;
+    line-height: 1.2;
+    text-transform: uppercase;
+  }
+  .vos-wiki-breadcrumbs li + li::before {
+    content: '/';
+    margin-right: 0.35rem;
+    color: rgba(139, 115, 85, 0.68);
+  }
+  .vos-wiki-breadcrumbs a {
+    color: rgba(212, 165, 116, 0.82);
+    border-bottom: none;
+  }
+  .vos-wiki-breadcrumbs a:hover {
+    color: var(--vos-cream);
+  }
+  .vos-wiki-breadcrumbs [aria-current="page"] {
+    max-width: min(46vw, 24rem);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: rgba(232, 220, 200, 0.72);
+  }
   .vos-is-index-page .vos-auto-index {
     margin-top: clamp(1rem, 2vw, 1.35rem);
   }
@@ -1127,6 +1201,28 @@
     .vos-is-wiki-page .vos-page-shell:not(.vos-home-shell) {
       padding: 0.95rem;
       border-radius: 10px;
+    }
+    .vos-wiki-navrail {
+      grid-template-columns: 1fr;
+      gap: 0.45rem;
+      margin-bottom: 0.7rem;
+    }
+    .vos-wiki-up {
+      justify-self: start;
+      min-height: 40px;
+      max-width: 100%;
+      padding: 0.5rem 0.78rem;
+    }
+    .vos-wiki-breadcrumbs {
+      width: 100%;
+      padding-bottom: 0.05rem;
+    }
+    .vos-wiki-breadcrumbs li {
+      font-size: 0.56rem;
+      letter-spacing: 0.08em;
+    }
+    .vos-wiki-breadcrumbs [aria-current="page"] {
+      max-width: 62vw;
     }
     .vos-is-wiki-page .vos-page-shell:not(.vos-home-shell) > p,
     .vos-is-wiki-page .vos-page-shell:not(.vos-home-shell) > ul,
@@ -1514,6 +1610,27 @@
 </aside>
 
 <main class="vos-content">
+  {%- if page.url and page.url.startsWith('/en/') and page.url != '/en/Tools/art/' -%}
+    {%- set crumbs = page.url | wikiBreadcrumbs(title) -%}
+    {%- set parentCrumb = crumbs | wikiParentCrumb -%}
+    {%- if crumbs.length > 1 and parentCrumb and parentCrumb.url -%}
+    <nav class="vos-wiki-navrail" aria-label="Wiki navigation">
+      <a class="vos-wiki-up" href="{{ parentCrumb.url }}">← {{ parentCrumb.title }}</a>
+      <ol class="vos-wiki-breadcrumbs" aria-label="Breadcrumb">
+        {%- for crumb in crumbs -%}
+        <li>
+          {%- if crumb.url and not loop.last -%}
+          <a href="{{ crumb.url }}">{{ crumb.title }}</a>
+          {%- else -%}
+          <span aria-current="page">{{ crumb.title }}</span>
+          {%- endif -%}
+        </li>
+        {%- endfor -%}
+      </ol>
+    </nav>
+    {%- endif -%}
+  {%- endif -%}
+
   <article class="vos-page-shell{% if page.filePathStem == '/home' %} vos-home-shell{% endif %}{% if page.url == '/en/Venturia/' %} vos-wiki-home-shell{% endif %}">
     {{ content | safe }}
   </article>
