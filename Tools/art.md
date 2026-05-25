@@ -11,39 +11,48 @@ dateCreated: 2026-05-24T00:00:00.000Z
 <style>
 /* ── Art Studio — page-scoped styles ─────────────────────────────────── */
 .vos-art {
-  --art-gold: #d4a574;
-  --art-gold-dim: #8b7355;
-  --art-bg: rgba(13, 11, 17, 0.85);
-  --art-border: rgba(139, 115, 85, 0.32);
-  --art-border-strong: rgba(212, 165, 116, 0.55);
-  max-width: 1220px;
-  margin: 0 auto 2rem;
+  --art-gold: #ddb77f;
+  --art-gold-soft: #b99062;
+  --art-gold-dim: #8d765b;
+  --art-ink: #08070b;
+  --art-panel: rgba(13, 11, 17, 0.9);
+  --art-panel-strong: rgba(18, 15, 22, 0.96);
+  --art-border: rgba(176, 143, 100, 0.26);
+  --art-border-strong: rgba(221, 183, 127, 0.58);
+  --art-teal: #7bb7ad;
+  --art-ruby: #9f4f5d;
+  max-width: 1180px;
+  margin: clamp(0.35rem, 2vw, 1.25rem) auto 2rem;
+  padding: 0 clamp(0.15rem, 1.5vw, 1rem);
 }
 
 .vos-art-app-head {
-  display: flex;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
   align-items: end;
-  justify-content: space-between;
   gap: 1rem;
-  margin: 0 0 1rem;
+  margin: 0 0 1.1rem;
+  padding: 0.4rem 0 1rem;
+  border-bottom: 1px solid rgba(176, 143, 100, 0.18);
 }
 .vos-art-app-kicker {
   color: var(--art-gold-dim);
   font-family: 'Cinzel', Georgia, serif;
-  font-size: 0.62rem;
+  font-size: 0.66rem;
   font-weight: 700;
-  letter-spacing: 0.2em;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
 }
 .vos-art-app-head h1 {
   margin: 0.1rem 0 0;
   padding: 0;
   border: 0;
-  color: var(--art-gold);
+  color: #f0d4a5;
   font-family: 'Cinzel', Georgia, serif;
-  font-size: clamp(1.75rem, 4vw, 3rem);
+  font-size: clamp(2rem, 4vw, 3.35rem);
   letter-spacing: 0.04em;
-  line-height: 1;
+  line-height: 0.98;
+  text-shadow: 0 10px 34px rgba(0, 0, 0, 0.75);
 }
 .vos-art-app-head h1::after { content: none; }
 .vos-art-app-actions {
@@ -56,132 +65,180 @@ dateCreated: 2026-05-24T00:00:00.000Z
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 40px;
-  padding: 0.55rem 0.8rem;
-  border: 1px solid rgba(212, 165, 116, 0.36);
+  min-height: 42px;
+  padding: 0.58rem 0.95rem;
+  border: 1px solid rgba(221, 183, 127, 0.38);
   border-radius: 6px;
-  background: rgba(212, 165, 116, 0.07);
+  background:
+    linear-gradient(180deg, rgba(221, 183, 127, 0.13), rgba(221, 183, 127, 0.04));
   color: var(--art-gold);
   font-family: 'Cinzel', Georgia, serif;
   font-size: 0.68rem;
   font-weight: 700;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), 0 8px 22px rgba(0, 0, 0, 0.28);
 }
 .vos-art-anchor:hover {
   border-color: var(--art-border-strong);
-  background: rgba(212, 165, 116, 0.12);
+  background: rgba(221, 183, 127, 0.12);
   color: var(--vos-cream);
 }
 
 .vos-art-workbench {
   display: grid;
-  grid-template-columns: minmax(0, 1.05fr) minmax(300px, 0.75fr);
-  gap: 1rem;
+  grid-template-columns: minmax(0, 1.15fr) minmax(290px, 0.72fr);
+  gap: clamp(0.85rem, 2vw, 1.15rem);
   align-items: start;
 }
 
 .vos-art-studio {
+  position: relative;
+  overflow: hidden;
   margin: 0;
-  padding: 1.5rem 1.6rem 1.7rem;
+  padding: clamp(1.05rem, 2.4vw, 1.55rem);
   border-radius: 8px;
   background:
-    linear-gradient(180deg, rgba(20, 18, 24, 0.7), rgba(7, 6, 10, 0.95)),
-    radial-gradient(ellipse 80% 60% at 50% 0%, rgba(212, 165, 116, 0.08), transparent 70%);
+    radial-gradient(ellipse 90% 45% at 15% 0%, rgba(221, 183, 127, 0.11), transparent 62%),
+    radial-gradient(ellipse 70% 50% at 100% 0%, rgba(123, 183, 173, 0.08), transparent 62%),
+    linear-gradient(180deg, rgba(20, 18, 24, 0.88), rgba(7, 6, 10, 0.97));
   border: 1px solid var(--art-border);
-  box-shadow: 0 14px 44px rgba(0, 0, 0, 0.6);
+  box-shadow: 0 18px 54px rgba(0, 0, 0, 0.58), inset 0 1px 0 rgba(255, 255, 255, 0.035);
+}
+.vos-art-studio::before {
+  content: '';
+  position: absolute;
+  left: 1rem;
+  right: 1rem;
+  top: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(221, 183, 127, 0.75), transparent);
+  opacity: 0.7;
+  pointer-events: none;
 }
 .vos-art-studio-title {
-  display: flex; align-items: baseline; gap: 0.6rem;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0.85rem;
   font-family: 'Cinzel', Georgia, serif;
   color: var(--art-gold);
-  font-size: 0.75rem;
-  letter-spacing: 0.3em;
+  font-size: 0.76rem;
+  letter-spacing: 0.24em;
   text-transform: uppercase;
-  margin-bottom: 0.85rem;
+  margin-bottom: 1rem;
 }
 .vos-art-studio-title::before {
   content: '✦';
   color: var(--art-gold);
   font-size: 0.85rem;
+  margin-right: -0.2rem;
 }
 
-.vos-art-row { display: flex; flex-wrap: wrap; gap: 1rem; margin-bottom: 0.85rem; }
-.vos-art-field { flex: 1 1 240px; display: flex; flex-direction: column; gap: 0.4rem; }
+.vos-art-row {
+  display: grid;
+  grid-template-columns: minmax(0, 0.82fr) minmax(260px, 1.18fr);
+  gap: 0.85rem;
+  margin-bottom: 0.95rem;
+  align-items: stretch;
+}
+.vos-art-field {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.42rem;
+  margin-bottom: 0.9rem;
+}
 .vos-art-field-label {
   font-family: 'Cinzel', Georgia, serif;
   color: var(--art-gold);
   font-size: 0.62rem;
-  letter-spacing: 0.28em;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
 }
 
 .vos-art-prompt, .vos-art-name {
   width: 100%;
-  background: rgba(7, 6, 10, 0.85);
+  background: rgba(4, 4, 8, 0.74);
   border: 1px solid var(--art-border);
-  border-radius: 4px;
-  padding: 0.7rem 0.85rem;
+  border-radius: 8px;
+  padding: 0.82rem 0.9rem;
   color: var(--vos-cream);
   font-family: 'Crimson Text', Georgia, serif;
-  font-size: 1rem;
+  font-size: 1.04rem;
   line-height: 1.4;
   transition: border-color 0.15s, box-shadow 0.15s;
-  box-shadow: inset 0 1px 0 rgba(0, 0, 0, 0.4);
+  box-shadow: inset 0 1px 0 rgba(0, 0, 0, 0.55);
   resize: vertical;
 }
-.vos-art-prompt { min-height: 6.5rem; }
+.vos-art-prompt { min-height: 8.3rem; }
 .vos-art-name { min-height: unset; }
 .vos-art-prompt:focus, .vos-art-name:focus {
   outline: none;
   border-color: var(--art-border-strong);
-  box-shadow: inset 0 1px 0 rgba(0,0,0,0.4), 0 0 0 3px rgba(212, 165, 116, 0.14);
+  box-shadow: inset 0 1px 0 rgba(0,0,0,0.4), 0 0 0 3px rgba(221, 183, 127, 0.14);
 }
 
-/* Style chip picker ─────────────────────────────────────────────────── */
-.vos-art-styles {
-  display: flex; flex-wrap: wrap; gap: 0.45rem;
-  margin: 0.2rem 0 1rem;
+/* Style selector ───────────────────────────────────────────────────── */
+.vos-art-style-shell {
+  display: grid;
+  gap: 0.55rem;
 }
-.vos-art-style {
-  display: inline-flex; flex-direction: column; align-items: flex-start;
-  padding: 0.5rem 0.85rem;
-  background: rgba(7, 6, 10, 0.7);
-  border: 1px solid var(--art-border);
-  border-radius: 4px;
-  cursor: pointer;
-  color: var(--vos-text);
+.vos-art-select-wrap {
+  position: relative;
+}
+.vos-art-select-wrap::after {
+  content: '⌄';
+  position: absolute;
+  right: 0.95rem;
+  top: 50%;
+  transform: translateY(-55%);
+  color: var(--art-gold);
+  font-size: 1.15rem;
+  pointer-events: none;
+}
+.vos-art-style-select {
+  appearance: none;
+  width: 100%;
+  min-height: 54px;
+  padding: 0.78rem 2.5rem 0.78rem 0.92rem;
+  border: 1px solid var(--art-border-strong);
+  border-radius: 8px;
+  background:
+    linear-gradient(180deg, rgba(40, 32, 27, 0.86), rgba(17, 13, 18, 0.94));
+  color: #f2ddbd;
   font-family: 'Cinzel', Georgia, serif;
-  font-size: 0.68rem;
-  letter-spacing: 0.18em;
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
-  text-align: left;
-  transition: background 0.15s, border-color 0.15s, color 0.15s;
-  max-width: 220px;
+  box-shadow:
+    0 10px 24px rgba(0, 0, 0, 0.32),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
-.vos-art-style small {
-  display: block;
-  margin-top: 0.25rem;
+.vos-art-style-select:focus {
+  outline: none;
+  box-shadow:
+    0 0 0 3px rgba(221, 183, 127, 0.16),
+    0 10px 24px rgba(0, 0, 0, 0.32),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+.vos-art-style-select option {
+  background: #100d14;
+  color: #f2ddbd;
+}
+.vos-art-style-summary {
+  min-height: 2.75rem;
+  padding: 0.68rem 0.78rem;
+  border-left: 2px solid rgba(123, 183, 173, 0.58);
+  border-radius: 0 8px 8px 0;
+  background: rgba(7, 6, 10, 0.42);
+  color: rgba(232, 220, 200, 0.76);
   font-family: 'Crimson Text', Georgia, serif;
   font-style: italic;
-  font-size: 0.78rem;
-  letter-spacing: 0;
-  color: rgba(212, 165, 116, 0.6);
-  text-transform: none;
-  line-height: 1.3;
+  font-size: 0.9rem;
+  line-height: 1.35;
 }
-.vos-art-style:hover {
-  background: rgba(212, 165, 116, 0.06);
-  border-color: var(--art-border-strong);
-  color: var(--art-gold);
-}
-.vos-art-style.is-active {
-  background: linear-gradient(180deg, rgba(212, 165, 116, 0.18), rgba(212, 165, 116, 0.05));
-  border-color: var(--art-gold);
-  color: var(--vos-cream);
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.06), 0 0 18px rgba(212, 165, 116, 0.18);
-}
-.vos-art-style.is-active small { color: rgba(232, 220, 200, 0.85); }
 
 .vos-art-recent {
   min-width: 0;
@@ -193,41 +250,54 @@ dateCreated: 2026-05-24T00:00:00.000Z
   min-height: 100%;
 }
 .vos-art-gallery-section {
-  margin-top: 1.45rem;
+  margin-top: 1.65rem;
 }
 
 /* Generate button + status row ─────────────────────────────────────── */
 .vos-art-actions {
-  display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;
-  margin-top: 0.4rem;
+  display: grid;
+  grid-template-columns: minmax(180px, 0.38fr) minmax(0, 1fr);
+  align-items: stretch;
+  gap: 0.8rem;
+  margin-top: 0.25rem;
 }
 .vos-art-btn {
   appearance: none;
-  background: linear-gradient(180deg, #e6c08a 0%, #c9a371 60%, #a8835a 100%);
+  min-height: 52px;
+  background:
+    linear-gradient(180deg, #f0ca91 0%, #d4a96e 58%, #a87e52 100%);
   color: #0d0b11;
   border: 1px solid rgba(255,255,255,0.18);
-  border-radius: 3px;
+  border-radius: 8px;
   font-family: 'Cinzel', Georgia, serif;
   font-size: 0.74rem;
   font-weight: 700;
-  letter-spacing: 0.28em;
+  letter-spacing: 0.24em;
   text-transform: uppercase;
-  padding: 0.85rem 1.6rem;
+  padding: 0.9rem 1.3rem;
   cursor: pointer;
-  box-shadow: 0 6px 20px rgba(212, 165, 116, 0.3),
+  box-shadow: 0 10px 28px rgba(221, 183, 127, 0.24),
               inset 0 1px 0 rgba(255,255,255,0.35),
               inset 0 -1px 0 rgba(0,0,0,0.25);
   transition: transform 0.15s, box-shadow 0.15s, opacity 0.2s;
 }
-.vos-art-btn:hover { transform: translateY(-1px); box-shadow: 0 8px 26px rgba(212, 165, 116, 0.5), inset 0 1px 0 rgba(255,255,255,0.4); }
+.vos-art-btn:hover { transform: translateY(-1px); box-shadow: 0 12px 32px rgba(221, 183, 127, 0.42), inset 0 1px 0 rgba(255,255,255,0.4); }
 .vos-art-btn:disabled { opacity: 0.55; cursor: progress; transform: none; }
 .vos-art-status {
+  min-height: 52px;
+  display: flex;
+  align-items: center;
+  padding: 0.7rem 0.85rem;
+  border: 1px solid rgba(176, 143, 100, 0.18);
+  border-radius: 8px;
+  background: rgba(7, 6, 10, 0.4);
   font-family: 'IM Fell English', Georgia, serif;
   font-style: italic;
   font-size: 0.92rem;
-  color: rgba(212, 165, 116, 0.78);
+  color: rgba(221, 183, 127, 0.78);
   line-height: 1.35;
 }
+.vos-art-status:empty { display: none; }
 .vos-art-status.is-error { color: #d8645c; }
 
 /* Latest preview slot ─────────────────────────────────────────────── */
@@ -358,18 +428,20 @@ dateCreated: 2026-05-24T00:00:00.000Z
 
 /* "Let Enzo refine my prompt" checkbox row ─────────────────────────── */
 .vos-art-enhance-toggle {
-  display: flex; gap: 0.8rem; align-items: flex-start;
+  display: flex; gap: 0.8rem; align-items: center;
+  height: 100%;
   cursor: pointer;
-  padding: 0.85rem 0.9rem;
-  background: rgba(7, 6, 10, 0.55);
+  padding: 0.78rem 0.9rem;
+  background:
+    linear-gradient(180deg, rgba(123, 183, 173, 0.08), rgba(7, 6, 10, 0.48));
   border: 1px solid var(--art-border);
-  border-radius: 5px;
+  border-radius: 8px;
   transition: border-color 0.15s, background 0.15s;
 }
 .vos-art-enhance-toggle:hover { border-color: var(--art-border-strong); }
 .vos-art-enhance-toggle input[type="checkbox"] {
   flex: 0 0 auto;
-  width: 1.05rem; height: 1.05rem; margin: 0.2rem 0 0;
+  width: 1.08rem; height: 1.08rem; margin: 0;
   accent-color: var(--art-gold);
 }
 .vos-art-enhance-text {
@@ -377,8 +449,8 @@ dateCreated: 2026-05-24T00:00:00.000Z
 }
 .vos-art-enhance-text strong {
   font-family: 'Cinzel', Georgia, serif;
-  font-size: 0.72rem;
-  letter-spacing: 0.18em;
+  font-size: 0.68rem;
+  letter-spacing: 0.15em;
   text-transform: uppercase;
   color: var(--art-gold);
   font-weight: 700;
@@ -464,13 +536,13 @@ dateCreated: 2026-05-24T00:00:00.000Z
 .vos-art-gallery-head {
   display: flex; align-items: baseline; justify-content: space-between; gap: 1rem;
   flex-wrap: wrap;
-  margin: 2rem 0 1rem;
+  margin: 2rem 0 0.85rem;
 }
 .vos-art-gallery-head h2 {
   font-family: 'Cinzel', Georgia, serif;
-  color: var(--art-gold);
-  font-size: 1.05rem;
-  letter-spacing: 0.18em;
+  color: #f0d4a5;
+  font-size: 1rem;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
   margin: 0;
   border: none;
@@ -479,35 +551,41 @@ dateCreated: 2026-05-24T00:00:00.000Z
 .vos-art-gallery-count {
   font-family: 'IM Fell English', Georgia, serif;
   font-style: italic;
-  color: rgba(212, 165, 116, 0.55);
+  color: rgba(221, 183, 127, 0.58);
   font-size: 0.9rem;
 }
 
 .vos-art-gallery {
   display: grid;
-  grid-template-columns: 1fr;
-  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr));
+  gap: clamp(0.85rem, 2vw, 1.1rem);
   margin: 0 0 1.5rem;
 }
-@media (min-width: 540px)  { .vos-art-gallery { grid-template-columns: repeat(2, 1fr); } }
-@media (min-width: 900px)  { .vos-art-gallery { grid-template-columns: repeat(3, 1fr); } }
-@media (min-width: 1280px) { .vos-art-gallery { grid-template-columns: repeat(4, 1fr); } }
+@media (min-width: 960px) {
+  .vos-art-gallery .vos-art-card:first-child {
+    grid-column: span 2;
+  }
+  .vos-art-gallery .vos-art-card:first-child img {
+    aspect-ratio: 2 / 1;
+  }
+}
 
 .vos-art-card {
   position: relative;
   display: block;
-  border-radius: 6px;
+  border-radius: 8px;
   overflow: hidden;
-  background: #0a0a0d;
+  background:
+    linear-gradient(180deg, rgba(17, 14, 20, 0.95), rgba(6, 5, 9, 0.98));
   border: 1px solid var(--art-border);
-  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.55);
+  box-shadow: 0 12px 34px rgba(0, 0, 0, 0.52);
   cursor: zoom-in;
   transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
 }
 .vos-art-card:hover {
   transform: translateY(-3px);
   border-color: var(--art-border-strong);
-  box-shadow: 0 14px 36px rgba(0, 0, 0, 0.7), 0 0 20px rgba(212, 165, 116, 0.18);
+  box-shadow: 0 16px 42px rgba(0, 0, 0, 0.72), 0 0 24px rgba(221, 183, 127, 0.16);
 }
 .vos-art-card img {
   display: block;
@@ -517,11 +595,11 @@ dateCreated: 2026-05-24T00:00:00.000Z
   background: #0a0a0d;
 }
 .vos-art-card-meta {
-  padding: 0.55rem 0.75rem 0.75rem;
+  padding: 0.68rem 0.82rem 0.82rem;
   border-top: 1px solid rgba(139, 115, 85, 0.16);
   font-family: 'Crimson Text', Georgia, serif;
   font-style: italic;
-  font-size: 0.85rem;
+  font-size: 0.88rem;
   line-height: 1.35;
   color: rgba(232, 220, 200, 0.78);
   display: -webkit-box;
@@ -532,7 +610,7 @@ dateCreated: 2026-05-24T00:00:00.000Z
 .vos-art-card-byline {
   font-style: normal;
   font-family: 'Cinzel', Georgia, serif;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
   font-size: 0.55rem;
   color: var(--art-gold-dim);
@@ -769,33 +847,51 @@ body.is-dm-mode .vos-art-lightbox-delete { display: inline-flex; }
 
 @media (max-width: 860px) {
   .vos-art {
-    margin-top: -0.4rem;
+    margin-top: 0;
+    padding: 0;
   }
   .vos-art-app-head {
-    align-items: start;
-    flex-direction: column;
-    gap: 0.75rem;
+    align-items: center;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 0.65rem;
+    padding: 0.1rem 0 0.85rem;
+  }
+  .vos-art-app-head h1 {
+    font-size: 2rem;
   }
   .vos-art-app-actions {
     width: auto;
   }
   .vos-art-anchor {
     width: auto;
-    min-width: 9rem;
+    min-width: 0;
+    min-height: 38px;
+    padding: 0.5rem 0.76rem;
   }
   .vos-art-workbench {
     grid-template-columns: 1fr;
   }
   .vos-art-studio {
-    padding: 1.05rem;
+    padding: 1rem;
   }
   .vos-art-studio-title,
   .vos-art-gallery-head h2 {
-    font-size: 0.88rem;
-    letter-spacing: 0.16em;
+    font-size: 0.82rem;
+    letter-spacing: 0.14em;
+  }
+  .vos-art-studio-title {
+    margin-bottom: 0.75rem;
   }
   .vos-art-gallery-head {
     margin: 1.35rem 0 0.75rem;
+  }
+  .vos-art-row {
+    grid-template-columns: 1fr;
+    gap: 0.55rem;
+    margin-bottom: 0.55rem;
+  }
+  .vos-art-field {
+    margin-bottom: 0.7rem;
   }
   .vos-art-field-label {
     font-size: 0.58rem;
@@ -806,13 +902,25 @@ body.is-dm-mode .vos-art-lightbox-delete { display: inline-flex; }
     font-size: 0.98rem;
     padding: 0.72rem;
   }
-  .vos-art-style {
-    max-width: none;
-    width: 100%;
+  .vos-art-prompt {
+    min-height: 6.25rem;
   }
+  .vos-art-style-select {
+    min-height: 50px;
+    font-size: 0.68rem;
+    letter-spacing: 0.13em;
+  }
+  .vos-art-style-summary {
+    display: none;
+  }
+  .vos-art-enhance-toggle { padding: 0.68rem 0.8rem; }
   .vos-art-enhance-text strong {
     font-size: 0.68rem;
     letter-spacing: 0.13em;
+  }
+  .vos-art-actions {
+    grid-template-columns: 1fr;
+    margin-top: 0;
   }
   .vos-art-btn {
     width: 100%;
@@ -845,18 +953,23 @@ body.is-dm-mode .vos-art-lightbox-delete { display: inline-flex; }
   </div>
 
   <div class="vos-art-field">
-    <label class="vos-art-field-label">Style</label>
-    <div id="vos-art-styles" class="vos-art-styles" role="radiogroup" aria-label="Visual style">
-      <div class="vos-art-empty" style="padding: 0.6rem 1rem;">Loading styles…</div>
+    <label class="vos-art-field-label" for="vos-art-style-select">Style</label>
+    <div class="vos-art-style-shell">
+      <div class="vos-art-select-wrap">
+        <select id="vos-art-style-select" class="vos-art-style-select" aria-describedby="vos-art-style-summary">
+          <option value="">Loading styles...</option>
+        </select>
+      </div>
+      <div id="vos-art-style-summary" class="vos-art-style-summary">Loading style notes...</div>
     </div>
   </div>
 
   <div class="vos-art-row">
-    <div class="vos-art-field" style="flex: 0 1 260px;">
+    <div class="vos-art-field">
       <label class="vos-art-field-label" for="vos-art-name">Created by <span style="opacity:0.6">(optional)</span></label>
       <input id="vos-art-name" class="vos-art-name" type="text" maxlength="64" placeholder="Your name or handle">
     </div>
-    <div class="vos-art-field" style="flex: 1 1 320px; align-self: end;">
+    <div class="vos-art-field">
       <label class="vos-art-enhance-toggle" for="vos-art-enhance">
         <input id="vos-art-enhance" type="checkbox" checked>
         <span class="vos-art-enhance-text">
@@ -943,7 +1056,8 @@ body.is-dm-mode .vos-art-lightbox-delete { display: inline-flex; }
   const $ = (id) => document.getElementById(id);
   const promptEl         = $('vos-art-prompt');
   const nameEl           = $('vos-art-name');
-  const stylesEl         = $('vos-art-styles');
+  const styleSelectEl    = $('vos-art-style-select');
+  const styleSummaryEl   = $('vos-art-style-summary');
   const enhanceEl        = $('vos-art-enhance');
   const generateEl       = $('vos-art-generate');
   const statusEl         = $('vos-art-status');
@@ -982,6 +1096,7 @@ body.is-dm-mode .vos-art-lightbox-delete { display: inline-flex; }
 
   let selectedStyle = null;
   let defaultStyle = 'valley';
+  let availableStyles = [];
 
   // ── Restore form state from localStorage ────────────────────────────
   try {
@@ -1004,32 +1119,48 @@ body.is-dm-mode .vos-art-lightbox-delete { display: inline-flex; }
 
   // ── Styles ───────────────────────────────────────────────────────────
   function renderStyles(styles) {
-    stylesEl.innerHTML = '';
+    availableStyles = Array.isArray(styles) ? styles : [];
+    styleSelectEl.innerHTML = '';
     let savedKey = null;
     try { savedKey = localStorage.getItem(STYLE_KEY); } catch (e) {}
-    selectedStyle = savedKey && styles.some(s => s.key === savedKey)
+    selectedStyle = savedKey && availableStyles.some(s => s.key === savedKey)
       ? savedKey
       : defaultStyle;
-    styles.forEach(s => {
-      const el = document.createElement('button');
-      el.type = 'button';
-      el.className = 'vos-art-style' + (s.key === selectedStyle ? ' is-active' : '');
-      el.dataset.styleKey = s.key;
-      el.setAttribute('role', 'radio');
-      el.setAttribute('aria-checked', String(s.key === selectedStyle));
-      el.innerHTML = `${escapeHtml(s.label)}<small>${escapeHtml(s.description)}</small>`;
-      el.addEventListener('click', () => {
-        selectedStyle = s.key;
-        try { localStorage.setItem(STYLE_KEY, s.key); } catch (e) {}
-        stylesEl.querySelectorAll('.vos-art-style').forEach(b => {
-          const on = b.dataset.styleKey === s.key;
-          b.classList.toggle('is-active', on);
-          b.setAttribute('aria-checked', String(on));
-        });
-      });
-      stylesEl.appendChild(el);
+
+    if (!availableStyles.length) {
+      selectedStyle = '';
+      const opt = document.createElement('option');
+      opt.value = '';
+      opt.textContent = 'Styles unavailable';
+      styleSelectEl.appendChild(opt);
+      styleSummaryEl.textContent = 'Could not load style choices.';
+      return;
+    }
+
+    if (!availableStyles.some(s => s.key === selectedStyle)) {
+      selectedStyle = availableStyles[0].key;
+    }
+
+    availableStyles.forEach(s => {
+      const opt = document.createElement('option');
+      opt.value = s.key;
+      opt.textContent = s.label;
+      styleSelectEl.appendChild(opt);
     });
+    styleSelectEl.value = selectedStyle;
+    updateStyleSummary();
   }
+
+  function updateStyleSummary() {
+    const active = availableStyles.find(s => s.key === selectedStyle);
+    styleSummaryEl.textContent = active ? active.description : '';
+  }
+
+  styleSelectEl.addEventListener('change', () => {
+    selectedStyle = styleSelectEl.value;
+    try { localStorage.setItem(STYLE_KEY, selectedStyle); } catch (e) {}
+    updateStyleSummary();
+  });
 
   fetch(API_BASE + '/api/art-styles')
     .then(r => r.json())
@@ -1038,7 +1169,7 @@ body.is-dm-mode .vos-art-lightbox-delete { display: inline-flex; }
       renderStyles(data.styles || []);
     })
     .catch(() => {
-      stylesEl.innerHTML = `<div class="vos-art-empty" style="padding: 0.6rem 1rem;">Could not load styles. Make sure the chatbot is reachable.</div>`;
+      renderStyles([]);
     });
 
   // ── Gallery ──────────────────────────────────────────────────────────
