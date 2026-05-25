@@ -497,7 +497,8 @@ class LoreMasterChatbot {
     }
 }
 let loreMaster;
-document.addEventListener('DOMContentLoaded', () => {
+function initLoreMaster() {
+    if (loreMaster) return;
     loreMaster = new LoreMasterChatbot();
 
     // Lock favicon — Wiki.js overwrites it dynamically, so fight back
@@ -512,7 +513,12 @@ document.addEventListener('DOMContentLoaded', () => {
         enforceFavicon();
         new MutationObserver(enforceFavicon).observe(document.head, { childList: true, subtree: true, attributes: true, attributeFilter: ['href'] });
     }
-});
+}
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initLoreMaster);
+} else {
+    initLoreMaster();
+}
 function clearChatHistory() {
     if (loreMaster) loreMaster.clearHistory();
 }
