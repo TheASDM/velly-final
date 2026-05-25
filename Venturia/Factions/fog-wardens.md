@@ -17,7 +17,7 @@ dateCreated: 2026-05-22T00:00:00.000Z
 
 <div style="font-family: Georgia, serif; font-size: 0.95rem; color: #e8dcc8; line-height: 1.85;">
 <div><span style="color: #8b7355; letter-spacing: 0.18em; text-transform: uppercase; font-size: 0.7rem; font-weight: 600;">Type</span> &nbsp;&middot;&nbsp; Law enforcement &amp; security</div>
-<div><span style="color: #8b7355; letter-spacing: 0.18em; text-transform: uppercase; font-size: 0.7rem; font-weight: 600;">Posting</span> &nbsp;&middot;&nbsp; The Overlook, at the [Vallombrosa](/en/Venturia/Locations/vallombrosa) boundary</div>
+<div><span style="color: #8b7355; letter-spacing: 0.18em; text-transform: uppercase; font-size: 0.7rem; font-weight: 600;">Posting</span> &nbsp;&middot;&nbsp; The Overlook, at the <a href="/en/Venturia/Locations/vallombrosa">Vallombrosa</a> boundary</div>
 <div><span style="color: #8b7355; letter-spacing: 0.18em; text-transform: uppercase; font-size: 0.7rem; font-weight: 600;">Leader</span> &nbsp;&middot;&nbsp; Captain-Commander Thora Ironmark</div>
 </div>
 <div style="margin-top: 1.25rem; padding-left: 1rem; border-left: 2px solid rgba(212, 165, 116, 0.4); font-style: italic; color: rgba(212, 165, 116, 0.9); font-family: 'IM Fell English', Georgia, serif; font-size: 1rem;">"The Watch at the fog line."</div>

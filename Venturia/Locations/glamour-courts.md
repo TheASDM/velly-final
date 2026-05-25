@@ -16,7 +16,7 @@ dateCreated: 2026-05-25T00:00:00.000Z
 
 <div style="font-family: Georgia, serif; font-size: 0.95rem; color: #e8dcc8; line-height: 1.85;">
 <div><span style="color: #8b7355; letter-spacing: 0.18em; text-transform: uppercase; font-size: 0.7rem; font-weight: 600;">Type</span> &nbsp;&middot;&nbsp; Academy hall</div>
-<div><span style="color: #8b7355; letter-spacing: 0.18em; text-transform: uppercase; font-size: 0.7rem; font-weight: 600;">Institution</span> &nbsp;&middot;&nbsp; [VAVA](/en/Venturia/Locations/vava)</div>
+<div><span style="color: #8b7355; letter-spacing: 0.18em; text-transform: uppercase; font-size: 0.7rem; font-weight: 600;">Institution</span> &nbsp;&middot;&nbsp; <a href="/en/Venturia/Locations/vava">VAVA</a></div>
 <div><span style="color: #8b7355; letter-spacing: 0.18em; text-transform: uppercase; font-size: 0.7rem; font-weight: 600;">Discipline</span> &nbsp;&middot;&nbsp; Illusion and glamour</div>
 </div>
 </div>

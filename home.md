@@ -570,7 +570,7 @@ dateCreated: 2026-02-20T05:30:38.113Z
 
 @media (max-width: 768px) {
   .vos-home {
-    --vos-home-wide: calc(100vw - 0.75rem);
+    --vos-home-wide: calc(100vw - 2rem);
     margin: -2.25rem 0 0;
   }
   .vos-home-hero { padding: 1.25rem 0 1.35rem; }

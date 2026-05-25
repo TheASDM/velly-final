@@ -15,7 +15,7 @@ dateCreated: 2026-02-23T23:57:23.247Z
 <div style="height: 1px; background: linear-gradient(90deg, rgba(212, 165, 116, 0.7), rgba(139, 115, 85, 0.2) 60%, transparent); margin-bottom: 1.25rem;"></div>
 
 <div style="font-family: Georgia, serif; font-size: 0.95rem; color: #e8dcc8; line-height: 1.85;">
-<div><span style="color: #8b7355; letter-spacing: 0.18em; text-transform: uppercase; font-size: 0.7rem; font-weight: 600;">Tier</span> &nbsp;&middot;&nbsp; [High Quarter](/en/Venturia/Locations/high-quarter)</div>
+<div><span style="color: #8b7355; letter-spacing: 0.18em; text-transform: uppercase; font-size: 0.7rem; font-weight: 600;">Tier</span> &nbsp;&middot;&nbsp; <a href="/en/Venturia/Locations/high-quarter">High Quarter</a></div>
 </div>
 <div style="margin-top: 1.25rem; padding-left: 1rem; border-left: 2px solid rgba(212, 165, 116, 0.4); font-style: italic; color: rgba(212, 165, 116, 0.9); font-family: 'IM Fell English', Georgia, serif; font-size: 1rem;">"Where masks reveal more than faces ever could"</div>
 </div>

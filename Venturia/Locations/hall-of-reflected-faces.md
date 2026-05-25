@@ -16,7 +16,7 @@ dateCreated: 2026-05-25T00:00:00.000Z
 
 <div style="font-family: Georgia, serif; font-size: 0.95rem; color: #e8dcc8; line-height: 1.85;">
 <div><span style="color: #8b7355; letter-spacing: 0.18em; text-transform: uppercase; font-size: 0.7rem; font-weight: 600;">Type</span> &nbsp;&middot;&nbsp; Private gallery</div>
-<div><span style="color: #8b7355; letter-spacing: 0.18em; text-transform: uppercase; font-size: 0.7rem; font-weight: 600;">Keeper</span> &nbsp;&middot;&nbsp; [The Veil Court](/en/Venturia/Factions/veil-court)</div>
+<div><span style="color: #8b7355; letter-spacing: 0.18em; text-transform: uppercase; font-size: 0.7rem; font-weight: 600;">Keeper</span> &nbsp;&middot;&nbsp; <a href="/en/Venturia/Factions/veil-court">The Veil Court</a></div>
 <div><span style="color: #8b7355; letter-spacing: 0.18em; text-transform: uppercase; font-size: 0.7rem; font-weight: 600;">Collection</span> &nbsp;&middot;&nbsp; Three centuries of Masquerade masks</div>
 </div>
 </div>

@@ -17,7 +17,7 @@ dateCreated: 2026-05-25T00:00:00.000Z
 <div style="font-family: Georgia, serif; font-size: 0.95rem; color: #e8dcc8; line-height: 1.85;">
 <div><span style="color: #8b7355; letter-spacing: 0.18em; text-transform: uppercase; font-size: 0.7rem; font-weight: 600;">Type</span> &nbsp;&middot;&nbsp; Festival</div>
 <div><span style="color: #8b7355; letter-spacing: 0.18em; text-transform: uppercase; font-size: 0.7rem; font-weight: 600;">Season</span> &nbsp;&middot;&nbsp; Autumn</div>
-<div><span style="color: #8b7355; letter-spacing: 0.18em; text-transform: uppercase; font-size: 0.7rem; font-weight: 600;">Patrons</span> &nbsp;&middot;&nbsp; [The Veil Court](/en/Venturia/Factions/veil-court)</div>
+<div><span style="color: #8b7355; letter-spacing: 0.18em; text-transform: uppercase; font-size: 0.7rem; font-weight: 600;">Patrons</span> &nbsp;&middot;&nbsp; <a href="/en/Venturia/Factions/veil-court">The Veil Court</a></div>
 </div>
 </div>
 

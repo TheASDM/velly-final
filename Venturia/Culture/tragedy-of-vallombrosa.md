@@ -16,8 +16,8 @@ dateCreated: 2026-05-25T00:00:00.000Z
 
 <div style="font-family: Georgia, serif; font-size: 0.95rem; color: #e8dcc8; line-height: 1.85;">
 <div><span style="color: #8b7355; letter-spacing: 0.18em; text-transform: uppercase; font-size: 0.7rem; font-weight: 600;">Type</span> &nbsp;&middot;&nbsp; Annual performance</div>
-<div><span style="color: #8b7355; letter-spacing: 0.18em; text-transform: uppercase; font-size: 0.7rem; font-weight: 600;">Season</span> &nbsp;&middot;&nbsp; [The Autumn Masquerade](/en/Venturia/Culture/autumn-masquerade)</div>
-<div><span style="color: #8b7355; letter-spacing: 0.18em; text-transform: uppercase; font-size: 0.7rem; font-weight: 600;">Home</span> &nbsp;&middot;&nbsp; [The Amaranth Theater](/en/Venturia/Locations/amaranth-theater)</div>
+<div><span style="color: #8b7355; letter-spacing: 0.18em; text-transform: uppercase; font-size: 0.7rem; font-weight: 600;">Season</span> &nbsp;&middot;&nbsp; <a href="/en/Venturia/Culture/autumn-masquerade">The Autumn Masquerade</a></div>
+<div><span style="color: #8b7355; letter-spacing: 0.18em; text-transform: uppercase; font-size: 0.7rem; font-weight: 600;">Home</span> &nbsp;&middot;&nbsp; <a href="/en/Venturia/Locations/amaranth-theater">The Amaranth Theater</a></div>
 </div>
 </div>
 
