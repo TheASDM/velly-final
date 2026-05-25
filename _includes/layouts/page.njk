@@ -155,24 +155,37 @@
   .vos-page-shell:not(.vos-home-shell) > h1::after {
     background: rgba(12, 10, 15, 0.98);
   }
-  .vos-page-shell:not(.vos-home-shell) > p,
-  .vos-page-shell:not(.vos-home-shell) > ul,
-  .vos-page-shell:not(.vos-home-shell) > ol,
-  .vos-page-shell:not(.vos-home-shell) > blockquote,
   .vos-page-shell:not(.vos-home-shell) > h1,
   .vos-page-shell:not(.vos-home-shell) > h2,
   .vos-page-shell:not(.vos-home-shell) > h3,
   .vos-page-shell:not(.vos-home-shell) > h4,
   .vos-page-shell:not(.vos-home-shell) > h5,
   .vos-page-shell:not(.vos-home-shell) > h6 {
-    max-width: 84ch;
+    width: 100%;
+    max-width: none;
+  }
+  .vos-page-shell:not(.vos-home-shell) > p,
+  .vos-page-shell:not(.vos-home-shell) > ul,
+  .vos-page-shell:not(.vos-home-shell) > ol,
+  .vos-page-shell:not(.vos-home-shell) > blockquote {
+    width: 100%;
+    max-width: none;
+    padding: clamp(0.85rem, 1.4vw, 1.15rem) clamp(1rem, 1.8vw, 1.4rem);
+    border: 1px solid rgba(201, 161, 74, 0.14);
+    border-left: 2px solid rgba(201, 161, 74, 0.34);
+    border-radius: 6px;
+    background:
+      linear-gradient(180deg, rgba(18, 16, 23, 0.54), rgba(8, 7, 11, 0.34)),
+      radial-gradient(ellipse 80% 60% at 50% 0%, rgba(201, 161, 74, 0.035), transparent 70%);
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.28);
+  }
+  .vos-page-shell:not(.vos-home-shell) > ul,
+  .vos-page-shell:not(.vos-home-shell) > ol {
+    padding-left: clamp(2rem, 2.8vw, 2.5rem);
   }
   .vos-page-shell:not(.vos-home-shell) > blockquote {
-    padding: 0.75rem 1rem 0.8rem 1.2rem;
-    border: 1px solid rgba(201, 161, 74, 0.18);
-    border-left: 3px solid rgba(201, 161, 74, 0.48);
-    border-radius: 6px;
-    background: rgba(201, 161, 74, 0.045);
+    color: rgba(232, 220, 200, 0.86);
+    font-family: 'IM Fell English', Georgia, serif;
   }
 
   /* ── Top bar ──────────────────────────────────────────────────────────
@@ -794,6 +807,37 @@
   /* When Enzo is collapsed to the pill, the OUTER container shrinks too
      so the floating layer doesn't reserve a 560px box. */
   #chatbot-container.vos-enzo-pill { width: auto; }
+
+  /* Critical collapsed Enzo styles live inline so the widget never flashes
+     open while the remote chatbot stylesheet is still loading. */
+  #chatbot-widget.chatbot-collapsed {
+    width: auto !important;
+    max-width: 180px;
+    max-height: 48px !important;
+    overflow: hidden;
+    border-radius: 999px;
+  }
+  #chatbot-widget.chatbot-collapsed .chatbot-body {
+    display: none !important;
+  }
+  #chatbot-widget.chatbot-collapsed .chatbot-header {
+    height: 48px;
+    padding: 0 0.85rem 0 0.5rem;
+    border-bottom: none;
+    border-radius: 999px;
+  }
+  #chatbot-widget.chatbot-collapsed .chatbot-avatar-header {
+    width: 32px;
+    height: 32px;
+    margin-right: 0;
+  }
+  #chatbot-widget.chatbot-collapsed #chat-clear-btn,
+  #chatbot-widget.chatbot-collapsed #dm-mode-badge,
+  #chatbot-widget.chatbot-collapsed #rules-badge,
+  #chatbot-widget.chatbot-collapsed #vibe-badge,
+  #chatbot-widget.chatbot-collapsed #art-badge {
+    display: none !important;
+  }
 
   /* Desktop widget sizing — widen panel + give the input room. The
      collapsed-state height override below uses !important to win against

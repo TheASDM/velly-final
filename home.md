@@ -157,22 +157,17 @@ dateCreated: 2026-02-20T05:30:38.113Z
 .vos-dash {
   display: grid;
   grid-template-columns: minmax(0, 1.25fr) minmax(360px, 0.85fr);
+  grid-template-areas:
+    "story next"
+    "inplay threads";
   gap: 1rem;
-  align-items: start;
-}
-.vos-dash-primary {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-.vos-dash-stack {
-  display: flex;
-  flex-direction: column;
-  gap: 1.25rem;
+  align-items: stretch;
 }
 .vos-dash-card {
   position: relative;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
   border: 1px solid rgba(201,161,74,0.22);
   border-radius: 8px;
   background:
@@ -189,8 +184,11 @@ dateCreated: 2026-02-20T05:30:38.113Z
   box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
 }
 .vos-story-card {
+  grid-area: story;
   padding: 1.45rem 1.55rem 1.55rem;
 }
+.vos-next-card { grid-area: next; }
+.vos-threads-card { grid-area: threads; }
 .vos-dash-side-card {
   padding: 1.1rem 1.2rem 1.2rem;
 }
@@ -230,6 +228,7 @@ dateCreated: 2026-02-20T05:30:38.113Z
   font-size: 0.98rem;
 }
 .vos-story-card p {
+  flex: 1 1 auto;
   margin: 0 0 1.25rem;
   color: rgba(233,225,208,0.84);
   font-family: 'Cormorant Garamond', 'Crimson Text', Georgia, serif;
@@ -302,8 +301,10 @@ dateCreated: 2026-02-20T05:30:38.113Z
   margin-top: 0.05rem;
 }
 .vos-thread-list {
+  flex: 1 1 auto;
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
 }
 .vos-thread {
   display: flex;
@@ -339,9 +340,12 @@ dateCreated: 2026-02-20T05:30:38.113Z
   text-transform: uppercase;
 }
 .vos-inplay-card {
+  grid-area: inplay;
   padding: 1.05rem 1.15rem 1rem;
 }
 .vos-play-rail {
+  flex: 1 1 auto;
+  align-content: flex-start;
   display: flex;
   flex-wrap: wrap;
   gap: 0.65rem;
@@ -570,8 +574,14 @@ dateCreated: 2026-02-20T05:30:38.113Z
     margin: -2.25rem 0 0;
   }
   .vos-home-hero { padding: 1.25rem 0 1.35rem; }
-  .vos-dash { grid-template-columns: 1fr; }
-  .vos-dash-primary { gap: 1rem; }
+  .vos-dash {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "story"
+      "next"
+      "threads"
+      "inplay";
+  }
   .vos-home-sec-head {
     align-items: flex-start;
     flex-wrap: wrap;
@@ -610,56 +620,52 @@ dateCreated: 2026-02-20T05:30:38.113Z
 <!-- ── LIVING DASHBOARD ─────────────────────────────────────────────── -->
 <section class="vos-home-dashboard" aria-label="Campaign dashboard">
   <div class="vos-dash">
-    <div class="vos-dash-primary">
-      <article class="vos-dash-card vos-story-card" aria-labelledby="vos-story-heading">
-        <div class="vos-dash-kicker">{{ campaign.latestSession.number }} · {{ campaign.latestSession.arc }}</div>
-        <h2 id="vos-story-heading" class="vos-card-heading">The Story So Far</h2>
-        <h3>{{ campaign.latestSession.title }}</h3>
-        <div class="vos-story-meta">Last played {{ campaign.latestSession.lastPlayed }} · updated {{ campaign.latestSession.updated }}</div>
-        <p>{{ campaign.latestSession.recap }}</p>
-        <a class="vos-story-read" href="{{ campaign.latestSession.link }}">Read full chronicle &rarr;</a>
-      </article>
-      <article class="vos-dash-card vos-inplay-card" aria-labelledby="vos-inplay-heading">
-        <div class="vos-dash-kicker">Currently In Play</div>
-        <h3 id="vos-inplay-heading">Currently In Play</h3>
-        <div class="vos-play-rail">
-          {%- for item in campaign.inPlay %}
-          <a class="vos-play-chip" href="{{ item.link }}">
-            <span class="vos-play-emblem" aria-hidden="true">{{ item.emblem }}</span>
-            <span class="vos-play-name">{{ item.name }}<small>{{ item.role }} · {{ item.kind }}</small></span>
-          </a>
-          {%- endfor %}
-        </div>
-      </article>
-    </div>
-    <div class="vos-dash-stack">
-      <article class="vos-dash-card vos-dash-side-card" aria-labelledby="vos-next-heading">
-        <div class="vos-dash-kicker">Next Gathering</div>
-        <h3 id="vos-next-heading">Next Gathering</h3>
-        <div class="vos-next-date">{{ campaign.nextGathering.date }}</div>
-        <div class="vos-next-where">{{ campaign.nextGathering.timeLocation }}</div>
-        <ul class="vos-next-notes">
-          {%- for note in campaign.nextGathering.notes %}
-          <li>{{ note }}</li>
-          {%- endfor %}
-        </ul>
-      </article>
-      <article class="vos-dash-card vos-dash-side-card" aria-labelledby="vos-threads-heading">
-        <div class="vos-dash-kicker">Open Threads</div>
-        <h3 id="vos-threads-heading">Open Threads</h3>
-        <div class="vos-thread-list">
-          {%- for thread in campaign.openThreads %}
-          <div class="vos-thread">
-            <span class="vos-thread-dot {{ thread.status }}" aria-hidden="true"></span>
-            <div class="vos-thread-question">
-              {{ thread.question }}
-              <span class="vos-thread-tag">{{ thread.status }} · {{ thread.tag }}</span>
-            </div>
+    <article class="vos-dash-card vos-story-card" aria-labelledby="vos-story-heading">
+      <div class="vos-dash-kicker">{{ campaign.latestSession.number }} · {{ campaign.latestSession.arc }}</div>
+      <h2 id="vos-story-heading" class="vos-card-heading">The Story So Far</h2>
+      <h3>{{ campaign.latestSession.title }}</h3>
+      <div class="vos-story-meta">Last played {{ campaign.latestSession.lastPlayed }} · updated {{ campaign.latestSession.updated }}</div>
+      <p>{{ campaign.latestSession.recap }}</p>
+      <a class="vos-story-read" href="{{ campaign.latestSession.link }}">Read full chronicle &rarr;</a>
+    </article>
+    <article class="vos-dash-card vos-dash-side-card vos-next-card" aria-labelledby="vos-next-heading">
+      <div class="vos-dash-kicker">Next Gathering</div>
+      <h3 id="vos-next-heading">Next Gathering</h3>
+      <div class="vos-next-date">{{ campaign.nextGathering.date }}</div>
+      <div class="vos-next-where">{{ campaign.nextGathering.timeLocation }}</div>
+      <ul class="vos-next-notes">
+        {%- for note in campaign.nextGathering.notes %}
+        <li>{{ note }}</li>
+        {%- endfor %}
+      </ul>
+    </article>
+    <article class="vos-dash-card vos-dash-side-card vos-threads-card" aria-labelledby="vos-threads-heading">
+      <div class="vos-dash-kicker">Open Threads</div>
+      <h3 id="vos-threads-heading">Open Threads</h3>
+      <div class="vos-thread-list">
+        {%- for thread in campaign.openThreads %}
+        <div class="vos-thread">
+          <span class="vos-thread-dot {{ thread.status }}" aria-hidden="true"></span>
+          <div class="vos-thread-question">
+            {{ thread.question }}
+            <span class="vos-thread-tag">{{ thread.status }} · {{ thread.tag }}</span>
           </div>
-          {%- endfor %}
         </div>
-      </article>
-    </div>
+        {%- endfor %}
+      </div>
+    </article>
+    <article class="vos-dash-card vos-inplay-card" aria-labelledby="vos-inplay-heading">
+      <div class="vos-dash-kicker">Currently In Play</div>
+      <h3 id="vos-inplay-heading">Currently In Play</h3>
+      <div class="vos-play-rail">
+        {%- for item in campaign.inPlay %}
+        <a class="vos-play-chip" href="{{ item.link }}">
+          <span class="vos-play-emblem" aria-hidden="true">{{ item.emblem }}</span>
+          <span class="vos-play-name">{{ item.name }}<small>{{ item.role }} · {{ item.kind }}</small></span>
+        </a>
+        {%- endfor %}
+      </div>
+    </article>
   </div>
 </section>
 

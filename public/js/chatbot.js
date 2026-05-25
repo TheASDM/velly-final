@@ -106,8 +106,9 @@ class LoreMasterChatbot {
             console.error('Chatbot container not found');
             return;
         }
+        const collapsedClass = this.isOpen ? '' : 'chatbot-collapsed';
         container.innerHTML = `
-            <div id="chatbot-widget" class="chatbot-collapsed">
+            <div id="chatbot-widget" class="${collapsedClass}">
                 <div class="chatbot-header">
                     <img src="${this.baseUrl}/images/loremaster192x192.png" alt="" class="chatbot-avatar-header">
                     <span>Enzo</span>
