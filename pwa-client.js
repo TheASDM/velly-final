@@ -11,6 +11,7 @@
     'Valentro',
     'DM',
   ];
+  let identityPromise = null;
 
   function isStandalone() {
     return window.matchMedia('(display-mode: standalone)').matches ||
@@ -43,8 +44,9 @@
   function ensureIdentity() {
     const existing = getStorage(PLAYER_KEY);
     if (existing) return Promise.resolve(existing);
+    if (identityPromise) return identityPromise;
 
-    return new Promise((resolve) => {
+    identityPromise = new Promise((resolve) => {
       const card = document.createElement('div');
       card.className = 'vos-identity-card';
       card.setAttribute('role', 'dialog');
@@ -62,6 +64,7 @@
         button.textContent = name;
         button.addEventListener('click', () => {
           setStorage(PLAYER_KEY, name);
+          identityPromise = null;
           removeNode(card);
           resolve(name);
           maybeShowPushPrompt();
@@ -71,6 +74,8 @@
 
       document.body.appendChild(card);
     });
+
+    return identityPromise;
   }
 
   async function getPushConfig() {

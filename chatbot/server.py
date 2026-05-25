@@ -73,6 +73,7 @@ ADMIN_TOKEN = os.environ.get("ADMIN_TOKEN", "").strip()
 VAPID_PUBLIC_KEY = os.environ.get("VAPID_PUBLIC_KEY", "").strip()
 VAPID_PRIVATE_KEY = os.environ.get("VAPID_PRIVATE_KEY", "").strip()
 VAPID_SUBJECT = os.environ.get("VAPID_SUBJECT", "mailto:dm@valleyofshadows.wiki").strip()
+RSVP_STATUSES = {"going", "maybe", "out"}
 
 # Style preset keys are stable strings sent from the UI; the corresponding
 # prompt prefix is prepended to the user prompt at generation time. Keep
@@ -239,6 +240,36 @@ def _run_app_migrations():
             conn.execute(
                 "INSERT INTO schema_migrations (name, applied_at) VALUES (?, ?)",
                 ("001_push_subscriptions", _utc_now_iso()),
+            )
+
+        if "002_dm_messages" not in done:
+            conn.execute("""
+                CREATE TABLE IF NOT EXISTS messages (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    title TEXT NOT NULL,
+                    body TEXT NOT NULL,
+                    created_at TEXT NOT NULL
+                )
+            """)
+            conn.execute(
+                "INSERT INTO schema_migrations (name, applied_at) VALUES (?, ?)",
+                ("002_dm_messages", _utc_now_iso()),
+            )
+
+        if "003_rsvps" not in done:
+            conn.execute("""
+                CREATE TABLE IF NOT EXISTS rsvps (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    event_id TEXT NOT NULL,
+                    player_name TEXT NOT NULL,
+                    status TEXT NOT NULL CHECK(status IN ('going', 'maybe', 'out')),
+                    updated_at TEXT NOT NULL,
+                    UNIQUE(event_id, player_name)
+                )
+            """)
+            conn.execute(
+                "INSERT INTO schema_migrations (name, applied_at) VALUES (?, ?)",
+                ("003_rsvps", _utc_now_iso()),
             )
 
 
@@ -1363,33 +1394,25 @@ def _subscription_info(row):
     }
 
 
-@app.route("/api/push/send", methods=["POST"])
-def push_send():
-    admin_error = _admin_error_response()
-    if admin_error:
-        return admin_error
-
+def _push_config_error():
     if send_webpush is None:
-        return jsonify({"error": "pywebpush is not installed on this server"}), 503
+        return "pywebpush is not installed on this server"
     if not VAPID_PUBLIC_KEY or not VAPID_PRIVATE_KEY:
-        return jsonify({"error": "VAPID keys are not configured on this server"}), 503
+        return "VAPID keys are not configured on this server"
+    return None
 
-    body = request.get_json(silent=True) or {}
-    title = body.get("title", "")
-    message = body.get("body", "")
-    url = body.get("url", "/")
 
-    if not isinstance(title, str) or not title.strip():
-        return jsonify({"error": "Missing notification title"}), 400
-    if not isinstance(message, str) or not message.strip():
-        return jsonify({"error": "Missing notification body"}), 400
-    if not isinstance(url, str) or not url.startswith("/"):
-        url = "/"
+def _app_url(value):
+    if not isinstance(value, str) or not value.startswith("/") or value.startswith("//"):
+        return "/"
+    return value[:300]
 
+
+def _fanout_push(conn, title, message, url):
     payload = json.dumps({
         "title": title.strip()[:120],
         "body": message.strip()[:500],
-        "url": url[:300],
+        "url": _app_url(url),
     })
 
     sent = 0
@@ -1397,51 +1420,260 @@ def push_send():
     pruned = 0
     errors = []
 
-    with _app_db() as conn:
-        rows = list(conn.execute("""
-            SELECT id, player_name, endpoint, p256dh, auth
-            FROM subscriptions
-            ORDER BY created_at ASC
-        """))
+    rows = list(conn.execute("""
+        SELECT id, player_name, endpoint, p256dh, auth
+        FROM subscriptions
+        ORDER BY created_at ASC
+    """))
 
-        for row in rows:
-            try:
-                send_webpush(
-                    subscription_info=_subscription_info(row),
-                    data=payload,
-                    vapid_private_key=VAPID_PRIVATE_KEY,
-                    vapid_claims={"sub": VAPID_SUBJECT},
-                    ttl=86400,
-                    timeout=15,
-                )
-                sent += 1
-            except WebPushException as exc:
-                failed += 1
-                response = getattr(exc, "response", None)
-                status_code = getattr(response, "status_code", None)
-                if status_code in (404, 410):
-                    conn.execute("DELETE FROM subscriptions WHERE id = ?", (row["id"],))
-                    pruned += 1
-                errors.append({
-                    "player_name": row["player_name"],
-                    "status": status_code,
-                    "error": str(exc)[:200],
-                })
-            except Exception as exc:
-                failed += 1
-                errors.append({
-                    "player_name": row["player_name"],
-                    "status": None,
-                    "error": str(exc)[:200],
-                })
+    for row in rows:
+        try:
+            send_webpush(
+                subscription_info=_subscription_info(row),
+                data=payload,
+                vapid_private_key=VAPID_PRIVATE_KEY,
+                vapid_claims={"sub": VAPID_SUBJECT},
+                ttl=86400,
+                timeout=15,
+            )
+            sent += 1
+        except WebPushException as exc:
+            failed += 1
+            response = getattr(exc, "response", None)
+            status_code = getattr(response, "status_code", None)
+            if status_code in (404, 410):
+                conn.execute("DELETE FROM subscriptions WHERE id = ?", (row["id"],))
+                pruned += 1
+            errors.append({
+                "player_name": row["player_name"],
+                "status": status_code,
+                "error": str(exc)[:200],
+            })
+        except Exception as exc:
+            failed += 1
+            errors.append({
+                "player_name": row["player_name"],
+                "status": None,
+                "error": str(exc)[:200],
+            })
 
-    return jsonify({
+    return {
         "ok": True,
         "attempted": len(rows),
         "sent": sent,
         "failed": failed,
         "pruned": pruned,
         "errors": errors[:10],
+    }
+
+
+@app.route("/api/push/send", methods=["POST"])
+def push_send():
+    admin_error = _admin_error_response()
+    if admin_error:
+        return admin_error
+
+    push_error = _push_config_error()
+    if push_error:
+        return jsonify({"error": push_error}), 503
+
+    body = request.get_json(silent=True) or {}
+    title = body.get("title", "")
+    message = body.get("body", "")
+    url = _app_url(body.get("url", "/"))
+
+    if not isinstance(title, str) or not title.strip():
+        return jsonify({"error": "Missing notification title"}), 400
+    if not isinstance(message, str) or not message.strip():
+        return jsonify({"error": "Missing notification body"}), 400
+
+    with _app_db() as conn:
+        result = _fanout_push(conn, title, message, url)
+
+    return jsonify(result)
+
+
+def _message_payload(row):
+    return {
+        "id": row["id"],
+        "title": row["title"],
+        "body": row["body"],
+        "created_at": row["created_at"],
+    }
+
+
+@app.route("/api/messages", methods=["GET", "POST"])
+def dm_messages():
+    if request.method == "GET":
+        try:
+            limit = int(request.args.get("limit", "5"))
+        except ValueError:
+            limit = 5
+        limit = max(1, min(limit, 20))
+
+        with _app_db() as conn:
+            rows = list(conn.execute("""
+                SELECT id, title, body, created_at
+                FROM messages
+                ORDER BY created_at DESC, id DESC
+                LIMIT ?
+            """, (limit,)))
+
+        return jsonify({"messages": [_message_payload(row) for row in rows]})
+
+    admin_error = _admin_error_response()
+    if admin_error:
+        return admin_error
+
+    push_error = _push_config_error()
+    if push_error:
+        return jsonify({"error": push_error}), 503
+
+    body = request.get_json(silent=True) or {}
+    title = body.get("title", "")
+    message = body.get("body", "")
+    url = _app_url(body.get("url", "/"))
+
+    if not isinstance(title, str) or not title.strip():
+        return jsonify({"error": "Missing message title"}), 400
+    if not isinstance(message, str) or not message.strip():
+        return jsonify({"error": "Missing message body"}), 400
+
+    title = title.strip()[:120]
+    message = message.strip()[:2000]
+    created_at = _utc_now_iso()
+
+    with _app_db() as conn:
+        cursor = conn.execute("""
+            INSERT INTO messages (title, body, created_at)
+            VALUES (?, ?, ?)
+        """, (title, message, created_at))
+        row = conn.execute("""
+            SELECT id, title, body, created_at
+            FROM messages
+            WHERE id = ?
+        """, (cursor.lastrowid,)).fetchone()
+        push_result = _fanout_push(conn, title, message, url)
+
+    return jsonify({
+        "ok": True,
+        "message": _message_payload(row),
+        "push": push_result,
+    }), 201
+
+
+def _rsvp_counts_and_responses(conn, event_id):
+    rows = list(conn.execute("""
+        SELECT player_name, status, updated_at
+        FROM rsvps
+        WHERE event_id = ?
+        ORDER BY player_name COLLATE NOCASE
+    """, (event_id,)))
+    counts = {"going": 0, "maybe": 0, "out": 0}
+    responses = []
+    for row in rows:
+        status = row["status"]
+        if status in counts:
+            counts[status] += 1
+        responses.append({
+            "player_name": row["player_name"],
+            "status": status,
+            "updated_at": row["updated_at"],
+        })
+    return counts, responses
+
+
+def _event_id_from_request(body=None):
+    body = body or {}
+    value = (
+        body.get("eventId")
+        or body.get("event_id")
+        or request.args.get("eventId")
+        or request.args.get("event_id")
+    )
+    if not isinstance(value, str) or not value.strip():
+        return None
+    return value.strip()[:100]
+
+
+def _player_name_from_request(body=None):
+    body = body or {}
+    value = (
+        body.get("name")
+        or body.get("playerName")
+        or body.get("player_name")
+        or request.args.get("name")
+        or request.args.get("playerName")
+        or request.args.get("player_name")
+    )
+    if not isinstance(value, str) or not value.strip():
+        return None
+    return value.strip()[:64]
+
+
+@app.route("/api/rsvp", methods=["GET", "POST"])
+def rsvp():
+    if request.method == "GET":
+        event_id = _event_id_from_request()
+        if not event_id:
+            return jsonify({"error": "Missing eventId"}), 400
+
+        player_name = _player_name_from_request()
+        with _app_db() as conn:
+            if player_name:
+                row = conn.execute("""
+                    SELECT status, updated_at
+                    FROM rsvps
+                    WHERE event_id = ? AND player_name = ?
+                """, (event_id, player_name)).fetchone()
+                return jsonify({
+                    "eventId": event_id,
+                    "playerName": player_name,
+                    "status": row["status"] if row else None,
+                    "updated_at": row["updated_at"] if row else None,
+                })
+
+            admin_error = _admin_error_response()
+            if admin_error:
+                return admin_error
+            counts, responses = _rsvp_counts_and_responses(conn, event_id)
+
+        return jsonify({
+            "eventId": event_id,
+            "counts": counts,
+            "responses": responses,
+        })
+
+    body = request.get_json(silent=True) or {}
+    event_id = _event_id_from_request(body)
+    player_name = _player_name_from_request(body)
+    status = body.get("status", "")
+
+    if not event_id:
+        return jsonify({"error": "Missing eventId"}), 400
+    if not player_name:
+        return jsonify({"error": "Missing player name"}), 400
+    if not isinstance(status, str) or status not in RSVP_STATUSES:
+        return jsonify({"error": "Invalid RSVP status"}), 400
+
+    updated_at = _utc_now_iso()
+    with _app_db() as conn:
+        conn.execute("""
+            INSERT INTO rsvps (event_id, player_name, status, updated_at)
+            VALUES (?, ?, ?, ?)
+            ON CONFLICT(event_id, player_name) DO UPDATE SET
+                status = excluded.status,
+                updated_at = excluded.updated_at
+        """, (event_id, player_name, status, updated_at))
+        counts, _responses = _rsvp_counts_and_responses(conn, event_id)
+
+    return jsonify({
+        "ok": True,
+        "eventId": event_id,
+        "playerName": player_name,
+        "status": status,
+        "updated_at": updated_at,
+        "counts": counts,
     })
 
 

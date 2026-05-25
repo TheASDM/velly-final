@@ -158,6 +158,7 @@ dateCreated: 2026-02-20T05:30:38.113Z
   display: grid;
   grid-template-columns: minmax(0, 1.25fr) minmax(360px, 0.85fr);
   grid-template-areas:
+    "story message"
     "story next"
     "inplay threads";
   gap: 1rem;
@@ -187,6 +188,8 @@ dateCreated: 2026-02-20T05:30:38.113Z
   grid-area: story;
   padding: 1.45rem 1.55rem 1.55rem;
 }
+.vos-message-card { grid-area: message; }
+.vos-message-card[hidden] { display: none; }
 .vos-next-card { grid-area: next; }
 .vos-threads-card { grid-area: threads; }
 .vos-dash-side-card {
@@ -299,6 +302,29 @@ dateCreated: 2026-02-20T05:30:38.113Z
   color: #b89048;
   font-size: 0.82rem;
   margin-top: 0.05rem;
+}
+.vos-message-title {
+  margin: 0.2rem 0 0.45rem;
+  color: var(--vos-cream);
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: clamp(1.1rem, 2vw, 1.35rem);
+  letter-spacing: 0.04em;
+  line-height: 1.18;
+}
+.vos-message-body {
+  margin: 0;
+  color: rgba(233,225,208,0.86);
+  font-size: 1.03rem;
+  line-height: 1.48;
+  white-space: pre-wrap;
+}
+.vos-message-meta {
+  margin-top: 0.75rem;
+  color: rgba(147,138,120,0.95);
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.56rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
 }
 .vos-thread-list {
   flex: 1 1 auto;
@@ -578,6 +604,7 @@ dateCreated: 2026-02-20T05:30:38.113Z
     grid-template-columns: 1fr;
     grid-template-areas:
       "story"
+      "message"
       "next"
       "threads"
       "inplay";
@@ -627,6 +654,12 @@ dateCreated: 2026-02-20T05:30:38.113Z
       <div class="vos-story-meta">Last played {{ campaign.latestSession.lastPlayed }} · updated {{ campaign.latestSession.updated }}</div>
       <p>{{ campaign.latestSession.recap }}</p>
       <a class="vos-story-read" href="{{ campaign.latestSession.link }}">Read full chronicle &rarr;</a>
+    </article>
+    <article class="vos-dash-card vos-dash-side-card vos-message-card" id="vos-message-card" aria-labelledby="vos-message-heading" hidden>
+      <h3 id="vos-message-heading">DM Message</h3>
+      <div class="vos-message-title" id="vos-message-title"></div>
+      <p class="vos-message-body" id="vos-message-body"></p>
+      <div class="vos-message-meta" id="vos-message-meta"></div>
     </article>
     <article class="vos-dash-card vos-dash-side-card vos-next-card" aria-labelledby="vos-next-heading">
       <h3 id="vos-next-heading">Next Gathering</h3>
@@ -679,3 +712,36 @@ dateCreated: 2026-02-20T05:30:38.113Z
 </section>
 
 </div>
+
+<script>
+(function () {
+  const card = document.getElementById('vos-message-card');
+  const title = document.getElementById('vos-message-title');
+  const body = document.getElementById('vos-message-body');
+  const meta = document.getElementById('vos-message-meta');
+  if (!card || !title || !body || !meta) return;
+
+  function formatDate(value) {
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return '';
+    return date.toLocaleString([], {
+      month: 'short',
+      day: 'numeric',
+      hour: 'numeric',
+      minute: '2-digit',
+    });
+  }
+
+  fetch('/api/messages?limit=1', { cache: 'no-store' })
+    .then((response) => response.ok ? response.json() : null)
+    .then((data) => {
+      const message = data && data.messages && data.messages[0];
+      if (!message) return;
+      title.textContent = message.title || 'DM Message';
+      body.textContent = message.body || '';
+      meta.textContent = formatDate(message.created_at);
+      card.hidden = false;
+    })
+    .catch(() => {});
+})();
+</script>

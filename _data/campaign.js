@@ -12,8 +12,10 @@ module.exports = {
   },
 
   nextGathering: {
+    eventId: "2026-05-30-cask-and-cube",
     date: "May 30, 2026",
     timeLocation: "The Cask and Cube / short campaign-character scene",
+    timefulUrl: "",
     notes: [
       "Bring something small to add to the tavern if you have it.",
       "Send 4-8 sentences about your character's typical day by May 28.",
