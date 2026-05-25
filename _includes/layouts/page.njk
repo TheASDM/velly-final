@@ -205,6 +205,7 @@
   .vos-page-shell:not(.vos-home-shell) > ul,
   .vos-page-shell:not(.vos-home-shell) > ol {
     padding-left: clamp(2rem, 2.8vw, 2.5rem);
+    list-style-position: outside;
   }
   .vos-page-shell:not(.vos-home-shell) > blockquote {
     color: rgba(232, 220, 200, 0.86);
@@ -236,6 +237,10 @@
     .vos-page-shell:not(.vos-home-shell) > ol,
     .vos-page-shell:not(.vos-home-shell) > blockquote {
       padding: 0.8rem 0.9rem;
+    }
+    .vos-page-shell:not(.vos-home-shell) > ul,
+    .vos-page-shell:not(.vos-home-shell) > ol {
+      padding-left: 2rem;
     }
     .vos-page-shell:not(.vos-home-shell) > div[style*="display: flex"][style*="gap: 2rem"] {
       display: block !important;
@@ -1179,6 +1184,32 @@
     border-color: rgba(212, 165, 116, 0.34);
     background: rgba(212, 165, 116, 0.07);
   }
+  .vos-is-wiki-page .vos-page-shell:not(.vos-home-shell) > ul,
+  .vos-is-wiki-page .vos-page-shell:not(.vos-home-shell) > ol {
+    padding-left: clamp(2.25rem, 3vw, 2.8rem);
+    list-style-position: outside;
+  }
+  .vos-is-wiki-page .vos-page-shell:not(.vos-home-shell) > ul li,
+  .vos-is-wiki-page .vos-page-shell:not(.vos-home-shell) > ol li {
+    margin: 0.35rem 0;
+    padding-left: 0.12rem;
+  }
+  .vos-is-wiki-page .vos-page-shell:not(.vos-home-shell) > ul li::marker,
+  .vos-is-wiki-page .vos-page-shell:not(.vos-home-shell) > ol li::marker {
+    color: rgba(232, 220, 200, 0.82);
+    font-size: 0.72em;
+  }
+  .vos-is-wiki-page .vos-page-shell:not(.vos-home-shell) > ul li > p,
+  .vos-is-wiki-page .vos-page-shell:not(.vos-home-shell) > ol li > p {
+    margin: 0.25rem 0;
+  }
+  .vos-is-wiki-page .vos-page-shell:not(.vos-home-shell) > ul li > ul,
+  .vos-is-wiki-page .vos-page-shell:not(.vos-home-shell) > ul li > ol,
+  .vos-is-wiki-page .vos-page-shell:not(.vos-home-shell) > ol li > ul,
+  .vos-is-wiki-page .vos-page-shell:not(.vos-home-shell) > ol li > ol {
+    margin-top: 0.35rem;
+    padding-left: 1.35rem;
+  }
 
   @media (min-width: 701px) and (max-width: 1023px) {
     .vos-is-wiki-page main.vos-content {
@@ -1231,6 +1262,18 @@
       padding: 0.78rem 0.82rem;
       border-radius: 8px;
       border-left-width: 1px;
+    }
+    .vos-is-wiki-page .vos-page-shell:not(.vos-home-shell) > ul,
+    .vos-is-wiki-page .vos-page-shell:not(.vos-home-shell) > ol {
+      padding-top: 0.78rem;
+      padding-right: 0.82rem;
+      padding-bottom: 0.78rem;
+      padding-left: 2.15rem;
+    }
+    .vos-is-wiki-page .vos-page-shell:not(.vos-home-shell) > ul li,
+    .vos-is-wiki-page .vos-page-shell:not(.vos-home-shell) > ol li {
+      margin: 0.42rem 0;
+      padding-left: 0.08rem;
     }
     .vos-is-index-page .vos-auto-index {
       padding: 0.95rem;
