@@ -31,11 +31,11 @@
   flex: 0 0 100%;
   min-width: 100%;
   display: grid;
-  grid-template-columns: minmax(220px, 0.9fr) minmax(0, 1.1fr);
-  gap: 1.15rem;
-  align-items: stretch;
+  grid-template-columns: minmax(180px, 0.34fr) minmax(0, 0.66fr);
+  gap: clamp(0.85rem, 2vw, 1.35rem);
+  align-items: center;
   width: 100%;
-  padding: 1rem;
+  padding: 0.72rem 0.9rem;
   border: 0;
   background: transparent;
   color: inherit;
@@ -48,6 +48,9 @@
 }
 .vos-gallery-slide-media {
   position: relative;
+  align-self: center;
+  width: min(100%, 18rem);
+  justify-self: start;
   border-radius: 6px;
   overflow: hidden;
   border: 1px solid rgba(201, 161, 74, 0.22);
@@ -58,7 +61,7 @@
   display: block;
   width: 100%;
   aspect-ratio: 1 / 1;
-  height: 100%;
+  height: auto;
   object-fit: cover;
 }
 .vos-gallery-slide-body {
@@ -66,21 +69,21 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding: 0.4rem 3.1rem 0.4rem 0.15rem;
+  padding: 0.35rem 3rem 0.35rem 0;
 }
 .vos-gallery-slide-caption {
   margin: 0;
   color: rgba(233, 225, 208, 0.9);
   font-family: 'Cormorant Garamond', 'Crimson Text', Georgia, serif;
   font-style: italic;
-  font-size: clamp(1rem, 1.7vw, 1.22rem);
-  line-height: 1.48;
+  font-size: clamp(0.98rem, 1.35vw, 1.12rem);
+  line-height: 1.42;
 }
 .vos-gallery-slide-tags {
   display: flex;
   flex-wrap: wrap;
   gap: 0.35rem;
-  margin-top: 0.9rem;
+  margin-top: 0.65rem;
 }
 .vos-gallery-tag {
   display: inline-flex;
@@ -99,7 +102,7 @@
   text-transform: uppercase;
 }
 .vos-gallery-slide-meta {
-  margin-top: 1rem;
+  margin-top: 0.72rem;
   color: rgba(147, 138, 120, 0.95);
   font-family: 'Cinzel', Georgia, serif;
   font-size: 0.58rem;
@@ -142,7 +145,7 @@
   display: flex;
   justify-content: center;
   gap: 0.42rem;
-  padding: 0 1rem 1rem;
+  padding: 0 1rem 0.72rem;
 }
 .vos-gallery-dot {
   width: 0.55rem;
@@ -275,11 +278,15 @@
     gap: 0.85rem;
     padding: 0.75rem;
   }
+  .vos-gallery-slide-media {
+    width: min(100%, 15rem);
+    justify-self: center;
+  }
   .vos-gallery-slide-body {
     padding: 0 0.25rem 0.25rem;
   }
   .vos-gallery-carousel-btn {
-    top: calc((100vw - 4rem) / 2);
+    top: min(8rem, calc((100vw - 4rem) / 2));
   }
   .vos-gallery-carousel-prev { left: 0.6rem; }
   .vos-gallery-carousel-next { right: 0.6rem; }
@@ -323,13 +330,110 @@
   let paused = false;
   let touchStartX = 0;
   let touchStartY = 0;
+  let titleAliases = new Map();
 
   function escapeText(value) {
     return String(value == null ? '' : value);
   }
 
+  function escapeRegExp(value) {
+    return String(value).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  }
+
+  function addTitleAlias(map, alias, canonical) {
+    const cleanAlias = String(alias || '').replace(/\s+/g, ' ').trim();
+    const cleanCanonical = String(canonical || '').replace(/\s+/g, ' ').trim();
+    if (!cleanAlias || !cleanCanonical) return;
+    if (cleanAlias.length < 3) return;
+    const key = cleanAlias.toLowerCase();
+    const existing = map.get(key);
+    if (!existing || cleanCanonical.length > existing.length) {
+      map.set(key, cleanCanonical);
+    }
+  }
+
+  function addTitleAliasesFromTitle(map, title, options) {
+    const opts = options || {};
+    const skipTitles = new Set(['Index', 'Characters', 'NPCs', 'Locations', 'Culture', 'Factions', 'Government', 'Lore', 'Maps']);
+    const base = String(title || '')
+      .split(/\s+[—-]\s+/)[0]
+      .replace(/\s+/g, ' ')
+      .trim();
+    if (!base || skipTitles.has(base)) return;
+
+    addTitleAlias(map, base, base);
+
+    const roleStripped = base.replace(/^(Master Artisan|Archmagister|Father|Mother-Abbot|Lord-Admiral|Guildmaster|Guild-Master|Lady|Lord)\s+/i, '');
+    addTitleAlias(map, roleStripped, roleStripped);
+
+    const words = base.match(/[A-Za-z0-9][A-Za-z0-9'’.-]*/g) || [];
+    const stop = new Set(['the', 'and', 'of', 'for', 'with', 'from', 'into', 'index']);
+    if (opts.wordAliases || words.length === 1) {
+      words.forEach((word) => {
+        const lower = word.toLowerCase();
+        if (word.length > 3 && !stop.has(lower)) addTitleAlias(map, word, word);
+      });
+    }
+    for (let size = 2; size <= Math.min(4, words.length); size += 1) {
+      for (let i = 0; i <= words.length - size; i += 1) {
+        const chunk = words.slice(i, i + size);
+        if (chunk.every((word) => stop.has(word.toLowerCase()))) continue;
+        const alias = chunk.join(' ');
+        addTitleAlias(map, alias, alias);
+      }
+    }
+  }
+
+  function loadTitleAliases() {
+    if (window.__vosCarouselTitleAliases) {
+      titleAliases = window.__vosCarouselTitleAliases;
+      return Promise.resolve();
+    }
+    return fetch('/images/sitemap.json')
+      .then((res) => {
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        return res.json();
+      })
+      .then((pages) => {
+        const map = new Map();
+        (Array.isArray(pages) ? pages : []).forEach((page) => {
+          const url = String(page.url || '');
+          if (!/^\/en\/Venturia\//.test(url)) return;
+          addTitleAliasesFromTitle(map, page.title, {
+            wordAliases: /\/Characters\//.test(url),
+          });
+        });
+        window.__vosCarouselTitleAliases = map;
+        titleAliases = map;
+      })
+      .catch(() => {
+        titleAliases = new Map();
+      });
+  }
+
+  function applyTitleCasing(text, extraNames) {
+    const aliases = new Map(titleAliases);
+    (extraNames || []).forEach((name) => addTitleAliasesFromTitle(aliases, name));
+    Array.from(aliases.entries())
+      .sort((a, b) => b[0].length - a[0].length)
+      .forEach(([alias, canonical]) => {
+        const pattern = new RegExp('(^|[^A-Za-z0-9])(' + escapeRegExp(alias) + ')(?=$|[^A-Za-z0-9])', 'gi');
+        text = text.replace(pattern, (match, prefix) => prefix + canonical);
+      });
+    return text;
+  }
+
+  function normalizePrompt(entry) {
+    let text = String(entry.prompt || '').replace(/\s+/g, ' ').trim();
+    if (!text) return '(no prompt recorded)';
+    text = applyTitleCasing(text, entry.grounded_in || []);
+    text = text.replace(/^([^A-Za-z0-9]*)([a-z])/, (match, prefix, first) => prefix + first.toUpperCase());
+    if (!/[.!?…]["')\]]?$/.test(text)) text += '.';
+    return text;
+  }
+
   function displayPrompt(entry) {
-    return entry.enhanced_prompt || entry.prompt || '(no prompt recorded)';
+    return normalizePrompt(entry);
   }
 
   function fmtRel(iso) {
@@ -489,7 +593,6 @@
   function openEntry(entry) {
     const displayEntry = Object.assign({}, entry, {
       prompt: displayPrompt(entry),
-      enhanced_prompt: null,
     });
     const event = new CustomEvent('vos:open-gallery-piece', {
       detail: displayEntry,
@@ -612,12 +715,15 @@
     }
   }, { passive: true });
 
-  fetch(apiBase + '/api/gallery?limit=' + encodeURIComponent(limit))
-    .then((res) => {
-      if (!res.ok) throw new Error('HTTP ' + res.status);
-      return res.json();
-    })
-    .then((data) => {
+  Promise.all([
+    fetch(apiBase + '/api/gallery?limit=' + encodeURIComponent(limit))
+      .then((res) => {
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        return res.json();
+      }),
+    loadTitleAliases(),
+  ])
+    .then(([data]) => {
       entries = (data.entries || [])
         .slice()
         .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
