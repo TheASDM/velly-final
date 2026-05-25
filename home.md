@@ -10,7 +10,19 @@ dateCreated: 2026-02-20T05:30:38.113Z
 
 <style>
 /* ─── Home-only styles. Scoped to .vos-home so they don't leak. ─── */
-.vos-home { margin: -2.25rem -1.75rem 0; }
+.vos-home {
+  --vos-home-wide: min(1440px, calc(100vw - 2rem));
+  position: relative;
+  left: 50%;
+  width: var(--vos-home-wide);
+  margin: -2.25rem 0 0;
+  transform: translateX(-50%);
+}
+@media (min-width: 1024px) {
+  .vos-home {
+    --vos-home-wide: min(1440px, calc(100vw - var(--vos-nav-w) - 3rem));
+  }
+}
 
 /* HERO — wide cinematic banner image (already includes the wordmark) ─ */
 .vos-home-hero {
@@ -18,13 +30,13 @@ dateCreated: 2026-02-20T05:30:38.113Z
   display: flex; flex-direction: column;
   align-items: center;
   text-align: center;
-  padding: 2.25rem 0 3rem;
+  padding: 1.8rem 0 1.45rem;
 }
 .vos-hero-banner {
   display: block;
   width: 100%;
-  max-width: 1280px;
-  height: auto;
+  height: 100%;
+  object-fit: cover;
   margin: 0 auto;
   box-shadow:
     0 20px 60px rgba(0,0,0,0.85),
@@ -34,23 +46,14 @@ dateCreated: 2026-02-20T05:30:38.113Z
 .vos-hero-banner-wrap {
   position: relative;
   width: 100%;
-  max-width: 1280px;
+  max-width: 1440px;
+  aspect-ratio: 2712 / 517;
   margin: 0 auto 2.25rem;
 }
 .vos-hero-banner-wrap::after {
   content: '';
   position: absolute; left: 6%; right: 6%; bottom: -10px; height: 1px;
   background: linear-gradient(90deg, transparent, rgba(212,165,116,0.6), transparent);
-}
-.vos-hero-tag {
-  font-family: 'IM Fell English', Georgia, serif;
-  font-style: italic;
-  font-size: clamp(1.05rem, 1.6vw, 1.3rem);
-  color: rgba(232, 220, 200, 0.8);
-  letter-spacing: 0.08em;
-  margin: 1rem 0 2.5rem 0;
-  max-width: 38rem;
-  padding: 0 1.5rem;
 }
 .vos-hero-divider {
   width: 320px; max-width: 80%;
@@ -103,6 +106,298 @@ dateCreated: 2026-02-20T05:30:38.113Z
   font-weight: 400;
   font-size: 1.05rem; letter-spacing: 0;
   margin-left: 0.1rem;
+}
+
+/* Living dashboard ─────────────────────────────────────────────────── */
+.vos-home-dashboard {
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0;
+}
+.vos-home-sec-head {
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+  margin: 2.75rem 0 1.1rem;
+}
+.vos-home-sec-head h2 {
+  margin: 0;
+  padding: 0;
+  border: none;
+  color: #e8cd84;
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.92rem;
+  font-weight: 700;
+  letter-spacing: 0.24em;
+  line-height: 1.2;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.vos-home-sec-head h2::after { content: none; }
+.vos-home-sec-head .vos-home-sec-line {
+  flex: 1 1 auto;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(201,161,74,0.5), transparent);
+}
+.vos-home-sec-head .vos-home-sec-more {
+  flex: 0 0 auto;
+  color: rgba(232,205,132,0.75);
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.65rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  border-bottom: none;
+  white-space: nowrap;
+}
+.vos-home-sec-head .vos-home-sec-more:hover {
+  color: var(--vos-cream);
+  border-bottom: none;
+}
+.vos-dash {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(360px, 0.85fr);
+  gap: 1rem;
+  align-items: start;
+}
+.vos-dash-primary {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.vos-dash-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+.vos-dash-card {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(201,161,74,0.22);
+  border-radius: 8px;
+  background:
+    linear-gradient(180deg, rgba(18,16,23,0.95), rgba(8,7,11,0.98)),
+    radial-gradient(ellipse 80% 60% at 50% 0%, rgba(201,161,74,0.07), transparent 70%);
+  box-shadow: 0 18px 46px rgba(0,0,0,0.62);
+}
+.vos-dash-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
+}
+.vos-story-card {
+  padding: 1.45rem 1.55rem 1.55rem;
+}
+.vos-dash-side-card {
+  padding: 1.1rem 1.2rem 1.2rem;
+}
+.vos-dash-kicker {
+  color: rgba(184,144,72,0.95);
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+.vos-story-card .vos-card-heading {
+  margin: 0.35rem 0 0.65rem;
+  padding: 0;
+  border: none;
+  color: #e8cd84;
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.9rem;
+  letter-spacing: 0.18em;
+  line-height: 1.25;
+  text-transform: uppercase;
+}
+.vos-story-card .vos-card-heading::after { content: none; }
+.vos-story-card h3 {
+  margin: 0.45rem 0 0.35rem;
+  color: var(--vos-cream);
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: clamp(1.35rem, 2.2vw, 2rem);
+  letter-spacing: 0.04em;
+  line-height: 1.15;
+}
+.vos-story-meta {
+  margin-bottom: 0.95rem;
+  color: rgba(147,138,120,0.95);
+  font-family: 'Cormorant Garamond', 'Crimson Text', Georgia, serif;
+  font-style: italic;
+  font-size: 0.98rem;
+}
+.vos-story-card p {
+  margin: 0 0 1.25rem;
+  color: rgba(233,225,208,0.84);
+  font-family: 'Cormorant Garamond', 'Crimson Text', Georgia, serif;
+  font-size: 1.08rem;
+  line-height: 1.58;
+}
+.vos-story-read {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.25rem;
+  padding: 0.48rem 0.95rem;
+  border: 1px solid rgba(201,161,74,0.32);
+  border-radius: 999px;
+  background: rgba(201,161,74,0.05);
+  color: #e8cd84;
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+.vos-story-read:hover {
+  color: var(--vos-cream);
+  border-color: rgba(232,205,132,0.8);
+  background: rgba(201,161,74,0.12);
+}
+.vos-dash-side-card h3,
+.vos-inplay-card h3 {
+  margin: 0.35rem 0 0.75rem;
+  color: #e8cd84;
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.9rem;
+  letter-spacing: 0.18em;
+  line-height: 1.25;
+  text-transform: uppercase;
+}
+.vos-next-date {
+  color: var(--vos-cream);
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: clamp(1.35rem, 2.7vw, 1.8rem);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  line-height: 1.1;
+}
+.vos-next-where {
+  margin: 0.25rem 0 0.85rem;
+  color: rgba(147,138,120,0.95);
+  font-family: 'Cormorant Garamond', 'Crimson Text', Georgia, serif;
+  font-style: italic;
+  font-size: 0.98rem;
+}
+.vos-next-notes {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.vos-next-notes li {
+  display: flex;
+  gap: 0.65rem;
+  padding: 0.55rem 0 0;
+  border-top: 1px solid rgba(201,161,74,0.11);
+  color: rgba(233,225,208,0.82);
+  line-height: 1.45;
+}
+.vos-next-notes li::before {
+  content: '\2726';
+  flex: 0 0 auto;
+  color: #b89048;
+  font-size: 0.82rem;
+  margin-top: 0.05rem;
+}
+.vos-thread-list {
+  display: flex;
+  flex-direction: column;
+}
+.vos-thread {
+  display: flex;
+  gap: 0.75rem;
+  padding: 0.72rem 0;
+  border-top: 1px solid rgba(201,161,74,0.11);
+}
+.vos-thread:first-of-type { border-top: none; padding-top: 0; }
+.vos-thread-dot {
+  flex: 0 0 auto;
+  width: 0.56rem;
+  height: 0.56rem;
+  border-radius: 50%;
+  margin-top: 0.48rem;
+  background: #c9a14a;
+  box-shadow: 0 0 10px currentColor;
+}
+.vos-thread-dot.hot { background: #b07732; color: #b07732; }
+.vos-thread-dot.pending { background: #c9a14a; color: #c9a14a; }
+.vos-thread-dot.slow { background: #647d8d; color: #647d8d; }
+.vos-thread-question {
+  color: rgba(233,225,208,0.84);
+  font-size: 1rem;
+  line-height: 1.42;
+}
+.vos-thread-tag {
+  display: block;
+  margin-top: 0.28rem;
+  color: rgba(147,138,120,0.92);
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.56rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+.vos-inplay-card {
+  padding: 1.05rem 1.15rem 1rem;
+}
+.vos-play-rail {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  overflow-x: visible;
+  padding: 0.1rem 0 0.35rem;
+}
+.vos-play-chip {
+  flex: 1 1 13rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  min-width: 0;
+  padding: 0.48rem 0.85rem 0.48rem 0.5rem;
+  border: 1px solid rgba(201,161,74,0.25);
+  border-radius: 999px;
+  background: rgba(255,255,255,0.025);
+  color: var(--vos-cream);
+  text-decoration: none;
+}
+.vos-play-chip:hover {
+  border-color: rgba(232,205,132,0.8);
+  background: rgba(201,161,74,0.08);
+  color: var(--vos-cream);
+}
+.vos-play-emblem {
+  flex: 0 0 auto;
+  width: 1.9rem;
+  height: 1.9rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(201,161,74,0.25);
+  border-radius: 50%;
+  background: radial-gradient(circle at 40% 35%, rgba(232,205,132,0.24), rgba(107,85,42,0.42));
+  color: #e8cd84;
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+.vos-play-name {
+  font-family: 'Cormorant Garamond', 'Crimson Text', Georgia, serif;
+  font-size: 1.02rem;
+  line-height: 1.1;
+}
+.vos-play-name small {
+  display: block;
+  margin-top: 0.18rem;
+  color: rgba(147,138,120,0.92);
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.54rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.vos-home-studio {
+  margin-bottom: 0.5rem;
 }
 
 /* Filigree divider — the comedy/tragedy mask piece. */
@@ -237,49 +532,6 @@ dateCreated: 2026-02-20T05:30:38.113Z
   .vos-tile-arrow { font-size: 0.55rem; letter-spacing: 0.28em; margin-top: 0.4rem; }
 }
 
-/* LATEST POSTS PANEL ─────────────────────────────────────────────────── */
-.vos-latest {
-  margin: 2rem auto 0;
-  background:
-    linear-gradient(180deg, rgba(13,11,17,0.65), rgba(7,6,10,0.85)),
-    rgba(139,0,0,0.06);
-  border: 1px solid rgba(212,165,116,0.22);
-  border-radius: 6px;
-  box-shadow: 0 12px 36px rgba(0,0,0,0.55);
-  padding: 0;
-}
-.vos-latest-row {
-  padding: 1rem 1.5rem;
-  display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap;
-}
-.vos-latest-row + .vos-latest-row { border-top: 1px solid rgba(139,115,85,0.18); }
-.vos-latest-kicker {
-  font-size: 0.6rem;
-  letter-spacing: 0.4em;
-  text-transform: uppercase;
-  color: var(--vos-gold-dim);
-  flex-shrink: 0;
-  min-width: 6rem;
-  font-family: 'Cinzel', Georgia, serif;
-}
-.vos-latest-link {
-  flex: 1; min-width: 200px;
-  font-size: 1.05rem;
-  color: var(--vos-gold-bright);
-  text-decoration: none;
-  font-style: italic;
-  font-family: 'Crimson Text', Georgia, serif;
-  border-bottom: none;
-}
-.vos-latest-link:hover { color: var(--vos-cream); }
-.vos-latest-row + .vos-latest-row .vos-latest-link { color: rgba(212,165,116,0.65); }
-.vos-latest-date {
-  font-size: 0.78rem;
-  color: rgba(139,115,85,0.7);
-  font-family: 'Cinzel', Georgia, serif;
-  letter-spacing: 0.1em;
-}
-
 /* CLOSING ────────────────────────────────────────────────────────────── */
 .vos-home-closing {
   max-width: 700px;
@@ -313,9 +565,27 @@ dateCreated: 2026-02-20T05:30:38.113Z
 }
 
 @media (max-width: 768px) {
-  .vos-home { margin: -2.25rem -1.75rem 0; }
-  .vos-home-hero { padding: 1.25rem 0 2rem; }
-  .vos-hero-tag { margin-bottom: 2rem; }
+  .vos-home {
+    --vos-home-wide: calc(100vw - 0.75rem);
+    margin: -2.25rem 0 0;
+  }
+  .vos-home-hero { padding: 1.25rem 0 1.35rem; }
+  .vos-dash { grid-template-columns: 1fr; }
+  .vos-dash-primary { gap: 1rem; }
+  .vos-home-sec-head {
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 0.55rem 0.85rem;
+  }
+  .vos-home-sec-head .vos-home-sec-line {
+    order: 3;
+    flex-basis: 100%;
+  }
+  .vos-story-card,
+  .vos-dash-side-card,
+  .vos-inplay-card {
+    padding: 1.1rem 1.05rem 1.2rem;
+  }
   .vos-home-section h2 { font-size: 1.1rem; }
   .vos-tiles { grid-template-columns: 1fr 1fr; }
   .vos-tile-title { font-size: 1.15rem; }
@@ -333,96 +603,76 @@ dateCreated: 2026-02-20T05:30:38.113Z
 <!-- ── HERO ─────────────────────────────────────────────────────────── -->
 <section class="vos-home-hero">
   <div class="vos-hero-banner-wrap">
-    <img src="/images/hero1.png" alt="Valley of Shadows" class="vos-hero-banner">
-  </div>
-  <p class="vos-hero-tag">A living chronicle of the masked city of Venturia and the fog-bound valley beyond it — written between sessions, remembered together.</p>
-</section>
-
-<!-- ── TILES (directly under the hero) ──────────────────────────────── -->
-<section class="vos-home-section">
-  <div class="vos-tiles">
-
-  <a class="vos-tile" href="/en/Venturia/index">
-    <div class="vos-tile-art" style="background-image: url('/images/locations/vallombrosa.png')"></div>
-    <div class="vos-tile-shade"></div>
-    <div class="vos-tile-body">
-      <span class="vos-tile-kicker">The World</span>
-      <span class="vos-tile-title">The Valley of Shadows</span>
-      <span class="vos-tile-desc">A city of tiers, masks, and fog. Locations, factions, the Autumn Council, and every name you'll meet at the table.</span>
-      <span class="vos-tile-arrow">Explore →</span>
-    </div>
-  </a>
-
-  <a class="vos-tile" href="/en/Archive/index">
-    <div class="vos-tile-art" style="background-image: url('/images/factions/veil-court.png')"></div>
-    <div class="vos-tile-shade"></div>
-    <div class="vos-tile-body">
-      <span class="vos-tile-kicker">The Long Thread</span>
-      <span class="vos-tile-title">Session Chronicles</span>
-      <span class="vos-tile-desc">The bound chronicle — every recap stitched into the ongoing tale of the Valley.</span>
-      <span class="vos-tile-arrow">Read →</span>
-    </div>
-  </a>
-
-  <a class="vos-tile" href="/en/Updates/index">
-    <div class="vos-tile-art" style="background-image: url('/images/character-art/orabella.png')"></div>
-    <div class="vos-tile-shade"></div>
-    <div class="vos-tile-body">
-      <span class="vos-tile-kicker">Between Sessions</span>
-      <span class="vos-tile-title">Updates</span>
-      <span class="vos-tile-desc">Bi-weekly notes, scheduling, and what's coming up at the next table.</span>
-      <span class="vos-tile-arrow">Catch up →</span>
-    </div>
-  </a>
-
-  <a class="vos-tile" href="/en/Articles/using-enzo">
-    <div class="vos-tile-art" style="background-image: url('/images/locations/covenant-archive.png')"></div>
-    <div class="vos-tile-shade"></div>
-    <div class="vos-tile-body">
-      <span class="vos-tile-kicker">The Loremaster</span>
-      <span class="vos-tile-title">Enzo Readme</span>
-      <span class="vos-tile-desc">How to talk to Enzo — the chatbot that knows the city and the rules.</span>
-      <span class="vos-tile-arrow">Learn →</span>
-    </div>
-  </a>
-
+    <img src="/images/hero3.png" alt="Valley of Shadows" class="vos-hero-banner">
   </div>
 </section>
 
-<img src="/images/masqueradeline.png" alt="" class="vos-home-divider" aria-hidden="true">
-
-<!-- ── LATEST CHRONICLES (auto-updated by publish.js) ───────────────── -->
-<section class="vos-home-section">
-  <h2>Latest Chronicles</h2>
-
-<!-- LATEST_POST -->
-<div class="vos-latest">
-<div class="vos-latest-row">
-<span class="vos-latest-kicker">Latest Post</span>
-<a class="vos-latest-link" href="/en/Updates/campaign-update-4">Campaign Update #4 — 5/21/2026 →</a>
-<span class="vos-latest-date">May 21, 2026</span>
-</div>
-<div class="vos-latest-row">
-<span class="vos-latest-kicker"></span>
-<a class="vos-latest-link" href="/en/Updates/campaign-update-3">Campaign Update #3 — 4/5/2026 →</a>
-<span class="vos-latest-date">April 5, 2026</span>
-</div>
-<div class="vos-latest-row">
-<span class="vos-latest-kicker"></span>
-<a class="vos-latest-link" href="/en/Updates/campaign-update-2">Bi-Weekly Campaign Update #2 — Feb 25 thru Mar 11 →</a>
-<span class="vos-latest-date">February 28, 2026</span>
-</div>
-</div>
-<!-- /LATEST_POST -->
-
+<!-- ── LIVING DASHBOARD ─────────────────────────────────────────────── -->
+<section class="vos-home-dashboard" aria-label="Campaign dashboard">
+  <div class="vos-dash">
+    <div class="vos-dash-primary">
+      <article class="vos-dash-card vos-story-card" aria-labelledby="vos-story-heading">
+        <div class="vos-dash-kicker">{{ campaign.latestSession.number }} · {{ campaign.latestSession.arc }}</div>
+        <h2 id="vos-story-heading" class="vos-card-heading">The Story So Far</h2>
+        <h3>{{ campaign.latestSession.title }}</h3>
+        <div class="vos-story-meta">Last played {{ campaign.latestSession.lastPlayed }} · updated {{ campaign.latestSession.updated }}</div>
+        <p>{{ campaign.latestSession.recap }}</p>
+        <a class="vos-story-read" href="{{ campaign.latestSession.link }}">Read full chronicle &rarr;</a>
+      </article>
+      <article class="vos-dash-card vos-inplay-card" aria-labelledby="vos-inplay-heading">
+        <div class="vos-dash-kicker">Currently In Play</div>
+        <h3 id="vos-inplay-heading">Currently In Play</h3>
+        <div class="vos-play-rail">
+          {%- for item in campaign.inPlay %}
+          <a class="vos-play-chip" href="{{ item.link }}">
+            <span class="vos-play-emblem" aria-hidden="true">{{ item.emblem }}</span>
+            <span class="vos-play-name">{{ item.name }}<small>{{ item.role }} · {{ item.kind }}</small></span>
+          </a>
+          {%- endfor %}
+        </div>
+      </article>
+    </div>
+    <div class="vos-dash-stack">
+      <article class="vos-dash-card vos-dash-side-card" aria-labelledby="vos-next-heading">
+        <div class="vos-dash-kicker">Next Gathering</div>
+        <h3 id="vos-next-heading">Next Gathering</h3>
+        <div class="vos-next-date">{{ campaign.nextGathering.date }}</div>
+        <div class="vos-next-where">{{ campaign.nextGathering.timeLocation }}</div>
+        <ul class="vos-next-notes">
+          {%- for note in campaign.nextGathering.notes %}
+          <li>{{ note }}</li>
+          {%- endfor %}
+        </ul>
+      </article>
+      <article class="vos-dash-card vos-dash-side-card" aria-labelledby="vos-threads-heading">
+        <div class="vos-dash-kicker">Open Threads</div>
+        <h3 id="vos-threads-heading">Open Threads</h3>
+        <div class="vos-thread-list">
+          {%- for thread in campaign.openThreads %}
+          <div class="vos-thread">
+            <span class="vos-thread-dot {{ thread.status }}" aria-hidden="true"></span>
+            <div class="vos-thread-question">
+              {{ thread.question }}
+              <span class="vos-thread-tag">{{ thread.status }} · {{ thread.tag }}</span>
+            </div>
+          </div>
+          {%- endfor %}
+        </div>
+      </article>
+    </div>
+  </div>
 </section>
 
-<!-- ── CLOSING ──────────────────────────────────────────────────────── -->
-<section class="vos-home-closing">
-  <h2>The Codex</h2>
-  <div>The Valley of Shadows Codex is the living record of our campaign — an ongoing dark fantasy chronicle set in the masked city of <strong>Venturia</strong> and the fog-bound valley of <strong>Vallombrosa</strong>.</div>
-  <div style="margin-top: 1rem;">Browse session recaps, world lore, house rules, and character resources. Everything that happens at the table finds its way here.</div>
-  <blockquote>The fog remembers everything. Whether it tells you is another matter.</blockquote>
+<!-- ── FRESH FROM THE STUDIO ───────────────────────────────────────── -->
+<section class="vos-home-dashboard vos-home-studio" aria-labelledby="vos-studio-heading">
+  <div class="vos-home-sec-head">
+    <h2 id="vos-studio-heading">Fresh From The Studio</h2>
+    <span class="vos-home-sec-line"></span>
+    <a class="vos-home-sec-more" href="/en/Tools/art/">Open the Art Studio &rarr;</a>
+  </div>
+  {% set carouselLimit = 5 %}
+  {% set carouselLabel = "Fresh from the shared Art Studio gallery" %}
+  {% include "partials/gallery-carousel.njk" %}
 </section>
 
 </div>

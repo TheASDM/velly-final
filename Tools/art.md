@@ -754,6 +754,15 @@ Generate campaign art with Enzo's image model and contribute to the shared playe
 </section>
 
 <div class="vos-art-gallery-head">
+  <h2>Featured / Recent</h2>
+  <div class="vos-art-gallery-count">Latest shared pieces</div>
+</div>
+
+{% set carouselLimit = 5 %}
+{% set carouselLabel = "Featured recent shared gallery images" %}
+{% include "partials/gallery-carousel.njk" %}
+
+<div class="vos-art-gallery-head">
   <h2>Shared Gallery</h2>
   <div class="vos-art-gallery-count" id="vos-art-gallery-count">Loading…</div>
 </div>
@@ -1009,6 +1018,11 @@ Generate campaign art with Enzo's image model and contribute to the shared playe
     lightImg.src = '';
     currentLightboxEntry = null;
   }
+  document.addEventListener('vos:open-gallery-piece', (evt) => {
+    if (!evt.detail) return;
+    evt.preventDefault();
+    openLightbox(evt.detail);
+  });
   lightDelete.addEventListener('click', () => {
     if (currentLightboxEntry) deleteEntry(currentLightboxEntry, lightDelete);
   });
