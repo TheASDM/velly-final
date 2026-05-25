@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'vallombrosa-pwa-v2';
+const CACHE_VERSION = 'vallombrosa-pwa-v3';
 const PRECACHE = `${CACHE_VERSION}-precache`;
 const PAGES = `${CACHE_VERSION}-pages`;
 const ASSETS = `${CACHE_VERSION}-assets`;
@@ -22,7 +22,14 @@ const APP_SHELL = [
   '/images/smalltitle.png',
   '/images/topnav.png',
   '/images/masqueradebackground.png',
-  '/images/masqueradeline.png'
+  '/images/masqueradeline.png',
+  '/images/loremaster192x192.png',
+  '/images/loremaster5e192x192.png',
+  '/images/loremaster5eDM192x192.png',
+  '/images/loremasterDM192x192.png',
+  '/images/loremasterRocky192x192.png',
+  '/images/loremasterYasQueen192x192.png',
+  '/images/loremasterfabio192x192.png'
 ];
 
 function isApiRequest(url) {
