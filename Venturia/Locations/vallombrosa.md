@@ -8,13 +8,24 @@ editor: markdown
 dateCreated: 2026-05-23T00:00:00.000Z
 ---
 
-<div style="margin: 0 0 2rem; border-radius: 6px; overflow: hidden; box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6); border: 1px solid rgba(139, 115, 85, 0.35);">
-<img src="/images/locations/vallombrosa.png" alt="Vallombrosa" style="width: 100%; height: auto; display: block;">
+<div style="display: flex; gap: 2rem; align-items: flex-start; margin: 0 0 2.5rem; padding: 1.5rem 1.75rem; background: linear-gradient(135deg, rgba(20, 18, 24, 0.55) 0%, rgba(36, 28, 18, 0.4) 100%); border: 1px solid rgba(139, 115, 85, 0.35); border-radius: 6px; box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6); flex-wrap: wrap;">
+
+<div style="flex: 1; min-width: 240px;">
+<div style="font-family: 'Cinzel', Georgia, serif; font-size: 2rem; letter-spacing: 0.08em; color: #d4a574; line-height: 1.1; margin-bottom: 0.75rem; text-transform: uppercase;">Vallombrosa</div>
+<div style="height: 1px; background: linear-gradient(90deg, rgba(212, 165, 116, 0.7), rgba(139, 115, 85, 0.2) 60%, transparent); margin-bottom: 1.25rem;"></div>
+
+<div style="font-family: Georgia, serif; font-size: 0.95rem; color: #e8dcc8; line-height: 1.85;">
+<div><span style="color: #8b7355; letter-spacing: 0.18em; text-transform: uppercase; font-size: 0.7rem; font-weight: 600;">Tier</span> &nbsp;&middot;&nbsp; Outside the city</div>
+<div><span style="color: #8b7355; letter-spacing: 0.18em; text-transform: uppercase; font-size: 0.7rem; font-weight: 600;">Status</span> &nbsp;&middot;&nbsp; Forbidden</div>
+</div>
+<div style="margin-top: 1.25rem; padding-left: 1rem; border-left: 2px solid rgba(212, 165, 116, 0.4); font-style: italic; color: rgba(212, 165, 116, 0.9); font-family: 'IM Fell English', Georgia, serif; font-size: 1rem;">"The valley of shadows."</div>
 </div>
 
-# Vallombrosa
+<div style="flex-shrink: 0;">
+<img src="/images/locations/vallombrosa.png" alt="Vallombrosa" style="width: 280px; aspect-ratio: 4 / 3; object-fit: cover; max-width: 100%; border-radius: 4px; box-shadow: 0 10px 36px rgba(0, 0, 0, 0.8); border: 1px solid rgba(139, 115, 85, 0.5);">
+</div>
 
-**Tier:** Outside the city &nbsp;|&nbsp; **Status:** Forbidden &nbsp;|&nbsp; *"The valley of shadows."*
+</div>
 
 The fog-bound valley west of Venturia, sealed off from the rest of the island for a thousand years. What was once the great di Errante estate — manor, vineyards, gardens, private harbor — has been lost behind a wall of supernatural fog that ignores wind and weather and never lifts. The land within is dead: nothing grows, no animals live there, the soil is ash and the water is still. People who cross the boundary do not come back.
 

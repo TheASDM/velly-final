@@ -42,7 +42,7 @@
   }
 
   *, *::before, *::after { box-sizing: border-box; }
-  html, body { margin: 0; padding: 0; background: var(--vos-bg-deep); color: var(--vos-text-body); }
+  html, body { margin: 0; padding: 0; background: var(--vos-bg-deep); color: var(--vos-text-body); overflow-x: hidden; }
 
   /* Themed scrollbars */
   * { scrollbar-width: thin; scrollbar-color: rgba(139, 115, 85, 0.45) transparent; }
@@ -87,6 +87,7 @@
 
   /* ── Typography ──────────────────────────────────────────────────────── */
   h1, h2 { font-family: 'Cinzel', Georgia, serif; color: var(--vos-gold-bright); letter-spacing: 0.06em; line-height: 1.2; }
+  h1, h2, h3 { overflow-wrap: anywhere; }
   h1 {
     font-size: 2.4rem; margin: 2rem 0 1.25rem;
     padding-bottom: 0.75rem;
@@ -127,6 +128,7 @@
   main.vos-content {
     width: 100%;
     max-width: 1440px;
+    min-width: 0;
     margin: 0 auto;
     padding: clamp(1rem, 2vw, 1.8rem) clamp(0.75rem, 2vw, 1.5rem) 7rem;
     position: relative;
@@ -135,6 +137,8 @@
 
   .vos-page-shell {
     width: 100%;
+    max-width: 100%;
+    min-width: 0;
     margin: 0 auto;
     padding: clamp(1.25rem, 2.5vw, 2.35rem);
     border: 1px solid rgba(201, 161, 74, 0.22);
@@ -170,6 +174,7 @@
   .vos-page-shell:not(.vos-home-shell) > blockquote {
     width: 100%;
     max-width: none;
+    overflow-wrap: anywhere;
     padding: clamp(0.85rem, 1.4vw, 1.15rem) clamp(1rem, 1.8vw, 1.4rem);
     border: 1px solid rgba(201, 161, 74, 0.14);
     border-left: 2px solid rgba(201, 161, 74, 0.34);
@@ -186,6 +191,57 @@
   .vos-page-shell:not(.vos-home-shell) > blockquote {
     color: rgba(232, 220, 200, 0.86);
     font-family: 'IM Fell English', Georgia, serif;
+  }
+
+  @media (max-width: 700px) {
+    h1 {
+      font-size: 1.85rem;
+      letter-spacing: 0;
+      line-height: 1.12;
+    }
+    h2 {
+      font-size: 1.35rem;
+      letter-spacing: 0;
+    }
+    h3 {
+      letter-spacing: 0;
+    }
+    main.vos-content {
+      padding-left: 0.75rem;
+      padding-right: 3rem;
+    }
+    .vos-page-shell {
+      padding: 1rem;
+    }
+    .vos-page-shell:not(.vos-home-shell) > p,
+    .vos-page-shell:not(.vos-home-shell) > ul,
+    .vos-page-shell:not(.vos-home-shell) > ol,
+    .vos-page-shell:not(.vos-home-shell) > blockquote {
+      padding: 0.8rem 0.9rem;
+    }
+    .vos-page-shell:not(.vos-home-shell) > div[style*="display: flex"][style*="gap: 2rem"] {
+      display: block !important;
+      gap: 1.1rem !important;
+      padding: 1.1rem !important;
+    }
+    .vos-page-shell:not(.vos-home-shell) > div[style*="display: flex"][style*="gap: 2rem"] > div:first-child {
+      flex-basis: 100% !important;
+      min-width: 0 !important;
+    }
+    .vos-page-shell:not(.vos-home-shell) > div[style*="display: flex"][style*="gap: 2rem"] > div:first-child > div:first-child {
+      font-size: 1.45rem !important;
+      letter-spacing: 0 !important;
+      overflow-wrap: anywhere;
+    }
+    .vos-page-shell:not(.vos-home-shell) > div[style*="display: flex"][style*="gap: 2rem"] > div:last-child {
+      width: 100%;
+      margin-top: 1rem;
+    }
+    .vos-page-shell:not(.vos-home-shell) > div[style*="display: flex"][style*="gap: 2rem"] > div:last-child img {
+      width: 100% !important;
+      max-height: 230px;
+      object-fit: cover;
+    }
   }
 
   /* ── Top bar ──────────────────────────────────────────────────────────
