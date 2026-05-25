@@ -8,6 +8,10 @@ editor: markdown
 dateCreated: 2026-05-22T00:00:00.000Z
 ---
 
+<div style="margin: 0 0 2rem; border-radius: 6px; overflow: hidden; box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6); border: 1px solid rgba(139, 115, 85, 0.35);">
+<img src="/images/lore/legends-of-vallombrosa.png" alt="Legends of Vallombrosa" style="width: 100%; height: auto; display: block;">
+</div>
+
 # The Legends of Vallombrosa
 
 **Type:** Folklore &amp; popular legend &nbsp;|&nbsp; **Subject:** Vallombrosa &nbsp;|&nbsp; *"Something bad definitely happened. The details? Who knows."*

@@ -8,6 +8,10 @@ editor: markdown
 dateCreated: 2026-02-21T06:38:52.389Z
 ---
 
+<div style="margin: 0 0 2rem; border-radius: 6px; overflow: hidden; box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6); border: 1px solid rgba(139, 115, 85, 0.35);">
+<img src="/images/articles/using-ai-to-develop-your-character.png" alt="Using AI to Develop Your Character" style="width: 100%; height: auto; display: block;">
+</div>
+
 # Using AI to Develop Your Character
 
 > *This article was written collaboratively by Claude (an AI assistant) and Dustin, your DM. The way it came to exist is itself an example of the principles it teaches — Dustin provided the core ideas, structure, and voice, while Claude helped organize and articulate them. It was built through conversation, with Dustin steering throughout.*

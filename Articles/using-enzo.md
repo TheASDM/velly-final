@@ -8,6 +8,10 @@ editor: markdown
 dateCreated: 2026-05-22T00:00:00.000Z
 ---
 
+<div style="margin: 0 0 2rem; border-radius: 6px; overflow: hidden; box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6); border: 1px solid rgba(139, 115, 85, 0.35);">
+<img src="/images/articles/using-enzo.png" alt="Using Enzo, the Loremaster" style="width: 100%; height: auto; display: block;">
+</div>
+
 # Using Enzo, the Loremaster
 
 Enzo is the codex's resident scholar — a chatbot who has read every published page of this wiki and can answer questions about Venturia, its people, its factions, the campaign so far, and D&D 5e rules. He lives at **[loremaster.valleyofshadows.wiki](https://loremaster.valleyofshadows.wiki)** as a standalone page (installable as an app on your phone) and is also embedded as a widget on every codex page.

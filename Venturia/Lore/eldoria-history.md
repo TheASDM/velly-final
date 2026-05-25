@@ -8,6 +8,10 @@ editor: markdown
 dateCreated: 2026-05-22T00:00:00.000Z
 ---
 
+<div style="margin: 0 0 2rem; border-radius: 6px; overflow: hidden; box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6); border: 1px solid rgba(139, 115, 85, 0.35);">
+<img src="/images/lore/eldoria-history.png" alt="Pre-Great Reunion History of Eldoria" style="width: 100%; height: auto; display: block;">
+</div>
+
 # Pre-Great Reunion History of Eldoria
 
 **Type:** World history &nbsp;|&nbsp; **Era:** Before the Great Reunion &nbsp;|&nbsp; *"Five thousand years sealed behind the Shroud."*

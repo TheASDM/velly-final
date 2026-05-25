@@ -8,6 +8,10 @@ editor: markdown
 dateCreated: 2026-02-20T06:38:47.723Z
 ---
 
+<div style="margin: 0 0 2rem; border-radius: 6px; overflow: hidden; box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6); border: 1px solid rgba(139, 115, 85, 0.35);">
+<img src="/images/articles/what-im-working.png" alt="What I'm Working On" style="width: 100%; height: auto; display: block;">
+</div>
+
 <h2 style="font-size: 1.75rem; color: #dc2626; margin-top: 2.5rem; margin-bottom: 1rem; font-weight: 600;">Why I'm Sharing This</h2>
 <p style="font-size: 1.1rem; font-style: italic; background: rgba(185, 28, 28, 0.15); padding: 1.5rem; border-left: 4px solid #b91c1c; margin-bottom: 2rem; border-radius: 4px;">I wanted to put some of my current DMing goals on the wiki so you know what I'm trying to do at the table. These are things I'm actively working on, not things I've mastered. Sharing this might help explain some of my choices, and it also gives you a clearer way to give feedback if something is or isn't landing.</p>
 

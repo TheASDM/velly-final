@@ -8,6 +8,10 @@ editor: markdown
 dateCreated: 2026-02-27T00:00:02.000Z
 ---
 
+<div style="margin: 0 0 2rem; border-radius: 6px; overflow: hidden; box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6); border: 1px solid rgba(139, 115, 85, 0.35);">
+<img src="/images/masquerade-forms/fey.png" alt="Car's Masquerade Forms: Fey" style="width: 100%; height: auto; display: block;">
+</div>
+
 # Car's Masquerade Forms: Fey
 
 *← Back to [Car: Masquerade Forms](/en/Venturia/College-of-the-Masquerade-Bard/car-masquerade-forms)*

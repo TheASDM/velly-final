@@ -8,6 +8,10 @@ editor: markdown
 dateCreated: 2026-05-25T00:00:00.000Z
 ---
 
+<div style="margin: 0 0 2rem; border-radius: 6px; overflow: hidden; box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6); border: 1px solid rgba(139, 115, 85, 0.35);">
+<img src="/images/culture/tragedy-of-vallombrosa.png" alt="The Tragedy of Vallombrosa" style="width: 100%; height: auto; display: block;">
+</div>
+
 # The Tragedy of Vallombrosa
 
 **Type:** Annual performance &nbsp;|&nbsp; **Season:** [The Autumn Masquerade](/en/Venturia/Culture/autumn-masquerade) &nbsp;|&nbsp; **Home:** [The Amaranth Theater](/en/Venturia/Locations/amaranth-theater)
