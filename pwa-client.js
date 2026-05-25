@@ -41,12 +41,13 @@
     return output;
   }
 
-  function ensureIdentity() {
+  function ensureIdentity(options = {}) {
     const existing = getStorage(PLAYER_KEY);
-    if (existing) return Promise.resolve(existing);
+    if (existing && !options.force) return Promise.resolve(existing);
     if (identityPromise) return identityPromise;
 
     identityPromise = new Promise((resolve) => {
+      removeNode(document.querySelector('.vos-identity-card'));
       const card = document.createElement('div');
       card.className = 'vos-identity-card';
       card.setAttribute('role', 'dialog');
@@ -189,12 +190,52 @@
     document.body.appendChild(card);
   }
 
+  function enhanceWikiLinkedLists() {
+    const shells = document.querySelectorAll('.vos-is-wiki-page .vos-page-shell:not(.vos-home-shell)');
+    shells.forEach((shell) => {
+      shell.querySelectorAll(':scope > ul, :scope > ol').forEach((list) => {
+        const items = Array.from(list.children).filter((item) => item.matches('li'));
+        if (items.length < 2) return;
+
+        const linkedItems = items.filter((item) => item.querySelector('a[href]'));
+        const mostlyLinks = linkedItems.length === items.length ||
+          (linkedItems.length >= 3 && linkedItems.length / items.length >= 0.7);
+        if (!mostlyLinks) return;
+
+        list.classList.add('vos-linked-row-list');
+        items.forEach((item) => {
+          const firstLink = item.querySelector('a[href]');
+          if (!firstLink) return;
+
+          item.classList.add('vos-linked-row');
+          item.setAttribute('role', 'link');
+          item.setAttribute('tabindex', '0');
+          item.addEventListener('click', (event) => {
+            if (event.target.closest('a, button, input, textarea, select, label')) return;
+            window.location.href = firstLink.href;
+          });
+          item.addEventListener('keydown', (event) => {
+            if (event.target !== item || (event.key !== 'Enter' && event.key !== ' ')) return;
+            event.preventDefault();
+            window.location.href = firstLink.href;
+          });
+        });
+      });
+    });
+  }
+
   window.VOS_PWA = {
     getPlayerName: () => getStorage(PLAYER_KEY),
     ensureIdentity,
+    openIdentitySettings: () => ensureIdentity({ force: true }),
   };
 
   window.addEventListener('DOMContentLoaded', () => {
+    enhanceWikiLinkedLists();
+    const profileButton = document.getElementById('vos-profile-button');
+    if (profileButton) {
+      profileButton.addEventListener('click', () => ensureIdentity({ force: true }));
+    }
     ensureIdentity();
     maybeSyncExistingSubscription();
     maybeShowPushPrompt();

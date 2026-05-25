@@ -20,7 +20,7 @@ dateCreated: 2026-02-20T05:30:38.113Z
 }
 @media (min-width: 1024px) {
   .vos-home {
-    --vos-home-wide: min(1440px, calc(100vw - var(--vos-nav-w) - 3rem));
+    --vos-home-wide: min(1440px, calc(100vw - 3rem));
   }
 }
 
@@ -189,7 +189,8 @@ dateCreated: 2026-02-20T05:30:38.113Z
   padding: 1.45rem 1.55rem 1.55rem;
 }
 .vos-message-card { grid-area: message; }
-.vos-message-card[hidden] { display: none; }
+.vos-message-card[hidden],
+.vos-dash-card[hidden] { display: none !important; }
 .vos-next-card { grid-area: next; }
 .vos-threads-card { grid-area: threads; }
 .vos-dash-side-card {

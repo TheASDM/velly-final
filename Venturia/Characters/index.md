@@ -6,20 +6,27 @@ date: 2026-05-23T00:00:00.000Z
 tags: characters, index, navigation
 editor: markdown
 dateCreated: 2026-05-23T00:00:00.000Z
+autoIndex: false
 ---
 
-# Characters
+<section class="vos-section-header">
+  <p class="vos-section-kicker">Cast</p>
+  <h1 class="vos-section-title">Characters</h1>
+</section>
 
-The cast of the Vallombrosa campaign — those at the table and those whose stories shape the world around them.
-
----
-
-## [Player Characters](/en/Venturia/Characters/PCs)
-
-The seven adventurers whose stories play out in Venturia.
-
----
-
-## [NPCs](/en/Venturia/Characters/NPCs)
-
-The Autumn Council, the Verdigris and di Errante families, the city's master craftspeople, and the legends still spoken of a thousand years on.
+<div class="vos-row-chip-grid">
+  <a class="vos-row-chip" href="/en/Venturia/Characters/PCs/">
+    <span>
+      <span class="vos-row-chip-title">Player Characters</span>
+      <span class="vos-row-chip-meta">The seven adventurers whose stories play out in Venturia.</span>
+    </span>
+    <span class="vos-row-chip-badge" aria-hidden="true">PCs</span>
+  </a>
+  <a class="vos-row-chip" href="/en/Venturia/Characters/NPCs/">
+    <span>
+      <span class="vos-row-chip-title">NPCs</span>
+      <span class="vos-row-chip-meta">Council members, families, artisans, performers, patrons, and legends.</span>
+    </span>
+    <span class="vos-row-chip-badge" aria-hidden="true">NPCs</span>
+  </a>
+</div>
