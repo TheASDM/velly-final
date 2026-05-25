@@ -1,0 +1,30 @@
+{%- set currentUrl = page.url or "/" -%}
+{%- set isHome = currentUrl == "/" -%}
+{%- set isCalendar = currentUrl == "/calendar/" -%}
+{%- set isStudio = currentUrl == "/en/Tools/art/" -%}
+{%- set isEnzo = currentUrl == "/enzo/" -%}
+{%- set isWiki = currentUrl.startsWith("/en/") and not isStudio -%}
+<nav class="vos-app-nav" aria-label="App navigation">
+  <div class="vos-app-nav-inner">
+    <a class="vos-app-tab{% if isHome %} is-active{% endif %}" href="/" {% if isHome %}aria-current="page"{% endif %}>
+      <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M3 10.8 12 3l9 7.8"/><path d="M5.5 9.5V21h13V9.5"/><path d="M9.5 21v-6h5v6"/></svg>
+      <span>Home</span>
+    </a>
+    <a class="vos-app-tab{% if isCalendar %} is-active{% endif %}" href="/calendar/" {% if isCalendar %}aria-current="page"{% endif %}>
+      <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M7 3v3"/><path d="M17 3v3"/><path d="M4 8h16"/><rect x="4" y="5" width="16" height="16" rx="2"/><path d="M8 12h3"/><path d="M13 12h3"/><path d="M8 16h3"/></svg>
+      <span>Calendar</span>
+    </a>
+    <a class="vos-app-tab{% if isWiki %} is-active{% endif %}" href="/en/Venturia/" {% if isWiki %}aria-current="page"{% endif %}>
+      <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v16H6.5A2.5 2.5 0 0 0 4 21.5z"/><path d="M4 5.5v16"/><path d="M8 7h8"/><path d="M8 11h6"/></svg>
+      <span>Wiki</span>
+    </a>
+    <a class="vos-app-tab{% if isStudio %} is-active{% endif %}" href="/en/Tools/art/" {% if isStudio %}aria-current="page"{% endif %}>
+      <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 3a9 9 0 0 0 0 18h1.2a1.8 1.8 0 0 0 1.1-3.2 1.4 1.4 0 0 1 .9-2.5H17a4 4 0 0 0 4-4C21 6.7 17 3 12 3z"/><circle cx="7.7" cy="10" r="1"/><circle cx="10.5" cy="7.3" r="1"/><circle cx="14" cy="7.4" r="1"/><circle cx="16.7" cy="10.2" r="1"/></svg>
+      <span>Studio</span>
+    </a>
+    <a class="vos-app-tab{% if isEnzo %} is-active{% endif %}" href="/enzo/" {% if isEnzo %}aria-current="page"{% endif %}>
+      <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 3c4.5 0 8 3 8 7.2 0 2.7-1.5 5-3.8 6.2L16.5 21l-4.1-3.5H12c-4.5 0-8-3-8-7.3C4 6 7.5 3 12 3z"/><path d="M8.5 10h7"/><path d="M8.5 13h4"/></svg>
+      <span>Enzo</span>
+    </a>
+  </div>
+</nav>

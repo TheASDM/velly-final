@@ -2,14 +2,18 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>{{ title or "Valley of Shadows — Codex" }}{% if title %} · Valley of Shadows{% endif %}</title>
 {% if description %}<meta name="description" content="{{ description }}">{% endif %}
 {% if tags %}<meta name="keywords" content="{{ tags }}">{% endif %}
 
 <link rel="icon" type="image/png" href="/images/masklogosquare.png">
-<link rel="apple-touch-icon" href="/images/masklogosquare.png">
-<meta name="theme-color" content="#0d0b11">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+<meta name="theme-color" content="#07060a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Vallombrosa">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -39,6 +43,7 @@
 
     --vos-nav-w: 300px;
     --vos-top-h: 68px;
+    --vos-app-nav-h: 72px;
   }
 
   *, *::before, *::after { box-sizing: border-box; }
@@ -130,7 +135,10 @@
     max-width: 1440px;
     min-width: 0;
     margin: 0 auto;
-    padding: clamp(1rem, 2vw, 1.8rem) clamp(0.75rem, 2vw, 1.5rem) 7rem;
+    padding:
+      clamp(1rem, 2vw, 1.8rem)
+      clamp(0.75rem, 2vw, 1.5rem)
+      calc(7rem + var(--vos-app-nav-h) + env(safe-area-inset-bottom));
     position: relative;
     z-index: 1;
   }
@@ -994,10 +1002,167 @@
   .vos-auto-index li { padding: 0.15rem 0; }
   .vos-auto-index li a { font-size: 1rem; }
 
+  /* ── PWA app rail + prompts ───────────────────────────────────────── */
+  .vos-app-nav {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1150;
+    min-height: calc(var(--vos-app-nav-h) + env(safe-area-inset-bottom));
+    padding:
+      0.45rem
+      max(0.8rem, env(safe-area-inset-right))
+      calc(0.45rem + env(safe-area-inset-bottom))
+      max(0.8rem, env(safe-area-inset-left));
+    border-top: 1px solid rgba(212, 165, 116, 0.24);
+    background:
+      linear-gradient(180deg, rgba(13, 11, 17, 0.88), rgba(7, 6, 10, 0.98)),
+      radial-gradient(ellipse 70% 80% at 50% 100%, rgba(212, 165, 116, 0.07), transparent 70%);
+    box-shadow: 0 -12px 34px rgba(0, 0, 0, 0.58);
+    backdrop-filter: blur(16px);
+  }
+  @media (min-width: 1024px) {
+    .vos-app-nav { left: var(--vos-nav-w); }
+  }
+  .vos-app-nav-inner {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 0.25rem;
+    width: min(560px, 100%);
+    margin: 0 auto;
+  }
+  .vos-app-tab {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-width: 0;
+    min-height: 54px;
+    gap: 0.18rem;
+    padding: 0.35rem 0.2rem;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    color: rgba(212, 199, 173, 0.72);
+    font-family: 'Cinzel', Georgia, serif;
+    font-size: 0.68rem;
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: 0;
+    text-decoration: none;
+  }
+  .vos-app-tab:hover {
+    color: var(--vos-cream);
+    border-bottom-color: transparent;
+    background: rgba(212, 165, 116, 0.07);
+  }
+  .vos-app-tab.is-active {
+    color: var(--vos-gold-bright);
+    border-color: rgba(212, 165, 116, 0.32);
+    background: rgba(212, 165, 116, 0.1);
+  }
+  .vos-app-tab svg {
+    width: 22px;
+    height: 22px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .vos-app-tab span {
+    display: block;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  @media (max-width: 380px) {
+    .vos-app-tab { font-size: 0.62rem; }
+    .vos-app-tab svg { width: 20px; height: 20px; }
+  }
+
+  .vos-pwa-card,
+  .vos-pwa-update {
+    position: fixed;
+    left: max(0.8rem, env(safe-area-inset-left));
+    right: max(0.8rem, env(safe-area-inset-right));
+    bottom: calc(var(--vos-app-nav-h) + env(safe-area-inset-bottom) + 0.85rem);
+    z-index: 1300;
+    max-width: 520px;
+    margin: 0 auto;
+    border: 1px solid rgba(212, 165, 116, 0.36);
+    border-radius: 8px;
+    background: rgba(10, 8, 14, 0.97);
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.68);
+    color: var(--vos-text-body);
+    padding: 0.9rem;
+  }
+  .vos-pwa-card[hidden],
+  .vos-pwa-update[hidden] {
+    display: none;
+  }
+  .vos-pwa-card-title,
+  .vos-pwa-update-title {
+    margin: 0 0 0.2rem;
+    color: var(--vos-gold-bright);
+    font-family: 'Cinzel', Georgia, serif;
+    font-size: 0.9rem;
+    font-weight: 700;
+    letter-spacing: 0;
+  }
+  .vos-pwa-card-text,
+  .vos-pwa-update-text {
+    margin: 0;
+    color: var(--vos-text);
+    font-size: 0.95rem;
+    line-height: 1.35;
+  }
+  .vos-pwa-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    margin-top: 0.8rem;
+  }
+  .vos-pwa-actions button {
+    min-height: 40px;
+    border-radius: 6px;
+    border: 1px solid rgba(212, 165, 116, 0.42);
+    background: rgba(212, 165, 116, 0.08);
+    color: var(--vos-gold-bright);
+    font-family: 'Cinzel', Georgia, serif;
+    font-size: 0.76rem;
+    font-weight: 700;
+    letter-spacing: 0;
+    cursor: pointer;
+  }
+  .vos-pwa-actions button:hover {
+    color: var(--vos-cream);
+    background: rgba(212, 165, 116, 0.14);
+  }
+  .vos-pwa-actions .vos-pwa-primary {
+    padding: 0.45rem 0.8rem;
+  }
+  .vos-pwa-actions .vos-pwa-dismiss {
+    width: 40px;
+    padding: 0;
+    font-size: 1.2rem;
+  }
+
+  .vos-enzo-page-panel,
+  .vos-offline-panel {
+    max-width: 740px;
+    margin: 0 auto;
+  }
+
   /* ── Enzo widget container fix ────────────────────────────────────────
      Float above the sidebar, but pin it firmly bottom-right so it can't
      drift over the centered logo on the home page. */
-  #chatbot-container { z-index: 1200 !important; }
+  #chatbot-container {
+    z-index: 1200 !important;
+    bottom: calc(var(--vos-app-nav-h) + env(safe-area-inset-bottom) + 1rem) !important;
+  }
 
   /* When Enzo is collapsed to the pill, the OUTER container shrinks too
      so the floating layer doesn't reserve a 560px box. */
@@ -1069,7 +1234,7 @@
   }
 </style>
 </head>
-<body>
+<body class="{% if page.url == '/enzo/' %}vos-is-enzo-page{% endif %}">
 
 <div class="vos-backdrop" aria-hidden="true"></div>
 
@@ -1156,6 +1321,25 @@
   {%- endif -%}
 </main>
 
+<div class="vos-pwa-card" id="vos-pwa-install" hidden role="region" aria-label="Install Vallombrosa">
+  <div class="vos-pwa-card-title" id="vos-pwa-install-title">Install Vallombrosa</div>
+  <p class="vos-pwa-card-text" id="vos-pwa-install-text">Add this app to your home screen.</p>
+  <div class="vos-pwa-actions">
+    <button class="vos-pwa-primary" id="vos-pwa-install-action" type="button">Install</button>
+    <button class="vos-pwa-dismiss" id="vos-pwa-install-dismiss" type="button" aria-label="Dismiss install prompt">×</button>
+  </div>
+</div>
+
+<div class="vos-pwa-update" id="vos-pwa-update" hidden role="status" aria-live="polite">
+  <div class="vos-pwa-update-title">New version</div>
+  <p class="vos-pwa-update-text">New version — tap to refresh.</p>
+  <div class="vos-pwa-actions">
+    <button class="vos-pwa-primary" id="vos-pwa-refresh" type="button">Refresh</button>
+  </div>
+</div>
+
+{% include "partials/app-bottom-nav.njk" %}
+
 <!-- ── Enzo floating chat widget ──────────────────────────────────────
      Production: load the real CSS + JS from this static site so a wiki
      publish updates the embedded widget with the rest of the codex.
@@ -1169,6 +1353,7 @@
 <script>
 (function () {
   const isLocal = ['localhost', '127.0.0.1', ''].includes(location.hostname);
+  const isEnzoPage = location.pathname.replace(/\/$/, '') === '/enzo';
 
   // Always include the chatbot stylesheet — local stub uses it too.
   const cssHref = '/css/chatbot.css';
@@ -1180,6 +1365,9 @@
   if (!isLocal) {
     // Production path: wire the real chatbot.
     window.LOREMASTER_API_URL = 'https://loremaster.valleyofshadows.wiki/api/chat';
+    if (isEnzoPage) {
+      try { localStorage.setItem('loreMasterOpen', 'true'); } catch (e) {}
+    }
     const js = document.createElement('script');
     js.src = '/js/chatbot.js';
     js.defer = true;
@@ -1197,7 +1385,7 @@
     try { localStorage.setItem('loreMasterOpen', JSON.stringify(v)); } catch (e) {}
   }
 
-  const startOpen = readPref() === true;
+  const startOpen = isEnzoPage || readPref() === true;
   const c = document.getElementById('chatbot-container');
   c.innerHTML = `
     <div id="chatbot-widget" class="${startOpen ? '' : 'chatbot-collapsed'}">
@@ -1256,6 +1444,149 @@
   }
   const t = setInterval(() => { if (swap()) clearInterval(t); }, 100);
   setTimeout(() => clearInterval(t), 10000);
+})();
+</script>
+
+<!-- ── PWA install + service worker update flow ─────────────────────── -->
+<script>
+(function () {
+  const installCard = document.getElementById('vos-pwa-install');
+  const installTitle = document.getElementById('vos-pwa-install-title');
+  const installText = document.getElementById('vos-pwa-install-text');
+  const installAction = document.getElementById('vos-pwa-install-action');
+  const installDismiss = document.getElementById('vos-pwa-install-dismiss');
+  const updateCard = document.getElementById('vos-pwa-update');
+  const refreshButton = document.getElementById('vos-pwa-refresh');
+  const INSTALL_DISMISSED = 'vos.pwa.installDismissed';
+  let deferredInstallPrompt = null;
+  let waitingWorker = null;
+  const hadControllerAtLoad = !!(navigator.serviceWorker && navigator.serviceWorker.controller);
+  let reloadAfterControllerChange = false;
+
+  function isStandalone() {
+    return window.matchMedia('(display-mode: standalone)').matches ||
+      window.navigator.standalone === true;
+  }
+
+  function isIOS() {
+    return /iphone|ipad|ipod/i.test(window.navigator.userAgent) ||
+      (window.navigator.platform === 'MacIntel' && window.navigator.maxTouchPoints > 1);
+  }
+
+  function wasDismissed() {
+    try { return localStorage.getItem(INSTALL_DISMISSED) === '1'; } catch (e) { return false; }
+  }
+
+  function setDismissed() {
+    try { localStorage.setItem(INSTALL_DISMISSED, '1'); } catch (e) {}
+  }
+
+  function showInstallCard(mode) {
+    if (!installCard || isStandalone() || wasDismissed()) return;
+    if (mode === 'ios') {
+      installTitle.textContent = 'Install Vallombrosa';
+      installText.textContent = 'Open Share, then choose Add to Home Screen.';
+      installAction.textContent = 'Got It';
+    } else if (mode === 'android') {
+      installTitle.textContent = 'Install Vallombrosa';
+      installText.textContent = 'Add this app to your home screen.';
+      installAction.textContent = 'Install';
+    } else {
+      installTitle.textContent = 'Install Vallombrosa';
+      installText.textContent = 'Add this app from your browser menu.';
+      installAction.textContent = 'Got It';
+    }
+    installCard.hidden = false;
+  }
+
+  function hideInstallCard() {
+    if (installCard) installCard.hidden = true;
+  }
+
+  window.addEventListener('beforeinstallprompt', (event) => {
+    event.preventDefault();
+    deferredInstallPrompt = event;
+    showInstallCard('android');
+  });
+
+  if (installAction) {
+    installAction.addEventListener('click', async () => {
+      if (deferredInstallPrompt) {
+        deferredInstallPrompt.prompt();
+        await deferredInstallPrompt.userChoice.catch(() => null);
+        deferredInstallPrompt = null;
+      }
+      setDismissed();
+      hideInstallCard();
+    });
+  }
+
+  if (installDismiss) {
+    installDismiss.addEventListener('click', () => {
+      setDismissed();
+      hideInstallCard();
+    });
+  }
+
+  window.addEventListener('DOMContentLoaded', () => {
+    if (!isStandalone() && !wasDismissed() && isIOS()) {
+      showInstallCard('ios');
+    }
+  });
+
+  function showUpdatePrompt(worker) {
+    waitingWorker = worker || waitingWorker;
+    if (updateCard) updateCard.hidden = false;
+  }
+
+  if (refreshButton) {
+    refreshButton.addEventListener('click', () => {
+      if (waitingWorker) {
+        reloadAfterControllerChange = true;
+        waitingWorker.postMessage({ type: 'SKIP_WAITING' });
+      } else {
+        window.location.reload();
+      }
+    });
+  }
+
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', async () => {
+      try {
+        const registration = await navigator.serviceWorker.register('/sw.js', { scope: '/' });
+
+        function watchWorker(worker) {
+          if (!worker) return;
+          worker.addEventListener('statechange', () => {
+            if (worker.state === 'installed' && navigator.serviceWorker.controller) {
+              showUpdatePrompt(worker);
+            }
+          });
+        }
+
+        watchWorker(registration.installing);
+        if (registration.waiting && navigator.serviceWorker.controller) {
+          showUpdatePrompt(registration.waiting);
+        }
+        registration.addEventListener('updatefound', () => {
+          watchWorker(registration.installing);
+        });
+
+        navigator.serviceWorker.addEventListener('message', (event) => {
+          if (event.data && event.data.type === 'VOS_SW_UPDATED' && hadControllerAtLoad) {
+            showUpdatePrompt(registration.waiting);
+          }
+        });
+
+        navigator.serviceWorker.addEventListener('controllerchange', () => {
+          if (!reloadAfterControllerChange) return;
+          window.location.reload();
+        });
+      } catch (error) {
+        console.warn('Service worker registration failed', error);
+      }
+    });
+  }
 })();
 </script>
 
