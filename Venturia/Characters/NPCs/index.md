@@ -54,6 +54,7 @@ Names from the legend of Vallombrosa, a thousand years past. The story the city 
 
 - **[Aurelio Volante](/en/Venturia/Characters/NPCs/aurelio-volante)** — Mask collector and merchant, [Volante & Associates](/en/Venturia/Factions/volante-associates)
 - **[Celina Cross](/en/Venturia/Characters/NPCs/celina-cross)** — Star performer of the Amaranth Theater
+- **[Professor Emiliana Sarto](/en/Venturia/Characters/NPCs/emiliana-sarto)** — VAVA faculty; Venturia's foremost scholar of Vallombrosa
 - **[Garl Glittergold](/en/Venturia/Characters/NPCs/garl-glittergold)** — Chief deity of gnomes; Roxy's divine patron
 - **[Maruk Grommarg](/en/Venturia/Characters/NPCs/maruk-grommarg)** — A missing Fog Warden; Noname's fiancé
 - **[Strider](/en/Venturia/Characters/NPCs/strider)** — Gardener-mentor in the Tiered Gardens; Valentro's teacher in the way of the leaf
