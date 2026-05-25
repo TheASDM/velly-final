@@ -166,6 +166,13 @@
     background: transparent;
     box-shadow: none;
   }
+  .vos-wiki-home-shell {
+    padding: 0;
+    border: none;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+  }
   .vos-page-shell:not(.vos-home-shell) > h1:first-child { margin-top: 0; }
   .vos-page-shell:not(.vos-home-shell) > h1::after {
     background: rgba(12, 10, 15, 0.98);
@@ -1025,6 +1032,126 @@
   .vos-auto-index li { padding: 0.15rem 0; }
   .vos-auto-index li a { font-size: 1rem; }
 
+  /* ── Wiki app reading/index surface ───────────────────────────────── */
+  .vos-is-wiki-page main.vos-content {
+    max-width: 1320px;
+  }
+  .vos-is-wiki-page .vos-page-shell:not(.vos-home-shell) {
+    border-color: rgba(212, 165, 116, 0.2);
+  }
+  .vos-is-wiki-page table {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .vos-is-wiki-page .vos-page-shell:not(.vos-home-shell) > p:first-of-type {
+    color: rgba(232, 220, 200, 0.88);
+    font-size: clamp(1rem, 1.4vw, 1.08rem);
+  }
+  .vos-is-index-page .vos-auto-index {
+    margin-top: clamp(1rem, 2vw, 1.35rem);
+  }
+  .vos-is-index-page .vos-auto-index-title {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+  }
+  .vos-is-index-page .vos-auto-index-title::before {
+    content: '✦';
+    color: var(--vos-gold-dim);
+    font-size: 0.9rem;
+  }
+  .vos-is-index-page .vos-auto-index .vos-auto-sub {
+    margin: 0;
+    min-width: 0;
+    padding: 0.9rem;
+    border: 1px solid rgba(212, 165, 116, 0.16);
+    border-radius: 8px;
+    background: rgba(7, 6, 10, 0.38);
+  }
+  .vos-is-index-page .vos-auto-index {
+    display: grid;
+    gap: 0.85rem;
+  }
+  .vos-is-index-page .vos-auto-index > h2 {
+    margin-bottom: 0;
+  }
+  .vos-is-index-page .vos-auto-index .vos-auto-sub > h3 {
+    margin: 0 0 0.65rem;
+    font-size: 0.88rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+  .vos-is-index-page .vos-auto-index .vos-auto-sub > h3 a {
+    color: var(--vos-gold-bright);
+  }
+  .vos-is-index-page .vos-auto-index ul {
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr));
+    gap: 0.4rem;
+  }
+  .vos-is-index-page .vos-auto-index li a {
+    display: block;
+    min-height: 38px;
+    padding: 0.45rem 0.55rem;
+    border: 1px solid rgba(212, 165, 116, 0.1);
+    border-radius: 6px;
+    background: rgba(13, 11, 17, 0.48);
+    color: rgba(232, 220, 200, 0.82);
+    font-size: 0.92rem;
+    line-height: 1.25;
+  }
+  .vos-is-index-page .vos-auto-index li a:hover {
+    color: var(--vos-gold-bright);
+    border-color: rgba(212, 165, 116, 0.34);
+    background: rgba(212, 165, 116, 0.07);
+  }
+
+  @media (min-width: 701px) and (max-width: 1023px) {
+    .vos-is-wiki-page main.vos-content {
+      padding-left: max(1.15rem, env(safe-area-inset-left));
+      padding-right: max(1.15rem, env(safe-area-inset-right));
+    }
+    .vos-is-wiki-page .vos-page-shell:not(.vos-home-shell) {
+      padding: 1.35rem;
+    }
+    .vos-is-index-page .vos-auto-index {
+      padding: 1.15rem;
+    }
+  }
+
+  @media (max-width: 700px) {
+    .vos-is-wiki-page main.vos-content {
+      padding-left: max(0.75rem, env(safe-area-inset-left));
+      padding-right: max(0.75rem, env(safe-area-inset-right));
+    }
+    .vos-is-wiki-page .vos-page-shell:not(.vos-home-shell) {
+      padding: 0.95rem;
+      border-radius: 10px;
+    }
+    .vos-is-wiki-page .vos-page-shell:not(.vos-home-shell) > p,
+    .vos-is-wiki-page .vos-page-shell:not(.vos-home-shell) > ul,
+    .vos-is-wiki-page .vos-page-shell:not(.vos-home-shell) > ol,
+    .vos-is-wiki-page .vos-page-shell:not(.vos-home-shell) > blockquote {
+      padding: 0.78rem 0.82rem;
+      border-radius: 8px;
+      border-left-width: 1px;
+    }
+    .vos-is-index-page .vos-auto-index {
+      padding: 0.95rem;
+      border-radius: 10px;
+    }
+    .vos-is-index-page .vos-auto-index h2.vos-auto-index-title {
+      font-size: 1.08rem;
+      letter-spacing: 0.08em;
+    }
+    .vos-is-index-page .vos-auto-index .vos-auto-sub {
+      padding: 0.75rem;
+    }
+    .vos-is-index-page .vos-auto-index ul {
+      grid-template-columns: 1fr;
+    }
+  }
+
   /* ── PWA app rail + prompts ───────────────────────────────────────── */
   .vos-app-nav {
     position: fixed;
@@ -1266,7 +1393,7 @@
      so the floating layer doesn't reserve a 560px box. */
   #chatbot-container.vos-enzo-pill { width: auto; }
 
-  @media (max-width: 768px) {
+  @media (max-width: 1023px) {
     body:not(.vos-is-enzo-page) #chatbot-container {
       display: none !important;
     }
@@ -1338,7 +1465,7 @@
   }
 </style>
 </head>
-<body class="{% if page.url == '/enzo/' %}vos-is-enzo-page{% endif %}">
+<body class="{% if page.url == '/enzo/' %}vos-is-enzo-page{% endif %}{% if page.url and page.url.startsWith('/en/') and page.url != '/en/Tools/art/' %} vos-is-wiki-page{% endif %}{% if page.filePathStem and page.filePathStem.endsWith('/index') %} vos-is-index-page{% endif %}">
 
 <div class="vos-backdrop" aria-hidden="true"></div>
 
@@ -1387,7 +1514,7 @@
 </aside>
 
 <main class="vos-content">
-  <article class="vos-page-shell{% if page.filePathStem == '/home' %} vos-home-shell{% endif %}">
+  <article class="vos-page-shell{% if page.filePathStem == '/home' %} vos-home-shell{% endif %}{% if page.url == '/en/Venturia/' %} vos-wiki-home-shell{% endif %}">
     {{ content | safe }}
   </article>
 
@@ -1395,7 +1522,7 @@
     {%- set tree = collections.all | descendantTree(page.url) -%}
     {%- if tree.subcategories.length > 0 or tree.direct.length > 0 -%}
       <section class="vos-auto-index" aria-label="All pages in this section">
-        <h2 class="vos-auto-index-title">All Pages in This Section</h2>
+        <h2 class="vos-auto-index-title">{% if page.url == '/en/Venturia/' %}Deep Index{% else %}All Pages in This Section{% endif %}</h2>
 
         {%- for sub in tree.subcategories -%}
         <div class="vos-auto-sub">

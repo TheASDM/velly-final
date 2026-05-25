@@ -1,60 +1,567 @@
 ---
 title: Venturia
-description: The city of Venturia — its people, its institutions, its districts, its history, and the fog at its edge.
+description: The mobile-first wiki hub for Venturia - people, places, factions, maps, lore, and the fog at the city's edge.
 published: true
 date: 2026-05-23T00:00:00.000Z
 editor: markdown
 dateCreated: 2026-02-27T00:00:00.000Z
 ---
 
-# Venturia
+<style>
+.vos-wiki-hub {
+  --hub-gold: #ddb77f;
+  --hub-gold-dim: #91765a;
+  --hub-cream: #f0dfc2;
+  --hub-teal: #7bb7ad;
+  --hub-ruby: #a14c5d;
+  --hub-ink: #08070b;
+  --hub-border: rgba(221, 183, 127, 0.24);
+  display: grid;
+  gap: clamp(0.95rem, 2vw, 1.25rem);
+}
+.vos-wiki-hub > * {
+  min-width: 0;
+}
 
-A city of tiers — literally and otherwise. The [High Quarter](/en/Venturia/Locations/high-quarter) looks down on the [Market Tiers](/en/Venturia/Locations/market-tiers), which look down on the [Harbor District](/en/Venturia/Locations/harbor-district), which looks out to sea. Above everything, [the Overlook](/en/Venturia/Locations/overlook) faces [Vallombrosa](/en/Venturia/Locations/vallombrosa).
+.vos-wiki-hero {
+  position: relative;
+  min-height: clamp(22rem, 46vw, 31rem);
+  overflow: hidden;
+  border: 1px solid var(--hub-border);
+  border-radius: 10px;
+  background:
+    linear-gradient(90deg, rgba(8, 7, 11, 0.98) 0%, rgba(8, 7, 11, 0.88) 44%, rgba(8, 7, 11, 0.22) 100%),
+    radial-gradient(ellipse 70% 70% at 10% 0%, rgba(221, 183, 127, 0.18), transparent 62%),
+    url('/images/venturia-map3.jpg') center / cover no-repeat;
+  box-shadow: 0 22px 60px rgba(0, 0, 0, 0.58);
+}
+.vos-wiki-hero::after {
+  content: '';
+  position: absolute;
+  inset: auto 0 0;
+  height: 42%;
+  background: linear-gradient(180deg, transparent, rgba(8, 7, 11, 0.96));
+  pointer-events: none;
+}
+.vos-wiki-hero-inner {
+  position: relative;
+  z-index: 1;
+  width: min(36rem, 100%);
+  padding: clamp(1.15rem, 4vw, 2.4rem);
+}
+.vos-wiki-kicker {
+  color: var(--hub-gold-dim);
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+.vos-wiki-hero h1 {
+  margin: 0.15rem 0 0.65rem;
+  padding: 0;
+  border: 0;
+  color: var(--hub-cream);
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: clamp(2.4rem, 8vw, 4.65rem);
+  line-height: 0.95;
+  letter-spacing: 0.03em;
+  text-shadow: 0 12px 34px rgba(0, 0, 0, 0.82);
+}
+.vos-wiki-hero h1::after { content: none; }
+.vos-wiki-hero p {
+  max-width: 33rem;
+  margin: 0;
+  color: rgba(232, 220, 200, 0.86);
+  font-family: 'Crimson Text', Georgia, serif;
+  font-size: clamp(1.03rem, 2.4vw, 1.22rem);
+  line-height: 1.42;
+}
+.vos-wiki-primary-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+  margin-top: 1.2rem;
+}
+.vos-wiki-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 42px;
+  padding: 0.56rem 0.85rem;
+  border: 1px solid rgba(221, 183, 127, 0.36);
+  border-radius: 999px;
+  background: rgba(13, 11, 17, 0.72);
+  color: var(--hub-gold);
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.vos-wiki-pill:hover {
+  color: var(--hub-cream);
+  border-color: rgba(221, 183, 127, 0.68);
+  background: rgba(221, 183, 127, 0.11);
+}
 
----
+.vos-wiki-status-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(280px, 0.95fr);
+  gap: clamp(0.85rem, 2vw, 1rem);
+}
+.vos-wiki-panel {
+  min-width: 0;
+  padding: clamp(0.95rem, 2vw, 1.15rem);
+  border: 1px solid var(--hub-border);
+  border-radius: 10px;
+  background:
+    radial-gradient(ellipse 70% 70% at 0% 0%, rgba(123, 183, 173, 0.09), transparent 62%),
+    linear-gradient(180deg, rgba(18, 16, 23, 0.88), rgba(7, 6, 10, 0.96));
+  box-shadow: 0 14px 38px rgba(0, 0, 0, 0.42);
+}
+.vos-wiki-panel-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.85rem;
+  margin-bottom: 0.75rem;
+}
+.vos-wiki-panel h2 {
+  margin: 0;
+  color: var(--hub-cream);
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.92rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.vos-wiki-panel h2::after { content: none; }
+.vos-wiki-panel-note {
+  color: rgba(221, 183, 127, 0.58);
+  font-family: 'IM Fell English', Georgia, serif;
+  font-style: italic;
+  font-size: 0.9rem;
+  white-space: nowrap;
+}
+.vos-wiki-thread {
+  display: grid;
+  gap: 0.55rem;
+}
+.vos-wiki-thread a,
+.vos-wiki-thread-item {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 0.65rem;
+  align-items: center;
+  min-height: 52px;
+  padding: 0.62rem 0.7rem;
+  border: 1px solid rgba(221, 183, 127, 0.13);
+  border-radius: 8px;
+  background: rgba(8, 7, 11, 0.46);
+}
+.vos-wiki-thread a:hover {
+  border-color: rgba(221, 183, 127, 0.36);
+  background: rgba(221, 183, 127, 0.07);
+}
+.vos-wiki-emblem {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 1px solid rgba(221, 183, 127, 0.34);
+  background: rgba(221, 183, 127, 0.08);
+  color: var(--hub-gold);
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.66rem;
+  font-weight: 700;
+}
+.vos-wiki-thread-title {
+  display: block;
+  color: rgba(240, 223, 194, 0.94);
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  line-height: 1.2;
+}
+.vos-wiki-thread-sub {
+  display: block;
+  color: rgba(232, 220, 200, 0.62);
+  font-family: 'Crimson Text', Georgia, serif;
+  font-style: italic;
+  font-size: 0.9rem;
+  line-height: 1.25;
+}
+.vos-wiki-update-link {
+  display: grid;
+  gap: 0.45rem;
+  min-height: 100%;
+  padding: 0.9rem;
+  border: 1px solid rgba(221, 183, 127, 0.18);
+  border-radius: 8px;
+  background:
+    linear-gradient(135deg, rgba(161, 76, 93, 0.14), transparent 46%),
+    rgba(8, 7, 11, 0.48);
+}
+.vos-wiki-update-link strong {
+  color: var(--hub-cream);
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.9rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.vos-wiki-update-link span {
+  color: rgba(232, 220, 200, 0.72);
+  font-family: 'Crimson Text', Georgia, serif;
+  font-style: italic;
+  font-size: 0.98rem;
+  line-height: 1.32;
+}
 
-## [Characters](/en/Venturia/Characters)
+.vos-wiki-section-grid {
+  min-width: 0;
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: clamp(0.75rem, 2vw, 1rem);
+}
+.vos-wiki-section-card {
+  position: relative;
+  display: grid;
+  gap: 0.5rem;
+  grid-column: span 4;
+  min-width: 0;
+  min-height: 10.5rem;
+  padding: 1rem;
+  overflow: hidden;
+  border: 1px solid var(--hub-border);
+  border-radius: 10px;
+  background:
+    linear-gradient(180deg, rgba(18, 16, 23, 0.88), rgba(7, 6, 10, 0.96));
+  box-shadow: 0 14px 36px rgba(0, 0, 0, 0.38);
+}
+.vos-wiki-section-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 72% 58% at 100% 0%, var(--card-glow, rgba(221, 183, 127, 0.1)), transparent 70%);
+  opacity: 0.9;
+  pointer-events: none;
+}
+.vos-wiki-section-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(221, 183, 127, 0.5);
+  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.54);
+}
+.vos-wiki-section-card[data-tone="teal"] { --card-glow: rgba(123, 183, 173, 0.14); }
+.vos-wiki-section-card[data-tone="ruby"] { --card-glow: rgba(161, 76, 93, 0.16); }
+.vos-wiki-section-card[data-tone="gold"] { --card-glow: rgba(221, 183, 127, 0.14); }
+.vos-wiki-section-card[data-wide="true"] {
+  grid-column: span 6;
+}
+.vos-wiki-card-top,
+.vos-wiki-card-title,
+.vos-wiki-card-text,
+.vos-wiki-card-links {
+  position: relative;
+  z-index: 1;
+}
+.vos-wiki-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+}
+.vos-wiki-card-code {
+  color: rgba(221, 183, 127, 0.55);
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+.vos-wiki-card-title {
+  color: var(--hub-cream);
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: clamp(1rem, 2vw, 1.18rem);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  line-height: 1.08;
+}
+.vos-wiki-card-text {
+  color: rgba(232, 220, 200, 0.68);
+  font-family: 'Crimson Text', Georgia, serif;
+  font-size: 0.95rem;
+  font-style: italic;
+  line-height: 1.32;
+}
+.vos-wiki-card-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  align-self: end;
+}
+.vos-wiki-mini-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 34px;
+  padding: 0.38rem 0.58rem;
+  border: 1px solid rgba(221, 183, 127, 0.16);
+  border-radius: 999px;
+  background: rgba(8, 7, 11, 0.46);
+  color: rgba(221, 183, 127, 0.88);
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.vos-wiki-mini-link:hover {
+  color: var(--hub-cream);
+  border-color: rgba(221, 183, 127, 0.42);
+}
 
-The seven adventurers, the Autumn Council, the Verdigris and di Errante families, and the other NPCs whose stories shape the city.
+@media (max-width: 1023px) {
+  .vos-wiki-hero {
+    min-height: 24rem;
+    background:
+      linear-gradient(180deg, rgba(8, 7, 11, 0.74) 0%, rgba(8, 7, 11, 0.98) 72%),
+      url('/images/venturia-map3.jpg') center top / cover no-repeat;
+  }
+  .vos-wiki-status-grid {
+    grid-template-columns: 1fr;
+  }
+  .vos-wiki-section-card,
+  .vos-wiki-section-card[data-wide="true"] {
+    grid-column: span 6;
+  }
+}
 
----
+@media (max-width: 700px) {
+  .vos-wiki-hub {
+    gap: 0.85rem;
+  }
+  .vos-wiki-hero {
+    min-height: 23rem;
+    border-radius: 10px;
+  }
+  .vos-wiki-hero-inner {
+    padding: 1rem;
+  }
+  .vos-wiki-primary-links {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.45rem;
+  }
+  .vos-wiki-pill {
+    min-height: 40px;
+    padding: 0.48rem 0.5rem;
+    font-size: 0.61rem;
+    letter-spacing: 0.08em;
+  }
+  .vos-wiki-panel {
+    padding: 0.85rem;
+  }
+  .vos-wiki-panel-head {
+    align-items: start;
+    flex-direction: column;
+    gap: 0.18rem;
+  }
+  .vos-wiki-panel-note {
+    white-space: normal;
+  }
+  .vos-wiki-section-grid {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+  .vos-wiki-section-card,
+  .vos-wiki-section-card[data-wide="true"] {
+    grid-column: auto;
+    min-height: 9.2rem;
+    padding: 0.9rem;
+  }
+  .vos-wiki-card-links {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .vos-wiki-mini-link {
+    justify-content: center;
+    text-align: center;
+  }
+}
+</style>
 
-## [Locations](/en/Venturia/Locations)
+<div class="vos-wiki-hub">
 
-Districts, institutions, guilds, and points of interest across the city — plus the forbidden fog-zone at its edge.
+  <section class="vos-wiki-hero" aria-labelledby="vos-wiki-title">
+    <div class="vos-wiki-hero-inner">
+      <div class="vos-wiki-kicker">Campaign Wiki</div>
+      <h1 id="vos-wiki-title">Venturia</h1>
+      <p>A city of tiers, masks, canals, old bargains, and the fogline where Vallombrosa begins. This is the campaign index for people, places, factions, history, rules, and play resources.</p>
+      <div class="vos-wiki-primary-links" aria-label="Primary wiki links">
+        <a class="vos-wiki-pill" href="/en/Venturia/Characters/">Characters</a>
+        <a class="vos-wiki-pill" href="/en/Venturia/Locations/">Locations</a>
+        <a class="vos-wiki-pill" href="/en/Venturia/Maps/">Maps</a>
+        <a class="vos-wiki-pill" href="{{ campaign.latestSession.link }}">Latest Update</a>
+      </div>
+    </div>
+  </section>
 
----
+  <section class="vos-wiki-status-grid" aria-label="Current campaign context">
+    <div class="vos-wiki-panel">
+      <div class="vos-wiki-panel-head">
+        <h2>In Play</h2>
+        <span class="vos-wiki-panel-note">{{ campaign.latestSession.arc }}</span>
+      </div>
+      <div class="vos-wiki-thread">
+        {% for item in campaign.inPlay %}
+          {% if loop.index0 < 5 %}
+          <a href="{{ item.link }}">
+            <span class="vos-wiki-emblem">{{ item.emblem }}</span>
+            <span>
+              <span class="vos-wiki-thread-title">{{ item.name }}</span>
+              <span class="vos-wiki-thread-sub">{{ item.role }}</span>
+            </span>
+          </a>
+          {% endif %}
+        {% endfor %}
+      </div>
+    </div>
 
-## [Factions](/en/Venturia/Factions)
+    <div class="vos-wiki-panel">
+      <div class="vos-wiki-panel-head">
+        <h2>Latest</h2>
+        <span class="vos-wiki-panel-note">{{ campaign.latestSession.updated }}</span>
+      </div>
+      <a class="vos-wiki-update-link" href="{{ campaign.latestSession.link }}">
+        <strong>{{ campaign.latestSession.title }}</strong>
+        <span>{{ campaign.latestSession.recap }}</span>
+      </a>
+    </div>
+  </section>
 
-The Abbey, the merchant covenants, the Watch, the Harbor guild, and the Veil Court.
+  <section class="vos-wiki-section-grid" id="vos-wiki-sections" aria-label="Wiki sections">
+    <a class="vos-wiki-section-card" data-tone="gold" data-wide="true" href="/en/Venturia/Characters/">
+      <span class="vos-wiki-card-top"><span class="vos-wiki-card-code">Cast</span></span>
+      <span class="vos-wiki-card-title">Characters</span>
+      <span class="vos-wiki-card-text">Player characters, NPCs, council members, families, patrons, and legends.</span>
+      <span class="vos-wiki-card-links">
+        <span class="vos-wiki-mini-link">PCs</span>
+        <span class="vos-wiki-mini-link">NPCs</span>
+      </span>
+    </a>
 
----
+    <a class="vos-wiki-section-card" data-tone="teal" data-wide="true" href="/en/Venturia/Locations/">
+      <span class="vos-wiki-card-top"><span class="vos-wiki-card-code">City</span></span>
+      <span class="vos-wiki-card-title">Locations</span>
+      <span class="vos-wiki-card-text">Districts, institutions, guildhalls, canals, sanctuaries, and the Overlook.</span>
+      <span class="vos-wiki-card-links">
+        <span class="vos-wiki-mini-link">High Quarter</span>
+        <span class="vos-wiki-mini-link">Harbor</span>
+      </span>
+    </a>
 
-## [Government](/en/Venturia/Government)
+    <a class="vos-wiki-section-card" data-tone="ruby" href="/en/Venturia/Factions/">
+      <span class="vos-wiki-card-top"><span class="vos-wiki-card-code">Power</span></span>
+      <span class="vos-wiki-card-title">Factions</span>
+      <span class="vos-wiki-card-text">Faith, commerce, theater, law, contracts, and the groups that move the city.</span>
+      <span class="vos-wiki-card-links">
+        <span class="vos-wiki-mini-link">Guilds</span>
+        <span class="vos-wiki-mini-link">Court</span>
+      </span>
+    </a>
 
-The Autumn Council — eleven seats, rarely a majority.
+    <a class="vos-wiki-section-card" data-tone="gold" href="/en/Venturia/Government/">
+      <span class="vos-wiki-card-top"><span class="vos-wiki-card-code">Council</span></span>
+      <span class="vos-wiki-card-title">Government</span>
+      <span class="vos-wiki-card-text">The Autumn Council, its vacant seat, and the deadlocks shaping the city.</span>
+      <span class="vos-wiki-card-links">
+        <span class="vos-wiki-mini-link">Seats</span>
+        <span class="vos-wiki-mini-link">Politics</span>
+      </span>
+    </a>
 
----
+    <a class="vos-wiki-section-card" data-tone="teal" href="/en/Venturia/Lore/">
+      <span class="vos-wiki-card-top"><span class="vos-wiki-card-code">History</span></span>
+      <span class="vos-wiki-card-title">Lore</span>
+      <span class="vos-wiki-card-text">Vallombrosa's legends, Eldoria's past, prosperity, fey-touch, and unresolved history.</span>
+      <span class="vos-wiki-card-links">
+        <span class="vos-wiki-mini-link">Legends</span>
+        <span class="vos-wiki-mini-link">History</span>
+      </span>
+    </a>
 
-## [Lore](/en/Venturia/Lore)
+    <a class="vos-wiki-section-card" data-tone="ruby" href="/en/Venturia/Culture/">
+      <span class="vos-wiki-card-top"><span class="vos-wiki-card-code">Customs</span></span>
+      <span class="vos-wiki-card-title">Culture</span>
+      <span class="vos-wiki-card-text">Language, masks, festivals, vernacular, public ritual, and private habit.</span>
+      <span class="vos-wiki-card-links">
+        <span class="vos-wiki-mini-link">Masks</span>
+        <span class="vos-wiki-mini-link">Speech</span>
+      </span>
+    </a>
 
-The legends, the history, and the deep past.
+    <a class="vos-wiki-section-card" data-tone="gold" href="/en/Venturia/Maps/">
+      <span class="vos-wiki-card-top"><span class="vos-wiki-card-code">Maps</span></span>
+      <span class="vos-wiki-card-title">Map Library</span>
+      <span class="vos-wiki-card-text">World, city, quadrants, campus maps, and deep-zoom reference pages.</span>
+      <span class="vos-wiki-card-links">
+        <span class="vos-wiki-mini-link">City</span>
+        <span class="vos-wiki-mini-link">World</span>
+      </span>
+    </a>
 
----
+    <a class="vos-wiki-section-card" data-tone="teal" href="/en/Session-Chronicles/">
+      <span class="vos-wiki-card-top"><span class="vos-wiki-card-code">Play</span></span>
+      <span class="vos-wiki-card-title">Session Chronicles</span>
+      <span class="vos-wiki-card-text">Campaign records, table memory, and the story as it moves forward.</span>
+      <span class="vos-wiki-card-links">
+        <span class="vos-wiki-mini-link">Sessions</span>
+        <span class="vos-wiki-mini-link">Archive</span>
+      </span>
+    </a>
 
-## [Culture](/en/Venturia/Culture)
+    <a class="vos-wiki-section-card" data-tone="ruby" href="/en/Articles/">
+      <span class="vos-wiki-card-top"><span class="vos-wiki-card-code">Guides</span></span>
+      <span class="vos-wiki-card-title">Articles</span>
+      <span class="vos-wiki-card-text">Character guidance, setting essays, campaign framework, and player-facing notes.</span>
+      <span class="vos-wiki-card-links">
+        <span class="vos-wiki-mini-link">Builds</span>
+        <span class="vos-wiki-mini-link">Setting</span>
+      </span>
+    </a>
 
-Language, customs, traditions, and the unspoken rules of daily life.
+    <a class="vos-wiki-section-card" data-tone="gold" href="/en/House-Rules/">
+      <span class="vos-wiki-card-top"><span class="vos-wiki-card-code">Rules</span></span>
+      <span class="vos-wiki-card-title">House Rules</span>
+      <span class="vos-wiki-card-text">Table rules, point buy, encumbrance, simplifications, and play expectations.</span>
+      <span class="vos-wiki-card-links">
+        <span class="vos-wiki-mini-link">Point Buy</span>
+        <span class="vos-wiki-mini-link">Slots</span>
+      </span>
+    </a>
 
----
+    <a class="vos-wiki-section-card" data-tone="teal" href="/en/Venturia/Creatures/">
+      <span class="vos-wiki-card-top"><span class="vos-wiki-card-code">Bestiary</span></span>
+      <span class="vos-wiki-card-title">Creatures</span>
+      <span class="vos-wiki-card-text">Celestials, fey, fiends, humanoids, and the forms Car can borrow.</span>
+      <span class="vos-wiki-card-links">
+        <span class="vos-wiki-mini-link">Fey</span>
+        <span class="vos-wiki-mini-link">Fiends</span>
+      </span>
+    </a>
 
-## [Creatures](/en/Venturia/Creatures)
+    <a class="vos-wiki-section-card" data-tone="ruby" href="/en/Venturia/College-of-the-Masquerade-Bard/">
+      <span class="vos-wiki-card-top"><span class="vos-wiki-card-code">Subclass</span></span>
+      <span class="vos-wiki-card-title">Masquerade Bard</span>
+      <span class="vos-wiki-card-text">Car's transformation college, reference tables, and available forms.</span>
+      <span class="vos-wiki-card-links">
+        <span class="vos-wiki-mini-link">Forms</span>
+        <span class="vos-wiki-mini-link">Reference</span>
+      </span>
+    </a>
+  </section>
 
-Celestials, Fey, Fiends, and Humanoids encountered in and around Venturia.
-
----
-
-## [College of the Masquerade Bard](/en/Venturia/College-of-the-Masquerade-Bard)
-
-Subclass resources and Car's available transformation forms.
+</div>

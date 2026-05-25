@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'vallombrosa-pwa-v4';
+const CACHE_VERSION = 'vallombrosa-pwa-v5';
 const PRECACHE = `${CACHE_VERSION}-precache`;
 const PAGES = `${CACHE_VERSION}-pages`;
 const ASSETS = `${CACHE_VERSION}-assets`;
