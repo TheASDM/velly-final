@@ -629,7 +629,6 @@ dateCreated: 2026-02-20T05:30:38.113Z
       <a class="vos-story-read" href="{{ campaign.latestSession.link }}">Read full chronicle &rarr;</a>
     </article>
     <article class="vos-dash-card vos-dash-side-card vos-next-card" aria-labelledby="vos-next-heading">
-      <div class="vos-dash-kicker">Next Gathering</div>
       <h3 id="vos-next-heading">Next Gathering</h3>
       <div class="vos-next-date">{{ campaign.nextGathering.date }}</div>
       <div class="vos-next-where">{{ campaign.nextGathering.timeLocation }}</div>
@@ -640,7 +639,6 @@ dateCreated: 2026-02-20T05:30:38.113Z
       </ul>
     </article>
     <article class="vos-dash-card vos-dash-side-card vos-threads-card" aria-labelledby="vos-threads-heading">
-      <div class="vos-dash-kicker">Open Threads</div>
       <h3 id="vos-threads-heading">Open Threads</h3>
       <div class="vos-thread-list">
         {%- for thread in campaign.openThreads %}
@@ -655,7 +653,6 @@ dateCreated: 2026-02-20T05:30:38.113Z
       </div>
     </article>
     <article class="vos-dash-card vos-inplay-card" aria-labelledby="vos-inplay-heading">
-      <div class="vos-dash-kicker">Currently In Play</div>
       <h3 id="vos-inplay-heading">Currently In Play</h3>
       <div class="vos-play-rail">
         {%- for item in campaign.inPlay %}
