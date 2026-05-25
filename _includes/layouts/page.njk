@@ -962,8 +962,9 @@
 </main>
 
 <!-- ── Enzo floating chat widget ──────────────────────────────────────
-     Production: load the real CSS + JS from the deployed loremaster
-     origin so the wiki stays in sync with the standalone chatbot app.
+     Production: load the real CSS + JS from this static site so a wiki
+     publish updates the embedded widget with the rest of the codex.
+     API calls still go to the deployed loremaster origin below.
      Local preview (localhost / 127.0.0.1): inject a visual-only stub
      that mirrors the production widget's DOM and uses /css/chatbot.css
      (passthrough from public/css). The stub doesn't call /api/chat —
@@ -975,9 +976,7 @@
   const isLocal = ['localhost', '127.0.0.1', ''].includes(location.hostname);
 
   // Always include the chatbot stylesheet — local stub uses it too.
-  const cssHref = isLocal
-    ? '/css/chatbot.css'
-    : 'https://loremaster.valleyofshadows.wiki/css/chatbot.css';
+  const cssHref = '/css/chatbot.css';
   const css = document.createElement('link');
   css.rel = 'stylesheet';
   css.href = cssHref;
@@ -987,7 +986,7 @@
     // Production path: wire the real chatbot.
     window.LOREMASTER_API_URL = 'https://loremaster.valleyofshadows.wiki/api/chat';
     const js = document.createElement('script');
-    js.src = 'https://loremaster.valleyofshadows.wiki/js/chatbot.js';
+    js.src = '/js/chatbot.js';
     js.defer = true;
     document.body.appendChild(js);
     return;
