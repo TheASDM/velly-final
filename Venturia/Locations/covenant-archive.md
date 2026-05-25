@@ -26,7 +26,7 @@ dateCreated: 2026-02-23T23:57:25.309Z
 
 </div>
 
-The Archive occupies a windowless building of black stone in the High Quarter, its entrance marked only by a simple brass plaque. Inside, gray-robed Archivists maintain Venturia's most important collection: witnessed contracts, binding agreements, and sworn oaths recorded on specially prepared vellum that cannot be altered once the ink dries.
+The Archive occupies a windowless building of black stone in the [High Quarter](/en/Venturia/Locations/high-quarter), its entrance marked only by a simple brass plaque. Inside, gray-robed Archivists maintain Venturia's most important collection: witnessed contracts, binding agreements, and sworn oaths recorded on specially prepared vellum that cannot be altered once the ink dries.
 
 ---
 
@@ -55,3 +55,11 @@ The Archivists maintain them with the same care as recent agreements — suggest
 - Legal scholar who spent years studying the old contracts
 - Person who witnessed something they shouldn't have in the deep Archive
 - Client whose agreement had unexpected consequences
+
+---
+
+## Connections
+
+- **[The Binding Hall](/en/Venturia/Locations/binding-hall)** — Names this location in its connections.
+- **[The Covenant of Silver Scales](/en/Venturia/Factions/covenant-silver-scales)** — Names this location in its connections.
+- **[The High Quarter](/en/Venturia/Locations/high-quarter)** — Lists this location among its notable places.

@@ -12,7 +12,7 @@ dateCreated: 2026-02-23T23:57:29.295Z
 
 ➜ [View the Map of Venturia](/en/Venturia/Locations/venturia-map)
 
-Venturia is a city of tiers — literally and otherwise. The [High Quarter](/en/Venturia/Locations/high-quarter) looks down on the [Market Tiers](/en/Venturia/Locations/market-tiers), which look down on the [Harbor District](/en/Venturia/Locations/harbor-district), which looks out to sea. Above everything, [the Overlook](/en/Venturia/Locations/overlook) faces Vallombrosa. Each district has its own character, its own institutions, and its own relationship with the fog.
+Venturia is a city of tiers — literally and otherwise. The [High Quarter](/en/Venturia/Locations/high-quarter) looks down on the [Market Tiers](/en/Venturia/Locations/market-tiers), which look down on the [Harbor District](/en/Venturia/Locations/harbor-district), which looks out to sea. Above everything, [the Overlook](/en/Venturia/Locations/overlook) faces [Vallombrosa](/en/Venturia/Locations/vallombrosa). Each district has its own character, its own institutions, and its own relationship with the fog.
 
 ---
 

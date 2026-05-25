@@ -55,3 +55,4 @@ Most residents do not think they live in a supernatural city. They think they li
 - **[Venturian Quirks and Traditions](/en/Venturia/Culture/venturian-quirks-and-traditions)** - How these oddities appear in daily life.
 - **[The Autumn Masquerade](/en/Venturia/Culture/autumn-masquerade)** - The season when masks and chosen faces matter most.
 - **[The Veil Court](/en/Venturia/Factions/veil-court)** - The society most invested in masks, identity, and performance.
+- **[The Veiled Tower](/en/Venturia/Locations/veiled-tower)** — Names this lore entry in its connections.

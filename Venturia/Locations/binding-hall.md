@@ -42,3 +42,4 @@ The Hall's work matters in any city, but it matters more in Venturia. Promises h
 - **[Venturian Academy of Veiled Arts](/en/Venturia/Locations/vava)** - The Hall's institution.
 - **[The Covenant Archive](/en/Venturia/Locations/covenant-archive)** - A natural institutional counterpart.
 - **[The Covenant of Silver Scales](/en/Venturia/Factions/covenant-silver-scales)** - The merchant association most invested in binding agreements.
+- **[The High Quarter](/en/Venturia/Locations/high-quarter)** — Lists this location among its notable places.

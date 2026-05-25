@@ -105,7 +105,7 @@ Visitors sometimes find things slightly unsettling — mirrors that lag, the int
 ### Native Venturians
 These quirks should feel **charming and atmospheric, not threatening**. They're home. They're comfortable weirdness.
 
-**Roleplay Opportunities:** Forgetting your name mid-introduction and laughing it off — discussing vivid dreams over breakfast — carefully wording promises because words feel important — going by a nickname rather than your birth name — having strong opinions about this year's *Tragedy of Vallombrosa* production.
+**Roleplay Opportunities:** Forgetting your name mid-introduction and laughing it off — discussing vivid dreams over breakfast — carefully wording promises because words feel important — going by a nickname rather than your birth name — having strong opinions about this year's *[Tragedy of Vallombrosa](/en/Venturia/Culture/tragedy-of-vallombrosa)* production.
 
 ### Outsiders
 These quirks should feel **slightly off but not overtly dangerous**. Venturia is charming, but there's something ineffable about it you can't quite identify.
@@ -120,3 +120,9 @@ These quirks should feel **slightly off but not overtly dangerous**. Venturia is
 | **Mask Tradition** | During Masquerade season, anonymity is culturally expected — natural cover for intrigue and investigation. |
 | **[The Autumn Masquerade](/en/Venturia/Culture/autumn-masquerade)** | A perfect set-piece for major plot events, social encounters, and dramatic revelations. |
 | **Theater Culture** | Performance and deception are valued skills. A good actor is respected. Working a crowd is practical knowledge. |
+
+---
+
+## Connections
+
+- **[The Subtle Fey-Touch](/en/Venturia/Lore/subtle-fey-touch)** — Names this cultural entry in its connections.

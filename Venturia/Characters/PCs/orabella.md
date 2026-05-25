@@ -34,12 +34,12 @@ Orabella is a fog child — she walked out of [Vallombrosa](/en/Venturia/Locatio
 ---
 
 ## Concept
-A Cleric at St. Viro's Respite. A fog child who arrived at Liminal House with no memory of her life before.
+A Cleric at [St. Viro's Respite](/en/Venturia/Locations/viros-respite). A fog child who arrived at Liminal House with no memory of her life before.
 
 ---
 
 ## The Dreams
-Not long after she came to Liminal House, the dreams began: vivid, first-person, and real in a way ordinary dreams aren't. She doesn't claim to know what they are or what they mean. When she started asking, the staff of Liminal House and the clergy at Viro's shut the questions down — which only made her more determined to find the answers herself.
+Not long after she came to [Liminal House](/en/Venturia/Locations/liminal-house), the dreams began: vivid, first-person, and real in a way ordinary dreams aren't. She doesn't claim to know what they are or what they mean. When she started asking, the staff of Liminal House and the clergy at Viro's shut the questions down — which only made her more determined to find the answers herself.
 
 ---
 

@@ -45,7 +45,7 @@ Led by Loren Asteri — old name, self-made fortune, impeccably dressed, unfaili
 ---
 
 ## Membership
-Members gain access to the Covenant's negotiators and arbitrators, the weight of its reputation behind their agreements, and standing in the High Quarter's commercial circles.
+Members gain access to the Covenant's negotiators and arbitrators, the weight of its reputation behind their agreements, and standing in the [High Quarter](/en/Venturia/Locations/high-quarter)'s commercial circles.
 
 ---
 
@@ -53,3 +53,4 @@ Members gain access to the Covenant's negotiators and arbitrators, the weight of
 - **[Caravel "Car" Asteri](/en/Venturia/Characters/PCs/caravel-asteri)** — Loren's child, who rejected the family business; the tie remains.
 - **[The Covenant Archive](/en/Venturia/Locations/covenant-archive)** — The Asteri family's own institution, bound up with their legal traditions.
 - **[The Harbor Wardens' Compact](/en/Venturia/Factions/harbor-wardens)** — Cooperate on commercial matters, compete for economic influence.
+- **[The Binding Hall](/en/Venturia/Locations/binding-hall)** — Names this faction in its connections.

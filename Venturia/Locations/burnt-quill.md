@@ -58,3 +58,9 @@ Both types find steady employment. Neither discusses their work with the other.
 - Former editor who left over a killed story
 - Source who fed information to the right journalist
 - Someone whose family appears in the very old files
+
+---
+
+## Connections
+
+- **[The Market Tiers](/en/Venturia/Locations/market-tiers)** — Lists this location among its notable places.

@@ -53,3 +53,7 @@ The Masquerade is not treated as costume play. In Venturia, a mask can be courte
 - **[The Masquers' Sodality](/en/Venturia/Locations/masquers-sodality)** - Crafts masks for the city's most important masked occasions.
 - **[The Amaranth Theater](/en/Venturia/Locations/amaranth-theater)** - Home to the most famous annual staging of the Tragedy.
 - **[Caravel "Car" Asteri](/en/Venturia/Characters/PCs/caravel-asteri)** - Lost a friend at a past Masquerade.
+- **[The Glamour Courts](/en/Venturia/Locations/glamour-courts)** — Names this cultural entry in its connections.
+- **[The Hall of Reflected Faces](/en/Venturia/Locations/hall-of-reflected-faces)** — Names this cultural entry in its connections.
+- **[The Subtle Fey-Touch](/en/Venturia/Lore/subtle-fey-touch)** — Names this cultural entry in its connections.
+- **[Valeria Tessere](/en/Venturia/Characters/NPCs/valeria-tessere)** — Names this cultural entry in its connections.

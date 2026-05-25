@@ -53,3 +53,9 @@ For the Fog Wardens, it is a workplace: logs, patrols, signal lamps, tired eyes,
 - **[The Fog Wardens and the Shadowed Wardens](/en/Venturia/Factions/fog-wardens)** - The force assigned to the boundary.
 - **[Maruk Grommarg](/en/Venturia/Characters/NPCs/maruk-grommarg)** - A missing Fog Warden tied to the current crisis.
 - **[Noname](/en/Venturia/Characters/PCs/noname)** - Connected to Maruk's disappearance at the fog line.
+
+---
+
+## Connections
+
+- **[The Harbor District](/en/Venturia/Locations/harbor-district)** — Cross-references this location.

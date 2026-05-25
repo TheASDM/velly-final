@@ -26,7 +26,7 @@ dateCreated: 2026-02-23T23:57:31.380Z
 
 </div>
 
-The Sodality occupies a sprawling workshop complex in the upper Market Tiers, where the smell of lacquer, leather, and something faintly sweet pervades the narrow streets. Founded shortly after the first *Tragedy of Vallombrosa* transformed the Autumn Masquerade into a cultural institution, the Sodality has spent nearly a millennium perfecting the art of concealment.
+The Sodality occupies a sprawling workshop complex in the upper Market Tiers, where the smell of lacquer, leather, and something faintly sweet pervades the narrow streets. Founded shortly after the first *[Tragedy of Vallombrosa](/en/Venturia/Culture/tragedy-of-vallombrosa)* transformed the [Autumn Masquerade](/en/Venturia/Culture/autumn-masquerade) into a cultural institution, the Sodality has spent nearly a millennium perfecting the art of concealment.
 
 ---
 
@@ -71,3 +71,13 @@ During Masquerade season, the workshops run day and night. Neighbors report stra
 - Customer whose commissioned mask showed the wrong reflection
 - Rival artisan operating outside the guild's control
 - Festival Committee member who has seen too much of the planning
+
+---
+
+## Connections
+
+- **[Aurelio Volante](/en/Venturia/Characters/NPCs/aurelio-volante)** — Names this location in its connections.
+- **[The Autumn Masquerade](/en/Venturia/Culture/autumn-masquerade)** — Names this location in its connections.
+- **[The Market Tiers](/en/Venturia/Locations/market-tiers)** — Lists this location among its notable places.
+- **[The Veil Court](/en/Venturia/Factions/veil-court)** — Names this location in its connections.
+- **[Volante & Associates](/en/Venturia/Factions/volante-associates)** — Names this location in its connections.

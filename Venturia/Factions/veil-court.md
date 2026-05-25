@@ -45,7 +45,7 @@ Led by [Valeria Tessere](/en/Venturia/Characters/NPCs/valeria-tessere), a former
 ---
 
 ## Membership
-Members gain entry to exclusive theatrical spaces and private masked events, connections to artists across the region, training in the "Art of Faces" — disguise, social reading, identity theory — and access to the [Hall of Reflected Faces](/en/Venturia/Locations/hall-of-reflected-faces), a gallery holding a mask from every Autumn Masquerade for nearly three hundred years.
+Members gain entry to exclusive theatrical spaces and private masked events, connections to artists across the region, training in the "Art of Faces" — disguise, social reading, identity theory — and access to the [Hall of Reflected Faces](/en/Venturia/Locations/hall-of-reflected-faces), a gallery holding a mask from every [Autumn Masquerade](/en/Venturia/Culture/autumn-masquerade) for nearly three hundred years.
 
 ---
 
@@ -54,3 +54,5 @@ Members gain entry to exclusive theatrical spaces and private masked events, con
 - **[The Hall of Reflected Faces](/en/Venturia/Locations/hall-of-reflected-faces)** — A private gallery preserving three centuries of Masquerade masks.
 - **[The Masquers' Sodality](/en/Venturia/Locations/masquers-sodality)** — Their maskmaking tradition is closely tied to the Court's cultural mission.
 - **[The Amaranth Theater](/en/Venturia/Locations/amaranth-theater)** — The principal venue for Court-sponsored productions and the annual *[Tragedy of Vallombrosa](/en/Venturia/Culture/tragedy-of-vallombrosa)*.
+- **[The Glamour Courts](/en/Venturia/Locations/glamour-courts)** — Names this faction in its connections.
+- **[The Subtle Fey-Touch](/en/Venturia/Lore/subtle-fey-touch)** — Names this faction in its connections.

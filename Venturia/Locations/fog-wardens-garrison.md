@@ -26,7 +26,7 @@ dateCreated: 2026-02-23T23:57:28.300Z
 
 </div>
 
-The garrison is small — a stone building and watchtower at the Overlook, where the city ends and the [Vallombrosa](/en/Venturia/Locations/vallombrosa) fog begins. The guards stationed here volunteered for the posting, which is considered either prestigious or disturbing depending on who you ask.
+The garrison is small — a stone building and watchtower at the [Overlook](/en/Venturia/Locations/overlook), where the city ends and the [Vallombrosa](/en/Venturia/Locations/vallombrosa) fog begins. The guards stationed here volunteered for the posting, which is considered either prestigious or disturbing depending on who you ask.
 
 Their duties are simple: maintain the barriers, record the names of anyone who approaches the fog line, and document anything unusual.
 
@@ -58,3 +58,10 @@ Some guards request extensions anyway. They claim they need to understand someth
 - Guard who noticed a pattern in the logs that others have missed
 - Person searching for someone who disappeared into the fog
 - Warden who claims to have seen what's inside — and survived
+
+---
+
+## Connections
+
+- **[The Fog Wardens and the Shadowed Wardens](/en/Venturia/Factions/fog-wardens)** — Names this location in its connections.
+- **[The Overlook](/en/Venturia/Locations/overlook)** — Lists this location among its notable places.

@@ -35,7 +35,7 @@ The patriarch of the Verdigris and an elder of the Mirrorwrights' guild — a re
 ---
 
 ## In the Guild
-A respected guild elder and a mentor to Guildmaster Vincenzo Copper, under whose [Metals Guild](/en/Venturia/Factions/metals-guild) the Mirrorwrights fall. Cautious by temperament, he guards both the family's craft secrets and his own private study of the city's reflection-strangeness.
+A respected guild elder and a mentor to [Guildmaster Vincenzo Copper](/en/Venturia/Characters/NPCs/vincenzo-copper), under whose [Metals Guild](/en/Venturia/Factions/metals-guild) the Mirrorwrights fall. Cautious by temperament, he guards both the family's craft secrets and his own private study of the city's reflection-strangeness.
 
 ---
 
@@ -43,3 +43,5 @@ A respected guild elder and a mentor to Guildmaster Vincenzo Copper, under whose
 - **[The Verdigris Family](/en/Venturia/Characters/NPCs/verdigris-family)** — Its patriarch.
 - **[Guildmaster Vincenzo Copper](/en/Venturia/Characters/NPCs/vincenzo-copper)** — A former mentee; the Mirrorwrights fall under his [Metals Guild](/en/Venturia/Factions/metals-guild).
 - **[The Mirrorwright's Court](/en/Venturia/Locations/mirrorwrights-court)** — The family's guild workshop.
+- **[Isidore Verdigris](/en/Venturia/Characters/NPCs/isidore-verdigris)** — Names this character in its connections.
+- **[Thalia Verdigris](/en/Venturia/Characters/NPCs/thalia-verdigris)** — Names this character in its connections.

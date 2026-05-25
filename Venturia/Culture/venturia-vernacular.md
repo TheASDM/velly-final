@@ -44,9 +44,9 @@ dateCreated: 2026-02-21T02:43:01.487Z
 |---|---|
 | **Fog and fire** | General frustration or dismay. References the two great threats to the city. Can be shortened to just *"fog"* as a mild expletive — the way we might say "damn." |
 | **Mirrors** | Muttered when something goes slightly wrong. Equivalent to "shoot" or "darn." Often drawn out: *"Mirrorrrs."* |
-| **Saints and shadows** | Surprise, wonder, or exasperation. *The saints* refers to Saint Viro; *shadows* references Vallombrosa. Old-fashioned but still common among older residents. |
+| **Saints and shadows** | Surprise, wonder, or exasperation. *The saints* refers to Saint Viro; *shadows* references [Vallombrosa](/en/Venturia/Locations/vallombrosa). Old-fashioned but still common among older residents. |
 | **What the fog?** | Mild incredulity or confusion. Exactly what it sounds like. |
-| **Ash and oak** | References the ancient trees in the Tiered Gardens that predate the city. Used like "good grief" or "for goodness sake." Considered quaint and somewhat rustic. |
+| **Ash and oak** | References the ancient trees in the [Tiered Gardens](/en/Venturia/Locations/tiered-gardens) that predate the city. Used like "good grief" or "for goodness sake." Considered quaint and somewhat rustic. |
 
 ### Moderate Oaths
 *Fine in casual settings — not around children or clergy*
@@ -57,7 +57,7 @@ dateCreated: 2026-02-21T02:43:01.487Z
 | **Keeper's teeth** | Most Venturians assume this references some old monster tale. It's actually a degraded reference to the Keeper of Faces — though no one living knows this. Equivalent to "goddammit." |
 | **Burnt quills** | Frustration when plans go wrong or information proves unreliable. References both the newspaper and the Harbor Fire. *"Well, burnt quills, there goes that idea."* |
 | **Half a coat to you** | A curse wishing someone the fate of Lucio from the fable — to be marked as an oath-breaker. Can be said jokingly between friends or seriously as an insult. |
-| **Drown it / Drown me** | Harbor District oath. *"Drown it"* = frustration. *"Drown me"* = disbelief. *"Drown me, did you see the price of salt today?"* |
+| **Drown it / Drown me** | [Harbor District](/en/Venturia/Locations/harbor-district) oath. *"Drown it"* = frustration. *"Drown me"* = disbelief. *"Drown me, did you see the price of salt today?"* |
 
 ### Strong Oaths
 *Crude, offensive, or genuinely hostile*
@@ -111,7 +111,7 @@ dateCreated: 2026-02-21T02:43:01.487Z
 | **Fog-curious** | Asks dangerous questions or takes foolish risks. Can be said with grudging admiration or genuine concern. |
 | **Tide-turner** | Loyalties shift with advantage. Unreliable, opportunistic. |
 | **Climbs but won't carry** | A social climber who abandons old friends. |
-| **Wouldn't sign it** | The ultimate expression of untrustworthiness. If someone wouldn't put their promise in the Covenant Archive, they don't really mean it. |
+| **Wouldn't sign it** | The ultimate expression of untrustworthiness. If someone wouldn't put their promise in the [Covenant Archive](/en/Venturia/Locations/covenant-archive), they don't really mean it. |
 
 ---
 
@@ -126,7 +126,7 @@ dateCreated: 2026-02-21T02:43:01.487Z
 | **The tide's going out** | A situation is deteriorating; opportunity is passing; time is running short. |
 | **The tide's coming in** | Opportunity approaching; situation improving; good times ahead. |
 | **Smoke on the water** | Warning of danger or trouble. References the Harbor Fire. |
-| **That dog won't hunt in the High Quarter** | That excuse or explanation won't work with sophisticated people. |
+| **That dog won't hunt in the [High Quarter](/en/Venturia/Locations/high-quarter)** | That excuse or explanation won't work with sophisticated people. |
 | **Archive it** | Make it official; commit to it seriously. |
 | **Below the fog line** | Safe, normal, mundane. |
 | **Above the fog line** | Dangerous, supernatural, or best avoided. |
@@ -147,7 +147,7 @@ dateCreated: 2026-02-21T02:43:01.487Z
 | **Fog knowledge** | Information that might be true but is impossible to verify and possibly dangerous to pursue. |
 | **Kessler's logs** | Detailed information that has conveniently disappeared. |
 | **The mirror knows** | Acknowledgment that the truth exists even if it's being hidden or denied. |
-| **That's a Burnt Quill story** | Something technically true but sensationalized. |
+| **That's a [Burnt Quill](/en/Venturia/Locations/burnt-quill) story** | Something technically true but sensationalized. |
 
 ---
 
@@ -211,7 +211,7 @@ dateCreated: 2026-02-21T02:43:01.487Z
 | **That's a fog question** | A question that shouldn't be asked — or one that has no safe answer. |
 | **Vallombrosa luck** | The bad kind of luck that comes from curiosity. |
 | **Fog story** | An explanation that sounds reasonable but conceals something darker. |
-| **Overlook weather** | When the fog seems closer or thicker than usual. Also describes an oppressive atmosphere. |
+| **[Overlook](/en/Venturia/Locations/overlook) weather** | When the fog seems closer or thicker than usual. Also describes an oppressive atmosphere. |
 | **The manor's lit tonight** | Something strange is happening; something supernatural is active. |
 
 ---
@@ -254,7 +254,7 @@ dateCreated: 2026-02-21T02:43:01.487Z
 | **One for the fire, one for the fog** | Said when pouring out a small libation before drinking. |
 | **May your enemies keep half their promises** | Vindictive toast. Usually humorous. |
 | **Here's to what we don't ask about** | Darkly humorous toast acknowledging the city's culture of willful ignorance. |
-| **Drink it before it ages wrong** | Reference to the Winecradle. Means act now before opportunity passes. |
+| **Drink it before it ages wrong** | Reference to the [Winecradle](/en/Venturia/Locations/winecradle). Means act now before opportunity passes. |
 
 ---
 
@@ -267,7 +267,7 @@ dateCreated: 2026-02-21T02:43:01.487Z
 | **Good binding** | VAVA contract magic | A solid agreement or arrangement. |
 | **Slack water** | Tidekeepers | A pause — a moment of calm before change. |
 | **Reading the fog** | Fog Wardens | Trying to understand something unclear or ominous. |
-| **House odds** | The Undertow | The likely outcome if you do nothing. |
+| **House odds** | [The Undertow](/en/Venturia/Locations/the-undertow) | The likely outcome if you do nothing. |
 | **Settling accounts** | The Undertow | Resolving debts or grievances. |
 | **In the wings** | Amaranth | Waiting, prepared, ready to enter a situation. |
 | **Playing understage** | Amaranth | Downplaying, being subtle, not drawing attention. |

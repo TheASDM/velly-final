@@ -38,7 +38,7 @@ dateCreated: 2026-02-28T00:00:00.000Z
 
 > *Imagine if Venice were haunted. Not by ghosts — ghosts would be simpler. Haunted by something that steals faces. That rewrites memories. That makes you question whether the person standing next to you is still the person you love.*
 
-"Valley of Shadows" is a long-term D&D campaign set in the sister cities of Venturia & Vallombrosa. Venturia is a breathtaking coastal city of canals, masquerade balls, and ancient secrets. Think *The Name of the Wind* meets *Interview with the Vampire*, wrapped in the aesthetic of a Venetian gothic fever dream.
+"Valley of Shadows" is a long-term D&D campaign set in the sister cities of Venturia & [Vallombrosa](/en/Venturia/Locations/vallombrosa). Venturia is a breathtaking coastal city of canals, masquerade balls, and ancient secrets. Think *The Name of the Wind* meets *Interview with the Vampire*, wrapped in the aesthetic of a Venetian gothic fever dream.
 
 Vallombrosa is the shadow Venturia has learned to live with — a dead zone of perpetual fog where the di Errante estates once stood, forbidden for a thousand years, swallowing anyone foolish enough to cross its boundary. Every Venturian has a favorite legend about what happened there. None of them are right. The truth is older, stranger, and considerably worse.
 
@@ -64,9 +64,9 @@ You will laugh at this table. You will also sit in stunned silence. The goal is 
 
 ### Venturia, City of Masked Faces
 
-Built in tiers on the cliffs of Seravalle island, Venturia is a city in love with its own performance. Harbor districts hum with salt and commerce. The High Quarter gleams with gilded towers and exclusive salons. And everywhere — on feast days, in storefronts, hanging from iron posts in the lamplight — masks.
+Built in tiers on the cliffs of Seravalle island, Venturia is a city in love with its own performance. Harbor districts hum with salt and commerce. [The High Quarter](/en/Venturia/Locations/high-quarter) gleams with gilded towers and exclusive salons. And everywhere — on feast days, in storefronts, hanging from iron posts in the lamplight — masks.
 
-Mask-wearing in Venturia isn't costume — it's culture. The Masquers' Sodality has been crafting them for centuries. The annual Autumn Masquerade is the most important social event of the year. And the city's famed Veil Court knows something others don't: in Venturia, when you genuinely commit to wearing a different face, reality becomes... slightly more willing to cooperate.
+Mask-wearing in Venturia isn't costume — it's culture. [The Masquers' Sodality](/en/Venturia/Locations/masquers-sodality) has been crafting them for centuries. The annual Autumn Masquerade is the most important social event of the year. And the city's famed Veil Court knows something others don't: in Venturia, when you genuinely commit to wearing a different face, reality becomes... slightly more willing to cooperate.
 
 The city has other quirks that everyone accepts as normal. Mirrors sometimes show your reflection a half-second late, as though it needed time to catch up. Promises feel heavier here — more binding than they should. Coincidences happen with uncanny frequency. Colors are more saturated in autumn than they have any right to be.
 
@@ -142,7 +142,7 @@ The DM will not railroad you. Your choices will change things. NPCs will live or
 
 ### Character Creation Philosophy
 
-Your character lives in Venturia. Ideally, they were born here. They know the canals, the festivals, the gossip. They have opinions about the Masquers' Sodality and a favorite spot to eat near the harbor and an uncomfortable memory from the last Autumn Masquerade.
+Your character lives in Venturia. Ideally, they were born here. They know the canals, the festivals, the gossip. They have opinions about the Masquers' Sodality and a favorite spot to eat near the harbor and an uncomfortable memory from the last [Autumn Masquerade](/en/Venturia/Culture/autumn-masquerade).
 
 They do not know about the supernatural elements of the setting. They know the legends — everyone knows the legends — but they treat them the way you treat ghost stories: entertaining, not literal.
 

@@ -57,4 +57,4 @@ The Last Wrongs defeated the Manifestation of the Nine at Eacromar, and the Chur
 ---
 
 ## Relevance to Venturia
-The Vallombrosa campaign takes place in this post-Reunion world, on the island of Maeve within Eldoria. The Last Wrongs were the heroes of an earlier age — and the restored pantheon is the theological ground on which today's clerics, warlocks, and divine magic stand. The Reunion's central tension, manufactured belief against genuine truth, echoes through Venturia still.
+The [Vallombrosa](/en/Venturia/Locations/vallombrosa) campaign takes place in this post-Reunion world, on the island of Maeve within Eldoria. The Last Wrongs were the heroes of an earlier age — and the restored pantheon is the theological ground on which today's clerics, warlocks, and divine magic stand. The Reunion's central tension, manufactured belief against genuine truth, echoes through Venturia still.

@@ -26,7 +26,7 @@ dateCreated: 2026-02-23T23:57:30.363Z
 
 </div>
 
-The House has operated continuously for over four hundred years, taking in children regardless of origin. It occupies a rambling compound in the lower Market Tiers — buildings added to, modified, and connected over centuries until the architecture itself seems uncertain about where one structure ends and another begins.
+The House has operated continuously for over four hundred years, taking in children regardless of origin. It occupies a rambling compound in the lower [Market Tiers](/en/Venturia/Locations/market-tiers) — buildings added to, modified, and connected over centuries until the architecture itself seems uncertain about where one structure ends and another begins.
 
 ---
 
@@ -64,3 +64,13 @@ A parchment-style plan of Liminal House alongside its neighbor, [St. Viro's Resp
 {% include "partials/map-viewer.njk" %}
 
 The standalone [map page](/en/Venturia/Maps/liminal-respite/) opens this same viewer with more room to work.
+
+---
+
+## Connections
+
+- **[Master Artisan Celeste Orion](/en/Venturia/Characters/NPCs/celeste-orion)** — Names this location in its connections.
+- **[Strider](/en/Venturia/Characters/NPCs/strider)** — Names this location in its connections.
+- **[The Abbey of Saint Viro and the Faithful](/en/Venturia/Factions/abbey-of-saint-viro)** — Names this location in its connections.
+- **[The Market Tiers](/en/Venturia/Locations/market-tiers)** — Lists this location among its notable places.
+- **[Vallombrosa](/en/Venturia/Locations/vallombrosa)** — Names this location in its connections.

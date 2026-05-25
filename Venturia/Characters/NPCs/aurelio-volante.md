@@ -27,7 +27,7 @@ dateCreated: 2026-05-22T00:00:00.000Z
 
 </div>
 
-A well-traveled merchant and inveterate collector who keeps a modest spice-and-dye house, [Volante & Associates](/en/Venturia/Factions/volante-associates), in the Market Tiers and a far less modest collection of masks. Tall, olive-skinned, somewhere in his fifties, with the easy bearing of a man who has been comfortable in difficult rooms his whole life.
+A well-traveled merchant and inveterate collector who keeps a modest spice-and-dye house, [Volante & Associates](/en/Venturia/Factions/volante-associates), in the [Market Tiers](/en/Venturia/Locations/market-tiers) and a far less modest collection of masks. Tall, olive-skinned, somewhere in his fifties, with the easy bearing of a man who has been comfortable in difficult rooms his whole life.
 
 ---
 

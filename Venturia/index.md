@@ -9,52 +9,52 @@ dateCreated: 2026-02-27T00:00:00.000Z
 
 # Venturia
 
-A city of tiers — literally and otherwise. The [High Quarter](/en/Venturia/Locations/high-quarter) looks down on the [Market Tiers](/en/Venturia/Locations/market-tiers), which look down on the [Harbor District](/en/Venturia/Locations/harbor-district), which looks out to sea. Above everything, [the Overlook](/en/Venturia/Locations/overlook) faces Vallombrosa.
+A city of tiers — literally and otherwise. The [High Quarter](/en/Venturia/Locations/high-quarter) looks down on the [Market Tiers](/en/Venturia/Locations/market-tiers), which look down on the [Harbor District](/en/Venturia/Locations/harbor-district), which looks out to sea. Above everything, [the Overlook](/en/Venturia/Locations/overlook) faces [Vallombrosa](/en/Venturia/Locations/vallombrosa).
 
 ---
 
-## [Characters](/en/Venturia/Characters/index)
+## [Characters](/en/Venturia/Characters)
 
 The seven adventurers, the Autumn Council, the Verdigris and di Errante families, and the other NPCs whose stories shape the city.
 
 ---
 
-## [Locations](/en/Venturia/Locations/index)
+## [Locations](/en/Venturia/Locations)
 
 Districts, institutions, guilds, and points of interest across the city — plus the forbidden fog-zone at its edge.
 
 ---
 
-## [Factions](/en/Venturia/Factions/index)
+## [Factions](/en/Venturia/Factions)
 
 The Abbey, the merchant covenants, the Watch, the Harbor guild, and the Veil Court.
 
 ---
 
-## [Government](/en/Venturia/Government/index)
+## [Government](/en/Venturia/Government)
 
 The Autumn Council — eleven seats, rarely a majority.
 
 ---
 
-## [Lore](/en/Venturia/Lore/index)
+## [Lore](/en/Venturia/Lore)
 
 The legends, the history, and the deep past.
 
 ---
 
-## [Culture](/en/Venturia/Culture/index)
+## [Culture](/en/Venturia/Culture)
 
 Language, customs, traditions, and the unspoken rules of daily life.
 
 ---
 
-## [Creatures](/en/Venturia/Creatures/index)
+## [Creatures](/en/Venturia/Creatures)
 
 Celestials, Fey, Fiends, and Humanoids encountered in and around Venturia.
 
 ---
 
-## [College of the Masquerade Bard](/en/Venturia/College-of-the-Masquerade-Bard/index)
+## [College of the Masquerade Bard](/en/Venturia/College-of-the-Masquerade-Bard)
 
 Subclass resources and Car's available transformation forms.

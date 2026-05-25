@@ -35,7 +35,7 @@ It is not only a place of wealth. It is a place where distance is part of the ar
 
 ## Character
 
-People come to the High Quarter for education, patronage, contracts, performances, and decisions made behind expensive doors. Its streets are cleaner than the Market Tiers and quieter than the Harbor District, but the calm is political rather than peaceful.
+People come to the High Quarter for education, patronage, contracts, performances, and decisions made behind expensive doors. Its streets are cleaner than the Market Tiers and quieter than the [Harbor District](/en/Venturia/Locations/harbor-district), but the calm is political rather than peaceful.
 
 The district's social codes are dense. A mask, invitation, surname, or school tie can matter as much as coin.
 
@@ -49,7 +49,7 @@ The district's social codes are dense. A mask, invitation, surname, or school ti
 - **[The Glamour Courts](/en/Venturia/Locations/glamour-courts)** - VAVA's illusion training spaces.
 - **[The Covenant Archive](/en/Venturia/Locations/covenant-archive)** - Repository of witnessed contracts and binding agreements.
 - **[The Amaranth Theater](/en/Venturia/Locations/amaranth-theater)** - Cultural heart of Venturia and home of the annual Tragedy.
-- **[The Hall of Reflected Faces](/en/Venturia/Locations/hall-of-reflected-faces)** - The Veil Court's private gallery of Masquerade masks.
+- **[The Hall of Reflected Faces](/en/Venturia/Locations/hall-of-reflected-faces)** - [The Veil Court](/en/Venturia/Factions/veil-court)'s private gallery of Masquerade masks.
 
 ---
 

@@ -28,7 +28,7 @@ dateCreated: 2026-05-25T00:00:00.000Z
 
 </div>
 
-The Signore of Venturia is not a current ruler. It is an old title preserved as an honorary seat on the Autumn Council, a remnant of the era when the di Errante name still meant direct civic authority on Seravalle.
+The Signore of Venturia is not a current ruler. It is an old title preserved as an honorary seat on the [Autumn Council](/en/Venturia/Government/autumn-council), a remnant of the era when the di Errante name still meant direct civic authority on Seravalle.
 
 The seat has stood empty for as long as anyone living remembers.
 

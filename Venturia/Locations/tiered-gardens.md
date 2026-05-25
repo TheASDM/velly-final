@@ -56,3 +56,10 @@ These closures can last days or weeks. During them, strange sounds and lights ar
 - Groundskeeper who tends the oldest trees
 - Former romantic who had their heart broken among the flowers
 - Person who remembers the Gardens differently than they are now
+
+---
+
+## Connections
+
+- **[Strider](/en/Venturia/Characters/NPCs/strider)** — Names this location in its connections.
+- **[The Market Tiers](/en/Venturia/Locations/market-tiers)** — Cross-references this location.

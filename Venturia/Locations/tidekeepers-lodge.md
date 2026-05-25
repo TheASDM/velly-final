@@ -53,3 +53,10 @@ The Lodge keeps its own counsel. When the Harbor-Lords ask about unusual vessels
 - Someone the Tidekeepers helped smuggle into the city
 - Sailor who owes a debt to the Lodge
 - Navigator trained in the old superstitions
+
+---
+
+## Connections
+
+- **[The Harbor District](/en/Venturia/Locations/harbor-district)** — Lists this location among its notable places.
+- **[Vincen Tidecaller](/en/Venturia/Characters/NPCs/vincen-tidecaller)** — Names this location in its connections.

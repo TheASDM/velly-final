@@ -30,7 +30,7 @@ dateCreated: 2026-05-25T00:00:00.000Z
 
 The Binding Crafts Guild speaks for the trades that physically hold Venturia together: timber, stone, rope, scaffolds, piers, repairs, foundations, and the hands that know when a wall is lying.
 
-Its members work across every tier of the city, but its politics are closest to the Market Tiers and the working districts.
+Its members work across every tier of the city, but its politics are closest to the [Market Tiers](/en/Venturia/Locations/market-tiers) and the working districts.
 
 ---
 

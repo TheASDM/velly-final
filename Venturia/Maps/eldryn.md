@@ -17,4 +17,4 @@ The full continent of Eldryn. Pinch, scroll, or use the zoom controls to explore
 
 ---
 
-Vallombrosa — and Venturia within it — is one fog-bound valley among many. The terrain around the Valley is mountainous, with the Maelstrom Strait to the west and the trade roads winding east through the Auric Reach.
+[Vallombrosa](/en/Venturia/Locations/vallombrosa) — and Venturia within it — is one fog-bound valley among many. The terrain around the Valley is mountainous, with the Maelstrom Strait to the west and the trade roads winding east through the Auric Reach.

@@ -26,7 +26,7 @@ dateCreated: 2026-02-23T23:57:38.360Z
 
 </div>
 
-The Academy rises from the High Quarter like a dream of scholarship made stone — all autumn-colored spires and candlelit windows that seem to glow even at midday. Founded three centuries after the curse, VAVA has become one of the foremost institutions of magical study in the region, drawing scholars who appreciate that Venturia's peculiarities make certain research... easier.
+The Academy rises from the [High Quarter](/en/Venturia/Locations/high-quarter) like a dream of scholarship made stone — all autumn-colored spires and candlelit windows that seem to glow even at midday. Founded three centuries after the curse, VAVA has become one of the foremost institutions of magical study in the region, drawing scholars who appreciate that Venturia's peculiarities make certain research... easier.
 
 Students and faculty alike are recognized throughout the city by their distinctive **amber-and-charcoal robes**. VAVA alumni form networks that reach into every corner of Venturian society — the Academy's influence extends well beyond the High Quarter, and a former student is rarely far away in any room that matters.
 
@@ -57,5 +57,12 @@ Pinch or scroll to zoom — every faculty hall, the five-floor library, and the 
 - Former student who left under mysterious circumstances
 - Faculty member researching something best left buried
 - Library assistant who has seen the Restricted Stacks
-- Scholarship recipient from the Harbor District
+- Scholarship recipient from the [Harbor District](/en/Venturia/Locations/harbor-district)
 - Dropout who learned the real lessons happened outside class
+
+---
+
+## Connections
+
+- **[Archmagister Dorian Silvermarch](/en/Venturia/Characters/NPCs/dorian-silvermarch)** — Names this location in its connections.
+- **[The High Quarter](/en/Venturia/Locations/high-quarter)** — Lists this location among its notable places.

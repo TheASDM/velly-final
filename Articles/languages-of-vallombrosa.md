@@ -5,19 +5,19 @@ tags: "player-guide, languages, worldbuilding, venturia, vallombrosa, character-
 date: 2026-02-23T00:00:00.000Z
 ---
 
-Languages in D&D often feel like an afterthought—a small mechanical benefit you note on your character sheet and forget about until the DM asks "does anyone speak Elvish?" three sessions in. For Vallombrosa, think about languages differently: not as tools for puzzle-solving, but as windows into your character's education, social position, and connection to Venturia's layered history.
+Languages in D&D often feel like an afterthought—a small mechanical benefit you note on your character sheet and forget about until the DM asks "does anyone speak Elvish?" three sessions in. For [Vallombrosa](/en/Venturia/Locations/vallombrosa), think about languages differently: not as tools for puzzle-solving, but as windows into your character's education, social position, and connection to Venturia's layered history.
 
 ## The Linguistic Landscape of Venturia
 
 **Common** is the everyday language of commerce, governance, and daily life—the language you've spoken since childhood, the language of the streets and markets and council chambers.
 
-**Trade Languages:** The harbor district echoes with languages brought by sailors and merchants from across Eldoria—Aquan, Dwarvish, Elvish, Halfling, and various human regional dialects. If you grew up in the Harbor District or your family is involved in maritime trade, you'd naturally pick up at least one of these.
+**Trade Languages:** The harbor district echoes with languages brought by sailors and merchants from across Eldoria—Aquan, Dwarvish, Elvish, Halfling, and various human regional dialects. If you grew up in the [Harbor District](/en/Venturia/Locations/harbor-district) or your family is involved in maritime trade, you'd naturally pick up at least one of these.
 
-**Scholarly Languages:** VAVA and the Vellum Hall maintain texts in languages that facilitate magical and academic study—Draconic, Celestial, Infernal, Primordial and its dialects. If your character had formal education, these represent specialized knowledge rather than conversational fluency. You can read the texts, translate the formulae, but you're not necessarily having casual conversations in Draconic.
+**Scholarly Languages:** VAVA and the [Vellum Hall](/en/Venturia/Locations/vellum-hall) maintain texts in languages that facilitate magical and academic study—Draconic, Celestial, Infernal, Primordial and its dialects. If your character had formal education, these represent specialized knowledge rather than conversational fluency. You can read the texts, translate the formulae, but you're not necessarily having casual conversations in Draconic.
 
-**Historical Languages:** The Abbey, the Covenant Archive, and VAVA's deepest libraries contain documents in languages that predate Venturia itself. Archaic Common appears in texts from the di Errante era and earlier. Sylvan, the language of fey courts, shows up in fragments and marginalia—scholars suspect it has significance to understanding Vallombrosa's transformation, but few can read it fluently.
+**Historical Languages:** The Abbey, the [Covenant Archive](/en/Venturia/Locations/covenant-archive), and VAVA's deepest libraries contain documents in languages that predate Venturia itself. Archaic Common appears in texts from the di Errante era and earlier. Sylvan, the language of fey courts, shows up in fragments and marginalia—scholars suspect it has significance to understanding Vallombrosa's transformation, but few can read it fluently.
 
-**Thieves' Cant:** Not a separate language but a coded way of speaking Common—slang, double meanings, and subtle signals that let certain people communicate in plain sight. It's about being part of underground networks, whether that's the Undertow's gambling circles, the gray market, or simply growing up in parts of the city where you learned not to say everything plainly.
+**Thieves' Cant:** Not a separate language but a coded way of speaking Common—slang, double meanings, and subtle signals that let certain people communicate in plain sight. It's about being part of underground networks, whether that's the [Undertow](/en/Venturia/Locations/the-undertow)'s gambling circles, the gray market, or simply growing up in parts of the city where you learned not to say everything plainly.
 
 ---
 

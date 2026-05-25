@@ -26,7 +26,7 @@ dateCreated: 2026-02-23T23:57:32.396Z
 
 </div>
 
-In a city where mirrors sometimes lag, the Mirrorwrights have made themselves indispensable. Their Court occupies a converted warehouse in the upper Market Tiers, its interior transformed into a maze of workshops where silver is applied to glass with techniques passed down through generations. The air smells of mercury and secrets.
+In a city where mirrors sometimes lag, the Mirrorwrights have made themselves indispensable. Their Court occupies a converted warehouse in the upper [Market Tiers](/en/Venturia/Locations/market-tiers), its interior transformed into a maze of workshops where silver is applied to glass with techniques passed down through generations. The air smells of mercury and secrets.
 
 ---
 
@@ -53,3 +53,14 @@ Some say the craft requires looking into mirrors for so long that you learn to s
 - Former apprentice who discovered the Mirrorwrights' real secrets
 - Client who needed a true mirror for deeply personal reasons
 - Watch consultant called in to settle identity cases
+
+---
+
+## Connections
+
+- **[Cosimo Verdigris](/en/Venturia/Characters/NPCs/cosimo-verdigris)** — Names this location in its connections.
+- **[Isidore Verdigris](/en/Venturia/Characters/NPCs/isidore-verdigris)** — Names this location in its connections.
+- **[Thalia Verdigris](/en/Venturia/Characters/NPCs/thalia-verdigris)** — Names this location in its connections.
+- **[The Market Tiers](/en/Venturia/Locations/market-tiers)** — Lists this location among its notable places.
+- **[The Metals Guild](/en/Venturia/Factions/metals-guild)** — Names this location in its connections.
+- **[The Verdigris Family](/en/Venturia/Characters/NPCs/verdigris-family)** — Names this location in its connections.

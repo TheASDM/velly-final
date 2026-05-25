@@ -26,7 +26,7 @@ dateCreated: 2026-02-23T23:57:40.320Z
 
 </div>
 
-The Respite sprawls across several connected buildings in the middle Market Tiers, marked by the Abbey's silver hand symbol and the constant coming and going of people seeking care. Run by the Abbey of Saint Viro, it provides treatment regardless of ability to pay — the Abbey's doctrine holds that suffering doesn't check anyone's purse before arriving.
+The Respite sprawls across several connected buildings in the middle [Market Tiers](/en/Venturia/Locations/market-tiers), marked by the Abbey's silver hand symbol and the constant coming and going of people seeking care. Run by the Abbey of Saint Viro, it provides treatment regardless of ability to pay — the Abbey's doctrine holds that suffering doesn't check anyone's purse before arriving.
 
 ---
 
@@ -69,3 +69,11 @@ The Respite shares its grounds with [Liminal House](/en/Venturia/Locations/limin
 {% include "partials/map-viewer.njk" %}
 
 The standalone [map page](/en/Venturia/Maps/liminal-respite/) opens this same viewer with more room to work.
+
+---
+
+## Connections
+
+- **[Mother-Abbot Lucia Virosdottir](/en/Venturia/Characters/NPCs/lucia-virosdottir)** — Names this location in its connections.
+- **[The Abbey of Saint Viro and the Faithful](/en/Venturia/Factions/abbey-of-saint-viro)** — Names this location in its connections.
+- **[The Market Tiers](/en/Venturia/Locations/market-tiers)** — Lists this location among its notable places.

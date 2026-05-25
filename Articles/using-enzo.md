@@ -55,9 +55,9 @@ Plain English. Ask the question you'd ask another player who happened to have re
 
 - "Who runs the Mirrorwrights' guild?"
 - "What's Caravel's deal with their parents?"
-- "What do the Fog Wardens actually do at the Overlook?"
+- "What do the Fog Wardens actually do at the [Overlook](/en/Venturia/Locations/overlook)?"
 - "Remind me of the rules for the Help action."
-- "What do we know about the Autumn Masquerade?"
+- "What do we know about the [Autumn Masquerade](/en/Venturia/Culture/autumn-masquerade)?"
 - "How does the Verdigris family fit into the city?"
 
 The more specific the question, the better the answer. If you're looking for a person, a faction, or a place, name it. He searches by text similarity to your question, so vague questions get vague answers.

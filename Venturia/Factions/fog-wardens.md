@@ -31,7 +31,7 @@ dateCreated: 2026-05-22T00:00:00.000Z
 
 <!-- TODO: banner — supply a filename to add -->
 
-Venturia's law and order — and its first line where the city meets the fog. The visible Watch patrols the streets and answers the day's troubles; the Fog Wardens hold the boundary at the Overlook, where Venturia ends and Vallombrosa's fog begins.
+Venturia's law and order — and its first line where the city meets the fog. The visible Watch patrols the streets and answers the day's troubles; the Fog Wardens hold the boundary at the Overlook, where Venturia ends and [Vallombrosa](/en/Venturia/Locations/vallombrosa)'s fog begins.
 
 ---
 
@@ -41,7 +41,7 @@ The Fog Wardens are the public force: street patrols, response to crime and diso
 ---
 
 ## Leadership
-Captain-Commander Thora Ironmark, a half-orc veteran who rose through the ranks over twenty years. Tough, fair, and fiercely protective of the city's people, she holds the Watch Commander's seat on the Autumn Council.
+[Captain-Commander Thora Ironmark](/en/Venturia/Characters/NPCs/thora-ironmark), a half-orc veteran who rose through the ranks over twenty years. Tough, fair, and fiercely protective of the city's people, she holds the Watch Commander's seat on the Autumn Council.
 
 ---
 
@@ -49,3 +49,5 @@ Captain-Commander Thora Ironmark, a half-orc veteran who rose through the ranks 
 - **[Captain-Commander Thora Ironmark](/en/Venturia/Characters/NPCs/thora-ironmark)** — Watch Commander and Autumn Council member.
 - **[The Fog Wardens' Garrison](/en/Venturia/Locations/fog-wardens-garrison)** — The Watch's primary post at the Vallombrosa boundary.
 - **[Noname](/en/Venturia/Characters/PCs/noname)** — A Fog Warden stationed at the Overlook.
+- **[The Harbor Wardens' Compact](/en/Venturia/Factions/harbor-wardens)** — Names this faction in its connections.
+- **[The Overlook](/en/Venturia/Locations/overlook)** — Cross-references this faction.

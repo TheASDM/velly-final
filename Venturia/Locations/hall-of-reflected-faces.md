@@ -27,7 +27,7 @@ dateCreated: 2026-05-25T00:00:00.000Z
 
 </div>
 
-The Hall of Reflected Faces is one of the Veil Court's most exclusive spaces: a gallery holding a mask from every Autumn Masquerade for nearly three hundred years.
+The Hall of Reflected Faces is one of the [Veil Court](/en/Venturia/Factions/veil-court)'s most exclusive spaces: a gallery holding a mask from every [Autumn Masquerade](/en/Venturia/Culture/autumn-masquerade) for nearly three hundred years.
 
 It is an archive, a shrine, and a social weapon depending on who is invited to stand inside it.
 
@@ -44,3 +44,4 @@ Each mask preserves a version of the city that chose to show itself for one autu
 - **[The Veil Court](/en/Venturia/Factions/veil-court)** - Keeper of the Hall.
 - **[The Autumn Masquerade](/en/Venturia/Culture/autumn-masquerade)** - Source of the masks in the collection.
 - **[Valeria Tessere](/en/Venturia/Characters/NPCs/valeria-tessere)** - The Court leader most associated with guarded access.
+- **[The High Quarter](/en/Venturia/Locations/high-quarter)** — Lists this location among its notable places.

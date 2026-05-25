@@ -28,7 +28,7 @@ dateCreated: 2026-05-25T00:00:00.000Z
 
 </div>
 
-The Gardener's Guild maintains the Tiered Gardens and the horticultural techniques that make Venturia's green spaces feel slightly impossible. Its members know which terraces can be safely opened, which trees should not be disturbed, and which flowers bloom in colors outsiders do not have names for.
+The Gardener's Guild maintains the [Tiered Gardens](/en/Venturia/Locations/tiered-gardens) and the horticultural techniques that make Venturia's green spaces feel slightly impossible. Its members know which terraces can be safely opened, which trees should not be disturbed, and which flowers bloom in colors outsiders do not have names for.
 
 ---
 

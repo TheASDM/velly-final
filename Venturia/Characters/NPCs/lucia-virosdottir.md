@@ -31,7 +31,7 @@ dateCreated: 2026-05-22T00:00:00.000Z
 
 > *"This is beyond our usual ministrations."*
 
-Temple Authority on the Autumn Council, its current Chair, and Mother-Abbot of the Abbey of Saint Viro. In her early seventies, slight but commanding, with forty years of service behind her and family roots reaching back to the city's founders. Wise and compassionate, and visibly wearied by a crisis that strains her faith.
+Temple Authority on the [Autumn Council](/en/Venturia/Government/autumn-council), its current Chair, and Mother-Abbot of the Abbey of Saint Viro. In her early seventies, slight but commanding, with forty years of service behind her and family roots reaching back to the city's founders. Wise and compassionate, and visibly wearied by a crisis that strains her faith.
 
 ---
 
@@ -44,3 +44,4 @@ She offers the city sanctuary, care for the afflicted, and the Abbey's scholarsh
 - **[The Autumn Council](/en/Venturia/Government/autumn-council)** — Temple Authority seat; current Council Chair.
 - **[The Abbey of Saint Viro and the Faithful](/en/Venturia/Factions/abbey-of-saint-viro)** — She leads the Abbey as Mother-Abbot.
 - **[St. Viro's Respite](/en/Venturia/Locations/viros-respite)** — The Respite operates under the Abbey's oversight.
+- **[High Oracle Ysmena Starweaver](/en/Venturia/Characters/NPCs/ysmena-starweaver)** — Names this character in its connections.

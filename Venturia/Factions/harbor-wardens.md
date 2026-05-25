@@ -40,7 +40,7 @@ Every ship that docks pays the Compact a fee; every warehouse operates under its
 ---
 
 ## Leadership
-Led by Lord-Admiral Teodor Vast, master of the city's largest private fleet and a Harbor-Lord on the Autumn Council. He holds, with real conviction, that Venturia's remarkable prosperity is a gift to be protected at any cost.
+Led by [Lord-Admiral Teodor Vast](/en/Venturia/Characters/NPCs/teodor-vast), master of the city's largest private fleet and a Harbor-Lord on the Autumn Council. He holds, with real conviction, that Venturia's remarkable prosperity is a gift to be protected at any cost.
 
 ---
 
@@ -53,3 +53,6 @@ Members gain access to regional trade networks, preferential shipping and wareho
 - **[Lord-Admiral Teodor Vast](/en/Venturia/Characters/NPCs/teodor-vast)** — Faction leader and Harbor-Lord on the Council.
 - **[The Covenant of Silver Scales](/en/Venturia/Factions/covenant-silver-scales)** — Cooperate on commercial matters, compete for economic influence.
 - **[The Fog Wardens and the Shadowed Wardens](/en/Venturia/Factions/fog-wardens)** — Generously funded by the Compact, since security is good for business — though its trade-restricting rules chafe.
+- **[The Harbor District](/en/Venturia/Locations/harbor-district)** — Cross-references this faction.
+- **[The Unexplained Prosperity](/en/Venturia/Lore/unexplained-prosperity)** — Names this faction in its connections.
+- **[The Warehouse Consortium](/en/Venturia/Factions/warehouse-consortium)** — Names this faction in its connections.

@@ -55,3 +55,9 @@ The librarians neither confirm nor deny what the Restricted Stacks actually cont
 - Applicant who has been waiting for access for many years
 - Former Head Librarian who retired under unclear circumstances
 - Self-educated professional who learned everything they know here
+
+---
+
+## Connections
+
+- **[The Market Tiers](/en/Venturia/Locations/market-tiers)** — Lists this location among its notable places.

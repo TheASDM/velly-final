@@ -27,7 +27,7 @@ dateCreated: 2026-05-22T00:00:00.000Z
 
 </div>
 
-A Fog Warden who volunteered for the Overlook posting, and the man Noname was to marry. One night he failed to return, and no trace of him has surfaced since.
+A Fog Warden who volunteered for the [Overlook](/en/Venturia/Locations/overlook) posting, and the man Noname was to marry. One night he failed to return, and no trace of him has surfaced since.
 
 ---
 
@@ -40,3 +40,4 @@ Maruk vanished the same night a scarred stranger appeared at the fog line below 
 - **[Noname](/en/Venturia/Characters/PCs/noname)** — His fiancée, now seeking treatment for her clouded memory of the night he disappeared.
 - **[Kryton Novelli](/en/Venturia/Characters/PCs/kryton-novelli)** — A close friend, whose own search for answers began with Maruk's disappearance.
 - **A scarred stranger** — Appeared at the fog line the same night Maruk vanished. Currently comatose at St. Viro's Respite; no one has named him.
+- **[The Overlook](/en/Venturia/Locations/overlook)** — Cross-references this character.

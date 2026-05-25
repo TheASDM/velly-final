@@ -30,7 +30,7 @@ dateCreated: 2026-05-22T00:00:00.000Z
 
 > *"The fog moves wrong. Something's waking that was sleeping."*
 
-Master of the Tidekeeper's Lodge, holding his Autumn Council seat by ancient charter rather than wealth. A quiet man in his sixties with a permanent horizon-squint, he speaks rarely and is listened to when he does, carrying generations of accumulated Tidekeeper knowledge. He cares more for the Lodge's independence than for politics.
+Master of the [Tidekeeper's Lodge](/en/Venturia/Locations/tidekeepers-lodge), holding his Autumn Council seat by ancient charter rather than wealth. A quiet man in his sixties with a permanent horizon-squint, he speaks rarely and is listened to when he does, carrying generations of accumulated Tidekeeper knowledge. He cares more for the Lodge's independence than for politics.
 
 ---
 
@@ -42,3 +42,4 @@ A voice for caution rooted in long memory. Vincen warns that the strangeness in 
 ## Connections
 - **[The Autumn Council](/en/Venturia/Government/autumn-council)** — Master of the Tidekeeper's Lodge; the compromise appointment after the Teodor–Constanza deadlock.
 - **[The Tidekeeper's Lodge](/en/Venturia/Locations/tidekeepers-lodge)** — The order he leads.
+- **[Primo Navigante Old Maren](/en/Venturia/Characters/NPCs/old-maren)** — Names this character in its connections.

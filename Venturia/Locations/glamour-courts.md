@@ -42,3 +42,4 @@ The Courts are beautiful, frustrating, and hard to describe consistently. A less
 - **[Venturian Academy of Veiled Arts](/en/Venturia/Locations/vava)** - The Courts' institution.
 - **[The Veil Court](/en/Venturia/Factions/veil-court)** - A cultural cousin outside the Academy.
 - **[The Autumn Masquerade](/en/Venturia/Culture/autumn-masquerade)** - The city's most famous demonstration of chosen identity.
+- **[The High Quarter](/en/Venturia/Locations/high-quarter)** — Lists this location among its notable places.

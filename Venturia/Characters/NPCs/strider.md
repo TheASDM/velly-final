@@ -28,7 +28,7 @@ dateCreated: 2026-05-25T00:00:00.000Z
 
 </div>
 
-Strider is the name the gardeners use for the mentor who trained [Valentro](/en/Venturia/Characters/PCs/valentro) in the way of the leaf. Among the terraces of the Tiered Gardens and the [Gardener's Guild](/en/Venturia/Factions/gardeners-guild), that means more than pruning and patience: it is a discipline of attention, quiet movement, and knowing when not to disturb what is growing.
+Strider is the name the gardeners use for the mentor who trained [Valentro](/en/Venturia/Characters/PCs/valentro) in the way of the leaf. Among the terraces of the [Tiered Gardens](/en/Venturia/Locations/tiered-gardens) and the [Gardener's Guild](/en/Venturia/Factions/gardeners-guild), that means more than pruning and patience: it is a discipline of attention, quiet movement, and knowing when not to disturb what is growing.
 
 ---
 
@@ -36,7 +36,7 @@ Strider is the name the gardeners use for the mentor who trained [Valentro](/en/
 
 Strider works within the culture of the Gardens rather than above it. The gardeners speak of them as someone who knows old paths, old trees, and the small signs by which a living place shows stress before anyone else notices.
 
-Valentro learned beside Strider before his recent memories of swordwork began surfacing. Whether Strider recognizes those reflexes as something ordinary, dangerous, or familiar has not yet been established.
+[Valentro](/en/Venturia/Characters/PCs/valentro) learned beside Strider before his recent memories of swordwork began surfacing. Whether Strider recognizes those reflexes as something ordinary, dangerous, or familiar has not yet been established.
 
 ---
 

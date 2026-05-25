@@ -52,7 +52,7 @@ The Confraternity maintains customs that outsiders find peculiar but accept as p
 
 **Payment in the dish.** Coin is always placed in a small bronze dish at the prow — never handed directly to the ferrier.
 
-**The dark week.** The Confraternity refuses to ferry passengers after midnight during the week before the Autumn Masquerade. They offer no explanation. The few people who have tried to navigate the canals alone during those nights report becoming hopelessly lost in waterways that seemed to shift and fold until dawn.
+**The dark week.** The Confraternity refuses to ferry passengers after midnight during the week before the [Autumn Masquerade](/en/Venturia/Culture/autumn-masquerade). They offer no explanation. The few people who have tried to navigate the canals alone during those nights report becoming hopelessly lost in waterways that seemed to shift and fold until dawn.
 
 ---
 
@@ -64,3 +64,10 @@ The Confraternity maintains customs that outsiders find peculiar but accept as p
 - Passenger who took a wrong turn into somewhere impossible
 - Merchant who relies on the Confraternity for sensitive cargo
 - Watch officer assigned to canal jurisdiction who learned not to ask questions
+
+---
+
+## Connections
+
+- **[Primo Navigante Old Maren](/en/Venturia/Characters/NPCs/old-maren)** — Names this location in its connections.
+- **[The Harbor District](/en/Venturia/Locations/harbor-district)** — Lists this location among its notable places.

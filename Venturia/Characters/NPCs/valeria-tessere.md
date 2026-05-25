@@ -28,7 +28,7 @@ dateCreated: 2026-05-25T00:00:00.000Z
 
 </div>
 
-Valeria Tessere is the public face, when she permits such a thing, of the Veil Court. Once a celebrated actress, she now appears as a patron, organizer, judge of taste, and keeper of the traditions surrounding Venturia's masks and Masquerade.
+Valeria Tessere is the public face, when she permits such a thing, of the [Veil Court](/en/Venturia/Factions/veil-court). Once a celebrated actress, she now appears as a patron, organizer, judge of taste, and keeper of the traditions surrounding Venturia's masks and Masquerade.
 
 She wears a different mask to every public appearance, and has seemed to do so for rather longer than her apparent years would allow.
 

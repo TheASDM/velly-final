@@ -31,7 +31,7 @@ dateCreated: 2026-05-22T00:00:00.000Z
 
 > *"This isn't about blame. It's about understanding what we're dealing with."*
 
-Temple Authority on the Autumn Council, speaking for the city's smaller temples and wandering clergy — the priests of travel, the sea, fortune, and trade. A weather-worn, restless man in his late thirties who spent fifteen years as a ship's chaplain before settling in Venturia, and an organizer by temperament: relief drives, mediations, interfaith networks.
+Temple Authority on the [Autumn Council](/en/Venturia/Government/autumn-council), speaking for the city's smaller temples and wandering clergy — the priests of travel, the sea, fortune, and trade. A weather-worn, restless man in his late thirties who spent fifteen years as a ship's chaplain before settling in Venturia, and an organizer by temperament: relief drives, mediations, interfaith networks.
 
 ---
 
@@ -43,3 +43,4 @@ The chamber's coalition-builder and its optimist. Domenico presses the council t
 ## Connections
 - **[The Autumn Council](/en/Venturia/Government/autumn-council)** — Temple Authority seat.
 - **Smaller temples &amp; wandering clergy** — The travel, maritime, and fortune faiths he represents.
+- **[High Oracle Ysmena Starweaver](/en/Venturia/Characters/NPCs/ysmena-starweaver)** — Names this character in its connections.

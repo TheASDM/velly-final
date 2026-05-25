@@ -26,7 +26,7 @@ dateCreated: 2026-02-23T23:57:33.417Z
 
 </div>
 
-The shrine has no official deity, no formal priesthood, no doctrine beyond hope. Wedged between warehouses in the Harbor District, it's a single room layered with centuries of accumulated offerings: coins from every nation that trades here, found objects left for luck, written prayers in dozens of languages, candles that are never allowed to all go out at once.
+The shrine has no official deity, no formal priesthood, no doctrine beyond hope. Wedged between warehouses in the [Harbor District](/en/Venturia/Locations/harbor-district), it's a single room layered with centuries of accumulated offerings: coins from every nation that trades here, found objects left for luck, written prayers in dozens of languages, candles that are never allowed to all go out at once.
 
 ---
 
@@ -55,3 +55,9 @@ Regulars know the shrine has its own strangeness.
 - Someone who left something precious and received... something in return
 - Skeptic who became a believer after a specific incident
 - Person trying to retrieve an offering they now regret leaving
+
+---
+
+## Connections
+
+- **[The Harbor District](/en/Venturia/Locations/harbor-district)** — Lists this location among its notable places.

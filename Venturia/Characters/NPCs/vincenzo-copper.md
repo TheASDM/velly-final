@@ -30,7 +30,7 @@ dateCreated: 2026-05-22T00:00:00.000Z
 
 > *"We'll survive this by doing what we've always done."*
 
-Guild-Master on the Autumn Council, representing the [Metals Guild](/en/Venturia/Factions/metals-guild) — smiths, metalworkers, jewelers, and the Mirrorwrights. A conservative dwarf traditionalist whose family has led the guild for three generations, he takes the seven-generation view of every problem: wise and steadying, and maddeningly slow to act.
+Guild-Master on the [Autumn Council](/en/Venturia/Government/autumn-council), representing the [Metals Guild](/en/Venturia/Factions/metals-guild) — smiths, metalworkers, jewelers, and the Mirrorwrights. A conservative dwarf traditionalist whose family has led the guild for three generations, he takes the seven-generation view of every problem: wise and steadying, and maddeningly slow to act.
 
 ---
 
@@ -42,3 +42,5 @@ The voice of caution and continuity. Vincenzo trusts the guilds' long survival o
 ## Connections
 - **[The Autumn Council](/en/Venturia/Government/autumn-council)** — Holds one of the two Guild-Master seats.
 - **[The Metals Guild](/en/Venturia/Factions/metals-guild)** — The smiths, jewelers, and Mirrorwrights under his leadership.
+- **[Cosimo Verdigris](/en/Venturia/Characters/NPCs/cosimo-verdigris)** — Names this character in its connections.
+- **[The Verdigris Family](/en/Venturia/Characters/NPCs/verdigris-family)** — Names this character in its connections.

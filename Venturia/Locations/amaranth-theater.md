@@ -26,7 +26,7 @@ dateCreated: 2026-02-23T23:57:23.247Z
 
 </div>
 
-The Amaranth dominates the eastern coast. While technically in the [Harbor District](/en/Venturia/Locations/harbor-district), it is considered an extension of the High Quarter — its grand facade of deep blue stone and gilded trim visible from half the city. For over three centuries, this sprawling complex of performance halls, rehearsal spaces, workshops, and artist residences has shaped Venturia's cultural identity. In a city obsessed with masks and performance, that makes the Amaranth something close to sacred ground.
+The Amaranth dominates the eastern coast. While technically in the [Harbor District](/en/Venturia/Locations/harbor-district), it is considered an extension of the [High Quarter](/en/Venturia/Locations/high-quarter) — its grand facade of deep blue stone and gilded trim visible from half the city. For over three centuries, this sprawling complex of performance halls, rehearsal spaces, workshops, and artist residences has shaped Venturia's cultural identity. In a city obsessed with masks and performance, that makes the Amaranth something close to sacred ground.
 
 ---
 
@@ -61,3 +61,14 @@ Veterans learn not to look too long into the mirrors in the dressing rooms durin
 - Former child performer who aged out of certain roles
 - Patron or donor with strong opinions about artistic direction
 - Someone who saw something strange backstage during Masquerade season
+
+---
+
+## Connections
+
+- **[Celina Cross](/en/Venturia/Characters/NPCs/celina-cross)** — Names this location in its connections.
+- **[Isabella Fortunata](/en/Venturia/Characters/NPCs/isabella-fortunata)** — Names this location in its connections.
+- **[Marcello di Errante](/en/Venturia/Characters/NPCs/marcello-di-errante)** — Names this location in its connections.
+- **[The Legends of Vallombrosa](/en/Venturia/Lore/legends-of-vallombrosa)** — Cross-references this location.
+- **[The Veil Court](/en/Venturia/Factions/veil-court)** — Names this location in its connections.
+- **[Valeria Tessere](/en/Venturia/Characters/NPCs/valeria-tessere)** — Names this location in its connections.

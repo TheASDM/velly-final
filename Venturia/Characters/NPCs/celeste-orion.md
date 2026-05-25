@@ -31,7 +31,7 @@ dateCreated: 2026-05-22T00:00:00.000Z
 
 > *"We need protection now."*
 
-Guild-Master on the Autumn Council and head of the [Binding Crafts Guild](/en/Venturia/Factions/binding-crafts-guild) — the carpenters, masons, shipwrights, and construction trades. Mid-fifties, with calloused hands and ink-stained fingers, the daughter of a Liminal House foundling who built her career from nothing and remains fiercely protective of working people.
+Guild-Master on the [Autumn Council](/en/Venturia/Government/autumn-council) and head of the [Binding Crafts Guild](/en/Venturia/Factions/binding-crafts-guild) — the carpenters, masons, shipwrights, and construction trades. Mid-fifties, with calloused hands and ink-stained fingers, the daughter of a Liminal House foundling who built her career from nothing and remains fiercely protective of working people.
 
 ---
 

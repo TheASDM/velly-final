@@ -42,3 +42,4 @@ In another city, divination might be treated as a clean discipline of signs and 
 - **[Venturian Academy of Veiled Arts](/en/Venturia/Locations/vava)** - The tower's institution.
 - **[Archmagister Dorian Silvermarch](/en/Venturia/Characters/NPCs/dorian-silvermarch)** - The Academy's head.
 - **[The Subtle Fey-Touch](/en/Venturia/Lore/subtle-fey-touch)** - The local strangeness that makes this work unusually fruitful.
+- **[The High Quarter](/en/Venturia/Locations/high-quarter)** — Lists this location among its notable places.

@@ -10,7 +10,7 @@ dateCreated: 2026-05-24T00:00:00.000Z
 
 # Liminal House & St. Viro's Respite
 
-A parchment rendering of the linked grounds of Liminal House and St. Viro's Respite — the orphanage that took in the fog children and the sanitarium that treats those for whom the fog never quite let go. Several party members were raised within these walls; one is currently a patient.
+A parchment rendering of the linked grounds of [Liminal House](/en/Venturia/Locations/liminal-house) and [St. Viro's Respite](/en/Venturia/Locations/viros-respite) — the orphanage that took in the fog children and the sanitarium that treats those for whom the fog never quite let go. Several party members were raised within these walls; one is currently a patient.
 
 {% set map = { slug: "liminal-respite", src: "/images/maps/liminal-respiteparchment_upscayl_5x_upscayl-standard-4x.jpg", caption: "Liminal House (left) and St. Viro's Respite (right) — orphanage and sanitarium, joined by the chapel garden." } %}
 {% include "partials/map-viewer.njk" %}
@@ -23,4 +23,4 @@ A parchment rendering of the linked grounds of Liminal House and St. Viro's Resp
 - [St. Viro's Respite](/en/Venturia/Locations/viros-respite/) — the sanitarium
 - [Noname](/en/Venturia/Characters/PCs/noname/) — current patient
 - [Orabella](/en/Venturia/Characters/PCs/orabella/) — cleric on staff
-- [Valentro](/en/Venturia/Characters/PCs/valentro/) — raised at Liminal House
+- [Valentro](/en/Venturia/Characters/PCs/valentro/) — raised at [Liminal House](/en/Venturia/Locations/liminal-house)

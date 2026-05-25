@@ -56,7 +56,7 @@ The family that has controlled the Mirrorwrights' guild for five generations. Ol
 ---
 
 ## The Guild
-The Verdigris run the [Mirrorwright's Court](/en/Venturia/Locations/mirrorwrights-court) in the Market Tiers, where most of what they make is ordinary looking-glass and a precious few are "true mirrors" that reflect honestly despite the city's peculiarities. Their word carries weight in any matter touching mirrors, reflection, or identity.
+The Verdigris run the [Mirrorwright's Court](/en/Venturia/Locations/mirrorwrights-court) in the [Market Tiers](/en/Venturia/Locations/market-tiers), where most of what they make is ordinary looking-glass and a precious few are "true mirrors" that reflect honestly despite the city's peculiarities. Their word carries weight in any matter touching mirrors, reflection, or identity.
 
 ---
 

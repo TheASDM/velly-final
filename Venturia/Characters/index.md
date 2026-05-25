@@ -14,12 +14,12 @@ The cast of the Vallombrosa campaign — those at the table and those whose stor
 
 ---
 
-## [Player Characters](/en/Venturia/Characters/PCs/index)
+## [Player Characters](/en/Venturia/Characters/PCs)
 
 The seven adventurers whose stories play out in Venturia.
 
 ---
 
-## [NPCs](/en/Venturia/Characters/NPCs/index)
+## [NPCs](/en/Venturia/Characters/NPCs)
 
 The Autumn Council, the Verdigris and di Errante families, the city's master craftspeople, and the legends still spoken of a thousand years on.

@@ -30,7 +30,7 @@ dateCreated: 2026-05-22T00:00:00.000Z
 
 <!-- TODO: banner — supply a filename to add -->
 
-Venturia's foremost religious institution, dedicated to Saint Viro — who, in the city's tellings, protected the valley long before it became Vallombrosa. The Abbey runs hospitals, orphanages, and food relief, and is genuinely respected for doing hard, unglamorous work without asking for credit.
+Venturia's foremost religious institution, dedicated to Saint Viro — who, in the city's tellings, protected the valley long before it became [Vallombrosa](/en/Venturia/Locations/vallombrosa). The Abbey runs hospitals, orphanages, and food relief, and is genuinely respected for doing hard, unglamorous work without asking for credit.
 
 ---
 
@@ -40,7 +40,7 @@ Spiritual guidance, charity, and education for children whose families can't aff
 ---
 
 ## Leadership
-Led by Mother-Abbot Lucia Virosdottir, who also holds a Temple Authority seat on the Autumn Council and currently serves as its Chair. Forty years of service have made her wise and compassionate; the present crisis has made her weary.
+Led by [Mother-Abbot Lucia Virosdottir](/en/Venturia/Characters/NPCs/lucia-virosdottir), who also holds a Temple Authority seat on the Autumn Council and currently serves as its Chair. Forty years of service have made her wise and compassionate; the present crisis has made her weary.
 
 ---
 

@@ -27,7 +27,7 @@ dateCreated: 2026-05-25T00:00:00.000Z
 
 </div>
 
-*The Tragedy of Vallombrosa* is the play Venturia cannot stop staging about the story it cannot agree on. Every year during the Autumn Masquerade, the Amaranth presents a new version of the di Errante fall, the catastrophe, and the fog that swallowed Vallombrosa.
+*The Tragedy of Vallombrosa* is the play Venturia cannot stop staging about the story it cannot agree on. Every year during the [Autumn Masquerade](/en/Venturia/Culture/autumn-masquerade), the Amaranth presents a new version of the di Errante fall, the catastrophe, and the fog that swallowed Vallombrosa.
 
 No two productions tell exactly the same story.
 
@@ -54,3 +54,4 @@ The di Errante family was powerful. Something catastrophic happened. The fog app
 - **[Isabella Fortunata](/en/Venturia/Characters/NPCs/isabella-fortunata)** - The legendary figure at the heart of many versions.
 - **[Marcello di Errante](/en/Venturia/Characters/NPCs/marcello-di-errante)** - A name in the old stories.
 - **[Lorenzo di Errante](/en/Venturia/Characters/NPCs/lorenzo-di-errante)** - Another name in the old stories.
+- **[The Veil Court](/en/Venturia/Factions/veil-court)** — Names this cultural entry in its connections.

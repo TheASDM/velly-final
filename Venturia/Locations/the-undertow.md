@@ -59,3 +59,9 @@ The identity of the Undertow's actual owner is one of Venturia's persistent myst
 - Regular player with a complicated relationship to risk
 - Person who owes the house a favor not yet called in
 - Winner of something that wasn't supposed to be possible to win
+
+---
+
+## Connections
+
+- **[The Harbor District](/en/Venturia/Locations/harbor-district)** — Lists this location among its notable places.

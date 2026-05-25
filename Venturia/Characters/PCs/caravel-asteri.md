@@ -44,7 +44,7 @@ Car's parents run [The Covenant Archive](/en/Venturia/Locations/covenant-archive
 ---
 
 ## The Masquerade
-Car watched family friends strike a bargain with someone they didn't know. The following night, at the Autumn Masquerade, that friend was dead. Car's parents call it "betrayal" and refuse to say more. Car has been categorically opposed to secrets ever since — and, perhaps in spite of that, was drawn straight into the Sodality's world of masks, theater, and performance.
+Car watched family friends strike a bargain with someone they didn't know. The following night, at the [Autumn Masquerade](/en/Venturia/Culture/autumn-masquerade), that friend was dead. Car's parents call it "betrayal" and refuse to say more. Car has been categorically opposed to secrets ever since — and, perhaps in spite of that, was drawn straight into the Sodality's world of masks, theater, and performance.
 
 ---
 
@@ -53,3 +53,6 @@ Car watched family friends strike a bargain with someone they didn't know. The f
 - **[Orabella](/en/Venturia/Characters/PCs/orabella)** — An indirect link through the stage: the performer Orabella adores, Celina Cross, is the elder sister of the friend Car lost at the Masquerade.
 - **[The Masquers' Sodality](/en/Venturia/Locations/masquers-sodality)** — Car's apprenticeship and entry into the city's mask-and-theater world.
 - **[The Covenant Archive](/en/Venturia/Locations/covenant-archive)** — The family business Car was raised in and rejected.
+- **[Celina Cross](/en/Venturia/Characters/NPCs/celina-cross)** — Names this character in its connections.
+- **[The Autumn Masquerade](/en/Venturia/Culture/autumn-masquerade)** — Names this character in its connections.
+- **[The Covenant of Silver Scales](/en/Venturia/Factions/covenant-silver-scales)** — Names this character in its connections.

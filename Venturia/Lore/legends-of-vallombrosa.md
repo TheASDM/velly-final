@@ -27,7 +27,7 @@ dateCreated: 2026-05-22T00:00:00.000Z
 
 </div>
 
-Every child in Venturia grows up on stories about Vallombrosa — and no two of them agree. Nobody takes any single version seriously as history, but everyone knows them; they're cultural furniture, like the tales you tell about the haunted house at the end of the road.
+Every child in Venturia grows up on stories about [Vallombrosa](/en/Venturia/Locations/vallombrosa) — and no two of them agree. Nobody takes any single version seriously as history, but everyone knows them; they're cultural furniture, like the tales you tell about the haunted house at the end of the road.
 
 ---
 
@@ -42,7 +42,7 @@ After that, the legends scatter wildly. Two brothers fought over a woman — and
 ---
 
 ## The Annual Tragedy
-During the [Autumn Masquerade](/en/Venturia/Culture/autumn-masquerade), the Amaranth Theater stages *[The Tragedy of Vallombrosa](/en/Venturia/Culture/tragedy-of-vallombrosa)* — but the plot changes every year, depending on which director is in charge and which legend they favor. Residents bet on which version will be staged and argue over the production. It's a running civic joke.
+During the [Autumn Masquerade](/en/Venturia/Culture/autumn-masquerade), the [Amaranth Theater](/en/Venturia/Locations/amaranth-theater) stages *[The Tragedy of Vallombrosa](/en/Venturia/Culture/tragedy-of-vallombrosa)* — but the plot changes every year, depending on which director is in charge and which legend they favor. Residents bet on which version will be staged and argue over the production. It's a running civic joke.
 
 ---
 

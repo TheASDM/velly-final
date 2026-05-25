@@ -33,7 +33,7 @@ Venturia's governing body: eleven seats meant to balance the powers that actuall
 ---
 
 ## Composition
-Eleven voting seats: two Harbor-Lords, two Guild-Masters, two Temple Authority representatives, the Master of the Tidekeeper's Lodge, the Archmagister of VAVA, the Primo Navigante of the Ferriers' Confraternity, the Watch Commander of the Fog Wardens, and an honorary seat for [the Signore of Venturia](/en/Venturia/Government/signore-of-venturia) that has stood empty for as long as anyone living remembers. The Council Chair rotates each year among the Harbor-Lords, Guild-Masters, and Temple Authority.
+Eleven voting seats: two Harbor-Lords, two Guild-Masters, two Temple Authority representatives, the Master of the [Tidekeeper's Lodge](/en/Venturia/Locations/tidekeepers-lodge), the Archmagister of VAVA, the Primo Navigante of the [Ferriers' Confraternity](/en/Venturia/Locations/ferriers-confraternity), the Watch Commander of the Fog Wardens, and an honorary seat for [the Signore of Venturia](/en/Venturia/Government/signore-of-venturia) that has stood empty for as long as anyone living remembers. The Council Chair rotates each year among the Harbor-Lords, Guild-Masters, and Temple Authority.
 
 ---
 
@@ -54,8 +54,15 @@ Because the faction blocs must move together to pass anything, and the unaligned
 - **[Guildmaster Vincenzo Copper](/en/Venturia/Characters/NPCs/vincenzo-copper)** — Guild-Master
 - **[Mother-Abbot Lucia Virosdottir](/en/Venturia/Characters/NPCs/lucia-virosdottir)** — Temple Authority, current Council Chair
 - **[Father Domenico of the Four Winds](/en/Venturia/Characters/NPCs/father-domenico)** — Temple Authority
-- **[Vincen Tidecaller](/en/Venturia/Characters/NPCs/vincen-tidecaller)** — Master of the Tidekeeper's Lodge
+- **[Vincen Tidecaller](/en/Venturia/Characters/NPCs/vincen-tidecaller)** — Master of the [Tidekeeper's Lodge](/en/Venturia/Locations/tidekeepers-lodge)
 - **[Archmagister Dorian Silvermarch](/en/Venturia/Characters/NPCs/dorian-silvermarch)** — Archmagister of VAVA
-- **[Primo Navigante Old Maren](/en/Venturia/Characters/NPCs/old-maren)** — Ferriers' Confraternity
+- **[Primo Navigante Old Maren](/en/Venturia/Characters/NPCs/old-maren)** — [Ferriers' Confraternity](/en/Venturia/Locations/ferriers-confraternity)
 - **[Captain-Commander Thora Ironmark](/en/Venturia/Characters/NPCs/thora-ironmark)** — Watch Commander of the Fog Wardens
 - *[The Signore of Venturia](/en/Venturia/Government/signore-of-venturia)* — honorary seat, vacant
+
+---
+
+## Connections
+
+- **[The Binding Crafts Guild](/en/Venturia/Factions/binding-crafts-guild)** — Names this government entry in its connections.
+- **[The High Quarter](/en/Venturia/Locations/high-quarter)** — Cross-references this government entry.

@@ -34,7 +34,7 @@ Kryton Novelli is a fixture of the [Venturian Academy of Veiled Arts](/en/Ventur
 ---
 
 ## Concept
-A mid-career VAVA faculty member — gifted, erratic, and in too deep at The Undertow. A former Wizard who is now a Warlock.
+A mid-career VAVA faculty member — gifted, erratic, and in too deep at [The Undertow](/en/Venturia/Locations/the-undertow). A former Wizard who is now a Warlock.
 
 ---
 

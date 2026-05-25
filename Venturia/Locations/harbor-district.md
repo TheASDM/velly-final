@@ -37,7 +37,7 @@ Venturia's wealth enters through this district before it climbs the hill.
 
 The Harbor is loud until it suddenly is not. Cargo crews shout over gulls and bells; ferriers go silent under bridges; tidekeepers watch ships with the air of people who know that some arrivals should not be celebrated too soon.
 
-The district's politics are old, practical, and personal. A favor at the docks can matter more than a signature in the High Quarter.
+The district's politics are old, practical, and personal. A favor at the docks can matter more than a signature in the [High Quarter](/en/Venturia/Locations/high-quarter).
 
 ---
 
@@ -55,3 +55,10 @@ The district's politics are old, practical, and personal. A favor at the docks c
 - **[The Harbor Wardens' Compact](/en/Venturia/Factions/harbor-wardens)** - The guild power that controls much of the city's maritime trade.
 - **[The Market Tiers](/en/Venturia/Locations/market-tiers)** - The city above the docks.
 - **[The Overlook](/en/Venturia/Locations/overlook)** - The boundary where civic life gives way to the fog.
+
+---
+
+## Connections
+
+- **[The High Quarter](/en/Venturia/Locations/high-quarter)** — Cross-references this location.
+- **[The Warehouse Consortium](/en/Venturia/Factions/warehouse-consortium)** — Names this location in its connections.

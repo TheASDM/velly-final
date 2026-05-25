@@ -28,7 +28,7 @@ dateCreated: 2026-05-25T00:00:00.000Z
 
 </div>
 
-Volante & Associates is a modest spice-and-dye house in the Market Tiers. Its business is legitimate, profitable, and quiet enough that most people think of it only when they need color, scent, or a merchant who knows how to be comfortable in difficult rooms.
+Volante & Associates is a modest spice-and-dye house in the [Market Tiers](/en/Venturia/Locations/market-tiers). Its business is legitimate, profitable, and quiet enough that most people think of it only when they need color, scent, or a merchant who knows how to be comfortable in difficult rooms.
 
 Aurelio's real passion, however, is the mask collection kept close to the business.
 

@@ -28,7 +28,7 @@ dateCreated: 2026-05-22T00:00:00.000Z
 
 </div>
 
-Another name out of the legend of Vallombrosa — in most tellings, the younger di Errante brother. As with all of that story, what the city remembers contradicts itself, and none of it can be trusted.
+Another name out of the legend of [Vallombrosa](/en/Venturia/Locations/vallombrosa) — in most tellings, the younger di Errante brother. As with all of that story, what the city remembers contradicts itself, and none of it can be trusted.
 
 ---
 
@@ -42,3 +42,5 @@ He belongs to the same lost generation of the di Errante house, and to the same 
 ## Connections
 - **[Vallombrosa](/en/Venturia/Locations/vallombrosa)** — The di Errante estate lost to the fog.
 - **[Marcello di Errante](/en/Venturia/Characters/NPCs/marcello-di-errante)** — Named as his brother in the surviving tellings.
+- **[The Signore of Venturia](/en/Venturia/Government/signore-of-venturia)** — Names this character in its connections.
+- **[The Tragedy of Vallombrosa](/en/Venturia/Culture/tragedy-of-vallombrosa)** — Names this character in its connections.

@@ -34,17 +34,17 @@ Noname is a Fog Warden — twenty-four, built for rage and trying to master it. 
 ---
 
 ## Concept
-A Barbarian Fog Warden working to calm her rage. Raised at Liminal House after her parents' early deaths.
+A Barbarian Fog Warden working to calm her rage. Raised at [Liminal House](/en/Venturia/Locations/liminal-house) after her parents' early deaths.
 
 ---
 
 ## Family
-Her father was a fog child — one of those who appeared out of Vallombrosa as a child, memoryless, and was raised by Liminal House. When her own parents died young, Noname followed the same path into that house.
+Her father was a fog child — one of those who appeared out of [Vallombrosa](/en/Venturia/Locations/vallombrosa) as a child, memoryless, and was raised by Liminal House. When her own parents died young, Noname followed the same path into that house.
 
 ---
 
 ## What Brought Her to Viro's
-Her fiancé, a fellow Fog Warden named [Maruk Grommarg](/en/Venturia/Characters/NPCs/maruk-grommarg), disappeared under circumstances she can't fully reconstruct. Her memory of that night is foggy and unclear — and that fog is the reason she's now at St. Viro's Respite, hunting for what she's missing.
+Her fiancé, a fellow Fog Warden named [Maruk Grommarg](/en/Venturia/Characters/NPCs/maruk-grommarg), disappeared under circumstances she can't fully reconstruct. Her memory of that night is foggy and unclear — and that fog is the reason she's now at [St. Viro's Respite](/en/Venturia/Locations/viros-respite), hunting for what she's missing.
 
 ---
 
@@ -54,3 +54,5 @@ Her fiancé, a fellow Fog Warden named [Maruk Grommarg](/en/Venturia/Characters/
 - **[Kryton Novelli](/en/Venturia/Characters/PCs/kryton-novelli)** — A close friend of Maruk, who carries his own guilt over the disappearance.
 - **[Maruk Grommarg](/en/Venturia/Characters/NPCs/maruk-grommarg)** — Her missing fiancé, a Fog Warden who vanished.
 - **[The Fog Wardens' Garrison](/en/Venturia/Locations/fog-wardens-garrison)** — Her post, stationed at the Overlook.
+- **[The Fog Wardens and the Shadowed Wardens](/en/Venturia/Factions/fog-wardens)** — Names this character in its connections.
+- **[The Overlook](/en/Venturia/Locations/overlook)** — Cross-references this character.

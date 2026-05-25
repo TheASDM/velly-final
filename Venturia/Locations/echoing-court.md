@@ -59,3 +59,9 @@ The Court attracts spectators the way theaters attract audiences — regulars wh
 - Former spectator who learned rhetoric purely by watching
 - Person whose case became legendary for the wrong reasons
 - Winner of a dispute who suspects the victory was arranged
+
+---
+
+## Connections
+
+- **[The Market Tiers](/en/Venturia/Locations/market-tiers)** — Lists this location among its notable places.

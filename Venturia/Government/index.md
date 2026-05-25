@@ -26,4 +26,4 @@ The vacant honorary seat preserved from the old di Errante order.
 
 ## Council Members
 
-For the seated members of the Council, see the [NPCs index](/en/Venturia/Characters/NPCs/index).
+For the seated members of the Council, see the [NPCs index](/en/Venturia/Characters/NPCs).

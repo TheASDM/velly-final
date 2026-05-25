@@ -63,3 +63,9 @@ The deepest pools, nearest the springs' source, are reserved for those whose bus
 - Someone who violated the Cup's traditions and faced consequences
 - Regular client with standing reservations in the deep pools
 - Person investigating something that was decided in the steam
+
+---
+
+## Connections
+
+- **[The Market Tiers](/en/Venturia/Locations/market-tiers)** — Lists this location among its notable places.

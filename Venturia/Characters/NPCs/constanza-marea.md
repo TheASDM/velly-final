@@ -31,7 +31,7 @@ dateCreated: 2026-05-22T00:00:00.000Z
 
 > *"What does everyone need to feel safe enough to let commerce resume?"*
 
-Harbor-Lord on the Autumn Council, speaking for the [Warehouse Consortium](/en/Venturia/Factions/warehouse-consortium) her family has run for four generations. In her early forties and newer to the chamber, she makes up for it with sharp political instincts and a taste for elegant maneuvering over Teodor's bluntness. Self-interested, but not cruel.
+Harbor-Lord on the [Autumn Council](/en/Venturia/Government/autumn-council), speaking for the [Warehouse Consortium](/en/Venturia/Factions/warehouse-consortium) her family has run for four generations. In her early forties and newer to the chamber, she makes up for it with sharp political instincts and a taste for elegant maneuvering over Teodor's bluntness. Self-interested, but not cruel.
 
 ---
 

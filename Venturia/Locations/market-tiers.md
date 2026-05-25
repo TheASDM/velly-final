@@ -29,7 +29,7 @@ dateCreated: 2026-05-25T00:00:00.000Z
 
 The Market Tiers are Venturia's working middle: shops, guild halls, taverns, care houses, workshops, and narrow streets where half the city seems to know the other half's business.
 
-If the High Quarter decides what Venturia claims to value, the Market Tiers show what it actually needs.
+If the [High Quarter](/en/Venturia/Locations/high-quarter) decides what Venturia claims to value, the Market Tiers show what it actually needs.
 
 ---
 
@@ -60,3 +60,11 @@ The Market Tiers are also where Venturia's strangeness feels most domestic. A mi
 - **[The High Quarter](/en/Venturia/Locations/high-quarter)** - The upper city.
 - **[The Harbor District](/en/Venturia/Locations/harbor-district)** - The waterline below.
 - **[The Tiered Gardens](/en/Venturia/Locations/tiered-gardens)** - The green slope between tiers.
+
+---
+
+## Connections
+
+- **[The Binding Crafts Guild](/en/Venturia/Factions/binding-crafts-guild)** — Names this location in its connections.
+- **[The Wine Merchants' Guild](/en/Venturia/Factions/wine-merchants-guild)** — Names this location in its connections.
+- **[Volante & Associates](/en/Venturia/Factions/volante-associates)** — Names this location in its connections.

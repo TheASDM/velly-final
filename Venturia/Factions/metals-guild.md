@@ -43,3 +43,4 @@ The guild values continuity. Its elders tend to think in decades, not moods. Tha
 - **[Guildmaster Vincenzo Copper](/en/Venturia/Characters/NPCs/vincenzo-copper)** - The guild's current Council voice.
 - **[The Mirrorwright's Court](/en/Venturia/Locations/mirrorwrights-court)** - A specialized craft tradition under the Metals Guild's umbrella.
 - **[The Verdigris Family](/en/Venturia/Characters/NPCs/verdigris-family)** - The family most associated with mirror-craft.
+- **[Cosimo Verdigris](/en/Venturia/Characters/NPCs/cosimo-verdigris)** — Names this faction in its connections.

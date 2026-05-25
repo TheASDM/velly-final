@@ -30,7 +30,7 @@ dateCreated: 2026-05-22T00:00:00.000Z
 
 > *"The water knows. It's been restless for months."*
 
-Primo Navigante of the Ferriers' Confraternity and an Autumn Council member of uncertain age — sixty or eighty, the canal-light makes it hard to say. "Old Maren" is the only name she'll answer to. She earned mastery improbably young, completing the Blind Navigation faster than anyone in living memory, and has led the Confraternity for over twenty years.
+Primo Navigante of the [Ferriers' Confraternity](/en/Venturia/Locations/ferriers-confraternity) and an Autumn Council member of uncertain age — sixty or eighty, the canal-light makes it hard to say. "Old Maren" is the only name she'll answer to. She earned mastery improbably young, completing the Blind Navigation faster than anyone in living memory, and has led the Confraternity for over twenty years.
 
 ---
 

@@ -10,7 +10,7 @@ dateCreated: 2026-05-24T00:00:00.000Z
 
 # VAVA — Campus Map
 
-The Venturia Academy of Veiled Arts in full detail. Zoom in for individual halls, classrooms, and the library's labeled floors — the Veiled Tower (divination), the Binding Hall (contract magic & oath-craft), the Glamour Courts (illusion), and the Library proper.
+The [Venturia Academy of Veiled Arts](/en/Venturia/Locations/vava) in full detail. Zoom in for individual halls, classrooms, and the library's labeled floors — the [Veiled Tower](/en/Venturia/Locations/veiled-tower) (divination), the [Binding Hall](/en/Venturia/Locations/binding-hall) (contract magic & oath-craft), the [Glamour Courts](/en/Venturia/Locations/glamour-courts) (illusion), and the Library proper.
 
 {% set map = { slug: "vava-map", src: "/images/maps/vava_upscayl_5x_upscayl-standard-4x.jpg", caption: "VAVA — every hall, every spire, every entrance into the Library's deeper floors." } %}
 {% include "partials/map-viewer.njk" %}

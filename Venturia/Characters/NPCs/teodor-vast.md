@@ -31,7 +31,7 @@ dateCreated: 2026-05-22T00:00:00.000Z
 
 > *"We're debating theology while ships sit idle in harbor."*
 
-Harbor-Lord on the Autumn Council and master of the largest private merchant fleet in Venturia. A commanding man in his late fifties, weathered and silver-streaked, who rose from ship's captain to fleet owner through skill, ruthlessness, and well-judged marriages — and who can put on a "simple sailor" act whenever it suits him. He forgets nothing said in front of him.
+Harbor-Lord on the [Autumn Council](/en/Venturia/Government/autumn-council) and master of the largest private merchant fleet in Venturia. A commanding man in his late fifties, weathered and silver-streaked, who rose from ship's captain to fleet owner through skill, ruthlessness, and well-judged marriages — and who can put on a "simple sailor" act whenever it suits him. He forgets nothing said in front of him.
 
 ---
 

@@ -28,12 +28,12 @@ dateCreated: 2026-05-22T00:00:00.000Z
 
 </div>
 
-The figure at the center of *The Tragedy of Vallombrosa* — the woman whose story the Amaranth restages every Autumn Masquerade, and around whom the whole legend of the di Errante turns. Whether she was ever a real person, and what truly became of her, is exactly the sort of thing the contradictory legends disagree about.
+The figure at the center of *[The Tragedy of Vallombrosa](/en/Venturia/Culture/tragedy-of-vallombrosa)* — the woman whose story the Amaranth restages every Autumn Masquerade, and around whom the whole legend of the di Errante turns. Whether she was ever a real person, and what truly became of her, is exactly the sort of thing the contradictory legends disagree about.
 
 ---
 
 ## In the Legend
-As the city tells and stages it, the Tragedy of Vallombrosa is her story above all — love, betrayal, and ruin set in the last days of the great house.
+As the city tells and stages it, the Tragedy of [Vallombrosa](/en/Venturia/Locations/vallombrosa) is her story above all — love, betrayal, and ruin set in the last days of the great house.
 
 <!-- TODO: the specific public legend of Isabella is not recorded in the knowledge base. Supply the in-world telling you want public. Also confirm surname spelling — canon records the alias as "Isabella Fortuna." -->
 
@@ -42,3 +42,4 @@ As the city tells and stages it, the Tragedy of Vallombrosa is her story above a
 ## Connections
 - **[The Amaranth Theater](/en/Venturia/Locations/amaranth-theater)** — Where her story is staged each Autumn Masquerade as *The Tragedy of Vallombrosa*.
 - **[Vallombrosa](/en/Venturia/Locations/vallombrosa)** — The lost estate where the Tragedy is set.
+- **[The Tragedy of Vallombrosa](/en/Venturia/Culture/tragedy-of-vallombrosa)** — Names this character in its connections.

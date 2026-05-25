@@ -34,12 +34,12 @@ Valentro keeps the [Tiered Gardens](/en/Venturia/Locations/tiered-gardens) — a
 ---
 
 ## Concept
-An elf Ranger working the Tiered Gardens in the way of the leaf, alongside his mentor, [Strider](/en/Venturia/Characters/NPCs/strider). Raised at Liminal House after he was orphaned.
+An elf Ranger working the [Tiered Gardens](/en/Venturia/Locations/tiered-gardens) in the way of the leaf, alongside his mentor, [Strider](/en/Venturia/Characters/NPCs/strider). Raised at Liminal House after he was orphaned.
 
 ---
 
 ## Family Loss
-His mother died before his father did. His father — a Fog Warden — disappeared. Valentro grew up in Liminal House.
+His mother died before his father did. His father — a Fog Warden — disappeared. Valentro grew up in [Liminal House](/en/Venturia/Locations/liminal-house).
 
 ---
 
@@ -54,3 +54,4 @@ While he was working, his gardening shears broke, and for an instant he saw them
 - **[Noname](/en/Venturia/Characters/PCs/noname)** — Raised alongside him at Liminal House; he was present the night her fiancé proposed in the Gardens.
 - **[Orabella](/en/Venturia/Characters/PCs/orabella)** — Another of Liminal House's children, though they were never especially close.
 - **[Kryton Novelli](/en/Venturia/Characters/PCs/kryton-novelli)** — A face he may know in passing from the Gardens.
+- **[The Gardener's Guild](/en/Venturia/Factions/gardeners-guild)** — Names this character in its connections.

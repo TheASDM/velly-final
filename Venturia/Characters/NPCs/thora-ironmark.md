@@ -30,7 +30,7 @@ dateCreated: 2026-05-22T00:00:00.000Z
 
 > *"I'm not asking to suspend anyone's rights. I'm asking you to let me do my job."*
 
-Watch Commander of the Fog Wardens and an Autumn Council member who votes with no faction. A scarred, imposing half-orc in her forties, decorated across twenty years of Watch service, she took the Captain-Commander's post as a compromise everyone could accept — competent, with no appetite for political power. She wants to protect people and be left to do it properly.
+Watch Commander of the Fog Wardens and an [Autumn Council](/en/Venturia/Government/autumn-council) member who votes with no faction. A scarred, imposing half-orc in her forties, decorated across twenty years of Watch service, she took the Captain-Commander's post as a compromise everyone could accept — competent, with no appetite for political power. She wants to protect people and be left to do it properly.
 
 ---
 

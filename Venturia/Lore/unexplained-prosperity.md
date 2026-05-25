@@ -44,7 +44,7 @@ Most residents treat this as simply how things are.
 
 ## Local Explanations
 
-No explanation has ever held the field. Some say the land was blessed to compensate for the curse. Some say the fog trapped the bad luck inside Vallombrosa and left the rest of Maeve clean. Some call it good soil, good harbor, and better branding.
+No explanation has ever held the field. Some say the land was blessed to compensate for the curse. Some say the fog trapped the bad luck inside [Vallombrosa](/en/Venturia/Locations/vallombrosa) and left the rest of Maeve clean. Some call it good soil, good harbor, and better branding.
 
 The practical consensus is simpler: good fortune is useful, and useful things are often left alone.
 
@@ -55,3 +55,4 @@ The practical consensus is simpler: good fortune is useful, and useful things ar
 - **[Venturia](/en/Venturia/)** - The city built in the shadow of this good fortune.
 - **[The Harbor Wardens' Compact](/en/Venturia/Factions/harbor-wardens)** - Among those most invested in protecting the city's prosperity.
 - **[Vallombrosa](/en/Venturia/Locations/vallombrosa)** - The curse that makes the prosperity feel harder to explain.
+- **[The Wine Merchants' Guild](/en/Venturia/Factions/wine-merchants-guild)** — Names this lore entry in its connections.

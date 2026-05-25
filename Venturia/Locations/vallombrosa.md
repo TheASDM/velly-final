@@ -33,7 +33,7 @@ The fog-bound valley west of Venturia, sealed off from the rest of the island fo
 
 ## The Fog
 
-The fog stops with geometric precision at the old property boundaries. From the Overlook it looks like a low ceiling of grey-white pressed against an invisible wall, unmoving even when the harbor winds blow hardest. Where it meets the sea, it ignores the tide. Where it meets the cliffs, it leaves a clean edge. Stand outside it and you can see how unnatural it is; step into it and visibility drops to nothing within a few paces.
+The fog stops with geometric precision at the old property boundaries. From the [Overlook](/en/Venturia/Locations/overlook) it looks like a low ceiling of grey-white pressed against an invisible wall, unmoving even when the harbor winds blow hardest. Where it meets the sea, it ignores the tide. Where it meets the cliffs, it leaves a clean edge. Stand outside it and you can see how unnatural it is; step into it and visibility drops to nothing within a few paces.
 
 The fog does not behave like weather. It is not damp. It is not cold. It is simply *there*, and it makes everything inside it harder to see, harder to hold onto, and harder to remember.
 
@@ -41,7 +41,7 @@ The fog does not behave like weather. It is not damp. It is not cold. It is simp
 
 ## The Boundary
 
-The Overlook is the city's high vantage on the fog line — the cliff terrace from which the Fog Wardens watch the edge of Vallombrosa. From there you can see the unmoving wall of grey, the dead ground beyond it where the land falls away into nothing legible, and the path the di Errante used to ride when their estate was still theirs.
+[The Overlook](/en/Venturia/Locations/overlook) is the city's high vantage on the fog line — the cliff terrace from which the Fog Wardens watch the edge of Vallombrosa. From there you can see the unmoving wall of grey, the dead ground beyond it where the land falls away into nothing legible, and the path the di Errante used to ride when their estate was still theirs.
 
 The [Fog Wardens](/en/Venturia/Factions/fog-wardens) patrol the boundary from the [Fog Wardens' Garrison](/en/Venturia/Locations/fog-wardens-garrison) below the Overlook. Their job, ostensibly, is to keep people from wandering in. In practice, they do that less often than they search the fog line for the people who have already gone in.
 
@@ -55,7 +55,7 @@ People who pass the point of no return inside the fog do not return — at least
 
 ## The Legend
 
-The di Errante family was the most powerful noble house on Seravalle a thousand years ago, and Vallombrosa was their seat. Then a catastrophe happened — and which catastrophe depends on who is telling it. The city has been retelling and disagreeing about that night for ten centuries. The contradictory tales are catalogued in [The Legends of Vallombrosa](/en/Venturia/Lore/legends-of-vallombrosa); the Amaranth Theater stages a new version every Autumn Masquerade.
+The di Errante family was the most powerful noble house on Seravalle a thousand years ago, and Vallombrosa was their seat. Then a catastrophe happened — and which catastrophe depends on who is telling it. The city has been retelling and disagreeing about that night for ten centuries. The contradictory tales are catalogued in [The Legends of Vallombrosa](/en/Venturia/Lore/legends-of-vallombrosa); the [Amaranth Theater](/en/Venturia/Locations/amaranth-theater) stages a new version every [Autumn Masquerade](/en/Venturia/Culture/autumn-masquerade).
 
 What everyone agrees on: the family ended that night, the estate was abandoned, the fog rose, and no one has lived in Vallombrosa since.
 
@@ -70,3 +70,6 @@ What everyone agrees on: the family ended that night, the estate was abandoned, 
 - **[The Fog Wardens and the Shadowed Wardens](/en/Venturia/Factions/fog-wardens)** — Patrol the boundary.
 - **[The Fog Wardens' Garrison](/en/Venturia/Locations/fog-wardens-garrison)** — Their post below the Overlook.
 - **[Liminal House](/en/Venturia/Locations/liminal-house)** — Takes in the rare fog children who walk out.
+- **[The Overlook](/en/Venturia/Locations/overlook)** — Lists this location among its notable places.
+- **[The Signore of Venturia](/en/Venturia/Government/signore-of-venturia)** — Names this location in its connections.
+- **[The Unexplained Prosperity](/en/Venturia/Lore/unexplained-prosperity)** — Names this location in its connections.

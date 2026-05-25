@@ -48,3 +48,9 @@ Membership in the Guild requires wealth, connections, and a demonstrated ability
 - Vintner who discovered what happens to wines aged too long
 - Former employee who saw the deepest cellars
 - Trader who uses the Guild's network for purposes beyond wine
+
+---
+
+## Connections
+
+- **[The Market Tiers](/en/Venturia/Locations/market-tiers)** — Lists this location among its notable places.
