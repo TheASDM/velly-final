@@ -16,10 +16,73 @@ dateCreated: 2026-05-24T00:00:00.000Z
   --art-bg: rgba(13, 11, 17, 0.85);
   --art-border: rgba(139, 115, 85, 0.32);
   --art-border-strong: rgba(212, 165, 116, 0.55);
+  max-width: 1220px;
+  margin: 0 auto 2rem;
+}
+
+.vos-art-app-head {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 1rem;
+  margin: 0 0 1rem;
+}
+.vos-art-app-kicker {
+  color: var(--art-gold-dim);
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+.vos-art-app-head h1 {
+  margin: 0.1rem 0 0;
+  padding: 0;
+  border: 0;
+  color: var(--art-gold);
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: clamp(1.75rem, 4vw, 3rem);
+  letter-spacing: 0.04em;
+  line-height: 1;
+}
+.vos-art-app-head h1::after { content: none; }
+.vos-art-app-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  flex: 0 0 auto;
+}
+.vos-art-anchor {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  padding: 0.55rem 0.8rem;
+  border: 1px solid rgba(212, 165, 116, 0.36);
+  border-radius: 6px;
+  background: rgba(212, 165, 116, 0.07);
+  color: var(--art-gold);
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.vos-art-anchor:hover {
+  border-color: var(--art-border-strong);
+  background: rgba(212, 165, 116, 0.12);
+  color: var(--vos-cream);
+}
+
+.vos-art-workbench {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(300px, 0.75fr);
+  gap: 1rem;
+  align-items: start;
 }
 
 .vos-art-studio {
-  margin: 2rem 0 2.5rem;
+  margin: 0;
   padding: 1.5rem 1.6rem 1.7rem;
   border-radius: 8px;
   background:
@@ -119,6 +182,19 @@ dateCreated: 2026-05-24T00:00:00.000Z
   box-shadow: inset 0 1px 0 rgba(255,255,255,0.06), 0 0 18px rgba(212, 165, 116, 0.18);
 }
 .vos-art-style.is-active small { color: rgba(232, 220, 200, 0.85); }
+
+.vos-art-recent {
+  min-width: 0;
+}
+.vos-art-recent .vos-art-gallery-head {
+  margin-top: 0;
+}
+.vos-art-recent .vos-gallery-carousel {
+  min-height: 100%;
+}
+.vos-art-gallery-section {
+  margin-top: 1.45rem;
+}
 
 /* Generate button + status row ─────────────────────────────────────── */
 .vos-art-actions {
@@ -690,22 +766,73 @@ body.is-dm-mode .vos-art-delete { display: inline-flex; }
 }
 body.is-dm-mode .vos-art-lightbox-delete { display: inline-flex; }
 .vos-art-lightbox-delete:hover { background: rgba(180, 50, 50, 0.2); color: #fff; }
+
+@media (max-width: 860px) {
+  .vos-art {
+    margin-top: -0.4rem;
+  }
+  .vos-art-app-head {
+    align-items: start;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  .vos-art-app-actions {
+    width: auto;
+  }
+  .vos-art-anchor {
+    width: auto;
+    min-width: 9rem;
+  }
+  .vos-art-workbench {
+    grid-template-columns: 1fr;
+  }
+  .vos-art-studio {
+    padding: 1.05rem;
+  }
+  .vos-art-studio-title,
+  .vos-art-gallery-head h2 {
+    font-size: 0.88rem;
+    letter-spacing: 0.16em;
+  }
+  .vos-art-gallery-head {
+    margin: 1.35rem 0 0.75rem;
+  }
+  .vos-art-field-label {
+    font-size: 0.58rem;
+    letter-spacing: 0.18em;
+  }
+  .vos-art-prompt,
+  .vos-art-name {
+    font-size: 0.98rem;
+    padding: 0.72rem;
+  }
+  .vos-art-style {
+    max-width: none;
+    width: 100%;
+  }
+  .vos-art-enhance-text strong {
+    font-size: 0.68rem;
+    letter-spacing: 0.13em;
+  }
+  .vos-art-btn {
+    width: 100%;
+  }
+}
 </style>
-
-# Art Studio
-
-Generate campaign art with Enzo's image model and contribute to the shared player gallery. Pick a style, describe what you want to see, and the result is automatically added to the gallery below for everyone at the table to find. Generation takes **30–90 seconds**.
 
 <div class="vos-art">
 
-<div class="vos-art-gallery-head">
-  <h2>Featured / Recent</h2>
-  <div class="vos-art-gallery-count">Latest shared pieces</div>
-</div>
+<header class="vos-art-app-head">
+  <div>
+    <div class="vos-art-app-kicker">Tools</div>
+    <h1>Studio</h1>
+  </div>
+  <div class="vos-art-app-actions">
+    <a class="vos-art-anchor" href="#vos-art-gallery-section">Gallery</a>
+  </div>
+</header>
 
-{% set carouselLimit = 5 %}
-{% set carouselLabel = "Featured recent shared gallery images" %}
-{% include "partials/gallery-carousel.njk" %}
+<div class="vos-art-workbench">
 
 <section class="vos-art-studio" aria-label="Generate new art">
   <div class="vos-art-studio-title">Compose a New Piece</div>
@@ -713,7 +840,7 @@ Generate campaign art with Enzo's image model and contribute to the shared playe
   <div class="vos-art-field">
     <label class="vos-art-field-label" for="vos-art-prompt">Description</label>
     <textarea id="vos-art-prompt" class="vos-art-prompt" rows="4"
-              placeholder="A masked masquerader on the bridge above the Echoing Court, autumn leaves on the canal, candlelight from the windows above…  (press Enter to generate, Shift+Enter for a new line)"
+              placeholder="A masked masquerader on the bridge above the Echoing Court, autumn leaves on the canal, candlelight from the windows above…"
               maxlength="3000"></textarea>
   </div>
 
@@ -734,7 +861,7 @@ Generate campaign art with Enzo's image model and contribute to the shared playe
         <input id="vos-art-enhance" type="checkbox" checked>
         <span class="vos-art-enhance-text">
           <strong>Let Enzo refine my prompt</strong>
-          <em>Names of campaign characters / locations get expanded into their canonical descriptions, and the prompt is rewritten for image quality.</em>
+          <em>Improves campaign references and image phrasing.</em>
         </span>
       </label>
     </div>
@@ -762,12 +889,26 @@ Generate campaign art with Enzo's image model and contribute to the shared playe
   </div>
 </section>
 
-<div class="vos-art-gallery-head">
-  <h2>Shared Gallery</h2>
-  <div class="vos-art-gallery-count" id="vos-art-gallery-count">Loading…</div>
+<section class="vos-art-recent" aria-labelledby="vos-art-recent-title">
+  <div class="vos-art-gallery-head">
+    <h2 id="vos-art-recent-title">Recent</h2>
+    <div class="vos-art-gallery-count">Latest shared pieces</div>
+  </div>
+  {% set carouselLimit = 5 %}
+  {% set carouselLabel = "Featured recent shared gallery images" %}
+  {% include "partials/gallery-carousel.njk" %}
+</section>
+
 </div>
 
-<div id="vos-art-gallery" class="vos-art-gallery"></div>
+<section class="vos-art-gallery-section" id="vos-art-gallery-section" aria-labelledby="vos-art-gallery-title">
+  <div class="vos-art-gallery-head">
+    <h2 id="vos-art-gallery-title">Shared Gallery</h2>
+    <div class="vos-art-gallery-count" id="vos-art-gallery-count">Loading…</div>
+  </div>
+
+  <div id="vos-art-gallery" class="vos-art-gallery"></div>
+</section>
 
 <div class="vos-art-dm-row">
   <span id="vos-art-dm-pill" class="vos-art-dm-pill">
