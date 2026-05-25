@@ -16,8 +16,8 @@ dateCreated: 2026-05-23T00:00:00.000Z
 
 Eleven seats meant to balance the powers that actually run the island. See [The Autumn Council](/en/Venturia/Government/autumn-council) for the chamber itself.
 
-- **[Master Artisan Celeste Orion](/en/Venturia/Characters/NPCs/celeste-orion)** — Guild-Master, Binding Crafts Guild
-- **[Constanza Marea](/en/Venturia/Characters/NPCs/constanza-marea)** — Harbor-Lord, Warehouse Consortium
+- **[Master Artisan Celeste Orion](/en/Venturia/Characters/NPCs/celeste-orion)** — Guild-Master, [Binding Crafts Guild](/en/Venturia/Factions/binding-crafts-guild)
+- **[Constanza Marea](/en/Venturia/Characters/NPCs/constanza-marea)** — Harbor-Lord, [Warehouse Consortium](/en/Venturia/Factions/warehouse-consortium)
 - **[Archmagister Dorian Silvermarch](/en/Venturia/Characters/NPCs/dorian-silvermarch)** — Archmagister of VAVA
 - **[Father Domenico of the Four Winds](/en/Venturia/Characters/NPCs/father-domenico)** — Temple Authority, wandering clergy
 - **[Mother-Abbot Lucia Virosdottir](/en/Venturia/Characters/NPCs/lucia-virosdottir)** — Temple Authority, current Chair
@@ -25,7 +25,7 @@ Eleven seats meant to balance the powers that actually run the island. See [The 
 - **[Lord-Admiral Teodor Vast](/en/Venturia/Characters/NPCs/teodor-vast)** — Harbor-Lord, Harbor Wardens' Compact
 - **[Captain-Commander Thora Ironmark](/en/Venturia/Characters/NPCs/thora-ironmark)** — Watch Commander of the Fog Wardens
 - **[Vincen Tidecaller](/en/Venturia/Characters/NPCs/vincen-tidecaller)** — Master of the Tidekeeper's Lodge
-- **[Guildmaster Vincenzo Copper](/en/Venturia/Characters/NPCs/vincenzo-copper)** — Guild-Master, Metals Guild
+- **[Guildmaster Vincenzo Copper](/en/Venturia/Characters/NPCs/vincenzo-copper)** — Guild-Master, [Metals Guild](/en/Venturia/Factions/metals-guild)
 
 ---
 
@@ -52,9 +52,11 @@ Names from the legend of Vallombrosa, a thousand years past. The story the city 
 
 ## Others
 
-- **[Aurelio Volante](/en/Venturia/Characters/NPCs/aurelio-volante)** — Mask collector and merchant, Volante & Associates
+- **[Aurelio Volante](/en/Venturia/Characters/NPCs/aurelio-volante)** — Mask collector and merchant, [Volante & Associates](/en/Venturia/Factions/volante-associates)
 - **[Celina Cross](/en/Venturia/Characters/NPCs/celina-cross)** — Star performer of the Amaranth Theater
 - **[Garl Glittergold](/en/Venturia/Characters/NPCs/garl-glittergold)** — Chief deity of gnomes; Roxy's divine patron
 - **[Maruk Grommarg](/en/Venturia/Characters/NPCs/maruk-grommarg)** — A missing Fog Warden; Noname's fiancé
+- **[Strider](/en/Venturia/Characters/NPCs/strider)** — Gardener-mentor in the Tiered Gardens; Valentro's teacher in the way of the leaf
 - **[Tolomeo Lucente](/en/Venturia/Characters/NPCs/tolomeo-lucente)** — A scholar and explorer who appears only in the margins of old records
+- **[Valeria Tessere](/en/Venturia/Characters/NPCs/valeria-tessere)** — Masked leader of the Veil Court
 - **[High Oracle Ysmena Starweaver](/en/Venturia/Characters/NPCs/ysmena-starweaver)** — An ageless elf oracle who speaks for the city's smaller mystery cults

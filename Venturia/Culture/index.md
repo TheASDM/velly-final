@@ -22,4 +22,6 @@ Venturia has its own accent — not just in speech, but in everything. The way r
 
 ## Customs & Traditions
 
+- [The Autumn Masquerade](/en/Venturia/Culture/autumn-masquerade) — Venturia's most important annual festival: masks, bargains, performance, and identities worn with dangerous sincerity.
+- [The Tragedy of Vallombrosa](/en/Venturia/Culture/tragedy-of-vallombrosa) — The annual Masquerade performance that retells the city's contradictory di Errante legends.
 - [Venturian Quirks and Traditions](/en/Venturia/Culture/venturian-quirks-and-traditions) — The habits, superstitions, and social customs that mark someone as a Venturian.

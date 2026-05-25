@@ -14,9 +14,9 @@ dateCreated: 2026-02-23T23:57:23.247Z
 
 # The Amaranth Theater
 
-**Tier:** High Quarter &nbsp;|&nbsp; *"Where masks reveal more than faces ever could"*
+**Tier:** [High Quarter](/en/Venturia/Locations/high-quarter) &nbsp;|&nbsp; *"Where masks reveal more than faces ever could"*
 
-The Amaranth dominates the eastern coast. While technically in the Harobor District it is considered and extension of the High Quarter — its grand facade of deep blue stone and gilded trim visible from half the city. For over three centuries, this sprawling complex of performance halls, rehearsal spaces, workshops, and artist residences has shaped Venturia's cultural identity. In a city obsessed with masks and performance, that makes the Amaranth something close to sacred ground.
+The Amaranth dominates the eastern coast. While technically in the [Harbor District](/en/Venturia/Locations/harbor-district), it is considered an extension of the High Quarter — its grand facade of deep blue stone and gilded trim visible from half the city. For over three centuries, this sprawling complex of performance halls, rehearsal spaces, workshops, and artist residences has shaped Venturia's cultural identity. In a city obsessed with masks and performance, that makes the Amaranth something close to sacred ground.
 
 ---
 
@@ -30,7 +30,7 @@ The workshops produce costumes, masks, and sets of legendary quality. Competitio
 
 ## The Tragedy of Vallombrosa
 
-The Amaranth's crown jewel is its annual staging of *"The Tragedy of Vallombrosa"* during the Autumn Masquerade — the most anticipated cultural event in the city. Each year brings a different director's interpretation of the ancient legend, and the city debates the merits of each production for months afterward.
+The Amaranth's crown jewel is its annual staging of *[The Tragedy of Vallombrosa](/en/Venturia/Culture/tragedy-of-vallombrosa)* during the [Autumn Masquerade](/en/Venturia/Culture/autumn-masquerade) — the most anticipated cultural event in the city. Each year brings a different director's interpretation of the ancient legend, and the city debates the merits of each production for months afterward.
 
 > Some years it's a tragic romance. Other years a cautionary tale about hubris. Sometimes a dark comedy. The inconsistency is part of the tradition.
 

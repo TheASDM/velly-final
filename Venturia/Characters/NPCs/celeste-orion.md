@@ -16,7 +16,7 @@ dateCreated: 2026-05-22T00:00:00.000Z
 
 <div style="font-family: Georgia, serif; font-size: 0.95rem; color: #e8dcc8; line-height: 1.85;">
 <div><span style="color: #8b7355; letter-spacing: 0.18em; text-transform: uppercase; font-size: 0.7rem; font-weight: 600;">Seat</span> &nbsp;&middot;&nbsp; Guild-Master</div>
-<div><span style="color: #8b7355; letter-spacing: 0.18em; text-transform: uppercase; font-size: 0.7rem; font-weight: 600;">Guild</span> &nbsp;&middot;&nbsp; Binding Crafts Guild</div>
+<div><span style="color: #8b7355; letter-spacing: 0.18em; text-transform: uppercase; font-size: 0.7rem; font-weight: 600;">Guild</span> &nbsp;&middot;&nbsp; <a href="/en/Venturia/Factions/binding-crafts-guild">Binding Crafts Guild</a></div>
 <div><span style="color: #8b7355; letter-spacing: 0.18em; text-transform: uppercase; font-size: 0.7rem; font-weight: 600;">Race</span> &nbsp;&middot;&nbsp; Human</div>
 <div><span style="color: #8b7355; letter-spacing: 0.18em; text-transform: uppercase; font-size: 0.7rem; font-weight: 600;">Age</span> &nbsp;&middot;&nbsp; Mid-50s</div>
 </div>
@@ -31,7 +31,7 @@ dateCreated: 2026-05-22T00:00:00.000Z
 
 > *"We need protection now."*
 
-Guild-Master on the Autumn Council and head of the Binding Crafts Guild — the carpenters, masons, shipwrights, and construction trades. Mid-fifties, with calloused hands and ink-stained fingers, the daughter of a Liminal House foundling who built her career from nothing and remains fiercely protective of working people.
+Guild-Master on the Autumn Council and head of the [Binding Crafts Guild](/en/Venturia/Factions/binding-crafts-guild) — the carpenters, masons, shipwrights, and construction trades. Mid-fifties, with calloused hands and ink-stained fingers, the daughter of a Liminal House foundling who built her career from nothing and remains fiercely protective of working people.
 
 ---
 
@@ -42,5 +42,5 @@ The chamber's loudest voice for the city's laborers. With the disappearances fal
 
 ## Connections
 - **[The Autumn Council](/en/Venturia/Government/autumn-council)** — Holds one of the two Guild-Master seats.
-- **The Binding Crafts Guild** — The building trades she leads.
+- **[The Binding Crafts Guild](/en/Venturia/Factions/binding-crafts-guild)** — The building trades she leads.
 - **[Liminal House](/en/Venturia/Locations/liminal-house)** — Her parent was a Liminal House foundling.

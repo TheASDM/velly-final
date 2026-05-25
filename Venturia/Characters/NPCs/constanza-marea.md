@@ -16,7 +16,7 @@ dateCreated: 2026-05-22T00:00:00.000Z
 
 <div style="font-family: Georgia, serif; font-size: 0.95rem; color: #e8dcc8; line-height: 1.85;">
 <div><span style="color: #8b7355; letter-spacing: 0.18em; text-transform: uppercase; font-size: 0.7rem; font-weight: 600;">Seat</span> &nbsp;&middot;&nbsp; Harbor-Lord</div>
-<div><span style="color: #8b7355; letter-spacing: 0.18em; text-transform: uppercase; font-size: 0.7rem; font-weight: 600;">Bloc</span> &nbsp;&middot;&nbsp; Warehouse Consortium</div>
+<div><span style="color: #8b7355; letter-spacing: 0.18em; text-transform: uppercase; font-size: 0.7rem; font-weight: 600;">Bloc</span> &nbsp;&middot;&nbsp; <a href="/en/Venturia/Factions/warehouse-consortium">Warehouse Consortium</a></div>
 <div><span style="color: #8b7355; letter-spacing: 0.18em; text-transform: uppercase; font-size: 0.7rem; font-weight: 600;">Race</span> &nbsp;&middot;&nbsp; Human</div>
 <div><span style="color: #8b7355; letter-spacing: 0.18em; text-transform: uppercase; font-size: 0.7rem; font-weight: 600;">Age</span> &nbsp;&middot;&nbsp; Early 40s</div>
 </div>
@@ -31,7 +31,7 @@ dateCreated: 2026-05-22T00:00:00.000Z
 
 > *"What does everyone need to feel safe enough to let commerce resume?"*
 
-Harbor-Lord on the Autumn Council, speaking for the Warehouse Consortium her family has run for four generations. In her early forties and newer to the chamber, she makes up for it with sharp political instincts and a taste for elegant maneuvering over Teodor's bluntness. Self-interested, but not cruel.
+Harbor-Lord on the Autumn Council, speaking for the [Warehouse Consortium](/en/Venturia/Factions/warehouse-consortium) her family has run for four generations. In her early forties and newer to the chamber, she makes up for it with sharp political instincts and a taste for elegant maneuvering over Teodor's bluntness. Self-interested, but not cruel.
 
 ---
 
@@ -42,5 +42,5 @@ A dealmaker. Where others stake out positions, Constanza looks for the trade tha
 
 ## Connections
 - **[The Autumn Council](/en/Venturia/Government/autumn-council)** — Holds one of the two Harbor-Lord seats.
-- **The Warehouse Consortium** — Her family's enterprise and power base in the Harbor District.
+- **[The Warehouse Consortium](/en/Venturia/Factions/warehouse-consortium)** — Her family's enterprise and power base in the Harbor District.
 - **[Teodor Vast](/en/Venturia/Characters/NPCs/teodor-vast)** — Her fellow Harbor-Lord; their deadlock two years ago led to Vincen Tidecaller's compromise appointment.

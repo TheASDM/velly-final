@@ -29,12 +29,12 @@ dateCreated: 2026-05-22T00:00:00.000Z
 
 </div>
 
-Valentro keeps the [Tiered Gardens](/en/Venturia/Locations/tiered-gardens) — an elf Ranger trained in the way of the leaf under a mentor the gardeners call Strider. He was orphaned young: his mother died first, and then his father, a Fog Warden, simply disappeared. [Liminal House](/en/Venturia/Locations/liminal-house) raised him. He'd have called himself a quiet man with quiet work — until the day his shears snapped in his hands and, for a heartbeat, he saw two short swords instead, and moved like someone who knew how to use them.
+Valentro keeps the [Tiered Gardens](/en/Venturia/Locations/tiered-gardens) — an elf Ranger trained in the way of the leaf under a mentor the gardeners call [Strider](/en/Venturia/Characters/NPCs/strider). He was orphaned young: his mother died first, and then his father, a Fog Warden, simply disappeared. [Liminal House](/en/Venturia/Locations/liminal-house) raised him. He'd have called himself a quiet man with quiet work — until the day his shears snapped in his hands and, for a heartbeat, he saw two short swords instead, and moved like someone who knew how to use them.
 
 ---
 
 ## Concept
-An elf Ranger working the Tiered Gardens in the way of the leaf, alongside his mentor, Strider. Raised at Liminal House after he was orphaned.
+An elf Ranger working the Tiered Gardens in the way of the leaf, alongside his mentor, [Strider](/en/Venturia/Characters/NPCs/strider). Raised at Liminal House after he was orphaned.
 
 ---
 
@@ -50,6 +50,7 @@ While he was working, his gardening shears broke, and for an instant he saw them
 
 ## Ties
 - **[Roxanya "Roxy"](/en/Venturia/Characters/PCs/roxanya)** — The only witness to the sword moment; now his trainer.
+- **[Strider](/en/Venturia/Characters/NPCs/strider)** — His mentor in the Tiered Gardens.
 - **[Noname](/en/Venturia/Characters/PCs/noname)** — Raised alongside him at Liminal House; he was present the night her fiancé proposed in the Gardens.
 - **[Orabella](/en/Venturia/Characters/PCs/orabella)** — Another of Liminal House's children, though they were never especially close.
 - **[Kryton Novelli](/en/Venturia/Characters/PCs/kryton-novelli)** — A face he may know in passing from the Gardens.

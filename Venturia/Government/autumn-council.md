@@ -33,7 +33,7 @@ Venturia's governing body: eleven seats meant to balance the powers that actuall
 ---
 
 ## Composition
-Eleven voting seats: two Harbor-Lords, two Guild-Masters, two Temple Authority representatives, the Master of the Tidekeeper's Lodge, the Archmagister of VAVA, the Primo Navigante of the Ferriers' Confraternity, the Watch Commander of the Fog Wardens, and an honorary seat for the Signore of Venturia that has stood empty for as long as anyone living remembers. The Council Chair rotates each year among the Harbor-Lords, Guild-Masters, and Temple Authority.
+Eleven voting seats: two Harbor-Lords, two Guild-Masters, two Temple Authority representatives, the Master of the Tidekeeper's Lodge, the Archmagister of VAVA, the Primo Navigante of the Ferriers' Confraternity, the Watch Commander of the Fog Wardens, and an honorary seat for [the Signore of Venturia](/en/Venturia/Government/signore-of-venturia) that has stood empty for as long as anyone living remembers. The Council Chair rotates each year among the Harbor-Lords, Guild-Masters, and Temple Authority.
 
 ---
 
@@ -58,4 +58,4 @@ Because the faction blocs must move together to pass anything, and the unaligned
 - **[Archmagister Dorian Silvermarch](/en/Venturia/Characters/NPCs/dorian-silvermarch)** — Archmagister of VAVA
 - **[Primo Navigante Old Maren](/en/Venturia/Characters/NPCs/old-maren)** — Ferriers' Confraternity
 - **[Captain-Commander Thora Ironmark](/en/Venturia/Characters/NPCs/thora-ironmark)** — Watch Commander of the Fog Wardens
-- *The Signore of Venturia* — honorary seat, vacant
+- *[The Signore of Venturia](/en/Venturia/Government/signore-of-venturia)* — honorary seat, vacant

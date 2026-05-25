@@ -180,6 +180,10 @@
     "title": "Primo Navigante Old Maren"
   },
   {
+    "url": "/en/Venturia/Characters/NPCs/strider",
+    "title": "Strider"
+  },
+  {
     "url": "/en/Venturia/Characters/NPCs/teodor-vast",
     "title": "Lord-Admiral Teodor Vast"
   },
@@ -194,6 +198,10 @@
   {
     "url": "/en/Venturia/Characters/NPCs/tolomeo-lucente",
     "title": "Tolomeo Lucente"
+  },
+  {
+    "url": "/en/Venturia/Characters/NPCs/valeria-tessere",
+    "title": "Valeria Tessere"
   },
   {
     "url": "/en/Venturia/Characters/NPCs/verdigris-family",
@@ -472,8 +480,16 @@
     "title": "Creatures"
   },
   {
+    "url": "/en/Venturia/Culture/autumn-masquerade",
+    "title": "The Autumn Masquerade"
+  },
+  {
     "url": "/en/Venturia/Culture/index",
     "title": "Culture"
+  },
+  {
+    "url": "/en/Venturia/Culture/tragedy-of-vallombrosa",
+    "title": "The Tragedy of Vallombrosa"
   },
   {
     "url": "/en/Venturia/Culture/venturia-vernacular",
@@ -488,12 +504,20 @@
     "title": "The Abbey of Saint Viro and the Faithful"
   },
   {
+    "url": "/en/Venturia/Factions/binding-crafts-guild",
+    "title": "The Binding Crafts Guild"
+  },
+  {
     "url": "/en/Venturia/Factions/covenant-silver-scales",
     "title": "The Covenant of Silver Scales"
   },
   {
     "url": "/en/Venturia/Factions/fog-wardens",
     "title": "The Fog Wardens and the Shadowed Wardens"
+  },
+  {
+    "url": "/en/Venturia/Factions/gardeners-guild",
+    "title": "The Gardener's Guild"
   },
   {
     "url": "/en/Venturia/Factions/harbor-wardens",
@@ -504,8 +528,24 @@
     "title": "Factions"
   },
   {
+    "url": "/en/Venturia/Factions/metals-guild",
+    "title": "The Metals Guild"
+  },
+  {
     "url": "/en/Venturia/Factions/veil-court",
     "title": "The Veil Court"
+  },
+  {
+    "url": "/en/Venturia/Factions/volante-associates",
+    "title": "Volante & Associates"
+  },
+  {
+    "url": "/en/Venturia/Factions/warehouse-consortium",
+    "title": "The Warehouse Consortium"
+  },
+  {
+    "url": "/en/Venturia/Factions/wine-merchants-guild",
+    "title": "The Wine Merchants' Guild"
   },
   {
     "url": "/en/Venturia/Government/autumn-council",
@@ -516,8 +556,16 @@
     "title": "Government"
   },
   {
+    "url": "/en/Venturia/Government/signore-of-venturia",
+    "title": "The Signore of Venturia"
+  },
+  {
     "url": "/en/Venturia/Locations/amaranth-theater",
     "title": "The Amaranth Theater"
+  },
+  {
+    "url": "/en/Venturia/Locations/binding-hall",
+    "title": "The Binding Hall"
   },
   {
     "url": "/en/Venturia/Locations/burnt-quill",
@@ -540,6 +588,22 @@
     "title": "The Fog Wardens' Garrison"
   },
   {
+    "url": "/en/Venturia/Locations/glamour-courts",
+    "title": "The Glamour Courts"
+  },
+  {
+    "url": "/en/Venturia/Locations/hall-of-reflected-faces",
+    "title": "The Hall of Reflected Faces"
+  },
+  {
+    "url": "/en/Venturia/Locations/harbor-district",
+    "title": "The Harbor District"
+  },
+  {
+    "url": "/en/Venturia/Locations/high-quarter",
+    "title": "The High Quarter"
+  },
+  {
     "url": "/en/Venturia/Locations/index",
     "title": "Locations"
   },
@@ -548,12 +612,20 @@
     "title": "The Liminal House"
   },
   {
+    "url": "/en/Venturia/Locations/market-tiers",
+    "title": "The Market Tiers"
+  },
+  {
     "url": "/en/Venturia/Locations/masquers-sodality",
     "title": "The Masquers' Sodality"
   },
   {
     "url": "/en/Venturia/Locations/mirrorwrights-court",
     "title": "The Mirrorwright's Court"
+  },
+  {
+    "url": "/en/Venturia/Locations/overlook",
+    "title": "The Overlook"
   },
   {
     "url": "/en/Venturia/Locations/penny-shrine",
@@ -584,6 +656,10 @@
     "title": "Venturia Academy of Veiled Arts"
   },
   {
+    "url": "/en/Venturia/Locations/veiled-tower",
+    "title": "The Veiled Tower"
+  },
+  {
     "url": "/en/Venturia/Locations/vellum-hall",
     "title": "The Vellum Hall"
   },
@@ -610,6 +686,14 @@
   {
     "url": "/en/Venturia/Lore/legends-of-vallombrosa",
     "title": "The Legends of Vallombrosa"
+  },
+  {
+    "url": "/en/Venturia/Lore/subtle-fey-touch",
+    "title": "The Subtle Fey-Touch"
+  },
+  {
+    "url": "/en/Venturia/Lore/unexplained-prosperity",
+    "title": "The Unexplained Prosperity"
   },
   {
     "url": "/en/Venturia/Maps/eldryn",

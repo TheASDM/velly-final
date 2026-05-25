@@ -17,7 +17,7 @@ dateCreated: 2026-05-22T00:00:00.000Z
 <div style="font-family: Georgia, serif; font-size: 0.95rem; color: #e8dcc8; line-height: 1.85;">
 <div><span style="color: #8b7355; letter-spacing: 0.18em; text-transform: uppercase; font-size: 0.7rem; font-weight: 600;">Type</span> &nbsp;&middot;&nbsp; Semi-secret society</div>
 <div><span style="color: #8b7355; letter-spacing: 0.18em; text-transform: uppercase; font-size: 0.7rem; font-weight: 600;">Domain</span> &nbsp;&middot;&nbsp; Masks, performance &amp; the Autumn Masquerade</div>
-<div><span style="color: #8b7355; letter-spacing: 0.18em; text-transform: uppercase; font-size: 0.7rem; font-weight: 600;">Leader</span> &nbsp;&middot;&nbsp; Valeria Tessere</div>
+<div><span style="color: #8b7355; letter-spacing: 0.18em; text-transform: uppercase; font-size: 0.7rem; font-weight: 600;">Leader</span> &nbsp;&middot;&nbsp; <a href="/en/Venturia/Characters/NPCs/valeria-tessere">Valeria Tessere</a></div>
 </div>
 <div style="margin-top: 1.25rem; padding-left: 1rem; border-left: 2px solid rgba(212, 165, 116, 0.4); font-style: italic; color: rgba(212, 165, 116, 0.9); font-family: 'IM Fell English', Georgia, serif; font-size: 1rem;">"The face you choose."</div>
 </div>
@@ -30,25 +30,27 @@ dateCreated: 2026-05-22T00:00:00.000Z
 
 <!-- TODO: banner — supply a filename to add -->
 
-A semi-secret society that keeps Venturia's traditions of masks, identity, and performance — and stages the annual Autumn Masquerade. It holds no government recognition, which is exactly how it likes things.
+A semi-secret society that keeps Venturia's traditions of masks, identity, and performance — and stages the annual [Autumn Masquerade](/en/Venturia/Culture/autumn-masquerade). It holds no government recognition, which is exactly how it likes things.
 
 ---
 
 ## What They Do
-The Court organizes the Autumn Masquerade, maintains the guild of master maskmakers, sponsors theatrical productions, and acts as patron to artists working in the "veiled arts": performance, disguise, transformation, and revelation.
+The Court organizes the [Autumn Masquerade](/en/Venturia/Culture/autumn-masquerade), maintains the guild of master maskmakers, sponsors theatrical productions, and acts as patron to artists working in the "veiled arts": performance, disguise, transformation, and revelation.
 
 ---
 
 ## Leadership
-Led by Valeria Tessere, a former celebrated actress who wears a different mask to every public appearance — and has seemed to do so for rather longer than her apparent years would allow. Charismatic, politically shrewd, and genuinely devoted to the city's mask-culture.
+Led by [Valeria Tessere](/en/Venturia/Characters/NPCs/valeria-tessere), a former celebrated actress who wears a different mask to every public appearance — and has seemed to do so for rather longer than her apparent years would allow. Charismatic, politically shrewd, and genuinely devoted to the city's mask-culture.
 
 ---
 
 ## Membership
-Members gain entry to exclusive theatrical spaces and private masked events, connections to artists across the region, training in the "Art of Faces" — disguise, social reading, identity theory — and access to the Hall of Reflected Faces, a gallery holding a mask from every Autumn Masquerade for nearly three hundred years.
+Members gain entry to exclusive theatrical spaces and private masked events, connections to artists across the region, training in the "Art of Faces" — disguise, social reading, identity theory — and access to the [Hall of Reflected Faces](/en/Venturia/Locations/hall-of-reflected-faces), a gallery holding a mask from every Autumn Masquerade for nearly three hundred years.
 
 ---
 
 ## Connections
+- **[Valeria Tessere](/en/Venturia/Characters/NPCs/valeria-tessere)** — The Court's masked leader.
+- **[The Hall of Reflected Faces](/en/Venturia/Locations/hall-of-reflected-faces)** — A private gallery preserving three centuries of Masquerade masks.
 - **[The Masquers' Sodality](/en/Venturia/Locations/masquers-sodality)** — Their maskmaking tradition is closely tied to the Court's cultural mission.
-- **[The Amaranth Theater](/en/Venturia/Locations/amaranth-theater)** — The principal venue for Court-sponsored productions and the annual *Tragedy of Vallombrosa*.
+- **[The Amaranth Theater](/en/Venturia/Locations/amaranth-theater)** — The principal venue for Court-sponsored productions and the annual *[Tragedy of Vallombrosa](/en/Venturia/Culture/tragedy-of-vallombrosa)*.

@@ -69,4 +69,4 @@ The Verdigris run the [Mirrorwright's Court](/en/Venturia/Locations/mirrorwright
 
 ## Connections
 - **[The Mirrorwright's Court](/en/Venturia/Locations/mirrorwrights-court)** — The family's guild workshop in the Market Tiers.
-- **[Guildmaster Vincenzo Copper](/en/Venturia/Characters/NPCs/vincenzo-copper)** — The Mirrorwrights fall under his Metals Guild; Cosimo Verdigris was his mentor.
+- **[Guildmaster Vincenzo Copper](/en/Venturia/Characters/NPCs/vincenzo-copper)** — The Mirrorwrights fall under his [Metals Guild](/en/Venturia/Factions/metals-guild); Cosimo Verdigris was his mentor.

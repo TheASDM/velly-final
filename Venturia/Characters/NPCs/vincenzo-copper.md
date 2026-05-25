@@ -16,7 +16,7 @@ dateCreated: 2026-05-22T00:00:00.000Z
 
 <div style="font-family: Georgia, serif; font-size: 0.95rem; color: #e8dcc8; line-height: 1.85;">
 <div><span style="color: #8b7355; letter-spacing: 0.18em; text-transform: uppercase; font-size: 0.7rem; font-weight: 600;">Seat</span> &nbsp;&middot;&nbsp; Guild-Master</div>
-<div><span style="color: #8b7355; letter-spacing: 0.18em; text-transform: uppercase; font-size: 0.7rem; font-weight: 600;">Guild</span> &nbsp;&middot;&nbsp; Metals Guild</div>
+<div><span style="color: #8b7355; letter-spacing: 0.18em; text-transform: uppercase; font-size: 0.7rem; font-weight: 600;">Guild</span> &nbsp;&middot;&nbsp; <a href="/en/Venturia/Factions/metals-guild">Metals Guild</a></div>
 <div><span style="color: #8b7355; letter-spacing: 0.18em; text-transform: uppercase; font-size: 0.7rem; font-weight: 600;">Race</span> &nbsp;&middot;&nbsp; Dwarf</div>
 </div>
 <div style="margin-top: 1.25rem; padding-left: 1rem; border-left: 2px solid rgba(212, 165, 116, 0.4); font-style: italic; color: rgba(212, 165, 116, 0.9); font-family: 'IM Fell English', Georgia, serif; font-size: 1rem;">"Rush produces shoddy work."</div>
@@ -30,7 +30,7 @@ dateCreated: 2026-05-22T00:00:00.000Z
 
 > *"We'll survive this by doing what we've always done."*
 
-Guild-Master on the Autumn Council, representing the Metals Guild — smiths, metalworkers, jewelers, and the Mirrorwrights. A conservative dwarf traditionalist whose family has led the guild for three generations, he takes the seven-generation view of every problem: wise and steadying, and maddeningly slow to act.
+Guild-Master on the Autumn Council, representing the [Metals Guild](/en/Venturia/Factions/metals-guild) — smiths, metalworkers, jewelers, and the Mirrorwrights. A conservative dwarf traditionalist whose family has led the guild for three generations, he takes the seven-generation view of every problem: wise and steadying, and maddeningly slow to act.
 
 ---
 
@@ -41,4 +41,4 @@ The voice of caution and continuity. Vincenzo trusts the guilds' long survival o
 
 ## Connections
 - **[The Autumn Council](/en/Venturia/Government/autumn-council)** — Holds one of the two Guild-Master seats.
-- **The Metals Guild** — The smiths, jewelers, and Mirrorwrights under his leadership.
+- **[The Metals Guild](/en/Venturia/Factions/metals-guild)** — The smiths, jewelers, and Mirrorwrights under his leadership.

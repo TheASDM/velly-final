@@ -68,7 +68,7 @@ Theater and performance are highly valued throughout Venturia. The city has mult
 
 ---
 
-## The Autumn Masquerade
+## [The Autumn Masquerade](/en/Venturia/Culture/autumn-masquerade)
 
 Venturia's biggest festival and social event of the year. Think Venice's Carnevale meets a Halloween ball — amplified by the supernatural saturation of autumn colors that make the entire city glow.
 
@@ -78,11 +78,11 @@ Venturia's biggest festival and social event of the year. Think Venice's Carneva
 | **Duration** | Three days and nights |
 | **Who Attends** | Everyone, from nobles to commoners (venues and events are class-stratified) |
 
-**What Happens:** Everyone wears elaborate masks — going unmasked during Masquerade is considered deeply unlucky. Major social connections are forged, business deals are sealed, and courtships begin and end. The city transforms into a continuous party with theater performances running constantly across every district. The final night culminates in the performance of *"The Tragedy of Vallombrosa."*
+**What Happens:** Everyone wears elaborate masks — going unmasked during Masquerade is considered deeply unlucky. Major social connections are forged, business deals are sealed, and courtships begin and end. The city transforms into a continuous party with theater performances running constantly across every district. The final night culminates in the performance of *[The Tragedy of Vallombrosa](/en/Venturia/Culture/tragedy-of-vallombrosa)*.
 
-### The Tragedy of Vallombrosa
+### [The Tragedy of Vallombrosa](/en/Venturia/Culture/tragedy-of-vallombrosa)
 
-Every year during Masquerade, a theatrical performance of **"The Tragedy of Vallombrosa"** is staged — but the plot changes every year. Different theater companies compete for the honor of producing it, and each director chooses which version of the legend to adapt. Residents treat the selection as an ongoing civic joke; people place bets on which version will be chosen, and post-performance criticism and comparison to previous years is intense.
+Every year during Masquerade, a theatrical performance of **[The Tragedy of Vallombrosa](/en/Venturia/Culture/tragedy-of-vallombrosa)** is staged — but the plot changes every year. Different theater companies compete for the honor of producing it, and each director chooses which version of the legend to adapt. Residents treat the selection as an ongoing civic joke; people place bets on which version will be chosen, and post-performance criticism and comparison to previous years is intense.
 
 Some years it's a tragic romance. Other years a cautionary tale about hubris. Sometimes a dark comedy. The inconsistency is part of the tradition.
 
@@ -118,5 +118,5 @@ These quirks should feel **slightly off but not overtly dangerous**. Venturia is
 |---|---|
 | **Contract Culture** | Promises and deals made in Venturia carry real social weight. Breaking your word has consequences. |
 | **Mask Tradition** | During Masquerade season, anonymity is culturally expected — natural cover for intrigue and investigation. |
-| **The Autumn Masquerade** | A perfect set-piece for major plot events, social encounters, and dramatic revelations. |
+| **[The Autumn Masquerade](/en/Venturia/Culture/autumn-masquerade)** | A perfect set-piece for major plot events, social encounters, and dramatic revelations. |
 | **Theater Culture** | Performance and deception are valued skills. A good actor is respected. Working a crowd is practical knowledge. |

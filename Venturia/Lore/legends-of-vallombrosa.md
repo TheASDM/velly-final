@@ -27,7 +27,7 @@ After that, the legends scatter wildly. Two brothers fought over a woman — and
 ---
 
 ## The Annual Tragedy
-During the Autumn Masquerade, the Amaranth Theater stages *The Tragedy of Vallombrosa* — but the plot changes every year, depending on which director is in charge and which legend they favor. Residents bet on which version will be staged and argue over the production. It's a running civic joke.
+During the [Autumn Masquerade](/en/Venturia/Culture/autumn-masquerade), the Amaranth Theater stages *[The Tragedy of Vallombrosa](/en/Venturia/Culture/tragedy-of-vallombrosa)* — but the plot changes every year, depending on which director is in charge and which legend they favor. Residents bet on which version will be staged and argue over the production. It's a running civic joke.
 
 ---
 
@@ -37,5 +37,5 @@ Children believe the frightening versions completely. Teenagers call it all supe
 ---
 
 ## See Also
-- **[The Amaranth Theater](/en/Venturia/Locations/amaranth-theater)** — Home of the annual *Tragedy of Vallombrosa*.
+- **[The Amaranth Theater](/en/Venturia/Locations/amaranth-theater)** — Home of the annual *[Tragedy of Vallombrosa](/en/Venturia/Culture/tragedy-of-vallombrosa)*.
 - **[Vallombrosa](/en/Venturia/Locations/vallombrosa)** — The forbidden fog-zone the legends concern.

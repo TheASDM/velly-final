@@ -26,9 +26,9 @@ Students and faculty alike are recognized throughout the city by their distincti
 
 | Building | Faculty | Notes |
 |---|---|---|
-| **The Veiled Tower** | Divination | Students learn to read futures in mirrors that sometimes show the past instead. |
-| **The Binding Hall** | Contract Magic & Oath-Craft | Disciplines that carry particular weight in a city where promises have teeth. |
-| **The Glamour Courts** | Illusion | Training spaces where the boundaries between appearance and reality have always been negotiable. |
+| **[The Veiled Tower](/en/Venturia/Locations/veiled-tower)** | Divination | Students learn to read futures in mirrors that sometimes show the past instead. |
+| **[The Binding Hall](/en/Venturia/Locations/binding-hall)** | Contract Magic & Oath-Craft | Disciplines that carry particular weight in a city where promises have teeth. |
+| **[The Glamour Courts](/en/Venturia/Locations/glamour-courts)** | Illusion | Training spaces where the boundaries between appearance and reality have always been negotiable. |
 | **The Library** | All faculties | Five floors of collected knowledge. The deepest levels require special permission and, some say, a willingness to forget certain things you might read there. |
 
 ---

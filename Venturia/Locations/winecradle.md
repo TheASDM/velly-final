@@ -13,7 +13,7 @@ date: 2026-02-23T00:00:00.000Z
 
 **Tier:** Market Tiers &nbsp;|&nbsp; *"Bottling Venturia's impossible vintages"*
 
-The Wine Merchants' Guild makes its home in a building designed to impress — soaring ceilings, walls lined with bottles from across the known world, a tasting room where the island's finest vintages are presented with appropriate ceremony. Venturia's wines fetch premium prices everywhere: something in the soil, the climate, the peculiar growing conditions produces results that shouldn't be possible.
+The [Wine Merchants' Guild](/en/Venturia/Factions/wine-merchants-guild) makes its home in a building designed to impress — soaring ceilings, walls lined with bottles from across the known world, a tasting room where the island's finest vintages are presented with appropriate ceremony. Venturia's wines fetch premium prices everywhere: something in the soil, the climate, the peculiar growing conditions produces results that shouldn't be possible.
 
 ---
 

@@ -9,7 +9,7 @@ dateCreated: 2026-02-27T00:00:00.000Z
 
 # Venturia
 
-A city of tiers — literally and otherwise. The High Quarter looks down on the Market Tiers, which look down on the Harbor District, which looks out to sea. Above everything, the Overlook faces Vallombrosa.
+A city of tiers — literally and otherwise. The [High Quarter](/en/Venturia/Locations/high-quarter) looks down on the [Market Tiers](/en/Venturia/Locations/market-tiers), which look down on the [Harbor District](/en/Venturia/Locations/harbor-district), which looks out to sea. Above everything, [the Overlook](/en/Venturia/Locations/overlook) faces Vallombrosa.
 
 ---
 

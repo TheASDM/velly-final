@@ -22,7 +22,7 @@ The Gardens cascade down the hillside in a series of terraces connected by windi
 
 ## What Grows Here
 
-The Gardener's Guild maintains these spaces with techniques developed nowhere else. They've learned which plants thrive in Venturia's peculiar conditions, and which produce results that would be impossible elsewhere.
+The [Gardener's Guild](/en/Venturia/Factions/gardeners-guild) maintains these spaces with techniques developed nowhere else. They've learned which plants thrive in Venturia's peculiar conditions, and which produce results that would be impossible elsewhere.
 
 - Roses that bloom in seventeen colors, including three that don't have proper names
 - Fruit trees that bear year-round regardless of season

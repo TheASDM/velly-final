@@ -12,21 +12,25 @@ dateCreated: 2026-02-23T23:57:29.295Z
 
 ➜ [View the Map of Venturia](/en/Venturia/Locations/venturia-map)
 
-Venturia is a city of tiers — literally and otherwise. The High Quarter looks down on the Market Tiers, which look down on the Harbor District, which looks out to sea. Above everything, the Overlook faces Vallombrosa. Each district has its own character, its own institutions, and its own relationship with the fog.
+Venturia is a city of tiers — literally and otherwise. The [High Quarter](/en/Venturia/Locations/high-quarter) looks down on the [Market Tiers](/en/Venturia/Locations/market-tiers), which look down on the [Harbor District](/en/Venturia/Locations/harbor-district), which looks out to sea. Above everything, [the Overlook](/en/Venturia/Locations/overlook) faces Vallombrosa. Each district has its own character, its own institutions, and its own relationship with the fog.
 
 ---
 
-## High Quarter
+## [High Quarter](/en/Venturia/Locations/high-quarter)
 
 The upper city — home to old money, the Academy, and institutions that prefer to be above it all.
 
 - [Venturia Academy of Veiled Arts (VAVA)](/en/Venturia/Locations/vava)
+  - [The Veiled Tower](/en/Venturia/Locations/veiled-tower)
+  - [The Binding Hall](/en/Venturia/Locations/binding-hall)
+  - [The Glamour Courts](/en/Venturia/Locations/glamour-courts)
 - [The Covenant Archive](/en/Venturia/Locations/covenant-archive)
 - [The Amaranth Theater](/en/Venturia/Locations/amaranth-theater)
+- [The Hall of Reflected Faces](/en/Venturia/Locations/hall-of-reflected-faces)
 
 ---
 
-## Market Tiers
+## [Market Tiers](/en/Venturia/Locations/market-tiers)
 
 The middle city — commerce, craft, and the institutions that keep the city running day to day.
 
@@ -42,7 +46,7 @@ The middle city — commerce, craft, and the institutions that keep the city run
 
 ---
 
-## Harbor District
+## [Harbor District](/en/Venturia/Locations/harbor-district)
 
 The lower city — salt, trade, old loyalties, and waterways that don't always behave.
 
@@ -59,7 +63,7 @@ The lower city — salt, trade, old loyalties, and waterways that don't always b
 
 ---
 
-## The Overlook
+## [The Overlook](/en/Venturia/Locations/overlook)
 
 Where the city ends and Vallombrosa begins.
 

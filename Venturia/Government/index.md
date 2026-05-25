@@ -18,6 +18,12 @@ Eleven seats meant to balance the powers that actually run the island — chroni
 
 ---
 
+## [The Signore of Venturia](/en/Venturia/Government/signore-of-venturia)
+
+The vacant honorary seat preserved from the old di Errante order.
+
+---
+
 ## Council Members
 
 For the seated members of the Council, see the [NPCs index](/en/Venturia/Characters/NPCs/index).
