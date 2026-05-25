@@ -698,6 +698,15 @@ Generate campaign art with Enzo's image model and contribute to the shared playe
 
 <div class="vos-art">
 
+<div class="vos-art-gallery-head">
+  <h2>Featured / Recent</h2>
+  <div class="vos-art-gallery-count">Latest shared pieces</div>
+</div>
+
+{% set carouselLimit = 5 %}
+{% set carouselLabel = "Featured recent shared gallery images" %}
+{% include "partials/gallery-carousel.njk" %}
+
 <section class="vos-art-studio" aria-label="Generate new art">
   <div class="vos-art-studio-title">Compose a New Piece</div>
 
@@ -752,15 +761,6 @@ Generate campaign art with Enzo's image model and contribute to the shared playe
     </details>
   </div>
 </section>
-
-<div class="vos-art-gallery-head">
-  <h2>Featured / Recent</h2>
-  <div class="vos-art-gallery-count">Latest shared pieces</div>
-</div>
-
-{% set carouselLimit = 5 %}
-{% set carouselLabel = "Featured recent shared gallery images" %}
-{% include "partials/gallery-carousel.njk" %}
 
 <div class="vos-art-gallery-head">
   <h2>Shared Gallery</h2>
