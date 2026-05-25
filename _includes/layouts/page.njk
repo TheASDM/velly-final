@@ -1156,6 +1156,81 @@
     margin: 0 auto;
   }
 
+  .vos-identity-card,
+  .vos-push-card {
+    position: fixed;
+    left: max(0.8rem, env(safe-area-inset-left));
+    right: max(0.8rem, env(safe-area-inset-right));
+    bottom: calc(var(--vos-app-nav-h) + env(safe-area-inset-bottom) + 0.85rem);
+    z-index: 1320;
+    max-width: 560px;
+    margin: 0 auto;
+    padding: 0.95rem;
+    border: 1px solid rgba(212, 165, 116, 0.36);
+    border-radius: 8px;
+    background: rgba(10, 8, 14, 0.98);
+    box-shadow: 0 18px 54px rgba(0, 0, 0, 0.72);
+  }
+  .vos-identity-title,
+  .vos-push-title {
+    color: var(--vos-gold-bright);
+    font-family: 'Cinzel', Georgia, serif;
+    font-size: 0.9rem;
+    font-weight: 700;
+    letter-spacing: 0;
+    margin-bottom: 0.65rem;
+  }
+  .vos-identity-options {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 0.45rem;
+  }
+  .vos-identity-options button,
+  .vos-push-actions button {
+    min-height: 42px;
+    border: 1px solid rgba(212, 165, 116, 0.34);
+    border-radius: 6px;
+    background: rgba(212, 165, 116, 0.08);
+    color: var(--vos-cream);
+    font-family: 'Cinzel', Georgia, serif;
+    font-size: 0.74rem;
+    font-weight: 700;
+    letter-spacing: 0;
+    cursor: pointer;
+  }
+  .vos-identity-options button:hover,
+  .vos-push-actions button:hover {
+    background: rgba(212, 165, 116, 0.15);
+    color: var(--vos-gold-bright);
+  }
+  .vos-push-text,
+  .vos-push-status {
+    margin: 0;
+    color: var(--vos-text);
+    font-size: 0.95rem;
+    line-height: 1.35;
+  }
+  .vos-push-status {
+    min-height: 1.4em;
+    margin-top: 0.35rem;
+    color: var(--vos-gold-dim);
+  }
+  .vos-push-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    margin-top: 0.8rem;
+  }
+  .vos-push-actions .vos-push-enable {
+    padding: 0.45rem 0.85rem;
+    color: var(--vos-gold-bright);
+  }
+  .vos-push-actions .vos-push-dismiss {
+    width: 42px;
+    padding: 0;
+    font-size: 1.2rem;
+  }
+
   /* ── Enzo widget container fix ────────────────────────────────────────
      Float above the sidebar, but pin it firmly bottom-right so it can't
      drift over the centered logo on the home page. */
@@ -1589,6 +1664,8 @@
   }
 })();
 </script>
+
+<script src="/pwa-client.js" defer></script>
 
 <!-- ── Pagefind site search ─────────────────────────────────────────── -->
 <script src="/pagefind/pagefind-ui.js"></script>

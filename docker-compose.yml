@@ -52,6 +52,11 @@ services:
       OLLAMA_URL: ${OLLAMA_URL:-https://ai.raptornet.dev/ollama}
       OLLAMA_API_KEY: ${OLLAMA_API_KEY:-${OPENWEBUI_API_KEY:-}}
       TEMPERATURE: ${TEMPERATURE:-0.2}
+      APP_DB_PATH: ${APP_DB_PATH:-/app/app-data/vallombrosa.sqlite3}
+      ADMIN_TOKEN: ${ADMIN_TOKEN:-}
+      VAPID_PUBLIC_KEY: ${VAPID_PUBLIC_KEY:-}
+      VAPID_PRIVATE_KEY: ${VAPID_PRIVATE_KEY:-}
+      VAPID_SUBJECT: ${VAPID_SUBJECT:-mailto:dm@valleyofshadows.wiki}
       # OpenAI image generation (used by the /art slash command)
       OPENAI_KEY: ${OPENAI_KEY:-}
       IMAGE_MODEL: ${IMAGE_MODEL:-gpt-image-2}
@@ -64,6 +69,8 @@ services:
       - ./campaign-data:/app/data:ro
       # Writable volume for chat logs
       - ./logs:/app/logs
+      # PWA runtime database — one SQLite file, backed up by copying it.
+      - ./app-data:/app/app-data
       # Art Studio gallery — persisted images + manifest. Survives container
       # rebuilds. Created on first generation if it doesn't exist on the host.
       - ./generated-art:/app/generated-art

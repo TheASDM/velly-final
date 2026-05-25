@@ -24,6 +24,11 @@ generated-art/**
 !generated-art/
 !generated-art/.gitkeep
 
+# PWA runtime data — SQLite database for push/messages/RSVPs.
+app-data/**
+!app-data/
+!app-data/.gitkeep
+
 # Generated vector store (large, rebuilt by build_vectors.py)
 campaign-data/vector_store.json
 # Legacy split-mode store from before the player-only refactor

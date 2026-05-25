@@ -10,11 +10,13 @@ Venturia/DM/).
 
 import base64
 import fcntl
+import hmac
 import json
 import logging
 import os
 import re
 import secrets
+import sqlite3
 import string
 import time
 from datetime import datetime, timezone
@@ -22,6 +24,12 @@ from pathlib import Path
 
 import requests as http_requests
 from flask import Flask, abort, jsonify, request, send_from_directory
+
+try:
+    from pywebpush import WebPushException, webpush as send_webpush
+except ImportError:  # Allows local syntax/build checks before deps are installed.
+    WebPushException = Exception
+    send_webpush = None
 
 # ── Configuration ────────────────────────────────────────────────────────────
 
@@ -56,6 +64,15 @@ GALLERY_PAGE_LIMIT = int(os.environ.get("GALLERY_PAGE_LIMIT", "60"))
 # on the host directly (see README). Match is case-insensitive and ignores
 # surrounding whitespace so "prima volta" and " Prima Volta " both work.
 DM_PASSPHRASE = os.environ.get("DM_PASSPHRASE", "").strip()
+
+# ── PWA runtime configuration ────────────────────────────────────────────────
+# One SQLite file for small read/write app state. This keeps the PWA layer
+# self-contained and backup-friendly: copy the file, keep the app.
+APP_DB_PATH = Path(os.environ.get("APP_DB_PATH", "/app/app-data/vallombrosa.sqlite3"))
+ADMIN_TOKEN = os.environ.get("ADMIN_TOKEN", "").strip()
+VAPID_PUBLIC_KEY = os.environ.get("VAPID_PUBLIC_KEY", "").strip()
+VAPID_PRIVATE_KEY = os.environ.get("VAPID_PRIVATE_KEY", "").strip()
+VAPID_SUBJECT = os.environ.get("VAPID_SUBJECT", "mailto:dm@valleyofshadows.wiki").strip()
 
 # Style preset keys are stable strings sent from the UI; the corresponding
 # prompt prefix is prepended to the user prompt at generation time. Keep
@@ -181,6 +198,48 @@ RAG_SKIP_PATTERNS = re.compile(
     r"help|test|ping)$",
     re.IGNORECASE,
 )
+
+
+def _utc_now_iso():
+    return datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
+
+
+def _app_db():
+    APP_DB_PATH.parent.mkdir(parents=True, exist_ok=True)
+    conn = sqlite3.connect(APP_DB_PATH, timeout=10)
+    conn.row_factory = sqlite3.Row
+    return conn
+
+
+def _run_app_migrations():
+    """Create/upgrade the small SQLite schema used by PWA features."""
+    with _app_db() as conn:
+        conn.execute("""
+            CREATE TABLE IF NOT EXISTS schema_migrations (
+                name TEXT PRIMARY KEY,
+                applied_at TEXT NOT NULL
+            )
+        """)
+        done = {
+            row["name"]
+            for row in conn.execute("SELECT name FROM schema_migrations")
+        }
+
+        if "001_push_subscriptions" not in done:
+            conn.execute("""
+                CREATE TABLE IF NOT EXISTS subscriptions (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    player_name TEXT NOT NULL,
+                    endpoint TEXT NOT NULL UNIQUE,
+                    p256dh TEXT NOT NULL,
+                    auth TEXT NOT NULL,
+                    created_at TEXT NOT NULL
+                )
+            """)
+            conn.execute(
+                "INSERT INTO schema_migrations (name, applied_at) VALUES (?, ?)",
+                ("001_push_subscriptions", _utc_now_iso()),
+            )
 
 
 def _skip_rag(message):
@@ -1210,7 +1269,7 @@ logging.basicConfig(
 
 
 _CORS_METHODS = "GET, POST, DELETE, OPTIONS"
-_CORS_HEADERS = "Content-Type, X-DM-Passphrase"
+_CORS_HEADERS = "Content-Type, X-DM-Passphrase, X-Admin-Token"
 
 
 @app.before_request
@@ -1229,6 +1288,161 @@ def add_cors_headers(response):
     response.headers["Access-Control-Allow-Methods"] = _CORS_METHODS
     response.headers["Access-Control-Allow-Headers"] = _CORS_HEADERS
     return response
+
+
+def _extract_admin_token():
+    header = request.headers.get("X-Admin-Token", "")
+    if header:
+        return header.strip()
+    body = request.get_json(silent=True) or {}
+    candidate = (
+        body.get("adminToken")
+        or body.get("admin_token")
+        or ""
+    )
+    return candidate.strip() if isinstance(candidate, str) else ""
+
+
+def _admin_error_response():
+    if not ADMIN_TOKEN:
+        return jsonify({"error": "ADMIN_TOKEN is not configured on this server"}), 503
+    candidate = _extract_admin_token()
+    if not candidate or not hmac.compare_digest(candidate, ADMIN_TOKEN):
+        return jsonify({"error": "Forbidden"}), 403
+    return None
+
+
+@app.route("/api/push/config", methods=["GET"])
+def push_config():
+    return jsonify({
+        "publicKey": VAPID_PUBLIC_KEY,
+        "pushConfigured": bool(VAPID_PUBLIC_KEY and VAPID_PRIVATE_KEY and send_webpush),
+    })
+
+
+@app.route("/api/push/subscribe", methods=["POST"])
+def push_subscribe():
+    if send_webpush is None or not VAPID_PUBLIC_KEY or not VAPID_PRIVATE_KEY:
+        return jsonify({"error": "Push is not configured on this server"}), 503
+
+    body = request.get_json(silent=True) or {}
+    name = body.get("name", "")
+    subscription = body.get("subscription") or {}
+    keys = subscription.get("keys") or {}
+
+    if not isinstance(name, str) or not name.strip():
+        return jsonify({"error": "Missing player name"}), 400
+    name = name.strip()[:64]
+
+    endpoint = subscription.get("endpoint", "")
+    p256dh = keys.get("p256dh", "")
+    auth = keys.get("auth", "")
+    if not all(isinstance(v, str) and v for v in (endpoint, p256dh, auth)):
+        return jsonify({"error": "Invalid push subscription"}), 400
+
+    with _app_db() as conn:
+        conn.execute("""
+            INSERT INTO subscriptions (player_name, endpoint, p256dh, auth, created_at)
+            VALUES (?, ?, ?, ?, ?)
+            ON CONFLICT(endpoint) DO UPDATE SET
+                player_name = excluded.player_name,
+                p256dh = excluded.p256dh,
+                auth = excluded.auth
+        """, (name, endpoint, p256dh, auth, _utc_now_iso()))
+
+    return jsonify({"ok": True})
+
+
+def _subscription_info(row):
+    return {
+        "endpoint": row["endpoint"],
+        "keys": {
+            "p256dh": row["p256dh"],
+            "auth": row["auth"],
+        },
+    }
+
+
+@app.route("/api/push/send", methods=["POST"])
+def push_send():
+    admin_error = _admin_error_response()
+    if admin_error:
+        return admin_error
+
+    if send_webpush is None:
+        return jsonify({"error": "pywebpush is not installed on this server"}), 503
+    if not VAPID_PUBLIC_KEY or not VAPID_PRIVATE_KEY:
+        return jsonify({"error": "VAPID keys are not configured on this server"}), 503
+
+    body = request.get_json(silent=True) or {}
+    title = body.get("title", "")
+    message = body.get("body", "")
+    url = body.get("url", "/")
+
+    if not isinstance(title, str) or not title.strip():
+        return jsonify({"error": "Missing notification title"}), 400
+    if not isinstance(message, str) or not message.strip():
+        return jsonify({"error": "Missing notification body"}), 400
+    if not isinstance(url, str) or not url.startswith("/"):
+        url = "/"
+
+    payload = json.dumps({
+        "title": title.strip()[:120],
+        "body": message.strip()[:500],
+        "url": url[:300],
+    })
+
+    sent = 0
+    failed = 0
+    pruned = 0
+    errors = []
+
+    with _app_db() as conn:
+        rows = list(conn.execute("""
+            SELECT id, player_name, endpoint, p256dh, auth
+            FROM subscriptions
+            ORDER BY created_at ASC
+        """))
+
+        for row in rows:
+            try:
+                send_webpush(
+                    subscription_info=_subscription_info(row),
+                    data=payload,
+                    vapid_private_key=VAPID_PRIVATE_KEY,
+                    vapid_claims={"sub": VAPID_SUBJECT},
+                    ttl=86400,
+                    timeout=15,
+                )
+                sent += 1
+            except WebPushException as exc:
+                failed += 1
+                response = getattr(exc, "response", None)
+                status_code = getattr(response, "status_code", None)
+                if status_code in (404, 410):
+                    conn.execute("DELETE FROM subscriptions WHERE id = ?", (row["id"],))
+                    pruned += 1
+                errors.append({
+                    "player_name": row["player_name"],
+                    "status": status_code,
+                    "error": str(exc)[:200],
+                })
+            except Exception as exc:
+                failed += 1
+                errors.append({
+                    "player_name": row["player_name"],
+                    "status": None,
+                    "error": str(exc)[:200],
+                })
+
+    return jsonify({
+        "ok": True,
+        "attempted": len(rows),
+        "sent": sent,
+        "failed": failed,
+        "pruned": pruned,
+        "errors": errors[:10],
+    })
 
 
 @app.route("/api/chat", methods=["POST"])
@@ -1624,6 +1838,7 @@ def health():
 
 # ── Startup ──────────────────────────────────────────────────────────────────
 
+_run_app_migrations()
 engine.load()
 logging.info("Loremaster ready (player-only)")
 

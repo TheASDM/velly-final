@@ -60,6 +60,7 @@ module.exports = function (eleventyConfig) {
   eleventyConfig.addPassthroughCopy("files");
   eleventyConfig.addPassthroughCopy("manifest.webmanifest");
   eleventyConfig.addPassthroughCopy("sw.js");
+  eleventyConfig.addPassthroughCopy("pwa-client.js");
   // Enzo widget assets — also live in public/ for the standalone /enzo PWA.
   // Mounted at /css and /js so the codex can load them locally for previews
   // without depending on the remote loremaster.valleyofshadows.wiki host.
