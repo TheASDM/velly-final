@@ -297,7 +297,7 @@
 </style>
 
 <div class="vos-gallery-carousel"
-     data-api-base="{{ carouselApiBase | default('https://loremaster.valleyofshadows.wiki') }}"
+     data-api-base="{{ carouselApiBase | default('') }}"
      data-limit="{{ carouselLimit | default(5) }}"
      aria-label="{{ carouselLabel | default('Shared gallery carousel') }}">
   <div class="vos-gallery-carousel-viewport" tabindex="0">
@@ -314,7 +314,7 @@
   const root = document.currentScript.previousElementSibling;
   if (!root) return;
 
-  const apiBase = root.dataset.apiBase || 'https://loremaster.valleyofshadows.wiki';
+  const apiBase = root.dataset.apiBase || '';
   const limit = Math.max(1, Math.min(parseInt(root.dataset.limit || '5', 10) || 5, 20));
   const viewport = root.querySelector('.vos-gallery-carousel-viewport');
   const track = root.querySelector('.vos-gallery-carousel-track');

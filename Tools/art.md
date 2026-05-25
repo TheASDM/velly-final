@@ -795,7 +795,7 @@ Generate campaign art with Enzo's image model and contribute to the shared playe
 
 <script>
 (function () {
-  const API_BASE = 'https://loremaster.valleyofshadows.wiki';
+  const API_BASE = '';
   const NAME_KEY = 'velly.artStudio.lastName';
   const STYLE_KEY = 'velly.artStudio.lastStyle';
 

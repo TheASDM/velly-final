@@ -1331,7 +1331,7 @@
     <span class="vos-next-session-date">{{ nextSession.display }}</span>
   </div>
   {%- endif %}
-  <a class="vos-enzo-btn" href="https://loremaster.valleyofshadows.wiki/" target="_blank" rel="noopener" title="Open Enzo — the campaign chatbot (new tab)">
+  <a class="vos-enzo-btn" href="/enzo/" title="Open Enzo — the campaign chatbot">
     <span class="vos-enzo-spark">✦</span><span class="vos-enzo-label-full">Enzo</span><span class="vos-enzo-label-short">Enzo</span>
   </a>
   <a class="vos-quest-btn" href="https://valleyofshadows.quest/" target="_blank" rel="noopener" title="Open the private Foundry server">
@@ -1416,9 +1416,8 @@
 {% include "partials/app-bottom-nav.njk" %}
 
 <!-- ── Enzo floating chat widget ──────────────────────────────────────
-     Production: load the real CSS + JS from this static site so a wiki
-     publish updates the embedded widget with the rest of the codex.
-     API calls still go to the deployed loremaster origin below.
+     Production: load the real CSS + JS from this static site so the
+     widget updates with the rest of the codex. API calls stay same-origin.
      Local preview (localhost / 127.0.0.1): inject a visual-only stub
      that mirrors the production widget's DOM and uses /css/chatbot.css
      (passthrough from public/css). The stub doesn't call /api/chat —
@@ -1439,7 +1438,7 @@
 
   if (!isLocal) {
     // Production path: wire the real chatbot.
-    window.LOREMASTER_API_URL = 'https://loremaster.valleyofshadows.wiki/api/chat';
+    window.LOREMASTER_API_URL = location.origin + '/api/chat';
     if (isEnzoPage) {
       try { localStorage.setItem('loreMasterOpen', 'true'); } catch (e) {}
     }
@@ -1731,7 +1730,7 @@ window.addEventListener('DOMContentLoaded', () => {
       defaultOpen: false,
       children: [
         { kind: 'internal', url: '/en/Tools/art/', title: 'Art Studio' },
-        { kind: 'external', url: 'https://loremaster.valleyofshadows.wiki/', title: 'Loremaster (Enzo)' },
+        { kind: 'internal', url: '/enzo/', title: 'Enzo' },
         { kind: 'external', url: 'https://reference.valleyofshadows.wiki/enzo/', title: 'Using Enzo' }
       ]
     }

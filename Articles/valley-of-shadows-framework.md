@@ -28,7 +28,7 @@ dateCreated: 2026-02-28T00:00:00.000Z
 
 </div>
 
-> ## This page reads better as a PDF. [Read it here.](https://loremaster.valleyofshadows.wiki/files/ValleyofShadowsFramework.pdf)
+> ## This page reads better as a PDF. [Read it here.](/files/ValleyofShadowsFramework.pdf)
 
 *A Tabletop RPG Campaign · D&D 5e (2024 Edition) · Long-Term Campaign*
 

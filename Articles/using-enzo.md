@@ -28,7 +28,7 @@ dateCreated: 2026-05-22T00:00:00.000Z
 
 </div>
 
-Enzo is the codex's resident scholar — a chatbot who has read every published page of this wiki and can answer questions about Venturia, its people, its factions, the campaign so far, and D&D 5e rules. He lives at **[loremaster.valleyofshadows.wiki](https://loremaster.valleyofshadows.wiki)** as a standalone page (installable as an app on your phone) and is also embedded as a widget on every codex page.
+Enzo is the codex's resident scholar — a chatbot who has read every published page of this wiki and can answer questions about Venturia, its people, its factions, the campaign so far, and D&D 5e rules. He lives at **[the Enzo tab](/enzo/)** inside the app and is also embedded as a widget on every codex page.
 
 This guide covers what he can and can't do, and how to get the most out of him.
 

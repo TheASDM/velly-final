@@ -63,9 +63,20 @@ module.exports = function (eleventyConfig) {
   eleventyConfig.addPassthroughCopy("pwa-client.js");
   // Enzo widget assets — also live in public/ for the standalone /enzo PWA.
   // Mounted at /css and /js so the codex can load them locally for previews
-  // without depending on the remote loremaster.valleyofshadows.wiki host.
+  // without depending on a separate Enzo host.
   eleventyConfig.addPassthroughCopy({ "public/css/chatbot.css": "css/chatbot.css" });
   eleventyConfig.addPassthroughCopy({ "public/js/chatbot.js": "js/chatbot.js" });
+  [
+    "loremaster192x192.png",
+    "loremaster5e192x192.png",
+    "loremaster5eDM192x192.png",
+    "loremasterDM192x192.png",
+    "loremasterRocky192x192.png",
+    "loremasterYasQueen192x192.png",
+    "loremasterfabio192x192.png",
+  ].forEach((file) => {
+    eleventyConfig.addPassthroughCopy({ [`public/images/${file}`]: `images/${file}` });
+  });
 
   // ── Layouts ──────────────────────────────────────────────────────────
   eleventyConfig.addLayoutAlias("page", "layouts/page.njk");
