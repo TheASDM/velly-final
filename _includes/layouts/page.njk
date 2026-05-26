@@ -344,6 +344,81 @@
     stroke-linecap: round;
     stroke-linejoin: round;
   }
+  .vos-app-profile {
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+    background: transparent;
+  }
+  .vos-app-profile:hover {
+    background: transparent;
+    border: none;
+  }
+  .vos-app-avatar-wrap {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background:
+      radial-gradient(circle at 50% 32%, rgba(232, 205, 132, 0.18), transparent 62%),
+      rgba(9, 8, 12, 0.86);
+    box-shadow:
+      0 0 0 2px rgba(232, 205, 132, 0.78),
+      inset 0 0 0 1px rgba(0, 0, 0, 0.66),
+      0 6px 16px rgba(0, 0, 0, 0.55);
+    overflow: visible;
+  }
+  .vos-app-avatar-img,
+  .vos-app-avatar-fallback {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+  }
+  .vos-app-avatar-img {
+    display: block;
+    object-fit: cover;
+    object-position: center;
+    opacity: 0;
+    transition: opacity 0.18s ease;
+  }
+  .vos-app-avatar-img.is-loaded {
+    opacity: 1;
+  }
+  .vos-app-avatar-fallback {
+    padding: 7px;
+    color: rgba(232, 205, 132, 0.9);
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.9;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    background: rgba(12, 10, 15, 0.88);
+  }
+  .vos-app-avatar-img.is-loaded + .vos-app-avatar-fallback {
+    opacity: 0;
+  }
+  .vos-app-avatar-badge {
+    position: absolute;
+    right: -3px;
+    bottom: -2px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #d8645c;
+    box-shadow:
+      0 0 0 2px rgba(8, 7, 11, 0.98),
+      0 0 0 3px rgba(232, 205, 132, 0.74);
+  }
+  .vos-app-avatar-badge[hidden] {
+    display: none;
+  }
   .vos-app-title-block {
     min-width: 0;
     display: grid;
@@ -741,6 +816,11 @@
       width: 40px;
       height: 40px;
       border-radius: 8px;
+    }
+    .vos-app-profile {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
     }
     .vos-app-crumbs {
       padding-left: 3.05rem;
@@ -1642,7 +1722,11 @@
       </a>
       {%- else -%}
       <button class="vos-app-icon-button vos-app-profile" id="vos-profile-button" type="button" aria-label="Profile and app settings" title="Profile and app settings">
-        <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M20 21a8 8 0 0 0-16 0"/><circle cx="12" cy="8" r="4"/></svg>
+        <span class="vos-app-avatar-wrap">
+          <img class="vos-app-avatar-img" id="vos-app-avatar-img" alt="">
+          <svg class="vos-app-avatar-fallback" id="vos-app-avatar-fallback" aria-hidden="true" viewBox="0 0 24 24"><path d="M20 21a8 8 0 0 0-16 0"/><circle cx="12" cy="8" r="4"/></svg>
+          <span class="vos-app-avatar-badge" id="vos-app-avatar-badge" hidden></span>
+        </span>
       </button>
       {%- endif -%}
       <div class="vos-app-title-block">

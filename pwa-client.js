@@ -2,6 +2,18 @@
   const PLAYER_KEY = 'vos.playerName';
   const AUTH_TOKEN_KEY = 'vos.authToken';
   const PUSH_DISMISSED_KEY = 'vos.pushPromptDismissed';
+  const DM_SEEN_KEY = 'vos.dmMessage.seenId';
+  const STUDIO_SEEN_JOB_KEY = 'vos.studio.seenDoneJobId';
+  const PROFILE_AVATAR_FALLBACK = '/images/app-profiles/unmapped.png';
+  const PROFILE_AVATARS = {
+    'Caravel "Car" Asteri': '/images/app-profiles/avatar-caravel-asteri.png',
+    'Kryton Novelli': '/images/app-profiles/avatar-kryton-novelli.png',
+    Lotan: '/images/app-profiles/avatar-lotan.png',
+    Noname: '/images/app-profiles/avatar-noname.png',
+    Orabella: '/images/app-profiles/avatar-orabella.png',
+    'Roxanya "Roxy"': '/images/app-profiles/avatar-roxanya.png',
+    Valentro: '/images/app-profiles/avatar-valentro.png',
+  };
   const PLAYERS = [
     'Caravel "Car" Asteri',
     'Kryton Novelli',
@@ -64,6 +76,7 @@
     removeStorage(PLAYER_KEY);
     removeStorage(AUTH_TOKEN_KEY);
     removeStorage(PUSH_DISMISSED_KEY);
+    setAvatarBadge(false);
     updateIdentityControls();
   }
 
@@ -72,6 +85,53 @@
     if (!name) return null;
     if (config && config.loginRequired && !getStorage(AUTH_TOKEN_KEY)) return null;
     return name;
+  }
+
+  function setAvatarBadge(active) {
+    const badge = document.getElementById('vos-app-avatar-badge');
+    if (badge) badge.hidden = !active;
+  }
+
+  function updateProfileAvatar(name) {
+    const profileButton = document.getElementById('vos-profile-button');
+    const img = document.getElementById('vos-app-avatar-img');
+    if (!profileButton || !img) return;
+
+    const labelName = name || 'profile';
+    const src = PROFILE_AVATARS[name] || PROFILE_AVATAR_FALLBACK;
+    const alt = name || 'Unmapped profile';
+    profileButton.setAttribute('aria-label', name ? `Open profile — ${name}` : 'Log in');
+    profileButton.title = name ? `Open profile — ${name}` : 'Log in';
+
+    if (img.dataset.avatarSrc === src && img.classList.contains('is-loaded')) {
+      img.alt = alt;
+      return;
+    }
+
+    img.classList.remove('is-loaded');
+    img.alt = labelName;
+    img.dataset.avatarSrc = src;
+
+    const probe = new Image();
+    probe.onload = () => {
+      if (img.dataset.avatarSrc !== src) return;
+      img.src = src;
+      img.alt = alt;
+      img.classList.add('is-loaded');
+    };
+    probe.onerror = () => {
+      if (src === PROFILE_AVATAR_FALLBACK || img.dataset.avatarSrc !== src) return;
+      img.dataset.avatarSrc = PROFILE_AVATAR_FALLBACK;
+      const fallback = new Image();
+      fallback.onload = () => {
+        if (img.dataset.avatarSrc !== PROFILE_AVATAR_FALLBACK) return;
+        img.src = PROFILE_AVATAR_FALLBACK;
+        img.alt = alt;
+        img.classList.add('is-loaded');
+      };
+      fallback.src = PROFILE_AVATAR_FALLBACK;
+    };
+    probe.src = src;
   }
 
   function updateIdentityControls(config = null) {
@@ -89,9 +149,46 @@
       identityButton.title = action;
     }
     if (profileButton) {
-      profileButton.setAttribute('aria-label', action);
-      profileButton.title = action;
+      profileButton.setAttribute('aria-label', name ? `Open profile — ${name}` : action);
+      profileButton.title = name ? `Open profile — ${name}` : action;
     }
+    updateProfileAvatar(name);
+  }
+
+  async function syncAvatarBadge(config = null) {
+    const activeConfig = config || await getAuthConfig();
+    const name = getActivePlayerName(activeConfig);
+    if (!name) {
+      setAvatarBadge(false);
+      return;
+    }
+
+    let hasBadge = false;
+    try {
+      const response = await fetch('/api/messages?limit=1', { cache: 'no-store' });
+      if (response.ok) {
+        const data = await response.json().catch(() => ({}));
+        const message = data && data.messages && data.messages[0];
+        if (message && message.id && getStorage(DM_SEEN_KEY) !== String(message.id)) {
+          hasBadge = true;
+        }
+      }
+    } catch (error) {}
+
+    try {
+      const url = `/api/studio/jobs?mine=1&name=${encodeURIComponent(name)}`;
+      const response = await fetch(url, { cache: 'no-store', headers: authHeaders() });
+      if (response.ok) {
+        const data = await response.json().catch(() => ({}));
+        const jobs = Array.isArray(data.jobs) ? data.jobs : [];
+        const done = jobs.find((job) => job.status === 'done');
+        if (done && getStorage(STUDIO_SEEN_JOB_KEY) !== String(done.id || done.jobId)) {
+          hasBadge = true;
+        }
+      }
+    } catch (error) {}
+
+    setAvatarBadge(hasBadge);
   }
 
   function urlBase64ToUint8Array(base64String) {
@@ -479,6 +576,7 @@
     ensureIdentity,
     openIdentitySettings: () => ensureIdentity({ force: true }),
     signOut: clearIdentity,
+    refreshAvatarBadge: () => syncAvatarBadge(),
   };
 
   window.addEventListener('DOMContentLoaded', () => {
@@ -496,7 +594,10 @@
       updateIdentityControls(config);
       const activeName = getActivePlayerName(config);
       if (activeName) announceIdentity(activeName);
+      syncAvatarBadge(config);
     });
+    window.addEventListener('vos:avatar-badge-refresh', () => syncAvatarBadge());
+    window.addEventListener('focus', () => syncAvatarBadge());
     ensureIdentity();
     maybeSyncExistingSubscription();
     maybeShowPushPrompt();

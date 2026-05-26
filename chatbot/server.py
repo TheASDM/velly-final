@@ -240,7 +240,7 @@ ART_STYLE_PRESETS = {
         ),
     },
 }
-DEFAULT_STYLE_KEY = "valley-portrait"
+DEFAULT_STYLE_KEY = "valley-scene"
 
 RAG_SKIP_MAX_LEN = 15
 RAG_SKIP_PATTERNS = re.compile(

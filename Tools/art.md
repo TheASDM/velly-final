@@ -1107,6 +1107,7 @@ body.is-dm-mode .vos-art-lightbox-delete { display: inline-flex; }
   const API_BASE = '';
   const STYLE_KEY = 'velly.artStudio.lastStyle';
   const ACTIVE_JOB_KEY = 'velly.artStudio.activeJobId';
+  const SEEN_DONE_JOB_KEY = 'vos.studio.seenDoneJobId';
   const POLL_MS = 2500;
 
   const $ = (id) => document.getElementById(id);
@@ -1152,7 +1153,7 @@ body.is-dm-mode .vos-art-lightbox-delete { display: inline-flex; }
   }
 
   let selectedStyle = null;
-  let defaultStyle = 'valley';
+  let defaultStyle = 'valley-scene';
   let availableStyles = [];
   let activeJobId = null;
   let pollTimer = null;
@@ -1581,6 +1582,10 @@ body.is-dm-mode .vos-art-lightbox-delete { display: inline-flex; }
   }
 
   function showJobDone(job) {
+    try {
+      localStorage.setItem(SEEN_DONE_JOB_KEY, String(job.id || job.jobId));
+      window.dispatchEvent(new CustomEvent('vos:avatar-badge-refresh'));
+    } catch (e) {}
     latestImg.src = assetUrl(job.result_url);
     latestImg.alt = job.prompt || 'Generated art';
     latestDetails.style.display = 'none';

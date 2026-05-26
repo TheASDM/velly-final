@@ -765,6 +765,10 @@ templateEngineOverride: njk
       body.textContent = message.body || '';
       meta.textContent = formatDate(message.created_at);
       card.hidden = false;
+      try {
+        localStorage.setItem('vos.dmMessage.seenId', String(message.id));
+        window.dispatchEvent(new CustomEvent('vos:avatar-badge-refresh'));
+      } catch (error) {}
     })
     .catch(() => {});
 })();
