@@ -29,7 +29,8 @@ app-data/**
 !app-data/
 !app-data/.gitkeep
 
-# Generated vector store (large, rebuilt by build_vectors.py)
+# Generated Enzo knowledge artifacts (rebuilt on the deployment host)
+campaign-data/tier1.md
 campaign-data/vector_store.json
 # Legacy split-mode store from before the player-only refactor
 campaign-data/vector_store_player.json
