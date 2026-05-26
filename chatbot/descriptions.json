@@ -119,7 +119,7 @@
     },
     "Roxanya \"Roxy\"": {
       "aliases": ["Roxy", "Roxanya", "Rox", "the gnome arcane trickster"],
-      "desc": "Forest gnome woman (she/her), 19; about three feet tall; fair skin with freckles; wild curly red hair in twin buns, green eyes, pointed ears, a bright grin; layered brown leather swashbuckler's garb with feathers; a taxidermy owl perched on her arm."
+      "desc": "Adult forest gnome woman (she/her), 19; about 3 feet tall, waist-high beside human-sized adults, unmistakably gnome-scale rather than merely a short human; fair skin with freckles; wild curly red hair in twin buns, green eyes, pointed ears, a bright grin; layered brown leather swashbuckler's garb with feathers; a taxidermy owl perched on her arm."
     }
   },
 
@@ -173,7 +173,7 @@
       "desc": "Human woman, ~23; striking, with dark wavy upswept hair and a jeweled silver mask pushed up onto her brow; a deep-blue and silver embroidered low-necked gown, jewels at ear and throat; lit by warm stage light. Magnetic."
     },
     "Maruk Grommarg": {
-      "aliases": ["Maruk", "Grommarg", "Marcus", "Noname's fiancé", "the missing fiancé"],
+      "aliases": ["Maruk", "Grommarg", "Marcus", "Noname's fiancé", "Noname's fiance", "Noname's fiancée", "Noname's fiancee", "Noname's missing fiancé", "Noname's missing fiance", "Noname and her fiancé", "Noname and her fiance", "Noname and her fiancée", "Noname and her fiancee", "the missing fiancé", "the missing fiance"],
       "desc": "Orc man; dark grey-green skin, a heavy muscular build, prominent lower tusks, a scar across the face, short dark hair, pointed ears; worn dark leather Fog Warden's armor with a shoulder pauldron; grim and steadfast."
     },
     "Garl Glittergold": {

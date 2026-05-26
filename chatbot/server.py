@@ -21,6 +21,7 @@ import sqlite3
 import string
 import threading
 import time
+import unicodedata
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -1259,6 +1260,18 @@ DESCRIPTIONS_FILE = Path(os.environ.get(
 ALIAS_MIN_LEN = 2
 
 
+def _normalize_description_phrase(value):
+    value = unicodedata.normalize("NFKD", str(value))
+    value = "".join(ch for ch in value if not unicodedata.combining(ch))
+    return (
+        value
+        .replace("’", "'")
+        .replace("‘", "'")
+        .replace("`", "'")
+        .lower()
+    )
+
+
 def _flatten_descriptions(raw):
     """Build a {lowercase_phrase: (canonical_name, desc_string)} index from
     the descriptions.json schema. Groups are expanded so a match on
@@ -1302,10 +1315,10 @@ def _flatten_descriptions(raw):
             f"Group reference — {canon}. The named members and their "
             "individual visual descriptions are:\n" + "\n".join(parts)
         )
-        group_index[canon] = (canon, combined)
+        group_index[_normalize_description_phrase(canon)] = (canon, combined)
         for alias in (payload.get("aliases") or []):
             if alias and len(alias) >= ALIAS_MIN_LEN:
-                group_index[alias.lower()] = (canon, combined)
+                group_index[_normalize_description_phrase(alias)] = (canon, combined)
 
     # Locations + PCs + NPCs: each canonical name AND every alias maps to
     # the canonical name and its desc. Canonical name wins on collision.
@@ -1316,7 +1329,7 @@ def _flatten_descriptions(raw):
         for key in [canon] + name_to_aliases.get(canon, []):
             if not key or len(key) < ALIAS_MIN_LEN:
                 continue
-            k = key.lower()
+            k = _normalize_description_phrase(key)
             # First-write wins, so collisions resolve to the entry whose
             # canonical name appears earliest in the JSON file.
             index.setdefault(k, (canon, desc))
@@ -1350,7 +1363,8 @@ def _match_descriptions(prompt, index):
     """
     if not index:
         return []
-    words = re.findall(r"[\w'\"]+", prompt.lower())
+    normalized_prompt = _normalize_description_phrase(prompt)
+    words = re.findall(r"[\w'\"]+", normalized_prompt)
     matched, seen = [], set()
     # Walk n-grams 1..5 like _keyword_match does.
     for n in range(min(5, len(words)), 0, -1):
@@ -1372,6 +1386,34 @@ def _match_descriptions(prompt, index):
     return matched
 
 
+def _relationship_description_matches(prompt, desc_index, already_matched):
+    normalized = _normalize_description_phrase(prompt)
+    matched_names = {m.get("name") for m in already_matched}
+    additions = []
+
+    def add(canon_name):
+        if canon_name in matched_names:
+            return
+        hit = desc_index.get(_normalize_description_phrase(canon_name))
+        if not hit:
+            return
+        name, desc = hit
+        matched_names.add(name)
+        additions.append({
+            "name": name,
+            "text": desc,
+            "source_file": "descriptions.json",
+            "page_id": f"desc:{name}",
+        })
+
+    has_noname = re.search(r"\b(no[- ]?name|noname)\b", normalized)
+    has_fiance = re.search(r"\bfiancee?\b", normalized) or re.search(r"\bfiance\b", normalized)
+    if has_noname and has_fiance:
+        add("Maruk Grommarg")
+
+    return additions
+
+
 def _extract_campaign_entities(prompt):
     """Find named campaign entities in the prompt for art grounding.
 
@@ -1386,6 +1428,7 @@ def _extract_campaign_entities(prompt):
     # Stage 1: hand-curated descriptions
     desc_index = _load_descriptions_index()
     matched.extend(_match_descriptions(prompt, desc_index))
+    matched.extend(_relationship_description_matches(prompt, desc_index, matched))
 
     # Stage 2: RAG keyword match (filtered to wiki entries only — 5e rules
     # noise is useless for image prompts)
@@ -1448,15 +1491,22 @@ def _enhance_image_prompt(raw_prompt, style_key, matched_entries):
         "visual details (appearance, distinctive features, setting) into "
         "the prompt. Stay true to the page — do NOT invent new physical "
         "traits, races, ages, or items not in the source.\n"
-        "4. DO NOT prepend a style description (e.g. 'cinematic,' "
+        "4. Preserve exact ancestry, species, body scale, and height cues "
+        "from CAMPAIGN ENTITIES. If an entity is described as about three "
+        "feet tall, six inches tall, an orc, a gnome, a dwarf, a satyr, "
+        "etc., include that plainly. Do not replace exact scale with vague "
+        "phrases like 'petite' or 'short' when the source gives a concrete "
+        "scale. In multi-character scenes, state relative scale clearly "
+        "when it matters.\n"
+        "5. DO NOT prepend a style description (e.g. 'cinematic,' "
         "'watercolor', 'illustrated'). The system prepends a style "
         "separately. Describe only the scene itself.\n"
-        "5. If the prompt is unsafe, sexual, or violent in a way that "
+        "6. If the prompt is unsafe, sexual, or violent in a way that "
         "image safety filters would refuse, soften it while preserving "
         "creative intent. If you can't soften it without losing meaning, "
         "output the player's prompt verbatim and let OpenAI's filter "
         "handle it.\n"
-        "6. Never mention this rewriting process. Never say things like "
+        "7. Never mention this rewriting process. Never say things like "
         "'in the style of' or 'inspired by'. Just describe the image.\n"
     )
 
@@ -2414,7 +2464,7 @@ def _notify_art_ready(creator, result_url):
                 "Your Vallombrosa art is ready",
                 "Your Studio piece has finished and is in the shared gallery.",
                 result_url or "/en/Tools/art/",
-                player_name=creator,
+                recipients=[creator],
             )
     except Exception:
         logging.exception("Art-ready push failed")
