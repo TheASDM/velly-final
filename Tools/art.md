@@ -1182,11 +1182,30 @@ body.is-dm-mode .vos-art-lightbox-delete { display: inline-flex; }
     }
   }
 
-  async function getCreatorName() {
-    if (window.VOS_PWA && window.VOS_PWA.ensureIdentity) {
-      const name = await window.VOS_PWA.ensureIdentity();
-      return name && typeof name === 'string' ? name.trim() : '';
+  function getCurrentAuthToken() {
+    if (window.VOS_PWA && window.VOS_PWA.getAuthToken) {
+      const token = window.VOS_PWA.getAuthToken();
+      return token && typeof token === 'string' ? token.trim() : '';
     }
+    try {
+      return (localStorage.getItem('vos.authToken') || '').trim();
+    } catch (e) {
+      return '';
+    }
+  }
+
+  function hasAuthenticatedCreator() {
+    return !!(getCurrentCreatorName() && getCurrentAuthToken());
+  }
+
+  async function openStudioLogin() {
+    if (window.VOS_PWA && window.VOS_PWA.ensureIdentity) {
+      await window.VOS_PWA.ensureIdentity({ force: true });
+    }
+    updateGenerateAccess();
+  }
+
+  async function getCreatorName() {
     return getCurrentCreatorName();
   }
 
@@ -1557,7 +1576,19 @@ body.is-dm-mode .vos-art-lightbox-delete { display: inline-flex; }
 
   function setGenerateButton(disabled, text) {
     generateEl.disabled = !!disabled;
-    generateEl.textContent = text || 'Generate';
+    generateEl.textContent = text || (hasAuthenticatedCreator() ? 'Generate' : 'Log in to Generate');
+  }
+
+  function updateGenerateAccess() {
+    if (isSubmitting || pollTimer) return;
+    setGenerateButton(false);
+    if (!hasAuthenticatedCreator()) {
+      setStatus('Log in before generating so the piece is tied to your account.', true);
+      return;
+    }
+    if (statusEl.textContent === 'Log in before generating so the piece is tied to your account.') {
+      setStatus('');
+    }
   }
 
   function showSubmitting() {
@@ -1684,7 +1715,7 @@ body.is-dm-mode .vos-art-lightbox-delete { display: inline-flex; }
 
   async function restoreStudioJobs() {
     const creator = getCurrentCreatorName();
-    if (!creator) return;
+    if (!creator || !getCurrentAuthToken()) return;
     try {
       const url = API_BASE + '/api/studio/jobs?mine=1&name=' + encodeURIComponent(creator);
       const response = await fetch(url, { cache: 'no-store', headers: requestHeaders() });
@@ -1702,6 +1733,11 @@ body.is-dm-mode .vos-art-lightbox-delete { display: inline-flex; }
 
   async function generate() {
     if (isSubmitting || generateEl.disabled) return;
+    if (!hasAuthenticatedCreator()) {
+      setStatus('Log in before generating so the piece is tied to your account.', true);
+      await openStudioLogin();
+      return;
+    }
     const prompt = promptEl.value.trim();
     if (!prompt) {
       setStatus('Add a description first.', true);
@@ -1713,7 +1749,7 @@ body.is-dm-mode .vos-art-lightbox-delete { display: inline-flex; }
       return;
     }
     const creatorName = await getCreatorName();
-    if (!creatorName) {
+    if (!creatorName || !getCurrentAuthToken()) {
       setStatus('Log in before generating so the piece is attributed correctly.', true);
       return;
     }
@@ -1753,9 +1789,16 @@ body.is-dm-mode .vos-art-lightbox-delete { display: inline-flex; }
   }
 
   generateEl.addEventListener('click', generate);
-  window.addEventListener('DOMContentLoaded', restoreStudioJobs);
-  window.addEventListener('vos:identity', restoreStudioJobs);
+  window.addEventListener('DOMContentLoaded', () => {
+    updateGenerateAccess();
+    restoreStudioJobs();
+  });
+  window.addEventListener('vos:identity', () => {
+    updateGenerateAccess();
+    restoreStudioJobs();
+  });
   window.addEventListener('focus', () => loadGallery({ quiet: true }));
+  updateGenerateAccess();
 
   // Enter submits, Shift+Enter inserts a newline — same pattern as the
   // chatbot widget so it feels consistent across the site.

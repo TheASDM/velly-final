@@ -128,6 +128,11 @@ class LoreMasterChatbot {
                         </button>
                     </div>
                     <div id="chat-messages"></div>
+                    <div class="chat-mode-controls" aria-label="Enzo response mode">
+                        <button class="chat-mode-button" type="button" data-chat-mode="lore" aria-pressed="true">Lore</button>
+                        <button class="chat-mode-button" type="button" data-chat-mode="rules" aria-pressed="false">Rules</button>
+                        <button class="chat-mode-button" type="button" data-chat-mode="brainstorm" aria-pressed="false">Brainstorm</button>
+                    </div>
                     <div class="chat-input-area">
                         <textarea id="chat-input" placeholder="Ask about NPCs, lore, locations…" autocomplete="off" rows="1"></textarea>
                         <button id="chat-send-btn" type="button" aria-label="Send message" title="Send">
@@ -169,6 +174,11 @@ class LoreMasterChatbot {
                 this.submitPrompt(prompt.trim());
             });
         });
+        document.querySelectorAll('[data-chat-mode]').forEach((button) => {
+            button.addEventListener('click', () => {
+                this.handleModeButton(button.getAttribute('data-chat-mode'));
+            });
+        });
     }
     toggleWidget() {
         const widget = document.getElementById('chatbot-widget');
@@ -196,6 +206,66 @@ class LoreMasterChatbot {
         input.value = prompt;
         input.dispatchEvent(new Event('input', { bubbles: true }));
         this.handleSendMessage();
+    }
+    getActiveResponseMode() {
+        if (this.vibe === 'brainstorm') return 'brainstorm';
+        if (this.rules) return 'rules';
+        return 'lore';
+    }
+    async handleModeButton(targetMode) {
+        const input = document.getElementById('chat-input');
+        if (this.isWaitingForResponse) return;
+
+        const currentMode = this.getActiveResponseMode();
+        if (!targetMode || targetMode === currentMode) {
+            if (input) input.focus();
+            return;
+        }
+
+        let command = '';
+        if (targetMode === 'rules') {
+            command = '/rules on';
+        } else if (targetMode === 'brainstorm') {
+            command = '/brainstorm on';
+        } else if (targetMode === 'lore') {
+            command = currentMode === 'rules' ? '/rules off' : '/brainstorm off';
+        }
+        if (!command) return;
+
+        const sendBtn = document.getElementById('chat-send-btn');
+        const previousHistory = this.conversationHistory.slice();
+        this.isWaitingForResponse = true;
+        if (sendBtn) sendBtn.disabled = true;
+        this.updateModeControls();
+        try {
+            const response = await this.sendMessageToAPI(command);
+            this.conversationHistory = previousHistory;
+            this.saveHistory();
+            this.addSystemMessage(response.response || 'Mode updated.');
+        } catch (error) {
+            console.error('Mode switch failed:', error);
+            this.addSystemMessage('Could not switch modes. Try again.');
+        } finally {
+            this.isWaitingForResponse = false;
+            if (sendBtn) sendBtn.disabled = false;
+            this.updateModeControls();
+            if (input) input.focus();
+        }
+    }
+    async getArtIdentity() {
+        if (window.VOS_PWA && window.VOS_PWA.ensureIdentity) {
+            const needsLogin = !window.VOS_PWA.getAuthToken || !window.VOS_PWA.getAuthToken();
+            const name = await window.VOS_PWA.ensureIdentity({ force: needsLogin });
+            const token = window.VOS_PWA.getAuthToken ? window.VOS_PWA.getAuthToken() : '';
+            return { name, token };
+        }
+        let name = '';
+        let token = '';
+        try {
+            name = localStorage.getItem('vos.playerName') || '';
+            token = localStorage.getItem('vos.authToken') || '';
+        } catch (error) {}
+        return { name, token };
     }
     async handleSendMessage() {
         const input = document.getElementById('chat-input');
@@ -236,6 +306,12 @@ class LoreMasterChatbot {
                 this.addSystemMessage('Usage: /art <description>, or /art on to enter art mode.');
                 return;
             }
+            const identity = await this.getArtIdentity();
+            if (!identity.name || !identity.token) {
+                this.addSystemMessage('Log in before generating images.');
+                input.focus();
+                return;
+            }
             input.value = '';
             input.dispatchEvent(new Event('input', { bubbles: true }));
             this.removeEmptyState();
@@ -248,8 +324,11 @@ class LoreMasterChatbot {
                 const url = this.chatApiUrl.replace(/\/api\/chat$/, '/api/generate-image');
                 const resp = await fetch(url, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ prompt: artPrompt }),
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${identity.token}`,
+                    },
+                    body: JSON.stringify({ prompt: artPrompt, creator: identity.name }),
                 });
                 this.hideThinkingIndicator();
                 const data = await resp.json().catch(() => ({}));
@@ -373,6 +452,7 @@ class LoreMasterChatbot {
         const badge = document.getElementById('rules-badge');
         if (badge) badge.style.display = this.rules ? 'inline' : 'none';
         this.updateIcons();
+        this.updateModeControls();
     }
     updateVibeIndicator() {
         const badge = document.getElementById('vibe-badge');
@@ -386,6 +466,10 @@ class LoreMasterChatbot {
                 badge.textContent = '🪨';
                 badge.style.color = '#e8dcc8';
                 badge.style.background = '#5a4632';
+            } else if (this.vibe === 'brainstorm') {
+                badge.textContent = 'IDEAS';
+                badge.style.color = '#0d0b11';
+                badge.style.background = '#c9a84c';
             } else {
                 badge.textContent = '💅';
                 badge.style.color = '#0d0b11';
@@ -393,6 +477,7 @@ class LoreMasterChatbot {
             }
         }
         this.updateIcons();
+        this.updateModeControls();
     }
     updateModeIndicator() {
         const widget = document.getElementById('chatbot-widget');
@@ -405,6 +490,30 @@ class LoreMasterChatbot {
             if (badge) badge.style.display = 'none';
         }
         this.updateIcons();
+    }
+    updateModeControls() {
+        const activeMode = this.getActiveResponseMode();
+        document.querySelectorAll('[data-chat-mode]').forEach((button) => {
+            const mode = button.getAttribute('data-chat-mode');
+            const active = mode === activeMode;
+            button.classList.toggle('is-active', active);
+            button.setAttribute('aria-pressed', active ? 'true' : 'false');
+            button.disabled = !!this.isWaitingForResponse;
+        });
+        this.updateInputPlaceholder();
+    }
+    updateInputPlaceholder() {
+        const input = document.getElementById('chat-input');
+        if (!input) return;
+        if (this.artMode) {
+            input.placeholder = 'Describe the image you want…';
+        } else if (this.vibe === 'brainstorm') {
+            input.placeholder = 'Ask for character hooks, backstory, voice…';
+        } else if (this.rules) {
+            input.placeholder = 'Ask a D&D 5e rules question…';
+        } else {
+            input.placeholder = 'Ask about NPCs, lore, locations…';
+        }
     }
     addMessage(text, role) {
         const messagesContainer = document.getElementById('chat-messages');
@@ -513,6 +622,9 @@ class LoreMasterChatbot {
         if (savedVibe) {
             this.vibe = savedVibe;
         }
+        if (this.vibe === 'brainstorm') {
+            this.rules = false;
+        }
         const savedArt = loadFromLocalStorage('loreMasterArtMode');
         if (savedArt === true) {
             this.artMode = true;
@@ -540,13 +652,7 @@ class LoreMasterChatbot {
         } else if (badge) {
             badge.style.display = 'none';
         }
-        // Update the placeholder so it's obvious you're sending image prompts
-        const input = document.getElementById('chat-input');
-        if (input) {
-            input.placeholder = this.artMode
-                ? 'Describe the image you want…'
-                : 'Ask about NPCs, lore, locations…';
-        }
+        this.updateInputPlaceholder();
     }
     clearHistory() {
         this.conversationHistory = [];

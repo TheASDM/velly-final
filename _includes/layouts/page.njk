@@ -7,12 +7,12 @@
 {% if description %}<meta name="description" content="{{ description }}">{% endif %}
 {% if tags %}<meta name="keywords" content="{{ tags }}">{% endif %}
 
-<link rel="icon" type="image/png" href="/images/masklogosquare.png">
+<link rel="icon" type="image/png" href="/images/foglight-192.png">
 <link rel="manifest" href="/manifest.webmanifest">
-<link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+<link rel="apple-touch-icon" href="/images/foglight-apple-touch-icon.png">
 <meta name="theme-color" content="#07060a">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="Vallombrosa">
+<meta name="apple-mobile-web-app-title" content="Foglight">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -1811,8 +1811,8 @@
   {%- endif -%}
 </main>
 
-<div class="vos-pwa-card" id="vos-pwa-install" hidden role="region" aria-label="Install Vallombrosa">
-  <div class="vos-pwa-card-title" id="vos-pwa-install-title">Install Vallombrosa</div>
+<div class="vos-pwa-card" id="vos-pwa-install" hidden role="region" aria-label="Install Foglight">
+  <div class="vos-pwa-card-title" id="vos-pwa-install-title">Install Foglight</div>
   <p class="vos-pwa-card-text" id="vos-pwa-install-text">Add this app to your home screen.</p>
   <div class="vos-pwa-actions">
     <button class="vos-pwa-primary" id="vos-pwa-install-action" type="button">Install</button>
@@ -1894,6 +1894,11 @@
             </div>
           </div>
         </div>
+        <div class="chat-mode-controls" aria-label="Enzo response mode">
+          <button class="chat-mode-button is-active" type="button" data-chat-mode="lore" aria-pressed="true">Lore</button>
+          <button class="chat-mode-button" type="button" data-chat-mode="rules" aria-pressed="false">Rules</button>
+          <button class="chat-mode-button" type="button" data-chat-mode="brainstorm" aria-pressed="false">Brainstorm</button>
+        </div>
         <div class="chat-input-area">
           <textarea id="chat-input" placeholder="Ask about NPCs, lore, locations…" rows="1"></textarea>
           <button id="chat-send-btn" type="button" aria-label="Send message" title="Send">
@@ -1909,6 +1914,17 @@
   header.addEventListener('click', () => {
     const open = widget.classList.toggle('chatbot-collapsed');
     writePref(!open); // class on = collapsed, so flip for "open"
+  });
+  c.querySelectorAll('[data-chat-mode]').forEach((button) => {
+    button.addEventListener('click', () => {
+      c.querySelectorAll('[data-chat-mode]').forEach((candidate) => {
+        const active = candidate === button;
+        candidate.classList.toggle('is-active', active);
+        candidate.setAttribute('aria-pressed', active ? 'true' : 'false');
+      });
+      const input = document.getElementById('chat-input');
+      if (input) input.focus();
+    });
   });
 })();
 </script>
@@ -2018,15 +2034,15 @@
   function showInstallCard(mode) {
     if (!installCard || isStandalone() || wasDismissed()) return;
     if (mode === 'ios') {
-      installTitle.textContent = 'Install Vallombrosa';
+      installTitle.textContent = 'Install Foglight';
       installText.textContent = 'Open Share, then choose Add to Home Screen.';
       installAction.textContent = 'Got It';
     } else if (mode === 'android') {
-      installTitle.textContent = 'Install Vallombrosa';
+      installTitle.textContent = 'Install Foglight';
       installText.textContent = 'Add this app to your home screen.';
       installAction.textContent = 'Install';
     } else {
-      installTitle.textContent = 'Install Vallombrosa';
+      installTitle.textContent = 'Install Foglight';
       installText.textContent = 'Add this app from your browser menu.';
       installAction.textContent = 'Got It';
     }

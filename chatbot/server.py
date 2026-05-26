@@ -343,6 +343,16 @@ def _authenticated_player_name(body=None):
     return token_name, None
 
 
+def _logged_in_player_name(body=None):
+    requested = _player_name_from_request(body)
+    token_name = _verify_player_token(_extract_player_token(body))
+    if not token_name:
+        return None, (jsonify({"error": "Login required"}), 401)
+    if requested and requested != token_name:
+        return None, (jsonify({"error": "Identity mismatch"}), 403)
+    return token_name, None
+
+
 def _app_db():
     APP_DB_PATH.parent.mkdir(parents=True, exist_ok=True)
     conn = sqlite3.connect(APP_DB_PATH, timeout=10)
@@ -952,6 +962,7 @@ class Loremaster:
         if cmd in ("/brainstorm on", "/brainstorm off"):
             vibe = "brainstorm" if cmd == "/brainstorm on" else None
             if vibe:
+                rules = False
                 reply = (
                     "Brainstorm mode on. I'm here to help you build your character — "
                     "backstory, voice, hooks, the bit you're stuck on. What do you have so far? "
@@ -1978,7 +1989,7 @@ def _studio_enhance_from_body(body):
     return enhance if isinstance(enhance, bool) else bool(enhance)
 
 
-def _studio_creator_from_body(body, required=True):
+def _studio_creator_from_body(body, required=True, require_login=False):
     requested_creator = body.get("creator", body.get("created_by", ""))
     if not isinstance(requested_creator, str):
         requested_creator = ""
@@ -1986,7 +1997,8 @@ def _studio_creator_from_body(body, required=True):
     auth_body = dict(body)
     if not any(auth_body.get(k) for k in ("name", "playerName", "player_name")):
         auth_body["name"] = requested_creator
-    created_by, auth_error = _authenticated_player_name(auth_body)
+    auth_fn = _logged_in_player_name if require_login else _authenticated_player_name
+    created_by, auth_error = auth_fn(auth_body)
     if auth_error:
         return None, auth_error
     created_by = (created_by or requested_creator or "").strip()[:64]
@@ -2213,7 +2225,7 @@ def studio_generate():
     if error:
         payload, status = error
         return jsonify(payload), status
-    creator, auth_error = _studio_creator_from_body(body)
+    creator, auth_error = _studio_creator_from_body(body, require_login=True)
     if auth_error:
         return auth_error
     enhance = _studio_enhance_from_body(body)
@@ -2243,7 +2255,7 @@ def studio_jobs():
     mine = request.args.get("mine") == "1"
     if not mine:
         return jsonify({"error": "Only mine=1 is supported"}), 400
-    creator, auth_error = _authenticated_player_name()
+    creator, auth_error = _logged_in_player_name()
     if auth_error:
         return auth_error
     if not creator:
@@ -2272,12 +2284,11 @@ def studio_job(job_id):
     if not row:
         return jsonify({"error": "Job not found"}), 404
 
-    if _auth_login_required():
-        creator, auth_error = _authenticated_player_name({"name": row["creator"]})
-        if auth_error:
-            return auth_error
-        if creator != row["creator"]:
-            return jsonify({"error": "Identity mismatch"}), 403
+    creator, auth_error = _logged_in_player_name({"name": row["creator"]})
+    if auth_error:
+        return auth_error
+    if creator != row["creator"]:
+        return jsonify({"error": "Identity mismatch"}), 403
 
     return jsonify(_studio_job_payload(row))
 
@@ -2298,7 +2309,7 @@ def generate_image():
     if error:
         payload, status = error
         return jsonify(payload), status
-    created_by, auth_error = _studio_creator_from_body(body, required=False)
+    created_by, auth_error = _studio_creator_from_body(body, require_login=True)
     if auth_error:
         return auth_error
     enhance = _studio_enhance_from_body(body)

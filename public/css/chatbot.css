@@ -206,6 +206,44 @@
     background: rgba(201, 168, 76, 0.4);
 }
 
+.chat-mode-controls {
+    display: flex;
+    flex-shrink: 0;
+    gap: 0.45rem;
+    padding: 0.45rem 0.75rem 0.15rem;
+    background: rgba(201, 168, 76, 0.03);
+}
+.chat-mode-button {
+    min-height: 32px;
+    border: 1px solid rgba(201, 168, 76, 0.2);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.035);
+    color: rgba(232, 220, 200, 0.72);
+    cursor: pointer;
+    font-family: 'Cinzel', Georgia, serif;
+    font-size: 0.58rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    line-height: 1;
+    padding: 0 0.72rem;
+    text-transform: uppercase;
+    transition: background 0.16s, border-color 0.16s, color 0.16s, box-shadow 0.16s;
+}
+.chat-mode-button:hover:not(:disabled) {
+    border-color: rgba(201, 168, 76, 0.42);
+    color: #e8cd84;
+}
+.chat-mode-button.is-active {
+    border-color: rgba(212, 165, 116, 0.62);
+    background: rgba(201, 168, 76, 0.18);
+    box-shadow: inset 0 0 0 1px rgba(255, 235, 180, 0.08);
+    color: #f1d89a;
+}
+.chat-mode-button:disabled {
+    cursor: progress;
+    opacity: 0.58;
+}
+
 /* ── Assistant message row (avatar + bubble) ── */
 .message-row.assistant {
     display: flex;
@@ -461,6 +499,19 @@ body.vos-is-enzo-page #chat-messages {
     height: 100%;
     padding: 0.95rem max(1rem, env(safe-area-inset-right)) 1rem max(1rem, env(safe-area-inset-left));
     gap: 0.9rem;
+}
+body.vos-is-enzo-page .chat-mode-controls {
+    padding:
+        0.42rem
+        max(0.8rem, env(safe-area-inset-right))
+        0.22rem
+        max(0.8rem, env(safe-area-inset-left));
+    background: rgba(7, 6, 10, 0.96);
+    backdrop-filter: blur(14px);
+    border-top: 1px solid rgba(201, 168, 76, 0.12);
+}
+body.vos-is-enzo-page .chat-mode-button {
+    flex: 1 1 0;
 }
 body.vos-is-enzo-page .message-row.assistant {
     max-width: 100%;

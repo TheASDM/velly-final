@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'vallombrosa-pwa-v17';
+const CACHE_VERSION = 'foglight-pwa-v18';
 const PRECACHE = `${CACHE_VERSION}-precache`;
 const PAGES = `${CACHE_VERSION}-pages`;
 const ASSETS = `${CACHE_VERSION}-assets`;
@@ -13,10 +13,11 @@ const APP_SHELL = [
   '/js/chatbot.js',
   '/pagefind/pagefind-ui.css',
   '/pagefind/pagefind-ui.js',
-  '/images/apple-touch-icon.png',
-  '/images/pwa-icon-192.png',
-  '/images/pwa-icon-512.png',
-  '/images/pwa-maskable-512.png',
+  '/images/foglight.png',
+  '/images/foglight-apple-touch-icon.png',
+  '/images/foglight-192.png',
+  '/images/foglight-512.png',
+  '/images/foglight-maskable-512.png',
   '/images/masklogosquare.png',
   '/images/vallombrosa-logo.png',
   '/images/smalltitle.png',
@@ -145,15 +146,15 @@ self.addEventListener('push', (event) => {
     try {
       data = event.data.json();
     } catch (error) {
-      data = { title: 'Vallombrosa', body: event.data.text() };
+      data = { title: 'Foglight', body: event.data.text() };
     }
   }
 
-  const title = data.title || 'Vallombrosa';
+  const title = data.title || 'Foglight';
   const options = {
     body: data.body || '',
-    icon: '/images/pwa-icon-192.png',
-    badge: '/images/pwa-icon-192.png',
+    icon: '/images/foglight-192.png',
+    badge: '/images/foglight-192.png',
     data: {
       url: data.url || '/',
     },
