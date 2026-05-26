@@ -60,8 +60,11 @@ class LoreMasterChatbot {
         this.vibe = null;
         this.artMode = false;
         this.isOpen = false;
+        this.isNativePage = document.body.classList.contains('vos-is-enzo-page') ||
+            window.location.pathname.replace(/\/$/, '') === '/enzo';
         this.isWaitingForResponse = false;
         this.loadHistory();
+        if (this.isNativePage) this.isOpen = true;
         this.init();
     }
     init() {
@@ -80,12 +83,11 @@ class LoreMasterChatbot {
         this.updateRulesIndicator();
         this.updateVibeIndicator();
         this.updateArtIndicator();
-        if (this.conversationHistory.length === 0) {
-            this.addSystemMessage('I am Enzo — your guide to the city of Venturia and the Valley of Shadows. Ask me about characters, locations, factions, past sessions, or house rules.');
-        }
+        this.renderEmptyState();
         console.log('Enzo initialized');
     }
     applyMobileLayout(isOpen) {
+        if (this.isNativePage) return;
         if (window.innerWidth > 768) return;
         const container = document.getElementById('chatbot-container');
         const widget = document.getElementById('chatbot-widget');
@@ -121,8 +123,10 @@ class LoreMasterChatbot {
                 <div class="chatbot-body">
                     <div id="chat-messages"></div>
                     <div class="chat-input-area">
-                        <input type="text" id="chat-input" placeholder="Ask about NPCs, lore, locations..." autocomplete="off">
-                        <button id="chat-send-btn">Send</button>
+                        <textarea id="chat-input" placeholder="Ask about NPCs, lore, locations…" autocomplete="off" rows="1"></textarea>
+                        <button id="chat-send-btn" type="button" aria-label="Send message" title="Send">
+                            <svg aria-hidden="true" viewBox="0 0 24 24"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -130,20 +134,33 @@ class LoreMasterChatbot {
     }
     setupEventListeners() {
         const header = document.querySelector('.chatbot-header');
-        if (header) header.addEventListener('click', () => this.toggleWidget());
+        if (header && !this.isNativePage) header.addEventListener('click', () => this.toggleWidget());
         const clearBtn = document.getElementById('chat-clear-btn');
         if (clearBtn) clearBtn.addEventListener('click', (e) => { e.stopPropagation(); this.clearHistory(); });
         const sendBtn = document.getElementById('chat-send-btn');
         if (sendBtn) sendBtn.addEventListener('click', () => this.handleSendMessage());
         const input = document.getElementById('chat-input');
         if (input) {
-            input.addEventListener('keypress', (e) => {
+            const grow = () => {
+                input.style.height = 'auto';
+                const max = parseFloat(getComputedStyle(input).lineHeight || '20') * 4 + 22;
+                input.style.height = `${Math.min(input.scrollHeight, max)}px`;
+            };
+            input.addEventListener('input', grow);
+            grow();
+            input.addEventListener('keydown', (e) => {
                 if (e.key === 'Enter' && !e.shiftKey) {
                     e.preventDefault();
                     this.handleSendMessage();
                 }
             });
         }
+        document.querySelectorAll('[data-chat-suggestion]').forEach((button) => {
+            button.addEventListener('click', () => {
+                const prompt = button.getAttribute('data-chat-suggestion') || button.textContent || '';
+                this.submitPrompt(prompt.trim());
+            });
+        });
     }
     toggleWidget() {
         const widget = document.getElementById('chatbot-widget');
@@ -165,6 +182,13 @@ class LoreMasterChatbot {
         }
         saveToLocalStorage('loreMasterOpen', this.isOpen);
     }
+    submitPrompt(prompt) {
+        const input = document.getElementById('chat-input');
+        if (!input || !prompt) return;
+        input.value = prompt;
+        input.dispatchEvent(new Event('input', { bubbles: true }));
+        this.handleSendMessage();
+    }
     async handleSendMessage() {
         const input = document.getElementById('chat-input');
         const sendBtn = document.getElementById('chat-send-btn');
@@ -176,6 +200,7 @@ class LoreMasterChatbot {
         // /art on / /art off — toggle persistent art mode like other slash commands
         if (/^\/art\s+on\s*$/i.test(message)) {
             input.value = '';
+            input.dispatchEvent(new Event('input', { bubbles: true }));
             this.artMode = true;
             this.saveHistory();
             this.updateArtIndicator();
@@ -185,6 +210,7 @@ class LoreMasterChatbot {
         }
         if (/^\/art\s+off\s*$/i.test(message)) {
             input.value = '';
+            input.dispatchEvent(new Event('input', { bubbles: true }));
             this.artMode = false;
             this.saveHistory();
             this.updateArtIndicator();
@@ -203,6 +229,8 @@ class LoreMasterChatbot {
                 return;
             }
             input.value = '';
+            input.dispatchEvent(new Event('input', { bubbles: true }));
+            this.removeEmptyState();
             this.addMessage(message, 'user');
             this.isWaitingForResponse = true;
             input.disabled = true;
@@ -238,6 +266,8 @@ class LoreMasterChatbot {
         }
 
         input.value = '';
+        input.dispatchEvent(new Event('input', { bubbles: true }));
+        this.removeEmptyState();
         this.addMessage(message, 'user');
         this.isWaitingForResponse = true;
         input.disabled = true;
@@ -371,11 +401,12 @@ class LoreMasterChatbot {
     addMessage(text, role) {
         const messagesContainer = document.getElementById('chat-messages');
         if (!messagesContainer) return;
+        this.removeEmptyState();
         if (role === 'assistant') {
             const wrapper = document.createElement('div');
             wrapper.className = 'message-row assistant';
             const iconName = this.getIconName();
-            wrapper.innerHTML = `<img src="${this.baseUrl}/images/${iconName}192x192.png" alt="" class="chatbot-avatar"><div class="message assistant">${renderMarkdown(text)}</div>`;
+            wrapper.innerHTML = `<img src="${this.baseUrl}/images/${iconName}192x192.png" alt="" class="chatbot-avatar"><div class="message assistant">${renderMarkdown(text)}<span class="message-source-tag">from the codex</span></div>`;
             messagesContainer.appendChild(wrapper);
         } else {
             const messageDiv = document.createElement('div');
@@ -388,6 +419,7 @@ class LoreMasterChatbot {
     addSystemMessage(text) {
         const messagesContainer = document.getElementById('chat-messages');
         if (!messagesContainer) return;
+        this.removeEmptyState();
         const messageDiv = document.createElement('div');
         messageDiv.className = 'message system';
         messageDiv.textContent = text;
@@ -421,6 +453,33 @@ class LoreMasterChatbot {
         this.conversationHistory.forEach(msg => {
             this.addMessage(msg.content, msg.role);
         });
+        this.renderEmptyState();
+    }
+    renderEmptyState() {
+        const messagesContainer = document.getElementById('chat-messages');
+        if (!messagesContainer || this.conversationHistory.length || document.getElementById('chat-empty-state')) return;
+        const empty = document.createElement('div');
+        empty.id = 'chat-empty-state';
+        empty.className = 'chat-empty-state';
+        empty.innerHTML = `
+            <div class="chat-empty-title">Ask Enzo</div>
+            <div class="chat-empty-chips" aria-label="Suggested prompts">
+                <button type="button" data-chat-suggestion="Who is Roxy?">Who is…</button>
+                <button type="button" data-chat-suggestion="Where is the Overlook?">Where is…</button>
+                <button type="button" data-chat-suggestion="How does stealth work in 5e?">Rules question…</button>
+            </div>
+        `;
+        messagesContainer.appendChild(empty);
+        empty.querySelectorAll('[data-chat-suggestion]').forEach((button) => {
+            button.addEventListener('click', () => {
+                const prompt = button.getAttribute('data-chat-suggestion') || '';
+                this.submitPrompt(prompt);
+            });
+        });
+    }
+    removeEmptyState() {
+        const empty = document.getElementById('chat-empty-state');
+        if (empty) empty.remove();
     }
     saveHistory() {
         saveToLocalStorage('loreMasterHistory', this.conversationHistory);
@@ -493,7 +552,7 @@ class LoreMasterChatbot {
         this.updateRulesIndicator();
         this.updateVibeIndicator();
         this.updateArtIndicator();
-        this.addSystemMessage('Conversation cleared. How can I help you?');
+        this.renderEmptyState();
     }
 }
 let loreMaster;

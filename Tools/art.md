@@ -1101,8 +1101,19 @@ body.is-dm-mode .vos-art-lightbox-delete { display: inline-flex; }
   // ── Restore form state from localStorage ────────────────────────────
   try {
     const lastName = localStorage.getItem(NAME_KEY);
-    if (lastName) nameEl.value = lastName;
+    const profileName = window.VOS_PWA && window.VOS_PWA.getPlayerName
+      ? window.VOS_PWA.getPlayerName()
+      : localStorage.getItem('vos.playerName');
+    const savedName = lastName && lastName.trim().toLowerCase() !== 'anonymous'
+      ? lastName
+      : '';
+    nameEl.value = savedName || profileName || '';
   } catch (e) {}
+  window.addEventListener('vos:identity', (event) => {
+    if (nameEl.value.trim()) return;
+    const profileName = event.detail && event.detail.name;
+    if (profileName) nameEl.value = profileName;
+  });
 
   try {
     const lastEnhance = localStorage.getItem(ENHANCE_KEY);

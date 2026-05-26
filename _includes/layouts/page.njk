@@ -585,6 +585,115 @@
     background: rgba(212, 165, 116, 0.13);
     border-bottom-color: rgba(212, 165, 116, 0.58);
   }
+  .vos-rsvp-control {
+    display: grid;
+    gap: 0.42rem;
+    min-width: 0;
+  }
+  .vos-rsvp-segmented {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    min-height: 42px;
+    overflow: hidden;
+    border: 1px solid rgba(212, 165, 116, 0.28);
+    border-radius: 999px;
+    background: rgba(7, 6, 10, 0.58);
+  }
+  .vos-rsvp-segment {
+    min-width: 0;
+    min-height: 42px;
+    border: 0;
+    border-right: 1px solid rgba(212, 165, 116, 0.18);
+    border-radius: 0;
+    background: transparent;
+    color: rgba(212, 199, 173, 0.72);
+    cursor: pointer;
+    font-family: 'Cinzel', Georgia, serif;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0;
+    line-height: 1;
+    text-transform: uppercase;
+  }
+  .vos-rsvp-segment:last-child { border-right: 0; }
+  .vos-rsvp-segment:hover:not(:disabled) {
+    color: var(--vos-cream);
+    background: rgba(212, 165, 116, 0.09);
+  }
+  .vos-rsvp-segment.is-selected {
+    color: #0d0b11;
+    background: linear-gradient(180deg, #e6c08a 0%, #c9a371 65%, #a8835a 100%);
+  }
+  .vos-rsvp-segment:disabled {
+    cursor: wait;
+    opacity: 0.72;
+  }
+  .vos-rsvp-status {
+    min-height: 1.25em;
+    color: rgba(233, 225, 208, 0.66);
+    font-size: 0.86rem;
+    line-height: 1.25;
+  }
+  .vos-rsvp-status.is-error {
+    color: var(--vos-quest-bright);
+  }
+  .vos-task-list {
+    display: grid;
+    gap: 0.48rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .vos-task-row {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 0.65rem;
+    min-width: 0;
+    padding: 0.62rem 0;
+    border-top: 1px solid rgba(212, 165, 116, 0.13);
+  }
+  .vos-task-row:first-child { border-top: 0; }
+  .vos-task-check {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.22rem;
+    height: 1.22rem;
+    border: 1px solid rgba(212, 165, 116, 0.34);
+    border-radius: 50%;
+    color: rgba(212, 165, 116, 0.86);
+    font-size: 0.72rem;
+    line-height: 1;
+  }
+  .vos-task-main {
+    min-width: 0;
+    color: rgba(233, 225, 208, 0.86);
+    font-size: 0.98rem;
+    line-height: 1.32;
+  }
+  .vos-task-date {
+    justify-self: end;
+    color: rgba(212, 165, 116, 0.76);
+    font-family: 'Cinzel', Georgia, serif;
+    font-size: 0.58rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  @media (max-width: 420px) {
+    .vos-rsvp-segment { font-size: 0.62rem; }
+    .vos-task-row {
+      grid-template-columns: auto minmax(0, 1fr);
+      align-items: start;
+    }
+    .vos-task-date {
+      grid-column: 2;
+      justify-self: start;
+      margin-top: -0.2rem;
+    }
+  }
 
   @media (max-width: 700px) {
     .vos-app-bar {
@@ -1377,37 +1486,22 @@
     display: none !important;
   }
 
-  /* Desktop widget sizing — widen panel + give the input room. The
-     collapsed-state height override below uses !important to win against
-     these so the pill actually shrinks. */
+  /* Desktop widget sizing. The input itself stays compact; chatbot.css owns
+     the growing textarea row. */
   @media (min-width: 769px) {
     #chatbot-widget {
       width: 560px;
       max-height: 86vh;
     }
-    .chat-input-area {
-      flex-direction: column !important;
-      gap: 0.5rem !important;
-      align-items: stretch !important;
-    }
     #chat-input {
-      min-height: 60px !important;
-      height: 130px;
-      line-height: 1.5 !important;
-      resize: vertical !important;
+      min-height: 38px !important;
+      max-height: 116px !important;
       white-space: pre-wrap !important;
       word-wrap: break-word !important;
-      border-right: 1px solid rgba(201, 168, 76, 0.2) !important;
-      width: 100% !important;
-    }
-    .chat-input-area #chat-send-btn {
-      align-self: flex-end !important;
-      padding: 0.55rem 1.6rem !important;
-      height: auto !important;
     }
     #chat-messages {
       min-height: 200px !important;
-      max-height: calc(86vh - 52px - 220px) !important;
+      max-height: calc(86vh - 52px - 74px) !important;
     }
   }
 </style>
@@ -1609,15 +1703,20 @@
       </div>
       <div class="chatbot-body">
         <div id="chat-messages">
-          <div class="message system">Enzo — preview stub. Local layout only; chat is wired in production.</div>
-          <div class="message-row assistant">
-            <img src="/images/maskicon2.png" alt="" class="chatbot-avatar">
-            <div class="message assistant">I am Enzo — your guide to the city of Venturia and the Valley of Shadows. Ask me about characters, locations, factions, past sessions, or house rules.</div>
+          <div id="chat-empty-state" class="chat-empty-state">
+            <div class="chat-empty-title">Ask Enzo</div>
+            <div class="chat-empty-chips" aria-label="Suggested prompts">
+              <button type="button">Who is…</button>
+              <button type="button">Where is…</button>
+              <button type="button">Rules question…</button>
+            </div>
           </div>
         </div>
         <div class="chat-input-area">
-          <textarea id="chat-input" placeholder="Ask about NPCs, lore, locations..." rows="5"></textarea>
-          <button id="chat-send-btn">Send</button>
+          <textarea id="chat-input" placeholder="Ask about NPCs, lore, locations…" rows="1"></textarea>
+          <button id="chat-send-btn" type="button" aria-label="Send message" title="Send">
+            <svg aria-hidden="true" viewBox="0 0 24 24"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>
+          </button>
         </div>
       </div>
     </div>
@@ -1632,20 +1731,32 @@
 })();
 </script>
 <script>
-// After chatbot.js renders #chat-input as a single-line <input>, swap it
-// for a wrapping <textarea> so messages can be multi-line. Enter sends,
-// Shift+Enter inserts a newline. The send button still finds the element
-// by id, so it keeps working.
+// Compatibility for any stale chatbot bundle that still renders a single-line
+// input: swap it for the compact growing textarea used by the native app UI.
 (function () {
+  function enhance(ta) {
+    const grow = () => {
+      ta.style.height = 'auto';
+      const max = parseFloat(getComputedStyle(ta).lineHeight || '20') * 4 + 22;
+      ta.style.height = `${Math.min(ta.scrollHeight, max)}px`;
+    };
+    ta.addEventListener('input', grow);
+    grow();
+  }
   function swap() {
     const old = document.getElementById('chat-input');
-    if (!old || old.tagName === 'TEXTAREA') return !!old;
+    if (!old) return false;
+    if (old.tagName === 'TEXTAREA') {
+      enhance(old);
+      return true;
+    }
     const ta = document.createElement('textarea');
     ta.id = 'chat-input';
     ta.placeholder = old.placeholder || '';
     ta.setAttribute('autocomplete', 'off');
-    ta.rows = 5;
+    ta.rows = 1;
     old.parentNode.replaceChild(ta, old);
+    enhance(ta);
     ta.addEventListener('keydown', (e) => {
       if (e.key === 'Enter' && !e.shiftKey) {
         e.preventDefault();

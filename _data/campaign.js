@@ -20,6 +20,16 @@ module.exports = {
       "Bring something small to add to the tavern if you have it.",
       "Send 4-8 sentences about your character's typical day by May 28.",
     ],
+    tasks: [
+      {
+        text: "Bring something small to add to the tavern if you have it.",
+      },
+      {
+        text: "Send 4-8 sentences about your character's typical day.",
+        due: "May 28",
+        dueIso: "2026-05-28",
+      },
+    ],
   },
 
   openThreads: [

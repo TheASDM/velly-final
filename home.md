@@ -158,11 +158,12 @@ dateCreated: 2026-02-20T05:30:38.113Z
   display: grid;
   grid-template-columns: minmax(0, 1.25fr) minmax(360px, 0.85fr);
   grid-template-areas:
-    "story message"
-    "story next"
-    "inplay threads";
+    "message next"
+    "threads next"
+    "inplay inplay"
+    "story story";
   gap: 1rem;
-  align-items: stretch;
+  align-items: start;
 }
 .vos-dash-card {
   position: relative;
@@ -186,7 +187,11 @@ dateCreated: 2026-02-20T05:30:38.113Z
 }
 .vos-story-card {
   grid-area: story;
-  padding: 1.45rem 1.55rem 1.55rem;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  gap: 0.8rem 1rem;
+  padding: 1rem 1.15rem;
 }
 .vos-message-card { grid-area: message; }
 .vos-message-card[hidden],
@@ -205,7 +210,7 @@ dateCreated: 2026-02-20T05:30:38.113Z
   text-transform: uppercase;
 }
 .vos-story-card .vos-card-heading {
-  margin: 0.35rem 0 0.65rem;
+  margin: 0.22rem 0 0;
   padding: 0;
   border: none;
   color: #e8cd84;
@@ -217,14 +222,16 @@ dateCreated: 2026-02-20T05:30:38.113Z
 }
 .vos-story-card .vos-card-heading::after { content: none; }
 .vos-story-card h3 {
-  margin: 0.45rem 0 0.35rem;
+  grid-column: 1 / -1;
+  margin: 0;
   color: var(--vos-cream);
   font-family: 'Cinzel', Georgia, serif;
-  font-size: clamp(1.35rem, 2.2vw, 2rem);
-  letter-spacing: 0.04em;
+  font-size: clamp(1.05rem, 2vw, 1.35rem);
+  letter-spacing: 0.02em;
   line-height: 1.15;
 }
 .vos-story-meta {
+  display: none;
   margin-bottom: 0.95rem;
   color: rgba(147,138,120,0.95);
   font-family: 'Cormorant Garamond', 'Crimson Text', Georgia, serif;
@@ -232,16 +239,24 @@ dateCreated: 2026-02-20T05:30:38.113Z
   font-size: 0.98rem;
 }
 .vos-story-card p {
-  flex: 1 1 auto;
-  margin: 0 0 1.25rem;
+  grid-column: 1;
+  flex: 0 1 auto;
+  display: -webkit-box;
+  margin: 0;
+  overflow: hidden;
   color: rgba(233,225,208,0.84);
   font-family: 'Cormorant Garamond', 'Crimson Text', Georgia, serif;
-  font-size: 1.08rem;
-  line-height: 1.58;
+  font-size: 1rem;
+  line-height: 1.38;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
 }
 .vos-story-read {
+  grid-column: 2;
+  grid-row: 3;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   min-height: 2.25rem;
   padding: 0.48rem 0.95rem;
   border: 1px solid rgba(201,161,74,0.32);
@@ -278,31 +293,16 @@ dateCreated: 2026-02-20T05:30:38.113Z
   line-height: 1.1;
 }
 .vos-next-where {
-  margin: 0.25rem 0 0.85rem;
+  margin: 0.25rem 0 0.75rem;
   color: rgba(147,138,120,0.95);
   font-family: 'Cormorant Garamond', 'Crimson Text', Georgia, serif;
   font-style: italic;
   font-size: 0.98rem;
 }
-.vos-next-notes {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-.vos-next-notes li {
-  display: flex;
-  gap: 0.65rem;
-  padding: 0.55rem 0 0;
-  border-top: 1px solid rgba(201,161,74,0.11);
-  color: rgba(233,225,208,0.82);
-  line-height: 1.45;
-}
-.vos-next-notes li::before {
-  content: '\2726';
-  flex: 0 0 auto;
-  color: #b89048;
-  font-size: 0.82rem;
-  margin-top: 0.05rem;
+.vos-next-rsvp {
+  margin-top: 0.85rem;
+  padding-top: 0.82rem;
+  border-top: 1px solid rgba(201,161,74,0.13);
 }
 .vos-message-title {
   margin: 0.2rem 0 0.45rem;
@@ -604,11 +604,11 @@ dateCreated: 2026-02-20T05:30:38.113Z
   .vos-dash {
     grid-template-columns: 1fr;
     grid-template-areas:
-      "story"
       "message"
       "next"
       "threads"
-      "inplay";
+      "inplay"
+      "story";
   }
   .vos-home-sec-head {
     align-items: flex-start;
@@ -623,6 +623,17 @@ dateCreated: 2026-02-20T05:30:38.113Z
   .vos-dash-side-card,
   .vos-inplay-card {
     padding: 1.1rem 1.05rem 1.2rem;
+  }
+  .vos-story-card {
+    grid-template-columns: 1fr;
+  }
+  .vos-story-card p,
+  .vos-story-read {
+    grid-column: 1;
+    grid-row: auto;
+  }
+  .vos-story-card p {
+    -webkit-line-clamp: 2;
   }
   .vos-home-section h2 { font-size: 1.1rem; }
   .vos-tiles { grid-template-columns: 1fr 1fr; }
@@ -648,14 +659,6 @@ dateCreated: 2026-02-20T05:30:38.113Z
 <!-- ── LIVING DASHBOARD ─────────────────────────────────────────────── -->
 <section class="vos-home-dashboard" aria-label="Campaign dashboard">
   <div class="vos-dash">
-    <article class="vos-dash-card vos-story-card" aria-labelledby="vos-story-heading">
-      <div class="vos-dash-kicker">{{ campaign.latestSession.number }} · {{ campaign.latestSession.arc }}</div>
-      <h2 id="vos-story-heading" class="vos-card-heading">The Story So Far</h2>
-      <h3>{{ campaign.latestSession.title }}</h3>
-      <div class="vos-story-meta">Last played {{ campaign.latestSession.lastPlayed }} · updated {{ campaign.latestSession.updated }}</div>
-      <p>{{ campaign.latestSession.recap }}</p>
-      <a class="vos-story-read" href="{{ campaign.latestSession.link }}">Read full chronicle &rarr;</a>
-    </article>
     <article class="vos-dash-card vos-dash-side-card vos-message-card" id="vos-message-card" aria-labelledby="vos-message-heading" hidden>
       <h3 id="vos-message-heading">DM Message</h3>
       <div class="vos-message-title" id="vos-message-title"></div>
@@ -666,11 +669,18 @@ dateCreated: 2026-02-20T05:30:38.113Z
       <h3 id="vos-next-heading">Next Gathering</h3>
       <div class="vos-next-date">{{ campaign.nextGathering.date }}</div>
       <div class="vos-next-where">{{ campaign.nextGathering.timeLocation }}</div>
-      <ul class="vos-next-notes">
-        {%- for note in campaign.nextGathering.notes %}
-        <li>{{ note }}</li>
+      <ul class="vos-task-list">
+        {%- for task in campaign.nextGathering.tasks %}
+        <li class="vos-task-row"{% if task.dueIso %} data-reminder-date="{{ task.dueIso }}"{% endif %}>
+          <span class="vos-task-check" aria-hidden="true">✓</span>
+          <span class="vos-task-main">{{ task.text }}</span>
+          {%- if task.due %}<span class="vos-task-date">Due {{ task.due }}</span>{%- endif %}
+        </li>
         {%- endfor %}
       </ul>
+      <div class="vos-next-rsvp" aria-label="RSVP for the next gathering">
+        {% include "partials/rsvp-control.njk" %}
+      </div>
     </article>
     <article class="vos-dash-card vos-dash-side-card vos-threads-card" aria-labelledby="vos-threads-heading">
       <h3 id="vos-threads-heading">Open Threads</h3>
@@ -696,6 +706,15 @@ dateCreated: 2026-02-20T05:30:38.113Z
         </a>
         {%- endfor %}
       </div>
+    </article>
+    <article class="vos-dash-card vos-story-card" aria-labelledby="vos-story-heading">
+      <div>
+        <div class="vos-dash-kicker">{{ campaign.latestSession.number }} · {{ campaign.latestSession.arc }}</div>
+        <h2 id="vos-story-heading" class="vos-card-heading">Story So Far</h2>
+      </div>
+      <h3>{{ campaign.latestSession.title }}</h3>
+      <p>{{ campaign.latestSession.recap }}</p>
+      <a class="vos-story-read" href="{{ campaign.latestSession.link }}">Read full chronicle &rarr;</a>
     </article>
   </div>
 </section>
