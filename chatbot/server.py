@@ -88,6 +88,25 @@ DEFAULT_PLAYERS = [
     "Valentro",
     "DM",
 ]
+LOGIN_NAME_ALIASES = {
+    "car": 'Caravel "Car" Asteri',
+    "caravel": 'Caravel "Car" Asteri',
+    'caravel "car" asteri': 'Caravel "Car" Asteri',
+    "kryton": "Kryton Novelli",
+    "kryton novelli": "Kryton Novelli",
+    "lotan": "Lotan",
+    "noname": "Noname",
+    "no name": "Noname",
+    "no-name": "Noname",
+    "orabella": "Orabella",
+    "roxy": 'Roxanya "Roxy"',
+    "roxanya": 'Roxanya "Roxy"',
+    'roxanya "roxy"': 'Roxanya "Roxy"',
+    "valen": "Valentro",
+    "valentro": "Valentro",
+    "dustin": "DM",
+    "dm": "DM",
+}
 AUTH_TOKEN_TTL_SECONDS = int(os.environ.get("AUTH_TOKEN_TTL_SECONDS", str(180 * 24 * 60 * 60)))
 AUTH_TOKEN_SECRET = (
     os.environ.get("AUTH_TOKEN_SECRET", "").strip()
@@ -95,6 +114,11 @@ AUTH_TOKEN_SECRET = (
     or VAPID_PRIVATE_KEY
     or ANTHROPIC_API_KEY
 )
+
+
+def _canonical_login_name(name):
+    cleaned = re.sub(r"\s+", " ", str(name or "").strip())
+    return LOGIN_NAME_ALIASES.get(cleaned.lower(), cleaned)
 
 
 def _parse_login_codes(raw):
@@ -105,20 +129,20 @@ def _parse_login_codes(raw):
         try:
             data = json.loads(raw)
             return {
-                str(name).strip(): str(code).strip()
+                _canonical_login_name(name): str(code).strip()
                 for name, code in data.items()
-                if str(name).strip() and str(code).strip()
+                if _canonical_login_name(name) and str(code).strip()
             }
         except Exception:
             logging.exception("PLAYER_LOGIN_CODES JSON is malformed")
             return {}
 
     codes = {}
-    for part in re.split(r"[;\n]+", raw):
+    for part in re.split(r"[,;\n]+", raw):
         if "=" not in part:
             continue
         name, code = part.split("=", 1)
-        name = name.strip()
+        name = _canonical_login_name(name)
         code = code.strip()
         if name and code:
             codes[name] = code
