@@ -2,6 +2,7 @@
 title: Calendar
 description: Next Valley of Shadows gathering.
 permalink: /calendar/
+templateEngineOverride: njk
 ---
 
 <style>

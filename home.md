@@ -6,6 +6,7 @@ date: 2026-05-22T01:24:39.808Z
 tags: locations, character-hooks, market-tiers, religion, abbey, healing, fog-sickness
 editor: markdown
 dateCreated: 2026-02-20T05:30:38.113Z
+templateEngineOverride: njk
 ---
 
 <style>
@@ -429,6 +430,9 @@ dateCreated: 2026-02-20T05:30:38.113Z
 }
 .vos-home-studio {
   margin-bottom: 0.5rem;
+}
+.vos-home-studio .vos-home-sec-head {
+  margin-top: 1.35rem;
 }
 
 /* Filigree divider — the comedy/tragedy mask piece. */
