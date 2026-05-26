@@ -1334,7 +1334,7 @@
     position: fixed;
     left: 0;
     right: 0;
-    bottom: var(--vos-vv-bottom);
+    bottom: 0;
     z-index: 1150;
     min-height: calc(var(--vos-app-nav-h) + env(safe-area-inset-bottom));
     padding:
@@ -1975,18 +1975,43 @@
 (function () {
   const root = document.documentElement;
 
-  function syncVisualViewportBottom() {
+  function measureVisualViewportBottom() {
     const viewport = window.visualViewport;
-    const bottom = viewport
-      ? Math.max(0, window.innerHeight - viewport.height - viewport.offsetTop)
-      : 0;
-    root.style.setProperty('--vos-vv-bottom', `${bottom.toFixed(2)}px`);
+    if (!viewport || document.hidden) return 0;
+
+    const raw = window.innerHeight - viewport.height - viewport.offsetTop;
+    if (!Number.isFinite(raw)) return 0;
+
+    // iOS standalone PWAs can report stale visualViewport geometry after the
+    // app resumes from the background. Treat anything larger than browser
+    // chrome as bad data; otherwise fixed bottom UI can jump into mid-screen.
+    const chromeInsetLimit = Math.min(96, window.innerHeight * 0.18);
+    const bottom = Math.max(0, raw);
+    return bottom <= chromeInsetLimit ? bottom : 0;
   }
 
-  syncVisualViewportBottom();
-  window.addEventListener('resize', syncVisualViewportBottom, { passive: true });
-  window.addEventListener('orientationchange', () => {
+  function syncVisualViewportBottom() {
+    root.style.setProperty('--vos-vv-bottom', `${measureVisualViewportBottom().toFixed(2)}px`);
+  }
+
+  function resyncVisualViewportBottom() {
+    root.style.setProperty('--vos-vv-bottom', '0px');
     requestAnimationFrame(syncVisualViewportBottom);
+    setTimeout(syncVisualViewportBottom, 120);
+    setTimeout(syncVisualViewportBottom, 450);
+  }
+
+  resyncVisualViewportBottom();
+  window.addEventListener('resize', syncVisualViewportBottom, { passive: true });
+  window.addEventListener('focus', resyncVisualViewportBottom, { passive: true });
+  window.addEventListener('pageshow', resyncVisualViewportBottom, { passive: true });
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) root.style.setProperty('--vos-vv-bottom', '0px');
+    else resyncVisualViewportBottom();
+  });
+  window.addEventListener('orientationchange', () => {
+    root.style.setProperty('--vos-vv-bottom', '0px');
+    requestAnimationFrame(resyncVisualViewportBottom);
     setTimeout(syncVisualViewportBottom, 250);
   }, { passive: true });
 
