@@ -19,6 +19,7 @@ import re
 import secrets
 import sqlite3
 import string
+import threading
 import time
 from datetime import datetime, timezone
 from pathlib import Path
@@ -407,6 +408,29 @@ def _run_app_migrations():
             conn.execute(
                 "INSERT INTO schema_migrations (name, applied_at) VALUES (?, ?)",
                 ("003_rsvps", _utc_now_iso()),
+            )
+
+        if "004_studio_jobs" not in done:
+            conn.execute("""
+                CREATE TABLE IF NOT EXISTS studio_jobs (
+                    id TEXT PRIMARY KEY,
+                    creator TEXT NOT NULL,
+                    prompt TEXT NOT NULL,
+                    style TEXT,
+                    status TEXT NOT NULL CHECK(status IN ('pending', 'done', 'error')),
+                    result_url TEXT,
+                    error_message TEXT,
+                    created_at TEXT NOT NULL,
+                    updated_at TEXT NOT NULL
+                )
+            """)
+            conn.execute("""
+                CREATE INDEX IF NOT EXISTS idx_studio_jobs_creator_updated
+                ON studio_jobs (creator, updated_at DESC)
+            """)
+            conn.execute(
+                "INSERT INTO schema_migrations (name, applied_at) VALUES (?, ?)",
+                ("004_studio_jobs", _utc_now_iso()),
             )
 
 
@@ -1597,7 +1621,7 @@ def _app_url(value):
     return value[:300]
 
 
-def _fanout_push(conn, title, message, url):
+def _fanout_push(conn, title, message, url, player_name=None):
     payload = json.dumps({
         "title": title.strip()[:120],
         "body": message.strip()[:500],
@@ -1609,11 +1633,19 @@ def _fanout_push(conn, title, message, url):
     pruned = 0
     errors = []
 
-    rows = list(conn.execute("""
-        SELECT id, player_name, endpoint, p256dh, auth
-        FROM subscriptions
-        ORDER BY created_at ASC
-    """))
+    if player_name:
+        rows = list(conn.execute("""
+            SELECT id, player_name, endpoint, p256dh, auth
+            FROM subscriptions
+            WHERE player_name = ?
+            ORDER BY created_at ASC
+        """, (player_name,)))
+    else:
+        rows = list(conn.execute("""
+            SELECT id, player_name, endpoint, p256dh, auth
+            FROM subscriptions
+            ORDER BY created_at ASC
+        """))
 
     for row in rows:
         try:
@@ -1922,46 +1954,48 @@ def chat():
         }), 500
 
 
-@app.route("/api/generate-image", methods=["POST"])
-def generate_image():
-    """Generate an image via OpenAI's images API + persist to the gallery.
-
-    Request body:
-        prompt      — required, the user's free-text description (<=3500 chars)
-        style       — optional, key into ART_STYLE_PRESETS (default "valley")
-        created_by  — optional, free-text attribution (<=64 chars), saved
-                      to the gallery manifest only — never sent to OpenAI
-
-    Driven by env: OPENAI_KEY (required), IMAGE_MODEL (default gpt-image-2),
-    IMAGE_STYLE_PROMPT (legacy fallback — used only when no style key is
-    provided AND the legacy chatbot widget is calling).
-    """
-    body = request.get_json(silent=True) or {}
+def _studio_prompt_from_body(body):
     prompt = body.get("prompt", "")
     if not prompt or not isinstance(prompt, str):
-        return jsonify({"error": "Invalid prompt"}), 400
+        return None, ({"error": "Invalid prompt"}, 400)
     prompt = prompt.strip()
     if len(prompt) > 3500:
-        return jsonify({"error": "Prompt too long (max 3500 chars)"}), 400
+        return None, ({"error": "Prompt too long (max 3500 chars)"}, 400)
+    return prompt, None
 
+
+def _studio_style_from_body(body):
     style_key = (body.get("style") or "").strip().lower() or None
     if style_key and style_key not in ART_STYLE_PRESETS:
-        return jsonify({
+        return None, ({
             "error": f"Unknown style '{style_key}'. See /api/art-styles."
-        }), 400
+        }, 400)
+    return style_key, None
 
-    created_by = body.get("created_by", "")
-    if not isinstance(created_by, str):
-        created_by = ""
 
-    # `enhance` defaults to True — Haiku rewrites the prompt and grounds any
-    # named campaign entities in their canonical descriptions. Clients can
-    # opt out by passing enhance: false (useful when they've already
-    # hand-crafted a polished prompt and don't want it touched).
+def _studio_enhance_from_body(body):
     enhance = body.get("enhance", True)
-    if not isinstance(enhance, bool):
-        enhance = bool(enhance)
+    return enhance if isinstance(enhance, bool) else bool(enhance)
 
+
+def _studio_creator_from_body(body, required=True):
+    requested_creator = body.get("creator", body.get("created_by", ""))
+    if not isinstance(requested_creator, str):
+        requested_creator = ""
+    requested_creator = requested_creator.strip()[:64]
+    auth_body = dict(body)
+    if not any(auth_body.get(k) for k in ("name", "playerName", "player_name")):
+        auth_body["name"] = requested_creator
+    created_by, auth_error = _authenticated_player_name(auth_body)
+    if auth_error:
+        return None, auth_error
+    created_by = (created_by or requested_creator or "").strip()[:64]
+    if not created_by and required:
+        return None, ({"error": "Missing creator"}, 400)
+    return created_by, None
+
+
+def _generate_image_payload(prompt, style_key, created_by, enhance=True):
     openai_key = os.environ.get("OPENAI_KEY", "")
     image_model = os.environ.get("IMAGE_MODEL", "gpt-image-2")
     legacy_style_prefix = os.environ.get("IMAGE_STYLE_PROMPT", "").strip()
@@ -1969,9 +2003,9 @@ def generate_image():
     image_size = os.environ.get("IMAGE_SIZE", "1024x1024")
 
     if not openai_key:
-        return jsonify({
+        return {
             "error": "Image generation not configured — OPENAI_KEY missing in server env"
-        }), 503
+        }, 503
 
     # Resolve the style prefix. Explicit `style` from the body wins; if none
     # provided, fall back to the legacy env var so existing /art chatbot
@@ -2031,10 +2065,10 @@ def generate_image():
         )
         if r.status_code >= 400:
             logging.warning("OpenAI image gen %s: %s", r.status_code, r.text[:300])
-            return jsonify({
+            return {
                 "error": "Image generation failed",
                 "details": r.text[:300],
-            }), r.status_code
+            }, r.status_code
 
         data = r.json()
         item = (data.get("data") or [{}])[0]
@@ -2087,10 +2121,189 @@ def generate_image():
                 "image_url": f"/api/gallery/image/{gallery_entry['filename']}",
                 "created_at": gallery_entry["created_at"],
             }
-        return jsonify(response)
+        return response, 200
     except Exception as e:
         logging.exception("Image generation error")
-        return jsonify({"error": "Image generation failed", "details": str(e)}), 500
+        return {"error": "Image generation failed", "details": str(e)}, 500
+
+
+def _studio_job_payload(row):
+    return {
+        "id": row["id"],
+        "jobId": row["id"],
+        "creator": row["creator"],
+        "prompt": row["prompt"],
+        "style": row["style"],
+        "status": row["status"],
+        "result_url": row["result_url"],
+        "error_message": row["error_message"],
+        "created_at": row["created_at"],
+        "updated_at": row["updated_at"],
+    }
+
+
+def _update_studio_job(job_id, status, result_url=None, error_message=None):
+    with _app_db() as conn:
+        conn.execute("""
+            UPDATE studio_jobs
+            SET status = ?, result_url = ?, error_message = ?, updated_at = ?
+            WHERE id = ?
+        """, (
+            status,
+            result_url,
+            error_message,
+            _utc_now_iso(),
+            job_id,
+        ))
+
+
+def _notify_art_ready(creator, result_url):
+    if _push_config_error():
+        return
+    try:
+        with _app_db() as conn:
+            _fanout_push(
+                conn,
+                "Your Vallombrosa art is ready",
+                "Your Studio piece has finished and is in the shared gallery.",
+                result_url or "/en/Tools/art/",
+                player_name=creator,
+            )
+    except Exception:
+        logging.exception("Art-ready push failed")
+
+
+def _run_studio_job(job_id, prompt, style_key, creator, enhance):
+    try:
+        data, status = _generate_image_payload(prompt, style_key, creator, enhance)
+        if status >= 400:
+            error = data.get("error") or "Image generation failed"
+            details = data.get("details")
+            if details:
+                error = f"{error}: {details}"
+            _update_studio_job(job_id, "error", error_message=error[:500])
+            return
+
+        result_url = None
+        gallery = data.get("gallery") or {}
+        if gallery.get("image_url"):
+            result_url = gallery["image_url"]
+        elif data.get("url"):
+            result_url = data["url"]
+
+        if not result_url:
+            _update_studio_job(job_id, "error", error_message="Image generation finished without an image URL.")
+            return
+
+        _update_studio_job(job_id, "done", result_url=result_url)
+        _notify_art_ready(creator, result_url)
+    except Exception as exc:
+        logging.exception("Studio job failed")
+        _update_studio_job(job_id, "error", error_message=str(exc)[:500])
+
+
+@app.route("/api/studio/generate", methods=["POST"])
+def studio_generate():
+    body = request.get_json(silent=True) or {}
+    prompt, error = _studio_prompt_from_body(body)
+    if error:
+        payload, status = error
+        return jsonify(payload), status
+    style_key, error = _studio_style_from_body(body)
+    if error:
+        payload, status = error
+        return jsonify(payload), status
+    creator, auth_error = _studio_creator_from_body(body)
+    if auth_error:
+        return auth_error
+    enhance = _studio_enhance_from_body(body)
+
+    job_id = secrets.token_urlsafe(18)
+    now = _utc_now_iso()
+    with _app_db() as conn:
+        conn.execute("""
+            INSERT INTO studio_jobs (
+                id, creator, prompt, style, status, result_url,
+                error_message, created_at, updated_at
+            )
+            VALUES (?, ?, ?, ?, 'pending', NULL, NULL, ?, ?)
+        """, (job_id, creator, prompt, style_key, now, now))
+
+    thread = threading.Thread(
+        target=_run_studio_job,
+        args=(job_id, prompt, style_key, creator, enhance),
+        daemon=True,
+    )
+    thread.start()
+    return jsonify({"jobId": job_id}), 202
+
+
+@app.route("/api/studio/jobs", methods=["GET"])
+def studio_jobs():
+    mine = request.args.get("mine") == "1"
+    if not mine:
+        return jsonify({"error": "Only mine=1 is supported"}), 400
+    creator, auth_error = _authenticated_player_name()
+    if auth_error:
+        return auth_error
+    if not creator:
+        return jsonify({"jobs": []})
+    with _app_db() as conn:
+        rows = list(conn.execute("""
+            SELECT id, creator, prompt, style, status, result_url,
+                   error_message, created_at, updated_at
+            FROM studio_jobs
+            WHERE creator = ?
+            ORDER BY updated_at DESC
+            LIMIT 10
+        """, (creator,)))
+    return jsonify({"jobs": [_studio_job_payload(row) for row in rows]})
+
+
+@app.route("/api/studio/jobs/<job_id>", methods=["GET"])
+def studio_job(job_id):
+    with _app_db() as conn:
+        row = conn.execute("""
+            SELECT id, creator, prompt, style, status, result_url,
+                   error_message, created_at, updated_at
+            FROM studio_jobs
+            WHERE id = ?
+        """, (job_id,)).fetchone()
+    if not row:
+        return jsonify({"error": "Job not found"}), 404
+
+    if _auth_login_required():
+        creator, auth_error = _authenticated_player_name({"name": row["creator"]})
+        if auth_error:
+            return auth_error
+        if creator != row["creator"]:
+            return jsonify({"error": "Identity mismatch"}), 403
+
+    return jsonify(_studio_job_payload(row))
+
+
+@app.route("/api/generate-image", methods=["POST"])
+def generate_image():
+    """Generate an image via OpenAI's images API + persist to the gallery.
+
+    Kept for legacy callers. The Studio app uses /api/studio/generate so page
+    navigation cannot lose the active generation state.
+    """
+    body = request.get_json(silent=True) or {}
+    prompt, error = _studio_prompt_from_body(body)
+    if error:
+        payload, status = error
+        return jsonify(payload), status
+    style_key, error = _studio_style_from_body(body)
+    if error:
+        payload, status = error
+        return jsonify(payload), status
+    created_by, auth_error = _studio_creator_from_body(body, required=False)
+    if auth_error:
+        return auth_error
+    enhance = _studio_enhance_from_body(body)
+    payload, status = _generate_image_payload(prompt, style_key, created_by, enhance)
+    return jsonify(payload), status
 
 
 @app.route("/api/art-styles", methods=["GET"])

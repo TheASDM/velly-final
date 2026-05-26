@@ -157,7 +157,7 @@ dateCreated: 2026-05-24T00:00:00.000Z
   text-transform: uppercase;
 }
 
-.vos-art-prompt, .vos-art-name {
+.vos-art-prompt {
   width: 100%;
   background: rgba(4, 4, 8, 0.74);
   border: 1px solid var(--art-border);
@@ -172,8 +172,7 @@ dateCreated: 2026-05-24T00:00:00.000Z
   resize: vertical;
 }
 .vos-art-prompt { min-height: 8.3rem; }
-.vos-art-name { min-height: unset; }
-.vos-art-prompt:focus, .vos-art-name:focus {
+.vos-art-prompt:focus {
   outline: none;
   border-color: var(--art-border-strong);
   box-shadow: inset 0 1px 0 rgba(0,0,0,0.4), 0 0 0 3px rgba(221, 183, 127, 0.14);
@@ -355,6 +354,9 @@ dateCreated: 2026-05-24T00:00:00.000Z
   transition: opacity 0.35s ease;
 }
 .vos-art-latest.has-image .vos-art-latest-pending { opacity: 0; pointer-events: none; }
+.vos-art-latest.has-error .vos-art-latest-frame {
+  display: none;
+}
 .vos-art-latest-pending::before {
   /* Slow gold shimmer sweep — the visual heartbeat of "still working". */
   content: '';
@@ -424,6 +426,39 @@ dateCreated: 2026-05-24T00:00:00.000Z
   font-style: italic;
   color: rgba(232, 220, 200, 0.78);
   font-size: 0.92rem;
+}
+.vos-art-latest-error {
+  display: grid;
+  gap: 0.65rem;
+  justify-items: center;
+  padding: 0.35rem 0 0.2rem;
+}
+.vos-art-latest-error strong {
+  color: #d8645c;
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+.vos-art-latest-error p {
+  max-width: 42rem;
+  margin: 0;
+  color: rgba(232, 220, 200, 0.78);
+}
+.vos-art-retry {
+  appearance: none;
+  min-height: 2.35rem;
+  padding: 0.48rem 0.95rem;
+  border: 1px solid var(--art-border-strong);
+  border-radius: 999px;
+  background: rgba(221, 183, 127, 0.08);
+  color: var(--art-gold);
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  cursor: pointer;
 }
 
 /* "Let Enzo refine my prompt" checkbox row ─────────────────────────── */
@@ -553,6 +588,30 @@ dateCreated: 2026-05-24T00:00:00.000Z
   font-style: italic;
   color: rgba(221, 183, 127, 0.58);
   font-size: 0.9rem;
+}
+.vos-art-gallery-tools {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+.vos-art-refresh {
+  appearance: none;
+  width: 2.15rem;
+  height: 2.15rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(221, 183, 127, 0.34);
+  border-radius: 50%;
+  background: rgba(7, 6, 10, 0.55);
+  color: var(--art-gold);
+  cursor: pointer;
+  font-size: 1.05rem;
+  line-height: 1;
+}
+.vos-art-refresh.is-refreshing {
+  animation: vos-art-spin 1.1s linear infinite;
+  cursor: progress;
 }
 
 .vos-art-gallery {
@@ -897,8 +956,7 @@ body.is-dm-mode .vos-art-lightbox-delete { display: inline-flex; }
     font-size: 0.58rem;
     letter-spacing: 0.18em;
   }
-  .vos-art-prompt,
-  .vos-art-name {
+  .vos-art-prompt {
     font-size: 0.98rem;
     padding: 0.72rem;
   }
@@ -964,20 +1022,14 @@ body.is-dm-mode .vos-art-lightbox-delete { display: inline-flex; }
     </div>
   </div>
 
-  <div class="vos-art-row">
-    <div class="vos-art-field">
-      <label class="vos-art-field-label" for="vos-art-name">Created by <span style="opacity:0.6">(optional)</span></label>
-      <input id="vos-art-name" class="vos-art-name" type="text" maxlength="64" placeholder="Your name or handle">
-    </div>
-    <div class="vos-art-field">
-      <label class="vos-art-enhance-toggle" for="vos-art-enhance">
-        <input id="vos-art-enhance" type="checkbox" checked>
-        <span class="vos-art-enhance-text">
-          <strong>Let Enzo refine my prompt</strong>
-          <em>Improves campaign references and image phrasing.</em>
-        </span>
-      </label>
-    </div>
+  <div class="vos-art-field">
+    <label class="vos-art-enhance-toggle" for="vos-art-enhance">
+      <input id="vos-art-enhance" type="checkbox" checked>
+      <span class="vos-art-enhance-text">
+        <strong>Let Enzo refine my prompt</strong>
+        <em>Improves campaign references and image phrasing.</em>
+      </span>
+    </label>
   </div>
 
   <div class="vos-art-actions">
@@ -1017,7 +1069,10 @@ body.is-dm-mode .vos-art-lightbox-delete { display: inline-flex; }
 <section class="vos-art-gallery-section" id="vos-art-gallery-section" aria-labelledby="vos-art-gallery-title">
   <div class="vos-art-gallery-head">
     <h2 id="vos-art-gallery-title">Shared Gallery</h2>
-    <div class="vos-art-gallery-count" id="vos-art-gallery-count">Loading…</div>
+    <div class="vos-art-gallery-tools">
+      <button id="vos-art-gallery-refresh" class="vos-art-refresh" type="button" aria-label="Refresh gallery" title="Refresh gallery">↻</button>
+      <div class="vos-art-gallery-count" id="vos-art-gallery-count">Loading…</div>
+    </div>
   </div>
 
   <div id="vos-art-gallery" class="vos-art-gallery"></div>
@@ -1050,12 +1105,12 @@ body.is-dm-mode .vos-art-lightbox-delete { display: inline-flex; }
 <script>
 (function () {
   const API_BASE = '';
-  const NAME_KEY = 'velly.artStudio.lastName';
   const STYLE_KEY = 'velly.artStudio.lastStyle';
+  const ACTIVE_JOB_KEY = 'velly.artStudio.activeJobId';
+  const POLL_MS = 2500;
 
   const $ = (id) => document.getElementById(id);
   const promptEl         = $('vos-art-prompt');
-  const nameEl           = $('vos-art-name');
   const styleSelectEl    = $('vos-art-style-select');
   const styleSummaryEl   = $('vos-art-style-summary');
   const enhanceEl        = $('vos-art-enhance');
@@ -1070,6 +1125,8 @@ body.is-dm-mode .vos-art-lightbox-delete { display: inline-flex; }
   const pendingStatusEl  = $('vos-art-latest-pending-status');
   const galleryEl        = $('vos-art-gallery');
   const countEl          = $('vos-art-gallery-count');
+  const gallerySection   = $('vos-art-gallery-section');
+  const refreshGalleryEl = $('vos-art-gallery-refresh');
   const lightbox         = $('vos-art-lightbox');
   const lightImg         = $('vos-art-lightbox-img');
   const lightCap         = $('vos-art-lightbox-caption');
@@ -1097,23 +1154,10 @@ body.is-dm-mode .vos-art-lightbox-delete { display: inline-flex; }
   let selectedStyle = null;
   let defaultStyle = 'valley';
   let availableStyles = [];
-
-  // ── Restore form state from localStorage ────────────────────────────
-  try {
-    const lastName = localStorage.getItem(NAME_KEY);
-    const profileName = window.VOS_PWA && window.VOS_PWA.getPlayerName
-      ? window.VOS_PWA.getPlayerName()
-      : localStorage.getItem('vos.playerName');
-    const savedName = lastName && lastName.trim().toLowerCase() !== 'anonymous'
-      ? lastName
-      : '';
-    nameEl.value = savedName || profileName || '';
-  } catch (e) {}
-  window.addEventListener('vos:identity', (event) => {
-    if (nameEl.value.trim()) return;
-    const profileName = event.detail && event.detail.name;
-    if (profileName) nameEl.value = profileName;
-  });
+  let activeJobId = null;
+  let pollTimer = null;
+  let isSubmitting = false;
+  let galleryHasLoaded = false;
 
   try {
     const lastEnhance = localStorage.getItem(ENHANCE_KEY);
@@ -1124,11 +1168,34 @@ body.is-dm-mode .vos-art-lightbox-delete { display: inline-flex; }
     try { localStorage.setItem(ENHANCE_KEY, enhanceEl.checked ? '1' : '0'); } catch (e) {}
   });
 
-  nameEl.addEventListener('change', () => {
-    try { localStorage.setItem(NAME_KEY, nameEl.value); } catch (e) {}
-  });
-
   // ── Styles ───────────────────────────────────────────────────────────
+  function getCurrentCreatorName() {
+    if (window.VOS_PWA && window.VOS_PWA.getPlayerName) {
+      const name = window.VOS_PWA.getPlayerName();
+      return name && typeof name === 'string' ? name.trim() : '';
+    }
+    try {
+      return (localStorage.getItem('vos.playerName') || '').trim();
+    } catch (e) {
+      return '';
+    }
+  }
+
+  async function getCreatorName() {
+    if (window.VOS_PWA && window.VOS_PWA.ensureIdentity) {
+      const name = await window.VOS_PWA.ensureIdentity();
+      return name && typeof name === 'string' ? name.trim() : '';
+    }
+    return getCurrentCreatorName();
+  }
+
+  function requestHeaders(headers) {
+    const token = window.VOS_PWA && window.VOS_PWA.getAuthToken
+      ? window.VOS_PWA.getAuthToken()
+      : '';
+    return token ? { ...headers, Authorization: `Bearer ${token}` } : headers;
+  }
+
   function renderStyles(styles) {
     availableStyles = Array.isArray(styles) ? styles : [];
     styleSelectEl.innerHTML = '';
@@ -1193,6 +1260,13 @@ body.is-dm-mode .vos-art-lightbox-delete { display: inline-flex; }
     return Math.floor(s / 86400) + 'd ago';
   }
 
+  function assetUrl(url) {
+    if (!url) return '';
+    return /^https?:\/\//i.test(url) || url.startsWith('data:')
+      ? url
+      : API_BASE + url;
+  }
+
   function renderGallery(entries, total) {
     galleryEl.innerHTML = '';
     countEl.textContent = total === 0 ? 'No art yet — be the first.' : `${total} piece${total === 1 ? '' : 's'} in the gallery`;
@@ -1204,7 +1278,7 @@ body.is-dm-mode .vos-art-lightbox-delete { display: inline-flex; }
     entries.forEach(e => {
       const card = document.createElement('a');
       card.className = 'vos-art-card';
-      card.href = API_BASE + e.image_url;
+      card.href = assetUrl(e.image_url);
       card.dataset.entryId = e.id;
       card.dataset.entry = JSON.stringify(e);
       card.addEventListener('click', (evt) => {
@@ -1228,7 +1302,7 @@ body.is-dm-mode .vos-art-lightbox-delete { display: inline-flex; }
       const img = document.createElement('img');
       img.loading = 'lazy';
       img.alt = e.prompt || 'Gallery piece';
-      img.src = API_BASE + e.image_url;
+      img.src = assetUrl(e.image_url);
       card.appendChild(img);
       const meta = document.createElement('div');
       meta.className = 'vos-art-card-meta';
@@ -1255,23 +1329,51 @@ body.is-dm-mode .vos-art-lightbox-delete { display: inline-flex; }
     galleryEl.appendChild(frag);
   }
 
-  function loadGallery() {
-    countEl.textContent = 'Loading…';
+  function setGalleryRefreshing(refreshing) {
+    if (refreshGalleryEl) {
+      refreshGalleryEl.disabled = refreshing;
+      refreshGalleryEl.classList.toggle('is-refreshing', refreshing);
+    }
+  }
+
+  function loadGallery(options = {}) {
+    const quiet = !!options.quiet;
+    if (!quiet || !galleryHasLoaded) countEl.textContent = 'Loading…';
+    setGalleryRefreshing(true);
     return fetch(API_BASE + '/api/gallery?limit=80')
       .then(r => r.json())
-      .then(data => renderGallery(data.entries || [], data.total || 0))
+      .then(data => {
+        galleryHasLoaded = true;
+        renderGallery(data.entries || [], data.total || 0);
+      })
       .catch(() => {
         countEl.textContent = 'Gallery unavailable.';
-        galleryEl.innerHTML = `<div class="vos-art-empty">Couldn't reach the gallery. Try again in a moment.</div>`;
-      });
+        if (!galleryHasLoaded) {
+          galleryEl.innerHTML = `<div class="vos-art-empty">Couldn't reach the gallery. Try again in a moment.</div>`;
+        }
+      })
+      .finally(() => setGalleryRefreshing(false));
   }
   loadGallery();
+  refreshGalleryEl.addEventListener('click', () => loadGallery({ quiet: true }));
+
+  let pullStartY = null;
+  gallerySection.addEventListener('touchstart', (event) => {
+    if (window.scrollY > gallerySection.offsetTop - 20) return;
+    pullStartY = event.touches[0].clientY;
+  }, { passive: true });
+  gallerySection.addEventListener('touchend', (event) => {
+    if (pullStartY === null) return;
+    const endY = event.changedTouches[0].clientY;
+    if (endY - pullStartY > 72) loadGallery({ quiet: true });
+    pullStartY = null;
+  }, { passive: true });
 
   // ── Lightbox ────────────────────────────────────────────────────────
   let currentLightboxEntry = null;
   function openLightbox(e) {
     currentLightboxEntry = e;
-    lightImg.src = API_BASE + e.image_url;
+    lightImg.src = assetUrl(e.image_url);
     lightImg.alt = e.prompt || '';
     const who = e.created_by ? `By ${escapeHtml(e.created_by)}` : 'Anonymous';
     let html = escapeHtml(e.prompt || '(no prompt recorded)');
@@ -1434,58 +1536,167 @@ body.is-dm-mode .vos-art-lightbox-delete { display: inline-flex; }
     }
   }
 
-  // ────────────────────────────────────────────────────────────────────
+  // ── Server-owned generation jobs ─────────────────────────────────────
+  function storeActiveJob(jobId) {
+    activeJobId = jobId || null;
+    try {
+      if (activeJobId) localStorage.setItem(ACTIVE_JOB_KEY, activeJobId);
+      else localStorage.removeItem(ACTIVE_JOB_KEY);
+    } catch (e) {}
+  }
 
-  /** Show the latest-preview frame in its pending state. The image
-   *  element is kept blank; the placeholder is visible with the prompt
-   *  overlaid and the shimmer/spinner animations running. */
-  function showPending(promptText, enhance) {
+  function getStoredActiveJob() {
+    try { return localStorage.getItem(ACTIVE_JOB_KEY) || ''; } catch (e) { return ''; }
+  }
+
+  function clearPoll() {
+    if (pollTimer) clearInterval(pollTimer);
+    pollTimer = null;
+  }
+
+  function setGenerateButton(disabled, text) {
+    generateEl.disabled = !!disabled;
+    generateEl.textContent = text || 'Generate';
+  }
+
+  function showSubmitting() {
+    latestEl.classList.remove('is-shown', 'has-image', 'has-error');
+    setGenerateButton(true, 'Submitting…');
+    setStatus('Submitting job to the Studio.');
+  }
+
+  function showGenerating(job) {
     latestImg.removeAttribute('src');
     latestImg.alt = '';
     latestCap.innerHTML = '';
     latestDetails.style.display = 'none';
     latestEnhanced.innerHTML = '';
-    pendingPromptEl.textContent = promptText;
-    pendingStatusEl.textContent = enhance ? 'Enzo is composing' : 'Composing';
-    latestEl.classList.remove('has-image');
+    pendingPromptEl.textContent = job.prompt || promptEl.value.trim();
+    pendingStatusEl.textContent = 'Enzo is composing';
+    latestEl.classList.remove('has-image', 'has-error');
     latestEl.classList.add('is-shown');
-    // Make sure the frame is in view for short pages so the user can see
-    // their submission landed somewhere visible.
+    setGenerateButton(true, 'Generating…');
+    setStatus('Generating. You can leave Studio and come back; this job is tracked on the server.');
     latestEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   }
 
-  /** Promote the pending frame to the finished state — sets the image
-   *  source, fills the caption, and fades the placeholder out via the
-   *  .has-image class. */
-  function showImage(src, prompt, data) {
-    latestImg.src = src;
-    latestImg.alt = prompt;
-    let captionHtml = data.gallery
-      ? 'Saved to the shared gallery below.'
-      : '(could not save to gallery — image shown locally only)';
-    if (data.grounded_in && data.grounded_in.length) {
-      const chips = data.grounded_in.map(n =>
-        `<span class="vos-art-grounded-chip">${escapeHtml(n)}</span>`
-      ).join('');
-      captionHtml += `<div class="vos-art-grounded" style="justify-content:center;margin-top:0.5rem;">${chips}</div>`;
-    }
-    latestCap.innerHTML = captionHtml;
-    if (data.enhanced_prompt && data.enhanced_prompt !== prompt) {
-      latestEnhanced.textContent = data.enhanced_prompt;
-      latestDetails.style.display = 'block';
-    }
-    latestEl.classList.add('has-image');
+  function showJobDone(job) {
+    latestImg.src = assetUrl(job.result_url);
+    latestImg.alt = job.prompt || 'Generated art';
+    latestDetails.style.display = 'none';
+    latestEnhanced.innerHTML = '';
+    latestCap.innerHTML = `Done. Saved to the shared gallery. <a href="#vos-art-gallery-section">View in gallery &rarr;</a>`;
+    latestEl.classList.remove('has-error');
+    latestEl.classList.add('is-shown', 'has-image');
+    setGenerateButton(false);
+    setStatus('Done. The shared gallery refreshed below.');
   }
 
-  /** Clear the placeholder on failure so a failed run doesn't leave a
-   *  dead pending frame on the page. */
-  function clearPending() {
-    latestEl.classList.remove('is-shown', 'has-image');
+  function showJobError(job) {
     latestImg.removeAttribute('src');
+    latestImg.alt = '';
     pendingPromptEl.textContent = '';
+    latestDetails.style.display = 'none';
+    latestEnhanced.innerHTML = '';
+    latestCap.innerHTML = '';
+    const wrap = document.createElement('div');
+    wrap.className = 'vos-art-latest-error';
+    const title = document.createElement('strong');
+    title.textContent = 'Generation failed';
+    const message = document.createElement('p');
+    message.textContent = job.error_message || 'The server marked this job as failed.';
+    const retry = document.createElement('button');
+    retry.className = 'vos-art-retry';
+    retry.type = 'button';
+    retry.textContent = 'Retry';
+    retry.addEventListener('click', () => {
+      promptEl.value = job.prompt || promptEl.value;
+      generate();
+    });
+    wrap.append(title, message, retry);
+    latestCap.appendChild(wrap);
+    latestEl.classList.remove('has-image');
+    latestEl.classList.add('is-shown', 'has-error');
+    setGenerateButton(false);
+    setStatus('Generation failed. Retry when ready.', true);
+  }
+
+  function showIdle() {
+    latestEl.classList.remove('is-shown', 'has-image');
+    latestEl.classList.remove('has-error');
+    latestImg.removeAttribute('src');
+    latestCap.innerHTML = '';
+    pendingPromptEl.textContent = '';
+    setGenerateButton(false);
+  }
+
+  function renderJob(job) {
+    if (!job) {
+      showIdle();
+      return;
+    }
+    storeActiveJob(job.jobId || job.id);
+    if (job.status === 'pending') {
+      showGenerating(job);
+      return;
+    }
+    clearPoll();
+    if (job.status === 'done') {
+      showJobDone(job);
+      loadGallery({ quiet: true });
+      return;
+    }
+    if (job.status === 'error') {
+      showJobError(job);
+      return;
+    }
+    showIdle();
+  }
+
+  async function fetchJob(jobId) {
+    const response = await fetch(API_BASE + '/api/studio/jobs/' + encodeURIComponent(jobId), {
+      cache: 'no-store',
+      headers: requestHeaders(),
+    });
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok) throw new Error(data.error || `HTTP ${response.status}`);
+    return data;
+  }
+
+  function startPolling(jobId) {
+    clearPoll();
+    const poll = async () => {
+      try {
+        const job = await fetchJob(jobId);
+        renderJob(job);
+      } catch (error) {
+        setStatus('Still checking the server for this job.', true);
+      }
+    };
+    poll();
+    pollTimer = setInterval(poll, POLL_MS);
+  }
+
+  async function restoreStudioJobs() {
+    const creator = getCurrentCreatorName();
+    if (!creator) return;
+    try {
+      const url = API_BASE + '/api/studio/jobs?mine=1&name=' + encodeURIComponent(creator);
+      const response = await fetch(url, { cache: 'no-store', headers: requestHeaders() });
+      if (!response.ok) return;
+      const data = await response.json().catch(() => ({}));
+      const jobs = Array.isArray(data.jobs) ? data.jobs : [];
+      const stored = getStoredActiveJob();
+      const job = jobs.find((candidate) => candidate.id === stored || candidate.jobId === stored)
+        || jobs.find((candidate) => candidate.status === 'pending');
+      if (!job) return;
+      renderJob(job);
+      if (job.status === 'pending') startPolling(job.jobId || job.id);
+    } catch (e) {}
   }
 
   async function generate() {
+    if (isSubmitting || generateEl.disabled) return;
     const prompt = promptEl.value.trim();
     if (!prompt) {
       setStatus('Add a description first.', true);
@@ -1496,22 +1707,23 @@ body.is-dm-mode .vos-art-lightbox-delete { display: inline-flex; }
       setStatus('That prompt is over the 3000-character limit.', true);
       return;
     }
-    generateEl.disabled = true;
-    generateEl.textContent = 'Generating…';
+    const creatorName = await getCreatorName();
+    if (!creatorName) {
+      setStatus('Log in before generating so the piece is attributed correctly.', true);
+      return;
+    }
+    isSubmitting = true;
     const enhance = !!enhanceEl.checked;
-    setStatus(enhance
-      ? 'Enzo is refining your prompt, then drawing. 30–90 seconds.'
-      : 'Drawing. 30–90 seconds.');
-    showPending(prompt, enhance);
+    showSubmitting();
 
     try {
-      const res = await fetch(API_BASE + '/api/generate-image', {
+      const res = await fetch(API_BASE + '/api/studio/generate', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: requestHeaders({ 'Content-Type': 'application/json' }),
         body: JSON.stringify({
           prompt,
           style: selectedStyle,
-          created_by: nameEl.value.trim(),
+          creator: creatorName,
           enhance,
         }),
       });
@@ -1520,35 +1732,25 @@ body.is-dm-mode .vos-art-lightbox-delete { display: inline-flex; }
         throw new Error(err.error || `HTTP ${res.status}`);
       }
       const data = await res.json();
-      let src = null;
-      if (data.b64)         src = 'data:image/png;base64,' + data.b64;
-      else if (data.gallery) src = API_BASE + data.gallery.image_url;
-      else if (data.url)    src = data.url;
-
-      if (src) {
-        showImage(src, prompt, data);
-      } else {
-        clearPending();
-      }
-      let doneMsg = 'Done. The shared gallery refreshed below.';
-      if (data.grounded_in && data.grounded_in.length) {
-        doneMsg = `Done — grounded in ${data.grounded_in.join(', ')}.`;
-      }
-      setStatus(doneMsg);
+      const jobId = data.jobId;
+      if (!jobId) throw new Error('Server did not return a job id.');
+      storeActiveJob(jobId);
       promptEl.value = '';
-      // Give the server a beat to finish flushing the manifest, then refresh.
-      setTimeout(loadGallery, 250);
+      showGenerating({ jobId, prompt, status: 'pending' });
+      startPolling(jobId);
     } catch (e) {
       console.error(e);
-      clearPending();
-      setStatus('Generation failed: ' + e.message, true);
+      showIdle();
+      setStatus('Could not start generation: ' + e.message, true);
     } finally {
-      generateEl.disabled = false;
-      generateEl.textContent = 'Generate';
+      isSubmitting = false;
     }
   }
 
   generateEl.addEventListener('click', generate);
+  window.addEventListener('DOMContentLoaded', restoreStudioJobs);
+  window.addEventListener('vos:identity', restoreStudioJobs);
+  window.addEventListener('focus', () => loadGallery({ quiet: true }));
 
   // Enter submits, Shift+Enter inserts a newline — same pattern as the
   // chatbot widget so it feels consistent across the site.
