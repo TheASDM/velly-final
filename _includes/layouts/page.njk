@@ -1391,7 +1391,48 @@
     grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
     gap: 0.45rem;
   }
+  .vos-identity-form {
+    display: grid;
+    gap: 0.75rem;
+  }
+  .vos-identity-field {
+    display: grid;
+    gap: 0.3rem;
+    color: var(--vos-gold-dim);
+    font-family: 'Cinzel', Georgia, serif;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .vos-identity-field select,
+  .vos-identity-field input {
+    min-height: 44px;
+    width: 100%;
+    border: 1px solid rgba(212, 165, 116, 0.34);
+    border-radius: 6px;
+    background: rgba(0, 0, 0, 0.32);
+    color: var(--vos-cream);
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 1rem;
+    letter-spacing: 0;
+    padding: 0.55rem 0.65rem;
+  }
+  .vos-identity-status {
+    min-height: 1.35em;
+    color: var(--vos-gold-dim);
+    font-size: 0.88rem;
+    line-height: 1.35;
+  }
+  .vos-identity-status.is-error {
+    color: #e4a39d;
+  }
+  .vos-identity-actions {
+    display: flex;
+    justify-content: flex-end;
+  }
   .vos-identity-options button,
+  .vos-identity-actions button,
   .vos-push-actions button {
     min-height: 42px;
     border: 1px solid rgba(212, 165, 116, 0.34);
@@ -1405,9 +1446,14 @@
     cursor: pointer;
   }
   .vos-identity-options button:hover,
+  .vos-identity-actions button:hover,
   .vos-push-actions button:hover {
     background: rgba(212, 165, 116, 0.15);
     color: var(--vos-gold-bright);
+  }
+  .vos-identity-actions button:disabled {
+    opacity: 0.55;
+    cursor: wait;
   }
   .vos-push-text,
   .vos-push-status {

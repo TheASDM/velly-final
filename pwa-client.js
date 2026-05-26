@@ -1,5 +1,6 @@
 (function () {
   const PLAYER_KEY = 'vos.playerName';
+  const AUTH_TOKEN_KEY = 'vos.authToken';
   const PUSH_DISMISSED_KEY = 'vos.pushPromptDismissed';
   const PLAYERS = [
     'Caravel "Car" Asteri',
@@ -12,6 +13,7 @@
     'DM',
   ];
   let identityPromise = null;
+  let authConfigPromise = null;
 
   function isStandalone() {
     return window.matchMedia('(display-mode: standalone)').matches ||
@@ -26,12 +28,42 @@
     try { localStorage.setItem(key, value); } catch (error) {}
   }
 
+  function removeStorage(key) {
+    try { localStorage.removeItem(key); } catch (error) {}
+  }
+
   function announceIdentity(name) {
     window.dispatchEvent(new CustomEvent('vos:identity', { detail: { name } }));
   }
 
   function removeNode(node) {
     if (node && node.parentNode) node.parentNode.removeChild(node);
+  }
+
+  async function getAuthConfig() {
+    if (authConfigPromise) return authConfigPromise;
+    authConfigPromise = fetch('/api/auth/config', { cache: 'no-store' })
+      .then((response) => {
+        if (!response.ok) throw new Error('Login is unavailable.');
+        return response.json();
+      })
+      .catch(() => ({
+        loginRequired: false,
+        authConfigured: true,
+        players: PLAYERS,
+      }));
+    return authConfigPromise;
+  }
+
+  function authHeaders(headers = {}) {
+    const token = getStorage(AUTH_TOKEN_KEY);
+    return token ? { ...headers, Authorization: `Bearer ${token}` } : headers;
+  }
+
+  function clearIdentity() {
+    removeStorage(PLAYER_KEY);
+    removeStorage(AUTH_TOKEN_KEY);
+    removeStorage(PUSH_DISMISSED_KEY);
   }
 
   function urlBase64ToUint8Array(base64String) {
@@ -45,40 +77,126 @@
     return output;
   }
 
-  function ensureIdentity(options = {}) {
+  function renderLegacyIdentity(card, resolve) {
+    card.innerHTML = `
+      <div class="vos-identity-title" id="vos-identity-title">Who are you?</div>
+      <div class="vos-identity-options"></div>
+    `;
+    const options = card.querySelector('.vos-identity-options');
+    PLAYERS.forEach((name) => {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.textContent = name;
+      button.addEventListener('click', () => {
+        setStorage(PLAYER_KEY, name);
+        removeStorage(AUTH_TOKEN_KEY);
+        announceIdentity(name);
+        identityPromise = null;
+        removeNode(card);
+        resolve(name);
+        maybeShowPushPrompt();
+      });
+      options.appendChild(button);
+    });
+  }
+
+  function renderLoginIdentity(card, config, resolve) {
+    const players = Array.isArray(config.players) && config.players.length ? config.players : PLAYERS;
     const existing = getStorage(PLAYER_KEY);
-    if (existing && !options.force) return Promise.resolve(existing);
+    card.innerHTML = `
+      <form class="vos-identity-form">
+        <div class="vos-identity-title" id="vos-identity-title">Log in</div>
+        <label class="vos-identity-field">
+          <span>Player</span>
+          <select name="name" required></select>
+        </label>
+        <label class="vos-identity-field">
+          <span>Invite code</span>
+          <input name="code" type="password" autocomplete="current-password" inputmode="text" required>
+        </label>
+        <div class="vos-identity-status" role="status" aria-live="polite"></div>
+        <div class="vos-identity-actions">
+          <button class="vos-identity-submit" type="submit">Log in</button>
+        </div>
+      </form>
+    `;
+
+    const form = card.querySelector('form');
+    const select = card.querySelector('select[name="name"]');
+    const codeInput = card.querySelector('input[name="code"]');
+    const status = card.querySelector('.vos-identity-status');
+    const submit = card.querySelector('.vos-identity-submit');
+
+    players.forEach((name) => {
+      const option = document.createElement('option');
+      option.value = name;
+      option.textContent = name;
+      if (name === existing) option.selected = true;
+      select.appendChild(option);
+    });
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const name = select.value;
+      const code = codeInput.value.trim();
+      if (!name || !code) return;
+
+      submit.disabled = true;
+      status.textContent = 'Checking...';
+      status.classList.remove('is-error');
+
+      try {
+        const response = await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, code }),
+        });
+        const data = await response.json().catch(() => ({}));
+        if (!response.ok) throw new Error(data.error || `HTTP ${response.status}`);
+        setStorage(PLAYER_KEY, data.playerName || name);
+        setStorage(AUTH_TOKEN_KEY, data.token || '');
+        announceIdentity(data.playerName || name);
+        identityPromise = null;
+        removeNode(card);
+        resolve(data.playerName || name);
+        maybeShowPushPrompt();
+      } catch (error) {
+        status.textContent = error.message || 'Login failed.';
+        status.classList.add('is-error');
+        submit.disabled = false;
+      }
+    });
+
+    codeInput.focus();
+  }
+
+  function ensureIdentity(options = {}) {
     if (identityPromise) return identityPromise;
 
-    identityPromise = new Promise((resolve) => {
+    identityPromise = getAuthConfig().then((config) => new Promise((resolve) => {
+      const existing = getStorage(PLAYER_KEY);
+      const token = getStorage(AUTH_TOKEN_KEY);
+      const loginRequired = !!config.loginRequired;
+      if (existing && !options.force && (!loginRequired || token)) {
+        resolve(existing);
+        return;
+      }
+
       removeNode(document.querySelector('.vos-identity-card'));
       const card = document.createElement('div');
       card.className = 'vos-identity-card';
       card.setAttribute('role', 'dialog');
       card.setAttribute('aria-modal', 'true');
       card.setAttribute('aria-labelledby', 'vos-identity-title');
-      card.innerHTML = `
-        <div class="vos-identity-title" id="vos-identity-title">Who are you?</div>
-        <div class="vos-identity-options"></div>
-      `;
-
-      const options = card.querySelector('.vos-identity-options');
-      PLAYERS.forEach((name) => {
-        const button = document.createElement('button');
-        button.type = 'button';
-        button.textContent = name;
-        button.addEventListener('click', () => {
-          setStorage(PLAYER_KEY, name);
-          announceIdentity(name);
-          identityPromise = null;
-          removeNode(card);
-          resolve(name);
-          maybeShowPushPrompt();
-        });
-        options.appendChild(button);
-      });
 
       document.body.appendChild(card);
+      if (loginRequired) {
+        renderLoginIdentity(card, config, resolve);
+      } else {
+        renderLegacyIdentity(card, resolve);
+      }
+    })).finally(() => {
+      identityPromise = null;
     });
 
     return identityPromise;
@@ -93,7 +211,7 @@
   async function registerSubscription(name, subscription) {
     const response = await fetch('/api/push/subscribe', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: authHeaders({ 'Content-Type': 'application/json' }),
       body: JSON.stringify({ name, subscription: subscription.toJSON() }),
     });
     if (!response.ok) {
@@ -262,7 +380,13 @@
       async function loadExisting(name) {
         if (!name) return;
         const url = `/api/rsvp?eventId=${encodeURIComponent(eventId)}&name=${encodeURIComponent(name)}`;
-        const response = await fetch(url, { cache: 'no-store' });
+        const response = await fetch(url, { cache: 'no-store', headers: authHeaders() });
+        if (response.status === 401 || response.status === 403) {
+          clearIdentity();
+          const newName = await ensureIdentity({ force: true });
+          if (newName) await loadExisting(newName);
+          return;
+        }
         if (!response.ok) return;
         const data = await response.json().catch(() => ({}));
         if (data.status) setSelected(data.status);
@@ -282,7 +406,7 @@
           try {
             const response = await fetch('/api/rsvp', {
               method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
+              headers: authHeaders({ 'Content-Type': 'application/json' }),
               body: JSON.stringify({
                 eventId,
                 name,
@@ -307,8 +431,10 @@
 
   window.VOS_PWA = {
     getPlayerName: () => getStorage(PLAYER_KEY),
+    getAuthToken: () => getStorage(AUTH_TOKEN_KEY),
     ensureIdentity,
     openIdentitySettings: () => ensureIdentity({ force: true }),
+    signOut: clearIdentity,
   };
 
   window.addEventListener('DOMContentLoaded', () => {

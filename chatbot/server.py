@@ -10,6 +10,7 @@ Venturia/DM/).
 
 import base64
 import fcntl
+import hashlib
 import hmac
 import json
 import logging
@@ -74,6 +75,56 @@ VAPID_PUBLIC_KEY = os.environ.get("VAPID_PUBLIC_KEY", "").strip()
 VAPID_PRIVATE_KEY = os.environ.get("VAPID_PRIVATE_KEY", "").strip()
 VAPID_SUBJECT = os.environ.get("VAPID_SUBJECT", "mailto:dm@valleyofshadows.wiki").strip()
 RSVP_STATUSES = {"going", "maybe", "out"}
+
+DEFAULT_PLAYERS = [
+    'Caravel "Car" Asteri',
+    "Kryton Novelli",
+    "Lotan",
+    "Noname",
+    "Orabella",
+    'Roxanya "Roxy"',
+    "Valentro",
+    "DM",
+]
+AUTH_TOKEN_TTL_SECONDS = int(os.environ.get("AUTH_TOKEN_TTL_SECONDS", str(180 * 24 * 60 * 60)))
+AUTH_TOKEN_SECRET = (
+    os.environ.get("AUTH_TOKEN_SECRET", "").strip()
+    or ADMIN_TOKEN
+    or VAPID_PRIVATE_KEY
+    or ANTHROPIC_API_KEY
+)
+
+
+def _parse_login_codes(raw):
+    raw = (raw or "").strip()
+    if not raw:
+        return {}
+    if raw.startswith("{"):
+        try:
+            data = json.loads(raw)
+            return {
+                str(name).strip(): str(code).strip()
+                for name, code in data.items()
+                if str(name).strip() and str(code).strip()
+            }
+        except Exception:
+            logging.exception("PLAYER_LOGIN_CODES JSON is malformed")
+            return {}
+
+    codes = {}
+    for part in re.split(r"[;\n]+", raw):
+        if "=" not in part:
+            continue
+        name, code = part.split("=", 1)
+        name = name.strip()
+        code = code.strip()
+        if name and code:
+            codes[name] = code
+    return codes
+
+
+PLAYER_LOGIN_CODES = _parse_login_codes(os.environ.get("PLAYER_LOGIN_CODES", ""))
+PLAYER_NAMES = list(PLAYER_LOGIN_CODES.keys()) or DEFAULT_PLAYERS
 
 # Style preset keys are stable strings sent from the UI; the corresponding
 # prompt prefix is prepended to the user prompt at generation time. Keep
@@ -203,6 +254,92 @@ RAG_SKIP_PATTERNS = re.compile(
 
 def _utc_now_iso():
     return datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
+
+
+def _b64url_encode(data):
+    return base64.urlsafe_b64encode(data).decode("ascii").rstrip("=")
+
+
+def _b64url_decode(value):
+    padding = "=" * ((4 - len(value) % 4) % 4)
+    return base64.urlsafe_b64decode((value + padding).encode("ascii"))
+
+
+def _auth_login_required():
+    return bool(PLAYER_LOGIN_CODES)
+
+
+def _issue_player_token(player_name):
+    if not AUTH_TOKEN_SECRET:
+        return None
+    now = int(time.time())
+    payload = {
+        "name": player_name,
+        "iat": now,
+        "exp": now + AUTH_TOKEN_TTL_SECONDS,
+    }
+    payload_b64 = _b64url_encode(json.dumps(payload, separators=(",", ":")).encode("utf-8"))
+    sig = hmac.new(
+        AUTH_TOKEN_SECRET.encode("utf-8"),
+        payload_b64.encode("ascii"),
+        hashlib.sha256,
+    ).digest()
+    return f"{payload_b64}.{_b64url_encode(sig)}"
+
+
+def _verify_player_token(token):
+    if not token or not AUTH_TOKEN_SECRET:
+        return None
+    try:
+        payload_b64, sig_b64 = token.split(".", 1)
+    except ValueError:
+        return None
+    expected = hmac.new(
+        AUTH_TOKEN_SECRET.encode("utf-8"),
+        payload_b64.encode("ascii"),
+        hashlib.sha256,
+    ).digest()
+    try:
+        actual = _b64url_decode(sig_b64)
+    except Exception:
+        return None
+    if not hmac.compare_digest(actual, expected):
+        return None
+    try:
+        payload = json.loads(_b64url_decode(payload_b64).decode("utf-8"))
+    except Exception:
+        return None
+    if int(payload.get("exp", 0)) < int(time.time()):
+        return None
+    name = payload.get("name")
+    if not isinstance(name, str) or not name:
+        return None
+    return name
+
+
+def _extract_player_token(body=None):
+    body = body or {}
+    auth = request.headers.get("Authorization", "")
+    if auth.lower().startswith("bearer "):
+        return auth[7:].strip()
+    header_token = request.headers.get("X-Player-Token", "").strip()
+    if header_token:
+        return header_token
+    token = body.get("token") or request.args.get("token")
+    return token.strip() if isinstance(token, str) else ""
+
+
+def _authenticated_player_name(body=None):
+    requested = _player_name_from_request(body)
+    if not _auth_login_required():
+        return requested, None
+
+    token_name = _verify_player_token(_extract_player_token(body))
+    if not token_name:
+        return None, (jsonify({"error": "Login required"}), 401)
+    if requested and requested != token_name:
+        return None, (jsonify({"error": "Identity mismatch"}), 403)
+    return token_name, None
 
 
 def _app_db():
@@ -1301,7 +1438,7 @@ logging.basicConfig(
 
 
 _CORS_METHODS = "GET, POST, DELETE, OPTIONS"
-_CORS_HEADERS = "Content-Type, X-DM-Passphrase, X-Admin-Token"
+_CORS_HEADERS = "Content-Type, Authorization, X-DM-Passphrase, X-Admin-Token, X-Player-Token"
 
 
 @app.before_request
@@ -1344,6 +1481,55 @@ def _admin_error_response():
     return None
 
 
+@app.route("/api/auth/config", methods=["GET"])
+def auth_config():
+    return jsonify({
+        "loginRequired": _auth_login_required(),
+        "authConfigured": bool(AUTH_TOKEN_SECRET) or not _auth_login_required(),
+        "players": PLAYER_NAMES,
+    })
+
+
+@app.route("/api/auth/login", methods=["POST"])
+def auth_login():
+    if not _auth_login_required():
+        return jsonify({
+            "ok": True,
+            "loginRequired": False,
+            "players": PLAYER_NAMES,
+        })
+    if not AUTH_TOKEN_SECRET:
+        return jsonify({"error": "Login is not configured on this server"}), 503
+
+    body = request.get_json(silent=True) or {}
+    name = body.get("name", "")
+    code = body.get("code", "")
+    if not isinstance(name, str) or name not in PLAYER_LOGIN_CODES:
+        return jsonify({"error": "Unknown player"}), 400
+    if not isinstance(code, str) or not hmac.compare_digest(code.strip(), PLAYER_LOGIN_CODES[name]):
+        return jsonify({"error": "Invalid login code"}), 403
+
+    token = _issue_player_token(name)
+    if not token:
+        return jsonify({"error": "Login is not configured on this server"}), 503
+    return jsonify({
+        "ok": True,
+        "playerName": name,
+        "token": token,
+        "expiresIn": AUTH_TOKEN_TTL_SECONDS,
+    })
+
+
+@app.route("/api/auth/session", methods=["GET"])
+def auth_session():
+    if not _auth_login_required():
+        return jsonify({"ok": True, "loginRequired": False})
+    name = _verify_player_token(_extract_player_token())
+    if not name:
+        return jsonify({"error": "Login required"}), 401
+    return jsonify({"ok": True, "playerName": name})
+
+
 @app.route("/api/push/config", methods=["GET"])
 def push_config():
     return jsonify({
@@ -1358,7 +1544,9 @@ def push_subscribe():
         return jsonify({"error": "Push is not configured on this server"}), 503
 
     body = request.get_json(silent=True) or {}
-    name = body.get("name", "")
+    name, auth_error = _authenticated_player_name(body)
+    if auth_error:
+        return auth_error
     subscription = body.get("subscription") or {}
     keys = subscription.get("keys") or {}
 
@@ -1620,6 +1808,10 @@ def rsvp():
             return jsonify({"error": "Missing eventId"}), 400
 
         player_name = _player_name_from_request()
+        if player_name:
+            player_name, auth_error = _authenticated_player_name()
+            if auth_error:
+                return auth_error
         with _app_db() as conn:
             if player_name:
                 row = conn.execute("""
@@ -1647,7 +1839,9 @@ def rsvp():
 
     body = request.get_json(silent=True) or {}
     event_id = _event_id_from_request(body)
-    player_name = _player_name_from_request(body)
+    player_name, auth_error = _authenticated_player_name(body)
+    if auth_error:
+        return auth_error
     status = body.get("status", "")
 
     if not event_id:

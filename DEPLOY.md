@@ -41,6 +41,8 @@ Edit `.env` and set:
 
 ```bash
 ADMIN_TOKEN=<long random value>
+AUTH_TOKEN_SECRET=<long random value>
+PLAYER_LOGIN_CODES=Caravel "Car" Asteri=<code>;Kryton Novelli=<code>;Lotan=<code>;Noname=<code>;Orabella=<code>;Roxanya "Roxy"=<code>;Valentro=<code>;DM=<code>
 ANTHROPIC_API_KEY=<key>
 OLLAMA_API_KEY=<key>
 OPENAI_KEY=<key>
