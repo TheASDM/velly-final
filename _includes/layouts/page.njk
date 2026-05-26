@@ -312,7 +312,7 @@
   .vos-app-bar-row {
     min-height: var(--vos-app-bar-content-h);
     display: grid;
-    grid-template-columns: auto minmax(0, 1fr);
+    grid-template-columns: auto minmax(0, 1fr) auto;
     align-items: center;
     gap: 0.72rem;
   }
@@ -369,6 +369,40 @@
     font-weight: 700;
     letter-spacing: 0.04em;
     line-height: 1.18;
+  }
+  .vos-app-identity {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 78px;
+    max-width: min(32vw, 18rem);
+    min-height: 38px;
+    border: 1px solid rgba(212, 165, 116, 0.24);
+    border-radius: 999px;
+    background: rgba(212, 165, 116, 0.065);
+    color: rgba(232, 220, 200, 0.78);
+    cursor: pointer;
+    font-family: 'Cinzel', Georgia, serif;
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    line-height: 1;
+    padding: 0 0.72rem;
+    text-transform: none;
+    white-space: nowrap;
+  }
+  .vos-app-identity:hover {
+    color: var(--vos-gold-bright);
+    border-color: rgba(212, 165, 116, 0.46);
+    background: rgba(212, 165, 116, 0.12);
+  }
+  .vos-app-identity-label {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .vos-app-identity.is-authenticated {
+    color: var(--vos-cream);
   }
   .vos-app-crumbs {
     display: flex;
@@ -714,6 +748,13 @@
     .vos-app-title {
       font-size: 1rem;
       letter-spacing: 0.025em;
+    }
+    .vos-app-identity {
+      max-width: min(36vw, 9.75rem);
+      min-width: 64px;
+      min-height: 36px;
+      padding: 0 0.58rem;
+      font-size: 0.56rem;
     }
     .vos-section-subtitle {
       font-size: 0.95rem;
@@ -1600,6 +1641,9 @@
         <div class="vos-app-eyebrow">{{ appEyebrow }}</div>
         <div class="vos-app-title">{{ appTitle }}</div>
       </div>
+      <button class="vos-app-identity" id="vos-app-identity-button" type="button" aria-label="Log in" title="Log in">
+        <span class="vos-app-identity-label" id="vos-app-identity-label">Log in</span>
+      </button>
     </div>
     {%- if crumbs.length > 1 -%}
     <nav aria-label="Breadcrumb">

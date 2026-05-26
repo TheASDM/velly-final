@@ -64,6 +64,34 @@
     removeStorage(PLAYER_KEY);
     removeStorage(AUTH_TOKEN_KEY);
     removeStorage(PUSH_DISMISSED_KEY);
+    updateIdentityControls();
+  }
+
+  function getActivePlayerName(config = null) {
+    const name = getStorage(PLAYER_KEY);
+    if (!name) return null;
+    if (config && config.loginRequired && !getStorage(AUTH_TOKEN_KEY)) return null;
+    return name;
+  }
+
+  function updateIdentityControls(config = null) {
+    const name = getActivePlayerName(config);
+    const label = document.getElementById('vos-app-identity-label');
+    const identityButton = document.getElementById('vos-app-identity-button');
+    const profileButton = document.getElementById('vos-profile-button');
+    const text = name ? `Welcome, ${name}` : 'Log in';
+    const action = name ? 'Switch player' : 'Log in';
+
+    if (label) label.textContent = text;
+    if (identityButton) {
+      identityButton.classList.toggle('is-authenticated', !!name);
+      identityButton.setAttribute('aria-label', action);
+      identityButton.title = action;
+    }
+    if (profileButton) {
+      profileButton.setAttribute('aria-label', action);
+      profileButton.title = action;
+    }
   }
 
   function urlBase64ToUint8Array(base64String) {
@@ -90,6 +118,7 @@
       button.addEventListener('click', () => {
         setStorage(PLAYER_KEY, name);
         removeStorage(AUTH_TOKEN_KEY);
+        updateIdentityControls({ loginRequired: false });
         announceIdentity(name);
         identityPromise = null;
         removeNode(card);
@@ -103,9 +132,11 @@
   function renderLoginIdentity(card, config, resolve) {
     const players = Array.isArray(config.players) && config.players.length ? config.players : PLAYERS;
     const existing = getStorage(PLAYER_KEY);
+    const titleText = existing ? 'Switch player' : 'Log in';
+    const buttonText = existing ? 'Switch' : 'Log in';
     card.innerHTML = `
       <form class="vos-identity-form">
-        <div class="vos-identity-title" id="vos-identity-title">Log in</div>
+        <div class="vos-identity-title" id="vos-identity-title">${titleText}</div>
         <label class="vos-identity-field">
           <span>Player</span>
           <select name="name" required></select>
@@ -116,7 +147,7 @@
         </label>
         <div class="vos-identity-status" role="status" aria-live="polite"></div>
         <div class="vos-identity-actions">
-          <button class="vos-identity-submit" type="submit">Log in</button>
+          <button class="vos-identity-submit" type="submit">${buttonText}</button>
         </div>
       </form>
     `;
@@ -155,6 +186,7 @@
         if (!response.ok) throw new Error(data.error || `HTTP ${response.status}`);
         setStorage(PLAYER_KEY, data.playerName || name);
         setStorage(AUTH_TOKEN_KEY, data.token || '');
+        updateIdentityControls(config);
         announceIdentity(data.playerName || name);
         identityPromise = null;
         removeNode(card);
@@ -178,6 +210,7 @@
       const token = getStorage(AUTH_TOKEN_KEY);
       const loginRequired = !!config.loginRequired;
       if (existing && !options.force && (!loginRequired || token)) {
+        updateIdentityControls(config);
         resolve(existing);
         return;
       }
@@ -253,7 +286,8 @@
   }
 
   async function maybeSyncExistingSubscription() {
-    const name = getStorage(PLAYER_KEY);
+    const config = await getAuthConfig();
+    const name = getActivePlayerName(config);
     if (!name || !('serviceWorker' in navigator) || !('PushManager' in window)) return;
     const registration = await navigator.serviceWorker.ready.catch(() => null);
     if (!registration) return;
@@ -265,7 +299,8 @@
     if (!isStandalone()) return;
     if (getStorage(PUSH_DISMISSED_KEY) === '1') return;
     if (window.Notification && Notification.permission === 'denied') return;
-    if (!getStorage(PLAYER_KEY)) return;
+    const authConfig = await getAuthConfig();
+    if (!getActivePlayerName(authConfig)) return;
 
     const existing = document.getElementById('vos-push-card');
     if (existing) return;
@@ -440,12 +475,19 @@
   window.addEventListener('DOMContentLoaded', () => {
     enhanceWikiLinkedLists();
     initRsvpControls();
-    const existingName = getStorage(PLAYER_KEY);
-    if (existingName) announceIdentity(existingName);
     const profileButton = document.getElementById('vos-profile-button');
     if (profileButton) {
       profileButton.addEventListener('click', () => ensureIdentity({ force: true }));
     }
+    const identityButton = document.getElementById('vos-app-identity-button');
+    if (identityButton) {
+      identityButton.addEventListener('click', () => ensureIdentity({ force: true }));
+    }
+    getAuthConfig().then((config) => {
+      updateIdentityControls(config);
+      const activeName = getActivePlayerName(config);
+      if (activeName) announceIdentity(activeName);
+    });
     ensureIdentity();
     maybeSyncExistingSubscription();
     maybeShowPushPrompt();
