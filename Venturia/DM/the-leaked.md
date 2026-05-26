@@ -8,7 +8,7 @@ editor: markdown
 dateCreated: 2026-05-22T00:00:00.000Z
 ---
 
-<!-- DM NOTE (not rendered): spoiler:true source. Do NOT publish to the player-facing tree. Keep behind WikiJS access control. -->
+<!-- DM NOTE (not rendered): spoiler:true source. Do NOT publish to the player-facing tree. Keep in DM-only source; it is excluded from player-facing builds. -->
 # The Leaked
 
 > **⚠ DM-ONLY — CAMPAIGN SPOILERS.** Players should not read it.

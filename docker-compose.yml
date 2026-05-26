@@ -1,38 +1,4 @@
 services:
-  # PostgreSQL database - this stores all your Wiki.js content
-  postgres:
-    image: postgres:15-alpine
-    container_name: dnd_postgres
-    environment:
-      POSTGRES_DB: ${POSTGRES_DB:-wiki}
-      POSTGRES_USER: ${POSTGRES_USER:-wikijs}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-    volumes:
-      # This ensures your wiki data persists even if the container restarts
-      - postgres-data:/var/lib/postgresql/data
-    networks:
-      - dnd-network
-    restart: unless-stopped
-
-  # Wiki.js - the main wiki engine for your campaign content
-  wikijs:
-    image: ghcr.io/requarks/wiki:2
-    container_name: dnd_wiki
-    depends_on:
-      - postgres
-    ports:
-      - "3000:3000"
-    environment:
-      DB_TYPE: postgres
-      DB_HOST: postgres
-      DB_PORT: 5432
-      DB_USER: ${POSTGRES_USER:-wikijs}
-      DB_PASS: ${POSTGRES_PASSWORD}
-      DB_NAME: ${POSTGRES_DB:-wiki}
-    networks:
-      - dnd-network
-    restart: unless-stopped
-
   # Chatbot service - Python/Flask RAG-powered lore assistant + Eleventy build
   # The container builds the static codex into /site/_site at startup, then
   # runs the gunicorn API on :3001 internal. nginx serves _site and proxies API.
@@ -82,7 +48,7 @@ services:
     image: nginx:alpine
     container_name: dnd_nginx
     ports:
-      - "8080:80"
+      - "127.0.0.1:8080:80"
     volumes:
       # Nginx config tells it how to route different URLs
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
@@ -90,7 +56,6 @@ services:
       # Built Eleventy PWA. The chatbot container writes /site/_site.
       - .:/site:ro
     depends_on:
-      - wikijs
       - chatbot
     networks:
       - dnd-network
@@ -100,7 +65,3 @@ services:
 networks:
   dnd-network:
     driver: bridge
-
-# Named volumes persist data between container restarts
-volumes:
-  postgres-data:

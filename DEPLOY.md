@@ -1,12 +1,11 @@
 # VPS Deployment
 
-This app expects HTTPS at the public edge. In this setup, Caddy runs on a
-different machine and terminates TLS there, then reverse-proxies to the OVH VPS.
+This app expects HTTPS at the public edge. Caddy terminates TLS and
+reverse-proxies to the PWA's nginx container on the VPS.
 
 ## Runtime Shape
 
-- PWA/codex: `http://OVH_VPS_IP:8080`
-- Wiki.js, if you keep it on this VPS: `http://OVH_VPS_IP:3000`
+- PWA/codex: `http://127.0.0.1:8080` on the VPS
 - Flask API: internal Docker network only, proxied at `/api/*`
 - PWA runtime state: `app-data/vallombrosa.sqlite3`
 - Shared art gallery: `generated-art/`
@@ -41,7 +40,6 @@ chmod 700 app-data generated-art logs
 Edit `.env` and set:
 
 ```bash
-POSTGRES_PASSWORD=<long random value>
 ADMIN_TOKEN=<long random value>
 ANTHROPIC_API_KEY=<key>
 OLLAMA_API_KEY=<key>
@@ -56,7 +54,7 @@ VAPID_SUBJECT=mailto:dm@valleyofshadows.wiki
 Start it:
 
 ```bash
-docker compose up -d --build
+docker compose up -d --build --remove-orphans
 docker compose logs -f chatbot nginx
 ```
 
@@ -69,21 +67,13 @@ curl -I http://127.0.0.1:8080/sw.js
 curl http://127.0.0.1:8080/health
 ```
 
-## Caddy Machine
+## Caddy
 
 For the obscure PWA URL:
 
 ```caddyfile
 pwa-obscure.example.com {
-  reverse_proxy OVH_VPS_IP:8080
-}
-```
-
-If Wiki.js also lives on the OVH VPS:
-
-```caddyfile
-wiki.example.com {
-  reverse_proxy OVH_VPS_IP:3000
+  reverse_proxy 127.0.0.1:8080
 }
 ```
 
@@ -95,8 +85,8 @@ On the OVH VPS, only expose the app ports to the Caddy machine if possible:
 
 ```bash
 sudo ufw allow OpenSSH
-sudo ufw allow from CADDY_PUBLIC_IP to any port 8080 proto tcp
-sudo ufw allow from CADDY_PUBLIC_IP to any port 3000 proto tcp
+sudo ufw allow http
+sudo ufw allow https
 sudo ufw enable
 ```
 
@@ -116,8 +106,8 @@ Also mirror those rules in OVH's network firewall if you enabled it there.
 
 ```bash
 cd ~/vallombrosa
-git pull
-docker compose up -d --build chatbot nginx
+git pull --ff-only
+docker compose up -d --build --remove-orphans
 ```
 
 The chatbot container rebuilds `_site` at startup. nginx serves that static
@@ -135,10 +125,4 @@ Art gallery:
 
 ```bash
 tar -czf "generated-art-$(date +%F).tgz" generated-art/
-```
-
-Wiki.js Postgres, if used:
-
-```bash
-docker exec dnd_postgres pg_dump -U wikijs wiki > "wiki-$(date +%F).sql"
 ```

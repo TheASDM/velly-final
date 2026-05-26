@@ -82,7 +82,7 @@ module.exports = function (eleventyConfig) {
   eleventyConfig.addLayoutAlias("page", "layouts/page.njk");
   eleventyConfig.addLayoutAlias("home", "layouts/home.njk");
 
-  // ── Frontmatter is YAML (Wiki.js dialect) ────────────────────────────
+  // ── Frontmatter is YAML ──────────────────────────────────────────────
   // The existing frontmatter uses `title:`, `description:`, `published:`,
   // `tags:`, `date:`, etc. — Eleventy reads these natively.
 

@@ -560,7 +560,7 @@ function initLoreMaster() {
     if (loreMaster) return;
     loreMaster = new LoreMasterChatbot();
 
-    // Lock favicon — Wiki.js overwrites it dynamically, so fight back
+    // Lock favicon for embedded contexts that mutate the active icon.
     const FAVICON_URL = window.LOREMASTER_FAVICON_URL;
     if (FAVICON_URL) {
         const enforceFavicon = () => {

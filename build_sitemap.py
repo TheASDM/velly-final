@@ -1,15 +1,13 @@
 #!/usr/bin/env python3
 """
 build_sitemap.py — walks the wiki content tree and writes images/sitemap.json
-with the real frontmatter titles, for the custom nav widget (files/wiki-nav.html)
-to consume.
+with the real frontmatter titles for the PWA's section navigation.
 
 Run on every wiki structural change (add/move/rename pages):
   python3 build_sitemap.py
   git add images/sitemap.json && git commit -m "rebuild sitemap"
 
-The widget fetches this from https://codex.valleyofshadows.wiki/images/sitemap.json
-since Wiki.js serves the images/ tree as static assets.
+The PWA build serves this from /images/sitemap.json.
 """
 from __future__ import annotations
 
