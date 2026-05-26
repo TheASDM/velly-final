@@ -6,6 +6,9 @@
   "scripts": {
     "dev": "eleventy && npm run search && eleventy --serve --port=8080",
     "build": "eleventy && npm run search",
+    "knowledge": "npm run knowledge:tiers && npm run knowledge:vectors",
+    "knowledge:tiers": "python3 build_tiers.py",
+    "knowledge:vectors": "python3 build_vectors.py",
     "search": "pagefind --site _site --output-subdir pagefind",
     "clean": "rm -rf _site",
     "sitemap": "python3 build_sitemap.py"

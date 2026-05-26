@@ -1,7 +1,7 @@
 {
   "_meta": {
     "purpose": "Physical-description grounding map for the Art Studio / Enzo prompt enhancer. Keyed by canonical name; 'aliases' help the grounder match nicknames and bare surnames; 'desc' is the short visual string to inject. Groups expand into the visual descriptions of their member entries at lookup time.",
-    "sources": "Locations + council NPCs from wiki text (campaign canon). PCs and the remaining NPCs derived from the actual portrait art in /images/character-art/. Pure visual detail only.",
+    "sources": "Locations + council NPCs from wiki text (campaign canon). PCs and the remaining NPCs derived from the actual portrait art in /images/character-art/. Items are hand-curated from their wiki entries. Pure visual detail only.",
     "corrections_applied": [
       "Noname is an ORC (the old campaign-data export said human).",
       "Noname's missing fiancé is Maruk Grommarg, an ORC (the old export called him 'Marcus')."
@@ -227,6 +227,13 @@
     "Tartuzi (in her prime)": {
       "aliases": ["young Tartuzi", "ancient Tartuzi", "Tartuzi regal", "Tartuzi the Lock in her prime", "Tartuzi unbroken", "the Lock in her prime"],
       "desc": "A great volcanic sphinx — a woman's face, a lion's body, broad wings — her hide cracked basalt, soot and ash like a mantle, lava-like veins blazing bright through the cuts across her body. Regal, powerful, fearsome and unbroken — depicted in her prime, before the imprisonment."
+    }
+  },
+
+  "items": {
+    "Kaligor": {
+      "aliases": ["Lotan's sword", "Lotan's scimitar", "the fire sword", "the flame scimitar", "Hearthblade"],
+      "desc": "Rare magic scimitar carried by Lotan; a slightly curved darkened-steel blade whose edge catches light like the rim of an ember; crossguard shaped as two unfurling flames; KALIGOR engraved along the ricasso; old leather grip rewrapped more than once; its flame is controlled, low, ember-gold, and heirloom-worn rather than wild."
     }
   },
 

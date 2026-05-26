@@ -41,6 +41,7 @@ WIKI_DIRS = [
     "Venturia/Characters/PCs",
     "Venturia/Characters/NPCs",
     "Venturia/Locations",
+    "Venturia/Items",
     "Venturia/Factions",
     "Venturia/Government",
     "Venturia/Lore",
@@ -134,6 +135,7 @@ def wiki_page_text(meta: dict, body: str) -> str:
     cleaned = re.sub(r"<script\b[^>]*>.*?</script>", "", cleaned, flags=re.DOTALL | re.IGNORECASE)
     cleaned = re.sub(r"<div[^>]*>.*?</div>", "", cleaned, flags=re.DOTALL)
     cleaned = re.sub(r"<img[^>]*>", "", cleaned)
+    cleaned = re.sub(r"<[^>]+>", "", cleaned)
     cleaned = "\n".join(l for l in cleaned.splitlines() if not l.strip().startswith(">"))
     cleaned = re.sub(r"^#\s+[^\n]+\n", "", cleaned, count=1)
     cleaned = re.sub(r"\n---+\n", "\n", cleaned)

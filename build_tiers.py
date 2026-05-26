@@ -27,6 +27,7 @@ WIKI_SECTIONS = [
     ("Venturia/Characters/PCs",      ("Characters", "Player Characters")),
     ("Venturia/Characters/NPCs",     ("Characters", "NPCs")),
     ("Venturia/Locations",  ("Locations",  None)),
+    ("Venturia/Items",      ("Items",      None)),
     ("Venturia/Factions",   ("Factions",   None)),
     ("Venturia/Government", ("Government", None)),
     ("Venturia/Lore",       ("Lore",       None)),
@@ -186,6 +187,8 @@ def _body_snippet(body: str, max_chars: int = 600) -> str:
     body = re.sub(r"<div[^>]*>.*?</div>", "", body, flags=re.DOTALL)
     # Drop standalone img tags
     body = re.sub(r"<img[^>]*>", "", body)
+    # Remove any leftover HTML from nested cards after block stripping.
+    body = re.sub(r"<[^>]+>", "", body)
     # Process line by line — easier than chained regexes
     out_lines = []
     for raw in body.splitlines():
@@ -284,7 +287,8 @@ def fmt_background(e: dict) -> str:
         skills += [k.title() for k, v in s.items() if v is True and k != "_"]
     desc = extract_text(e.get("entries", []), 80)
     sk = ", ".join(skills[:3]) if skills else "—"
-    return f"**{name}** (Skills: {sk}) — {desc}"
+    detail = f" — {desc}" if desc else ""
+    return f"**{name}** (Skills: {sk}){detail}"
 
 
 def fmt_feat(e: dict) -> str:
@@ -387,7 +391,7 @@ def build_tier1() -> str:
     # with no lore content, just inline CSS and tile markup.
 
     # Emit in stable order
-    for top in ["Characters", "Locations", "Factions", "Government", "Lore",
+    for top in ["Characters", "Locations", "Items", "Factions", "Government", "Lore",
                 "Articles", "Class Changes", "House Rules", "Updates"]:
         if top not in grouped:
             continue

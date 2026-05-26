@@ -1297,10 +1297,10 @@ ENHANCE_ENTITY_CHARS = int(os.environ.get("ENHANCE_ENTITY_CHARS", "3000"))
 # at /site so we read straight from there. Falls back to (none) when the
 # file is missing or malformed — RAG keyword matching still works without
 # it, the result is just less specific.
-DESCRIPTIONS_FILE = Path(os.environ.get(
-    "ART_DESCRIPTIONS_FILE",
-    "/site/chatbot/descriptions.json",
-))
+DEFAULT_DESCRIPTIONS_FILE = Path("/site/chatbot/descriptions.json")
+if not DEFAULT_DESCRIPTIONS_FILE.exists():
+    DEFAULT_DESCRIPTIONS_FILE = Path(__file__).resolve().parent / "descriptions.json"
+DESCRIPTIONS_FILE = Path(os.environ.get("ART_DESCRIPTIONS_FILE", str(DEFAULT_DESCRIPTIONS_FILE)))
 
 # Aliases shorter than this rarely identify a unique entity (e.g. "lo",
 # "tl", "rox"); we still let them through, but the loader excludes
@@ -1338,7 +1338,7 @@ def _flatten_descriptions(raw):
             name_to_desc[canon] = payload.get("desc", "")
             name_to_aliases[canon] = list(payload.get("aliases") or [])
 
-    for section in ("player_characters", "npcs"):
+    for section in ("player_characters", "npcs", "items"):
         for canon, payload in (raw.get(section) or {}).items():
             if isinstance(payload, dict):
                 name_to_desc[canon] = payload.get("desc", "")
