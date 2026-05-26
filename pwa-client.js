@@ -13,6 +13,17 @@
     Orabella: '/images/app-profiles/avatar-orabella.png',
     'Roxanya "Roxy"': '/images/app-profiles/avatar-roxanya.png',
     Valentro: '/images/app-profiles/avatar-valentro.png',
+    DM: '/images/app-profiles/dustin.png',
+  };
+  const PROFILE_DISPLAY_NAMES = {
+    'Caravel "Car" Asteri': 'Car',
+    'Kryton Novelli': 'Kryton',
+    Lotan: 'Lotan',
+    Noname: 'Noname',
+    Orabella: 'Orabella',
+    'Roxanya "Roxy"': 'Roxy',
+    Valentro: 'Valen',
+    DM: 'Dustin',
   };
   const PLAYERS = [
     'Caravel "Car" Asteri',
@@ -92,16 +103,21 @@
     if (badge) badge.hidden = !active;
   }
 
+  function getProfileDisplayName(name) {
+    return PROFILE_DISPLAY_NAMES[name] || name || '';
+  }
+
   function updateProfileAvatar(name) {
     const profileButton = document.getElementById('vos-profile-button');
     const img = document.getElementById('vos-app-avatar-img');
     if (!profileButton || !img) return;
 
-    const labelName = name || 'profile';
+    const displayName = getProfileDisplayName(name);
+    const labelName = displayName || 'profile';
     const src = PROFILE_AVATARS[name] || PROFILE_AVATAR_FALLBACK;
-    const alt = name || 'Unmapped profile';
-    profileButton.setAttribute('aria-label', name ? `Open profile — ${name}` : 'Log in');
-    profileButton.title = name ? `Open profile — ${name}` : 'Log in';
+    const alt = displayName || 'Unmapped profile';
+    profileButton.setAttribute('aria-label', name ? `Open profile — ${displayName}` : 'Log in');
+    profileButton.title = name ? `Open profile — ${displayName}` : 'Log in';
 
     if (img.dataset.avatarSrc === src && img.classList.contains('is-loaded')) {
       img.alt = alt;
@@ -136,10 +152,11 @@
 
   function updateIdentityControls(config = null) {
     const name = getActivePlayerName(config);
+    const displayName = getProfileDisplayName(name);
     const label = document.getElementById('vos-app-identity-label');
     const identityButton = document.getElementById('vos-app-identity-button');
     const profileButton = document.getElementById('vos-profile-button');
-    const text = name ? `Welcome, ${name}` : 'Log in';
+    const text = name ? `Welcome, ${displayName}` : 'Log in';
     const action = name ? 'Switch player' : 'Log in';
 
     if (label) label.textContent = text;
@@ -149,8 +166,8 @@
       identityButton.title = action;
     }
     if (profileButton) {
-      profileButton.setAttribute('aria-label', name ? `Open profile — ${name}` : action);
-      profileButton.title = name ? `Open profile — ${name}` : action;
+      profileButton.setAttribute('aria-label', name ? `Open profile — ${displayName}` : action);
+      profileButton.title = name ? `Open profile — ${displayName}` : action;
     }
     updateProfileAvatar(name);
   }

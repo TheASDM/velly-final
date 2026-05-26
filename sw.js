@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'vallombrosa-pwa-v16';
+const CACHE_VERSION = 'vallombrosa-pwa-v17';
 const PRECACHE = `${CACHE_VERSION}-precache`;
 const PAGES = `${CACHE_VERSION}-pages`;
 const ASSETS = `${CACHE_VERSION}-assets`;
@@ -37,6 +37,7 @@ const APP_SHELL = [
   '/images/app-profiles/avatar-orabella.png',
   '/images/app-profiles/avatar-roxanya.png',
   '/images/app-profiles/avatar-valentro.png',
+  '/images/app-profiles/dustin.png',
   '/images/app-profiles/unmapped.png'
 ];
 
