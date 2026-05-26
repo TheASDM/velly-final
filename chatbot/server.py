@@ -360,6 +360,13 @@ def _app_db():
     return conn
 
 
+def _table_columns(conn, table_name):
+    return {
+        row["name"]
+        for row in conn.execute(f"PRAGMA table_info({table_name})")
+    }
+
+
 def _run_app_migrations():
     """Create/upgrade the small SQLite schema used by PWA features."""
     with _app_db() as conn:
@@ -441,6 +448,51 @@ def _run_app_migrations():
             conn.execute(
                 "INSERT INTO schema_migrations (name, applied_at) VALUES (?, ?)",
                 ("004_studio_jobs", _utc_now_iso()),
+            )
+
+        if "005_targeted_dm_messages" not in done:
+            columns = _table_columns(conn, "messages")
+            if "url" not in columns:
+                conn.execute("ALTER TABLE messages ADD COLUMN url TEXT NOT NULL DEFAULT '/'")
+            if "target_type" not in columns:
+                conn.execute("ALTER TABLE messages ADD COLUMN target_type TEXT NOT NULL DEFAULT 'all'")
+            if "deleted_at" not in columns:
+                conn.execute("ALTER TABLE messages ADD COLUMN deleted_at TEXT")
+
+            conn.execute("""
+                CREATE TABLE IF NOT EXISTS message_recipients (
+                    message_id INTEGER NOT NULL,
+                    player_name TEXT NOT NULL,
+                    PRIMARY KEY (message_id, player_name)
+                )
+            """)
+            conn.execute("""
+                CREATE INDEX IF NOT EXISTS idx_message_recipients_player
+                ON message_recipients (player_name, message_id)
+            """)
+            conn.execute("""
+                CREATE TABLE IF NOT EXISTS push_deliveries (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    message_id INTEGER,
+                    player_name TEXT NOT NULL,
+                    endpoint TEXT NOT NULL,
+                    status TEXT NOT NULL CHECK(status IN ('sent', 'failed', 'pruned')),
+                    error TEXT,
+                    created_at TEXT NOT NULL
+                )
+            """)
+            conn.execute("""
+                CREATE INDEX IF NOT EXISTS idx_push_deliveries_message
+                ON push_deliveries (message_id, created_at DESC)
+            """)
+            conn.execute("""
+                UPDATE messages
+                SET url = COALESCE(NULLIF(url, ''), '/'),
+                    target_type = COALESCE(NULLIF(target_type, ''), 'all')
+            """)
+            conn.execute(
+                "INSERT INTO schema_migrations (name, applied_at) VALUES (?, ?)",
+                ("005_targeted_dm_messages", _utc_now_iso()),
             )
 
 
@@ -1632,7 +1684,63 @@ def _app_url(value):
     return value[:300]
 
 
-def _fanout_push(conn, title, message, url, player_name=None):
+def _parse_recipients(body, field="recipients"):
+    raw = body.get(field, None)
+    if raw is None or raw == "all":
+        return None, None
+    if not isinstance(raw, list):
+        return None, (jsonify({"error": "Recipients must be a list"}), 400)
+
+    recipients = []
+    seen = set()
+    for value in raw:
+        if not isinstance(value, str):
+            continue
+        name = value.strip()
+        if not name or name in seen:
+            continue
+        seen.add(name)
+        recipients.append(name)
+
+    if not recipients:
+        return None, (jsonify({"error": "Choose at least one recipient"}), 400)
+
+    valid = set(PLAYER_NAMES)
+    invalid = [name for name in recipients if name not in valid]
+    if invalid:
+        return None, (jsonify({"error": f"Unknown recipient: {', '.join(invalid[:3])}"}), 400)
+
+    return recipients, None
+
+
+def _delivery_summary(conn, message_id):
+    rows = conn.execute("""
+        SELECT status, COUNT(*) AS count
+        FROM push_deliveries
+        WHERE message_id = ?
+        GROUP BY status
+    """, (message_id,))
+    summary = {"sent": 0, "failed": 0, "pruned": 0}
+    for row in rows:
+        if row["status"] in summary:
+            summary[row["status"]] = row["count"]
+    summary["attempted"] = summary["sent"] + summary["failed"] + summary["pruned"]
+    return summary
+
+
+def _message_recipients(conn, message_id):
+    return [
+        row["player_name"]
+        for row in conn.execute("""
+            SELECT player_name
+            FROM message_recipients
+            WHERE message_id = ?
+            ORDER BY player_name COLLATE NOCASE
+        """, (message_id,))
+    ]
+
+
+def _fanout_push(conn, title, message, url, recipients=None, message_id=None):
     payload = json.dumps({
         "title": title.strip()[:120],
         "body": message.strip()[:500],
@@ -1644,18 +1752,19 @@ def _fanout_push(conn, title, message, url, player_name=None):
     pruned = 0
     errors = []
 
-    if player_name:
+    if recipients:
+        placeholders = ",".join("?" for _ in recipients)
         rows = list(conn.execute("""
             SELECT id, player_name, endpoint, p256dh, auth
             FROM subscriptions
-            WHERE player_name = ?
-            ORDER BY created_at ASC
-        """, (player_name,)))
+            WHERE player_name IN ({})
+            ORDER BY player_name COLLATE NOCASE, created_at ASC
+        """.format(placeholders), recipients))
     else:
         rows = list(conn.execute("""
             SELECT id, player_name, endpoint, p256dh, auth
             FROM subscriptions
-            ORDER BY created_at ASC
+            ORDER BY player_name COLLATE NOCASE, created_at ASC
         """))
 
     for row in rows:
@@ -1669,6 +1778,10 @@ def _fanout_push(conn, title, message, url, player_name=None):
                 timeout=15,
             )
             sent += 1
+            conn.execute("""
+                INSERT INTO push_deliveries (message_id, player_name, endpoint, status, error, created_at)
+                VALUES (?, ?, ?, 'sent', NULL, ?)
+            """, (message_id, row["player_name"], row["endpoint"], _utc_now_iso()))
         except WebPushException as exc:
             failed += 1
             response = getattr(exc, "response", None)
@@ -1676,17 +1789,30 @@ def _fanout_push(conn, title, message, url, player_name=None):
             if status_code in (404, 410):
                 conn.execute("DELETE FROM subscriptions WHERE id = ?", (row["id"],))
                 pruned += 1
+                status = "pruned"
+            else:
+                status = "failed"
+            error_text = str(exc)[:200]
+            conn.execute("""
+                INSERT INTO push_deliveries (message_id, player_name, endpoint, status, error, created_at)
+                VALUES (?, ?, ?, ?, ?, ?)
+            """, (message_id, row["player_name"], row["endpoint"], status, error_text, _utc_now_iso()))
             errors.append({
                 "player_name": row["player_name"],
                 "status": status_code,
-                "error": str(exc)[:200],
+                "error": error_text,
             })
         except Exception as exc:
             failed += 1
+            error_text = str(exc)[:200]
+            conn.execute("""
+                INSERT INTO push_deliveries (message_id, player_name, endpoint, status, error, created_at)
+                VALUES (?, ?, ?, 'failed', ?, ?)
+            """, (message_id, row["player_name"], row["endpoint"], error_text, _utc_now_iso()))
             errors.append({
                 "player_name": row["player_name"],
                 "status": None,
-                "error": str(exc)[:200],
+                "error": error_text,
             })
 
     return {
@@ -1695,6 +1821,7 @@ def _fanout_push(conn, title, message, url, player_name=None):
         "sent": sent,
         "failed": failed,
         "pruned": pruned,
+        "recipients": recipients or "all",
         "errors": errors[:10],
     }
 
@@ -1713,6 +1840,9 @@ def push_send():
     title = body.get("title", "")
     message = body.get("body", "")
     url = _app_url(body.get("url", "/"))
+    recipients, recipient_error = _parse_recipients(body)
+    if recipient_error:
+        return recipient_error
 
     if not isinstance(title, str) or not title.strip():
         return jsonify({"error": "Missing notification title"}), 400
@@ -1720,18 +1850,27 @@ def push_send():
         return jsonify({"error": "Missing notification body"}), 400
 
     with _app_db() as conn:
-        result = _fanout_push(conn, title, message, url)
+        result = _fanout_push(conn, title, message, url, recipients=recipients)
 
     return jsonify(result)
 
 
-def _message_payload(row):
-    return {
+def _message_payload(row, recipients=None, push_summary=None, include_deleted=False):
+    payload = {
         "id": row["id"],
         "title": row["title"],
         "body": row["body"],
+        "url": row["url"],
+        "target_type": row["target_type"],
         "created_at": row["created_at"],
     }
+    if recipients is not None:
+        payload["recipients"] = recipients
+    if push_summary is not None:
+        payload["push"] = push_summary
+    if include_deleted:
+        payload["deleted_at"] = row["deleted_at"]
+    return payload
 
 
 @app.route("/api/messages", methods=["GET", "POST"])
@@ -1743,13 +1882,40 @@ def dm_messages():
             limit = 5
         limit = max(1, min(limit, 20))
 
+        if _auth_login_required():
+            name, auth_error = _logged_in_player_name()
+            if auth_error:
+                return auth_error
+        else:
+            name = _player_name_from_request()
+
         with _app_db() as conn:
-            rows = list(conn.execute("""
-                SELECT id, title, body, created_at
-                FROM messages
-                ORDER BY created_at DESC, id DESC
-                LIMIT ?
-            """, (limit,)))
+            if name:
+                rows = list(conn.execute("""
+                    SELECT id, title, body, url, target_type, created_at, deleted_at
+                    FROM messages
+                    WHERE deleted_at IS NULL
+                      AND (
+                        target_type = 'all'
+                        OR EXISTS (
+                            SELECT 1
+                            FROM message_recipients
+                            WHERE message_recipients.message_id = messages.id
+                              AND message_recipients.player_name = ?
+                        )
+                      )
+                    ORDER BY created_at DESC, id DESC
+                    LIMIT ?
+                """, (name, limit)))
+            else:
+                rows = list(conn.execute("""
+                    SELECT id, title, body, url, target_type, created_at, deleted_at
+                    FROM messages
+                    WHERE deleted_at IS NULL
+                      AND target_type = 'all'
+                    ORDER BY created_at DESC, id DESC
+                    LIMIT ?
+                """, (limit,)))
 
         return jsonify({"messages": [_message_payload(row) for row in rows]})
 
@@ -1765,6 +1931,9 @@ def dm_messages():
     title = body.get("title", "")
     message = body.get("body", "")
     url = _app_url(body.get("url", "/"))
+    recipients, recipient_error = _parse_recipients(body)
+    if recipient_error:
+        return recipient_error
 
     if not isinstance(title, str) or not title.strip():
         return jsonify({"error": "Missing message title"}), 400
@@ -1773,25 +1942,91 @@ def dm_messages():
 
     title = title.strip()[:120]
     message = message.strip()[:2000]
+    target_type = "selected" if recipients else "all"
     created_at = _utc_now_iso()
 
     with _app_db() as conn:
         cursor = conn.execute("""
-            INSERT INTO messages (title, body, created_at)
-            VALUES (?, ?, ?)
-        """, (title, message, created_at))
+            INSERT INTO messages (title, body, url, target_type, created_at)
+            VALUES (?, ?, ?, ?, ?)
+        """, (title, message, url, target_type, created_at))
+        message_id = cursor.lastrowid
+        if recipients:
+            conn.executemany("""
+                INSERT INTO message_recipients (message_id, player_name)
+                VALUES (?, ?)
+            """, [(message_id, name) for name in recipients])
         row = conn.execute("""
-            SELECT id, title, body, created_at
+            SELECT id, title, body, url, target_type, created_at, deleted_at
             FROM messages
             WHERE id = ?
-        """, (cursor.lastrowid,)).fetchone()
-        push_result = _fanout_push(conn, title, message, url)
+        """, (message_id,)).fetchone()
+        push_result = _fanout_push(conn, title, message, url, recipients=recipients, message_id=message_id)
 
     return jsonify({
         "ok": True,
-        "message": _message_payload(row),
+        "message": _message_payload(row, recipients=recipients or []),
         "push": push_result,
     }), 201
+
+
+@app.route("/api/admin/messages", methods=["GET"])
+def admin_messages():
+    admin_error = _admin_error_response()
+    if admin_error:
+        return admin_error
+
+    try:
+        limit = int(request.args.get("limit", "20"))
+    except ValueError:
+        limit = 20
+    limit = max(1, min(limit, 100))
+    include_deleted = request.args.get("includeDeleted") in {"1", "true", "yes"}
+
+    where = "" if include_deleted else "WHERE deleted_at IS NULL"
+    with _app_db() as conn:
+        rows = list(conn.execute(f"""
+            SELECT id, title, body, url, target_type, created_at, deleted_at
+            FROM messages
+            {where}
+            ORDER BY created_at DESC, id DESC
+            LIMIT ?
+        """, (limit,)))
+        messages = [
+            _message_payload(
+                row,
+                recipients=_message_recipients(conn, row["id"]),
+                push_summary=_delivery_summary(conn, row["id"]),
+                include_deleted=True,
+            )
+            for row in rows
+        ]
+
+    return jsonify({"messages": messages})
+
+
+@app.route("/api/messages/<int:message_id>", methods=["DELETE"])
+def dm_message_delete(message_id):
+    admin_error = _admin_error_response()
+    if admin_error:
+        return admin_error
+
+    deleted_at = _utc_now_iso()
+    with _app_db() as conn:
+        row = conn.execute("""
+            SELECT id
+            FROM messages
+            WHERE id = ?
+        """, (message_id,)).fetchone()
+        if not row:
+            return jsonify({"error": "Message not found"}), 404
+        conn.execute("""
+            UPDATE messages
+            SET deleted_at = COALESCE(deleted_at, ?)
+            WHERE id = ?
+        """, (deleted_at, message_id))
+
+    return jsonify({"ok": True, "id": message_id, "deleted_at": deleted_at})
 
 
 def _rsvp_counts_and_responses(conn, event_id):

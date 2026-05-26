@@ -739,26 +739,34 @@ templateEngineOverride: njk
 
 <script>
 (function () {
-  const card = document.getElementById('vos-message-card');
-  const title = document.getElementById('vos-message-title');
-  const body = document.getElementById('vos-message-body');
-  const meta = document.getElementById('vos-message-meta');
-  if (!card || !title || !body || !meta) return;
+  window.addEventListener('DOMContentLoaded', () => {
+    const card = document.getElementById('vos-message-card');
+    const title = document.getElementById('vos-message-title');
+    const body = document.getElementById('vos-message-body');
+    const meta = document.getElementById('vos-message-meta');
+    if (!card || !title || !body || !meta) return;
 
-  function formatDate(value) {
-    const date = new Date(value);
-    if (Number.isNaN(date.getTime())) return '';
-    return date.toLocaleString([], {
-      month: 'short',
-      day: 'numeric',
-      hour: 'numeric',
-      minute: '2-digit',
-    });
-  }
+    function formatDate(value) {
+      const date = new Date(value);
+      if (Number.isNaN(date.getTime())) return '';
+      return date.toLocaleString([], {
+        month: 'short',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: '2-digit',
+      });
+    }
 
-  fetch('/api/messages?limit=1', { cache: 'no-store' })
-    .then((response) => response.ok ? response.json() : null)
-    .then((data) => {
+    async function loadMessage() {
+      const pwa = window.VOS_PWA;
+      const name = pwa && pwa.ensureIdentity ? await pwa.ensureIdentity().catch(() => null) : null;
+      const headers = pwa && pwa.authHeaders ? pwa.authHeaders() : {};
+      const url = name
+        ? `/api/messages?limit=1&name=${encodeURIComponent(name)}`
+        : '/api/messages?limit=1';
+      const response = await fetch(url, { cache: 'no-store', headers });
+      if (!response.ok) return;
+      const data = await response.json().catch(() => null);
       const message = data && data.messages && data.messages[0];
       if (!message) return;
       title.textContent = message.title || 'DM Message';
@@ -769,7 +777,9 @@ templateEngineOverride: njk
         localStorage.setItem('vos.dmMessage.seenId', String(message.id));
         window.dispatchEvent(new CustomEvent('vos:avatar-badge-refresh'));
       } catch (error) {}
-    })
-    .catch(() => {});
+    }
+
+    loadMessage().catch(() => {});
+  });
 })();
 </script>

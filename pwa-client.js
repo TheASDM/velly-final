@@ -182,7 +182,8 @@
 
     let hasBadge = false;
     try {
-      const response = await fetch('/api/messages?limit=1', { cache: 'no-store' });
+      const url = `/api/messages?limit=1&name=${encodeURIComponent(name)}`;
+      const response = await fetch(url, { cache: 'no-store', headers: authHeaders() });
       if (response.ok) {
         const data = await response.json().catch(() => ({}));
         const message = data && data.messages && data.messages[0];
@@ -590,6 +591,7 @@
   window.VOS_PWA = {
     getPlayerName: () => getStorage(PLAYER_KEY),
     getAuthToken: () => getStorage(AUTH_TOKEN_KEY),
+    authHeaders,
     ensureIdentity,
     openIdentitySettings: () => ensureIdentity({ force: true }),
     signOut: clearIdentity,
