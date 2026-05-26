@@ -10,6 +10,8 @@ dateCreated: 2026-05-26T00:00:00.000Z
 
 # Kaligor
 
+![Kaligor, Lotan's rare magic scimitar](/images/items/kaligor.png)
+
 **Category:** Magic weapon  
 **Type:** Scimitar  
 **Rarity:** Rare  
@@ -52,4 +54,3 @@ The circle ends early if you fall unconscious or choose to dismiss it.
 ## Known Connections
 
 - **[Lotan](/en/Venturia/Characters/PCs/lotan)** — Current owner.
-- **Vallombrosa** — Named on the item record as the origin of the Kaligor line.
