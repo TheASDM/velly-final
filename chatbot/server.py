@@ -88,6 +88,16 @@ DEFAULT_PLAYERS = [
     "Valentro",
     "DM",
 ]
+PLAYER_CODE_ENV_VARS = [
+    ('Caravel "Car" Asteri', ("PLAYER_CODE_CAR", "PLAYER_CODE_CARAVEL")),
+    ("Kryton Novelli", ("PLAYER_CODE_KRYTON",)),
+    ("Lotan", ("PLAYER_CODE_LOTAN",)),
+    ("Noname", ("PLAYER_CODE_NONAME",)),
+    ("Orabella", ("PLAYER_CODE_ORABELLA",)),
+    ('Roxanya "Roxy"', ("PLAYER_CODE_ROXY", "PLAYER_CODE_ROXANYA")),
+    ("Valentro", ("PLAYER_CODE_VALEN", "PLAYER_CODE_VALENTRO")),
+    ("DM", ("PLAYER_CODE_DUSTIN", "PLAYER_CODE_DM")),
+]
 LOGIN_NAME_ALIASES = {
     "car": 'Caravel "Car" Asteri',
     "caravel": 'Caravel "Car" Asteri',
@@ -121,6 +131,17 @@ def _canonical_login_name(name):
     return LOGIN_NAME_ALIASES.get(cleaned.lower(), cleaned)
 
 
+def _parse_individual_login_codes():
+    codes = {}
+    for canonical_name, env_names in PLAYER_CODE_ENV_VARS:
+        for env_name in env_names:
+            code = os.environ.get(env_name, "").strip()
+            if code:
+                codes[canonical_name] = code
+                break
+    return codes
+
+
 def _parse_login_codes(raw):
     raw = (raw or "").strip()
     if not raw:
@@ -149,7 +170,10 @@ def _parse_login_codes(raw):
     return codes
 
 
-PLAYER_LOGIN_CODES = _parse_login_codes(os.environ.get("PLAYER_LOGIN_CODES", ""))
+PLAYER_LOGIN_CODES = (
+    _parse_individual_login_codes()
+    or _parse_login_codes(os.environ.get("PLAYER_LOGIN_CODES", ""))
+)
 PLAYER_NAMES = list(PLAYER_LOGIN_CODES.keys()) or DEFAULT_PLAYERS
 
 # Style preset keys are stable strings sent from the UI; the corresponding

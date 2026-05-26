@@ -42,7 +42,14 @@ Edit `.env` and set:
 ```bash
 ADMIN_TOKEN=<long random value>
 AUTH_TOKEN_SECRET=<long random value>
-PLAYER_LOGIN_CODES=Car=<code>,Kryton=<code>,Lotan=<code>,Noname=<code>,Orabella=<code>,Roxy=<code>,Valen=<code>,Dustin=<code>
+PLAYER_CODE_CAR=<code>
+PLAYER_CODE_KRYTON=<code>
+PLAYER_CODE_LOTAN=<code>
+PLAYER_CODE_NONAME=<code>
+PLAYER_CODE_ORABELLA=<code>
+PLAYER_CODE_ROXY=<code>
+PLAYER_CODE_VALEN=<code>
+PLAYER_CODE_DUSTIN=<code>
 ANTHROPIC_API_KEY=<key>
 OLLAMA_API_KEY=<key>
 OPENAI_KEY=<key>
