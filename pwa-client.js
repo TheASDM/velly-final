@@ -147,6 +147,7 @@
         </label>
         <div class="vos-identity-status" role="status" aria-live="polite"></div>
         <div class="vos-identity-actions">
+          <button class="vos-identity-cancel" type="button">Cancel</button>
           <button class="vos-identity-submit" type="submit">${buttonText}</button>
         </div>
       </form>
@@ -156,6 +157,7 @@
     const select = card.querySelector('select[name="name"]');
     const codeInput = card.querySelector('input[name="code"]');
     const status = card.querySelector('.vos-identity-status');
+    const cancel = card.querySelector('.vos-identity-cancel');
     const submit = card.querySelector('.vos-identity-submit');
 
     players.forEach((name) => {
@@ -197,6 +199,13 @@
         status.classList.add('is-error');
         submit.disabled = false;
       }
+    });
+
+    cancel.addEventListener('click', () => {
+      const activeName = getActivePlayerName(config);
+      identityPromise = null;
+      removeNode(card);
+      resolve(activeName);
     });
 
     codeInput.focus();

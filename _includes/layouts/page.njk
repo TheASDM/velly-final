@@ -1471,6 +1471,7 @@
   .vos-identity-actions {
     display: flex;
     justify-content: flex-end;
+    gap: 0.5rem;
   }
   .vos-identity-options button,
   .vos-identity-actions button,
@@ -1495,6 +1496,13 @@
   .vos-identity-actions button:disabled {
     opacity: 0.55;
     cursor: wait;
+  }
+  .vos-identity-actions .vos-identity-cancel {
+    color: rgba(232, 220, 200, 0.7);
+    background: rgba(255, 255, 255, 0.035);
+  }
+  .vos-identity-actions .vos-identity-submit {
+    color: var(--vos-gold-bright);
   }
   .vos-push-text,
   .vos-push-status {
