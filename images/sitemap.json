@@ -564,6 +564,14 @@
     "title": "The Signore of Venturia"
   },
   {
+    "url": "/en/Venturia/Items/index",
+    "title": "Items"
+  },
+  {
+    "url": "/en/Venturia/Items/kaligor",
+    "title": "Kaligor"
+  },
+  {
     "url": "/en/Venturia/Locations/amaranth-theater",
     "title": "The Amaranth Theater"
   },
@@ -726,9 +734,5 @@
   {
     "url": "/en/Venturia/Maps/venturia-topdown",
     "title": "Venturia — Top-Down"
-  },
-  {
-    "url": "/en/Venturia/index",
-    "title": "Venturia"
   }
 ]

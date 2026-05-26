@@ -52,3 +52,9 @@ He sailed into Venturia from abroad and has stayed on land ever since. On the cr
 
 ## Ties
 - **[Roxanya "Roxy"](/en/Venturia/Characters/PCs/roxanya)** — Met on the voyage to Venturia; he was her first guide to the city, and the friendship stuck.
+
+---
+
+## Possessions
+
+- **[Kaligor](/en/Venturia/Items/kaligor)** — A rare magic scimitar and heirloom of the Kaligor line.
