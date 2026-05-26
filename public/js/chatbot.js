@@ -121,6 +121,12 @@ class LoreMasterChatbot {
                     <span class="toggle-icon">▼</span>
                 </div>
                 <div class="chatbot-body">
+                    <div class="chatbot-native-actions" aria-label="Chat controls">
+                        <button id="chat-native-clear-btn" class="chatbot-clear-action" type="button" title="Clear chat" aria-label="Clear chat">
+                            <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="m6 6 1 15h10l1-15"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>
+                            <span>Clear</span>
+                        </button>
+                    </div>
                     <div id="chat-messages"></div>
                     <div class="chat-input-area">
                         <textarea id="chat-input" placeholder="Ask about NPCs, lore, locations…" autocomplete="off" rows="1"></textarea>
@@ -137,6 +143,8 @@ class LoreMasterChatbot {
         if (header && !this.isNativePage) header.addEventListener('click', () => this.toggleWidget());
         const clearBtn = document.getElementById('chat-clear-btn');
         if (clearBtn) clearBtn.addEventListener('click', (e) => { e.stopPropagation(); this.clearHistory(); });
+        const nativeClearBtn = document.getElementById('chat-native-clear-btn');
+        if (nativeClearBtn) nativeClearBtn.addEventListener('click', () => this.clearHistory());
         const sendBtn = document.getElementById('chat-send-btn');
         if (sendBtn) sendBtn.addEventListener('click', () => this.handleSendMessage());
         const input = document.getElementById('chat-input');
