@@ -52,7 +52,16 @@
   }
 
   *, *::before, *::after { box-sizing: border-box; }
-  html, body { margin: 0; padding: 0; background: var(--vos-bg-deep); color: var(--vos-text-body); overflow-x: hidden; }
+  html,
+  body {
+    margin: 0;
+    padding: 0;
+    background: var(--vos-bg-deep);
+    color: var(--vos-text-body);
+    overflow-x: hidden;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
 
   /* Themed scrollbars */
   * { scrollbar-width: thin; scrollbar-color: rgba(139, 115, 85, 0.45) transparent; }

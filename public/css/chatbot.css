@@ -8,6 +8,14 @@
     right: 1.5rem;
     z-index: 1000;
     font-family: 'Crimson Text', Georgia, serif;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+}
+
+#chatbot-widget,
+#chatbot-widget * {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
 }
 
 /* ── Widget shell ── */
