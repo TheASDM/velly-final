@@ -427,6 +427,151 @@ dateCreated: 2026-05-24T00:00:00.000Z
   color: rgba(232, 220, 200, 0.78);
   font-size: 0.92rem;
 }
+/* Available references panel — collapsed by default; click to expand a
+   list of names the prompt enhancer recognises. */
+.vos-art-references {
+  margin: 0 0 0.85rem;
+  padding: 0;
+  border: 1px solid rgba(201, 161, 74, 0.22);
+  border-radius: 8px;
+  background: rgba(7, 6, 10, 0.4);
+}
+.vos-art-references > summary {
+  list-style: none;
+  cursor: pointer;
+  padding: 0.55rem 0.85rem;
+  color: var(--vos-gold-bright);
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.vos-art-references > summary::-webkit-details-marker { display: none; }
+.vos-art-references > summary::before {
+  content: '▸ ';
+  display: inline-block;
+  margin-right: 0.35rem;
+  transition: transform 0.18s ease;
+}
+.vos-art-references[open] > summary::before {
+  transform: rotate(90deg);
+}
+.vos-art-references-body {
+  padding: 0.65rem 0.85rem 0.9rem;
+  border-top: 1px solid rgba(201, 161, 74, 0.18);
+  display: grid;
+  gap: 0.7rem;
+}
+.vos-art-references-cat {
+  display: grid;
+  gap: 0.35rem;
+}
+.vos-art-references-cat h4 {
+  margin: 0;
+  color: rgba(212, 199, 173, 0.7);
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.vos-art-references-names {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+}
+.vos-art-references-name {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.18rem 0.55rem;
+  border: 1px solid rgba(201, 161, 74, 0.28);
+  border-radius: 999px;
+  background: rgba(212, 165, 116, 0.06);
+  color: var(--vos-cream);
+  font-family: 'Crimson Text', Georgia, serif;
+  font-size: 0.86rem;
+  cursor: pointer;
+  line-height: 1.2;
+}
+.vos-art-references-name:hover {
+  border-color: rgba(212, 165, 116, 0.6);
+  background: rgba(212, 165, 116, 0.14);
+}
+
+/* Per-card icon overlay (favorite + share). Sits in the top-right of
+   each tile alongside the existing DM delete button. */
+.vos-art-card-actions {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  display: flex;
+  gap: 0.3rem;
+  z-index: 2;
+}
+.vos-art-card-actions .vos-art-icon-btn {
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 1px solid rgba(212, 165, 116, 0.28);
+  border-radius: 50%;
+  background: rgba(7, 6, 10, 0.7);
+  color: rgba(212, 199, 173, 0.85);
+  font-size: 0.95rem;
+  line-height: 1;
+  cursor: pointer;
+  backdrop-filter: blur(4px);
+}
+.vos-art-card-actions .vos-art-icon-btn:hover {
+  color: var(--vos-cream);
+  border-color: rgba(212, 165, 116, 0.6);
+}
+.vos-art-card-actions .vos-art-icon-btn.is-favorited {
+  color: #ff7a8b;
+  border-color: rgba(255, 122, 139, 0.55);
+}
+
+/* Lightbox toolbar — favorite + share, mirrors the card actions. */
+.vos-art-lightbox-actions {
+  position: absolute;
+  top: 0.85rem;
+  right: 3rem;
+  display: flex;
+  gap: 0.4rem;
+  z-index: 12;
+}
+.vos-art-lightbox-actions .vos-art-icon-btn {
+  width: 36px;
+  height: 36px;
+  font-size: 1.05rem;
+}
+
+/* "Load more" button at gallery bottom. */
+.vos-art-load-more {
+  display: block;
+  margin: 1rem auto 0;
+  padding: 0.6rem 1.4rem;
+  border: 1px solid rgba(212, 165, 116, 0.36);
+  border-radius: 999px;
+  background: rgba(212, 165, 116, 0.08);
+  color: var(--vos-gold-bright);
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.vos-art-load-more:hover {
+  color: var(--vos-cream);
+  border-color: var(--vos-gold-bright);
+  background: rgba(212, 165, 116, 0.16);
+}
+.vos-art-load-more:disabled {
+  cursor: wait;
+  opacity: 0.6;
+}
+.vos-art-load-more[hidden] { display: none; }
+
 .vos-art-latest-error {
   display: grid;
   gap: 0.65rem;
@@ -1005,6 +1150,12 @@ body.is-dm-mode .vos-art-lightbox-delete { display: inline-flex; }
 
   <div class="vos-art-field">
     <label class="vos-art-field-label" for="vos-art-prompt">Description</label>
+    <details class="vos-art-references" id="vos-art-references">
+      <summary>Available references — click to expand</summary>
+      <div class="vos-art-references-body" id="vos-art-references-body">
+        <div class="vos-art-references-cat" style="opacity: 0.6;">Loading references…</div>
+      </div>
+    </details>
     <textarea id="vos-art-prompt" class="vos-art-prompt" rows="4"
               placeholder="A masked masquerader on the bridge above the Echoing Court, autumn leaves on the canal, candlelight from the windows above…"
               maxlength="3000"></textarea>
@@ -1076,6 +1227,7 @@ body.is-dm-mode .vos-art-lightbox-delete { display: inline-flex; }
   </div>
 
   <div id="vos-art-gallery" class="vos-art-gallery"></div>
+  <button id="vos-art-load-more" class="vos-art-load-more" type="button" hidden>Load more</button>
 </section>
 
 <div class="vos-art-dm-row">
@@ -1093,6 +1245,10 @@ body.is-dm-mode .vos-art-lightbox-delete { display: inline-flex; }
 
 <div id="vos-art-lightbox" class="vos-art-lightbox" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="vos-art-lightbox-caption">
   <div class="vos-art-lightbox-inner">
+    <div class="vos-art-lightbox-actions">
+      <button class="vos-art-icon-btn" id="vos-art-lightbox-favorite" type="button" aria-label="Favorite this image" title="Favorite">♡</button>
+      <button class="vos-art-icon-btn" id="vos-art-lightbox-share" type="button" aria-label="Share this image" title="Share">↗</button>
+    </div>
     <button class="vos-art-lightbox-delete" id="vos-art-lightbox-delete" type="button" aria-label="Delete this image (DM)" title="Delete this image">×</button>
     <button class="vos-art-lightbox-close" type="button" aria-label="Close lightbox">×</button>
     <img id="vos-art-lightbox-img" alt="">
@@ -1287,66 +1443,107 @@ body.is-dm-mode .vos-art-lightbox-delete { display: inline-flex; }
       : API_BASE + url;
   }
 
+  function buildGalleryCard(e) {
+    const card = document.createElement('a');
+    card.className = 'vos-art-card';
+    card.href = assetUrl(e.image_url);
+    card.dataset.entryId = e.id;
+    card.dataset.entry = JSON.stringify(e);
+    card.addEventListener('click', (evt) => {
+      evt.preventDefault();
+      openLightbox(e);
+    });
+
+    // Top-right actions: favorite, share. Delete button (existing) is
+    // separately positioned and only visible in DM mode.
+    const actions = document.createElement('div');
+    actions.className = 'vos-art-card-actions';
+
+    const favBtn = document.createElement('button');
+    favBtn.type = 'button';
+    favBtn.className = 'vos-art-icon-btn';
+    favBtn.setAttribute('aria-label', 'Favorite this image');
+    favBtn.title = 'Favorite';
+    favBtn.dataset.favoriteId = e.id;
+    const isFav = favoriteIds.has(e.id);
+    favBtn.classList.toggle('is-favorited', isFav);
+    favBtn.textContent = isFav ? '♥' : '♡';
+    favBtn.addEventListener('click', (evt) => {
+      evt.preventDefault();
+      evt.stopPropagation();
+      toggleFavorite(e, favBtn);
+    });
+
+    const shareBtn = document.createElement('button');
+    shareBtn.type = 'button';
+    shareBtn.className = 'vos-art-icon-btn';
+    shareBtn.setAttribute('aria-label', 'Share this image');
+    shareBtn.title = 'Share';
+    shareBtn.textContent = '↗';
+    shareBtn.addEventListener('click', (evt) => {
+      evt.preventDefault();
+      evt.stopPropagation();
+      shareEntry(e);
+    });
+
+    actions.append(favBtn, shareBtn);
+    card.appendChild(actions);
+
+    // Delete button (CSS-hidden unless body.is-dm-mode). Stop propagation
+    // so clicking it doesn't also trigger the lightbox open.
+    const del = document.createElement('button');
+    del.type = 'button';
+    del.className = 'vos-art-delete';
+    del.title = 'Delete (DM)';
+    del.setAttribute('aria-label', 'Delete this image');
+    del.textContent = '✕';
+    del.addEventListener('click', (evt) => {
+      evt.preventDefault();
+      evt.stopPropagation();
+      deleteEntry(e, del);
+    });
+    card.appendChild(del);
+
+    const img = document.createElement('img');
+    img.loading = 'lazy';
+    img.alt = e.prompt || 'Gallery piece';
+    img.src = assetUrl(e.image_url);
+    card.appendChild(img);
+    const meta = document.createElement('div');
+    meta.className = 'vos-art-card-meta';
+    meta.textContent = e.prompt || '(no prompt recorded)';
+    if (e.grounded_in && e.grounded_in.length) {
+      const chips = document.createElement('div');
+      chips.className = 'vos-art-grounded';
+      e.grounded_in.slice(0, 3).forEach(name => {
+        const chip = document.createElement('span');
+        chip.className = 'vos-art-grounded-chip';
+        chip.textContent = name;
+        chips.appendChild(chip);
+      });
+      meta.appendChild(chips);
+    }
+    const byline = document.createElement('span');
+    byline.className = 'vos-art-card-byline';
+    const who = e.created_by ? `By ${e.created_by}` : 'Anonymous';
+    byline.textContent = `${who} · ${fmtRel(e.created_at)}`;
+    meta.appendChild(byline);
+    card.appendChild(meta);
+    return card;
+  }
+
   function renderGallery(entries, total) {
     galleryEl.innerHTML = '';
     countEl.textContent = total === 0 ? 'No art yet — be the first.' : `${total} piece${total === 1 ? '' : 's'} in the gallery`;
     if (!entries.length) {
       galleryEl.innerHTML = `<div class="vos-art-empty">The gallery is empty. Generate something above and it will land here.</div>`;
+      if (loadMoreEl) loadMoreEl.hidden = true;
       return;
     }
     const frag = document.createDocumentFragment();
-    entries.forEach(e => {
-      const card = document.createElement('a');
-      card.className = 'vos-art-card';
-      card.href = assetUrl(e.image_url);
-      card.dataset.entryId = e.id;
-      card.dataset.entry = JSON.stringify(e);
-      card.addEventListener('click', (evt) => {
-        evt.preventDefault();
-        openLightbox(e);
-      });
-      // Delete button (CSS-hidden unless body.is-dm-mode). Stop propagation
-      // so clicking it doesn't also trigger the lightbox open.
-      const del = document.createElement('button');
-      del.type = 'button';
-      del.className = 'vos-art-delete';
-      del.title = 'Delete (DM)';
-      del.setAttribute('aria-label', 'Delete this image');
-      del.textContent = '✕';
-      del.addEventListener('click', (evt) => {
-        evt.preventDefault();
-        evt.stopPropagation();
-        deleteEntry(e, del);
-      });
-      card.appendChild(del);
-      const img = document.createElement('img');
-      img.loading = 'lazy';
-      img.alt = e.prompt || 'Gallery piece';
-      img.src = assetUrl(e.image_url);
-      card.appendChild(img);
-      const meta = document.createElement('div');
-      meta.className = 'vos-art-card-meta';
-      meta.textContent = e.prompt || '(no prompt recorded)';
-      if (e.grounded_in && e.grounded_in.length) {
-        const chips = document.createElement('div');
-        chips.className = 'vos-art-grounded';
-        e.grounded_in.slice(0, 3).forEach(name => {
-          const chip = document.createElement('span');
-          chip.className = 'vos-art-grounded-chip';
-          chip.textContent = name;
-          chips.appendChild(chip);
-        });
-        meta.appendChild(chips);
-      }
-      const byline = document.createElement('span');
-      byline.className = 'vos-art-card-byline';
-      const who = e.created_by ? `By ${e.created_by}` : 'Anonymous';
-      byline.textContent = `${who} · ${fmtRel(e.created_at)}`;
-      meta.appendChild(byline);
-      card.appendChild(meta);
-      frag.appendChild(card);
-    });
+    entries.forEach((e) => frag.appendChild(buildGalleryCard(e)));
     galleryEl.appendChild(frag);
+    if (pendingOpenImageId) tryOpenPending();
   }
 
   function setGalleryRefreshing(refreshing) {
@@ -1356,26 +1553,272 @@ body.is-dm-mode .vos-art-lightbox-delete { display: inline-flex; }
     }
   }
 
+  // ── Gallery pagination + favorites state ────────────────────────────
+  const GALLERY_PAGE = 40;
+  const loadMoreEl = document.getElementById('vos-art-load-more');
+  let galleryOffset = 0;
+  let galleryTotal = 0;
+  const favoriteIds = new Set();
+
+  async function fetchFavorites() {
+    const creator = getCurrentCreatorName();
+    if (!creator) return;
+    try {
+      const r = await fetch(
+        API_BASE + '/api/gallery/favorites?name=' + encodeURIComponent(creator),
+        { cache: 'no-store', headers: requestHeaders() }
+      );
+      if (!r.ok) return;
+      const data = await r.json().catch(() => ({}));
+      favoriteIds.clear();
+      (data.ids || []).forEach((id) => favoriteIds.add(id));
+      // Re-apply heart state to any already-rendered cards.
+      document.querySelectorAll('[data-favorite-id]').forEach((btn) => {
+        const id = btn.getAttribute('data-favorite-id');
+        const isFav = favoriteIds.has(id);
+        btn.classList.toggle('is-favorited', isFav);
+        btn.textContent = isFav ? '♥' : '♡';
+      });
+    } catch (e) {}
+  }
+
   function loadGallery(options = {}) {
     const quiet = !!options.quiet;
+    const append = !!options.append;
     if (!quiet || !galleryHasLoaded) countEl.textContent = 'Loading…';
     setGalleryRefreshing(true);
-    return fetch(API_BASE + '/api/gallery?limit=80')
+    if (!append) {
+      galleryOffset = 0;
+    }
+    if (loadMoreEl) {
+      loadMoreEl.disabled = true;
+      loadMoreEl.textContent = append ? 'Loading…' : 'Load more';
+    }
+    const url = API_BASE + '/api/gallery?limit=' + GALLERY_PAGE + '&offset=' + galleryOffset;
+    return fetch(url)
       .then(r => r.json())
       .then(data => {
         galleryHasLoaded = true;
-        renderGallery(data.entries || [], data.total || 0);
+        const entries = data.entries || [];
+        galleryTotal = data.total || 0;
+        if (append) {
+          appendGallery(entries);
+        } else {
+          renderGallery(entries, galleryTotal);
+        }
+        galleryOffset += entries.length;
+        if (loadMoreEl) {
+          loadMoreEl.hidden = galleryOffset >= galleryTotal;
+          loadMoreEl.disabled = false;
+          loadMoreEl.textContent = 'Load more';
+        }
+        // Make sure heart states reflect the latest favorites snapshot.
+        fetchFavorites();
       })
       .catch(() => {
         countEl.textContent = 'Gallery unavailable.';
         if (!galleryHasLoaded) {
           galleryEl.innerHTML = `<div class="vos-art-empty">Couldn't reach the gallery. Try again in a moment.</div>`;
         }
+        if (loadMoreEl) {
+          loadMoreEl.disabled = false;
+        }
       })
       .finally(() => setGalleryRefreshing(false));
   }
+
+  function appendGallery(entries) {
+    if (!entries || !entries.length) return;
+    const frag = document.createDocumentFragment();
+    entries.forEach((e) => frag.appendChild(buildGalleryCard(e)));
+    galleryEl.appendChild(frag);
+    countEl.textContent = `${galleryTotal} piece${galleryTotal === 1 ? '' : 's'} in the gallery`;
+    // Honor a pending deep-link if the requested image has now arrived.
+    if (pendingOpenImageId) tryOpenPending();
+  }
+
   loadGallery();
   refreshGalleryEl.addEventListener('click', () => loadGallery({ quiet: true }));
+  if (loadMoreEl) {
+    loadMoreEl.addEventListener('click', () => loadGallery({ quiet: true, append: true }));
+  }
+
+  // ── Favorites toggle ────────────────────────────────────────────────
+  async function toggleFavorite(entry, button) {
+    const creator = getCurrentCreatorName();
+    if (!creator || !getCurrentAuthToken()) {
+      setStatus('Log in to favorite gallery images.', true);
+      await openStudioLogin();
+      return;
+    }
+    const wasFav = favoriteIds.has(entry.id);
+    const method = wasFav ? 'DELETE' : 'POST';
+    button.disabled = true;
+    try {
+      const r = await fetch(
+        API_BASE + '/api/gallery/' + encodeURIComponent(entry.id)
+          + '/favorite?name=' + encodeURIComponent(creator),
+        { method, headers: requestHeaders() }
+      );
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      if (wasFav) favoriteIds.delete(entry.id);
+      else favoriteIds.add(entry.id);
+      const isFav = favoriteIds.has(entry.id);
+      // Update every button for this entry (card + lightbox can both exist).
+      document.querySelectorAll('[data-favorite-id="' + entry.id + '"]').forEach((b) => {
+        b.classList.toggle('is-favorited', isFav);
+        b.textContent = isFav ? '♥' : '♡';
+      });
+    } catch (e) {
+      // Quiet failure — toggle back if needed and just leave the heart.
+    } finally {
+      button.disabled = false;
+    }
+  }
+
+  // ── Share helpers ───────────────────────────────────────────────────
+  // Tries the native share sheet first (best UX on mobile — gives Insta
+  // / Messages / etc. options); falls back to clipboard. The image is
+  // shared as a File when fetched successfully, so receiving apps treat
+  // it as an image attachment rather than just a link.
+  async function shareEntry(entry) {
+    const url = absoluteUrl(entry.image_url);
+    const title = entry.prompt
+      ? `Vallombrosa: ${entry.prompt.slice(0, 80)}`
+      : 'Vallombrosa gallery';
+    const text = entry.prompt || 'From the Vallombrosa Art Studio.';
+
+    let file = null;
+    try {
+      const r = await fetch(url, { cache: 'force-cache' });
+      if (r.ok) {
+        const blob = await r.blob();
+        file = new File([blob], 'vallombrosa.png', { type: blob.type || 'image/png' });
+      }
+    } catch (e) {}
+
+    if (navigator.share) {
+      try {
+        const payload = { title, text, url };
+        if (file && navigator.canShare && navigator.canShare({ files: [file] })) {
+          payload.files = [file];
+        }
+        await navigator.share(payload);
+        return;
+      } catch (e) {
+        if (e && e.name === 'AbortError') return; // user cancelled
+      }
+    }
+
+    // Fallback: copy the URL to clipboard. Always offer a download too.
+    try {
+      await navigator.clipboard.writeText(url);
+      setStatus('Image link copied to clipboard.');
+    } catch (e) {
+      setStatus('Couldn’t share automatically — long-press the image to save.', true);
+      return;
+    }
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'vallombrosa-' + entry.id + '.png';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  }
+
+  function absoluteUrl(url) {
+    const resolved = assetUrl(url);
+    if (/^https?:/i.test(resolved)) return resolved;
+    return window.location.origin + resolved;
+  }
+
+  // ── Available references panel ──────────────────────────────────────
+  let referencesLoaded = false;
+  async function loadReferences() {
+    if (referencesLoaded) return;
+    referencesLoaded = true;
+    const body = document.getElementById('vos-art-references-body');
+    if (!body) return;
+    try {
+      const r = await fetch(API_BASE + '/api/descriptions');
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      const data = await r.json();
+      const cats = data.categories || [];
+      if (!cats.length) {
+        body.innerHTML = '<div class="vos-art-references-cat">No references registered.</div>';
+        return;
+      }
+      body.innerHTML = '';
+      cats.forEach((cat) => {
+        if (!cat.entries || !cat.entries.length) return;
+        const wrap = document.createElement('div');
+        wrap.className = 'vos-art-references-cat';
+        const h = document.createElement('h4');
+        h.textContent = cat.label;
+        wrap.appendChild(h);
+        const names = document.createElement('div');
+        names.className = 'vos-art-references-names';
+        cat.entries.forEach((name) => {
+          const chip = document.createElement('button');
+          chip.type = 'button';
+          chip.className = 'vos-art-references-name';
+          chip.textContent = name;
+          chip.title = 'Insert into prompt';
+          chip.addEventListener('click', () => insertReferenceName(name));
+          names.appendChild(chip);
+        });
+        wrap.appendChild(names);
+        body.appendChild(wrap);
+      });
+    } catch (e) {
+      body.innerHTML = '<div class="vos-art-references-cat">Couldn’t load references.</div>';
+    }
+  }
+
+  function insertReferenceName(name) {
+    const start = promptEl.selectionStart || promptEl.value.length;
+    const end = promptEl.selectionEnd || promptEl.value.length;
+    const before = promptEl.value.slice(0, start);
+    const after = promptEl.value.slice(end);
+    const sep = before && !/\s$/.test(before) ? ' ' : '';
+    const trailing = after && !/^\s/.test(after) ? ' ' : '';
+    promptEl.value = before + sep + name + trailing + after;
+    const caret = (before + sep + name).length;
+    promptEl.setSelectionRange(caret, caret);
+    promptEl.focus();
+  }
+
+  // Load lazily on first expand so first paint isn't held up.
+  const referencesEl = document.getElementById('vos-art-references');
+  if (referencesEl) {
+    referencesEl.addEventListener('toggle', () => {
+      if (referencesEl.open) loadReferences();
+    });
+  }
+
+  // ── Deep-link: open the lightbox to ?image=<gallery_id> ─────────────
+  let pendingOpenImageId = null;
+  try {
+    const params = new URLSearchParams(window.location.search);
+    pendingOpenImageId = params.get('image') || null;
+  } catch (e) {}
+
+  function tryOpenPending() {
+    if (!pendingOpenImageId) return;
+    const card = galleryEl.querySelector('[data-entry-id="' + pendingOpenImageId + '"]');
+    if (!card) return;
+    try {
+      const data = JSON.parse(card.dataset.entry);
+      openLightbox(data);
+    } catch (e) {}
+    pendingOpenImageId = null;
+    // Clean the param so a refresh doesn't keep re-opening.
+    try {
+      const u = new URL(window.location.href);
+      u.searchParams.delete('image');
+      window.history.replaceState({}, '', u.toString());
+    } catch (e) {}
+  }
 
   let pullStartY = null;
   gallerySection.addEventListener('touchstart', (event) => {
@@ -1391,10 +1834,18 @@ body.is-dm-mode .vos-art-lightbox-delete { display: inline-flex; }
 
   // ── Lightbox ────────────────────────────────────────────────────────
   let currentLightboxEntry = null;
+  const lightFavorite = document.getElementById('vos-art-lightbox-favorite');
+  const lightShare    = document.getElementById('vos-art-lightbox-share');
   function openLightbox(e) {
     currentLightboxEntry = e;
     lightImg.src = assetUrl(e.image_url);
     lightImg.alt = e.prompt || '';
+    if (lightFavorite) {
+      lightFavorite.dataset.favoriteId = e.id;
+      const isFav = favoriteIds.has(e.id);
+      lightFavorite.classList.toggle('is-favorited', isFav);
+      lightFavorite.textContent = isFav ? '♥' : '♡';
+    }
     const who = e.created_by ? `By ${escapeHtml(e.created_by)}` : 'Anonymous';
     let html = escapeHtml(e.prompt || '(no prompt recorded)');
     if (e.grounded_in && e.grounded_in.length) {
@@ -1431,6 +1882,16 @@ body.is-dm-mode .vos-art-lightbox-delete { display: inline-flex; }
   lightDelete.addEventListener('click', () => {
     if (currentLightboxEntry) deleteEntry(currentLightboxEntry, lightDelete);
   });
+  if (lightFavorite) {
+    lightFavorite.addEventListener('click', () => {
+      if (currentLightboxEntry) toggleFavorite(currentLightboxEntry, lightFavorite);
+    });
+  }
+  if (lightShare) {
+    lightShare.addEventListener('click', () => {
+      if (currentLightboxEntry) shareEntry(currentLightboxEntry);
+    });
+  }
   lightbox.addEventListener('click', (e) => { if (e.target === lightbox) closeLightbox(); });
   lightbox.querySelector('.vos-art-lightbox-close').addEventListener('click', closeLightbox);
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeLightbox(); });
@@ -1628,6 +2089,46 @@ body.is-dm-mode .vos-art-lightbox-delete { display: inline-flex; }
     setStatus('Done. The shared gallery refreshed below.');
   }
 
+  function copyForErrorCode(code, fallback, extras) {
+    extras = extras || {};
+    switch (code) {
+      case 'quota': {
+        const reset = extras.resets_at
+          ? new Date(extras.resets_at + 'T00:00:00').toLocaleDateString(undefined, { month: 'long', day: 'numeric' })
+          : 'next month';
+        return {
+          title: 'Monthly limit reached',
+          message: `You've used all your image generations for this month. Resets ${reset}.`,
+          allowRetry: false,
+        };
+      }
+      case 'auth':
+        return {
+          title: 'Log in to generate',
+          message: 'Generation is tied to your player account. Log in and try again.',
+          allowRetry: true,
+        };
+      case 'invalid_prompt':
+        return {
+          title: 'Prompt not accepted',
+          message: fallback || 'The prompt was rejected — try rephrasing.',
+          allowRetry: true,
+        };
+      case 'api_error':
+        return {
+          title: 'OpenAI is unavailable',
+          message: 'The image API didn’t respond. Wait a minute and try again.',
+          allowRetry: true,
+        };
+      default:
+        return {
+          title: 'Generation failed',
+          message: fallback || 'The server marked this job as failed.',
+          allowRetry: true,
+        };
+    }
+  }
+
   function showJobError(job) {
     latestImg.removeAttribute('src');
     latestImg.alt = '';
@@ -1635,26 +2136,30 @@ body.is-dm-mode .vos-art-lightbox-delete { display: inline-flex; }
     latestDetails.style.display = 'none';
     latestEnhanced.innerHTML = '';
     latestCap.innerHTML = '';
+    const copy = copyForErrorCode(job.error_code, job.error_message, job.quota || {});
     const wrap = document.createElement('div');
     wrap.className = 'vos-art-latest-error';
     const title = document.createElement('strong');
-    title.textContent = 'Generation failed';
+    title.textContent = copy.title;
     const message = document.createElement('p');
-    message.textContent = job.error_message || 'The server marked this job as failed.';
-    const retry = document.createElement('button');
-    retry.className = 'vos-art-retry';
-    retry.type = 'button';
-    retry.textContent = 'Retry';
-    retry.addEventListener('click', () => {
-      promptEl.value = job.prompt || promptEl.value;
-      generate();
-    });
-    wrap.append(title, message, retry);
+    message.textContent = copy.message;
+    wrap.append(title, message);
+    if (copy.allowRetry) {
+      const retry = document.createElement('button');
+      retry.className = 'vos-art-retry';
+      retry.type = 'button';
+      retry.textContent = 'Retry';
+      retry.addEventListener('click', () => {
+        promptEl.value = job.prompt || promptEl.value;
+        generate();
+      });
+      wrap.appendChild(retry);
+    }
     latestCap.appendChild(wrap);
     latestEl.classList.remove('has-image');
     latestEl.classList.add('is-shown', 'has-error');
     setGenerateButton(false);
-    setStatus('Generation failed. Retry when ready.', true);
+    setStatus(copy.title + '.', true);
   }
 
   function showIdle() {
@@ -1770,7 +2275,15 @@ body.is-dm-mode .vos-art-lightbox-delete { display: inline-flex; }
       });
       if (!res.ok) {
         const err = await res.json().catch(() => ({}));
-        throw new Error(err.error || `HTTP ${res.status}`);
+        // Render the same error card the polling path uses so quota /
+        // auth / invalid_prompt get the right copy.
+        showJobError({
+          prompt,
+          error_message: err.error || `HTTP ${res.status}`,
+          error_code: err.error_code,
+          quota: err.quota,
+        });
+        return;
       }
       const data = await res.json();
       const jobId = data.jobId;

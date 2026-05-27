@@ -64,6 +64,24 @@ GALLERY_MANIFEST = GALLERY_DIR / "gallery.json"
 GALLERY_MAX_ENTRIES = int(os.environ.get("GALLERY_MAX_ENTRIES", "2000"))
 GALLERY_PAGE_LIMIT = int(os.environ.get("GALLERY_PAGE_LIMIT", "60"))
 
+# OpenAI image model selection. Validated at startup — typos in IMAGE_MODEL
+# would otherwise blow up at every /api/studio/generate with an opaque
+# OpenAI 4xx, which is hard to diagnose from logs.
+ALLOWED_IMAGE_MODELS = {
+    "gpt-image-1", "gpt-image-2",
+    "dall-e-3", "dall-e-2",
+}
+IMAGE_MODEL = os.environ.get("IMAGE_MODEL", "gpt-image-2").strip()
+if IMAGE_MODEL and IMAGE_MODEL not in ALLOWED_IMAGE_MODELS:
+    raise RuntimeError(
+        f"IMAGE_MODEL={IMAGE_MODEL!r} is not in the allowed list "
+        f"{sorted(ALLOWED_IMAGE_MODELS)!r}. Fix the env var and restart."
+    )
+
+# Per-player monthly cap on Studio image generations. Override via env;
+# 0 disables the quota check entirely (useful for local dev).
+STUDIO_MONTHLY_QUOTA = int(os.environ.get("STUDIO_MONTHLY_QUOTA", "30"))
+
 # DM passphrase gates the gallery delete endpoint. When unset, the delete
 # route is disabled entirely — you can still purge images by editing files
 # on the host directly (see README). Match is case-insensitive and ignores
@@ -717,6 +735,47 @@ def _run_app_migrations():
             conn.execute(
                 "INSERT INTO schema_migrations (name, applied_at) VALUES (?, ?)",
                 ("010_card_fields", _utc_now_iso()),
+            )
+
+        if "011_studio_quotas" not in done:
+            # Per-player monthly count of /api/studio/generate calls.
+            # `period` is 'YYYY-MM' (UTC) so the row keys to the calendar
+            # month and resets automatically on the 1st.
+            conn.execute("""
+                CREATE TABLE IF NOT EXISTS studio_quotas (
+                    player TEXT NOT NULL,
+                    period TEXT NOT NULL,
+                    count INTEGER NOT NULL DEFAULT 0,
+                    updated_at TEXT NOT NULL,
+                    PRIMARY KEY (player, period)
+                )
+            """)
+            conn.execute(
+                "INSERT INTO schema_migrations (name, applied_at) VALUES (?, ?)",
+                ("011_studio_quotas", _utc_now_iso()),
+            )
+
+        if "012_gallery_favorites" not in done:
+            # Per-player favorite/pin on gallery entries. gallery_id is the
+            # 'id' field from the gallery manifest (not a DB FK — manifest
+            # is JSON on disk). A favorite row whose entry has been
+            # deleted from the manifest is just a dangling pointer the
+            # client filters out at render time.
+            conn.execute("""
+                CREATE TABLE IF NOT EXISTS gallery_favorites (
+                    player TEXT NOT NULL,
+                    gallery_id TEXT NOT NULL,
+                    favorited_at TEXT NOT NULL,
+                    PRIMARY KEY (player, gallery_id)
+                )
+            """)
+            conn.execute("""
+                CREATE INDEX IF NOT EXISTS idx_gallery_favorites_gallery
+                ON gallery_favorites (gallery_id)
+            """)
+            conn.execute(
+                "INSERT INTO schema_migrations (name, applied_at) VALUES (?, ?)",
+                ("012_gallery_favorites", _utc_now_iso()),
             )
 
 
@@ -2637,7 +2696,7 @@ def _generate_image_payload(
     save_gallery=True, image_output_path=None,
 ):
     openai_key = os.environ.get("OPENAI_KEY", "")
-    image_model = os.environ.get("IMAGE_MODEL", "gpt-image-2")
+    image_model = IMAGE_MODEL
     legacy_style_prefix = os.environ.get("IMAGE_STYLE_PROMPT", "").strip()
     image_quality = os.environ.get("IMAGE_QUALITY", "high")
     image_size = os.environ.get("IMAGE_SIZE", "1024x1024")
@@ -2779,6 +2838,24 @@ def _generate_image_payload(
         return {"error": "Image generation failed", "details": str(e)}, 500
 
 
+def _infer_studio_error_code(error_message):
+    """Map a free-text job error to one of the client-side error_code
+    buckets (quota / api_error / invalid_prompt / unknown). Lets the UI
+    pick the right human copy without a separate column."""
+    if not error_message:
+        return None
+    text = str(error_message).lower()
+    if "quota" in text or "monthly limit" in text or "rate limit" in text:
+        return "quota"
+    if "openai_key" in text or "not configured" in text:
+        return "api_error"
+    if "content policy" in text or "moderation" in text or "rejected" in text:
+        return "invalid_prompt"
+    if "openai" in text or "image generation failed" in text or "timeout" in text:
+        return "api_error"
+    return "unknown"
+
+
 def _studio_job_payload(row):
     return {
         "id": row["id"],
@@ -2789,6 +2866,7 @@ def _studio_job_payload(row):
         "status": row["status"],
         "result_url": row["result_url"],
         "error_message": row["error_message"],
+        "error_code": _infer_studio_error_code(row["error_message"]),
         "created_at": row["created_at"],
         "updated_at": row["updated_at"],
     }
@@ -2809,16 +2887,70 @@ def _update_studio_job(job_id, status, result_url=None, error_message=None):
         ))
 
 
-def _notify_art_ready(creator, result_url):
+# ── Studio quota helpers ─────────────────────────────────────────────────
+def _studio_period():
+    """Current quota period key ('YYYY-MM' in UTC). Quotas roll over on
+    the 1st of each month."""
+    return datetime.now(timezone.utc).strftime("%Y-%m")
+
+
+def _studio_period_reset_iso():
+    """First day of the next period as an ISO date the client can render
+    ("June 1, 2026"). Used in the 429 quota response."""
+    now = datetime.now(timezone.utc)
+    year = now.year + (1 if now.month == 12 else 0)
+    month = 1 if now.month == 12 else now.month + 1
+    return f"{year:04d}-{month:02d}-01"
+
+
+def _studio_quota_count(player, period=None):
+    period = period or _studio_period()
+    with _app_db() as conn:
+        row = conn.execute("""
+            SELECT count FROM studio_quotas
+            WHERE player = ? AND period = ?
+        """, (player, period)).fetchone()
+    return int(row["count"]) if row else 0
+
+
+def _studio_quota_consume(player):
+    """Increment this player's count for the current period. Returns the
+    new total."""
+    period = _studio_period()
+    now = _utc_now_iso()
+    with _app_db() as conn:
+        conn.execute("""
+            INSERT INTO studio_quotas (player, period, count, updated_at)
+            VALUES (?, ?, 1, ?)
+            ON CONFLICT(player, period) DO UPDATE SET
+                count = count + 1,
+                updated_at = excluded.updated_at
+        """, (player, period, now))
+        row = conn.execute(
+            "SELECT count FROM studio_quotas WHERE player = ? AND period = ?",
+            (player, period),
+        ).fetchone()
+    return int(row["count"]) if row else 0
+
+
+def _notify_art_ready(creator, result_url, gallery_id=None):
     if _push_config_error():
         return
+    # Deep-link straight to the same lightbox a gallery click opens.
+    # Studio reads ?image=<id> on load and opens the matching entry; if
+    # nothing matches (image already deleted, etc.), it falls back to
+    # the normal gallery grid.
+    if gallery_id:
+        target_url = f"/en/Tools/art/?image={gallery_id}"
+    else:
+        target_url = result_url or "/en/Tools/art/"
     try:
         with _app_db() as conn:
             _fanout_push(
                 conn,
                 "Your Vallombrosa art is ready",
                 "Your Studio piece has finished and is in the shared gallery.",
-                result_url or "/en/Tools/art/",
+                target_url,
                 recipients=[creator],
             )
     except Exception:
@@ -2848,7 +2980,7 @@ def _run_studio_job(job_id, prompt, style_key, creator, enhance):
             return
 
         _update_studio_job(job_id, "done", result_url=result_url)
-        _notify_art_ready(creator, result_url)
+        _notify_art_ready(creator, result_url, gallery_id=gallery.get("id"))
     except Exception as exc:
         logging.exception("Studio job failed")
         _update_studio_job(job_id, "error", error_message=str(exc)[:500])
@@ -4074,15 +4206,44 @@ def studio_generate():
     prompt, error = _studio_prompt_from_body(body)
     if error:
         payload, status = error
+        payload.setdefault("error_code", "invalid_prompt")
         return jsonify(payload), status
     style_key, error = _studio_style_from_body(body)
     if error:
         payload, status = error
+        payload.setdefault("error_code", "invalid_prompt")
         return jsonify(payload), status
     creator, auth_error = _studio_creator_from_body(body, require_login=True)
     if auth_error:
+        # auth_error is a Flask Response object — re-tag with error_code.
+        try:
+            data = auth_error.get_json(silent=True) or {}
+            if isinstance(data, dict) and "error_code" not in data:
+                data["error_code"] = "auth"
+                return jsonify(data), auth_error.status_code
+        except Exception:
+            pass
         return auth_error
     enhance = _studio_enhance_from_body(body)
+
+    # Per-player monthly cap. STUDIO_MONTHLY_QUOTA=0 disables the check
+    # (useful for local dev). The DM creator slot is also exempt so the
+    # admin can backfill without burning their own budget.
+    if STUDIO_MONTHLY_QUOTA > 0 and creator != "DM":
+        used = _studio_quota_count(creator)
+        if used >= STUDIO_MONTHLY_QUOTA:
+            return jsonify({
+                "error": (
+                    f"You've used all {STUDIO_MONTHLY_QUOTA} of your image "
+                    f"generations this month."
+                ),
+                "error_code": "quota",
+                "quota": {
+                    "used": used,
+                    "limit": STUDIO_MONTHLY_QUOTA,
+                    "resets_at": _studio_period_reset_iso(),
+                },
+            }), 429
 
     job_id = secrets.token_urlsafe(18)
     now = _utc_now_iso()
@@ -4094,6 +4255,13 @@ def studio_generate():
             )
             VALUES (?, ?, ?, ?, 'pending', NULL, NULL, ?, ?)
         """, (job_id, creator, prompt, style_key, now, now))
+
+    # Count the quota here, before kicking off the background job, so a
+    # mid-job server crash can't be used to bypass the cap. The job
+    # itself may still fail at the OpenAI step — we deliberately don't
+    # refund (failed attempts cost compute on our side too).
+    if STUDIO_MONTHLY_QUOTA > 0 and creator != "DM":
+        _studio_quota_consume(creator)
 
     thread = threading.Thread(
         target=_run_studio_job,
@@ -4231,6 +4399,92 @@ def list_gallery():
         "limit": limit,
         "entries": public,
     })
+
+
+@app.route("/api/descriptions", methods=["GET"])
+def list_descriptions():
+    """Return the names known to the prompt enhancer (descriptions.json),
+    grouped by category. Used by the Studio's 'Available references'
+    panel so players can see what entities they can mention without
+    describing them visually."""
+    try:
+        with open(DEFAULT_DESCRIPTIONS_FILE, "r", encoding="utf-8") as fh:
+            data = json.load(fh)
+    except Exception:
+        return jsonify({"categories": []})
+
+    category_labels = {
+        "player_characters": "Player Characters",
+        "npcs": "NPCs",
+        "locations": "Locations",
+        "items": "Items",
+        "groups": "Groups",
+    }
+    categories = []
+    for key, raw in data.items():
+        if key.startswith("_") or not isinstance(raw, dict):
+            continue
+        names = sorted(raw.keys(), key=str.lower)
+        categories.append({
+            "key": key,
+            "label": category_labels.get(key, key.replace("_", " ").title()),
+            "entries": names,
+        })
+    return jsonify({"categories": categories})
+
+
+@app.route("/api/gallery/<gallery_id>/favorite", methods=["POST", "DELETE"])
+def gallery_favorite(gallery_id):
+    """Toggle a per-player favorite on a gallery entry. POST stars,
+    DELETE unstars. The favorite row is keyed by (player, gallery_id);
+    a row whose gallery_id no longer exists in the manifest is left
+    dangling and ignored client-side at render time."""
+    if _auth_login_required():
+        player, auth_error = _logged_in_player_name()
+        if auth_error:
+            return auth_error
+    else:
+        player = _player_name_from_request()
+    if not player:
+        return jsonify({"error": "Player name required", "error_code": "auth"}), 400
+
+    if request.method == "POST":
+        with _app_db() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO gallery_favorites
+                    (player, gallery_id, favorited_at)
+                VALUES (?, ?, ?)
+            """, (player, gallery_id, _utc_now_iso()))
+        return jsonify({"ok": True, "favorited": True})
+
+    with _app_db() as conn:
+        conn.execute("""
+            DELETE FROM gallery_favorites
+            WHERE player = ? AND gallery_id = ?
+        """, (player, gallery_id))
+    return jsonify({"ok": True, "favorited": False})
+
+
+@app.route("/api/gallery/favorites", methods=["GET"])
+def gallery_favorites_list():
+    """Return the set of gallery_ids the named player has favorited.
+    Cheap O(rows) — gallery is small. The client merges this with the
+    gallery list to render the heart state on each card."""
+    if _auth_login_required():
+        player, auth_error = _logged_in_player_name()
+        if auth_error:
+            return auth_error
+    else:
+        player = _player_name_from_request()
+    if not player:
+        return jsonify({"ids": []})
+    with _app_db() as conn:
+        rows = list(conn.execute("""
+            SELECT gallery_id FROM gallery_favorites
+            WHERE player = ?
+            ORDER BY favorited_at DESC
+        """, (player,)))
+    return jsonify({"ids": [r["gallery_id"] for r in rows]})
 
 
 @app.route("/api/gallery/image/<path:filename>", methods=["GET"])
