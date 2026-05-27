@@ -2981,21 +2981,26 @@ def _fallback_lore_draft(kind, title, description, connections, notes=""):
         relation = item.get("relation") or "Connection"
         note = item.get("note") or ""
         if target:
-            line = f"- **{relation}.** {target}"
+            line = f"- **{target}** — {relation}"
             if note:
-                line += f" — {note}"
+                line += f"; {note}"
             connection_lines.append(line)
 
     summary = description.strip().split("\n", 1)[0][:220] or f"A new {kind} submitted for the wiki."
-    markdown = (
-        f"# {title}\n\n"
-        "{{IMAGE}}\n\n"
-        f"{description.strip()}\n\n"
-        "## Notes\n\n"
-        f"{notes.strip() or 'No additional notes were provided.'}\n\n"
-        "## Connections\n\n"
-        + ("\n".join(connection_lines) if connection_lines else "- No connections were provided.")
-    )
+    notes_block = notes.strip()
+    parts = [
+        f"# {title}",
+        "{{IMAGE}}",
+        description.strip(),
+    ]
+    if notes_block:
+        parts.extend(["---", "## Notes", notes_block])
+    parts.extend([
+        "---",
+        "## Connections",
+        "\n".join(connection_lines) if connection_lines else "- No connections were provided.",
+    ])
+    markdown = "\n\n".join(parts)
     image_prompt = (
         f"{title}. {description.strip()} Connections for visual grounding: "
         f"{_connections_to_text(connections)}"
@@ -3020,7 +3025,24 @@ def _generate_lore_draft_text(kind, title, description, connections, notes, cont
         "known facts. Do not invent secrets, hidden motives, unrevealed plot, "
         "or canon beyond the submission. If something is uncertain, write it "
         "plainly as a note for DM review rather than pretending it is settled. "
-        "Return strict JSON only."
+        "Return strict JSON only.\n"
+        "\n"
+        "STYLE (match the existing Vallombrosa wiki):\n"
+        "- After the `# Title` and `{{IMAGE}}` placeholder, lead with one "
+        "  or two paragraphs of plain prose that set up what this is. Never "
+        "  start the body with a section heading like `## Overview` — let "
+        "  the lede paragraphs be the overview.\n"
+        "- Use 2–4 useful `## Section` headings to organize the rest "
+        "  (e.g. In Play, Function, Known History, Notes). Pick whatever "
+        "  sections suit this specific entry; don't force a fixed outline.\n"
+        "- Insert a horizontal rule (`---`) on its own line between major "
+        "  sections, including before `## Connections`.\n"
+        "- End with `## Connections`. Render each entry as "
+        "  `- **{Target name}** — {relation}; {note}` with NO hyperlinks. "
+        "  Do not invent or guess wiki URLs — the publisher resolves links "
+        "  to real wiki pages by name. Plain bold name only.\n"
+        "- Tone: matter-of-fact, observational, in the campaign's voice. "
+        "  No dramatic narrator framing.\n"
     )
     user_msg = f"""
 Draft a wiki entry for this submitted {kind_label}.
@@ -3043,7 +3065,7 @@ Retrieved codex context:
 Return exactly this JSON object:
 {{
   "summary": "One concise public description, 180 characters max.",
-  "markdown": "The wiki page body in Markdown. Start with '# {title}'. Include a standalone {{{{IMAGE}}}} placeholder after the heading. For item entries, do not create an HTML stat/card layout; the publisher applies the item template. Use useful sections for this type of entry, and end with '## Connections'.",
+  "markdown": "The wiki page body in Markdown. Follow the STYLE block in the system message exactly: '# {title}' heading, '{{{{IMAGE}}}}' placeholder, lede paragraphs (NOT a heading), '---' between sections, '## Connections' at the end with bold names only (no URLs). For item entries, do not create an HTML stat/card layout; the publisher applies the item template.",
   "image_prompt": "A visual prompt for generating one clean wiki image for this entry. Use concrete details and any relevant known character/place descriptions."
 }}
 """
