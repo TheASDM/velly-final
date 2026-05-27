@@ -545,6 +545,68 @@ dateCreated: 2026-05-24T00:00:00.000Z
   font-size: 1.05rem;
 }
 
+/* "Pin to wiki" menu — small popover anchored under the lightbox
+   action bar. Lists the grounded entities the image was tied to. */
+.vos-art-pin-menu {
+  position: absolute;
+  top: 3.5rem;
+  right: 1rem;
+  z-index: 14;
+  min-width: 240px;
+  max-width: min(360px, 80vw);
+  padding: 0.55rem;
+  border: 1px solid rgba(212, 165, 116, 0.45);
+  border-radius: 8px;
+  background: rgba(8, 6, 12, 0.96);
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.7);
+  display: grid;
+  gap: 0.3rem;
+}
+.vos-art-pin-menu[hidden] { display: none; }
+.vos-art-pin-menu-title {
+  margin: 0 0 0.2rem;
+  padding: 0 0.35rem;
+  color: rgba(212, 199, 173, 0.7);
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.vos-art-pin-option {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.45rem 0.55rem;
+  border: 1px solid rgba(201, 161, 74, 0.18);
+  border-radius: 6px;
+  background: rgba(7, 6, 10, 0.5);
+  color: var(--vos-cream);
+  font-family: 'Crimson Text', Georgia, serif;
+  font-size: 0.9rem;
+  text-align: left;
+  cursor: pointer;
+}
+.vos-art-pin-option:hover {
+  border-color: rgba(212, 165, 116, 0.55);
+  background: rgba(212, 165, 116, 0.1);
+}
+.vos-art-pin-option-kind {
+  color: rgba(212, 165, 116, 0.7);
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.55rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.vos-art-pin-empty {
+  padding: 0.55rem;
+  color: rgba(212, 199, 173, 0.6);
+  font-style: italic;
+  font-size: 0.88rem;
+}
+
 /* "Load more" button at gallery bottom. */
 .vos-art-load-more {
   display: block;
@@ -1248,7 +1310,9 @@ body.is-dm-mode .vos-art-lightbox-delete { display: inline-flex; }
     <div class="vos-art-lightbox-actions">
       <button class="vos-art-icon-btn" id="vos-art-lightbox-favorite" type="button" aria-label="Favorite this image" title="Favorite">♡</button>
       <button class="vos-art-icon-btn" id="vos-art-lightbox-share" type="button" aria-label="Share this image" title="Share">↗</button>
+      <button class="vos-art-icon-btn" id="vos-art-lightbox-pin" type="button" aria-label="Pin this image to a wiki page" title="Pin to wiki">📌</button>
     </div>
+    <div class="vos-art-pin-menu" id="vos-art-pin-menu" hidden role="menu" aria-label="Pin to wiki page"></div>
     <button class="vos-art-lightbox-delete" id="vos-art-lightbox-delete" type="button" aria-label="Delete this image (DM)" title="Delete this image">×</button>
     <button class="vos-art-lightbox-close" type="button" aria-label="Close lightbox">×</button>
     <img id="vos-art-lightbox-img" alt="">
@@ -1836,8 +1900,12 @@ body.is-dm-mode .vos-art-lightbox-delete { display: inline-flex; }
   let currentLightboxEntry = null;
   const lightFavorite = document.getElementById('vos-art-lightbox-favorite');
   const lightShare    = document.getElementById('vos-art-lightbox-share');
+  const lightPin      = document.getElementById('vos-art-lightbox-pin');
+  const pinMenuEl     = document.getElementById('vos-art-pin-menu');
+  let wikiPagesByTitle = null;
   function openLightbox(e) {
     currentLightboxEntry = e;
+    if (pinMenuEl) pinMenuEl.hidden = true;
     lightImg.src = assetUrl(e.image_url);
     lightImg.alt = e.prompt || '';
     if (lightFavorite) {
@@ -1873,6 +1941,7 @@ body.is-dm-mode .vos-art-lightbox-delete { display: inline-flex; }
     lightbox.setAttribute('aria-hidden', 'true');
     lightImg.src = '';
     currentLightboxEntry = null;
+    if (pinMenuEl) pinMenuEl.hidden = true;
   }
   document.addEventListener('vos:open-gallery-piece', (evt) => {
     if (!evt.detail) return;
@@ -1891,6 +1960,143 @@ body.is-dm-mode .vos-art-lightbox-delete { display: inline-flex; }
     lightShare.addEventListener('click', () => {
       if (currentLightboxEntry) shareEntry(currentLightboxEntry);
     });
+  }
+  if (lightPin) {
+    lightPin.addEventListener('click', () => {
+      if (currentLightboxEntry) togglePinMenu(currentLightboxEntry);
+    });
+  }
+  // Click outside the pin menu (but inside the lightbox) closes it.
+  if (pinMenuEl) {
+    document.addEventListener('click', (evt) => {
+      if (pinMenuEl.hidden) return;
+      if (pinMenuEl.contains(evt.target) || evt.target === lightPin) return;
+      pinMenuEl.hidden = true;
+    });
+  }
+
+  // ── Pin-to-wiki menu ────────────────────────────────────────────────
+  async function loadWikiPagesIndex() {
+    if (wikiPagesByTitle) return wikiPagesByTitle;
+    try {
+      const r = await fetch('/data/wiki-pages.json', { cache: 'default' });
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      const data = await r.json();
+      const map = new Map();
+      (Array.isArray(data) ? data : []).forEach((entry) => {
+        if (!entry || !entry.title) return;
+        map.set(entry.title.toLowerCase(), entry);
+      });
+      wikiPagesByTitle = map;
+    } catch (e) {
+      wikiPagesByTitle = new Map();
+    }
+    return wikiPagesByTitle;
+  }
+
+  // Given a grounded_in name (e.g. 'Caravel "Car" Asteri'), find a
+  // matching wiki page by case-insensitive title — exact first, then a
+  // best-effort substring fallback so 'Caravel' will still match
+  // 'Caravel "Car" Asteri' if the gallery only recorded the short name.
+  function resolveWikiPageForName(map, name) {
+    if (!name) return null;
+    const key = name.toLowerCase();
+    if (map.has(key)) return map.get(key);
+    for (const [title, entry] of map.entries()) {
+      if (title.includes(key) || key.includes(title)) return entry;
+    }
+    return null;
+  }
+
+  async function togglePinMenu(entry) {
+    if (!pinMenuEl) return;
+    if (!pinMenuEl.hidden) {
+      pinMenuEl.hidden = true;
+      return;
+    }
+    pinMenuEl.innerHTML = '<div class="vos-art-pin-empty">Loading wiki entries…</div>';
+    pinMenuEl.hidden = false;
+
+    const map = await loadWikiPagesIndex();
+    const grounded = Array.isArray(entry.grounded_in) ? entry.grounded_in : [];
+    const candidates = [];
+    const seen = new Set();
+    grounded.forEach((name) => {
+      const match = resolveWikiPageForName(map, name);
+      if (!match || seen.has(match.url)) return;
+      seen.add(match.url);
+      candidates.push({ name, page: match });
+    });
+
+    pinMenuEl.innerHTML = '';
+    const title = document.createElement('div');
+    title.className = 'vos-art-pin-menu-title';
+    title.textContent = 'Pin to wiki';
+    pinMenuEl.appendChild(title);
+
+    if (!candidates.length) {
+      const empty = document.createElement('div');
+      empty.className = 'vos-art-pin-empty';
+      empty.textContent = grounded.length
+        ? 'None of the grounded entities match a published wiki page.'
+        : 'This image has no grounded entities to pin to.';
+      pinMenuEl.appendChild(empty);
+      return;
+    }
+
+    candidates.forEach((cand) => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'vos-art-pin-option';
+      const labelWrap = document.createElement('span');
+      const nameEl = document.createElement('div');
+      nameEl.textContent = cand.page.title;
+      labelWrap.appendChild(nameEl);
+      btn.appendChild(labelWrap);
+      const kind = document.createElement('span');
+      kind.className = 'vos-art-pin-option-kind';
+      kind.textContent = cand.page.kind || 'Wiki';
+      btn.appendChild(kind);
+      btn.addEventListener('click', () => pinImageToWiki(entry, cand.page, btn));
+      pinMenuEl.appendChild(btn);
+    });
+  }
+
+  async function pinImageToWiki(entry, page, button) {
+    const creator = getCurrentCreatorName();
+    if (!creator || !getCurrentAuthToken()) {
+      setStatus('Log in to pin images.', true);
+      pinMenuEl.hidden = true;
+      await openStudioLogin();
+      return;
+    }
+    button.disabled = true;
+    const originalText = button.firstChild ? button.firstChild.textContent : '';
+    button.firstChild && (button.firstChild.textContent = 'Pinning…');
+    try {
+      const r = await fetch(
+        API_BASE + '/api/gallery/' + encodeURIComponent(entry.id)
+          + '/pin?name=' + encodeURIComponent(creator),
+        {
+          method: 'POST',
+          headers: requestHeaders({ 'Content-Type': 'application/json' }),
+          body: JSON.stringify({ wiki_url: page.url }),
+        }
+      );
+      const data = await r.json().catch(() => ({}));
+      if (!r.ok) throw new Error(data.error || 'HTTP ' + r.status);
+      if (data.already_pinned) {
+        setStatus('Already pinned to ' + page.title + '.');
+      } else {
+        setStatus('Pinned to ' + page.title + '. It will appear after the next site build.');
+      }
+    } catch (e) {
+      setStatus('Pin failed: ' + e.message, true);
+    } finally {
+      button.disabled = false;
+      button.firstChild && (button.firstChild.textContent = originalText);
+      pinMenuEl.hidden = true;
+    }
   }
   lightbox.addEventListener('click', (e) => { if (e.target === lightbox) closeLightbox(); });
   lightbox.querySelector('.vos-art-lightbox-close').addEventListener('click', closeLightbox);

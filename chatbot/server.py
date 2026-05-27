@@ -3716,6 +3716,87 @@ def _source_file_url(source_file):
     return f"/en/{path}/" if path else None
 
 
+def _wiki_url_to_source_path(wiki_url):
+    """Inverse of _source_file_url: '/en/Venturia/Items/foo/' -> the on-
+    disk SITE_SOURCE_DIR/Venturia/Items/foo.md (or .../index.md for
+    section roots). Returns None when the URL isn't a wiki page or the
+    target source file doesn't exist."""
+    if not wiki_url or not isinstance(wiki_url, str):
+        return None
+    if not wiki_url.startswith("/en/"):
+        return None
+    # Normalise: strip /en/ prefix and trailing slash
+    rel = wiki_url[4:].rstrip("/")
+    if not rel:
+        return None
+    # Reject path traversal — `..` and absolute paths can never refer to
+    # a wiki source file under SITE_SOURCE_DIR.
+    if ".." in rel.split("/") or rel.startswith("/"):
+        return None
+    base = SITE_SOURCE_DIR / rel
+    candidates = [
+        SITE_SOURCE_DIR / f"{rel}.md",
+        SITE_SOURCE_DIR / rel / "index.md",
+    ]
+    for path in candidates:
+        try:
+            path.resolve().relative_to(SITE_SOURCE_DIR.resolve())
+        except (ValueError, OSError):
+            continue
+        if path.exists() and path.is_file():
+            return path
+    return None
+
+
+# Match the start of any "## Gallery" heading, leading whitespace tolerated.
+_WIKI_GALLERY_HEADING_RE = re.compile(r"(?m)^\s*##\s+Gallery\s*$")
+# Match the next H2 (## ...) after a given offset — used to find the end
+# of the Gallery section.
+_WIKI_NEXT_H2_RE = re.compile(r"(?m)^##\s+\S")
+
+
+def _append_image_to_wiki_gallery(source_path, image_abs_url, alt_text,
+                                  gallery_id, pinned_by):
+    """Append an image to the wiki page's ## Gallery section, creating
+    that section if it doesn't exist. Idempotent on image_abs_url.
+    Returns True if the file was modified, False if the image was
+    already present."""
+    text = source_path.read_text(encoding="utf-8")
+
+    # Idempotency: any existing reference to this image URL counts as
+    # already-pinned. Avoids accidental duplicates from double-clicks.
+    if image_abs_url in text:
+        return False
+
+    safe_alt = re.sub(r"[\[\]\n]", " ", str(alt_text or "Pinned art")).strip() or "Pinned art"
+    comment = (
+        f"<!-- pinned by {pinned_by or 'unknown'}, "
+        f"gallery_id {gallery_id}, {_utc_now_iso()} -->"
+    )
+    image_line = f"![{safe_alt}]({image_abs_url})"
+    block = f"{comment}\n{image_line}\n"
+
+    gallery_match = _WIKI_GALLERY_HEADING_RE.search(text)
+    if gallery_match:
+        # Insert at the end of the existing Gallery section (right before
+        # the next H2, or at EOF if Gallery is the last section).
+        start = gallery_match.end()
+        next_h2 = _WIKI_NEXT_H2_RE.search(text, start)
+        if next_h2:
+            insert_pos = next_h2.start()
+            head = text[:insert_pos].rstrip() + "\n\n"
+            tail = text[insert_pos:]
+            new_text = head + block + "\n" + tail
+        else:
+            new_text = text.rstrip() + "\n\n" + block
+    else:
+        new_text = text.rstrip() + "\n\n---\n\n## Gallery\n\n" + block
+
+    source_path.write_text(new_text, encoding="utf-8")
+    _chown_like_site(source_path)
+    return True
+
+
 def _wiki_link_for_name(name):
     label = str(name or "").strip()
     if not label:
@@ -4618,6 +4699,77 @@ def gallery_favorites_list():
             ORDER BY favorited_at DESC
         """, (player,)))
     return jsonify({"ids": [r["gallery_id"] for r in rows]})
+
+
+@app.route("/api/gallery/<gallery_id>/pin", methods=["POST"])
+def gallery_pin(gallery_id):
+    """Append a gallery image to a wiki page's ## Gallery section.
+
+    Body: { "wiki_url": "/en/Venturia/Items/the-listener-s-coin/" }
+
+    Auth: the image's creator (matched against the logged-in player) or
+    a signed-in DM. Either authenticates by the usual flows — the player
+    auth token in Authorization for the creator path, the DM session
+    JWT in Authorization for the DM path. The wiki_url must resolve to
+    an existing source markdown file under SITE_SOURCE_DIR. Pinning the
+    same image twice is a no-op (idempotent on image URL)."""
+    body = request.get_json(silent=True) or {}
+    wiki_url = (body.get("wiki_url") or "").strip()
+    if not wiki_url:
+        return jsonify({"error": "wiki_url is required", "error_code": "invalid"}), 400
+
+    # Look up the gallery entry by id from the manifest.
+    entries = _load_manifest()
+    entry = next((e for e in entries if e.get("id") == gallery_id), None)
+    if not entry:
+        return jsonify({"error": "Gallery image not found", "error_code": "not_found"}), 404
+
+    # Auth: image creator OR signed-in DM.
+    creator = (entry.get("created_by") or "").strip()
+    actor = None
+    player, _player_err = _logged_in_player_name({"name": creator})
+    if player and player == creator:
+        actor = player
+    else:
+        dm_email, _dm_err = _verify_session_jwt(_extract_bearer_token())
+        if dm_email:
+            actor = f"DM ({dm_email})"
+    if not actor:
+        return jsonify({
+            "error": "Only the image creator or a signed-in DM can pin this image.",
+            "error_code": "auth",
+        }), 403
+
+    source_path = _wiki_url_to_source_path(wiki_url)
+    if not source_path:
+        return jsonify({
+            "error": f"No wiki page found at {wiki_url}",
+            "error_code": "not_found",
+        }), 404
+
+    # Resolve the absolute image URL the wiki page should embed. The
+    # gallery filename lives under /api/gallery/image/<filename>.
+    filename = entry.get("filename")
+    if not filename:
+        return jsonify({"error": "Gallery entry has no filename", "error_code": "invalid"}), 500
+    image_url = f"/api/gallery/image/{filename}"
+    alt_text = entry.get("prompt") or "Pinned from the Studio"
+
+    try:
+        modified = _append_image_to_wiki_gallery(
+            source_path, image_url, alt_text, gallery_id, actor
+        )
+    except Exception as exc:
+        logging.exception("Failed to pin gallery image to wiki")
+        return jsonify({"error": str(exc), "error_code": "api_error"}), 500
+
+    return jsonify({
+        "ok": True,
+        "wiki_url": wiki_url,
+        "source_file": str(source_path.relative_to(SITE_SOURCE_DIR)),
+        "modified": modified,
+        "already_pinned": not modified,
+    })
 
 
 @app.route("/api/gallery/image/<path:filename>", methods=["GET"])
