@@ -55,7 +55,6 @@ class LoreMasterChatbot {
             this.baseUrl = '';
         }
         this.conversationHistory = [];
-        this.mode = 'player';
         this.rules = false;
         this.vibe = null;
         this.artMode = false;
@@ -79,7 +78,6 @@ class LoreMasterChatbot {
             if (clearBtn) clearBtn.style.display = 'inline';
         }
         this.applyMobileLayout(this.isOpen);
-        this.updateModeIndicator();
         this.updateRulesIndicator();
         this.updateVibeIndicator();
         this.updateArtIndicator();
@@ -114,7 +112,6 @@ class LoreMasterChatbot {
                 <div class="chatbot-header">
                     <img src="${this.baseUrl}/images/loremaster192x192.png" alt="" class="chatbot-avatar-header">
                     <span>Enzo</span>
-                    <span id="dm-mode-badge" style="display:none;margin-left:0.4rem;font-size:0.55rem;letter-spacing:0.1em;text-transform:uppercase;color:#0d0b11;background:#c9a84c;padding:0.1rem 0.35rem;border-radius:2px;font-weight:700;vertical-align:middle">DM</span>
                     <span id="rules-badge" style="display:none;margin-left:0.3rem;font-size:0.55rem;letter-spacing:0.1em;text-transform:uppercase;color:#e8dcc8;background:rgba(139,26,42,0.5);border:1px solid rgba(139,26,42,0.7);padding:0.1rem 0.35rem;border-radius:2px;font-weight:700;vertical-align:middle">5e</span>
                     <span id="vibe-badge" style="display:none;margin-left:0.3rem;font-size:0.55rem;letter-spacing:0.1em;text-transform:uppercase;padding:0.1rem 0.35rem;border-radius:2px;font-weight:700;vertical-align:middle">💅</span>
                     <button id="chat-clear-btn" style="display:none;margin-left:auto;margin-right:0.5rem;background:none;border:none;cursor:pointer;font-size:0.7rem;letter-spacing:0.08em;color:rgba(212,165,116,0.45);padding:0;line-height:1;text-transform:uppercase;font-family:inherit" title="Start a new conversation">new chat</button>
@@ -363,9 +360,15 @@ class LoreMasterChatbot {
         try {
             const response = await this.sendMessageToAPI(message);
             this.hideThinkingIndicator();
-            this.addMessage(response.response, 'assistant');
+            this.addMessage(response.response, 'assistant', {
+                citations: Array.isArray(response.citations) ? response.citations : [],
+            });
             this.conversationHistory = response.conversationHistory;
             this.saveHistory();
+            if (response.historyTruncated && !this.historyTruncatedNoticed) {
+                this.historyTruncatedNoticed = true;
+                this.addSystemMessage('Older messages condensed to fit Enzo’s memory budget.');
+            }
         } catch (error) {
             console.error('Error sending message:', error);
             this.hideThinkingIndicator();
@@ -403,18 +406,12 @@ class LoreMasterChatbot {
             body: JSON.stringify({
                 message: message,
                 conversationHistory: this.conversationHistory,
-                mode: this.mode,
                 rules: this.rules,
                 vibe: this.vibe
             })
         });
         if (!response.ok) throw new Error(`API error: ${response.status}`);
         const data = await response.json();
-        if (data.mode && data.mode !== this.mode) {
-            this.mode = data.mode;
-            this.updateModeIndicator();
-            saveToLocalStorage('loreMasterMode', this.mode);
-        }
         if (typeof data.rules === 'boolean' && data.rules !== this.rules) {
             this.rules = data.rules;
             this.updateRulesIndicator();
@@ -431,13 +428,10 @@ class LoreMasterChatbot {
         const yq = this.vibe === 'yasqueen';
         const fab = this.vibe === 'fabio';
         const rocky = this.vibe === 'rocky';
-        const dm = this.mode === 'dm';
         const r = this.rules;
         if (yq)       return 'loremasterYasQueen';
         if (fab)      return 'loremasterfabio';
         if (rocky)    return 'loremasterRocky';
-        if (dm && r)  return 'loremaster5eDM';
-        if (dm)       return 'loremasterDM';
         if (r)        return 'loremaster5e';
         return 'loremaster';
     }
@@ -479,18 +473,6 @@ class LoreMasterChatbot {
         this.updateIcons();
         this.updateModeControls();
     }
-    updateModeIndicator() {
-        const widget = document.getElementById('chatbot-widget');
-        const badge = document.getElementById('dm-mode-badge');
-        if (this.mode === 'dm') {
-            widget.classList.add('dm-mode');
-            if (badge) badge.style.display = 'inline';
-        } else {
-            widget.classList.remove('dm-mode');
-            if (badge) badge.style.display = 'none';
-        }
-        this.updateIcons();
-    }
     updateModeControls() {
         const activeMode = this.getActiveResponseMode();
         document.querySelectorAll('[data-chat-mode]').forEach((button) => {
@@ -515,7 +497,8 @@ class LoreMasterChatbot {
             input.placeholder = 'Ask about NPCs, lore, locations…';
         }
     }
-    addMessage(text, role) {
+    addMessage(text, role, options) {
+        const opts = options || {};
         const messagesContainer = document.getElementById('chat-messages');
         if (!messagesContainer) return;
         this.removeEmptyState();
@@ -524,6 +507,11 @@ class LoreMasterChatbot {
             wrapper.className = 'message-row assistant';
             const iconName = this.getIconName();
             wrapper.innerHTML = `<img src="${this.baseUrl}/images/${iconName}192x192.png" alt="" class="chatbot-avatar"><div class="message assistant">${renderMarkdown(text)}<span class="message-source-tag">from the codex</span></div>`;
+            const messageEl = wrapper.querySelector('.message.assistant');
+            const citations = Array.isArray(opts.citations) ? opts.citations : [];
+            if (messageEl && citations.length) {
+                messageEl.appendChild(this.renderCitations(citations));
+            }
             messagesContainer.appendChild(wrapper);
         } else {
             const messageDiv = document.createElement('div');
@@ -532,6 +520,42 @@ class LoreMasterChatbot {
             messagesContainer.appendChild(messageDiv);
         }
         this.scrollToBottom();
+    }
+
+    renderCitations(citations) {
+        // Collapsible "Sources" chip row under each assistant message.
+        // Chips with a url become links; ones without (5e rules etc.)
+        // render as plain spans. Citations are pre-deduplicated server
+        // side and capped at the top auto-injected matches.
+        const details = document.createElement('details');
+        details.className = 'chatbot-citations';
+        details.style.cssText = 'margin-top:0.65rem;font-size:0.82rem;';
+        const summary = document.createElement('summary');
+        summary.textContent = `Sources (${citations.length})`;
+        summary.style.cssText = 'cursor:pointer;color:rgba(212,165,116,0.85);letter-spacing:0.08em;text-transform:uppercase;font-size:0.62rem;font-family:Cinzel,Georgia,serif;';
+        details.appendChild(summary);
+        const list = document.createElement('div');
+        list.style.cssText = 'display:flex;flex-wrap:wrap;gap:0.3rem;margin-top:0.4rem;';
+        citations.forEach((c) => {
+            const label = `${c.name || c.source_file || 'source'}${
+                typeof c.score === 'number' ? ` · ${Math.round(c.score * 100)}%` : ''
+            }`;
+            const chipStyle = 'display:inline-flex;align-items:center;padding:0.18rem 0.55rem;border:1px solid rgba(212,165,116,0.28);border-radius:999px;background:rgba(212,165,116,0.06);color:#e8dcc8;font-family:Crimson Text,Georgia,serif;line-height:1.2;text-decoration:none;';
+            let chip;
+            if (c.url) {
+                chip = document.createElement('a');
+                chip.href = c.url;
+                chip.target = '_blank';
+                chip.rel = 'noopener';
+            } else {
+                chip = document.createElement('span');
+            }
+            chip.style.cssText = chipStyle;
+            chip.textContent = label;
+            list.appendChild(chip);
+        });
+        details.appendChild(list);
+        return details;
     }
     addSystemMessage(text) {
         const messagesContainer = document.getElementById('chat-messages');
@@ -600,7 +624,6 @@ class LoreMasterChatbot {
     }
     saveHistory() {
         saveToLocalStorage('loreMasterHistory', this.conversationHistory);
-        saveToLocalStorage('loreMasterMode', this.mode);
         saveToLocalStorage('loreMasterRules', this.rules);
         saveToLocalStorage('loreMasterVibe', this.vibe);
         saveToLocalStorage('loreMasterArtMode', this.artMode);
@@ -609,10 +632,6 @@ class LoreMasterChatbot {
         const saved = loadFromLocalStorage('loreMasterHistory');
         if (saved && Array.isArray(saved)) {
             this.conversationHistory = saved;
-        }
-        const savedMode = loadFromLocalStorage('loreMasterMode');
-        if (savedMode === 'dm' || savedMode === 'player') {
-            this.mode = savedMode;
         }
         const savedRules = loadFromLocalStorage('loreMasterRules');
         if (savedRules === true) {
@@ -656,13 +675,11 @@ class LoreMasterChatbot {
     }
     clearHistory() {
         this.conversationHistory = [];
-        this.mode = 'player';
         this.rules = false;
         this.vibe = null;
         this.artMode = false;
         this.saveHistory();
         this.displayHistory();
-        this.updateModeIndicator();
         this.updateRulesIndicator();
         this.updateVibeIndicator();
         this.updateArtIndicator();

@@ -921,17 +921,38 @@ class Loremaster:
 
         self._build_name_index()
 
+    @staticmethod
+    def _normalize(text):
+        """Lowercase, accent-fold, drop apostrophes/quotes/hyphens, then
+        collapse whitespace. Lets 'Caravel’s backstory' match the
+        'Caravel' alias and 'San Lorenzo's' match 'san lorenzo'."""
+        if not text:
+            return ""
+        text = unicodedata.normalize("NFKD", str(text))
+        text = "".join(ch for ch in text if not unicodedata.combining(ch))
+        text = text.lower()
+        # Strip apostrophes (incl. curly), quotes, hyphens; keep other
+        # word-separators (spaces, slashes) as-is so n-gram boundaries
+        # stay sensible.
+        text = re.sub(r"[’'‘“”\"\-]+", "", text)
+        text = re.sub(r"\s+", " ", text).strip()
+        return text
+
     def _build_name_index(self):
-        """Map lowercased names AND aliases to vector store entries."""
+        """Map normalized names AND aliases to vector store entries.
+        Normalization (NFKD + accent-fold + lowercase + apostrophe-strip)
+        lets the keyword matcher catch 'Caravel’s', 'Caravel,',
+        accented variants, etc."""
         index = {}
         for entry in self._vector_store or []:
             names = set()
             name = entry.get("name", "")
             if name:
-                names.add(name.lower())
+                names.add(self._normalize(name))
             for alias in entry.get("aliases", []) or []:
                 if alias:
-                    names.add(alias.lower())
+                    names.add(self._normalize(alias))
+            names.discard("")
             for n in names:
                 index.setdefault(n, []).append(entry)
         self._name_index = index
@@ -941,10 +962,12 @@ class Loremaster:
         )
 
     def _keyword_match(self, query):
-        """Find vector store entries whose name/alias matches an n-gram in the query."""
+        """Find vector store entries whose name/alias matches an n-gram
+        in the query. Both query and index are normalized via _normalize
+        so punctuation/accents don't break the lookup."""
         if not self._name_index:
             return []
-        words = query.lower().split()
+        words = self._normalize(query).split()
         matched = {}
         for n in range(1, min(5, len(words) + 1)):
             for i in range(len(words) - n + 1):
@@ -1099,13 +1122,29 @@ class Loremaster:
         return auto_inject, additional
 
     def build_rag_context(self, query, rules=False):
+        """Build the RAG context block AND the structured citations list
+        that the chat endpoint surfaces to the client. Returns
+        (text_block, citations) where citations is a list of
+        {name, score, url} dicts deduplicated by source_file."""
         auto_inject, additional = self.retrieve(query, rules)
         blocks = []
+        citations = []
+        seen = set()
         for match in auto_inject:
             blocks.append(
                 f"[DETAILED REFERENCE: {match['name']} from {match['source_file']} "
                 f"(similarity: {match['score']:.2f})]\n{match['text']}"
             )
+            source = match.get("source_file") or ""
+            if source in seen:
+                continue
+            seen.add(source)
+            citations.append({
+                "name": match.get("name") or "",
+                "score": round(float(match.get("score", 0.0)), 3),
+                "url": _source_file_url(source),
+                "source_file": source,
+            })
         if additional:
             lines = [
                 f"  - {m['name']} ({m['source_file']}, score: {m['score']:.2f})"
@@ -1116,7 +1155,7 @@ class Loremaster:
                 "You can use the lookup_entry tool to load full details on any of these:\n"
                 + "\n".join(lines)
             )
-        return "\n\n".join(blocks)
+        return "\n\n".join(blocks), citations
 
     # ── Tool: lookup_entry ───────────────────────────────────────────────
 
@@ -1124,12 +1163,12 @@ class Loremaster:
         """Find a page by exact name/alias match. Long pages are stored as
         multiple chunks in the vector store — this reassembles all chunks of
         the matching page into a single full-text response."""
-        name_lower = name.lower().strip()
-        entries = self._name_index.get(name_lower)
+        name_norm = self._normalize(name)
+        entries = self._name_index.get(name_norm) if name_norm else None
         if not entries:
-            # Fall back to substring search if exact match misses
+            # Fall back to substring search against normalized names
             entries = [e for e in (self._vector_store or [])
-                       if name_lower in e.get("name", "").lower()]
+                       if name_norm and name_norm in self._normalize(e.get("name", ""))]
         if not entries:
             return f"No entry found matching '{name}'. Try a different name or spelling."
 
@@ -1299,7 +1338,7 @@ class Loremaster:
                 {"role": "user", "content": message},
                 {"role": "assistant", "content": reply},
             ]
-            return reply, updated_history, rules, vibe
+            return reply, updated_history, rules, vibe, []
 
         # /yasqueen toggle
         if cmd in ("/yasqueen on", "/yasqueen off"):
@@ -1314,7 +1353,7 @@ class Loremaster:
                 {"role": "user", "content": message},
                 {"role": "assistant", "content": reply},
             ]
-            return reply, updated_history, rules, vibe
+            return reply, updated_history, rules, vibe, []
 
         # /fabio toggle
         if cmd in ("/fabio on", "/fabio off"):
@@ -1329,7 +1368,7 @@ class Loremaster:
                 {"role": "user", "content": message},
                 {"role": "assistant", "content": reply},
             ]
-            return reply, updated_history, rules, vibe
+            return reply, updated_history, rules, vibe, []
 
         # /rocky toggle
         if cmd in ("/rocky on", "/rocky off"):
@@ -1344,7 +1383,7 @@ class Loremaster:
                 {"role": "user", "content": message},
                 {"role": "assistant", "content": reply},
             ]
-            return reply, updated_history, rules, vibe
+            return reply, updated_history, rules, vibe, []
 
         # /brainstorm toggle — character-development mode (a different role,
         # not just a personality skin like the other vibes).
@@ -1364,7 +1403,7 @@ class Loremaster:
                 {"role": "user", "content": message},
                 {"role": "assistant", "content": reply},
             ]
-            return reply, updated_history, rules, vibe
+            return reply, updated_history, rules, vibe, []
 
         # Build system prompt. Brainstorm mode swaps the role entirely
         # (creative partner instead of factual reference); other vibes overlay
@@ -1431,11 +1470,12 @@ class Loremaster:
 
         # RAG
         rag_context = ""
+        citations = []
         if _skip_rag(message):
             logging.info("  RAG: skipped (short/casual message)")
         else:
             try:
-                rag_context = self.build_rag_context(message, rules)
+                rag_context, citations = self.build_rag_context(message, rules)
             except Exception as e:
                 logging.error("  RAG failed: %s", e)
 
@@ -1459,7 +1499,7 @@ class Loremaster:
             {"role": "user", "content": message},
             {"role": "assistant", "content": response_text},
         ]
-        return response_text, updated_history, rules, vibe
+        return response_text, updated_history, rules, vibe, citations
 
 
 # ── Logging ──────────────────────────────────────────────────────────────────
@@ -2874,7 +2914,7 @@ def chat():
         conversation_history = sanitized
 
     try:
-        response_text, updated_history, new_rules, new_vibe = engine.chat(
+        response_text, updated_history, new_rules, new_vibe, citations = engine.chat(
             message, conversation_history, rules, vibe
         )
 
@@ -2887,6 +2927,7 @@ def chat():
             "rules": new_rules,
             "vibe": new_vibe,
             "historyTruncated": history_truncated,
+            "citations": citations,
         })
     except Exception as e:
         logging.exception("Chat handler error")
@@ -4924,19 +4965,6 @@ def _check_dm_passphrase(candidate):
     return hmac.compare_digest(
         DM_PASSPHRASE.lower(), candidate.strip().lower()
     )
-
-
-@app.route("/api/dm-check", methods=["POST"])
-def dm_check():
-    """Lightweight passphrase validator the UI hits when a DM is logging
-    in. Returns 200 on match, 403 otherwise. 503 if DM mode is disabled
-    on this server (env var unset) so the UI can hide the toggle entirely.
-    """
-    if not DM_PASSPHRASE:
-        return jsonify({"error": "DM mode not configured on this server"}), 503
-    if _check_dm_passphrase(_extract_passphrase()):
-        return jsonify({"ok": True}), 200
-    return jsonify({"error": "Invalid passphrase"}), 403
 
 
 @app.route("/api/gallery/<gallery_id>", methods=["DELETE"])
