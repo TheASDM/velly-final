@@ -42,6 +42,13 @@ services:
       # DM passphrase gates the Art Studio gallery delete button.
       # Unset = delete disabled (gallery is append-only via the API).
       DM_PASSPHRASE: ${DM_PASSPHRASE:-}
+      # CORS allowlist (comma-separated origins). Unset = fall open to
+      # "*" for local dev.
+      ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:-}
+      # /api/chat rate limit (Flask-Limiter syntax, e.g. "60/hour;10/minute").
+      CHAT_RATE_LIMIT: ${CHAT_RATE_LIMIT:-30/hour;5/minute}
+      # Max bytes of conversation_history accepted per /api/chat call.
+      MAX_CONVERSATION_BYTES: ${MAX_CONVERSATION_BYTES:-60000}
     volumes:
       # Campaign data files + vector stores (read-only)
       - ./campaign-data:/app/data:ro

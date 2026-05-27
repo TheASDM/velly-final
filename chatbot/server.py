@@ -29,6 +29,8 @@ from pathlib import Path
 
 import requests as http_requests
 from flask import Flask, abort, jsonify, request, send_from_directory
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
 
 try:
     from pywebpush import WebPushException, webpush as send_webpush
@@ -81,6 +83,15 @@ if IMAGE_MODEL and IMAGE_MODEL not in ALLOWED_IMAGE_MODELS:
 # Per-player monthly cap on Studio image generations. Override via env;
 # 0 disables the quota check entirely (useful for local dev).
 STUDIO_MONTHLY_QUOTA = int(os.environ.get("STUDIO_MONTHLY_QUOTA", "30"))
+
+# Rate limits applied to /api/chat. Keyed by player auth token when
+# present, falling back to remote IP otherwise. Override either via env;
+# accepts any Flask-Limiter syntax (e.g. "60/hour;10/minute").
+CHAT_RATE_LIMIT = os.environ.get("CHAT_RATE_LIMIT", "30/hour;5/minute")
+# Conversation history is capped both by message count (last 40) and by
+# total bytes to stop pathological clients from sending megabytes of
+# replayed history per request.
+MAX_CONVERSATION_BYTES = int(os.environ.get("MAX_CONVERSATION_BYTES", str(60_000)))
 
 # DM passphrase gates the gallery delete endpoint. When unset, the delete
 # route is disabled entirely — you can still purge images by editing files
@@ -949,28 +960,44 @@ class Loremaster:
         headers = {"Content-Type": "application/json"}
         if OLLAMA_API_KEY:
             headers["Authorization"] = f"Bearer {OLLAMA_API_KEY}"
+        # Three attempts with exponential backoff. A flaky Ollama
+        # silently used to drop us to zero-context responses; the
+        # retry covers transient hiccups (network, restart, brief
+        # 5xx) without making the user re-ask.
+        delays_ms = [100, 300, 900]
+        last_error = None
         t0 = time.time()
-        try:
-            resp = http_requests.post(
-                f"{OLLAMA_URL}/api/embeddings",
-                json={"model": EMBEDDING_MODEL, "prompt": text},
-                headers=headers,
-                timeout=10,
-            )
-            resp.raise_for_status()
-            embedding = resp.json().get("embedding")
-            logging.info(
-                "  Embedding: %dms (%d dims)",
-                int((time.time() - t0) * 1000),
-                len(embedding) if embedding else 0,
-            )
-            return embedding
-        except Exception as e:
-            logging.error(
-                "  Embedding FAILED (%dms): %s",
-                int((time.time() - t0) * 1000), e,
-            )
-            return None
+        for attempt, delay_ms in enumerate(delays_ms + [0]):
+            try:
+                resp = http_requests.post(
+                    f"{OLLAMA_URL}/api/embeddings",
+                    json={"model": EMBEDDING_MODEL, "prompt": text},
+                    headers=headers,
+                    timeout=10,
+                )
+                resp.raise_for_status()
+                embedding = resp.json().get("embedding")
+                logging.info(
+                    "  Embedding: %dms total (%d attempt%s, %d dims)",
+                    int((time.time() - t0) * 1000),
+                    attempt + 1, "" if attempt == 0 else "s",
+                    len(embedding) if embedding else 0,
+                )
+                return embedding
+            except Exception as e:
+                last_error = e
+                if attempt < len(delays_ms):
+                    logging.warning(
+                        "  Embedding attempt %d failed: %s — retrying in %dms",
+                        attempt + 1, e, delay_ms,
+                    )
+                    time.sleep(delay_ms / 1000.0)
+                    continue
+        logging.error(
+            "  Embedding FAILED after %d attempts (%dms): %s",
+            len(delays_ms) + 1, int((time.time() - t0) * 1000), last_error,
+        )
+        return None
 
     # ── RAG retrieval ────────────────────────────────────────────────────
 
@@ -1154,10 +1181,21 @@ class Loremaster:
 
     def call_anthropic(self, system_prompt, messages, temperature=None):
         temp = TEMPERATURE if temperature is None else temperature
+        # Prompt caching: wrap the (mostly-static) system prompt in a
+        # single cacheable block. Per-request context lives in user
+        # messages, not in `system`, so the cache prefix is stable
+        # across requests in the same vibe/mode. Anthropic returns
+        # cache_creation_input_tokens / cache_read_input_tokens
+        # alongside the normal input_tokens count.
+        system_blocks = [{
+            "type": "text",
+            "text": system_prompt,
+            "cache_control": {"type": "ephemeral"},
+        }]
         payload = {
             "model": ANTHROPIC_MODEL,
             "max_tokens": MAX_TOKENS,
-            "system": system_prompt,
+            "system": system_blocks,
             "messages": messages,
             "tools": self._tool_definitions(),
             "temperature": temp,
@@ -1189,9 +1227,13 @@ class Loremaster:
             result = resp.json()
             usage = result.get("usage", {})
             logging.info(
-                "  Anthropic response (%dms): stop=%s, input_tokens=%d, output_tokens=%d",
+                "  Anthropic response (%dms): stop=%s, input=%d "
+                "(cache_create=%d, cache_read=%d), output=%d",
                 api_ms, result.get("stop_reason"),
-                usage.get("input_tokens", 0), usage.get("output_tokens", 0),
+                usage.get("input_tokens", 0),
+                usage.get("cache_creation_input_tokens", 0),
+                usage.get("cache_read_input_tokens", 0),
+                usage.get("output_tokens", 0),
             )
 
             if result.get("stop_reason") != "tool_use":
@@ -1860,6 +1902,40 @@ def _enhance_image_prompt(raw_prompt, style_key, matched_entries):
 # ── Flask app ────────────────────────────────────────────────────────────────
 
 app = Flask(__name__)
+
+
+def _chat_rate_limit_key():
+    """Limit by the player auth token when we can identify the user
+    (so a shared NAT/IP doesn't penalise everyone), falling back to
+    the remote IP for anonymous callers."""
+    auth = request.headers.get("Authorization", "")
+    if auth.lower().startswith("bearer "):
+        token = auth[7:].strip()
+        if token:
+            # Hash so the key cache doesn't carry the raw token around.
+            return "tok:" + hashlib.sha256(token.encode()).hexdigest()[:24]
+    return "ip:" + get_remote_address()
+
+
+limiter = Limiter(
+    app=app,
+    key_func=_chat_rate_limit_key,
+    storage_uri="memory://",
+    default_limits=[],   # no global default; only /api/chat is limited
+)
+
+
+@app.errorhandler(429)
+def _rate_limited(exc):
+    return jsonify({
+        "error": (
+            "Slow down — you've hit the chat rate limit. "
+            "Try again in a minute."
+        ),
+        "error_code": "rate_limited",
+    }), 429
+
+
 engine = Loremaster()
 
 logging.basicConfig(
@@ -1868,26 +1944,55 @@ logging.basicConfig(
 )
 
 
-_CORS_METHODS = "GET, POST, DELETE, OPTIONS"
+_CORS_METHODS = "GET, POST, PUT, DELETE, OPTIONS"
 _CORS_HEADERS = "Content-Type, Authorization, X-DM-Passphrase, X-Admin-Token, X-Player-Token"
+
+# Comma-separated list of allowed origins. When unset we fall open to
+# "*" so local dev (no env vars, file://, etc.) keeps working. Set in
+# .env on the VPS to lock down production.
+ALLOWED_ORIGINS = [
+    origin.strip()
+    for origin in os.environ.get("ALLOWED_ORIGINS", "").split(",")
+    if origin.strip()
+]
+
+
+def _cors_origin_for_request():
+    """Return the value to send back in Access-Control-Allow-Origin for
+    this request, or None to omit the header entirely (which makes the
+    browser block the response). When ALLOWED_ORIGINS is unset, fall
+    open to '*' so local dev works without configuration."""
+    if not ALLOWED_ORIGINS:
+        return "*"
+    origin = (request.headers.get("Origin") or "").strip()
+    if origin and origin in ALLOWED_ORIGINS:
+        return origin
+    return None
+
+
+def _apply_cors_headers(response):
+    allowed = _cors_origin_for_request()
+    if allowed:
+        response.headers["Access-Control-Allow-Origin"] = allowed
+        if allowed != "*":
+            # Tell caches the response depends on the Origin header so a
+            # cached response for one origin can't be served to another.
+            response.headers["Vary"] = "Origin"
+    response.headers["Access-Control-Allow-Methods"] = _CORS_METHODS
+    response.headers["Access-Control-Allow-Headers"] = _CORS_HEADERS
+    return response
 
 
 @app.before_request
 def handle_cors_preflight():
     if request.method == "OPTIONS":
         response = app.make_default_options_response()
-        response.headers["Access-Control-Allow-Origin"] = "*"
-        response.headers["Access-Control-Allow-Methods"] = _CORS_METHODS
-        response.headers["Access-Control-Allow-Headers"] = _CORS_HEADERS
-        return response
+        return _apply_cors_headers(response)
 
 
 @app.after_request
 def add_cors_headers(response):
-    response.headers["Access-Control-Allow-Origin"] = "*"
-    response.headers["Access-Control-Allow-Methods"] = _CORS_METHODS
-    response.headers["Access-Control-Allow-Headers"] = _CORS_HEADERS
-    return response
+    return _apply_cors_headers(response)
 
 
 def _admin_auth_configured():
@@ -2731,6 +2836,7 @@ def rsvp():
 
 
 @app.route("/api/chat", methods=["POST"])
+@limiter.limit(lambda: CHAT_RATE_LIMIT)
 def chat():
     body = request.get_json(silent=True) or {}
     message = body.get("message", "")
@@ -2744,16 +2850,27 @@ def chat():
     if len(message) > 4000:
         return jsonify({"error": "Message too long"}), 400
 
-    # Validate and sanitize conversation history
+    # Validate and sanitize conversation history. Cap is two-sided:
+    # last 40 messages AND a total-bytes budget so a misbehaving client
+    # can't ship megabytes of replayed history per request.
+    history_truncated = False
     if not isinstance(conversation_history, list):
         conversation_history = []
     else:
+        original_count = len(conversation_history)
         sanitized = []
         for msg in conversation_history[-40:]:
             if (isinstance(msg, dict)
                     and msg.get("role") in ("user", "assistant")
                     and isinstance(msg.get("content"), str)):
                 sanitized.append({"role": msg["role"], "content": msg["content"][:8000]})
+        # Now trim from the OLDEST end until we fit MAX_CONVERSATION_BYTES.
+        running_bytes = sum(len(m["content"]) for m in sanitized)
+        while sanitized and running_bytes > MAX_CONVERSATION_BYTES:
+            running_bytes -= len(sanitized[0]["content"])
+            sanitized.pop(0)
+        if len(sanitized) < original_count:
+            history_truncated = True
         conversation_history = sanitized
 
     try:
@@ -2764,13 +2881,12 @@ def chat():
         write_log("user", message)
         write_log("assistant", response_text)
 
-        # Always report mode=player for frontend compatibility (DM mode is gone)
         return jsonify({
             "response": response_text,
             "conversationHistory": updated_history,
-            "mode": "player",
             "rules": new_rules,
             "vibe": new_vibe,
+            "historyTruncated": history_truncated,
         })
     except Exception as e:
         logging.exception("Chat handler error")
