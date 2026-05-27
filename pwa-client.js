@@ -525,9 +525,29 @@
     }
   }
 
-  async function enablePush(button, status) {
+  function pushSupported() {
+    return 'serviceWorker' in navigator
+      && 'PushManager' in window
+      && 'Notification' in window;
+  }
+
+  // Resolves to one of: 'unsupported', 'denied', 'enabled', 'disabled'.
+  // 'disabled' means the device could subscribe but hasn't.
+  async function getPushStatus() {
+    if (!pushSupported()) return 'unsupported';
+    if (Notification.permission === 'denied') return 'denied';
+    const registration = await navigator.serviceWorker.ready.catch(() => null);
+    if (!registration) return 'disabled';
+    const subscription = await registration.pushManager.getSubscription();
+    return subscription ? 'enabled' : 'disabled';
+  }
+
+  // Subscribe this device to push. Throws on any failure (permission
+  // denied, server misconfigured, no identity, etc.) — caller renders the
+  // resulting message.
+  async function enablePush() {
     const name = await ensureIdentity();
-    if (!('serviceWorker' in navigator) || !('PushManager' in window) || !('Notification' in window)) {
+    if (!pushSupported()) {
       throw new Error('Push is not supported on this device.');
     }
 
@@ -541,9 +561,6 @@
       throw new Error('Notification permission was not granted.');
     }
 
-    button.disabled = true;
-    status.textContent = 'Enabling...';
-
     const registration = await navigator.serviceWorker.ready;
     let subscription = await registration.pushManager.getSubscription();
     if (!subscription) {
@@ -555,6 +572,17 @@
 
     await registerSubscription(name, subscription);
     setStorage(PUSH_DISMISSED_KEY, '1');
+  }
+
+  // Unsubscribe this device from push. The server-side record is left
+  // alone (delivery will start failing, which is a cheap-to-clean signal).
+  async function disablePush() {
+    if (!('serviceWorker' in navigator)) return;
+    const registration = await navigator.serviceWorker.ready.catch(() => null);
+    if (!registration) return;
+    const subscription = await registration.pushManager.getSubscription();
+    if (!subscription) return;
+    await subscription.unsubscribe();
   }
 
   async function maybeSyncExistingSubscription() {
@@ -613,8 +641,10 @@
     };
 
     enableButton.addEventListener('click', async () => {
+      enableButton.disabled = true;
+      status.textContent = 'Enabling...';
       try {
-        await enablePush(enableButton, status);
+        await enablePush();
         status.textContent = 'Enabled on this device.';
         setTimeout(closeCard, 900);
       } catch (error) {
@@ -760,15 +790,20 @@
     openIdentitySettings: () => ensureIdentity({ force: true }),
     signOut: clearIdentity,
     refreshAvatarBadge: () => syncAvatarBadge(),
+    getPushStatus,
+    enablePush,
+    disablePush,
+    getRoster: () => roster.slice(),
+    lookupPlayer: lookupRoster,
+    getProfileDisplayName,
   };
 
   window.addEventListener('DOMContentLoaded', () => {
     enhanceWikiLinkedLists();
     initRsvpControls();
-    const profileButton = document.getElementById('vos-profile-button');
-    if (profileButton) {
-      profileButton.addEventListener('click', () => ensureIdentity({ force: true }));
-    }
+    // The avatar button is now an <a href="/settings/"> — let the browser
+    // navigate. Identity switching lives inside settings (and is still
+    // reachable from the "Welcome, X" pill on the right of the app bar).
     const identityButton = document.getElementById('vos-app-identity-button');
     if (identityButton) {
       identityButton.addEventListener('click', () => ensureIdentity({ force: true }));

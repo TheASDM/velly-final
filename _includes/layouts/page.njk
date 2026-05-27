@@ -46,13 +46,13 @@
         <svg aria-hidden="true" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg>
       </a>
       {%- else -%}
-      <button class="vos-app-icon-button vos-app-profile" id="vos-profile-button" type="button" aria-label="Profile and app settings" title="Profile and app settings">
+      <a class="vos-app-icon-button vos-app-profile" id="vos-profile-button" href="/settings/" aria-label="Settings" title="Settings">
         <span class="vos-app-avatar-wrap">
           <img class="vos-app-avatar-img" id="vos-app-avatar-img" alt="">
           <svg class="vos-app-avatar-fallback" id="vos-app-avatar-fallback" aria-hidden="true" viewBox="0 0 24 24"><path d="M20 21a8 8 0 0 0-16 0"/><circle cx="12" cy="8" r="4"/></svg>
           <span class="vos-app-avatar-badge" id="vos-app-avatar-badge" hidden></span>
         </span>
-      </button>
+      </a>
       {%- endif -%}
       <div class="vos-app-title-block">
         <div class="vos-app-eyebrow">{{ appEyebrow }}</div>
