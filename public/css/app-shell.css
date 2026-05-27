@@ -610,6 +610,38 @@
     background: rgba(212, 165, 116, 0.075);
     border-bottom-color: rgba(212, 165, 116, 0.48);
   }
+  /* CTA variant — used for the prominent "Contribute Lore" tile on the
+     Venturia hub and the smaller version on Home. */
+  .vos-row-chip-cta {
+    min-height: 60px;
+    border-color: rgba(212, 165, 116, 0.45);
+    background:
+      linear-gradient(180deg, rgba(212, 165, 116, 0.14), rgba(212, 165, 116, 0.05)),
+      rgba(8, 7, 11, 0.7);
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.4);
+  }
+  .vos-row-chip-cta .vos-row-chip-title {
+    color: var(--vos-gold-bright);
+    letter-spacing: 0.07em;
+  }
+  .vos-row-chip-cta .vos-row-chip-meta {
+    color: rgba(232, 220, 200, 0.84);
+  }
+  .vos-row-chip-cta:hover {
+    color: var(--vos-cream);
+    border-color: rgba(212, 165, 116, 0.7);
+    background:
+      linear-gradient(180deg, rgba(212, 165, 116, 0.22), rgba(212, 165, 116, 0.08)),
+      rgba(12, 10, 16, 0.78);
+  }
+  .vos-row-chip-cta-compact {
+    min-height: 44px;
+    padding: 0.55rem 0.78rem;
+  }
+  .vos-row-chip-cta-compact .vos-row-chip-meta {
+    margin-top: 0.1rem;
+    font-style: normal;
+  }
   .vos-row-chip-title,
   .vos-row-chip-meta {
     display: block;
@@ -994,6 +1026,41 @@
     background: rgba(232, 205, 132, 0.28);
     color: var(--vos-cream);
     padding: 0 0.08em;
+  }
+  /* Pagefind ships its own internal layout which crowds on small phones.
+     These overrides keep the search box and result rows breathable below
+     420px and prevent horizontal overflow at 380px (smallest target). */
+  @media (max-width: 480px) {
+    .pagefind-ui {
+      --pagefind-ui-scale: 0.92;
+    }
+    .pagefind-ui__search-input {
+      padding-right: 2.5rem !important;
+      padding-left: 1rem !important;
+      font-size: 0.95rem !important;
+    }
+    .pagefind-ui__result {
+      padding: 0.6rem 0 !important;
+    }
+    .pagefind-ui__result-title {
+      font-size: 0.95rem !important;
+      line-height: 1.25 !important;
+    }
+    .pagefind-ui__result-excerpt {
+      font-size: 0.86rem !important;
+      line-height: 1.35 !important;
+      overflow-wrap: break-word !important;
+      word-break: break-word !important;
+    }
+    .pagefind-ui__result-thumb {
+      display: none !important;
+    }
+    .pagefind-ui__drawer,
+    .pagefind-ui__results,
+    .pagefind-ui__results-area {
+      max-width: 100% !important;
+      overflow-x: hidden !important;
+    }
   }
 
   /* ── Auto-index list (when a *index.md page renders) ─────────────────── */

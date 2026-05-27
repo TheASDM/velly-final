@@ -29,7 +29,7 @@ autoIndex: false
         <h2 class="vos-panel-title">In Play</h2>
         <span class="vos-panel-note">{{ campaign.latestSession.arc }}</span>
       </div>
-      <div class="vos-row-chip-list">
+      <div class="vos-row-chip-list" data-in-play-container="venturia" data-in-play-limit="5">
         {% for item in campaign.inPlay %}
           {% if loop.index0 < 5 %}
           <a class="vos-row-chip" href="{{ item.link }}">
@@ -57,6 +57,16 @@ autoIndex: false
         <span class="vos-row-chip-arrow" aria-hidden="true">&rsaquo;</span>
       </a>
     </div>
+  </section>
+
+  <section class="vos-wiki-cta" aria-labelledby="vos-wiki-cta-title">
+    <a class="vos-row-chip vos-row-chip-cta" href="/submit-lore/">
+      <span>
+        <span class="vos-row-chip-title" id="vos-wiki-cta-title">Contribute Lore</span>
+        <span class="vos-row-chip-meta">Draft an item, person, place, faction, or lore entry — AI writes the entry and the DM reviews it before it joins the codex.</span>
+      </span>
+      <span class="vos-row-chip-arrow" aria-hidden="true">›</span>
+    </a>
   </section>
 
   <section class="vos-wiki-sections" aria-labelledby="vos-wiki-sections-title">
@@ -114,13 +124,6 @@ autoIndex: false
           <span class="vos-row-chip-meta">Named equipment, heirlooms, magic items, and objects with history.</span>
         </span>
         <span class="vos-row-chip-badge" aria-hidden="true">Gear</span>
-      </a>
-      <a class="vos-row-chip" href="/submit-lore/">
-        <span>
-          <span class="vos-row-chip-title">Submit Lore</span>
-          <span class="vos-row-chip-meta">Draft an item, person, place, faction, or lore entry for DM review.</span>
-        </span>
-        <span class="vos-row-chip-badge" aria-hidden="true">Draft</span>
       </a>
       <a class="vos-row-chip" href="/en/Venturia/Maps/">
         <span>

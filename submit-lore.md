@@ -105,6 +105,38 @@ autoIndex: false
   color: rgba(233,225,208,0.64);
   font-style: italic;
 }
+.vos-submit-card.is-rejected {
+  border-left: 3px solid rgba(228, 130, 130, 0.6);
+}
+.vos-submit-reject-reason {
+  margin-top: 0.65rem;
+  padding: 0.55rem 0.7rem;
+  border: 1px solid rgba(228, 130, 130, 0.35);
+  border-radius: 6px;
+  background: rgba(40, 18, 18, 0.55);
+  color: #f3d4d4;
+  font-size: 0.92rem;
+  line-height: 1.4;
+}
+.vos-submit-reject-label {
+  display: block;
+  margin-bottom: 0.18rem;
+  color: rgba(243, 196, 196, 0.85);
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.vos-submit-reject-text {
+  display: block;
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+.vos-submit-resubmit {
+  margin-top: 0.65rem;
+  align-self: start;
+}
 @media (max-width: 560px) {
   .vos-submit-card {
     grid-template-columns: 1fr;
@@ -255,6 +287,7 @@ Opposes: The Fog Wardens"></textarea>
       const kind = document.createElement('span');
       const status = document.createElement('span');
       card.className = 'vos-submit-card';
+      if (item.status === 'rejected') card.classList.add('is-rejected');
       title.textContent = item.title || 'Untitled';
       summary.textContent = item.generated_summary || item.short_description || '';
       meta.className = 'vos-submit-meta';
@@ -263,13 +296,37 @@ Opposes: The Fog Wardens"></textarea>
       status.className = 'vos-submit-chip';
       status.textContent = item.status || 'submitted';
       meta.append(kind, status);
-      if (item.error_message) {
+      if (item.status !== 'rejected' && item.error_message) {
         const warning = document.createElement('span');
         warning.className = 'vos-submit-chip';
         warning.textContent = 'Needs DM';
         meta.appendChild(warning);
       }
       main.append(title, summary, meta);
+
+      // Rejected submissions: surface the DM's reason and offer a one-tap
+      // "Edit & resubmit" that prefills the form above with this draft's
+      // fields. The rejected row is left in history as a record.
+      if (item.status === 'rejected') {
+        const reasonRow = document.createElement('div');
+        reasonRow.className = 'vos-submit-reject-reason';
+        const reasonLabel = document.createElement('span');
+        reasonLabel.className = 'vos-submit-reject-label';
+        reasonLabel.textContent = 'DM feedback:';
+        const reasonText = document.createElement('span');
+        reasonText.className = 'vos-submit-reject-text';
+        reasonText.textContent = item.error_message || 'Rejected by DM';
+        reasonRow.append(reasonLabel, reasonText);
+        main.appendChild(reasonRow);
+
+        const resubmit = document.createElement('button');
+        resubmit.type = 'button';
+        resubmit.className = 'vos-button vos-submit-resubmit';
+        resubmit.textContent = 'Edit & resubmit';
+        resubmit.addEventListener('click', () => loadIntoForm(item));
+        main.appendChild(resubmit);
+      }
+
       card.appendChild(main);
       if (item.image_url) {
         const image = document.createElement('img');
@@ -279,6 +336,21 @@ Opposes: The Fog Wardens"></textarea>
       }
       listEl.appendChild(card);
     });
+  }
+
+  function loadIntoForm(item) {
+    if (!item) return;
+    if (kindEl) kindEl.value = item.kind || kindEl.value;
+    if (titleEl) titleEl.value = item.title || '';
+    if (descriptionEl) descriptionEl.value = item.short_description || '';
+    if (connectionsEl) {
+      const list = Array.isArray(item.connections) ? item.connections : [];
+      connectionsEl.value = list.join('\n');
+    }
+    if (notesEl) notesEl.value = item.notes || '';
+    setStatus(statusEl, 'Loaded for editing — change what the DM flagged, then submit again.');
+    form.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    if (titleEl && typeof titleEl.focus === 'function') titleEl.focus();
   }
 
   async function refreshMine() {

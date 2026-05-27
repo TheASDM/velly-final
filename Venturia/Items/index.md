@@ -12,5 +12,4 @@ dateCreated: 2026-05-26T00:00:00.000Z
 
 Named objects matter in Venturia: heirlooms, weapons, masks, contracts, books, and other things that carry history as much as use.
 
-- **[Kaligor](/en/Venturia/Items/kaligor)** — Lotan's rare magic scimitar, an heirloom of the Kaligor line.
-- **[The Listener's Coin](/en/Venturia/Items/the-listener-s-coin)** — Roxy's worn bronze coin, able to listen through solid surfaces for ten minutes before recharging at dawn.
+Every item is listed below — including anything players have submitted and the DM has approved. Wiki search up top is the fastest way to find a specific one.

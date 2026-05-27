@@ -773,7 +773,7 @@ templateEngineOverride: njk
     </article>
     <article class="vos-dash-card vos-inplay-card" aria-labelledby="vos-inplay-heading">
       <h3 id="vos-inplay-heading">Currently In Play</h3>
-      <div class="vos-play-rail">
+      <div class="vos-play-rail" data-in-play-container="home">
         {%- for item in campaign.inPlay %}
         <a class="vos-play-chip" href="{{ item.link }}">
           <span class="vos-play-emblem" aria-hidden="true">{{ item.emblem }}</span>
@@ -819,6 +819,17 @@ templateEngineOverride: njk
   </ul>
 </section>
 {%- endif -%}
+
+<!-- ── CONTRIBUTE LORE (small) ─────────────────────────────────────── -->
+<section class="vos-home-dashboard vos-home-cta">
+  <a class="vos-row-chip vos-row-chip-cta vos-row-chip-cta-compact" href="/submit-lore/">
+    <span>
+      <span class="vos-row-chip-title">Contribute Lore</span>
+      <span class="vos-row-chip-meta">Draft an entry — AI writes it, the DM approves.</span>
+    </span>
+    <span class="vos-row-chip-arrow" aria-hidden="true">›</span>
+  </a>
+</section>
 
 <!-- ── FRESH FROM THE STUDIO ───────────────────────────────────────── -->
 <section class="vos-home-dashboard vos-home-studio" aria-labelledby="vos-studio-heading">

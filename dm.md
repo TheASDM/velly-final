@@ -251,6 +251,59 @@ permalink: /dm/
   color: rgba(233,225,208,0.64);
   font-style: italic;
 }
+.vos-dm-helper {
+  margin: 0 0 0.6rem;
+  color: rgba(212, 199, 173, 0.7);
+  font-size: 0.88rem;
+  line-height: 1.4;
+}
+.vos-dm-helper code {
+  background: rgba(212, 165, 116, 0.12);
+  color: var(--vos-cream);
+  padding: 0.05rem 0.3rem;
+  border-radius: 3px;
+  font-size: 0.85rem;
+}
+.vos-dm-inplay-list {
+  display: grid;
+  gap: 0.5rem;
+}
+.vos-dm-inplay-row {
+  display: grid;
+  grid-template-columns: 1.2fr 1.2fr 0.9fr 0.5fr 1.6fr auto;
+  gap: 0.5rem;
+  align-items: center;
+}
+.vos-dm-inplay-row input {
+  width: 100%;
+  min-height: 36px;
+  padding: 0.35rem 0.55rem;
+  border: 1px solid rgba(201, 168, 76, 0.22);
+  border-radius: 6px;
+  background: rgba(7, 6, 10, 0.55);
+  color: var(--vos-cream);
+  font-family: 'Crimson Text', Georgia, serif;
+  font-size: 0.94rem;
+}
+.vos-dm-inplay-row input:focus {
+  outline: none;
+  border-color: rgba(212, 165, 116, 0.6);
+  background: rgba(7, 6, 10, 0.75);
+}
+.vos-dm-inplay-row button {
+  width: 36px;
+  padding: 0;
+  font-size: 1.1rem;
+}
+@media (max-width: 720px) {
+  .vos-dm-inplay-row {
+    grid-template-columns: 1fr 1fr;
+  }
+  .vos-dm-inplay-row button {
+    grid-column: 1 / -1;
+    width: 100%;
+  }
+}
 .vos-dm-submission-grid {
   display: grid;
   grid-template-columns: minmax(220px, 0.75fr) minmax(0, 1.25fr);
@@ -260,6 +313,47 @@ permalink: /dm/
   display: grid;
   align-content: start;
   gap: 0.55rem;
+}
+.vos-dm-submission-row {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: stretch;
+  gap: 0.55rem;
+}
+.vos-dm-submission-check {
+  align-self: center;
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+}
+.vos-dm-bulk-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+  margin: 0 0 0.65rem;
+  padding: 0.5rem 0.7rem;
+  border: 1px solid rgba(201,168,76,0.22);
+  border-radius: 8px;
+  background: rgba(7,6,10,0.45);
+}
+.vos-dm-bulk-bar[hidden] { display: none; }
+.vos-dm-bulk-select-all {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  color: var(--vos-cream);
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.vos-dm-bulk-select-all input {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
 }
 .vos-dm-submission-item {
   display: grid;
@@ -346,6 +440,16 @@ permalink: /dm/
         <button id="vos-dm-lore-refresh" type="button">Refresh</button>
       </div>
     </div>
+    <div class="vos-dm-bulk-bar" id="vos-dm-lore-bulk-bar" hidden>
+      <label class="vos-dm-bulk-select-all">
+        <input type="checkbox" id="vos-dm-lore-select-all">
+        <span id="vos-dm-lore-select-count">0 selected</span>
+      </label>
+      <div class="vos-dm-actions">
+        <button class="vos-dm-button" id="vos-dm-lore-bulk-publish" type="button" disabled>Publish selected</button>
+        <button class="vos-dm-button is-danger" id="vos-dm-lore-bulk-reject" type="button" disabled>Reject selected</button>
+      </div>
+    </div>
     <div class="vos-dm-submission-grid">
       <div class="vos-dm-submission-list" id="vos-dm-lore-list"></div>
       <form class="vos-dm-form vos-dm-submission-editor" id="vos-dm-lore-form" hidden>
@@ -369,6 +473,10 @@ permalink: /dm/
         <label>
           Image Prompt
           <textarea id="vos-dm-lore-image-prompt"></textarea>
+        </label>
+        <label class="vos-dm-reject-row">
+          Rejection reason (shown to the player)
+          <textarea id="vos-dm-lore-reject-reason" rows="2" maxlength="500" placeholder="Optional — what should change before resubmit? Defaults to 'Rejected by DM'."></textarea>
         </label>
         <div class="vos-dm-actions">
           <button id="vos-dm-lore-redraft" type="button">Regenerate</button>
@@ -438,6 +546,20 @@ permalink: /dm/
       <button id="vos-dm-rsvp-refresh" type="button">Refresh RSVPs</button>
     </div>
     <div class="vos-dm-status" id="vos-dm-rsvp-status" role="status" aria-live="polite"></div>
+  </section>
+
+  <section class="vos-dm-panel" aria-labelledby="vos-dm-inplay-title">
+    <div class="vos-dm-panel-head">
+      <h2 id="vos-dm-inplay-title">Currently In Play</h2>
+      <div class="vos-dm-actions">
+        <button id="vos-dm-inplay-refresh" type="button">Refresh</button>
+        <button id="vos-dm-inplay-add" type="button">Add row</button>
+        <button class="vos-dm-button" id="vos-dm-inplay-save" type="button">Save</button>
+      </div>
+    </div>
+    <p class="vos-dm-helper">Replaces the live "Currently In Play" rail on Home and the In Play panel on the Venturia hub. The static fallback in <code>_data/campaign.js</code> shows until this loads.</p>
+    <div class="vos-dm-inplay-list" id="vos-dm-inplay-list"></div>
+    <div class="vos-dm-status" id="vos-dm-inplay-status" role="status" aria-live="polite"></div>
   </section>
 
   <section class="vos-dm-panel" aria-labelledby="vos-dm-push-title">
@@ -511,6 +633,18 @@ permalink: /dm/
   const sendEl = document.getElementById('vos-dm-send');
   const recipientPickers = new Map();
   const loreListEl = document.getElementById('vos-dm-lore-list');
+  const loreBulkBarEl = document.getElementById('vos-dm-lore-bulk-bar');
+  const loreSelectAllEl = document.getElementById('vos-dm-lore-select-all');
+  const loreSelectCountEl = document.getElementById('vos-dm-lore-select-count');
+  const loreBulkPublishEl = document.getElementById('vos-dm-lore-bulk-publish');
+  const loreBulkRejectEl = document.getElementById('vos-dm-lore-bulk-reject');
+  const selectedLoreIds = new Set();
+
+  const inPlayListEl = document.getElementById('vos-dm-inplay-list');
+  const inPlayStatusEl = document.getElementById('vos-dm-inplay-status');
+  const inPlayAddEl = document.getElementById('vos-dm-inplay-add');
+  const inPlayRefreshEl = document.getElementById('vos-dm-inplay-refresh');
+  const inPlaySaveEl = document.getElementById('vos-dm-inplay-save');
   const loreForm = document.getElementById('vos-dm-lore-form');
   const loreRefreshEl = document.getElementById('vos-dm-lore-refresh');
   const loreStatusEl = document.getElementById('vos-dm-lore-status');
@@ -523,6 +657,7 @@ permalink: /dm/
   const loreRedraftEl = document.getElementById('vos-dm-lore-redraft');
   const loreSaveEl = document.getElementById('vos-dm-lore-save');
   const loreRejectEl = document.getElementById('vos-dm-lore-reject');
+  const loreRejectReasonEl = document.getElementById('vos-dm-lore-reject-reason');
   const lorePublishEl = document.getElementById('vos-dm-lore-publish');
   let selectedLoreId = null;
   let selectedLoreStatus = null;
@@ -775,6 +910,13 @@ permalink: /dm/
 
   function renderLoreList(submissions) {
     loreListEl.innerHTML = '';
+    // Drop any selections that aren't in the new list anymore (e.g.,
+    // after a refresh that removed published / rejected items).
+    const incomingIds = new Set(submissions.map((s) => s.id));
+    for (const id of Array.from(selectedLoreIds)) {
+      if (!incomingIds.has(id)) selectedLoreIds.delete(id);
+    }
+
     if (!submissions.length) {
       const empty = document.createElement('p');
       empty.className = 'vos-dm-empty';
@@ -783,10 +925,26 @@ permalink: /dm/
       loreForm.hidden = true;
       selectedLoreId = null;
       selectedLoreStatus = null;
+      updateBulkBar();
       return;
     }
 
     submissions.forEach((submission) => {
+      const row = document.createElement('div');
+      row.className = 'vos-dm-submission-row';
+      row.dataset.id = submission.id;
+
+      const check = document.createElement('input');
+      check.type = 'checkbox';
+      check.className = 'vos-dm-submission-check';
+      check.checked = selectedLoreIds.has(submission.id);
+      check.setAttribute('aria-label', `Select ${submission.title || 'submission'}`);
+      check.addEventListener('change', () => {
+        if (check.checked) selectedLoreIds.add(submission.id);
+        else selectedLoreIds.delete(submission.id);
+        updateBulkBar();
+      });
+
       const button = document.createElement('button');
       const title = document.createElement('span');
       const meta = document.createElement('span');
@@ -800,8 +958,133 @@ permalink: /dm/
       meta.textContent = `${submission.kindLabel || submission.kind} · ${submission.submitter} · ${submission.status}`;
       button.append(title, meta);
       button.addEventListener('click', () => selectLoreSubmission(submission.id));
-      loreListEl.appendChild(button);
+
+      row.append(check, button);
+      loreListEl.appendChild(row);
     });
+
+    updateBulkBar();
+  }
+
+  function updateBulkBar() {
+    if (!loreBulkBarEl) return;
+    const rows = loreListEl.querySelectorAll('.vos-dm-submission-row');
+    const hasRows = rows.length > 0;
+    loreBulkBarEl.hidden = !hasRows;
+    if (!hasRows) return;
+    const count = selectedLoreIds.size;
+    loreSelectCountEl.textContent = count === 0
+      ? '0 selected'
+      : `${count} selected`;
+    loreBulkPublishEl.disabled = count === 0;
+    loreBulkRejectEl.disabled = count === 0;
+    // Header checkbox reflects the "select-all" state of visible rows.
+    let allChecked = true;
+    let anyChecked = false;
+    rows.forEach((row) => {
+      const cb = row.querySelector('.vos-dm-submission-check');
+      if (cb && cb.checked) anyChecked = true;
+      else allChecked = false;
+    });
+    loreSelectAllEl.checked = anyChecked && allChecked;
+    loreSelectAllEl.indeterminate = anyChecked && !allChecked;
+  }
+
+  function toggleSelectAll() {
+    const rows = loreListEl.querySelectorAll('.vos-dm-submission-row');
+    const target = loreSelectAllEl.checked;
+    rows.forEach((row) => {
+      const id = row.dataset.id;
+      const cb = row.querySelector('.vos-dm-submission-check');
+      if (!cb) return;
+      cb.checked = target;
+      if (target) selectedLoreIds.add(id);
+      else selectedLoreIds.delete(id);
+    });
+    updateBulkBar();
+  }
+
+  async function bulkPublishSelected() {
+    const token = getToken(loreStatusEl);
+    if (!token) return;
+    const ids = Array.from(selectedLoreIds);
+    if (!ids.length) return;
+    const confirmText = ids.length === 1
+      ? 'Publish 1 submission to the wiki?'
+      : `Publish ${ids.length} submissions to the wiki?`;
+    if (!window.confirm(confirmText)) return;
+
+    loreBulkPublishEl.disabled = true;
+    loreBulkRejectEl.disabled = true;
+    let ok = 0;
+    let failed = 0;
+    for (let i = 0; i < ids.length; i += 1) {
+      const id = ids[i];
+      setStatus(loreStatusEl, `Publishing ${i + 1} / ${ids.length}...`);
+      try {
+        // Empty body — server falls back to stored title/slug/markdown/etc.
+        // Retry once with overwrite=true so already-published rows refresh.
+        try {
+          await postJson(`/api/admin/lore-submissions/${encodeURIComponent(id)}/publish`, token, {});
+        } catch (firstError) {
+          await postJson(`/api/admin/lore-submissions/${encodeURIComponent(id)}/publish`, token, { overwrite: true });
+        }
+        ok += 1;
+      } catch (error) {
+        failed += 1;
+      }
+    }
+    selectedLoreIds.clear();
+    await refreshLoreSubmissions();
+    setStatus(
+      loreStatusEl,
+      failed
+        ? `Published ${ok}, ${failed} failed.`
+        : `Published ${ok}.`,
+      failed > 0
+    );
+  }
+
+  async function bulkRejectSelected() {
+    const token = getToken(loreStatusEl);
+    if (!token) return;
+    const ids = Array.from(selectedLoreIds);
+    if (!ids.length) return;
+    const reason = window.prompt(
+      `Reject ${ids.length === 1 ? '1 submission' : ids.length + ' submissions'}. Reason shown to players (optional):`,
+      ''
+    );
+    // prompt() returns null on Cancel, '' on empty OK
+    if (reason === null) return;
+    const trimmed = reason.trim();
+
+    loreBulkPublishEl.disabled = true;
+    loreBulkRejectEl.disabled = true;
+    let ok = 0;
+    let failed = 0;
+    for (let i = 0; i < ids.length; i += 1) {
+      const id = ids[i];
+      setStatus(loreStatusEl, `Rejecting ${i + 1} / ${ids.length}...`);
+      try {
+        await postJson(
+          `/api/admin/lore-submissions/${encodeURIComponent(id)}/reject`,
+          token,
+          trimmed ? { reason: trimmed } : {}
+        );
+        ok += 1;
+      } catch (error) {
+        failed += 1;
+      }
+    }
+    selectedLoreIds.clear();
+    await refreshLoreSubmissions();
+    setStatus(
+      loreStatusEl,
+      failed
+        ? `Rejected ${ok}, ${failed} failed.`
+        : `Rejected ${ok}.`,
+      failed > 0
+    );
   }
 
   function fillLoreForm(submission) {
@@ -908,11 +1191,20 @@ permalink: /dm/
     if (!selectedLoreId) return;
     const token = getToken(loreStatusEl);
     if (!token) return;
-    if (!window.confirm('Reject this submission?')) return;
+    const reason = (loreRejectReasonEl && loreRejectReasonEl.value || '').trim();
+    const confirmText = reason
+      ? `Reject this submission with the reason above? The player will see it.`
+      : 'Reject without a reason? (The player will only see "Rejected by DM".)';
+    if (!window.confirm(confirmText)) return;
     loreRejectEl.disabled = true;
     setStatus(loreStatusEl, 'Rejecting...');
     try {
-      await postJson(`/api/admin/lore-submissions/${encodeURIComponent(selectedLoreId)}/reject`, token, {});
+      await postJson(
+        `/api/admin/lore-submissions/${encodeURIComponent(selectedLoreId)}/reject`,
+        token,
+        reason ? { reason } : {}
+      );
+      if (loreRejectReasonEl) loreRejectReasonEl.value = '';
       await refreshLoreSubmissions();
       setStatus(loreStatusEl, 'Rejected.');
     } catch (error) {
@@ -1036,6 +1328,86 @@ permalink: /dm/
   loreRedraftEl.addEventListener('click', redraftLoreSubmission);
   loreRejectEl.addEventListener('click', rejectLoreSubmission);
   loreForm.addEventListener('submit', publishLoreSubmission);
+  if (loreSelectAllEl) loreSelectAllEl.addEventListener('change', toggleSelectAll);
+  if (loreBulkPublishEl) loreBulkPublishEl.addEventListener('click', bulkPublishSelected);
+  if (loreBulkRejectEl) loreBulkRejectEl.addEventListener('click', bulkRejectSelected);
+
+  // ── Currently In Play editor ──────────────────────────────────────
+  function renderInPlayRow(item) {
+    const row = document.createElement('div');
+    row.className = 'vos-dm-inplay-row';
+    row.innerHTML =
+      `<input class="vos-dm-inplay-name" placeholder="Name" maxlength="120">` +
+      `<input class="vos-dm-inplay-role" placeholder="Role / context" maxlength="120">` +
+      `<input class="vos-dm-inplay-kind" placeholder="PC / NPC / Location / ..." maxlength="40">` +
+      `<input class="vos-dm-inplay-emblem" placeholder="Emblem" maxlength="8">` +
+      `<input class="vos-dm-inplay-link" placeholder="/en/Venturia/..." maxlength="300">` +
+      `<button class="vos-dm-button is-danger" type="button" aria-label="Remove row">×</button>`;
+    if (item) {
+      row.querySelector('.vos-dm-inplay-name').value = item.name || '';
+      row.querySelector('.vos-dm-inplay-role').value = item.role || '';
+      row.querySelector('.vos-dm-inplay-kind').value = item.kind || '';
+      row.querySelector('.vos-dm-inplay-emblem').value = item.emblem || '';
+      row.querySelector('.vos-dm-inplay-link').value = item.link || '';
+    }
+    row.querySelector('button').addEventListener('click', () => row.remove());
+    return row;
+  }
+
+  function renderInPlayList(items) {
+    inPlayListEl.innerHTML = '';
+    (items || []).forEach((item) => inPlayListEl.appendChild(renderInPlayRow(item)));
+  }
+
+  async function refreshInPlay() {
+    setStatus(inPlayStatusEl, 'Loading...');
+    try {
+      const response = await fetch('/api/in-play', { cache: 'no-store' });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(data.error || `HTTP ${response.status}`);
+      renderInPlayList(data.items || []);
+      setStatus(inPlayStatusEl, `Loaded ${data.items ? data.items.length : 0} rows.`);
+    } catch (error) {
+      setStatus(inPlayStatusEl, error.message, true);
+    }
+  }
+
+  async function saveInPlay() {
+    const token = getToken(inPlayStatusEl);
+    if (!token) return;
+    const rows = Array.from(inPlayListEl.querySelectorAll('.vos-dm-inplay-row'));
+    const items = rows.map((row) => ({
+      name: row.querySelector('.vos-dm-inplay-name').value.trim(),
+      role: row.querySelector('.vos-dm-inplay-role').value.trim(),
+      kind: row.querySelector('.vos-dm-inplay-kind').value.trim(),
+      emblem: row.querySelector('.vos-dm-inplay-emblem').value.trim(),
+      link: row.querySelector('.vos-dm-inplay-link').value.trim(),
+    })).filter((item) => item.name);
+
+    inPlaySaveEl.disabled = true;
+    setStatus(inPlayStatusEl, 'Saving...');
+    try {
+      const data = await adminJson('/api/in-play', token, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ items }),
+      });
+      setStatus(inPlayStatusEl, `Saved ${data.count || 0} rows.`);
+      await refreshInPlay();
+    } catch (error) {
+      setStatus(inPlayStatusEl, error.message, true);
+    } finally {
+      inPlaySaveEl.disabled = false;
+    }
+  }
+
+  if (inPlayAddEl) inPlayAddEl.addEventListener('click', () => {
+    inPlayListEl.appendChild(renderInPlayRow(null));
+  });
+  if (inPlayRefreshEl) inPlayRefreshEl.addEventListener('click', refreshInPlay);
+  if (inPlaySaveEl) inPlaySaveEl.addEventListener('click', saveInPlay);
+  // Load once on page open so the DM sees the current saved list.
+  if (inPlayListEl) refreshInPlay();
 
   form.addEventListener('submit', async (event) => {
     event.preventDefault();

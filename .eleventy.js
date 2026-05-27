@@ -72,6 +72,7 @@ module.exports = function (eleventyConfig) {
   eleventyConfig.addPassthroughCopy({ "public/js/viewport-handler.js": "js/viewport-handler.js" });
   eleventyConfig.addPassthroughCopy({ "public/js/search-init.js": "js/search-init.js" });
   eleventyConfig.addPassthroughCopy({ "public/js/settings.js": "js/settings.js" });
+  eleventyConfig.addPassthroughCopy({ "public/js/in-play-live.js": "js/in-play-live.js" });
   // Player roster — also lives in _data/players.json so templates can read
   // it as `players`. Passed through so the PWA client can fetch it at
   // /data/players.json (used as a fallback when /api/auth/config is down).
@@ -108,6 +109,15 @@ module.exports = function (eleventyConfig) {
       if (data.permalink === false || data.permalink === null) return false;
       if (data.permalink) return data.permalink;
       const stem = (data.page && data.page.filePathStem) || "";
+      // Safety: any page under Venturia/DM/ that's been marked published
+      // is almost certainly a typo — fail the build loudly so the typo
+      // doesn't ship a DM-only page to players.
+      if (stem.includes("/Venturia/DM/") && data.published === true) {
+        throw new Error(
+          `DM page ${stem} has 'published: true' — set it to false ` +
+          `(or delete the field) before building.`
+        );
+      }
       if (stem === "/home") return "/";
       if (stem.endsWith("/index")) {
         // /en/Venturia/Locations/index → /en/Venturia/Locations/
