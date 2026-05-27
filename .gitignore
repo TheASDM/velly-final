@@ -46,5 +46,16 @@ node_modules/
 _site/
 .eleventy.cache/
 
-# macOS Finder duplicates ("file 2.json" style)
-"* 2.*"
+# Editor backup files
+*.bak
+
+# Local-only loose scratch files in repo root
+cloudpw.txt
+/.txt
+
+# Unused image scratch dir
+Tools/image/
+
+# macOS Finder duplicates ("file 2.json" style — note: no quotes; literal
+# quotes in gitignore are matched as characters, not metacharacters)
+* 2.*
