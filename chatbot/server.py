@@ -109,6 +109,9 @@ DM_PASSPHRASE = os.environ.get("DM_PASSPHRASE", "").strip()
 # One SQLite file for small read/write app state. This keeps the PWA layer
 # self-contained and backup-friendly: copy the file, keep the app.
 APP_DB_PATH = Path(os.environ.get("APP_DB_PATH", "/app/app-data/vallombrosa.sqlite3"))
+# Vector index lives in its own SQLite file so a rebuild can't corrupt
+# the app-state DB. Kept next to APP_DB_PATH so backups capture both.
+VECTOR_SQLITE_PATH = APP_DB_PATH.parent / "vector_store.sqlite3"
 SITE_SOURCE_DIR = Path(os.environ.get("SITE_SOURCE_DIR", "/site"))
 if not SITE_SOURCE_DIR.exists():
     SITE_SOURCE_DIR = Path(__file__).resolve().parents[1]
@@ -904,6 +907,11 @@ class Loremaster:
         # value: (timestamp, expanded_text). Bounded + TTL'd so a long-
         # running worker doesn't grow unbounded.
         self._query_expansion_cache = {}
+        # sqlite-vec index. None when the extension can't load (we then
+        # fall back to the Python cosine loop). Populated by load().
+        self._vec_db = None
+        self._vec_dim = 0
+        self._entries_by_id = {}
 
     # ── Data loading ─────────────────────────────────────────────────────
 
@@ -957,7 +965,17 @@ class Loremaster:
             logging.error("Failed to load vector_store.json: %s", e)
             self._vector_store = []
 
+        # ID→entry map for the sqlite-vec retrieval path (and a few
+        # other lookups). Built before _init_vector_sqlite because
+        # that uses it implicitly via self._vector_store.
+        self._entries_by_id = {
+            e.get("id"): e
+            for e in (self._vector_store or [])
+            if e.get("id")
+        }
+
         self._build_name_index()
+        self._init_vector_sqlite()
 
     @staticmethod
     def _normalize(text):
@@ -998,6 +1016,186 @@ class Loremaster:
             "Name index: %d unique names/aliases across %d entries",
             len(index), len(self._vector_store or []),
         )
+
+    # ── sqlite-vec index ─────────────────────────────────────────────────
+
+    def _vector_source_hash(self):
+        """sha256 of vector_store.json — used to detect rebuilds needed."""
+        try:
+            path = DATA_DIR / "vector_store.json"
+            h = hashlib.sha256()
+            with open(path, "rb") as f:
+                for chunk in iter(lambda: f.read(65536), b""):
+                    h.update(chunk)
+            return h.hexdigest()
+        except Exception:
+            return ""
+
+    def _existing_vec_meta(self):
+        """Return the source_hash baked into the existing sqlite file,
+        or None if missing/unreadable."""
+        if not VECTOR_SQLITE_PATH.exists():
+            return None
+        try:
+            con = sqlite3.connect(VECTOR_SQLITE_PATH)
+            row = con.execute(
+                "SELECT value FROM vec_meta WHERE key = ?", ("source_hash",)
+            ).fetchone()
+            con.close()
+            return row[0] if row else None
+        except Exception:
+            return None
+
+    def _init_vector_sqlite(self):
+        """Load (and if necessary rebuild) the sqlite-vec index. Falls
+        back to leaving self._vec_db = None when the extension can't
+        load — retrieve() then takes the Python-loop path."""
+        try:
+            import sqlite_vec
+        except ImportError:
+            logging.warning(
+                "sqlite-vec not installed; vector search will use the "
+                "Python cosine fallback."
+            )
+            return
+        if not self._vector_store:
+            return
+
+        # Detect embedding dimension from the first entry that has one.
+        dim = 0
+        for entry in self._vector_store:
+            emb = entry.get("embedding")
+            if emb:
+                dim = len(emb)
+                break
+        if not dim:
+            logging.warning("No embeddings in vector_store.json — sqlite-vec disabled")
+            return
+        self._vec_dim = dim
+
+        source_hash = self._vector_source_hash()
+        existing_hash = self._existing_vec_meta()
+        if source_hash and existing_hash == source_hash:
+            logging.info(
+                "Vector sqlite index up-to-date (source_hash=%s…)",
+                source_hash[:12],
+            )
+        else:
+            logging.info(
+                "Rebuilding vector_store.sqlite3 (source_hash=%s, was=%s)",
+                (source_hash or "?")[:12], (existing_hash or "none")[:12],
+            )
+            if VECTOR_SQLITE_PATH.exists():
+                try:
+                    VECTOR_SQLITE_PATH.unlink()
+                except Exception as e:
+                    logging.warning("Could not unlink stale vec db: %s", e)
+
+            try:
+                con = sqlite3.connect(VECTOR_SQLITE_PATH)
+                con.enable_load_extension(True)
+                sqlite_vec.load(con)
+                con.enable_load_extension(False)
+            except Exception as e:
+                logging.error(
+                    "sqlite-vec failed to load (extension support disabled "
+                    "in libsqlite3?). Falling back to Python loop. %s", e,
+                )
+                return
+
+            con.execute("CREATE TABLE vec_meta (key TEXT PRIMARY KEY, value TEXT)")
+            # distance_metric=cosine keeps the ordering identical to the
+            # legacy cosine_similarity path, so retrieval recall + the
+            # AUTO_THRESHOLD constants don't need re-tuning.
+            con.execute(
+                f"CREATE VIRTUAL TABLE vec_entries USING vec0("
+                f"  embedding float[{dim}] distance_metric=cosine, "
+                f"  +entry_id TEXT, "
+                f"  +is_5e INTEGER"
+                f")"
+            )
+            inserted = 0
+            rowid = 1
+            for entry in self._vector_store:
+                emb = entry.get("embedding")
+                if not emb or len(emb) != dim:
+                    continue
+                is_5e = 1 if (entry.get("source_file") or "").startswith("5e-filtered/") else 0
+                try:
+                    con.execute(
+                        "INSERT INTO vec_entries (rowid, embedding, entry_id, is_5e) "
+                        "VALUES (?, ?, ?, ?)",
+                        (rowid, sqlite_vec.serialize_float32(emb), entry.get("id", ""), is_5e),
+                    )
+                    inserted += 1
+                    rowid += 1
+                except Exception as e:
+                    logging.warning("vec_entries insert failed for %s: %s", entry.get("id"), e)
+            con.execute(
+                "INSERT INTO vec_meta (key, value) VALUES (?, ?)",
+                ("source_hash", source_hash),
+            )
+            con.execute(
+                "INSERT INTO vec_meta (key, value) VALUES (?, ?)",
+                ("entry_count", str(inserted)),
+            )
+            con.execute(
+                "INSERT INTO vec_meta (key, value) VALUES (?, ?)",
+                ("dim", str(dim)),
+            )
+            con.commit()
+            con.close()
+            logging.info("vector_store.sqlite3 rebuilt with %d entries (dim=%d)", inserted, dim)
+
+        # Open the long-lived connection for retrieve() to query.
+        try:
+            con = sqlite3.connect(VECTOR_SQLITE_PATH, check_same_thread=False)
+            con.enable_load_extension(True)
+            sqlite_vec.load(con)
+            con.enable_load_extension(False)
+            self._vec_db = con
+            logging.info("sqlite-vec ready (dim=%d)", dim)
+        except Exception as e:
+            logging.error("Could not open vector_store.sqlite3: %s", e)
+            self._vec_db = None
+
+    def _vec_search(self, query_vec, rules, limit):
+        """Cosine top-k via sqlite-vec. Returns list of (similarity, entry)."""
+        if not self._vec_db:
+            return None
+        try:
+            import sqlite_vec
+        except ImportError:
+            return None
+        try:
+            q_blob = sqlite_vec.serialize_float32(query_vec)
+            if rules:
+                rows = self._vec_db.execute(
+                    "SELECT entry_id, distance FROM vec_entries "
+                    "WHERE embedding MATCH ? "
+                    "ORDER BY distance LIMIT ?",
+                    (q_blob, limit),
+                ).fetchall()
+            else:
+                rows = self._vec_db.execute(
+                    "SELECT entry_id, distance FROM vec_entries "
+                    "WHERE embedding MATCH ? AND is_5e = 0 "
+                    "ORDER BY distance LIMIT ?",
+                    (q_blob, limit),
+                ).fetchall()
+        except Exception as e:
+            logging.warning("vec0 query failed, falling back to Python: %s", e)
+            return None
+
+        scored = []
+        for entry_id, distance in rows:
+            entry = self._entries_by_id.get(entry_id)
+            if not entry:
+                continue
+            # vec0 cosine distance is `1 - cosine_similarity`.
+            sim = 1.0 - float(distance)
+            scored.append((sim, entry))
+        return scored
 
     def _keyword_match(self, query):
         """Find vector store entries whose name/alias matches an n-gram
@@ -1183,18 +1381,31 @@ class Loremaster:
             return auto_inject, []
 
         t0 = time.time()
-        scored = []
-        for entry in store:
-            # When rules is off, skip 5etools entries in vector search
-            if not rules and entry.get("source_file", "").startswith("5e-filtered/"):
-                continue
-            emb = entry.get("embedding")
-            if not emb:
-                continue
-            sim = cosine_similarity(query_vec, emb)
-            scored.append((sim, entry))
-        scored.sort(key=lambda x: x[0], reverse=True)
+        # Prefer the sqlite-vec index when available (sub-millisecond on
+        # the current ~3k-entry store). Falls back to the in-memory
+        # Python cosine loop when the extension didn't load or the
+        # index isn't built (first-boot edge cases).
+        candidate_cap = max(RAG_TOP_K * 8, 64)
+        vec_scored = self._vec_search(query_vec, rules, candidate_cap)
+        if vec_scored is not None:
+            scored = vec_scored
+            scored.sort(key=lambda x: x[0], reverse=True)
+            search_path = "sqlite-vec"
+        else:
+            scored = []
+            for entry in store:
+                if not rules and entry.get("source_file", "").startswith("5e-filtered/"):
+                    continue
+                emb = entry.get("embedding")
+                if not emb:
+                    continue
+                sim = cosine_similarity(query_vec, emb)
+                scored.append((sim, entry))
+            scored.sort(key=lambda x: x[0], reverse=True)
+            search_path = "python-loop"
         search_ms = int((time.time() - t0) * 1000)
+        logging.info("  Vector search (%s): %dms, %d candidates",
+                     search_path, search_ms, len(scored))
 
         additional = []
         vector_injected = 0
