@@ -97,7 +97,19 @@ if not SITE_SOURCE_DIR.exists():
     SITE_SOURCE_DIR = Path(__file__).resolve().parents[1]
 LORE_DRAFT_DIR = Path(os.environ.get("LORE_DRAFT_DIR", "/app/app-data/lore-drafts"))
 LORE_DRAFT_IMAGES_DIR = LORE_DRAFT_DIR / "images"
-ADMIN_TOKEN = os.environ.get("ADMIN_TOKEN", "").strip()
+# ── DM authentication (Google OAuth + signed session JWT) ───────────────
+# Replaces the old static ADMIN_TOKEN. To log in as DM, a user signs in
+# with Google in the browser; we verify the resulting Google ID token
+# server-side, check the email against ALLOWED_DM_EMAILS, and mint a
+# 7-day HS256 JWT used as a session cookie via the Authorization header.
+GOOGLE_OAUTH_CLIENT_ID = os.environ.get("GOOGLE_OAUTH_CLIENT_ID", "").strip()
+ALLOWED_DM_EMAILS = {
+    email.strip().lower()
+    for email in os.environ.get("ALLOWED_DM_EMAILS", "").split(",")
+    if email.strip()
+}
+SESSION_JWT_SECRET = os.environ.get("SESSION_JWT_SECRET", "").strip()
+SESSION_JWT_TTL_SECONDS = int(os.environ.get("SESSION_JWT_TTL_SECONDS", str(7 * 24 * 3600)))
 VAPID_PUBLIC_KEY = os.environ.get("VAPID_PUBLIC_KEY", "").strip()
 VAPID_PRIVATE_KEY = os.environ.get("VAPID_PRIVATE_KEY", "").strip()
 VAPID_SUBJECT = os.environ.get("VAPID_SUBJECT", "mailto:dm@valleyofshadows.wiki").strip()
@@ -1878,25 +1890,95 @@ def add_cors_headers(response):
     return response
 
 
-def _extract_admin_token():
-    header = request.headers.get("X-Admin-Token", "")
-    if header:
-        return header.strip()
+def _admin_auth_configured():
+    return bool(GOOGLE_OAUTH_CLIENT_ID and SESSION_JWT_SECRET and ALLOWED_DM_EMAILS)
+
+
+def _extract_bearer_token():
+    """Pull the session JWT off the Authorization header. Also tolerates
+    the value being passed via JSON body for cURL convenience."""
+    header = request.headers.get("Authorization", "")
+    if header.lower().startswith("bearer "):
+        return header[7:].strip()
     body = request.get_json(silent=True) or {}
-    candidate = (
-        body.get("adminToken")
-        or body.get("admin_token")
-        or ""
-    )
+    candidate = body.get("session_token") or body.get("sessionToken") or ""
     return candidate.strip() if isinstance(candidate, str) else ""
 
 
+def _verify_google_id_token(credential):
+    """Validate a Google-issued ID token against Google's public keys.
+    Returns the verified email on success, or raises a ValueError with a
+    short, user-safe reason on any failure."""
+    if not credential:
+        raise ValueError("No Google credential supplied")
+    try:
+        from google.oauth2 import id_token as google_id_token
+        from google.auth.transport import requests as google_requests
+    except ImportError as exc:
+        raise ValueError(f"google-auth not installed: {exc}")
+    try:
+        idinfo = google_id_token.verify_oauth2_token(
+            credential, google_requests.Request(), GOOGLE_OAUTH_CLIENT_ID
+        )
+    except Exception as exc:
+        raise ValueError(f"Google rejected the credential: {exc}")
+    email = (idinfo.get("email") or "").lower()
+    if not email or not idinfo.get("email_verified"):
+        raise ValueError("Google did not return a verified email")
+    if email not in ALLOWED_DM_EMAILS:
+        raise ValueError(f"{email} isn't on the DM allowlist")
+    return email
+
+
+def _mint_session_jwt(email):
+    import jwt as pyjwt
+    now = int(time.time())
+    payload = {
+        "sub": email,
+        "email": email,
+        "iat": now,
+        "exp": now + SESSION_JWT_TTL_SECONDS,
+        "iss": "vallombrosa",
+    }
+    return pyjwt.encode(payload, SESSION_JWT_SECRET, algorithm="HS256")
+
+
+def _verify_session_jwt(token):
+    """Decode + validate a session JWT. Returns (email, None) on success
+    or (None, reason) so the caller can surface clean errors."""
+    if not token:
+        return None, "No session token"
+    import jwt as pyjwt
+    try:
+        payload = pyjwt.decode(
+            token, SESSION_JWT_SECRET, algorithms=["HS256"], issuer="vallombrosa"
+        )
+    except pyjwt.ExpiredSignatureError:
+        return None, "Session expired — sign in again"
+    except pyjwt.InvalidTokenError as exc:
+        return None, f"Session invalid: {exc}"
+    email = (payload.get("email") or "").lower()
+    # Re-check the allowlist on every request so removing someone from
+    # ALLOWED_DM_EMAILS revokes them within a request, not a session.
+    if not email or email not in ALLOWED_DM_EMAILS:
+        return None, "Not on the DM allowlist"
+    return email, None
+
+
 def _admin_error_response():
-    if not ADMIN_TOKEN:
-        return jsonify({"error": "ADMIN_TOKEN is not configured on this server"}), 503
-    candidate = _extract_admin_token()
-    if not candidate or not hmac.compare_digest(candidate, ADMIN_TOKEN):
-        return jsonify({"error": "Forbidden"}), 403
+    if not _admin_auth_configured():
+        return jsonify({
+            "error": (
+                "DM auth is not configured on this server "
+                "(GOOGLE_OAUTH_CLIENT_ID / ALLOWED_DM_EMAILS / SESSION_JWT_SECRET)."
+            ),
+            "error_code": "auth_not_configured",
+        }), 503
+    email, reason = _verify_session_jwt(_extract_bearer_token())
+    if not email:
+        return jsonify({"error": reason or "Forbidden", "error_code": "auth"}), 401
+    # Stash for handlers that want to know who's acting.
+    request.dm_email = email
     return None
 
 
@@ -1907,6 +1989,55 @@ def auth_config():
         "authConfigured": bool(AUTH_TOKEN_SECRET) or not _auth_login_required(),
         "players": PLAYER_NAMES,
     })
+
+
+@app.route("/api/admin/config", methods=["GET"])
+def admin_config():
+    """Tells the DM page what it needs to render the Sign in with Google
+    button. The client_id is public (anyone can read it from .well-known
+    or our own static assets — that's how OAuth works) so returning it
+    here is fine. Never returns the JWT secret or the allowlist."""
+    return jsonify({
+        "configured": _admin_auth_configured(),
+        "google_client_id": GOOGLE_OAUTH_CLIENT_ID,
+    })
+
+
+@app.route("/api/admin/login", methods=["POST"])
+def admin_login():
+    """Exchange a Google ID token for a server-signed session JWT.
+    Client should send { credential: <id_token from GIS> }."""
+    if not _admin_auth_configured():
+        return jsonify({
+            "error": "DM auth is not configured on this server.",
+            "error_code": "auth_not_configured",
+        }), 503
+    body = request.get_json(silent=True) or {}
+    credential = body.get("credential")
+    try:
+        email = _verify_google_id_token(credential)
+    except ValueError as exc:
+        return jsonify({"error": str(exc), "error_code": "auth"}), 401
+    token = _mint_session_jwt(email)
+    return jsonify({
+        "ok": True,
+        "session_token": token,
+        "email": email,
+        "expires_in": SESSION_JWT_TTL_SECONDS,
+    })
+
+
+@app.route("/api/admin/session", methods=["GET"])
+def admin_session():
+    """Return who the caller is logged in as (or 401). Used by the DM
+    page on load to decide whether to show the sign-in button or the
+    signed-in chrome."""
+    if not _admin_auth_configured():
+        return jsonify({"configured": False}), 200
+    email, reason = _verify_session_jwt(_extract_bearer_token())
+    if not email:
+        return jsonify({"configured": True, "signed_in": False, "reason": reason}), 200
+    return jsonify({"configured": True, "signed_in": True, "email": email})
 
 
 @app.route("/api/auth/login", methods=["POST"])

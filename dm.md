@@ -426,18 +426,54 @@ permalink: /dm/
   .vos-dm-actions button,
   .vos-dm-button { width: 100%; }
 }
+.vos-dm-auth-panel {
+  display: grid;
+  gap: 0.65rem;
+}
+.vos-dm-google-button {
+  min-height: 44px;
+}
+.vos-dm-auth-meta {
+  color: var(--vos-cream);
+  font-family: 'Crimson Text', Georgia, serif;
+  font-size: 0.96rem;
+  line-height: 1.35;
+}
+.vos-dm-auth-meta strong {
+  color: var(--vos-gold-bright);
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.78rem;
+  letter-spacing: 0.06em;
+}
+.vos-dm-auth-blocked code {
+  background: rgba(212, 165, 116, 0.12);
+  color: var(--vos-cream);
+  padding: 0.05rem 0.3rem;
+  border-radius: 3px;
+  font-size: 0.85rem;
+}
 </style>
+
+<script src="https://accounts.google.com/gsi/client" async defer></script>
 
 <div class="vos-dm">
   <h1>DM</h1>
 
-  <section class="vos-dm-panel" aria-labelledby="vos-dm-token-title">
-    <h2 id="vos-dm-token-title">Admin Token</h2>
-    <div class="vos-dm-form">
-      <label>
-        Admin Token
-        <input id="vos-dm-token" type="password" autocomplete="current-password">
-      </label>
+  <section class="vos-dm-panel vos-dm-auth-panel" aria-labelledby="vos-dm-auth-title">
+    <h2 id="vos-dm-auth-title">Sign in</h2>
+    <div class="vos-dm-auth-signed-out" id="vos-dm-auth-signed-out" hidden>
+      <p class="vos-dm-helper">Sign in with the DM Google account to manage submissions, RSVPs, and pushes.</p>
+      <div id="vos-dm-google-button" class="vos-dm-google-button"></div>
+      <div class="vos-dm-status" id="vos-dm-auth-status" role="status" aria-live="polite"></div>
+    </div>
+    <div class="vos-dm-auth-signed-in" id="vos-dm-auth-signed-in" hidden>
+      <div class="vos-dm-auth-meta">
+        Signed in as <strong id="vos-dm-auth-email"></strong>
+      </div>
+      <button type="button" class="vos-dm-button" id="vos-dm-sign-out">Sign out</button>
+    </div>
+    <div class="vos-dm-auth-blocked" id="vos-dm-auth-blocked" hidden>
+      <p class="vos-dm-helper">DM authentication isn't configured on this server. Set <code>GOOGLE_OAUTH_CLIENT_ID</code>, <code>ALLOWED_DM_EMAILS</code>, and <code>SESSION_JWT_SECRET</code> in <code>.env</code> and rebuild the chatbot container.</p>
     </div>
   </section>
 
@@ -604,7 +640,37 @@ permalink: /dm/
 
 <script>
 (function () {
-  const TOKEN_KEY = 'vos.adminToken';
+  const SESSION_KEY = 'vos.dmSession';
+  let dmSession = null;
+  try {
+    const raw = localStorage.getItem(SESSION_KEY);
+    if (raw) dmSession = JSON.parse(raw);
+  } catch (e) {}
+
+  function persistSession(session) {
+    dmSession = session;
+    try {
+      if (session) localStorage.setItem(SESSION_KEY, JSON.stringify(session));
+      else localStorage.removeItem(SESSION_KEY);
+    } catch (e) {}
+    renderAuthState();
+  }
+
+  function isSessionLive() {
+    if (!dmSession || !dmSession.session_token) return false;
+    if (dmSession.expires_at && Date.now() >= dmSession.expires_at) return false;
+    return true;
+  }
+
+  function renderAuthState() {
+    if (!authSignedOutEl) return;
+    const live = isSessionLive();
+    authSignedOutEl.hidden = live;
+    authSignedInEl.hidden = !live;
+    if (live) {
+      authEmailEl.textContent = dmSession.email || 'DM';
+    }
+  }
   const DEFAULT_PLAYERS = [
     'Caravel "Car" Asteri',
     'Kryton Novelli',
@@ -616,7 +682,17 @@ permalink: /dm/
     'DM',
   ];
 
-  const tokenEl = document.getElementById('vos-dm-token');
+  // DM auth UI: replaces the old admin-token text field. Once the user
+  // completes Google sign-in we cache the server-signed JWT in
+  // localStorage; from there every admin call sends Authorization:
+  // Bearer <jwt>.
+  const authSignedOutEl = document.getElementById('vos-dm-auth-signed-out');
+  const authSignedInEl  = document.getElementById('vos-dm-auth-signed-in');
+  const authBlockedEl   = document.getElementById('vos-dm-auth-blocked');
+  const authEmailEl     = document.getElementById('vos-dm-auth-email');
+  const authStatusEl    = document.getElementById('vos-dm-auth-status');
+  const googleButtonEl  = document.getElementById('vos-dm-google-button');
+  const signOutEl       = document.getElementById('vos-dm-sign-out');
   const messageForm = document.getElementById('vos-dm-message-form');
   const messageTitleEl = document.getElementById('vos-dm-message-heading');
   const messageBodyEl = document.getElementById('vos-dm-message-body');
@@ -671,24 +747,116 @@ permalink: /dm/
   let selectedLoreId = null;
   let selectedLoreStatus = null;
 
-  try {
-    tokenEl.value = localStorage.getItem(TOKEN_KEY) || '';
-  } catch (error) {}
-
-  tokenEl.addEventListener('change', () => {
-    try { localStorage.setItem(TOKEN_KEY, tokenEl.value.trim()); } catch (error) {}
-  });
-
+  // Returns the session JWT to send as `Authorization: Bearer <token>`,
+  // or null when the user is signed out. Mirrors the old getToken
+  // signature so call sites stay tidy.
   function getToken(statusTarget) {
-    const token = tokenEl.value.trim();
-    if (!token) {
-      setStatus(statusTarget, 'Enter the admin token.', true);
-      tokenEl.focus();
+    if (!isSessionLive()) {
+      if (statusTarget) {
+        setStatus(statusTarget, 'Sign in with Google first.', true);
+      }
       return null;
     }
-    try { localStorage.setItem(TOKEN_KEY, token); } catch (error) {}
-    return token;
+    return dmSession.session_token;
   }
+
+  // ── Google sign-in wiring ───────────────────────────────────────────
+  let googleClientId = null;
+
+  async function bootAdminAuth() {
+    try {
+      const r = await fetch('/api/admin/config', { cache: 'no-store' });
+      if (!r.ok) throw new Error('admin/config ' + r.status);
+      const data = await r.json();
+      if (!data.configured) {
+        authSignedOutEl.hidden = true;
+        authBlockedEl.hidden = false;
+        return;
+      }
+      googleClientId = data.google_client_id;
+    } catch (e) {
+      setStatus(authStatusEl, 'Could not reach the auth server.', true);
+      return;
+    }
+    // If we already have a non-expired session, render that.
+    if (isSessionLive()) {
+      renderAuthState();
+      // Server-side re-check so a revoked allowlist takes effect promptly.
+      const r = await fetch('/api/admin/session', {
+        cache: 'no-store',
+        headers: { Authorization: 'Bearer ' + dmSession.session_token },
+      });
+      if (r.ok) {
+        const data = await r.json().catch(() => ({}));
+        if (data && data.signed_in) return;
+      }
+      // Server rejected — wipe and prompt again.
+      persistSession(null);
+    }
+    renderAuthState();
+    initGoogleButton();
+  }
+
+  function initGoogleButton() {
+    if (!googleClientId || !googleButtonEl) return;
+    // GIS loads async; retry until it's ready.
+    if (!(window.google && window.google.accounts && window.google.accounts.id)) {
+      setTimeout(initGoogleButton, 120);
+      return;
+    }
+    googleButtonEl.innerHTML = '';
+    window.google.accounts.id.initialize({
+      client_id: googleClientId,
+      callback: handleGoogleCredential,
+      ux_mode: 'popup',
+      auto_select: false,
+    });
+    window.google.accounts.id.renderButton(googleButtonEl, {
+      theme: 'filled_black',
+      text: 'signin_with',
+      size: 'large',
+      shape: 'pill',
+      logo_alignment: 'left',
+    });
+  }
+
+  async function handleGoogleCredential(response) {
+    if (!response || !response.credential) {
+      setStatus(authStatusEl, 'No credential returned from Google.', true);
+      return;
+    }
+    setStatus(authStatusEl, 'Verifying with the server…');
+    try {
+      const r = await fetch('/api/admin/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ credential: response.credential }),
+      });
+      const data = await r.json().catch(() => ({}));
+      if (!r.ok) {
+        throw new Error(data.error || 'HTTP ' + r.status);
+      }
+      const ttlMs = (data.expires_in || (7 * 24 * 3600)) * 1000;
+      persistSession({
+        session_token: data.session_token,
+        email: data.email,
+        expires_at: Date.now() + ttlMs,
+      });
+      setStatus(authStatusEl, '');
+    } catch (e) {
+      setStatus(authStatusEl, e.message, true);
+    }
+  }
+
+  function signOut() {
+    persistSession(null);
+    // Re-render the Google button so the user can sign back in.
+    initGoogleButton();
+    setStatus(authStatusEl, 'Signed out.');
+  }
+
+  if (signOutEl) signOutEl.addEventListener('click', signOut);
+  bootAdminAuth();
 
   function setStatus(target, text, isError) {
     if (!target) return;
@@ -709,7 +877,7 @@ permalink: /dm/
 
   async function adminJson(url, token, options) {
     const headers = {
-      'X-Admin-Token': token,
+      'Authorization': 'Bearer ' + token,
       ...(options && options.headers ? options.headers : {}),
     };
     const response = await fetch(url, {
@@ -718,6 +886,12 @@ permalink: /dm/
       headers,
     });
     const data = await response.json().catch(() => ({}));
+    if (response.status === 401) {
+      // Session expired or revoked — wipe locally and force re-auth.
+      persistSession(null);
+      initGoogleButton();
+      throw new Error(data.error || 'Session expired — sign in again.');
+    }
     if (!response.ok) throw new Error(data.error || `HTTP ${response.status}`);
     return data;
   }
