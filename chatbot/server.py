@@ -28,7 +28,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 import requests as http_requests
-from flask import Flask, abort, jsonify, request, send_from_directory
+from flask import Flask, Response, abort, jsonify, request, send_from_directory, stream_with_context
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 
@@ -1428,6 +1428,157 @@ class Loremaster:
         logging.warning("  Hit max tool loops (%d)", max_loops)
         return "I got lost in the archives. Could you try a simpler question?"
 
+    def call_anthropic_stream(self, system_prompt, messages, temperature=None):
+        """Generator. Yields event dicts: {type: 'token', text: '...'},
+        {type: 'done', usage: {...}}, or {type: 'error', text: '...'}.
+        Handles tool_use inline by accumulating the tool call, running
+        the tool, and re-issuing a fresh streaming request with the tool
+        result appended to messages."""
+        temp = TEMPERATURE if temperature is None else temperature
+        system_blocks = [{
+            "type": "text",
+            "text": system_prompt,
+            "cache_control": {"type": "ephemeral"},
+        }]
+        payload = {
+            "model": ANTHROPIC_MODEL,
+            "max_tokens": MAX_TOKENS,
+            "system": system_blocks,
+            "messages": messages,
+            "tools": self._tool_definitions(),
+            "temperature": temp,
+            "stream": True,
+        }
+
+        max_loops = 5
+        for loop_i in range(max_loops):
+            t0 = time.time()
+            resp = http_requests.post(
+                "https://api.anthropic.com/v1/messages",
+                headers=self._anthropic_headers(),
+                json=payload,
+                stream=True,
+                timeout=300,
+            )
+            if resp.status_code != 200:
+                # Drain a few bytes so the connection releases cleanly.
+                body = resp.text[:300]
+                logging.error(
+                    "  Anthropic stream HTTP %d: %s", resp.status_code, body,
+                )
+                yield {"type": "error", "text": "I'm having trouble responding right now. Please try again in a moment."}
+                return
+
+            content_blocks = []
+            current_block = None
+            partial_json_buf = ""
+            stop_reason = None
+            usage = {}
+
+            for raw in resp.iter_lines(decode_unicode=True):
+                if not raw:
+                    continue
+                if not raw.startswith("data: "):
+                    continue
+                payload_str = raw[6:].strip()
+                if not payload_str or payload_str == "[DONE]":
+                    continue
+                try:
+                    event = json.loads(payload_str)
+                except Exception:
+                    continue
+                etype = event.get("type")
+
+                if etype == "content_block_start":
+                    block = event.get("content_block") or {}
+                    btype = block.get("type")
+                    if btype == "text":
+                        current_block = {"type": "text", "text": ""}
+                    elif btype == "tool_use":
+                        current_block = {
+                            "type": "tool_use",
+                            "id": block.get("id"),
+                            "name": block.get("name"),
+                            "input": {},
+                        }
+                    partial_json_buf = ""
+
+                elif etype == "content_block_delta":
+                    delta = event.get("delta") or {}
+                    if not current_block:
+                        continue
+                    if current_block.get("type") == "text" and delta.get("type") == "text_delta":
+                        chunk = delta.get("text", "")
+                        if chunk:
+                            current_block["text"] += chunk
+                            yield {"type": "token", "text": chunk}
+                    elif current_block.get("type") == "tool_use" and delta.get("type") == "input_json_delta":
+                        partial_json_buf += delta.get("partial_json", "")
+
+                elif etype == "content_block_stop":
+                    if current_block:
+                        if current_block.get("type") == "tool_use" and partial_json_buf:
+                            try:
+                                current_block["input"] = json.loads(partial_json_buf)
+                            except Exception:
+                                current_block["input"] = {}
+                        content_blocks.append(current_block)
+                    current_block = None
+                    partial_json_buf = ""
+
+                elif etype == "message_delta":
+                    delta = event.get("delta") or {}
+                    if delta.get("stop_reason"):
+                        stop_reason = delta["stop_reason"]
+                    usage.update(event.get("usage") or {})
+
+                elif etype == "message_stop":
+                    pass
+
+            api_ms = int((time.time() - t0) * 1000)
+            logging.info(
+                "  Anthropic stream (%dms loop %d): stop=%s, "
+                "input=%d (cache_create=%d, cache_read=%d), output=%d",
+                api_ms, loop_i + 1, stop_reason,
+                usage.get("input_tokens", 0),
+                usage.get("cache_creation_input_tokens", 0),
+                usage.get("cache_read_input_tokens", 0),
+                usage.get("output_tokens", 0),
+            )
+
+            if stop_reason != "tool_use":
+                yield {"type": "done", "usage": usage}
+                return
+
+            # Tool use: run each call, append tool result, loop with
+            # updated messages.
+            tool_results = []
+            for block in content_blocks:
+                if block.get("type") != "tool_use":
+                    continue
+                tool_name = block.get("name")
+                tool_input = block.get("input") or {}
+                logging.info(
+                    "  Tool call [stream %d/%d]: %s(%s)",
+                    loop_i + 1, max_loops, tool_name, json.dumps(tool_input),
+                )
+                if tool_name == "lookup_entry":
+                    tool_result = self.lookup_entry(tool_input.get("name", ""))
+                else:
+                    tool_result = f"Unknown tool: {tool_name}"
+                tool_results.append({
+                    "type": "tool_result",
+                    "tool_use_id": block.get("id"),
+                    "content": tool_result,
+                })
+
+            messages.append({"role": "assistant", "content": content_blocks})
+            messages.append({"role": "user", "content": tool_results})
+            payload["messages"] = messages
+
+        logging.warning("  Hit max tool loops (%d) in stream", max_loops)
+        yield {"type": "error", "text": "I got lost in the archives. Could you try a simpler question?"}
+
     # ── Main chat handler ────────────────────────────────────────────────
 
     def chat(self, message, conversation_history, rules=False, vibe=None):
@@ -1616,6 +1767,144 @@ class Loremaster:
             {"role": "assistant", "content": response_text},
         ]
         return response_text, updated_history, rules, vibe, citations
+
+    def chat_stream(self, message, conversation_history, rules=False, vibe=None):
+        """Streaming variant of chat(). Yields the same event dicts
+        as call_anthropic_stream() plus a final
+        {type: 'meta', conversationHistory, rules, vibe, citations}.
+
+        For command toggles (/rules on/off, /vibe ...), there's nothing
+        to stream — yields a single token event with the full reply
+        followed by the meta event. Keeps the client renderer uniform."""
+        cmd = (message or "").strip().lower()
+
+        # Run the same toggle handling as chat() but yield instead of
+        # return. Falls through to the LLM path on any non-toggle.
+        def _yield_toggle_reply(reply, new_rules, new_vibe):
+            updated_history = conversation_history + [
+                {"role": "user", "content": message},
+                {"role": "assistant", "content": reply},
+            ]
+            yield {"type": "token", "text": reply}
+            yield {
+                "type": "meta",
+                "conversationHistory": updated_history,
+                "rules": new_rules,
+                "vibe": new_vibe,
+                "citations": [],
+            }
+
+        # Delegate toggles to chat() (which returns the full reply
+        # already). We get the exact same behaviour without duplicating
+        # all the toggle strings.
+        if cmd.startswith("/"):
+            reply, updated_history, new_rules, new_vibe, citations = self.chat(
+                message, conversation_history, rules, vibe
+            )
+            yield {"type": "token", "text": reply}
+            yield {
+                "type": "meta",
+                "conversationHistory": updated_history,
+                "rules": new_rules,
+                "vibe": new_vibe,
+                "citations": citations,
+            }
+            return
+
+        # ── Normal flow: mirror chat()'s system-prompt construction ──
+        # We can't easily call chat() then stream — by the time chat()
+        # returns we've already paid the full latency. So we re-build
+        # the prompt here. Tracked refactor target: extract a shared
+        # _prepare_prompt() helper next pass.
+        t_start = time.time()
+        logging.info(
+            "── Chat stream ── rules=%s, vibe=%s, history=%d msgs",
+            rules, vibe, len(conversation_history),
+        )
+
+        if vibe == "brainstorm":
+            system_prompt = BRAINSTORM_SYSTEM_HEADER
+        else:
+            system_prompt = SYSTEM_HEADER
+        if vibe == "yasqueen":
+            system_prompt += (
+                "\nVIBE MODE — YasQueen: respond as a fabulously dramatic "
+                "loremaster. Sprinkle in 'honey,' 'darling,' '✨', and exclamations. "
+                "Still factually accurate but extra. Reference real campaign "
+                "lore as drama. ALWAYS use real names/places — don't pretend.\n\n"
+            )
+        elif vibe == "fabio":
+            system_prompt += (
+                "\nVIBE MODE — Fabio: respond as a sultry romance-novel narrator. "
+                "Lean into sensuality, longing, and dramatic flourishes — but keep "
+                "the lore accurate. References to real campaign content remain "
+                "verbatim; only your DELIVERY changes.\n\n"
+            )
+        elif vibe == "rocky":
+            system_prompt += (
+                "\nVIBE MODE — Rocky: respond as a salty, no-nonsense quarry "
+                "rock. Brief, blunt, occasionally grumpy. When players bring up "
+                "social ('honor,' 'betrayal,' 'romance'), express mild confusion or restate them in concrete "
+                "terms. Stay accurate to the campaign lore — just deliver it in Rocky's voice.\n\n"
+            )
+        if rules:
+            system_prompt += "The user has enabled rules lookup. You may receive D&D 5e rules references alongside campaign content.\n\n"
+        system_prompt += self._tier1
+
+        anthropic_messages = []
+        for msg in conversation_history:
+            role = msg.get("role", "")
+            content = msg.get("content", "")
+            if role in ("user", "assistant") and isinstance(content, str):
+                anthropic_messages.append({"role": role, "content": content})
+
+        rag_context = ""
+        citations = []
+        if _skip_rag(message):
+            logging.info("  RAG: skipped (short/casual message)")
+        else:
+            try:
+                rag_context, citations = self.build_rag_context(message, rules)
+            except Exception as e:
+                logging.error("  RAG failed: %s", e)
+
+        user_content = message
+        if rag_context:
+            user_content = message + "\n\n" + rag_context
+            logging.info("  RAG context: %d chars injected", len(rag_context))
+
+        anthropic_messages.append({"role": "user", "content": user_content})
+
+        temp = 0.7 if vibe == "brainstorm" else None
+
+        # Stream the model response, accumulating the full text so the
+        # final meta event carries the full assistant message for the
+        # history.
+        full_response = ""
+        for event in self.call_anthropic_stream(system_prompt, anthropic_messages, temperature=temp):
+            if event.get("type") == "token":
+                full_response += event.get("text", "")
+            yield event
+            if event.get("type") in ("done", "error"):
+                break
+
+        total_ms = int((time.time() - t_start) * 1000)
+        logging.info(
+            "── Done (stream) ── %dms total, response %d chars",
+            total_ms, len(full_response),
+        )
+
+        updated_history = conversation_history + [
+            {"role": "user", "content": message},
+            {"role": "assistant", "content": full_response},
+        ]
+        yield {
+            "type": "meta",
+            "conversationHistory": updated_history,
+            "rules": rules,
+            "vibe": vibe,
+            "citations": citations,
+        }
 
 
 # ── Logging ──────────────────────────────────────────────────────────────────
@@ -3028,6 +3317,68 @@ def chat():
         if len(sanitized) < original_count:
             history_truncated = True
         conversation_history = sanitized
+
+    # Streaming opt-in: the client sets Accept: text/event-stream when
+    # it wants SSE. Otherwise we fall back to the legacy JSON response
+    # so older clients + the offline stub keep working without change.
+    accept = (request.headers.get("Accept") or "").lower()
+    wants_stream = "text/event-stream" in accept
+
+    if wants_stream:
+        write_log("user", message)
+
+        def event_stream():
+            try:
+                full_response_chunks = []
+                for event in engine.chat_stream(
+                    message, conversation_history, rules, vibe
+                ):
+                    etype = event.get("type")
+                    if etype == "token":
+                        full_response_chunks.append(event.get("text", ""))
+                        yield (
+                            "event: token\n"
+                            "data: " + json.dumps({"text": event.get("text", "")}) + "\n\n"
+                        )
+                    elif etype == "meta":
+                        payload = {
+                            "conversationHistory": event.get("conversationHistory") or [],
+                            "rules": event.get("rules"),
+                            "vibe": event.get("vibe"),
+                            "citations": event.get("citations") or [],
+                            "historyTruncated": history_truncated,
+                        }
+                        yield (
+                            "event: meta\n"
+                            "data: " + json.dumps(payload) + "\n\n"
+                        )
+                    elif etype == "error":
+                        yield (
+                            "event: error\n"
+                            "data: " + json.dumps({"message": event.get("text", "")}) + "\n\n"
+                        )
+                    elif etype == "done":
+                        pass  # final 'done' event sent after meta below
+                # End-of-stream marker so the client can finalise UI.
+                yield "event: done\ndata: {}\n\n"
+                write_log("assistant", "".join(full_response_chunks))
+            except Exception as e:
+                logging.exception("Chat stream error")
+                yield (
+                    "event: error\n"
+                    "data: " + json.dumps({"message": str(e)}) + "\n\n"
+                )
+
+        return Response(
+            stream_with_context(event_stream()),
+            mimetype="text/event-stream",
+            headers={
+                "Cache-Control": "no-store",
+                # Tell nginx not to buffer; otherwise tokens batch up
+                # behind the proxy and the client doesn't see streaming.
+                "X-Accel-Buffering": "no",
+            },
+        )
 
     try:
         response_text, updated_history, new_rules, new_vibe, citations = engine.chat(
