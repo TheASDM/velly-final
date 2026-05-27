@@ -1476,17 +1476,47 @@ class Loremaster:
         """Build the RAG context block AND the structured citations list
         that the chat endpoint surfaces to the client. Returns
         (text_block, citations) where citations is a list of
-        {name, score, url} dicts deduplicated by source_file."""
+        {name, score, url} dicts deduplicated by source_file.
+
+        When a 5e rules entry gets injected via keyword/alias match
+        while the user has rules-mode OFF (Phase-1 retrieval doesn't
+        filter source), it's almost always a name collision — a
+        campaign NPC/place/item that happens to share a word with a
+        spell or monster. We still include the entry so Claude has the
+        data, but wrap it with a clear 'this is probably not what the
+        user wants' header and skip it from the user-facing citation
+        chips so the Sources row stays honest."""
         auto_inject, additional = self.retrieve(query, rules)
         blocks = []
         citations = []
         seen = set()
         for match in auto_inject:
+            source = match.get("source_file") or ""
+            is_5e_collision = (
+                not rules and source.startswith("5e-filtered/")
+            )
+            if is_5e_collision:
+                blocks.append(
+                    f"[POSSIBLE NAME COLLISION — 5e rule entry, rules-mode is OFF]\n"
+                    f"The user's message exact-name-matches this 5e rules "
+                    f"entry ({match['name']!r} from {source}), but rules-mode "
+                    f"is off — they're asking a campaign question. Treat this "
+                    f"as a coincidental name collision (a campaign NPC, place, "
+                    f"or item that happens to share a word with this 5e term). "
+                    f"Do NOT reference this entry, its mechanics, or its 5e "
+                    f"flavor in your reply unless the user explicitly asked "
+                    f"for the rule. Look for a campaign entity with this name "
+                    f"instead.\n{match['text']}"
+                )
+                # Skip the citation: the player would see this 5e entry as a
+                # "source" even though Claude shouldn't (and won't) be leaning
+                # on it. Misleading. The keyword inject log still records it
+                # for DM visibility in the chatbot logs.
+                continue
             blocks.append(
-                f"[DETAILED REFERENCE: {match['name']} from {match['source_file']} "
+                f"[DETAILED REFERENCE: {match['name']} from {source} "
                 f"(similarity: {match['score']:.2f})]\n{match['text']}"
             )
-            source = match.get("source_file") or ""
             if source in seen:
                 continue
             seen.add(source)
