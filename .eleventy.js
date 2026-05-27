@@ -65,7 +65,12 @@ module.exports = function (eleventyConfig) {
   // Mounted at /css and /js so the codex can load them locally for previews
   // without depending on a separate Enzo host.
   eleventyConfig.addPassthroughCopy({ "public/css/chatbot.css": "css/chatbot.css" });
+  eleventyConfig.addPassthroughCopy({ "public/css/app-shell.css": "css/app-shell.css" });
   eleventyConfig.addPassthroughCopy({ "public/js/chatbot.js": "js/chatbot.js" });
+  eleventyConfig.addPassthroughCopy({ "public/js/pwa-manager.js": "js/pwa-manager.js" });
+  eleventyConfig.addPassthroughCopy({ "public/js/enzo-widget.js": "js/enzo-widget.js" });
+  eleventyConfig.addPassthroughCopy({ "public/js/viewport-handler.js": "js/viewport-handler.js" });
+  eleventyConfig.addPassthroughCopy({ "public/js/search-init.js": "js/search-init.js" });
   [
     "loremaster192x192.png",
     "loremaster5e192x192.png",
@@ -110,6 +115,35 @@ module.exports = function (eleventyConfig) {
   // ── Filter: render markdown body to HTML inside templates ────────────
   const md = require("markdown-it")({ html: true, linkify: true, typographer: true });
   eleventyConfig.addFilter("md", (content) => md.render(content || ""));
+
+  // ── Filter: resolve the active bottom-nav tab id from a URL.
+  // Used by partials/app-bottom-nav.njk to highlight the current tab.
+  // Reads navigation.tabs from _data/navigation.js. See the `match` field
+  // there: "exact" compares hrefs literally; "wiki" matches anything under
+  // /en/ that isn't another tab's exact href (covers all wiki pages).
+  const navigationData = require("./_data/navigation.js");
+  function resolveActiveTabId(currentUrl) {
+    if (!currentUrl) return null;
+    const exactHit = navigationData.tabs.find((tab) => tab.match === "exact" && tab.href === currentUrl);
+    if (exactHit) return exactHit.id;
+    const exactHrefs = new Set(navigationData.tabs.filter((tab) => tab.match === "exact").map((tab) => tab.href));
+    if (currentUrl.startsWith("/en/") && !exactHrefs.has(currentUrl)) {
+      const wikiTab = navigationData.tabs.find((tab) => tab.match === "wiki");
+      if (wikiTab) return wikiTab.id;
+    }
+    return null;
+  }
+  eleventyConfig.addFilter("activeNavTab", resolveActiveTabId);
+
+  // ── Filter: derive the app-bar { title, eyebrow } for a URL. Falls back
+  // to the page's frontmatter title for non-tab pages, using "Wiki" as the
+  // eyebrow for anything under /en/ so wiki pages get a consistent label.
+  eleventyConfig.addFilter("appBarMeta", (currentUrl, fallbackTitle) => {
+    const tab = navigationData.tabs.find((t) => t.href === currentUrl);
+    if (tab) return { title: tab.title, eyebrow: tab.eyebrow };
+    const eyebrow = currentUrl && currentUrl.startsWith("/en/") ? "Wiki" : "Vallombrosa";
+    return { title: fallbackTitle || "Vallombrosa", eyebrow };
+  });
 
   // ── Filter: derive the descendant tree of an index page from its URL.
   // Returns { direct: [...], subcategories: [{ key, title, url, pages }] }

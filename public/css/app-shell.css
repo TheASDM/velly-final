@@ -1,0 +1,1668 @@
+<style>
+  /* ── Tokens ─────────────────────────────────────────────────────────── */
+  :root {
+    --vos-gold-bright: #d4a574;
+    --vos-gold: #c9a84c;
+    --vos-gold-dim: #8b7355;
+    --vos-gold-faint: rgba(212, 165, 116, 0.08);
+    --vos-cream: #e8dcc8;
+    --vos-text: #c9b896;
+    --vos-text-body: #d4c7ad;
+    --vos-bg: #0d0b11;
+    --vos-bg-deep: #07060a;
+    --vos-bg-panel: rgba(13, 11, 17, 0.92);
+    --vos-bg-panel-solid: rgba(10, 8, 14, 0.97);
+    --vos-border: rgba(139, 115, 85, 0.28);
+    --vos-border-strong: rgba(212, 165, 116, 0.45);
+    --vos-quest: #a0322a;
+    --vos-quest-bright: #d44d3f;
+    --vos-shadow: 0 24px 80px rgba(0, 0, 0, 0.7);
+
+    --vos-nav-w: 0px;
+    --vos-safe-top: env(safe-area-inset-top, 0px);
+    --vos-app-bar-content-h: 58px;
+    --vos-app-bar-h: calc(var(--vos-app-bar-content-h) + var(--vos-safe-top));
+    --vos-top-bar-h: var(--vos-app-bar-content-h);
+    --vos-top-h: var(--vos-app-bar-h);
+    --vos-app-nav-h: 72px;
+    --vos-vv-bottom: 0px;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+  html,
+  body {
+    margin: 0;
+    padding: 0;
+    background: var(--vos-bg-deep);
+    color: var(--vos-text-body);
+    overflow-x: hidden;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+
+  /* Themed scrollbars */
+  * { scrollbar-width: thin; scrollbar-color: rgba(139, 115, 85, 0.45) transparent; }
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: rgba(139, 115, 85, 0.35); border-radius: 4px; border: 1px solid rgba(13, 11, 17, 0.6); }
+  ::-webkit-scrollbar-thumb:hover { background: rgba(212, 165, 116, 0.55); }
+  ::-webkit-scrollbar-corner { background: transparent; }
+  iframe { color-scheme: dark; }
+
+  body {
+    font-family: 'EB Garamond', 'Crimson Text', Georgia, serif;
+    font-size: 17px;
+    line-height: 1.65;
+    padding-top: 0;
+    min-height: 100vh;
+    position: relative;
+  }
+
+  /* ── Masquerade backdrop ─────────────────────────────────────────────
+     Fixed full-viewport image, dimmed and blurred, sitting behind the
+     content. A vignette + radial wash on top keeps text legible. */
+  .vos-backdrop {
+    position: fixed; inset: 0; z-index: -2; pointer-events: none;
+    background:
+      radial-gradient(ellipse 60% 40% at 50% 0%, rgba(212, 165, 116, 0.08), transparent 70%),
+      radial-gradient(ellipse 80% 60% at 50% 100%, rgba(13, 11, 17, 0.85), transparent 70%),
+      linear-gradient(180deg, rgba(7, 6, 10, 0.78) 0%, rgba(7, 6, 10, 0.94) 100%),
+      url('/images/masqueradebackground.png') center/cover no-repeat fixed,
+      var(--vos-bg-deep);
+    filter: saturate(0.85);
+  }
+  .vos-backdrop::after {
+    content: '';
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 90% 60% at 50% 50%, transparent 0%, rgba(7, 6, 10, 0.55) 100%);
+  }
+
+  /* ── Typography ──────────────────────────────────────────────────────── */
+  h1, h2 { font-family: 'Cinzel', Georgia, serif; color: var(--vos-gold-bright); letter-spacing: 0.06em; line-height: 1.2; }
+  h1, h2, h3 { overflow-wrap: anywhere; }
+  h1 {
+    font-size: 2.4rem; margin: 2rem 0 1.25rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--vos-border);
+    position: relative;
+  }
+  h1::after {
+    content: '✦';
+    position: absolute; left: 0; bottom: -0.55rem;
+    background: var(--vos-bg-deep); padding-right: 0.5rem;
+    color: var(--vos-gold-dim); font-size: 0.8rem;
+  }
+  h2 { font-size: 1.55rem; margin: 2.25rem 0 0.85rem; }
+  h3 { font-family: 'Cinzel', Georgia, serif; color: var(--vos-cream); font-size: 1.18rem; letter-spacing: 0.04em; margin: 1.5rem 0 0.5rem; }
+  h4, h5, h6 { color: var(--vos-cream); }
+  hr {
+    border: none;
+    height: 16px; margin: 2.5rem 0;
+    background: center/contain no-repeat url('/images/masqueradeline.png');
+    opacity: 0.55;
+  }
+
+  a { color: var(--vos-gold-bright); text-decoration: none; border-bottom: 1px solid transparent; transition: border-color 0.15s, color 0.15s; }
+  a:hover { border-bottom-color: var(--vos-gold-bright); color: #e8c084; }
+
+  blockquote { border-left: 3px solid var(--vos-gold-dim); margin: 1.5rem 0; padding: 0.5rem 1.25rem; color: var(--vos-text); font-style: italic; }
+
+  code { background: rgba(212, 165, 116, 0.12); color: var(--vos-cream); padding: 0.1rem 0.4rem; border-radius: 3px; font-size: 0.92em; }
+  pre { background: rgba(13, 11, 17, 0.65); border: 1px solid var(--vos-border); border-radius: 4px; padding: 1rem; overflow-x: auto; }
+  pre code { background: none; padding: 0; }
+
+  table { border-collapse: collapse; margin: 1.5rem 0; width: 100%; }
+  th, td { border: 1px solid var(--vos-border); padding: 0.5rem 0.75rem; text-align: left; }
+  th { background: rgba(212, 165, 116, 0.08); color: var(--vos-cream); font-family: 'Cinzel', Georgia, serif; font-size: 0.85rem; letter-spacing: 0.04em; text-transform: uppercase; }
+
+  img { max-width: 100%; height: auto; }
+
+  main.vos-content {
+    width: 100%;
+    max-width: 1440px;
+    min-width: 0;
+    margin: 0 auto;
+    padding:
+      clamp(1rem, 2vw, 1.8rem)
+      clamp(0.75rem, 2vw, 1.5rem)
+      calc(7rem + var(--vos-app-nav-h) + env(safe-area-inset-bottom));
+    position: relative;
+    z-index: 1;
+  }
+
+  .vos-page-shell {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    margin: 0 auto;
+    padding: clamp(1.25rem, 2.5vw, 2.35rem);
+    border: 1px solid rgba(201, 161, 74, 0.22);
+    border-radius: 8px;
+    background:
+      linear-gradient(180deg, rgba(18, 16, 23, 0.94), rgba(8, 7, 11, 0.98)),
+      radial-gradient(ellipse 80% 60% at 50% 0%, rgba(201, 161, 74, 0.07), transparent 70%);
+    box-shadow: 0 18px 46px rgba(0, 0, 0, 0.62);
+  }
+  .vos-home-shell {
+    padding: 0;
+    border: none;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+  }
+  .vos-wiki-home-shell {
+    padding: 0;
+    border: none;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+  }
+  .vos-page-shell:not(.vos-home-shell) > h1:first-child { margin-top: 0; }
+  .vos-page-shell:not(.vos-home-shell) > h1::after {
+    background: rgba(12, 10, 15, 0.98);
+  }
+  .vos-page-shell:not(.vos-home-shell) > h1,
+  .vos-page-shell:not(.vos-home-shell) > h2,
+  .vos-page-shell:not(.vos-home-shell) > h3,
+  .vos-page-shell:not(.vos-home-shell) > h4,
+  .vos-page-shell:not(.vos-home-shell) > h5,
+  .vos-page-shell:not(.vos-home-shell) > h6 {
+    width: 100%;
+    max-width: none;
+  }
+  .vos-page-shell:not(.vos-home-shell) > p,
+  .vos-page-shell:not(.vos-home-shell) > ul,
+  .vos-page-shell:not(.vos-home-shell) > ol,
+  .vos-page-shell:not(.vos-home-shell) > blockquote {
+    width: 100%;
+    max-width: none;
+    overflow-wrap: anywhere;
+    padding: clamp(0.85rem, 1.4vw, 1.15rem) clamp(1rem, 1.8vw, 1.4rem);
+    border: 1px solid rgba(201, 161, 74, 0.14);
+    border-left: 2px solid rgba(201, 161, 74, 0.34);
+    border-radius: 6px;
+    background:
+      linear-gradient(180deg, rgba(18, 16, 23, 0.54), rgba(8, 7, 11, 0.34)),
+      radial-gradient(ellipse 80% 60% at 50% 0%, rgba(201, 161, 74, 0.035), transparent 70%);
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.28);
+  }
+  .vos-page-shell:not(.vos-home-shell) > ul,
+  .vos-page-shell:not(.vos-home-shell) > ol {
+    padding-left: clamp(2rem, 2.8vw, 2.5rem);
+    list-style-position: outside;
+  }
+  .vos-page-shell:not(.vos-home-shell) > blockquote {
+    color: rgba(232, 220, 200, 0.86);
+    font-family: 'IM Fell English', Georgia, serif;
+  }
+
+  @media (max-width: 700px) {
+    h1 {
+      font-size: 1.85rem;
+      letter-spacing: 0;
+      line-height: 1.12;
+    }
+    h2 {
+      font-size: 1.35rem;
+      letter-spacing: 0;
+    }
+    h3 {
+      letter-spacing: 0;
+    }
+    main.vos-content {
+      padding-left: max(1rem, env(safe-area-inset-left));
+      padding-right: max(1rem, env(safe-area-inset-right));
+    }
+    .vos-page-shell {
+      padding: 1rem;
+    }
+    .vos-page-shell:not(.vos-home-shell) > p,
+    .vos-page-shell:not(.vos-home-shell) > ul,
+    .vos-page-shell:not(.vos-home-shell) > ol,
+    .vos-page-shell:not(.vos-home-shell) > blockquote {
+      padding: 0.8rem 0.9rem;
+    }
+    .vos-page-shell:not(.vos-home-shell) > ul,
+    .vos-page-shell:not(.vos-home-shell) > ol {
+      padding-left: 2rem;
+    }
+    .vos-page-shell:not(.vos-home-shell) > div[style*="display: flex"][style*="gap: 2rem"] {
+      display: block !important;
+      gap: 1.1rem !important;
+      padding: 1.1rem !important;
+    }
+    .vos-page-shell:not(.vos-home-shell) > div[style*="display: flex"][style*="gap: 2rem"] > div:first-child {
+      flex-basis: 100% !important;
+      min-width: 0 !important;
+    }
+    .vos-page-shell:not(.vos-home-shell) > div[style*="display: flex"][style*="gap: 2rem"] > div:first-child > div:first-child {
+      font-size: 1.45rem !important;
+      letter-spacing: 0 !important;
+      overflow-wrap: anywhere;
+    }
+    .vos-page-shell:not(.vos-home-shell) > div[style*="display: flex"][style*="gap: 2rem"] > div:last-child {
+      width: 100%;
+      margin-top: 1rem;
+    }
+    .vos-page-shell:not(.vos-home-shell) > div[style*="display: flex"][style*="gap: 2rem"] > div:last-child img {
+      width: 100% !important;
+      max-height: 230px;
+      object-fit: cover;
+    }
+  }
+
+  /* ── App component system ─────────────────────────────────────────── */
+  .vos-app-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1120;
+    min-height: var(--vos-app-bar-h);
+    padding:
+      var(--vos-safe-top)
+      max(0.82rem, env(safe-area-inset-right))
+      0.5rem
+      max(0.82rem, env(safe-area-inset-left));
+    border-bottom: 1px solid rgba(212, 165, 116, 0.24);
+    background:
+      radial-gradient(ellipse 60% 120% at 0% 0%, rgba(212, 165, 116, 0.12), transparent 70%),
+      linear-gradient(180deg, rgba(13, 11, 17, 0.98), rgba(7, 6, 10, 0.985));
+    box-shadow: 0 8px 26px rgba(0, 0, 0, 0.56);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+  }
+  .vos-app-bar-spacer {
+    height: calc(var(--vos-safe-top) + var(--vos-app-bar-content-h) + 0.6rem);
+  }
+  .vos-app-bar-spacer.has-crumbs {
+    height: calc(var(--vos-safe-top) + var(--vos-app-bar-content-h) + 1.75rem);
+  }
+  .vos-app-bar::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -1px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(212, 165, 116, 0.72), transparent);
+    pointer-events: none;
+  }
+  .vos-app-bar-inner {
+    width: min(1320px, 100%);
+    margin: 0 auto;
+    display: grid;
+    gap: 0.35rem;
+  }
+  .vos-app-bar-row {
+    min-height: var(--vos-app-bar-content-h);
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 0.72rem;
+  }
+  .vos-app-icon-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    border: 1px solid rgba(212, 165, 116, 0.28);
+    border-radius: 8px;
+    background: rgba(13, 11, 17, 0.62);
+    color: var(--vos-gold-bright);
+    text-decoration: none;
+    cursor: pointer;
+  }
+  .vos-app-icon-button:hover {
+    color: var(--vos-cream);
+    border-color: rgba(212, 165, 116, 0.56);
+    background: rgba(212, 165, 116, 0.1);
+    border-bottom-color: rgba(212, 165, 116, 0.56);
+  }
+  .vos-app-icon-button svg {
+    width: 21px;
+    height: 21px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .vos-app-profile {
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+    background: transparent;
+  }
+  .vos-app-profile:hover {
+    background: transparent;
+    border: none;
+  }
+  .vos-app-avatar-wrap {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background:
+      radial-gradient(circle at 50% 32%, rgba(232, 205, 132, 0.18), transparent 62%),
+      rgba(9, 8, 12, 0.86);
+    box-shadow:
+      0 0 0 2px rgba(232, 205, 132, 0.78),
+      inset 0 0 0 1px rgba(0, 0, 0, 0.66),
+      0 6px 16px rgba(0, 0, 0, 0.55);
+    overflow: visible;
+  }
+  .vos-app-avatar-img,
+  .vos-app-avatar-fallback {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+  }
+  .vos-app-avatar-img {
+    display: block;
+    object-fit: cover;
+    object-position: center;
+    opacity: 0;
+    transition: opacity 0.18s ease;
+  }
+  .vos-app-avatar-img.is-loaded {
+    opacity: 1;
+  }
+  .vos-app-avatar-fallback {
+    padding: 7px;
+    color: rgba(232, 205, 132, 0.9);
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.9;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    background: rgba(12, 10, 15, 0.88);
+  }
+  .vos-app-avatar-img.is-loaded + .vos-app-avatar-fallback {
+    opacity: 0;
+  }
+  .vos-app-avatar-badge {
+    position: absolute;
+    right: -3px;
+    bottom: -2px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #d8645c;
+    box-shadow:
+      0 0 0 2px rgba(8, 7, 11, 0.98),
+      0 0 0 3px rgba(232, 205, 132, 0.74);
+  }
+  .vos-app-avatar-badge[hidden] {
+    display: none;
+  }
+  .vos-app-title-block {
+    min-width: 0;
+    display: grid;
+    gap: 0.04rem;
+  }
+  .vos-app-eyebrow {
+    color: rgba(212, 165, 116, 0.58);
+    font-family: 'Cinzel', Georgia, serif;
+    font-size: 0.58rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    line-height: 1;
+    text-transform: uppercase;
+  }
+  .vos-app-title {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: var(--vos-cream);
+    font-family: 'Cinzel', Georgia, serif;
+    font-size: clamp(1.02rem, 2.2vw, 1.18rem);
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    line-height: 1.18;
+  }
+  .vos-app-identity {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 78px;
+    max-width: min(32vw, 18rem);
+    min-height: 38px;
+    border: 1px solid rgba(212, 165, 116, 0.24);
+    border-radius: 999px;
+    background: rgba(212, 165, 116, 0.065);
+    color: rgba(232, 220, 200, 0.78);
+    cursor: pointer;
+    font-family: 'Cinzel', Georgia, serif;
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    line-height: 1;
+    padding: 0 0.72rem;
+    text-transform: none;
+    white-space: nowrap;
+  }
+  .vos-app-identity:hover {
+    color: var(--vos-gold-bright);
+    border-color: rgba(212, 165, 116, 0.46);
+    background: rgba(212, 165, 116, 0.12);
+  }
+  .vos-app-identity-label {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .vos-app-identity.is-authenticated {
+    color: var(--vos-cream);
+  }
+  .vos-app-crumbs {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    min-width: 0;
+    margin: -0.12rem 0 0;
+    padding: 0 0 0.18rem 3.35rem;
+    list-style: none;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .vos-app-crumbs::-webkit-scrollbar { display: none; }
+  .vos-app-crumbs li {
+    display: inline-flex;
+    align-items: center;
+    flex: 0 0 auto;
+    min-width: 0;
+    color: rgba(212, 199, 173, 0.58);
+    font-family: 'Cinzel', Georgia, serif;
+    font-size: 0.58rem;
+    font-weight: 700;
+    letter-spacing: 0.09em;
+    line-height: 1.2;
+    text-transform: uppercase;
+  }
+  .vos-app-crumbs li + li::before {
+    content: '/';
+    margin-right: 0.35rem;
+    color: rgba(139, 115, 85, 0.72);
+  }
+  .vos-app-crumbs a {
+    color: rgba(212, 165, 116, 0.86);
+    border-bottom: none;
+  }
+  .vos-app-crumbs a:hover {
+    color: var(--vos-cream);
+    border-bottom: none;
+  }
+  .vos-app-crumbs [aria-current="page"] {
+    max-width: min(52vw, 28rem);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: rgba(232, 220, 200, 0.72);
+  }
+  .vos-section-header {
+    min-width: 0;
+    display: grid;
+    gap: 0.22rem;
+    margin: 0 0 clamp(0.75rem, 1.8vw, 1rem);
+  }
+  .vos-section-kicker {
+    margin: 0;
+    color: rgba(212, 165, 116, 0.66);
+    font-family: 'Cinzel', Georgia, serif;
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    line-height: 1.1;
+    text-transform: uppercase;
+  }
+  .vos-section-title {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    color: var(--vos-cream);
+    font-family: 'Cinzel', Georgia, serif;
+    font-size: clamp(1.25rem, 3vw, 1.85rem);
+    letter-spacing: 0.04em;
+    line-height: 1.08;
+  }
+  .vos-section-title::after { content: none; }
+  .vos-section-subtitle {
+    margin: 0;
+    max-width: 48rem;
+    color: rgba(212, 199, 173, 0.76);
+    font-size: clamp(0.98rem, 1.8vw, 1.06rem);
+    line-height: 1.38;
+  }
+  .vos-compact-panel {
+    min-width: 0;
+    padding: clamp(0.86rem, 1.7vw, 1.12rem);
+    border: 1px solid rgba(212, 165, 116, 0.18);
+    border-radius: 8px;
+    background:
+      linear-gradient(180deg, rgba(18, 16, 23, 0.72), rgba(7, 6, 10, 0.9)),
+      radial-gradient(ellipse 80% 70% at 0% 0%, rgba(212, 165, 116, 0.055), transparent 70%);
+    box-shadow: 0 12px 34px rgba(0, 0, 0, 0.38);
+  }
+  .vos-panel-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.8rem;
+    margin-bottom: 0.7rem;
+  }
+  .vos-panel-title {
+    margin: 0;
+    color: var(--vos-cream);
+    font-family: 'Cinzel', Georgia, serif;
+    font-size: 0.88rem;
+    font-weight: 700;
+    letter-spacing: 0.13em;
+    line-height: 1.2;
+    text-transform: uppercase;
+  }
+  .vos-panel-title::after { content: none; }
+  .vos-panel-note {
+    color: rgba(212, 165, 116, 0.64);
+    font-family: 'IM Fell English', Georgia, serif;
+    font-style: italic;
+    font-size: 0.9rem;
+    line-height: 1.2;
+  }
+  .vos-row-chip-list,
+  .vos-row-chip-grid {
+    display: grid;
+    gap: 0.5rem;
+    min-width: 0;
+  }
+  .vos-row-chip-grid {
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
+  }
+  .vos-row-chip {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 0.7rem;
+    min-width: 0;
+    min-height: 48px;
+    padding: 0.72rem 0.78rem;
+    border: 1px solid rgba(212, 165, 116, 0.16);
+    border-radius: 8px;
+    background: rgba(8, 7, 11, 0.5);
+    color: rgba(232, 220, 200, 0.9);
+    text-decoration: none;
+    box-shadow: none;
+  }
+  .vos-row-chip:hover {
+    color: var(--vos-cream);
+    border-color: rgba(212, 165, 116, 0.48);
+    background: rgba(212, 165, 116, 0.075);
+    border-bottom-color: rgba(212, 165, 116, 0.48);
+  }
+  .vos-row-chip-title,
+  .vos-row-chip-meta {
+    display: block;
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+  .vos-row-chip-title {
+    color: var(--vos-cream);
+    font-family: 'Cinzel', Georgia, serif;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.065em;
+    line-height: 1.18;
+    text-transform: uppercase;
+  }
+  .vos-row-chip-meta {
+    margin-top: 0.2rem;
+    color: rgba(212, 199, 173, 0.7);
+    font-size: 0.9rem;
+    font-style: italic;
+    line-height: 1.25;
+  }
+  .vos-row-chip-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 2.1rem;
+    min-height: 2.1rem;
+    padding: 0.28rem;
+    border: 1px solid rgba(212, 165, 116, 0.28);
+    border-radius: 999px;
+    color: rgba(212, 165, 116, 0.86);
+    font-family: 'Cinzel', Georgia, serif;
+    font-size: 0.58rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    line-height: 1;
+  }
+  .vos-row-chip-arrow {
+    color: rgba(212, 165, 116, 0.7);
+    font-family: Georgia, serif;
+    font-size: 1.2rem;
+    line-height: 1;
+  }
+  .vos-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 42px;
+    padding: 0.55rem 0.85rem;
+    border: 1px solid rgba(212, 165, 116, 0.36);
+    border-radius: 8px;
+    background: rgba(212, 165, 116, 0.08);
+    color: var(--vos-gold-bright);
+    font-family: 'Cinzel', Georgia, serif;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    line-height: 1;
+    text-transform: uppercase;
+    text-decoration: none;
+    cursor: pointer;
+  }
+  .vos-button:hover {
+    color: var(--vos-cream);
+    border-color: rgba(212, 165, 116, 0.58);
+    background: rgba(212, 165, 116, 0.13);
+    border-bottom-color: rgba(212, 165, 116, 0.58);
+  }
+  .vos-rsvp-control {
+    display: grid;
+    gap: 0.42rem;
+    min-width: 0;
+  }
+  .vos-rsvp-segmented {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    min-height: 42px;
+    overflow: hidden;
+    border: 1px solid rgba(212, 165, 116, 0.28);
+    border-radius: 999px;
+    background: rgba(7, 6, 10, 0.58);
+  }
+  .vos-rsvp-segment {
+    min-width: 0;
+    min-height: 42px;
+    border: 0;
+    border-right: 1px solid rgba(212, 165, 116, 0.18);
+    border-radius: 0;
+    background: transparent;
+    color: rgba(212, 199, 173, 0.72);
+    cursor: pointer;
+    font-family: 'Cinzel', Georgia, serif;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0;
+    line-height: 1;
+    text-transform: uppercase;
+  }
+  .vos-rsvp-segment:last-child { border-right: 0; }
+  .vos-rsvp-segment:hover:not(:disabled) {
+    color: var(--vos-cream);
+    background: rgba(212, 165, 116, 0.09);
+  }
+  .vos-rsvp-segment.is-selected {
+    color: #0d0b11;
+    background: linear-gradient(180deg, #e6c08a 0%, #c9a371 65%, #a8835a 100%);
+  }
+  .vos-rsvp-segment:disabled {
+    cursor: wait;
+    opacity: 0.72;
+  }
+  .vos-rsvp-status {
+    min-height: 1.25em;
+    color: rgba(233, 225, 208, 0.66);
+    font-size: 0.86rem;
+    line-height: 1.25;
+  }
+  .vos-rsvp-status.is-error {
+    color: var(--vos-quest-bright);
+  }
+  .vos-task-list {
+    display: grid;
+    gap: 0.48rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .vos-task-row {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 0.65rem;
+    min-width: 0;
+    padding: 0.62rem 0;
+    border-top: 1px solid rgba(212, 165, 116, 0.13);
+  }
+  .vos-task-row:first-child { border-top: 0; }
+  .vos-task-check {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.22rem;
+    height: 1.22rem;
+    border: 1px solid rgba(212, 165, 116, 0.34);
+    border-radius: 50%;
+    color: rgba(212, 165, 116, 0.86);
+    font-size: 0.72rem;
+    line-height: 1;
+  }
+  .vos-task-main {
+    min-width: 0;
+    color: rgba(233, 225, 208, 0.86);
+    font-size: 0.98rem;
+    line-height: 1.32;
+  }
+  .vos-task-date {
+    justify-self: end;
+    color: rgba(212, 165, 116, 0.76);
+    font-family: 'Cinzel', Georgia, serif;
+    font-size: 0.58rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  @media (max-width: 420px) {
+    .vos-rsvp-segment { font-size: 0.62rem; }
+    .vos-task-row {
+      grid-template-columns: auto minmax(0, 1fr);
+      align-items: start;
+    }
+    .vos-task-date {
+      grid-column: 2;
+      justify-self: start;
+      margin-top: -0.2rem;
+    }
+  }
+
+  @media (max-width: 700px) {
+    .vos-app-bar {
+      padding-right: max(0.75rem, env(safe-area-inset-right));
+      padding-left: max(0.75rem, env(safe-area-inset-left));
+    }
+    .vos-app-bar-row {
+      gap: 0.58rem;
+    }
+    .vos-app-icon-button {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+    }
+    .vos-app-profile {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+    }
+    .vos-app-crumbs {
+      padding-left: 3.05rem;
+    }
+    .vos-app-title {
+      font-size: 1rem;
+      letter-spacing: 0.025em;
+    }
+    .vos-app-identity {
+      max-width: min(36vw, 9.75rem);
+      min-width: 64px;
+      min-height: 36px;
+      padding: 0 0.58rem;
+      font-size: 0.56rem;
+    }
+    .vos-section-subtitle {
+      font-size: 0.95rem;
+    }
+    .vos-row-chip-grid {
+      grid-template-columns: 1fr;
+    }
+    .vos-row-chip {
+      min-height: 46px;
+      padding: 0.68rem 0.72rem;
+    }
+  }
+
+  /* ── Map viewer (OpenSeadragon container) ──────────────────────────────
+     Gold-bordered deep-zoom viewer used by every page under Venturia/Maps/
+     and by the embedded map snippets on VAVA / Liminal House / Respite. */
+  .vos-map-viewer-wrap {
+    position: relative;
+    margin: 1.5rem 0 2rem;
+    border-radius: 6px;
+    overflow: hidden;
+    border: 1px solid rgba(212, 165, 116, 0.45);
+    background:
+      radial-gradient(ellipse 80% 60% at 50% 50%, rgba(20, 18, 24, 0.6), rgba(7, 6, 10, 0.95)),
+      #060509;
+    box-shadow: 0 14px 44px rgba(0, 0, 0, 0.7);
+  }
+  .vos-map-viewer {
+    width: 100%;
+    height: 70vh; min-height: 420px; max-height: 820px;
+    background: #060509;
+  }
+  .vos-map-viewer-wrap.is-tall .vos-map-viewer { height: 85vh; max-height: 1100px; }
+  /* OSD canvas — hide the focus ring */
+  .vos-map-viewer .openseadragon-canvas:focus { outline: none; }
+  /* OSD default controls — make them feel a bit more at home with the
+     gold/dark theme. The img-based controls live in span.zoom-in etc. */
+  .vos-map-viewer .navigator {
+    border: 1px solid rgba(212, 165, 116, 0.5) !important;
+    background: rgba(7, 6, 10, 0.85) !important;
+  }
+
+  .vos-map-toolbar {
+    display: flex; flex-wrap: wrap; gap: 0.6rem;
+    padding: 0.65rem 0.9rem;
+    background: linear-gradient(180deg, rgba(13, 11, 17, 0.95), rgba(7, 6, 10, 0.98));
+    border-top: 1px solid rgba(212, 165, 116, 0.18);
+    align-items: center;
+  }
+  .vos-map-toolbar-caption {
+    flex: 1; min-width: 180px;
+    font-family: 'IM Fell English', Georgia, serif;
+    font-style: italic;
+    font-size: 0.85rem;
+    color: rgba(212, 165, 116, 0.75);
+    line-height: 1.4;
+  }
+  .vos-map-action {
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    padding: 0.4rem 0.8rem;
+    background: transparent;
+    color: var(--vos-gold-bright);
+    font-family: 'Cinzel', Georgia, serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.22em; text-transform: uppercase;
+    border: 1px solid rgba(212, 165, 116, 0.4);
+    border-radius: 3px;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s, color 0.15s;
+  }
+  .vos-map-action:hover {
+    color: var(--vos-cream);
+    background: rgba(212, 165, 116, 0.08);
+    border-color: var(--vos-gold-bright);
+    border-bottom: 1px solid var(--vos-gold-bright);
+  }
+
+  /* Tile-grid: the index page that lists all maps as cards. */
+  .vos-map-tiles {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+    margin: 1.5rem 0 2.5rem;
+  }
+  @media (min-width: 720px) {
+    .vos-map-tiles { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (min-width: 1100px) {
+    .vos-map-tiles { grid-template-columns: repeat(3, 1fr); }
+  }
+  .vos-map-tile {
+    display: block;
+    text-decoration: none;
+    border: 1px solid rgba(212, 165, 116, 0.25);
+    border-radius: 6px;
+    overflow: hidden;
+    background: rgba(13, 11, 17, 0.6);
+    transition: transform 0.25s ease, border-color 0.2s, box-shadow 0.2s;
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.55);
+  }
+  .vos-map-tile:hover {
+    transform: translateY(-4px);
+    border-color: rgba(212, 165, 116, 0.7);
+    box-shadow: 0 14px 38px rgba(0, 0, 0, 0.7), 0 0 18px rgba(212, 165, 116, 0.18);
+  }
+  .vos-map-tile-art {
+    width: 100%; aspect-ratio: 4 / 3;
+    background-size: cover; background-position: center;
+    background-color: #0a0a0d;
+  }
+  .vos-map-tile-body {
+    padding: 0.85rem 1rem 1.1rem;
+    border-top: 1px solid rgba(139, 115, 85, 0.18);
+  }
+  .vos-map-tile-title {
+    display: block;
+    font-family: 'Cinzel', Georgia, serif;
+    font-size: 0.95rem;
+    letter-spacing: 0.06em;
+    color: var(--vos-cream);
+    margin-bottom: 0.35rem;
+  }
+  .vos-map-tile-desc {
+    display: block;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-style: italic;
+    font-size: 0.82rem;
+    line-height: 1.4;
+    color: rgba(212, 165, 116, 0.75);
+  }
+
+  /* Pagefind overrides — match the gold/dark palette and float the
+     results panel below the input so it doesn't expand the nav. */
+  .pagefind-ui {
+    --pagefind-ui-primary: var(--vos-gold-bright);
+    --pagefind-ui-text: var(--vos-text-body);
+    --pagefind-ui-background: rgba(13, 11, 17, 0.85);
+    --pagefind-ui-border: var(--vos-border);
+    --pagefind-ui-tag: rgba(212, 165, 116, 0.15);
+    --pagefind-ui-border-width: 1px;
+    --pagefind-ui-border-radius: 4px;
+    --pagefind-ui-font: 'Crimson Text', Georgia, serif;
+  }
+  .pagefind-ui__search-input {
+    font-family: 'Crimson Text', Georgia, serif !important;
+    font-size: 1rem !important;
+    background:
+      linear-gradient(180deg, rgba(7, 6, 10, 0.7), rgba(13, 11, 17, 0.55)) !important;
+    color: var(--vos-cream) !important;
+    padding: 0.5rem 3.65rem 0.5rem 2.25rem !important;
+    height: 40px !important;
+    border: 1px solid var(--vos-border) !important;
+    border-radius: 4px !important;
+    box-shadow:
+      inset 0 1px 4px rgba(0, 0, 0, 0.6),
+      0 0 0 1px rgba(212, 165, 116, 0) !important;
+    transition: border-color 0.2s, box-shadow 0.2s !important;
+  }
+  .pagefind-ui__search-input:focus {
+    border-color: var(--vos-gold-bright) !important;
+    box-shadow:
+      inset 0 1px 4px rgba(0, 0, 0, 0.6),
+      0 0 0 1px rgba(212, 165, 116, 0.4),
+      0 0 18px rgba(212, 165, 116, 0.15) !important;
+  }
+  .pagefind-ui__search-input::placeholder { color: var(--vos-gold-dim); font-style: italic; }
+  .pagefind-ui__result-link { color: var(--vos-gold-bright) !important; font-family: 'Cinzel', Georgia, serif; }
+  .pagefind-ui__result-excerpt { color: var(--vos-text) !important; }
+  .pagefind-ui__result-tags, .pagefind-ui__filter-name, .pagefind-ui__message { color: var(--vos-text) !important; }
+  .pagefind-ui mark {
+    background: rgba(232, 205, 132, 0.28);
+    color: var(--vos-cream);
+    padding: 0 0.08em;
+  }
+
+  /* ── Auto-index list (when a *index.md page renders) ─────────────────── */
+  .vos-auto-index {
+    margin: 1.5rem auto 0;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+    display: grid;
+    gap: 0.85rem;
+  }
+  .vos-auto-index h2.vos-auto-index-title {
+    color: var(--vos-gold-bright); font-family: 'Cinzel', Georgia, serif;
+    font-size: 1.4rem; letter-spacing: 0.06em; margin-top: 0;
+  }
+  .vos-auto-index .vos-auto-sub { margin: 0; }
+  .vos-auto-index .vos-auto-sub > h3 {
+    margin: 0 0 0.65rem; font-size: 0.88rem;
+    color: var(--vos-cream); font-family: 'Cinzel', Georgia, serif;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+  .vos-auto-index ul {
+    list-style: none; padding: 0; margin: 0.4rem 0 0 0;
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
+    gap: 0.5rem;
+  }
+  .vos-auto-index li { padding: 0; }
+  .vos-auto-index li a { font-size: 1rem; }
+  .vos-auto-index .vos-auto-sub {
+    min-width: 0;
+    padding: clamp(0.86rem, 1.7vw, 1.12rem);
+    border: 1px solid rgba(212, 165, 116, 0.18);
+    border-radius: 8px;
+    background:
+      linear-gradient(180deg, rgba(18, 16, 23, 0.72), rgba(7, 6, 10, 0.9)),
+      radial-gradient(ellipse 80% 70% at 0% 0%, rgba(212, 165, 116, 0.055), transparent 70%);
+    box-shadow: 0 12px 34px rgba(0, 0, 0, 0.38);
+  }
+
+  /* ── Wiki app reading/index surface ───────────────────────────────── */
+  .vos-is-wiki-page main.vos-content {
+    max-width: 1320px;
+  }
+  .vos-is-wiki-page .vos-page-shell:not(.vos-home-shell) {
+    border-color: rgba(212, 165, 116, 0.2);
+    padding: clamp(1rem, 2vw, 1.6rem);
+  }
+  .vos-is-wiki-page .vos-page-shell:not(.vos-home-shell) > h1 {
+    margin: 0 0 0.9rem;
+    padding-bottom: 0.45rem;
+    font-size: clamp(1.55rem, 3.2vw, 2rem);
+    letter-spacing: 0.035em;
+  }
+  .vos-is-wiki-page .vos-page-shell:not(.vos-home-shell) > h2 {
+    margin: 1.45rem 0 0.55rem;
+    font-size: clamp(1.12rem, 2.2vw, 1.35rem);
+    letter-spacing: 0.035em;
+  }
+  .vos-is-wiki-page .vos-page-shell:not(.vos-home-shell) > h3 {
+    margin: 1.05rem 0 0.4rem;
+    font-size: 1rem;
+    letter-spacing: 0.035em;
+  }
+  .vos-is-wiki-page .vos-page-shell:not(.vos-home-shell) > hr {
+    display: none;
+  }
+  .vos-is-wiki-page table {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .vos-is-wiki-page .vos-page-shell:not(.vos-home-shell) > p:first-of-type {
+    color: rgba(232, 220, 200, 0.88);
+    font-size: clamp(0.98rem, 1.35vw, 1.04rem);
+    line-height: 1.48;
+  }
+  .vos-wiki-search-panel {
+    display: grid;
+    gap: 0.65rem;
+  }
+  .vos-wiki-search-panel .pagefind-ui,
+  .vos-wiki-search-panel .pagefind-ui__form {
+    margin: 0 !important;
+  }
+  .vos-wiki-search-panel .pagefind-ui__search-input {
+    height: 46px !important;
+    font-size: 1.05rem !important;
+    border-radius: 8px !important;
+  }
+  .vos-wiki-search-panel .pagefind-ui__drawer {
+    position: static !important;
+    max-height: none !important;
+    margin-top: 0.65rem !important;
+    border: 1px solid rgba(201, 161, 74, 0.18);
+    border-radius: 8px;
+    background: rgba(8, 7, 11, 0.7);
+    box-shadow: none;
+  }
+  .vos-wiki-hub {
+    display: grid;
+    gap: clamp(0.85rem, 1.8vw, 1.15rem);
+  }
+  .vos-wiki-status-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.05fr) minmax(280px, 0.95fr);
+    gap: clamp(0.75rem, 1.8vw, 0.95rem);
+  }
+  .vos-wiki-sections {
+    display: grid;
+    gap: 0.7rem;
+  }
+  .vos-is-index-page .vos-auto-index {
+    margin-top: clamp(1rem, 2vw, 1.35rem);
+  }
+  .vos-is-wiki-page.vos-is-index-page .vos-page-shell:not(.vos-home-shell) {
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+  }
+  .vos-is-index-page .vos-auto-index-title {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+  }
+  .vos-is-index-page .vos-auto-index-title::before {
+    content: '✦';
+    color: var(--vos-gold-dim);
+    font-size: 0.9rem;
+  }
+  .vos-is-index-page .vos-auto-index .vos-auto-sub {
+    margin: 0;
+    min-width: 0;
+    padding: clamp(0.86rem, 1.7vw, 1.12rem);
+    border: 1px solid rgba(212, 165, 116, 0.18);
+    border-radius: 8px;
+    background:
+      linear-gradient(180deg, rgba(18, 16, 23, 0.72), rgba(7, 6, 10, 0.9)),
+      radial-gradient(ellipse 80% 70% at 0% 0%, rgba(212, 165, 116, 0.055), transparent 70%);
+  }
+  .vos-is-index-page .vos-auto-index {
+    display: grid;
+    gap: 0.85rem;
+  }
+  .vos-is-index-page .vos-auto-index > h2 {
+    margin-bottom: 0;
+  }
+  .vos-is-index-page .vos-auto-index .vos-auto-sub > h3 {
+    margin: 0 0 0.65rem;
+    font-size: 0.88rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+  .vos-is-index-page .vos-auto-index .vos-auto-sub > h3 a {
+    color: var(--vos-gold-bright);
+  }
+  .vos-is-index-page .vos-auto-index ul {
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr));
+    gap: 0.4rem;
+  }
+  .vos-is-index-page .vos-auto-index .vos-row-chip {
+    min-height: 48px;
+  }
+  .vos-is-wiki-page .vos-page-shell:not(.vos-home-shell) > ul,
+  .vos-is-wiki-page .vos-page-shell:not(.vos-home-shell) > ol {
+    padding-left: clamp(2.25rem, 3vw, 2.8rem);
+    list-style-position: outside;
+  }
+  .vos-is-wiki-page .vos-page-shell:not(.vos-home-shell) > ul li,
+  .vos-is-wiki-page .vos-page-shell:not(.vos-home-shell) > ol li {
+    margin: 0.35rem 0;
+    padding-left: 0.12rem;
+  }
+  .vos-is-wiki-page .vos-page-shell:not(.vos-home-shell) > ul li::marker,
+  .vos-is-wiki-page .vos-page-shell:not(.vos-home-shell) > ol li::marker {
+    color: rgba(232, 220, 200, 0.82);
+    font-size: 0.72em;
+  }
+  .vos-is-wiki-page .vos-page-shell:not(.vos-home-shell) > ul li > p,
+  .vos-is-wiki-page .vos-page-shell:not(.vos-home-shell) > ol li > p {
+    margin: 0.25rem 0;
+  }
+  .vos-is-wiki-page .vos-page-shell:not(.vos-home-shell) > ul li > ul,
+  .vos-is-wiki-page .vos-page-shell:not(.vos-home-shell) > ul li > ol,
+  .vos-is-wiki-page .vos-page-shell:not(.vos-home-shell) > ol li > ul,
+  .vos-is-wiki-page .vos-page-shell:not(.vos-home-shell) > ol li > ol {
+    margin-top: 0.35rem;
+    padding-left: 1.35rem;
+  }
+
+  @media (min-width: 701px) and (max-width: 1023px) {
+    .vos-is-wiki-page main.vos-content {
+      padding-left: max(1.15rem, env(safe-area-inset-left));
+      padding-right: max(1.15rem, env(safe-area-inset-right));
+    }
+    .vos-is-wiki-page .vos-page-shell:not(.vos-home-shell) {
+      padding: 1.35rem;
+    }
+    .vos-is-index-page .vos-auto-index {
+      padding: 0;
+    }
+  }
+
+  @media (max-width: 700px) {
+    .vos-is-wiki-page main.vos-content {
+      padding-left: max(0.75rem, env(safe-area-inset-left));
+      padding-right: max(0.75rem, env(safe-area-inset-right));
+    }
+    .vos-is-wiki-page .vos-page-shell:not(.vos-home-shell) {
+      padding: 0.95rem;
+      border-radius: 10px;
+    }
+    .vos-is-wiki-page .vos-page-shell:not(.vos-home-shell) > p,
+    .vos-is-wiki-page .vos-page-shell:not(.vos-home-shell) > ul,
+    .vos-is-wiki-page .vos-page-shell:not(.vos-home-shell) > ol,
+    .vos-is-wiki-page .vos-page-shell:not(.vos-home-shell) > blockquote {
+      padding: 0.78rem 0.82rem;
+      border-radius: 8px;
+      border-left-width: 1px;
+    }
+    .vos-is-wiki-page .vos-page-shell:not(.vos-home-shell) > ul,
+    .vos-is-wiki-page .vos-page-shell:not(.vos-home-shell) > ol {
+      padding-top: 0.78rem;
+      padding-right: 0.82rem;
+      padding-bottom: 0.78rem;
+      padding-left: 2.15rem;
+    }
+    .vos-is-wiki-page .vos-page-shell:not(.vos-home-shell) > ul li,
+    .vos-is-wiki-page .vos-page-shell:not(.vos-home-shell) > ol li {
+      margin: 0.42rem 0;
+      padding-left: 0.08rem;
+    }
+    .vos-is-index-page .vos-auto-index {
+      padding: 0;
+      border-radius: 10px;
+    }
+    .vos-is-index-page .vos-auto-index h2.vos-auto-index-title {
+      font-size: 1.08rem;
+      letter-spacing: 0.08em;
+    }
+    .vos-is-index-page .vos-auto-index .vos-auto-sub {
+      padding: 0.75rem;
+    }
+    .vos-is-index-page .vos-auto-index ul {
+      grid-template-columns: 1fr;
+    }
+    .vos-wiki-status-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .vos-is-wiki-page .vos-page-shell:not(.vos-home-shell) > .vos-linked-row-list {
+    display: grid;
+    gap: 0.5rem;
+    width: 100%;
+    max-width: none;
+    margin: 0.45rem 0 1rem;
+    padding: 0 !important;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+    list-style: none;
+  }
+  .vos-is-wiki-page .vos-page-shell:not(.vos-home-shell) > .vos-linked-row-list > .vos-linked-row {
+    position: relative;
+    margin: 0;
+    padding: 0.76rem 2.25rem 0.76rem 0.82rem;
+    border: 1px solid rgba(212, 165, 116, 0.16);
+    border-radius: 8px;
+    background: rgba(8, 7, 11, 0.5);
+    color: rgba(232, 220, 200, 0.86);
+    font-size: 0.96rem;
+    line-height: 1.36;
+    cursor: pointer;
+  }
+  .vos-is-wiki-page .vos-page-shell:not(.vos-home-shell) > .vos-linked-row-list > .vos-linked-row::marker {
+    content: '';
+  }
+  .vos-is-wiki-page .vos-page-shell:not(.vos-home-shell) > .vos-linked-row-list > .vos-linked-row::after {
+    content: '›';
+    position: absolute;
+    top: 50%;
+    right: 0.82rem;
+    color: rgba(212, 165, 116, 0.7);
+    font-family: Georgia, serif;
+    font-size: 1.2rem;
+    line-height: 1;
+    transform: translateY(-50%);
+  }
+  .vos-is-wiki-page .vos-page-shell:not(.vos-home-shell) > .vos-linked-row-list > .vos-linked-row:hover,
+  .vos-is-wiki-page .vos-page-shell:not(.vos-home-shell) > .vos-linked-row-list > .vos-linked-row:focus {
+    border-color: rgba(212, 165, 116, 0.48);
+    background: rgba(212, 165, 116, 0.075);
+    outline: none;
+  }
+  .vos-is-wiki-page .vos-page-shell:not(.vos-home-shell) > .vos-linked-row-list > .vos-linked-row:focus-visible {
+    box-shadow: 0 0 0 2px rgba(212, 165, 116, 0.34);
+  }
+  .vos-linked-row-list .vos-linked-row a {
+    border-bottom: 0;
+  }
+  .vos-linked-row-list .vos-linked-row > a:first-child,
+  .vos-linked-row-list .vos-linked-row > strong:first-child a {
+    color: var(--vos-gold-bright);
+    font-family: 'Cinzel', Georgia, serif;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.045em;
+    line-height: 1.18;
+    text-transform: uppercase;
+  }
+  .vos-linked-row-list .vos-linked-row > strong:first-child {
+    font-weight: 700;
+  }
+
+  /* ── PWA app rail + prompts ───────────────────────────────────────── */
+  .vos-app-nav {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1150;
+    min-height: calc(var(--vos-app-nav-h) + env(safe-area-inset-bottom));
+    padding:
+      0.45rem
+      max(0.8rem, env(safe-area-inset-right))
+      calc(0.45rem + env(safe-area-inset-bottom))
+      max(0.8rem, env(safe-area-inset-left));
+    border-top: 1px solid rgba(212, 165, 116, 0.24);
+    background:
+      linear-gradient(180deg, rgba(13, 11, 17, 0.88), rgba(7, 6, 10, 0.98)),
+      radial-gradient(ellipse 70% 80% at 50% 100%, rgba(212, 165, 116, 0.07), transparent 70%);
+    box-shadow: 0 -12px 34px rgba(0, 0, 0, 0.58);
+    backdrop-filter: blur(16px);
+  }
+  @media (min-width: 1024px) {
+    .vos-app-nav { left: var(--vos-nav-w); }
+  }
+  .vos-app-nav-inner {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 0.25rem;
+    width: min(560px, 100%);
+    margin: 0 auto;
+  }
+  .vos-app-tab {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-width: 0;
+    min-height: 54px;
+    gap: 0.18rem;
+    padding: 0.35rem 0.2rem;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    color: rgba(212, 199, 173, 0.72);
+    font-family: 'Cinzel', Georgia, serif;
+    font-size: 0.68rem;
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: 0;
+    text-decoration: none;
+  }
+  .vos-app-tab:hover {
+    color: var(--vos-cream);
+    border-bottom-color: transparent;
+    background: rgba(212, 165, 116, 0.07);
+  }
+  .vos-app-tab.is-active {
+    color: var(--vos-gold-bright);
+    border-color: rgba(212, 165, 116, 0.32);
+    background: rgba(212, 165, 116, 0.1);
+  }
+  .vos-app-tab svg {
+    width: 22px;
+    height: 22px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .vos-app-tab span {
+    display: block;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  @media (max-width: 380px) {
+    .vos-app-tab { font-size: 0.62rem; }
+    .vos-app-tab svg { width: 20px; height: 20px; }
+  }
+
+  .vos-pwa-card,
+  .vos-pwa-update {
+    position: fixed;
+    left: max(0.8rem, env(safe-area-inset-left));
+    right: max(0.8rem, env(safe-area-inset-right));
+    bottom: calc(var(--vos-vv-bottom) + var(--vos-app-nav-h) + env(safe-area-inset-bottom) + 0.85rem);
+    z-index: 1300;
+    max-width: 520px;
+    margin: 0 auto;
+    border: 1px solid rgba(212, 165, 116, 0.36);
+    border-radius: 8px;
+    background: rgba(10, 8, 14, 0.97);
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.68);
+    color: var(--vos-text-body);
+    padding: 0.9rem;
+  }
+  .vos-pwa-card[hidden],
+  .vos-pwa-update[hidden] {
+    display: none;
+  }
+  .vos-pwa-card-title,
+  .vos-pwa-update-title {
+    margin: 0 0 0.2rem;
+    color: var(--vos-gold-bright);
+    font-family: 'Cinzel', Georgia, serif;
+    font-size: 0.9rem;
+    font-weight: 700;
+    letter-spacing: 0;
+  }
+  .vos-pwa-card-text,
+  .vos-pwa-update-text {
+    margin: 0;
+    color: var(--vos-text);
+    font-size: 0.95rem;
+    line-height: 1.35;
+  }
+  .vos-pwa-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    margin-top: 0.8rem;
+  }
+  .vos-pwa-actions button {
+    min-height: 40px;
+    border-radius: 6px;
+    border: 1px solid rgba(212, 165, 116, 0.42);
+    background: rgba(212, 165, 116, 0.08);
+    color: var(--vos-gold-bright);
+    font-family: 'Cinzel', Georgia, serif;
+    font-size: 0.76rem;
+    font-weight: 700;
+    letter-spacing: 0;
+    cursor: pointer;
+  }
+  .vos-pwa-actions button:hover {
+    color: var(--vos-cream);
+    background: rgba(212, 165, 116, 0.14);
+  }
+  .vos-pwa-actions .vos-pwa-primary {
+    padding: 0.45rem 0.8rem;
+  }
+  .vos-pwa-actions .vos-pwa-dismiss {
+    width: 40px;
+    padding: 0;
+    font-size: 1.2rem;
+  }
+
+  .vos-enzo-page-panel,
+  .vos-offline-panel {
+    max-width: 740px;
+    margin: 0 auto;
+  }
+
+  .vos-identity-card,
+  .vos-push-card {
+    position: fixed;
+    left: max(0.8rem, env(safe-area-inset-left));
+    right: max(0.8rem, env(safe-area-inset-right));
+    bottom: calc(var(--vos-vv-bottom) + var(--vos-app-nav-h) + env(safe-area-inset-bottom) + 0.85rem);
+    z-index: 1320;
+    max-width: 560px;
+    margin: 0 auto;
+    padding: 0.95rem;
+    border: 1px solid rgba(212, 165, 116, 0.36);
+    border-radius: 8px;
+    background: rgba(10, 8, 14, 0.98);
+    box-shadow: 0 18px 54px rgba(0, 0, 0, 0.72);
+  }
+  .vos-identity-title,
+  .vos-push-title {
+    color: var(--vos-gold-bright);
+    font-family: 'Cinzel', Georgia, serif;
+    font-size: 0.9rem;
+    font-weight: 700;
+    letter-spacing: 0;
+    margin-bottom: 0.65rem;
+  }
+  .vos-identity-options {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 0.45rem;
+  }
+  .vos-identity-form {
+    display: grid;
+    gap: 0.75rem;
+  }
+  .vos-identity-field {
+    display: grid;
+    gap: 0.3rem;
+    color: var(--vos-gold-dim);
+    font-family: 'Cinzel', Georgia, serif;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .vos-identity-field select,
+  .vos-identity-field input {
+    min-height: 44px;
+    width: 100%;
+    border: 1px solid rgba(212, 165, 116, 0.34);
+    border-radius: 6px;
+    background: rgba(0, 0, 0, 0.32);
+    color: var(--vos-cream);
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 1rem;
+    letter-spacing: 0;
+    padding: 0.55rem 0.65rem;
+  }
+  .vos-identity-status {
+    min-height: 1.35em;
+    color: var(--vos-gold-dim);
+    font-size: 0.88rem;
+    line-height: 1.35;
+  }
+  .vos-identity-status.is-error {
+    color: #e4a39d;
+  }
+  .vos-identity-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+  }
+  .vos-identity-options button,
+  .vos-identity-actions button,
+  .vos-push-actions button {
+    min-height: 42px;
+    border: 1px solid rgba(212, 165, 116, 0.34);
+    border-radius: 6px;
+    background: rgba(212, 165, 116, 0.08);
+    color: var(--vos-cream);
+    font-family: 'Cinzel', Georgia, serif;
+    font-size: 0.74rem;
+    font-weight: 700;
+    letter-spacing: 0;
+    cursor: pointer;
+  }
+  .vos-identity-options button:hover,
+  .vos-identity-actions button:hover,
+  .vos-push-actions button:hover {
+    background: rgba(212, 165, 116, 0.15);
+    color: var(--vos-gold-bright);
+  }
+  .vos-identity-actions button:disabled {
+    opacity: 0.55;
+    cursor: wait;
+  }
+  .vos-identity-actions .vos-identity-cancel {
+    color: rgba(232, 220, 200, 0.7);
+    background: rgba(255, 255, 255, 0.035);
+  }
+  .vos-identity-actions .vos-identity-submit {
+    color: var(--vos-gold-bright);
+  }
+  .vos-push-text,
+  .vos-push-status {
+    margin: 0;
+    color: var(--vos-text);
+    font-size: 0.95rem;
+    line-height: 1.35;
+  }
+  .vos-push-status {
+    min-height: 1.4em;
+    margin-top: 0.35rem;
+    color: var(--vos-gold-dim);
+  }
+  .vos-push-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    margin-top: 0.8rem;
+  }
+  .vos-push-actions .vos-push-enable {
+    padding: 0.45rem 0.85rem;
+    color: var(--vos-gold-bright);
+  }
+  .vos-push-actions .vos-push-dismiss {
+    width: 42px;
+    padding: 0;
+    font-size: 1.2rem;
+  }
+
+  /* ── Enzo widget container fix ────────────────────────────────────────
+     Float above the sidebar, but pin it firmly bottom-right so it can't
+     drift over the centered logo on the home page. */
+  #chatbot-container {
+    z-index: 1200 !important;
+    bottom: calc(var(--vos-vv-bottom) + var(--vos-app-nav-h) + env(safe-area-inset-bottom) + 1rem) !important;
+  }
+
+  /* When Enzo is collapsed to the pill, the OUTER container shrinks too
+     so the floating layer doesn't reserve a 560px box. */
+  #chatbot-container.vos-enzo-pill { width: auto; }
+
+  @media (max-width: 1023px) {
+    body:not(.vos-is-enzo-page) #chatbot-container {
+      display: none !important;
+    }
+  }
+
+  /* Critical collapsed Enzo styles live inline so the widget never flashes
+     open while the remote chatbot stylesheet is still loading. */
+  #chatbot-widget.chatbot-collapsed {
+    width: auto !important;
+    max-width: 180px;
+    max-height: 48px !important;
+    overflow: hidden;
+    border-radius: 999px;
+  }
+  #chatbot-widget.chatbot-collapsed .chatbot-body {
+    display: none !important;
+  }
+  #chatbot-widget.chatbot-collapsed .chatbot-header {
+    height: 48px;
+    padding: 0 0.85rem 0 0.5rem;
+    border-bottom: none;
+    border-radius: 999px;
+  }
+  #chatbot-widget.chatbot-collapsed .chatbot-avatar-header {
+    width: 32px;
+    height: 32px;
+    margin-right: 0;
+  }
+  #chatbot-widget.chatbot-collapsed #chat-clear-btn,
+  #chatbot-widget.chatbot-collapsed #dm-mode-badge,
+  #chatbot-widget.chatbot-collapsed #rules-badge,
+  #chatbot-widget.chatbot-collapsed #vibe-badge,
+  #chatbot-widget.chatbot-collapsed #art-badge {
+    display: none !important;
+  }
+
+  /* Desktop widget sizing. The input itself stays compact; chatbot.css owns
+     the growing textarea row. */
+  @media (min-width: 769px) {
+    #chatbot-widget {
+      width: 560px;
+      max-height: 86vh;
+    }
+    #chat-input {
+      min-height: 38px !important;
+      max-height: 116px !important;
+      white-space: pre-wrap !important;
+      word-wrap: break-word !important;
+    }
+    #chat-messages {
+      min-height: 200px !important;
+      max-height: calc(86vh - 52px - 74px) !important;
+    }
+  }
+</style>
