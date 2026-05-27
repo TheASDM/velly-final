@@ -5477,7 +5477,24 @@ def list_gallery():
     limit = max(1, min(limit, 200))
     offset = max(0, offset)
 
+    favorites_only = request.args.get("favorites") == "1"
+    filter_name = (request.args.get("name") or "").strip()
+
     entries = list(reversed(_load_manifest()))  # newest first
+
+    # Optional filter: when ?favorites=1&name=X, intersect with
+    # gallery_favorites for that player. The Home page's "My Favorites"
+    # carousel hits this. Empty list when the player has no favorites
+    # yet — the client renders an inviting empty state.
+    if favorites_only and filter_name:
+        with _app_db() as conn:
+            rows = conn.execute(
+                "SELECT gallery_id FROM gallery_favorites WHERE player = ?",
+                (filter_name,),
+            ).fetchall()
+        favorite_ids = {row["gallery_id"] for row in rows}
+        entries = [e for e in entries if e.get("id") in favorite_ids]
+
     page = entries[offset:offset + limit]
 
     # Don't leak `full_prompt` (it includes the style prefix; not useful to

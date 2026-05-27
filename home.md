@@ -834,12 +834,15 @@ templateEngineOverride: njk
 <!-- ── FRESH FROM THE STUDIO ───────────────────────────────────────── -->
 <section class="vos-home-dashboard vos-home-studio" aria-labelledby="vos-studio-heading">
   <div class="vos-home-sec-head">
-    <h2 id="vos-studio-heading">Fresh From The Studio</h2>
+    <h2 id="vos-studio-heading">My Favorites</h2>
     <span class="vos-home-sec-line"></span>
     <a class="vos-home-sec-more" href="/en/Tools/art/">Open the Art Studio &rarr;</a>
   </div>
-  {% set carouselLimit = 5 %}
-  {% set carouselLabel = "Fresh from the shared Art Studio gallery" %}
+  {% set carouselLimit = 8 %}
+  {% set carouselSource = "favorites" %}
+  {% set carouselLabel = "Gallery images you've hearted" %}
+  {% set carouselEmptyMessage = "You haven't hearted anything yet. Tap ♥ on a piece in the Studio gallery to feature it here." %}
+  {% set carouselEmptySignedOut = "Sign in to see your favorite gallery pieces here." %}
   {% include "partials/gallery-carousel.njk" %}
 </section>
 

@@ -299,6 +299,9 @@
 <div class="vos-gallery-carousel"
      data-api-base="{{ carouselApiBase | default('') }}"
      data-limit="{{ carouselLimit | default(5) }}"
+     data-source="{{ carouselSource | default('recent') }}"
+     data-empty-message="{{ carouselEmptyMessage | default('The shared gallery is empty. New studio pieces will appear here automatically.') }}"
+     data-empty-signed-out="{{ carouselEmptySignedOut | default('Log in and heart some images in the Studio to feature them here.') }}"
      aria-label="{{ carouselLabel | default('Shared gallery carousel') }}">
   <div class="vos-gallery-carousel-viewport" tabindex="0">
     <div class="vos-gallery-carousel-track"></div>
@@ -306,7 +309,7 @@
   <button class="vos-gallery-carousel-btn vos-gallery-carousel-prev" type="button" aria-label="Previous gallery image">&lsaquo;</button>
   <button class="vos-gallery-carousel-btn vos-gallery-carousel-next" type="button" aria-label="Next gallery image">&rsaquo;</button>
   <div class="vos-gallery-carousel-dots" aria-label="Gallery slide selector"></div>
-  <div class="vos-gallery-carousel-empty" hidden>The shared gallery is empty. New studio pieces will appear here automatically.</div>
+  <div class="vos-gallery-carousel-empty" hidden></div>
 </div>
 
 <script>
@@ -316,6 +319,9 @@
 
   const apiBase = root.dataset.apiBase || '';
   const limit = Math.max(1, Math.min(parseInt(root.dataset.limit || '5', 10) || 5, 20));
+  const source = (root.dataset.source || 'recent').toLowerCase();
+  const emptyMessage = root.dataset.emptyMessage || 'The shared gallery is empty. New studio pieces will appear here automatically.';
+  const emptySignedOutMessage = root.dataset.emptySignedOut || emptyMessage;
   const viewport = root.querySelector('.vos-gallery-carousel-viewport');
   const track = root.querySelector('.vos-gallery-carousel-track');
   const prevBtn = root.querySelector('.vos-gallery-carousel-prev');
@@ -715,27 +721,55 @@
     }
   }, { passive: true });
 
-  Promise.all([
-    fetch(apiBase + '/api/gallery?limit=' + encodeURIComponent(limit))
-      .then((res) => {
-        if (!res.ok) throw new Error('HTTP ' + res.status);
-        return res.json();
-      }),
-    loadTitleAliases(),
-  ])
-    .then(([data]) => {
-      entries = (data.entries || [])
-        .slice()
-        .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
-        .slice(0, limit);
-      if (!entries.length) {
-        showEmpty();
-        return;
-      }
-      render();
-    })
-    .catch(() => {
-      showEmpty('The shared gallery is unavailable right now.');
-    });
+  function buildFetchUrl() {
+    const params = new URLSearchParams();
+    params.set('limit', String(limit));
+    if (source === 'favorites') {
+      const player = (window.VOS_PWA && window.VOS_PWA.getPlayerName && window.VOS_PWA.getPlayerName()) || '';
+      if (!player) return null; // signed-out fast-path; empty state will render
+      params.set('favorites', '1');
+      params.set('name', player);
+    }
+    return apiBase + '/api/gallery?' + params.toString();
+  }
+
+  function loadCarousel() {
+    const url = buildFetchUrl();
+    if (!url) {
+      if (source === 'favorites') showEmpty(emptySignedOutMessage);
+      else showEmpty(emptyMessage);
+      return;
+    }
+    Promise.all([
+      fetch(url)
+        .then((res) => {
+          if (!res.ok) throw new Error('HTTP ' + res.status);
+          return res.json();
+        }),
+      loadTitleAliases(),
+    ])
+      .then(([data]) => {
+        entries = (data.entries || [])
+          .slice()
+          .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+          .slice(0, limit);
+        if (!entries.length) {
+          showEmpty(emptyMessage);
+          return;
+        }
+        render();
+      })
+      .catch(() => {
+        showEmpty('The shared gallery is unavailable right now.');
+      });
+  }
+
+  loadCarousel();
+
+  // Re-fetch when the signed-in player changes — switching accounts on
+  // a long-lived tab should refresh "My Favorites" without a hard reload.
+  if (source === 'favorites') {
+    window.addEventListener('vos:identity', loadCarousel);
+  }
 })();
 </script>
