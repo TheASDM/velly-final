@@ -1470,10 +1470,15 @@ permalink: /dm/
 
     try {
       const response = await fetch(`/api/rsvp?eventId=${encodeURIComponent(eventId)}`, {
-        headers: { 'X-Admin-Token': token },
+        headers: { 'Authorization': 'Bearer ' + token },
         cache: 'no-store',
       });
       const data = await response.json().catch(() => ({}));
+      if (response.status === 401) {
+        persistSession(null);
+        initGoogleButton();
+        throw new Error(data.error || 'Session expired — sign in again.');
+      }
       if (!response.ok) throw new Error(data.error || `HTTP ${response.status}`);
       const counts = data.counts || {};
       rsvpGoingEl.textContent = counts.going || 0;
