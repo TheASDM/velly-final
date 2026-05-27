@@ -1031,20 +1031,26 @@ class Loremaster:
         except Exception:
             return ""
 
+    # Bump this whenever the vec0 schema changes — forces a rebuild on
+    # next boot even when vector_store.json hasn't.
+    _VEC_SQLITE_SCHEMA_VERSION = "2"
+
     def _existing_vec_meta(self):
-        """Return the source_hash baked into the existing sqlite file,
-        or None if missing/unreadable."""
+        """Return (source_hash, schema_version) baked into the existing
+        sqlite file, or (None, None) if missing/unreadable."""
         if not VECTOR_SQLITE_PATH.exists():
-            return None
+            return None, None
         try:
             con = sqlite3.connect(VECTOR_SQLITE_PATH)
-            row = con.execute(
-                "SELECT value FROM vec_meta WHERE key = ?", ("source_hash",)
-            ).fetchone()
+            rows = con.execute(
+                "SELECT key, value FROM vec_meta WHERE key IN (?, ?)",
+                ("source_hash", "schema_version"),
+            ).fetchall()
             con.close()
-            return row[0] if row else None
+            meta = dict(rows)
+            return meta.get("source_hash"), meta.get("schema_version")
         except Exception:
-            return None
+            return None, None
 
     def _init_vector_sqlite(self):
         """Load (and if necessary rebuild) the sqlite-vec index. Falls
@@ -1074,16 +1080,22 @@ class Loremaster:
         self._vec_dim = dim
 
         source_hash = self._vector_source_hash()
-        existing_hash = self._existing_vec_meta()
-        if source_hash and existing_hash == source_hash:
+        existing_hash, existing_schema = self._existing_vec_meta()
+        if (
+            source_hash
+            and existing_hash == source_hash
+            and existing_schema == self._VEC_SQLITE_SCHEMA_VERSION
+        ):
             logging.info(
-                "Vector sqlite index up-to-date (source_hash=%s…)",
-                source_hash[:12],
+                "Vector sqlite index up-to-date (source_hash=%s…, schema=v%s)",
+                source_hash[:12], existing_schema,
             )
         else:
             logging.info(
-                "Rebuilding vector_store.sqlite3 (source_hash=%s, was=%s)",
+                "Rebuilding vector_store.sqlite3 "
+                "(source_hash=%s, was=%s; schema=v%s, was=v%s)",
                 (source_hash or "?")[:12], (existing_hash or "none")[:12],
+                self._VEC_SQLITE_SCHEMA_VERSION, existing_schema or "none",
             )
             if VECTOR_SQLITE_PATH.exists():
                 try:
@@ -1105,13 +1117,15 @@ class Loremaster:
 
             con.execute("CREATE TABLE vec_meta (key TEXT PRIMARY KEY, value TEXT)")
             # distance_metric=cosine keeps the ordering identical to the
-            # legacy cosine_similarity path, so retrieval recall + the
-            # AUTO_THRESHOLD constants don't need re-tuning.
+            # legacy cosine_similarity path. is_5e filter was originally
+            # an auxiliary `+is_5e` column here, but vec0 KNN queries
+            # don't allow WHERE constraints on auxiliary columns, so we
+            # pull a wider candidate set and filter in Python (cheap at
+            # this size).
             con.execute(
                 f"CREATE VIRTUAL TABLE vec_entries USING vec0("
                 f"  embedding float[{dim}] distance_metric=cosine, "
-                f"  +entry_id TEXT, "
-                f"  +is_5e INTEGER"
+                f"  +entry_id TEXT"
                 f")"
             )
             inserted = 0
@@ -1120,12 +1134,11 @@ class Loremaster:
                 emb = entry.get("embedding")
                 if not emb or len(emb) != dim:
                     continue
-                is_5e = 1 if (entry.get("source_file") or "").startswith("5e-filtered/") else 0
                 try:
                     con.execute(
-                        "INSERT INTO vec_entries (rowid, embedding, entry_id, is_5e) "
-                        "VALUES (?, ?, ?, ?)",
-                        (rowid, sqlite_vec.serialize_float32(emb), entry.get("id", ""), is_5e),
+                        "INSERT INTO vec_entries (rowid, embedding, entry_id) "
+                        "VALUES (?, ?, ?)",
+                        (rowid, sqlite_vec.serialize_float32(emb), entry.get("id", "")),
                     )
                     inserted += 1
                     rowid += 1
@@ -1137,6 +1150,10 @@ class Loremaster:
             )
             con.execute(
                 "INSERT INTO vec_meta (key, value) VALUES (?, ?)",
+                ("schema_version", self._VEC_SQLITE_SCHEMA_VERSION),
+            )
+            con.execute(
+                "INSERT INTO vec_meta (key, value) VALUES (?, ?)",
                 ("entry_count", str(inserted)),
             )
             con.execute(
@@ -1145,7 +1162,10 @@ class Loremaster:
             )
             con.commit()
             con.close()
-            logging.info("vector_store.sqlite3 rebuilt with %d entries (dim=%d)", inserted, dim)
+            logging.info(
+                "vector_store.sqlite3 rebuilt with %d entries (dim=%d, schema=v%s)",
+                inserted, dim, self._VEC_SQLITE_SCHEMA_VERSION,
+            )
 
         # Open the long-lived connection for retrieve() to query.
         try:
@@ -1160,29 +1180,30 @@ class Loremaster:
             self._vec_db = None
 
     def _vec_search(self, query_vec, rules, limit):
-        """Cosine top-k via sqlite-vec. Returns list of (similarity, entry)."""
+        """Cosine top-k via sqlite-vec. Returns list of (similarity, entry).
+
+        vec0 doesn't permit WHERE filters on auxiliary columns in a KNN
+        query, so we pull a wider candidate set and filter is_5e in
+        Python. When rules=False, ~95% of the store is 5e content, so
+        we ask for several times more candidates than RAG_TOP_K to
+        guarantee enough campaign rows survive."""
         if not self._vec_db:
             return None
         try:
             import sqlite_vec
         except ImportError:
             return None
+        # When rules is off and the store is mostly 5e, widen the SQL
+        # candidate set so the post-filter has enough campaign rows left.
+        sql_limit = limit if rules else max(limit * 4, 200)
         try:
             q_blob = sqlite_vec.serialize_float32(query_vec)
-            if rules:
-                rows = self._vec_db.execute(
-                    "SELECT entry_id, distance FROM vec_entries "
-                    "WHERE embedding MATCH ? "
-                    "ORDER BY distance LIMIT ?",
-                    (q_blob, limit),
-                ).fetchall()
-            else:
-                rows = self._vec_db.execute(
-                    "SELECT entry_id, distance FROM vec_entries "
-                    "WHERE embedding MATCH ? AND is_5e = 0 "
-                    "ORDER BY distance LIMIT ?",
-                    (q_blob, limit),
-                ).fetchall()
+            rows = self._vec_db.execute(
+                "SELECT entry_id, distance FROM vec_entries "
+                "WHERE embedding MATCH ? "
+                "ORDER BY distance LIMIT ?",
+                (q_blob, sql_limit),
+            ).fetchall()
         except Exception as e:
             logging.warning("vec0 query failed, falling back to Python: %s", e)
             return None
@@ -1192,9 +1213,12 @@ class Loremaster:
             entry = self._entries_by_id.get(entry_id)
             if not entry:
                 continue
-            # vec0 cosine distance is `1 - cosine_similarity`.
+            if not rules and (entry.get("source_file") or "").startswith("5e-filtered/"):
+                continue
             sim = 1.0 - float(distance)
             scored.append((sim, entry))
+            if len(scored) >= limit:
+                break
         return scored
 
     def _keyword_match(self, query):
