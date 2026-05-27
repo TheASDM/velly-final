@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'foglight-pwa-v22';
+const CACHE_VERSION = 'foglight-pwa-v23';
 const PRECACHE = `${CACHE_VERSION}-precache`;
 const PAGES = `${CACHE_VERSION}-pages`;
 const ASSETS = `${CACHE_VERSION}-assets`;
@@ -6,12 +6,20 @@ const GALLERY = `${CACHE_VERSION}-gallery`;
 
 const APP_SHELL = [
   '/',
+  '/settings/',
   '/submit-lore/',
   '/offline/',
   '/pwa-client.js',
   '/manifest.webmanifest',
+  '/css/app-shell.css',
   '/css/chatbot.css',
   '/js/chatbot.js',
+  '/js/pwa-manager.js',
+  '/js/enzo-widget.js',
+  '/js/viewport-handler.js',
+  '/js/search-init.js',
+  '/js/settings.js',
+  '/data/players.json',
   '/pagefind/pagefind-ui.css',
   '/pagefind/pagefind-ui.js',
   '/images/foglight.png',
