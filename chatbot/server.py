@@ -12,11 +12,13 @@ import base64
 import fcntl
 import hashlib
 import hmac
+import html
 import json
 import logging
 import os
 import re
 import secrets
+import shutil
 import sqlite3
 import string
 import threading
@@ -72,6 +74,11 @@ DM_PASSPHRASE = os.environ.get("DM_PASSPHRASE", "").strip()
 # One SQLite file for small read/write app state. This keeps the PWA layer
 # self-contained and backup-friendly: copy the file, keep the app.
 APP_DB_PATH = Path(os.environ.get("APP_DB_PATH", "/app/app-data/vallombrosa.sqlite3"))
+SITE_SOURCE_DIR = Path(os.environ.get("SITE_SOURCE_DIR", "/site"))
+if not SITE_SOURCE_DIR.exists():
+    SITE_SOURCE_DIR = Path(__file__).resolve().parents[1]
+LORE_DRAFT_DIR = Path(os.environ.get("LORE_DRAFT_DIR", "/app/app-data/lore-drafts"))
+LORE_DRAFT_IMAGES_DIR = LORE_DRAFT_DIR / "images"
 ADMIN_TOKEN = os.environ.get("ADMIN_TOKEN", "").strip()
 VAPID_PUBLIC_KEY = os.environ.get("VAPID_PUBLIC_KEY", "").strip()
 VAPID_PRIVATE_KEY = os.environ.get("VAPID_PRIVATE_KEY", "").strip()
@@ -542,6 +549,46 @@ def _run_app_migrations():
             conn.execute(
                 "INSERT INTO schema_migrations (name, applied_at) VALUES (?, ?)",
                 ("005_targeted_dm_messages", _utc_now_iso()),
+            )
+
+        if "006_lore_submissions" not in done:
+            conn.execute("""
+                CREATE TABLE IF NOT EXISTS lore_submissions (
+                    id TEXT PRIMARY KEY,
+                    submitter TEXT NOT NULL,
+                    kind TEXT NOT NULL CHECK(kind IN ('item', 'person', 'place', 'faction', 'lore')),
+                    title TEXT NOT NULL,
+                    slug TEXT NOT NULL,
+                    short_description TEXT NOT NULL,
+                    connections_json TEXT NOT NULL,
+                    notes TEXT,
+                    status TEXT NOT NULL CHECK(status IN (
+                        'submitted', 'drafting', 'needs_review', 'approved',
+                        'rejected', 'published', 'error'
+                    )),
+                    context_json TEXT,
+                    generated_markdown TEXT,
+                    generated_summary TEXT,
+                    generated_image_prompt TEXT,
+                    image_url TEXT,
+                    image_filename TEXT,
+                    error_message TEXT,
+                    created_at TEXT NOT NULL,
+                    updated_at TEXT NOT NULL,
+                    published_at TEXT
+                )
+            """)
+            conn.execute("""
+                CREATE INDEX IF NOT EXISTS idx_lore_submissions_status_updated
+                ON lore_submissions (status, updated_at DESC)
+            """)
+            conn.execute("""
+                CREATE INDEX IF NOT EXISTS idx_lore_submissions_submitter_updated
+                ON lore_submissions (submitter, updated_at DESC)
+            """)
+            conn.execute(
+                "INSERT INTO schema_migrations (name, applied_at) VALUES (?, ?)",
+                ("006_lore_submissions", _utc_now_iso()),
             )
 
 
@@ -2340,7 +2387,10 @@ def _studio_creator_from_body(body, required=True, require_login=False):
     return created_by, None
 
 
-def _generate_image_payload(prompt, style_key, created_by, enhance=True):
+def _generate_image_payload(
+    prompt, style_key, created_by, enhance=True,
+    save_gallery=True, image_output_path=None,
+):
     openai_key = os.environ.get("OPENAI_KEY", "")
     image_model = os.environ.get("IMAGE_MODEL", "gpt-image-2")
     legacy_style_prefix = os.environ.get("IMAGE_STYLE_PROMPT", "").strip()
@@ -2437,8 +2487,19 @@ def _generate_image_payload(prompt, style_key, created_by, enhance=True):
             except Exception:
                 logging.warning("Could not fetch image URL for persistence")
 
+        image_saved_path = None
+        if image_bytes and image_output_path:
+            try:
+                image_output_path = Path(image_output_path)
+                image_output_path.parent.mkdir(parents=True, exist_ok=True)
+                with open(image_output_path, "wb") as f:
+                    f.write(image_bytes)
+                image_saved_path = str(image_output_path)
+            except Exception:
+                logging.exception("Failed to persist generated image to %s", image_output_path)
+
         gallery_entry = None
-        if image_bytes:
+        if image_bytes and save_gallery:
             gallery_entry = _save_gallery_entry(
                 image_bytes=image_bytes,
                 prompt=prompt,
@@ -2459,6 +2520,7 @@ def _generate_image_payload(prompt, style_key, created_by, enhance=True):
             "grounded_in": grounded_in,
             "model": image_model,
             "style": style_label,
+            "image_saved": bool(image_saved_path),
         }
         if gallery_entry:
             response["gallery"] = {
@@ -2545,6 +2607,861 @@ def _run_studio_job(job_id, prompt, style_key, creator, enhance):
     except Exception as exc:
         logging.exception("Studio job failed")
         _update_studio_job(job_id, "error", error_message=str(exc)[:500])
+
+
+# ── Player lore-submission pipeline ──────────────────────────────────────────
+
+LORE_SUBMISSION_KINDS = {
+    "item": {
+        "label": "Item",
+        "source_dir": "Venturia/Items",
+        "url_prefix": "/en/Venturia/Items",
+        "image_dir": "images/items",
+        "style": "valley-portrait",
+        "tags": "venturia, items, generated, player-submission",
+        "index": "Venturia/Items/index.md",
+        "index_mode": "markdown",
+    },
+    "person": {
+        "label": "Person",
+        "source_dir": "Venturia/Characters/NPCs",
+        "url_prefix": "/en/Venturia/Characters/NPCs",
+        "image_dir": "images/character-art",
+        "style": "valley-portrait",
+        "tags": "venturia, characters, npcs, generated, player-submission",
+        "index": "Venturia/Characters/NPCs/index.md",
+        "index_mode": "npc-html",
+    },
+    "place": {
+        "label": "Place",
+        "source_dir": "Venturia/Locations",
+        "url_prefix": "/en/Venturia/Locations",
+        "image_dir": "images/locations",
+        "style": "valley-place",
+        "tags": "venturia, locations, generated, player-submission",
+        "index": "Venturia/Locations/index.md",
+        "index_mode": "markdown",
+    },
+    "faction": {
+        "label": "Faction",
+        "source_dir": "Venturia/Factions",
+        "url_prefix": "/en/Venturia/Factions",
+        "image_dir": "images/factions",
+        "style": "valley-scene",
+        "tags": "venturia, factions, generated, player-submission",
+        "index": "Venturia/Factions/index.md",
+        "index_mode": "markdown",
+    },
+    "lore": {
+        "label": "Lore",
+        "source_dir": "Venturia/Lore",
+        "url_prefix": "/en/Venturia/Lore",
+        "image_dir": "images/lore",
+        "style": "valley-scene",
+        "tags": "venturia, lore, generated, player-submission",
+        "index": "Venturia/Lore/index.md",
+        "index_mode": "markdown",
+    },
+}
+
+
+def _slugify(value):
+    normalized = unicodedata.normalize("NFKD", str(value or ""))
+    ascii_text = "".join(ch for ch in normalized if not unicodedata.combining(ch))
+    ascii_text = ascii_text.encode("ascii", "ignore").decode("ascii")
+    slug = re.sub(r"[^a-zA-Z0-9]+", "-", ascii_text.lower()).strip("-")
+    return slug[:80] or f"entry-{secrets.token_hex(4)}"
+
+
+def _json_loads(value, fallback):
+    if not value:
+        return fallback
+    try:
+        data = json.loads(value)
+        return data if data is not None else fallback
+    except Exception:
+        return fallback
+
+
+def _parse_submission_connections(raw):
+    if raw is None:
+        return []
+
+    if isinstance(raw, list):
+        parsed = []
+        for item in raw[:30]:
+            if isinstance(item, dict):
+                relation = str(item.get("relation") or "Connection").strip()[:60]
+                target = str(item.get("target") or "").strip()[:160]
+                note = str(item.get("note") or "").strip()[:240]
+            else:
+                relation = "Connection"
+                target = str(item or "").strip()[:160]
+                note = ""
+            if target:
+                parsed.append({"relation": relation or "Connection", "target": target, "note": note})
+        return parsed
+
+    text = str(raw or "")
+    parsed = []
+    for line in text.splitlines()[:30]:
+        line = line.strip().lstrip("-*").strip()
+        if not line:
+            continue
+        if ":" in line:
+            relation, target = line.split(":", 1)
+        elif " - " in line:
+            relation, target = line.split(" - ", 1)
+        elif " — " in line:
+            relation, target = line.split(" — ", 1)
+        else:
+            relation, target = "Connection", line
+        relation = relation.strip()[:60] or "Connection"
+        target = target.strip()[:160]
+        if target:
+            parsed.append({"relation": relation, "target": target, "note": ""})
+    return parsed
+
+
+def _connections_to_text(connections):
+    lines = []
+    for item in connections or []:
+        relation = item.get("relation") or "Connection"
+        target = item.get("target") or ""
+        note = item.get("note") or ""
+        line = f"{relation}: {target}"
+        if note:
+            line += f" ({note})"
+        lines.append(line)
+    return "\n".join(lines) or "(none provided)"
+
+
+def _submission_context_query(kind, title, description, connections, notes=""):
+    pieces = [
+        LORE_SUBMISSION_KINDS.get(kind, {}).get("label", kind),
+        title,
+        description,
+        _connections_to_text(connections),
+        notes,
+    ]
+    return "\n".join(str(piece or "") for piece in pieces if piece)
+
+
+def _submission_context(kind, title, description, connections, notes=""):
+    query = _submission_context_query(kind, title, description, connections, notes)
+    matches = []
+    additional = []
+    try:
+        auto_inject, additional = engine.retrieve(query, rules=False)
+    except Exception:
+        logging.exception("Lore submission context retrieval failed")
+        auto_inject = []
+        additional = []
+
+    blocks = []
+    for match in auto_inject:
+        if len(matches) >= 8:
+            break
+        if (match.get("source_file") or "").startswith("5e-filtered/"):
+            continue
+        item = {
+            "name": match.get("name"),
+            "source_file": match.get("source_file"),
+            "score": match.get("score"),
+            "text": (match.get("text") or "")[:2200],
+        }
+        matches.append(item)
+        blocks.append(
+            f"### {item['name']} ({item['source_file']})\n{item['text']}"
+        )
+
+    context_text = "\n\n".join(blocks) if blocks else "(no matching codex context found)"
+    if additional:
+        extra_lines = [
+            f"- {m.get('name')} ({m.get('source_file')}, score {float(m.get('score') or 0):.2f})"
+            for m in additional[:10]
+        ]
+        context_text += "\n\nAdditional possible matches:\n" + "\n".join(extra_lines)
+
+    return {
+        "query": query,
+        "matches": matches,
+        "additional": [
+            {
+                "name": m.get("name"),
+                "source_file": m.get("source_file"),
+                "score": m.get("score"),
+            }
+            for m in additional[:10]
+        ],
+        "text": context_text[:14000],
+    }
+
+
+def _extract_json_object(text):
+    text = (text or "").strip()
+    if text.startswith("```"):
+        text = re.sub(r"^```(?:json)?\s*", "", text, flags=re.IGNORECASE)
+        text = re.sub(r"\s*```$", "", text)
+    start = text.find("{")
+    end = text.rfind("}")
+    if start >= 0 and end > start:
+        text = text[start:end + 1]
+    return json.loads(text)
+
+
+def _fallback_lore_draft(kind, title, description, connections, notes=""):
+    connection_lines = []
+    for item in connections or []:
+        target = item.get("target") or ""
+        relation = item.get("relation") or "Connection"
+        note = item.get("note") or ""
+        if target:
+            line = f"- **{relation}.** {target}"
+            if note:
+                line += f" — {note}"
+            connection_lines.append(line)
+
+    summary = description.strip().split("\n", 1)[0][:220] or f"A new {kind} submitted for the wiki."
+    markdown = (
+        f"# {title}\n\n"
+        "{{IMAGE}}\n\n"
+        f"{description.strip()}\n\n"
+        "## Notes\n\n"
+        f"{notes.strip() or 'No additional notes were provided.'}\n\n"
+        "## Connections\n\n"
+        + ("\n".join(connection_lines) if connection_lines else "- No connections were provided.")
+    )
+    image_prompt = (
+        f"{title}. {description.strip()} Connections for visual grounding: "
+        f"{_connections_to_text(connections)}"
+    )
+    return {
+        "summary": summary,
+        "markdown": markdown,
+        "image_prompt": image_prompt[:1200],
+    }
+
+
+def _generate_lore_draft_text(kind, title, description, connections, notes, context):
+    fallback = _fallback_lore_draft(kind, title, description, connections, notes)
+    if not ANTHROPIC_API_KEY:
+        return fallback, "ANTHROPIC_API_KEY is not configured; used fallback draft."
+
+    kind_label = LORE_SUBMISSION_KINDS[kind]["label"]
+    system = (
+        "You draft player-facing wiki entries for the Vallombrosa campaign. "
+        "Use the player's submission as proposed content and the retrieved "
+        "codex context only for grounding names, relationships, tone, and "
+        "known facts. Do not invent secrets, hidden motives, unrevealed plot, "
+        "or canon beyond the submission. If something is uncertain, write it "
+        "plainly as a note for DM review rather than pretending it is settled. "
+        "Return strict JSON only."
+    )
+    user_msg = f"""
+Draft a wiki entry for this submitted {kind_label}.
+
+Submission title:
+{title}
+
+Short description:
+{description}
+
+Connections:
+{_connections_to_text(connections)}
+
+Player notes:
+{notes or "(none)"}
+
+Retrieved codex context:
+{context.get("text") or "(none)"}
+
+Return exactly this JSON object:
+{{
+  "summary": "One concise public description, 180 characters max.",
+  "markdown": "The wiki page body in Markdown. Start with '# {title}'. Include a standalone {{IMAGE}} placeholder after the heading. Use useful sections for this type of entry, and end with '## Connections'.",
+  "image_prompt": "A visual prompt for generating one clean wiki image for this entry. Use concrete details and any relevant known character/place descriptions."
+}}
+"""
+    payload = {
+        "model": ANTHROPIC_MODEL,
+        "max_tokens": max(MAX_TOKENS, 3200),
+        "temperature": 0.35,
+        "system": system,
+        "messages": [{"role": "user", "content": user_msg}],
+    }
+
+    try:
+        response = http_requests.post(
+            "https://api.anthropic.com/v1/messages",
+            headers={
+                "x-api-key": ANTHROPIC_API_KEY,
+                "anthropic-version": "2023-06-01",
+                "content-type": "application/json",
+            },
+            json=payload,
+            timeout=120,
+        )
+        if response.status_code != 200:
+            return fallback, f"Draft generation failed: {response.text[:250]}"
+        data = response.json()
+        text = "\n".join(
+            block.get("text", "")
+            for block in data.get("content") or []
+            if block.get("type") == "text"
+        )
+        parsed = _extract_json_object(text)
+        draft = {
+            "summary": str(parsed.get("summary") or fallback["summary"]).strip()[:300],
+            "markdown": str(parsed.get("markdown") or fallback["markdown"]).strip(),
+            "image_prompt": str(parsed.get("image_prompt") or fallback["image_prompt"]).strip()[:1800],
+        }
+        if "{{IMAGE}}" not in draft["markdown"]:
+            draft["markdown"] = re.sub(
+                r"^(# .+?\n)",
+                r"\1\n{{IMAGE}}\n",
+                draft["markdown"],
+                count=1,
+                flags=re.DOTALL,
+            )
+        return draft, None
+    except Exception as exc:
+        logging.exception("Lore draft text generation failed")
+        return fallback, f"Draft generation failed: {str(exc)[:250]}"
+
+
+def _submission_payload(row, include_markdown=True, include_context=False):
+    payload = {
+        "id": row["id"],
+        "submitter": row["submitter"],
+        "kind": row["kind"],
+        "kindLabel": LORE_SUBMISSION_KINDS.get(row["kind"], {}).get("label", row["kind"]),
+        "title": row["title"],
+        "slug": row["slug"],
+        "short_description": row["short_description"],
+        "connections": _json_loads(row["connections_json"], []),
+        "notes": row["notes"] or "",
+        "status": row["status"],
+        "generated_summary": row["generated_summary"],
+        "generated_image_prompt": row["generated_image_prompt"],
+        "image_url": row["image_url"],
+        "image_filename": row["image_filename"],
+        "error_message": row["error_message"],
+        "created_at": row["created_at"],
+        "updated_at": row["updated_at"],
+        "published_at": row["published_at"],
+    }
+    if include_markdown:
+        payload["generated_markdown"] = row["generated_markdown"] or ""
+    if include_context:
+        payload["context"] = _json_loads(row["context_json"], {})
+    return payload
+
+
+def _lore_submission_row(conn, submission_id):
+    return conn.execute("""
+        SELECT id, submitter, kind, title, slug, short_description,
+               connections_json, notes, status, context_json,
+               generated_markdown, generated_summary, generated_image_prompt,
+               image_url, image_filename, error_message, created_at,
+               updated_at, published_at
+        FROM lore_submissions
+        WHERE id = ?
+    """, (submission_id,)).fetchone()
+
+
+def _run_lore_submission_draft(submission_id):
+    with _app_db() as conn:
+        row = _lore_submission_row(conn, submission_id)
+        if not row:
+            return
+        conn.execute("""
+            UPDATE lore_submissions
+            SET status = 'drafting', error_message = NULL, updated_at = ?
+            WHERE id = ?
+        """, (_utc_now_iso(), submission_id))
+
+    connections = _json_loads(row["connections_json"], [])
+    context = _submission_context(
+        row["kind"], row["title"], row["short_description"], connections, row["notes"] or ""
+    )
+    draft, draft_warning = _generate_lore_draft_text(
+        row["kind"], row["title"], row["short_description"], connections, row["notes"] or "", context
+    )
+
+    image_url = None
+    image_filename = None
+    image_error = None
+    draft_image_path = LORE_DRAFT_IMAGES_DIR / f"{submission_id}.png"
+    image_prompt = draft.get("image_prompt") or row["short_description"]
+    try:
+        image_data, image_status = _generate_image_payload(
+            image_prompt,
+            LORE_SUBMISSION_KINDS[row["kind"]]["style"],
+            row["submitter"],
+            enhance=True,
+            save_gallery=False,
+            image_output_path=draft_image_path,
+        )
+        if image_status >= 400:
+            image_error = image_data.get("error") or "Image generation failed"
+            if image_data.get("details"):
+                image_error = f"{image_error}: {image_data['details']}"
+        elif draft_image_path.exists():
+            image_filename = draft_image_path.name
+            image_url = f"/api/lore-submissions/{submission_id}/image"
+    except Exception as exc:
+        logging.exception("Lore draft image generation failed")
+        image_error = str(exc)[:300]
+
+    warnings = "; ".join([msg for msg in (draft_warning, image_error) if msg])
+    status = "needs_review"
+    with _app_db() as conn:
+        conn.execute("""
+            UPDATE lore_submissions
+            SET status = ?, context_json = ?, generated_markdown = ?,
+                generated_summary = ?, generated_image_prompt = ?,
+                image_url = ?, image_filename = ?, error_message = ?,
+                updated_at = ?
+            WHERE id = ?
+        """, (
+            status,
+            json.dumps(context, separators=(",", ":")),
+            draft.get("markdown") or "",
+            draft.get("summary") or "",
+            image_prompt,
+            image_url,
+            image_filename,
+            warnings[:500] if warnings else None,
+            _utc_now_iso(),
+            submission_id,
+        ))
+
+
+def _start_lore_draft_thread(submission_id):
+    thread = threading.Thread(
+        target=_run_lore_submission_draft,
+        args=(submission_id,),
+        daemon=True,
+    )
+    thread.start()
+
+
+def _yaml_quote(value):
+    return json.dumps(str(value or ""), ensure_ascii=False)
+
+
+def _chown_like_site(path):
+    try:
+        site_stat = SITE_SOURCE_DIR.stat()
+        os.chown(path, site_stat.st_uid, site_stat.st_gid)
+    except Exception:
+        pass
+
+
+def _markdown_with_image(markdown, title, image_url):
+    body = (markdown or "").strip()
+    if not re.match(r"^#\s+", body):
+        body = f"# {title}\n\n{body}" if body else f"# {title}"
+    if not image_url:
+        return re.sub(r"\{\{\s*IMAGE\s*\}\}\s*", "", body, flags=re.IGNORECASE).strip() + "\n"
+
+    image_markdown = f"![{title}]({image_url})"
+    if re.search(r"\{\{\s*IMAGE\s*\}\}", body, flags=re.IGNORECASE):
+        body = re.sub(r"\{\{\s*IMAGE\s*\}\}", image_markdown, body, count=1, flags=re.IGNORECASE)
+        return body.strip() + "\n"
+
+    lines = body.splitlines()
+    if lines and lines[0].startswith("# "):
+        return "\n".join([lines[0], "", image_markdown, "", *lines[1:]]).strip() + "\n"
+    return f"{image_markdown}\n\n{body}".strip() + "\n"
+
+
+def _page_frontmatter(title, summary, tags):
+    now = datetime.now(timezone.utc).strftime("%Y-%m-%dT00:00:00.000Z")
+    return (
+        "---\n"
+        f"title: {_yaml_quote(title)}\n"
+        f"description: {_yaml_quote(summary)}\n"
+        "published: true\n"
+        f"date: {now}\n"
+        f"tags: {tags}\n"
+        "editor: markdown\n"
+        f"dateCreated: {now}\n"
+        "---\n\n"
+    )
+
+
+def _copy_draft_image(submission_id, kind, slug):
+    draft_image = LORE_DRAFT_IMAGES_DIR / f"{submission_id}.png"
+    if not draft_image.exists():
+        return None
+    config = LORE_SUBMISSION_KINDS[kind]
+    image_rel = f"{config['image_dir']}/{slug}.png"
+    image_target = SITE_SOURCE_DIR / image_rel
+    image_target.parent.mkdir(parents=True, exist_ok=True)
+    shutil.copyfile(draft_image, image_target)
+    _chown_like_site(image_target)
+    return f"/{image_rel}"
+
+
+def _append_index_link(kind, title, slug, summary):
+    config = LORE_SUBMISSION_KINDS[kind]
+    index_path = SITE_SOURCE_DIR / config["index"]
+    if not index_path.exists():
+        return False
+
+    page_url = f"{config['url_prefix']}/{slug}"
+    try:
+        text = index_path.read_text(encoding="utf-8")
+    except Exception:
+        logging.exception("Could not read index %s", index_path)
+        return False
+    if page_url in text:
+        return True
+
+    clean_summary = (summary or "").strip()[:220] or f"Player-submitted {config['label'].lower()}."
+    if config["index_mode"] == "npc-html":
+        chip = (
+            f'    <a class="vos-row-chip" href="{html.escape(page_url)}/">'
+            f'<span><span class="vos-row-chip-title">{html.escape(title)}</span>'
+            f'<span class="vos-row-chip-meta">{html.escape(clean_summary)}</span></span>'
+            f'<span class="vos-row-chip-arrow" aria-hidden="true">&rsaquo;</span></a>\n'
+        )
+        pattern = re.compile(
+            r'(<section class="vos-compact-panel" aria-labelledby="npc-others">.*?'
+            r'<div class="vos-row-chip-list">\n)(.*?)(  </div>\n</section>)',
+            re.DOTALL,
+        )
+        if pattern.search(text):
+            text = pattern.sub(lambda m: m.group(1) + m.group(2) + chip + m.group(3), text, count=1)
+        else:
+            text = text.rstrip() + f"\n\n- **[{title}]({page_url})** — {clean_summary}\n"
+    else:
+        bullet = f"- **[{title}]({page_url})** — {clean_summary}"
+        if "## Player Additions" not in text:
+            text = text.rstrip() + "\n\n---\n\n## Player Additions\n\n"
+        else:
+            text = text.rstrip() + "\n"
+        text += bullet + "\n"
+
+    try:
+        index_path.write_text(text, encoding="utf-8")
+        _chown_like_site(index_path)
+        return True
+    except Exception:
+        logging.exception("Could not update index %s", index_path)
+        return False
+
+
+def _update_descriptions_json(kind, title, slug, summary, image_prompt):
+    section = {
+        "item": "items",
+        "person": "npcs",
+        "place": "locations",
+    }.get(kind)
+    if not section:
+        return False
+
+    path = SITE_SOURCE_DIR / "chatbot" / "descriptions.json"
+    if not path.exists():
+        return False
+
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+        data.setdefault(section, {})
+        aliases = [title]
+        slug_alias = slug.replace("-", " ")
+        if slug_alias.lower() != title.lower():
+            aliases.append(slug_alias)
+        desc = (image_prompt or summary or title).strip()
+        if section == "locations":
+            data[section][title] = {"aliases": aliases, "desc": desc}
+        else:
+            data[section][title] = {"aliases": aliases, "desc": desc}
+        path.write_text(json.dumps(data, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+        _chown_like_site(path)
+        return True
+    except Exception:
+        logging.exception("Could not update descriptions.json")
+        return False
+
+
+def _publish_lore_submission(submission_id, body):
+    with _app_db() as conn:
+        row = _lore_submission_row(conn, submission_id)
+    if not row:
+        return {"error": "Submission not found"}, 404
+    if row["status"] == "published" and not body.get("overwrite"):
+        return {"error": "Submission is already published"}, 409
+
+    kind = row["kind"]
+    config = LORE_SUBMISSION_KINDS[kind]
+    title = str(body.get("title") or row["title"]).strip()[:120]
+    slug = _slugify(body.get("slug") or row["slug"] or title)
+    summary = str(body.get("summary") or row["generated_summary"] or row["short_description"]).strip()[:300]
+    markdown = str(body.get("markdown") or row["generated_markdown"] or "").strip()
+    image_prompt = str(body.get("image_prompt") or row["generated_image_prompt"] or "").strip()
+
+    if not title:
+        return {"error": "Title is required"}, 400
+    if not markdown:
+        return {"error": "Draft markdown is empty"}, 400
+
+    source_dir = SITE_SOURCE_DIR / config["source_dir"]
+    source_dir.mkdir(parents=True, exist_ok=True)
+    markdown_path = source_dir / f"{slug}.md"
+    if markdown_path.exists() and not body.get("overwrite"):
+        return {
+            "error": f"{config['label']} page already exists for slug '{slug}'",
+            "path": str(markdown_path),
+        }, 409
+
+    image_url = _copy_draft_image(submission_id, kind, slug)
+    body_markdown = _markdown_with_image(markdown, title, image_url)
+    markdown_path.write_text(
+        _page_frontmatter(title, summary, config["tags"]) + body_markdown,
+        encoding="utf-8",
+    )
+    _chown_like_site(markdown_path)
+    index_updated = _append_index_link(kind, title, slug, summary)
+    descriptions_updated = _update_descriptions_json(kind, title, slug, summary, image_prompt)
+
+    now = _utc_now_iso()
+    with _app_db() as conn:
+        conn.execute("""
+            UPDATE lore_submissions
+            SET title = ?, slug = ?, status = 'published',
+                generated_markdown = ?, generated_summary = ?,
+                generated_image_prompt = ?, error_message = NULL,
+                updated_at = ?, published_at = ?
+            WHERE id = ?
+        """, (title, slug, markdown, summary, image_prompt, now, now, submission_id))
+
+    return {
+        "ok": True,
+        "id": submission_id,
+        "title": title,
+        "slug": slug,
+        "path": str(markdown_path),
+        "url": f"{config['url_prefix']}/{slug}/",
+        "image_url": image_url,
+        "index_updated": index_updated,
+        "descriptions_updated": descriptions_updated,
+        "next_steps": [
+            "npm run knowledge",
+            "docker compose up -d --build chatbot nginx",
+        ],
+    }, 200
+
+
+@app.route("/api/lore-submissions", methods=["POST"])
+def lore_submission_create():
+    body = request.get_json(silent=True) or {}
+    submitter, auth_error = _authenticated_player_name(body)
+    if auth_error:
+        return auth_error
+    if not submitter:
+        return jsonify({"error": "Login required before submitting lore"}), 401
+
+    kind = str(body.get("kind") or "").strip().lower()
+    if kind not in LORE_SUBMISSION_KINDS:
+        return jsonify({"error": "Choose item, person, place, faction, or lore"}), 400
+
+    title = str(body.get("title") or "").strip()
+    description = str(body.get("description") or body.get("short_description") or "").strip()
+    notes = str(body.get("notes") or "").strip()[:2000]
+    connections = _parse_submission_connections(body.get("connections"))
+    if not title:
+        return jsonify({"error": "Title is required"}), 400
+    if not description:
+        return jsonify({"error": "Short description is required"}), 400
+    if len(title) > 120:
+        return jsonify({"error": "Title is too long"}), 400
+    if len(description) > 2500:
+        return jsonify({"error": "Description is too long"}), 400
+
+    submission_id = secrets.token_urlsafe(18)
+    slug = _slugify(title)
+    now = _utc_now_iso()
+    with _app_db() as conn:
+        conn.execute("""
+            INSERT INTO lore_submissions (
+                id, submitter, kind, title, slug, short_description,
+                connections_json, notes, status, created_at, updated_at
+            )
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'submitted', ?, ?)
+        """, (
+            submission_id,
+            submitter,
+            kind,
+            title,
+            slug,
+            description,
+            json.dumps(connections, separators=(",", ":")),
+            notes,
+            now,
+            now,
+        ))
+    _start_lore_draft_thread(submission_id)
+    return jsonify({"ok": True, "id": submission_id, "status": "submitted"}), 202
+
+
+@app.route("/api/lore-submissions/mine", methods=["GET"])
+def lore_submissions_mine():
+    submitter, auth_error = _logged_in_player_name()
+    if auth_error:
+        return auth_error
+    with _app_db() as conn:
+        rows = list(conn.execute("""
+            SELECT id, submitter, kind, title, slug, short_description,
+                   connections_json, notes, status, context_json,
+                   generated_markdown, generated_summary, generated_image_prompt,
+                   image_url, image_filename, error_message, created_at,
+                   updated_at, published_at
+            FROM lore_submissions
+            WHERE submitter = ?
+            ORDER BY updated_at DESC
+            LIMIT 20
+        """, (submitter,)))
+    return jsonify({"submissions": [_submission_payload(row, include_markdown=False) for row in rows]})
+
+
+@app.route("/api/lore-submissions/<submission_id>", methods=["GET"])
+def lore_submission_detail(submission_id):
+    with _app_db() as conn:
+        row = _lore_submission_row(conn, submission_id)
+    if not row:
+        return jsonify({"error": "Submission not found"}), 404
+    submitter, auth_error = _logged_in_player_name({"name": row["submitter"]})
+    if auth_error:
+        return auth_error
+    if submitter != row["submitter"]:
+        return jsonify({"error": "Identity mismatch"}), 403
+    return jsonify({"submission": _submission_payload(row, include_markdown=True)})
+
+
+@app.route("/api/lore-submissions/<submission_id>/image", methods=["GET"])
+def lore_submission_image(submission_id):
+    if not re.fullmatch(r"[A-Za-z0-9_-]{12,80}", submission_id or ""):
+        abort(404)
+    if not LORE_DRAFT_IMAGES_DIR.exists():
+        abort(404)
+    return send_from_directory(LORE_DRAFT_IMAGES_DIR, f"{submission_id}.png", max_age=60)
+
+
+@app.route("/api/admin/lore-submissions", methods=["GET"])
+def admin_lore_submissions():
+    admin_error = _admin_error_response()
+    if admin_error:
+        return admin_error
+    status = request.args.get("status", "").strip()
+    try:
+        limit = int(request.args.get("limit", "30"))
+    except ValueError:
+        limit = 30
+    limit = max(1, min(limit, 100))
+
+    where = ""
+    args = []
+    if status:
+        where = "WHERE status = ?"
+        args.append(status)
+    args.append(limit)
+    with _app_db() as conn:
+        rows = list(conn.execute(f"""
+            SELECT id, submitter, kind, title, slug, short_description,
+                   connections_json, notes, status, context_json,
+                   generated_markdown, generated_summary, generated_image_prompt,
+                   image_url, image_filename, error_message, created_at,
+                   updated_at, published_at
+            FROM lore_submissions
+            {where}
+            ORDER BY updated_at DESC
+            LIMIT ?
+        """, args))
+    return jsonify({"submissions": [_submission_payload(row, include_markdown=False) for row in rows]})
+
+
+@app.route("/api/admin/lore-submissions/<submission_id>", methods=["GET"])
+def admin_lore_submission_detail(submission_id):
+    admin_error = _admin_error_response()
+    if admin_error:
+        return admin_error
+    with _app_db() as conn:
+        row = _lore_submission_row(conn, submission_id)
+    if not row:
+        return jsonify({"error": "Submission not found"}), 404
+    return jsonify({"submission": _submission_payload(row, include_markdown=True, include_context=True)})
+
+
+@app.route("/api/admin/lore-submissions/<submission_id>/save", methods=["POST"])
+def admin_lore_submission_save(submission_id):
+    admin_error = _admin_error_response()
+    if admin_error:
+        return admin_error
+    body = request.get_json(silent=True) or {}
+    with _app_db() as conn:
+        row = _lore_submission_row(conn, submission_id)
+        if not row:
+            return jsonify({"error": "Submission not found"}), 404
+        title = str(body.get("title") or row["title"]).strip()[:120]
+        slug = _slugify(body.get("slug") or row["slug"] or title)
+        markdown = str(body.get("markdown") or row["generated_markdown"] or "").strip()
+        summary = str(body.get("summary") or row["generated_summary"] or "").strip()[:300]
+        image_prompt = str(body.get("image_prompt") or row["generated_image_prompt"] or "").strip()[:1800]
+        conn.execute("""
+            UPDATE lore_submissions
+            SET title = ?, slug = ?, generated_markdown = ?,
+                generated_summary = ?, generated_image_prompt = ?,
+                updated_at = ?
+            WHERE id = ?
+        """, (title, slug, markdown, summary, image_prompt, _utc_now_iso(), submission_id))
+        updated = _lore_submission_row(conn, submission_id)
+    return jsonify({"ok": True, "submission": _submission_payload(updated, include_markdown=True)})
+
+
+@app.route("/api/admin/lore-submissions/<submission_id>/draft", methods=["POST"])
+def admin_lore_submission_redraft(submission_id):
+    admin_error = _admin_error_response()
+    if admin_error:
+        return admin_error
+    with _app_db() as conn:
+        row = _lore_submission_row(conn, submission_id)
+        if not row:
+            return jsonify({"error": "Submission not found"}), 404
+        if row["status"] == "published":
+            return jsonify({"error": "Published submissions cannot be regenerated"}), 409
+    _start_lore_draft_thread(submission_id)
+    return jsonify({"ok": True, "id": submission_id, "status": "drafting"}), 202
+
+
+@app.route("/api/admin/lore-submissions/<submission_id>/reject", methods=["POST"])
+def admin_lore_submission_reject(submission_id):
+    admin_error = _admin_error_response()
+    if admin_error:
+        return admin_error
+    body = request.get_json(silent=True) or {}
+    reason = str(body.get("reason") or "Rejected by DM").strip()[:500]
+    with _app_db() as conn:
+        row = _lore_submission_row(conn, submission_id)
+        if not row:
+            return jsonify({"error": "Submission not found"}), 404
+        conn.execute("""
+            UPDATE lore_submissions
+            SET status = 'rejected', error_message = ?, updated_at = ?
+            WHERE id = ?
+        """, (reason, _utc_now_iso(), submission_id))
+    return jsonify({"ok": True, "id": submission_id, "status": "rejected"})
+
+
+@app.route("/api/admin/lore-submissions/<submission_id>/publish", methods=["POST"])
+def admin_lore_submission_publish(submission_id):
+    admin_error = _admin_error_response()
+    if admin_error:
+        return admin_error
+    payload, status = _publish_lore_submission(submission_id, request.get_json(silent=True) or {})
+    return jsonify(payload), status
 
 
 @app.route("/api/studio/generate", methods=["POST"])

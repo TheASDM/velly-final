@@ -49,6 +49,7 @@ permalink: /dm/
   gap: 0.35rem;
 }
 .vos-dm-form input,
+.vos-dm-form select,
 .vos-dm-form textarea {
   width: 100%;
   border: 1px solid rgba(201,168,76,0.25);
@@ -250,6 +251,58 @@ permalink: /dm/
   color: rgba(233,225,208,0.64);
   font-style: italic;
 }
+.vos-dm-submission-grid {
+  display: grid;
+  grid-template-columns: minmax(220px, 0.75fr) minmax(0, 1.25fr);
+  gap: 1rem;
+}
+.vos-dm-submission-list {
+  display: grid;
+  align-content: start;
+  gap: 0.55rem;
+}
+.vos-dm-submission-item {
+  display: grid;
+  gap: 0.25rem;
+  width: 100%;
+  border: 1px solid rgba(201,168,76,0.18);
+  border-radius: 8px;
+  background: rgba(7,6,10,0.44);
+  color: var(--vos-text);
+  cursor: pointer;
+  padding: 0.7rem;
+  text-align: left;
+}
+.vos-dm-submission-item:hover,
+.vos-dm-submission-item.is-selected {
+  border-color: rgba(212,165,116,0.52);
+  background: rgba(212,165,116,0.1);
+}
+.vos-dm-submission-title {
+  color: var(--vos-cream);
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.86rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+.vos-dm-submission-meta {
+  color: rgba(233,225,208,0.62);
+  font-size: 0.9rem;
+}
+.vos-dm-submission-preview {
+  width: 100%;
+  max-height: 260px;
+  object-fit: cover;
+  border: 1px solid rgba(201,168,76,0.24);
+  border-radius: 6px;
+  background: rgba(7,6,10,0.5);
+}
+.vos-dm-submission-editor textarea#vos-dm-lore-markdown {
+  min-height: 360px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.86rem;
+}
 .vos-dm-toggle {
   display: inline-flex;
   align-items: center;
@@ -265,6 +318,7 @@ permalink: /dm/
     align-items: stretch;
     flex-direction: column;
   }
+  .vos-dm-submission-grid { grid-template-columns: 1fr; }
   .vos-dm-counts { grid-template-columns: 1fr; }
   .vos-dm-actions { justify-content: stretch; }
   .vos-dm-actions button,
@@ -283,6 +337,48 @@ permalink: /dm/
         <input id="vos-dm-token" type="password" autocomplete="current-password">
       </label>
     </div>
+  </section>
+
+  <section class="vos-dm-panel" aria-labelledby="vos-dm-lore-title">
+    <div class="vos-dm-panel-head">
+      <h2 id="vos-dm-lore-title">Lore Submissions</h2>
+      <div class="vos-dm-actions">
+        <button id="vos-dm-lore-refresh" type="button">Refresh</button>
+      </div>
+    </div>
+    <div class="vos-dm-submission-grid">
+      <div class="vos-dm-submission-list" id="vos-dm-lore-list"></div>
+      <form class="vos-dm-form vos-dm-submission-editor" id="vos-dm-lore-form" hidden>
+        <label>
+          Title
+          <input id="vos-dm-lore-entry-title" type="text">
+        </label>
+        <label>
+          Slug
+          <input id="vos-dm-lore-slug" type="text">
+        </label>
+        <label>
+          Summary
+          <textarea id="vos-dm-lore-summary"></textarea>
+        </label>
+        <img class="vos-dm-submission-preview" id="vos-dm-lore-image" alt="" hidden>
+        <label>
+          Markdown
+          <textarea id="vos-dm-lore-markdown" spellcheck="false"></textarea>
+        </label>
+        <label>
+          Image Prompt
+          <textarea id="vos-dm-lore-image-prompt"></textarea>
+        </label>
+        <div class="vos-dm-actions">
+          <button id="vos-dm-lore-redraft" type="button">Regenerate</button>
+          <button class="vos-dm-button" id="vos-dm-lore-save" type="button">Save</button>
+          <button class="vos-dm-button is-danger" id="vos-dm-lore-reject" type="button">Reject</button>
+          <button id="vos-dm-lore-publish" type="submit">Publish</button>
+        </div>
+      </form>
+    </div>
+    <div class="vos-dm-status" id="vos-dm-lore-status" role="status" aria-live="polite"></div>
   </section>
 
   <section class="vos-dm-panel" aria-labelledby="vos-dm-message-title">
@@ -414,6 +510,21 @@ permalink: /dm/
   const statusEl = document.getElementById('vos-dm-status');
   const sendEl = document.getElementById('vos-dm-send');
   const recipientPickers = new Map();
+  const loreListEl = document.getElementById('vos-dm-lore-list');
+  const loreForm = document.getElementById('vos-dm-lore-form');
+  const loreRefreshEl = document.getElementById('vos-dm-lore-refresh');
+  const loreStatusEl = document.getElementById('vos-dm-lore-status');
+  const loreTitleEl = document.getElementById('vos-dm-lore-entry-title');
+  const loreSlugEl = document.getElementById('vos-dm-lore-slug');
+  const loreSummaryEl = document.getElementById('vos-dm-lore-summary');
+  const loreMarkdownEl = document.getElementById('vos-dm-lore-markdown');
+  const loreImagePromptEl = document.getElementById('vos-dm-lore-image-prompt');
+  const loreImageEl = document.getElementById('vos-dm-lore-image');
+  const loreRedraftEl = document.getElementById('vos-dm-lore-redraft');
+  const loreSaveEl = document.getElementById('vos-dm-lore-save');
+  const loreRejectEl = document.getElementById('vos-dm-lore-reject');
+  const lorePublishEl = document.getElementById('vos-dm-lore-publish');
+  let selectedLoreId = null;
 
   try {
     tokenEl.value = localStorage.getItem(TOKEN_KEY) || '';
@@ -651,6 +762,187 @@ permalink: /dm/
     }
   }
 
+  function lorePayloadFromForm() {
+    return {
+      title: loreTitleEl.value.trim(),
+      slug: loreSlugEl.value.trim(),
+      summary: loreSummaryEl.value.trim(),
+      markdown: loreMarkdownEl.value.trim(),
+      image_prompt: loreImagePromptEl.value.trim(),
+    };
+  }
+
+  function renderLoreList(submissions) {
+    loreListEl.innerHTML = '';
+    if (!submissions.length) {
+      const empty = document.createElement('p');
+      empty.className = 'vos-dm-empty';
+      empty.textContent = 'No lore submissions yet.';
+      loreListEl.appendChild(empty);
+      loreForm.hidden = true;
+      selectedLoreId = null;
+      return;
+    }
+
+    submissions.forEach((submission) => {
+      const button = document.createElement('button');
+      const title = document.createElement('span');
+      const meta = document.createElement('span');
+      button.type = 'button';
+      button.className = 'vos-dm-submission-item';
+      button.dataset.id = submission.id;
+      if (submission.id === selectedLoreId) button.classList.add('is-selected');
+      title.className = 'vos-dm-submission-title';
+      meta.className = 'vos-dm-submission-meta';
+      title.textContent = submission.title || 'Untitled';
+      meta.textContent = `${submission.kindLabel || submission.kind} · ${submission.submitter} · ${submission.status}`;
+      button.append(title, meta);
+      button.addEventListener('click', () => selectLoreSubmission(submission.id));
+      loreListEl.appendChild(button);
+    });
+  }
+
+  function fillLoreForm(submission) {
+    selectedLoreId = submission.id;
+    loreForm.hidden = false;
+    loreTitleEl.value = submission.title || '';
+    loreSlugEl.value = submission.slug || '';
+    loreSummaryEl.value = submission.generated_summary || submission.short_description || '';
+    loreMarkdownEl.value = submission.generated_markdown || '';
+    loreImagePromptEl.value = submission.generated_image_prompt || '';
+    if (submission.image_url) {
+      loreImageEl.hidden = false;
+      loreImageEl.src = `${submission.image_url}?v=${encodeURIComponent(submission.updated_at || Date.now())}`;
+      loreImageEl.alt = submission.title || 'Draft image';
+    } else {
+      loreImageEl.hidden = true;
+      loreImageEl.removeAttribute('src');
+    }
+    setStatus(loreStatusEl, submission.error_message || `Loaded ${submission.status}.`, !!submission.error_message);
+  }
+
+  async function refreshLoreSubmissions() {
+    const token = getToken(loreStatusEl);
+    if (!token) return;
+    loreRefreshEl.disabled = true;
+    setStatus(loreStatusEl, 'Loading...');
+    try {
+      const data = await adminJson('/api/admin/lore-submissions?limit=40', token);
+      const submissions = data.submissions || [];
+      renderLoreList(submissions);
+      setStatus(loreStatusEl, 'Updated.');
+      if (!selectedLoreId && submissions.length) {
+        await selectLoreSubmission(submissions[0].id);
+      } else if (selectedLoreId) {
+        Array.from(loreListEl.querySelectorAll('.vos-dm-submission-item')).forEach((button) => {
+          button.classList.toggle('is-selected', button.dataset.id === selectedLoreId);
+        });
+      }
+    } catch (error) {
+      setStatus(loreStatusEl, error.message, true);
+    } finally {
+      loreRefreshEl.disabled = false;
+    }
+  }
+
+  async function selectLoreSubmission(id) {
+    const token = getToken(loreStatusEl);
+    if (!token) return;
+    selectedLoreId = id;
+    setStatus(loreStatusEl, 'Loading draft...');
+    try {
+      const data = await adminJson(`/api/admin/lore-submissions/${encodeURIComponent(id)}`, token);
+      fillLoreForm(data.submission);
+      Array.from(loreListEl.querySelectorAll('.vos-dm-submission-item')).forEach((button) => {
+        button.classList.toggle('is-selected', button.dataset.id === id);
+      });
+    } catch (error) {
+      setStatus(loreStatusEl, error.message, true);
+    }
+  }
+
+  async function saveLoreSubmission() {
+    if (!selectedLoreId) return;
+    const token = getToken(loreStatusEl);
+    if (!token) return;
+    loreSaveEl.disabled = true;
+    setStatus(loreStatusEl, 'Saving...');
+    try {
+      const data = await postJson(
+        `/api/admin/lore-submissions/${encodeURIComponent(selectedLoreId)}/save`,
+        token,
+        lorePayloadFromForm()
+      );
+      fillLoreForm(data.submission);
+      await refreshLoreSubmissions();
+      setStatus(loreStatusEl, 'Saved.');
+    } catch (error) {
+      setStatus(loreStatusEl, error.message, true);
+    } finally {
+      loreSaveEl.disabled = false;
+    }
+  }
+
+  async function redraftLoreSubmission() {
+    if (!selectedLoreId) return;
+    const token = getToken(loreStatusEl);
+    if (!token) return;
+    if (!window.confirm('Regenerate this draft? Current edits are replaced when the new draft finishes.')) return;
+    loreRedraftEl.disabled = true;
+    setStatus(loreStatusEl, 'Regenerating...');
+    try {
+      await postJson(`/api/admin/lore-submissions/${encodeURIComponent(selectedLoreId)}/draft`, token, {});
+      await refreshLoreSubmissions();
+      setStatus(loreStatusEl, 'Regeneration started.');
+    } catch (error) {
+      setStatus(loreStatusEl, error.message, true);
+    } finally {
+      loreRedraftEl.disabled = false;
+    }
+  }
+
+  async function rejectLoreSubmission() {
+    if (!selectedLoreId) return;
+    const token = getToken(loreStatusEl);
+    if (!token) return;
+    if (!window.confirm('Reject this submission?')) return;
+    loreRejectEl.disabled = true;
+    setStatus(loreStatusEl, 'Rejecting...');
+    try {
+      await postJson(`/api/admin/lore-submissions/${encodeURIComponent(selectedLoreId)}/reject`, token, {});
+      await refreshLoreSubmissions();
+      setStatus(loreStatusEl, 'Rejected.');
+    } catch (error) {
+      setStatus(loreStatusEl, error.message, true);
+    } finally {
+      loreRejectEl.disabled = false;
+    }
+  }
+
+  async function publishLoreSubmission(event) {
+    event.preventDefault();
+    if (!selectedLoreId) return;
+    const token = getToken(loreStatusEl);
+    if (!token) return;
+    if (!window.confirm('Publish this draft into the wiki source files?')) return;
+    lorePublishEl.disabled = true;
+    setStatus(loreStatusEl, 'Publishing...');
+    try {
+      const data = await postJson(
+        `/api/admin/lore-submissions/${encodeURIComponent(selectedLoreId)}/publish`,
+        token,
+        lorePayloadFromForm()
+      );
+      await refreshLoreSubmissions();
+      const steps = (data.next_steps || []).join(' then ');
+      setStatus(loreStatusEl, `Published: ${data.url}. Rebuild next: ${steps}`);
+    } catch (error) {
+      setStatus(loreStatusEl, error.message, true);
+    } finally {
+      lorePublishEl.disabled = false;
+    }
+  }
+
   messageForm.addEventListener('submit', async (event) => {
     event.preventDefault();
     const token = getToken(messageStatusEl);
@@ -729,6 +1021,11 @@ permalink: /dm/
   rsvpRefreshEl.addEventListener('click', refreshRsvps);
   historyRefreshEl.addEventListener('click', refreshMessages);
   showDeletedEl.addEventListener('change', refreshMessages);
+  loreRefreshEl.addEventListener('click', refreshLoreSubmissions);
+  loreSaveEl.addEventListener('click', saveLoreSubmission);
+  loreRedraftEl.addEventListener('click', redraftLoreSubmission);
+  loreRejectEl.addEventListener('click', rejectLoreSubmission);
+  loreForm.addEventListener('submit', publishLoreSubmission);
 
   form.addEventListener('submit', async (event) => {
     event.preventDefault();
@@ -757,6 +1054,7 @@ permalink: /dm/
 
   initRecipientPickers().then(() => {
     if (tokenEl.value.trim()) {
+      refreshLoreSubmissions();
       refreshMessages();
       refreshRsvps();
     }
