@@ -4,37 +4,37 @@
   const PUSH_DISMISSED_KEY = 'vos.pushPromptDismissed';
   const DM_SEEN_KEY = 'vos.dmMessage.seenId';
   const STUDIO_SEEN_JOB_KEY = 'vos.studio.seenDoneJobId';
+  const AUTH_CONFIG_CACHE_KEY = 'vos.authConfig.cache';
+  const AUTH_CONFIG_CACHE_TTL_MS = 5 * 60 * 1000;
+  const ROSTER_URL = '/data/players.json';
   const PROFILE_AVATAR_FALLBACK = '/images/app-profiles/unmapped.png';
-  const PROFILE_AVATARS = {
-    'Caravel "Car" Asteri': '/images/app-profiles/avatar-caravel-asteri.png',
-    'Kryton Novelli': '/images/app-profiles/avatar-kryton-novelli.png',
-    Lotan: '/images/app-profiles/avatar-lotan.png',
-    Noname: '/images/app-profiles/avatar-noname.png',
-    Orabella: '/images/app-profiles/avatar-orabella.png',
-    'Roxanya "Roxy"': '/images/app-profiles/avatar-roxanya.png',
-    Valentro: '/images/app-profiles/avatar-valentro.png',
-    DM: '/images/app-profiles/dustin.png',
-  };
-  const PROFILE_DISPLAY_NAMES = {
-    'Caravel "Car" Asteri': 'Car',
-    'Kryton Novelli': 'Kryton',
-    Lotan: 'Lotan',
-    Noname: 'Noname',
-    Orabella: 'Orabella',
-    'Roxanya "Roxy"': 'Roxy',
-    Valentro: 'Valen',
-    DM: 'Dustin',
-  };
-  const PLAYERS = [
-    'Caravel "Car" Asteri',
-    'Kryton Novelli',
-    'Lotan',
-    'Noname',
-    'Orabella',
-    'Roxanya "Roxy"',
-    'Valentro',
-    'DM',
-  ];
+
+  // Player roster (display name + avatar) lives in _data/players.json and
+  // is fetched once at startup. Used as a fallback list when /api/auth/config
+  // is unreachable, and to resolve display names + avatars.
+  let roster = [];
+  let rosterPromise = null;
+
+  function loadRoster() {
+    if (rosterPromise) return rosterPromise;
+    rosterPromise = fetch(ROSTER_URL, { cache: 'default' })
+      .then((r) => (r.ok ? r.json() : []))
+      .catch(() => [])
+      .then((data) => {
+        roster = Array.isArray(data) ? data : [];
+        return roster;
+      });
+    return rosterPromise;
+  }
+
+  function rosterNames() {
+    return roster.map((p) => p.name);
+  }
+
+  function lookupRoster(name) {
+    return roster.find((p) => p.name === name) || null;
+  }
+
   let identityPromise = null;
   let authConfigPromise = null;
 
@@ -63,24 +63,149 @@
     if (node && node.parentNode) node.parentNode.removeChild(node);
   }
 
+  // Read the most recent successful /api/auth/config response from
+  // localStorage, returning null if missing or older than the cache TTL.
+  function readAuthConfigCache() {
+    try {
+      const raw = getStorage(AUTH_CONFIG_CACHE_KEY);
+      if (!raw) return null;
+      const parsed = JSON.parse(raw);
+      if (!parsed || !parsed.ts || !parsed.data) return null;
+      if (Date.now() - parsed.ts > AUTH_CONFIG_CACHE_TTL_MS) return null;
+      return parsed.data;
+    } catch (e) { return null; }
+  }
+
+  // Three attempts with exponential backoff (100ms, 300ms, 900ms). Only
+  // retries on network errors or 5xx; 4xx returns short-circuit since they
+  // won't get healthier on retry.
+  async function fetchWithRetry(url, options, attempts) {
+    const tries = attempts || 3;
+    let lastError = null;
+    for (let i = 0; i < tries; i += 1) {
+      try {
+        const response = await fetch(url, options);
+        if (response.ok || (response.status >= 400 && response.status < 500)) {
+          return response;
+        }
+        lastError = new Error(`HTTP ${response.status}`);
+      } catch (error) {
+        lastError = error;
+      }
+      if (i < tries - 1) {
+        const delay = 100 * Math.pow(3, i);
+        await new Promise((resolve) => setTimeout(resolve, delay));
+      }
+    }
+    throw lastError || new Error('Network failure');
+  }
+
   async function getAuthConfig() {
     if (authConfigPromise) return authConfigPromise;
-    authConfigPromise = fetch('/api/auth/config', { cache: 'no-store' })
-      .then((response) => {
-        if (!response.ok) throw new Error('Login is unavailable.');
-        return response.json();
-      })
-      .catch(() => ({
-        loginRequired: false,
-        authConfigured: true,
-        players: PLAYERS,
-      }));
+    authConfigPromise = (async () => {
+      try {
+        const response = await fetchWithRetry('/api/auth/config', { cache: 'no-store' });
+        if (response.ok) {
+          const data = await response.json();
+          try {
+            setStorage(AUTH_CONFIG_CACHE_KEY, JSON.stringify({ ts: Date.now(), data }));
+          } catch (e) {}
+          hideConnectionBanner();
+          return data;
+        }
+        throw new Error(`HTTP ${response.status}`);
+      } catch (error) {
+        const cached = readAuthConfigCache();
+        if (cached) return cached;
+        showConnectionBanner();
+        await loadRoster();
+        return {
+          loginRequired: false,
+          authConfigured: true,
+          players: rosterNames(),
+        };
+      }
+    })();
     return authConfigPromise;
   }
 
   function authHeaders(headers = {}) {
     const token = getStorage(AUTH_TOKEN_KEY);
     return token ? { ...headers, Authorization: `Bearer ${token}` } : headers;
+  }
+
+  // Confine keyboard focus to `element` while a modal is open. Tab cycles
+  // within the modal; Shift+Tab wraps backwards; Esc invokes onEscape.
+  // Returns a release function that detaches the listener and restores
+  // focus to whatever had it before the trap was installed.
+  function trapFocus(element, options) {
+    const opts = options || {};
+    const previousFocus = document.activeElement;
+    const focusableSelector =
+      'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), ' +
+      'textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
+
+    function getFocusable() {
+      return Array.from(element.querySelectorAll(focusableSelector));
+    }
+
+    function onKeyDown(event) {
+      if (event.key === 'Escape' && typeof opts.onEscape === 'function') {
+        event.preventDefault();
+        opts.onEscape();
+        return;
+      }
+      if (event.key !== 'Tab') return;
+      const items = getFocusable();
+      if (!items.length) return;
+      const first = items[0];
+      const last = items[items.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    }
+
+    element.addEventListener('keydown', onKeyDown);
+
+    requestAnimationFrame(() => {
+      const target = opts.initialFocus || getFocusable()[0];
+      if (target && typeof target.focus === 'function') {
+        try { target.focus(); } catch (e) {}
+      }
+    });
+
+    return function release() {
+      element.removeEventListener('keydown', onKeyDown);
+      if (previousFocus && typeof previousFocus.focus === 'function') {
+        try { previousFocus.focus(); } catch (e) {}
+      }
+    };
+  }
+
+  // Toast-style banner shown when /api/auth/config can't be reached and
+  // the client is operating off cached or fallback data. Hidden again as
+  // soon as a real config response arrives.
+  function showConnectionBanner() {
+    let banner = document.getElementById('vos-connection-banner');
+    if (!banner) {
+      banner = document.createElement('div');
+      banner.id = 'vos-connection-banner';
+      banner.className = 'vos-connection-banner';
+      banner.setAttribute('role', 'status');
+      banner.setAttribute('aria-live', 'polite');
+      banner.textContent = 'Connection lost — using offline data.';
+      document.body.appendChild(banner);
+    }
+    banner.hidden = false;
+  }
+
+  function hideConnectionBanner() {
+    const banner = document.getElementById('vos-connection-banner');
+    if (banner) banner.hidden = true;
   }
 
   function clearIdentity() {
@@ -104,7 +229,8 @@
   }
 
   function getProfileDisplayName(name) {
-    return PROFILE_DISPLAY_NAMES[name] || name || '';
+    const entry = lookupRoster(name);
+    return (entry && entry.display) || name || '';
   }
 
   function updateProfileAvatar(name) {
@@ -114,7 +240,8 @@
 
     const displayName = getProfileDisplayName(name);
     const labelName = displayName || 'profile';
-    const src = PROFILE_AVATARS[name] || PROFILE_AVATAR_FALLBACK;
+    const entry = lookupRoster(name);
+    const src = (entry && entry.avatar) || PROFILE_AVATAR_FALLBACK;
     const alt = displayName || 'Unmapped profile';
     profileButton.setAttribute('aria-label', name ? `Open profile — ${displayName}` : 'Log in');
     profileButton.title = name ? `Open profile — ${displayName}` : 'Log in';
@@ -226,7 +353,7 @@
       <div class="vos-identity-options"></div>
     `;
     const options = card.querySelector('.vos-identity-options');
-    PLAYERS.forEach((name) => {
+    rosterNames().forEach((name) => {
       const button = document.createElement('button');
       button.type = 'button';
       button.textContent = name;
@@ -245,7 +372,7 @@
   }
 
   function renderLoginIdentity(card, config, resolve) {
-    const players = Array.isArray(config.players) && config.players.length ? config.players : PLAYERS;
+    const players = Array.isArray(config.players) && config.players.length ? config.players : rosterNames();
     const existing = getStorage(PLAYER_KEY);
     const titleText = existing ? 'Switch player' : 'Log in';
     const buttonText = existing ? 'Switch' : 'Log in';
@@ -347,11 +474,32 @@
       card.setAttribute('aria-labelledby', 'vos-identity-title');
 
       document.body.appendChild(card);
+
+      // Wrap resolve so the focus trap releases (and restores focus) the
+      // instant any code path tears down the card. Each render function
+      // calls resolve() right before removeNode(card), so wrapping resolve
+      // covers cancel, successful login, and legacy player pick.
+      let release = null;
+      const wrappedResolve = (value) => {
+        if (release) {
+          try { release(); } catch (e) {}
+          release = null;
+        }
+        resolve(value);
+      };
+
       if (loginRequired) {
-        renderLoginIdentity(card, config, resolve);
+        renderLoginIdentity(card, config, wrappedResolve);
       } else {
-        renderLegacyIdentity(card, resolve);
+        renderLegacyIdentity(card, wrappedResolve);
       }
+
+      release = trapFocus(card, {
+        onEscape: () => {
+          wrappedResolve(getActivePlayerName(config));
+          removeNode(card);
+        },
+      });
     })).finally(() => {
       identityPromise = null;
     });
@@ -453,11 +601,22 @@
     const dismissButton = card.querySelector('.vos-push-dismiss');
     const status = card.querySelector('.vos-push-status');
 
+    document.body.appendChild(card);
+
+    let releasePushTrap = null;
+    const closeCard = () => {
+      if (releasePushTrap) {
+        try { releasePushTrap(); } catch (e) {}
+        releasePushTrap = null;
+      }
+      removeNode(card);
+    };
+
     enableButton.addEventListener('click', async () => {
       try {
         await enablePush(enableButton, status);
         status.textContent = 'Enabled on this device.';
-        setTimeout(() => removeNode(card), 900);
+        setTimeout(closeCard, 900);
       } catch (error) {
         enableButton.disabled = false;
         status.textContent = error.message;
@@ -466,10 +625,15 @@
 
     dismissButton.addEventListener('click', () => {
       setStorage(PUSH_DISMISSED_KEY, '1');
-      removeNode(card);
+      closeCard();
     });
 
-    document.body.appendChild(card);
+    releasePushTrap = trapFocus(card, {
+      onEscape: () => {
+        setStorage(PUSH_DISMISSED_KEY, '1');
+        closeCard();
+      },
+    });
   }
 
   function enhanceWikiLinkedLists() {
@@ -609,16 +773,20 @@
     if (identityButton) {
       identityButton.addEventListener('click', () => ensureIdentity({ force: true }));
     }
-    getAuthConfig().then((config) => {
-      updateIdentityControls(config);
-      const activeName = getActivePlayerName(config);
-      if (activeName) announceIdentity(activeName);
-      syncAvatarBadge(config);
+    // Load the player roster first so display names + avatars resolve on
+    // the first paint, then fan out the rest of the startup work.
+    loadRoster().then(() => {
+      getAuthConfig().then((config) => {
+        updateIdentityControls(config);
+        const activeName = getActivePlayerName(config);
+        if (activeName) announceIdentity(activeName);
+        syncAvatarBadge(config);
+      });
+      ensureIdentity();
+      maybeSyncExistingSubscription();
+      maybeShowPushPrompt();
     });
     window.addEventListener('vos:avatar-badge-refresh', () => syncAvatarBadge());
     window.addEventListener('focus', () => syncAvatarBadge());
-    ensureIdentity();
-    maybeSyncExistingSubscription();
-    maybeShowPushPrompt();
   });
 })();
