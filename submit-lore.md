@@ -177,6 +177,7 @@ autoIndex: false
           <option value="place">Place</option>
           <option value="faction">Faction</option>
           <option value="lore">Lore</option>
+          <option value="culture">Culture (festival, custom, ritual)</option>
         </select>
       </label>
       <label>

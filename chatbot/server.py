@@ -613,6 +613,70 @@ def _run_app_migrations():
                 ("007_message_dismissals", _utc_now_iso()),
             )
 
+        if "009_culture_kind" not in done:
+            # Widen the lore_submissions.kind CHECK constraint to include
+            # 'culture'. SQLite has no ALTER for CHECK constraints, so this
+            # rebuilds the table. Indexes are dropped with the old table and
+            # recreated below; existing rows are preserved.
+            conn.execute("""
+                CREATE TABLE lore_submissions_new (
+                    id TEXT PRIMARY KEY,
+                    submitter TEXT NOT NULL,
+                    kind TEXT NOT NULL CHECK(kind IN (
+                        'item', 'person', 'place', 'faction', 'lore', 'culture'
+                    )),
+                    title TEXT NOT NULL,
+                    slug TEXT NOT NULL,
+                    short_description TEXT NOT NULL,
+                    connections_json TEXT NOT NULL,
+                    notes TEXT,
+                    status TEXT NOT NULL CHECK(status IN (
+                        'submitted', 'drafting', 'needs_review', 'approved',
+                        'rejected', 'published', 'error'
+                    )),
+                    context_json TEXT,
+                    generated_markdown TEXT,
+                    generated_summary TEXT,
+                    generated_image_prompt TEXT,
+                    image_url TEXT,
+                    image_filename TEXT,
+                    error_message TEXT,
+                    created_at TEXT NOT NULL,
+                    updated_at TEXT NOT NULL,
+                    published_at TEXT
+                )
+            """)
+            conn.execute("""
+                INSERT INTO lore_submissions_new (
+                    id, submitter, kind, title, slug, short_description,
+                    connections_json, notes, status, context_json,
+                    generated_markdown, generated_summary, generated_image_prompt,
+                    image_url, image_filename, error_message,
+                    created_at, updated_at, published_at
+                )
+                SELECT
+                    id, submitter, kind, title, slug, short_description,
+                    connections_json, notes, status, context_json,
+                    generated_markdown, generated_summary, generated_image_prompt,
+                    image_url, image_filename, error_message,
+                    created_at, updated_at, published_at
+                FROM lore_submissions
+            """)
+            conn.execute("DROP TABLE lore_submissions")
+            conn.execute("ALTER TABLE lore_submissions_new RENAME TO lore_submissions")
+            conn.execute("""
+                CREATE INDEX IF NOT EXISTS idx_lore_submissions_status_updated
+                ON lore_submissions (status, updated_at DESC)
+            """)
+            conn.execute("""
+                CREATE INDEX IF NOT EXISTS idx_lore_submissions_submitter_updated
+                ON lore_submissions (submitter, updated_at DESC)
+            """)
+            conn.execute(
+                "INSERT INTO schema_migrations (name, applied_at) VALUES (?, ?)",
+                ("009_culture_kind", _utc_now_iso()),
+            )
+
         if "008_in_play" not in done:
             # Live overlay for the "Currently In Play" cards on home and the
             # Venturia hub. The static campaign.js list still ships as a
@@ -636,6 +700,23 @@ def _run_app_migrations():
             conn.execute(
                 "INSERT INTO schema_migrations (name, applied_at) VALUES (?, ?)",
                 ("008_in_play", _utc_now_iso()),
+            )
+
+        if "010_card_fields" not in done:
+            # Persist AI-generated stat-card fields so the publisher can
+            # render the gold-bordered card on top of any kind (not just
+            # items). NULL is fine — non-item submissions before this
+            # column existed will publish with just the body, same as
+            # before. Items keep their existing field-inference path.
+            cols = _table_columns(conn, "lore_submissions")
+            if "generated_card_fields_json" not in cols:
+                conn.execute(
+                    "ALTER TABLE lore_submissions ADD COLUMN "
+                    "generated_card_fields_json TEXT"
+                )
+            conn.execute(
+                "INSERT INTO schema_migrations (name, applied_at) VALUES (?, ?)",
+                ("010_card_fields", _utc_now_iso()),
             )
 
 
@@ -2826,6 +2907,16 @@ LORE_SUBMISSION_KINDS = {
         "index": "Venturia/Lore/index.md",
         "index_mode": "simple-markdown",
     },
+    "culture": {
+        "label": "Culture",
+        "source_dir": "Venturia/Culture",
+        "url_prefix": "/en/Venturia/Culture",
+        "image_dir": "images/culture",
+        "style": "valley-scene",
+        "tags": "venturia, culture",
+        "index": "Venturia/Culture/index.md",
+        "index_mode": "simple-markdown",
+    },
 }
 
 
@@ -2974,6 +3065,36 @@ def _extract_json_object(text):
     return json.loads(text)
 
 
+# Per-kind defaults for the AI fallback. Only used when ANTHROPIC_API_KEY
+# is unset — the live AI is told to pick fields itself.
+FALLBACK_CARD_FIELDS = {
+    "item":    [{"label": "Category", "value": "Object"}, {"label": "Type", "value": "Item"}],
+    "person":  [{"label": "Title", "value": "Resident"}],
+    "place":   [{"label": "Type", "value": "Location"}],
+    "faction": [{"label": "Type", "value": "Faction"}],
+    "lore":    [{"label": "Subject", "value": "Lore"}],
+    "culture": [{"label": "Type", "value": "Custom"}],
+}
+
+
+def _sanitize_card_fields(raw):
+    """Coerce the AI's card_fields array into a clean list of
+    {label, value} pairs. Drops anything that isn't a dict with both
+    label and value strings; caps length and field count."""
+    if not isinstance(raw, list):
+        return []
+    cleaned = []
+    for item in raw[:6]:
+        if not isinstance(item, dict):
+            continue
+        label = str(item.get("label") or "").strip()[:40]
+        value = str(item.get("value") or "").strip()[:160]
+        if not label or not value:
+            continue
+        cleaned.append({"label": label, "value": value})
+    return cleaned
+
+
 def _fallback_lore_draft(kind, title, description, connections, notes=""):
     connection_lines = []
     for item in connections or []:
@@ -3009,6 +3130,7 @@ def _fallback_lore_draft(kind, title, description, connections, notes=""):
         "summary": summary,
         "markdown": markdown,
         "image_prompt": image_prompt[:1200],
+        "card_fields": list(FALLBACK_CARD_FIELDS.get(kind, [])),
     }
 
 
@@ -3043,6 +3165,21 @@ def _generate_lore_draft_text(kind, title, description, connections, notes, cont
         "  to real wiki pages by name. Plain bold name only.\n"
         "- Tone: matter-of-fact, observational, in the campaign's voice. "
         "  No dramatic narrator framing.\n"
+        "\n"
+        "CARD FIELDS:\n"
+        "- Pick 3–5 short label/value pairs that summarize this entry at "
+        "  a glance. Labels are 1–2 words in Title Case (e.g. 'Type', "
+        "  'Season', 'Owner', 'District', 'Headquarters'). Values are "
+        "  plain text only — no Markdown, no HTML, no URLs.\n"
+        "- Pick fields that suit the kind. Examples per kind:\n"
+        "  - item: Category, Type, Rarity, Attunement, Owner, Origin\n"
+        "  - person: Title, Family, Affiliation, Status\n"
+        "  - place: Type, District, Notable For, Population\n"
+        "  - faction: Type, Headquarters, Leader, Standing\n"
+        "  - lore: Era, Subject, Source, First Recorded\n"
+        "  - culture: Type, Season, Patrons, Frequency, Origin\n"
+        "- Do not invent values you can't ground in the submission. If "
+        "  you can't say a field with reasonable confidence, omit it.\n"
     )
     user_msg = f"""
 Draft a wiki entry for this submitted {kind_label}.
@@ -3065,7 +3202,11 @@ Retrieved codex context:
 Return exactly this JSON object:
 {{
   "summary": "One concise public description, 180 characters max.",
-  "markdown": "The wiki page body in Markdown. Follow the STYLE block in the system message exactly: '# {title}' heading, '{{{{IMAGE}}}}' placeholder, lede paragraphs (NOT a heading), '---' between sections, '## Connections' at the end with bold names only (no URLs). For item entries, do not create an HTML stat/card layout; the publisher applies the item template.",
+  "card_fields": [
+    {{"label": "Type", "value": "..."}},
+    {{"label": "Owner", "value": "..."}}
+  ],
+  "markdown": "The wiki page body in Markdown. Follow the STYLE block in the system message exactly: '# {title}' heading, '{{{{IMAGE}}}}' placeholder, lede paragraphs (NOT a heading), '---' between sections, '## Connections' at the end with bold names only (no URLs). Do NOT include any HTML card or stat block in the markdown — the publisher renders the card from card_fields.",
   "image_prompt": "A visual prompt for generating one clean wiki image for this entry. Use concrete details and any relevant known character/place descriptions."
 }}
 """
@@ -3101,6 +3242,7 @@ Return exactly this JSON object:
             "summary": str(parsed.get("summary") or fallback["summary"]).strip()[:300],
             "markdown": str(parsed.get("markdown") or fallback["markdown"]).strip(),
             "image_prompt": str(parsed.get("image_prompt") or fallback["image_prompt"]).strip()[:1800],
+            "card_fields": _sanitize_card_fields(parsed.get("card_fields") or fallback.get("card_fields") or []),
         }
         if not IMAGE_PLACEHOLDER_RE.search(draft["markdown"]):
             draft["markdown"] = re.sub(
@@ -3130,6 +3272,7 @@ def _submission_payload(row, include_markdown=True, include_context=False):
         "status": row["status"],
         "generated_summary": row["generated_summary"],
         "generated_image_prompt": row["generated_image_prompt"],
+        "generated_card_fields": _json_loads(row["generated_card_fields_json"], []),
         "image_url": row["image_url"],
         "image_filename": row["image_filename"],
         "error_message": row["error_message"],
@@ -3149,6 +3292,7 @@ def _lore_submission_row(conn, submission_id):
         SELECT id, submitter, kind, title, slug, short_description,
                connections_json, notes, status, context_json,
                generated_markdown, generated_summary, generated_image_prompt,
+               generated_card_fields_json,
                image_url, image_filename, error_message, created_at,
                updated_at, published_at
         FROM lore_submissions
@@ -3202,11 +3346,16 @@ def _run_lore_submission_draft(submission_id):
 
     warnings = "; ".join([msg for msg in (draft_warning, image_error) if msg])
     status = "needs_review"
+    card_fields_json = json.dumps(
+        _sanitize_card_fields(draft.get("card_fields") or []),
+        separators=(",", ":"),
+    )
     with _app_db() as conn:
         conn.execute("""
             UPDATE lore_submissions
             SET status = ?, context_json = ?, generated_markdown = ?,
                 generated_summary = ?, generated_image_prompt = ?,
+                generated_card_fields_json = ?,
                 image_url = ?, image_filename = ?, error_message = ?,
                 updated_at = ?
             WHERE id = ?
@@ -3216,6 +3365,7 @@ def _run_lore_submission_draft(submission_id):
             draft.get("markdown") or "",
             draft.get("summary") or "",
             image_prompt,
+            card_fields_json,
             image_url,
             image_filename,
             warnings[:500] if warnings else None,
@@ -3376,6 +3526,45 @@ def _item_card_row(label, value):
     )
 
 
+def _card_html(title, image_url, rows, quote):
+    """Shared stat-card HTML used by every published lore page. `rows` is
+    a list of strings already rendered by _item_card_row()."""
+    image_block = ""
+    if image_url:
+        image_block = (
+            '\n<div style="flex-shrink: 0;">\n'
+            f'<img src="{html.escape(image_url)}" alt="{html.escape(title)}" '
+            'style="width: 280px; max-width: 100%; border-radius: 4px; '
+            'box-shadow: 0 10px 36px rgba(0, 0, 0, 0.8); '
+            'border: 1px solid rgba(139, 115, 85, 0.5);">\n'
+            '</div>\n'
+        )
+    quote_block = ""
+    quote_text = str(quote or "").strip()
+    if quote_text:
+        quote_block = (
+            '<div style="margin-top: 1.25rem; padding-left: 1rem; '
+            'border-left: 2px solid rgba(212, 165, 116, 0.4); font-style: '
+            'italic; color: rgba(212, 165, 116, 0.9); font-family: '
+            "'IM Fell English', Georgia, serif; font-size: 1rem;\">"
+            f'"{html.escape(quote_text)}"</div>'
+        )
+    rows_html = ''.join(rows).rstrip()
+    return f"""<div style="display: flex; gap: 2rem; align-items: flex-start; margin: 0 0 2.5rem; padding: 1.5rem 1.75rem; background: linear-gradient(135deg, rgba(20, 18, 24, 0.55) 0%, rgba(36, 28, 18, 0.4) 100%); border: 1px solid rgba(139, 115, 85, 0.35); border-radius: 6px; box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6); flex-wrap: wrap;">
+
+<div style="flex: 1; min-width: 240px;">
+<div style="font-family: 'Cinzel', Georgia, serif; font-size: 2rem; letter-spacing: 0.08em; color: #d4a574; line-height: 1.1; margin-bottom: 0.75rem; text-transform: uppercase;">{html.escape(title)}</div>
+<div style="height: 1px; background: linear-gradient(90deg, rgba(212, 165, 116, 0.7), rgba(139, 115, 85, 0.2) 60%, transparent); margin-bottom: 1.25rem;"></div>
+
+<div style="font-family: Georgia, serif; font-size: 0.95rem; color: #e8dcc8; line-height: 1.85;">
+{rows_html}
+</div>
+{quote_block}
+</div>
+{image_block}
+</div>"""
+
+
 def _render_item_markdown(title, summary, markdown, image_url, connections, image_prompt):
     body = _strip_generated_images(_strip_markdown_title(markdown))
     item_type = _infer_item_type(title, summary, body, image_prompt)
@@ -3389,34 +3578,33 @@ def _render_item_markdown(title, summary, markdown, image_url, connections, imag
         _item_card_row("Owner", _wiki_link_for_name(owner)) if owner else "",
         _item_card_row("Prior Owner", _wiki_link_for_name(prior_owner)) if prior_owner else "",
     ]
-    image_block = ""
-    if image_url:
-        image_block = (
-            '\n<div style="flex-shrink: 0;">\n'
-            f'<img src="{html.escape(image_url)}" alt="{html.escape(title)}" '
-            'style="width: 280px; max-width: 100%; border-radius: 4px; '
-            'box-shadow: 0 10px 36px rgba(0, 0, 0, 0.8); '
-            'border: 1px solid rgba(139, 115, 85, 0.5);">\n'
-            '</div>\n'
-        )
-
-    quote = html.escape((summary or "").strip() or f"A named item in the Vallombrosa campaign.")
-    card = f"""<div style="display: flex; gap: 2rem; align-items: flex-start; margin: 0 0 2.5rem; padding: 1.5rem 1.75rem; background: linear-gradient(135deg, rgba(20, 18, 24, 0.55) 0%, rgba(36, 28, 18, 0.4) 100%); border: 1px solid rgba(139, 115, 85, 0.35); border-radius: 6px; box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6); flex-wrap: wrap;">
-
-<div style="flex: 1; min-width: 240px;">
-<div style="font-family: 'Cinzel', Georgia, serif; font-size: 2rem; letter-spacing: 0.08em; color: #d4a574; line-height: 1.1; margin-bottom: 0.75rem; text-transform: uppercase;">{html.escape(title)}</div>
-<div style="height: 1px; background: linear-gradient(90deg, rgba(212, 165, 116, 0.7), rgba(139, 115, 85, 0.2) 60%, transparent); margin-bottom: 1.25rem;"></div>
-
-<div style="font-family: Georgia, serif; font-size: 0.95rem; color: #e8dcc8; line-height: 1.85;">
-{''.join(rows).rstrip()}
-</div>
-<div style="margin-top: 1.25rem; padding-left: 1rem; border-left: 2px solid rgba(212, 165, 116, 0.4); font-style: italic; color: rgba(212, 165, 116, 0.9); font-family: 'IM Fell English', Georgia, serif; font-size: 1rem;">"{quote}"</div>
-</div>
-{image_block}
-</div>"""
-
+    quote = (summary or "").strip() or "A named item in the Vallombrosa campaign."
+    card = _card_html(title, image_url, rows, quote)
     if not body:
         body = f"{summary}\n\n## Connections\n\n" + _connections_markdown(connections)
+    return f"# {title}\n\n{card}\n\n{body.strip()}\n"
+
+
+def _render_card_markdown(title, summary, markdown, image_url, card_fields):
+    """Render a non-item published page with the AI's card_fields. Each
+    field value is run through _wiki_link_for_name so any value that
+    matches a known wiki entity becomes a hyperlink."""
+    body = _strip_generated_images(_strip_markdown_title(markdown))
+    rows = []
+    for field in card_fields or []:
+        if not isinstance(field, dict):
+            continue
+        label = str(field.get("label") or "").strip()
+        value = str(field.get("value") or "").strip()
+        if not label or not value:
+            continue
+        rows.append(_item_card_row(label, _wiki_link_for_name(value)))
+    if not rows:
+        # No card_fields means no card — fall back to plain image substitution.
+        return _markdown_with_image(markdown, title, image_url)
+    card = _card_html(title, image_url, rows, (summary or "").strip())
+    if not body:
+        body = f"{summary}\n"
     return f"# {title}\n\n{card}\n\n{body.strip()}\n"
 
 
@@ -3435,9 +3623,11 @@ def _connections_markdown(connections):
     return "\n".join(lines) if lines else "- No connections were provided."
 
 
-def _render_published_markdown(kind, title, summary, markdown, image_url, connections, image_prompt):
+def _render_published_markdown(kind, title, summary, markdown, image_url, connections, image_prompt, card_fields=None):
     if kind == "item":
         return _render_item_markdown(title, summary, markdown, image_url, connections, image_prompt)
+    if card_fields:
+        return _render_card_markdown(title, summary, markdown, image_url, card_fields)
     return _markdown_with_image(markdown, title, image_url)
 
 
@@ -3611,8 +3801,16 @@ def _publish_lore_submission(submission_id, body):
 
     image_url = _copy_draft_image(submission_id, kind, slug)
     connections = _json_loads(row["connections_json"], [])
+    # DM can override card_fields via the publish body; otherwise we use
+    # whatever the AI produced and stored at draft time.
+    card_fields = _sanitize_card_fields(
+        body.get("card_fields")
+        if body.get("card_fields") is not None
+        else _json_loads(row["generated_card_fields_json"], [])
+    )
     body_markdown = _render_published_markdown(
-        kind, title, summary, markdown, image_url, connections, image_prompt
+        kind, title, summary, markdown, image_url, connections, image_prompt,
+        card_fields=card_fields,
     )
     markdown_path.write_text(
         _page_frontmatter(title, summary, config["tags"]) + body_markdown,
@@ -3623,15 +3821,19 @@ def _publish_lore_submission(submission_id, body):
     descriptions_updated = _update_descriptions_json(kind, title, slug, summary, image_prompt)
 
     now = _utc_now_iso()
+    card_fields_json = json.dumps(card_fields, separators=(",", ":"))
     with _app_db() as conn:
         conn.execute("""
             UPDATE lore_submissions
             SET title = ?, slug = ?, status = 'published',
                 generated_markdown = ?, generated_summary = ?,
-                generated_image_prompt = ?, error_message = NULL,
+                generated_image_prompt = ?,
+                generated_card_fields_json = ?,
+                error_message = NULL,
                 updated_at = ?, published_at = ?
             WHERE id = ?
-        """, (title, slug, markdown, summary, image_prompt, now, now, submission_id))
+        """, (title, slug, markdown, summary, image_prompt,
+              card_fields_json, now, now, submission_id))
 
     return {
         "ok": True,
@@ -3805,13 +4007,20 @@ def admin_lore_submission_save(submission_id):
         markdown = str(body.get("markdown") or row["generated_markdown"] or "").strip()
         summary = str(body.get("summary") or row["generated_summary"] or "").strip()[:300]
         image_prompt = str(body.get("image_prompt") or row["generated_image_prompt"] or "").strip()[:1800]
+        if "card_fields" in body:
+            card_fields = _sanitize_card_fields(body.get("card_fields") or [])
+        else:
+            card_fields = _json_loads(row["generated_card_fields_json"], [])
+        card_fields_json = json.dumps(card_fields, separators=(",", ":"))
         conn.execute("""
             UPDATE lore_submissions
             SET title = ?, slug = ?, generated_markdown = ?,
                 generated_summary = ?, generated_image_prompt = ?,
+                generated_card_fields_json = ?,
                 updated_at = ?
             WHERE id = ?
-        """, (title, slug, markdown, summary, image_prompt, _utc_now_iso(), submission_id))
+        """, (title, slug, markdown, summary, image_prompt,
+              card_fields_json, _utc_now_iso(), submission_id))
         updated = _lore_submission_row(conn, submission_id)
     return jsonify({"ok": True, "submission": _submission_payload(updated, include_markdown=True)})
 
