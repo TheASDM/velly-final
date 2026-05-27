@@ -11,6 +11,7 @@ DM-only content (Venturia/DM/, any file with `published: false`) is excluded.
 
 from __future__ import annotations
 
+import hashlib
 import json
 import re
 import sys
@@ -454,10 +455,66 @@ def token_estimate(text: str) -> int:
     return len(text) // 4
 
 
+MANIFEST_PATH = ROOT / "campaign-data" / ".tier1.manifest.json"
+
+
+def _hash_file(path: Path) -> str:
+    h = hashlib.sha256()
+    with open(path, "rb") as fh:
+        for chunk in iter(lambda: fh.read(65536), b""):
+            h.update(chunk)
+    return h.hexdigest()
+
+
+def _input_manifest() -> dict[str, str]:
+    """Hash every input file build_tier1 reads. If the resulting dict
+    matches what we stored from the last run, we can skip the rebuild."""
+    manifest: dict[str, str] = {}
+    for rel_dir, _ in WIKI_SECTIONS:
+        base = WIKI_ROOT / rel_dir
+        if not base.is_dir():
+            continue
+        for path in sorted(base.rglob("*.md")):
+            try:
+                manifest[str(path.relative_to(ROOT))] = _hash_file(path)
+            except OSError:
+                continue
+    if FILTERED_DIR.is_dir():
+        for path in sorted(FILTERED_DIR.glob("*.json")):
+            try:
+                manifest[str(path.relative_to(ROOT))] = _hash_file(path)
+            except OSError:
+                continue
+    # Also hash this script — schema/format changes should force a rebuild.
+    manifest["_self"] = _hash_file(Path(__file__))
+    return manifest
+
+
 def main():
+    force = "--force" in sys.argv
     print("Building tier1.md from wiki content + 5e reference …")
+    new_manifest = _input_manifest()
+
+    if not force and TIER1_OUT.exists() and MANIFEST_PATH.exists():
+        try:
+            old_manifest = json.loads(MANIFEST_PATH.read_text(encoding="utf-8"))
+        except Exception:
+            old_manifest = None
+        if old_manifest == new_manifest:
+            existing = TIER1_OUT.read_text(encoding="utf-8")
+            tokens = token_estimate(existing)
+            print(
+                f"  → {TIER1_OUT.name} unchanged  {len(existing):,} chars  "
+                f"~{tokens:,} tokens (skipped rebuild — pass --force to override)"
+            )
+            return
+
     text = build_tier1()
     TIER1_OUT.write_text(text, encoding="utf-8")
+    MANIFEST_PATH.write_text(
+        json.dumps(new_manifest, sort_keys=True, indent=2),
+        encoding="utf-8",
+    )
     tokens = token_estimate(text)
     print(f"  → {TIER1_OUT.name}  {len(text):,} chars  ~{tokens:,} tokens")
 

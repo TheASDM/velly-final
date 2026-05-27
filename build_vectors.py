@@ -24,6 +24,7 @@ import os
 import re
 import sys
 import time
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Optional
 
@@ -540,6 +541,19 @@ def load_5etools_entries() -> list[dict]:
 # ── Vector store I/O ─────────────────────────────────────────────────────────
 
 
+VECTOR_STORE_SCHEMA_VERSION = 1
+
+
+def _unwrap_vector_store(data):
+    """Accept both old `[entry, ...]` and new `{meta, entries: [...]}`
+    shapes. Returns the entries list (or an empty list on garbage)."""
+    if isinstance(data, dict) and isinstance(data.get("entries"), list):
+        return data["entries"]
+    if isinstance(data, list):
+        return data
+    return []
+
+
 def load_existing_store(path: Path) -> dict[str, dict]:
     if not path.exists():
         return {}
@@ -548,7 +562,7 @@ def load_existing_store(path: Path) -> dict[str, dict]:
             data = json.load(f)
     except Exception:
         return {}
-    return {e["id"]: e for e in data}
+    return {e["id"]: e for e in _unwrap_vector_store(data) if isinstance(e, dict) and e.get("id")}
 
 
 def text_hash(text: str) -> str:
@@ -646,13 +660,36 @@ def build_store(entries: list[dict], output_path: Path, ollama_url: str,
 
     results.sort(key=lambda x: x["id"])
 
+    # Wrap entries in a metadata header so stale deploys are detectable.
+    # tier1_hash is the sha256 of the campaign-data/tier1.md that was
+    # current when this store was built — if Enzo's tier1.md doesn't
+    # match, the loader can log a warning.
+    tier1_path = BASE_DIR / "campaign-data" / "tier1.md"
+    tier1_hash = ""
+    if tier1_path.exists():
+        h = hashlib.sha256()
+        with open(tier1_path, "rb") as fh:
+            for chunk in iter(lambda: fh.read(65536), b""):
+                h.update(chunk)
+        tier1_hash = h.hexdigest()
+    payload = {
+        "meta": {
+            "schema_version": VECTOR_STORE_SCHEMA_VERSION,
+            "built_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+            "embedding_model": EMBED_MODEL,
+            "tier1_hash": tier1_hash,
+            "entry_count": len(results),
+        },
+        "entries": results,
+    }
+
     # Atomic write: tmp file in same dir, then rename. On PermissionError
     # falling back to /tmp so the work isn't lost.
     actual_path = output_path
     tmp_path = output_path.with_suffix(output_path.suffix + ".tmp")
     try:
         with open(tmp_path, "w") as f:
-            json.dump(results, f, separators=(",", ":"))
+            json.dump(payload, f, separators=(",", ":"))
         os.replace(tmp_path, output_path)
     except PermissionError as e:
         # Couldn't write next to the original — dump to /tmp so the user

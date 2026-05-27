@@ -910,11 +910,39 @@ class Loremaster:
         vector_path = DATA_DIR / "vector_store.json"
         try:
             with open(vector_path) as f:
-                self._vector_store = json.load(f)
-            logging.info(
-                "Loaded vector_store.json (%d entries)",
-                len(self._vector_store),
-            )
+                raw = json.load(f)
+            # Accept both shapes: the legacy `[entry, ...]` and the new
+            # `{meta: {...}, entries: [...]}`. Once every deploy is on
+            # the new format we can drop the legacy branch.
+            if isinstance(raw, dict) and isinstance(raw.get("entries"), list):
+                self._vector_store = raw["entries"]
+                meta = raw.get("meta") or {}
+                logging.info(
+                    "Loaded vector_store.json (%d entries, built %s, model %s)",
+                    len(self._vector_store),
+                    meta.get("built_at", "?"),
+                    meta.get("embedding_model", "?"),
+                )
+                # Stale-deploy warning: if tier1.md on disk doesn't
+                # match the hash baked into the vector store, the
+                # embeddings might be out of sync with the system prompt.
+                tier1_hash = meta.get("tier1_hash") or ""
+                if tier1_hash and self._tier1:
+                    actual = hashlib.sha256(self._tier1.encode("utf-8")).hexdigest()
+                    if actual != tier1_hash:
+                        logging.warning(
+                            "vector_store.json tier1_hash mismatch — "
+                            "vectors may be stale (rerun build_vectors.py)"
+                        )
+            elif isinstance(raw, list):
+                self._vector_store = raw
+                logging.info(
+                    "Loaded vector_store.json (%d entries, legacy shape)",
+                    len(self._vector_store),
+                )
+            else:
+                logging.error("vector_store.json has unexpected shape — empty store")
+                self._vector_store = []
         except Exception as e:
             logging.error("Failed to load vector_store.json: %s", e)
             self._vector_store = []
