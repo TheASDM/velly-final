@@ -491,9 +491,13 @@
     "The Listener's Coin": {
       "aliases": [
         "The Listener's Coin",
-        "the listener s coin"
+        "Listener's Coin",
+        "listener coin",
+        "listening coin",
+        "Roxy's coin",
+        "Aurelio's coin"
       ],
-      "desc": "A close-up photograph of a worn bronze coin lying flat on a wooden surface, its faces too weathered to read clearly. Soft light catches the smooth, burnished edges. The coin appears ancient and well-handled. In the background, slightly out of focus, a wooden door or wall suggests the coin's purpose—listening through barriers."
+      "desc": "A worn bronze listening coin currently carried by Roxanya \"Roxy\" and formerly owned by Aurelio Volante. The coin is smooth from long handling, its faces too weathered to read, with subtle magic that lets its holder hear clearly through a solid wall, door, floor, or window for ten minutes before recharging at dawn."
     }
   },
   "groups": {
