@@ -41,7 +41,11 @@
 <header class="vos-app-bar{% if crumbs.length > 1 %} has-crumbs{% endif %}" role="banner">
   <div class="vos-app-bar-inner">
     <div class="vos-app-bar-row">
-      {%- if parentCrumb and parentCrumb.url -%}
+      {%- if page.url == "/settings/" -%}
+      <button class="vos-app-icon-button vos-app-back" id="vos-settings-back" type="button" aria-label="Back">
+        <svg aria-hidden="true" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg>
+      </button>
+      {%- elif parentCrumb and parentCrumb.url -%}
       <a class="vos-app-icon-button vos-app-back" href="{{ parentCrumb.url }}" aria-label="Back to {{ parentCrumb.title }}">
         <svg aria-hidden="true" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg>
       </a>

@@ -182,6 +182,25 @@
   }
 
   // ── Wire it up ────────────────────────────────────────────────────
+  // App-bar back button: return to whatever same-origin page the user
+  // came from. Falls back to home when settings was a direct entry
+  // (bookmark, refresh on /settings/, new tab).
+  const backButton = document.getElementById('vos-settings-back');
+  if (backButton) {
+    backButton.addEventListener('click', () => {
+      let cameFromSameOrigin = false;
+      if (document.referrer) {
+        try { cameFromSameOrigin = new URL(document.referrer).origin === location.origin; }
+        catch (e) {}
+      }
+      if (cameFromSameOrigin || history.length > 1) {
+        history.back();
+      } else {
+        location.href = '/';
+      }
+    });
+  }
+
   document.getElementById('vos-settings-check-updates').addEventListener('click', checkForUpdates);
   document.getElementById('vos-settings-apply-update').addEventListener('click', applyUpdate);
   setText('vos-settings-update-status', 'Press “Check for updates” to look for a newer version.');
