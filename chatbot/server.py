@@ -4177,6 +4177,7 @@ def lore_submissions_mine():
             SELECT id, submitter, kind, title, slug, short_description,
                    connections_json, notes, status, context_json,
                    generated_markdown, generated_summary, generated_image_prompt,
+                   generated_card_fields_json,
                    image_url, image_filename, error_message, created_at,
                    updated_at, published_at
             FROM lore_submissions
@@ -4233,6 +4234,7 @@ def admin_lore_submissions():
             SELECT id, submitter, kind, title, slug, short_description,
                    connections_json, notes, status, context_json,
                    generated_markdown, generated_summary, generated_image_prompt,
+                   generated_card_fields_json,
                    image_url, image_filename, error_message, created_at,
                    updated_at, published_at
             FROM lore_submissions
