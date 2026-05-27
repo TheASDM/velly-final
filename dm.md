@@ -525,6 +525,7 @@ permalink: /dm/
   const loreRejectEl = document.getElementById('vos-dm-lore-reject');
   const lorePublishEl = document.getElementById('vos-dm-lore-publish');
   let selectedLoreId = null;
+  let selectedLoreStatus = null;
 
   try {
     tokenEl.value = localStorage.getItem(TOKEN_KEY) || '';
@@ -781,6 +782,7 @@ permalink: /dm/
       loreListEl.appendChild(empty);
       loreForm.hidden = true;
       selectedLoreId = null;
+      selectedLoreStatus = null;
       return;
     }
 
@@ -804,6 +806,7 @@ permalink: /dm/
 
   function fillLoreForm(submission) {
     selectedLoreId = submission.id;
+    selectedLoreStatus = submission.status || null;
     loreForm.hidden = false;
     loreTitleEl.value = submission.title || '';
     loreSlugEl.value = submission.slug || '';
@@ -924,14 +927,21 @@ permalink: /dm/
     if (!selectedLoreId) return;
     const token = getToken(loreStatusEl);
     if (!token) return;
-    if (!window.confirm('Publish this draft into the wiki source files?')) return;
+    const confirmText = selectedLoreStatus === 'published'
+      ? 'Republish and overwrite this wiki source file with the current draft?'
+      : 'Publish this draft into the wiki source files?';
+    if (!window.confirm(confirmText)) return;
     lorePublishEl.disabled = true;
     setStatus(loreStatusEl, 'Publishing...');
     try {
+      const payload = lorePayloadFromForm();
+      if (selectedLoreStatus === 'published') {
+        payload.overwrite = true;
+      }
       const data = await postJson(
         `/api/admin/lore-submissions/${encodeURIComponent(selectedLoreId)}/publish`,
         token,
-        lorePayloadFromForm()
+        payload
       );
       await refreshLoreSubmissions();
       const steps = (data.next_steps || []).join(' then ');

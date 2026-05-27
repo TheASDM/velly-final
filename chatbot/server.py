@@ -2618,9 +2618,9 @@ LORE_SUBMISSION_KINDS = {
         "url_prefix": "/en/Venturia/Items",
         "image_dir": "images/items",
         "style": "valley-portrait",
-        "tags": "venturia, items, generated, player-submission",
+        "tags": "venturia, items",
         "index": "Venturia/Items/index.md",
-        "index_mode": "markdown",
+        "index_mode": "simple-markdown",
     },
     "person": {
         "label": "Person",
@@ -2628,7 +2628,7 @@ LORE_SUBMISSION_KINDS = {
         "url_prefix": "/en/Venturia/Characters/NPCs",
         "image_dir": "images/character-art",
         "style": "valley-portrait",
-        "tags": "venturia, characters, npcs, generated, player-submission",
+        "tags": "venturia, characters, npcs",
         "index": "Venturia/Characters/NPCs/index.md",
         "index_mode": "npc-html",
     },
@@ -2638,9 +2638,9 @@ LORE_SUBMISSION_KINDS = {
         "url_prefix": "/en/Venturia/Locations",
         "image_dir": "images/locations",
         "style": "valley-place",
-        "tags": "venturia, locations, generated, player-submission",
+        "tags": "venturia, locations",
         "index": "Venturia/Locations/index.md",
-        "index_mode": "markdown",
+        "index_mode": "other-markdown",
     },
     "faction": {
         "label": "Faction",
@@ -2648,9 +2648,9 @@ LORE_SUBMISSION_KINDS = {
         "url_prefix": "/en/Venturia/Factions",
         "image_dir": "images/factions",
         "style": "valley-scene",
-        "tags": "venturia, factions, generated, player-submission",
+        "tags": "venturia, factions",
         "index": "Venturia/Factions/index.md",
-        "index_mode": "markdown",
+        "index_mode": "simple-markdown",
     },
     "lore": {
         "label": "Lore",
@@ -2658,9 +2658,9 @@ LORE_SUBMISSION_KINDS = {
         "url_prefix": "/en/Venturia/Lore",
         "image_dir": "images/lore",
         "style": "valley-scene",
-        "tags": "venturia, lore, generated, player-submission",
+        "tags": "venturia, lore",
         "index": "Venturia/Lore/index.md",
-        "index_mode": "markdown",
+        "index_mode": "simple-markdown",
     },
 }
 
@@ -2879,7 +2879,7 @@ Retrieved codex context:
 Return exactly this JSON object:
 {{
   "summary": "One concise public description, 180 characters max.",
-  "markdown": "The wiki page body in Markdown. Start with '# {title}'. Include a standalone {{IMAGE}} placeholder after the heading. Use useful sections for this type of entry, and end with '## Connections'.",
+  "markdown": "The wiki page body in Markdown. Start with '# {title}'. Include a standalone {{{{IMAGE}}}} placeholder after the heading. For item entries, do not create an HTML stat/card layout; the publisher applies the item template. Use useful sections for this type of entry, and end with '## Connections'.",
   "image_prompt": "A visual prompt for generating one clean wiki image for this entry. Use concrete details and any relevant known character/place descriptions."
 }}
 """
@@ -2916,7 +2916,7 @@ Return exactly this JSON object:
             "markdown": str(parsed.get("markdown") or fallback["markdown"]).strip(),
             "image_prompt": str(parsed.get("image_prompt") or fallback["image_prompt"]).strip()[:1800],
         }
-        if "{{IMAGE}}" not in draft["markdown"]:
+        if not IMAGE_PLACEHOLDER_RE.search(draft["markdown"]):
             draft["markdown"] = re.sub(
                 r"^(# .+?\n)",
                 r"\1\n{{IMAGE}}\n",
@@ -3059,16 +3059,31 @@ def _chown_like_site(path):
         pass
 
 
+IMAGE_PLACEHOLDER_RE = re.compile(r"\{\{?\s*IMAGE\s*\}?\}", re.IGNORECASE)
+MARKDOWN_IMAGE_RE = re.compile(r"^\s*!\[[^\]]*\]\([^)]+\)\s*$", re.MULTILINE)
+
+
+def _strip_markdown_title(markdown):
+    body = (markdown or "").strip()
+    return re.sub(r"^#\s+.*(?:\n+|$)", "", body, count=1).strip()
+
+
+def _strip_generated_images(markdown):
+    body = IMAGE_PLACEHOLDER_RE.sub("", markdown or "")
+    body = MARKDOWN_IMAGE_RE.sub("", body)
+    return re.sub(r"\n{3,}", "\n\n", body).strip()
+
+
 def _markdown_with_image(markdown, title, image_url):
     body = (markdown or "").strip()
     if not re.match(r"^#\s+", body):
         body = f"# {title}\n\n{body}" if body else f"# {title}"
     if not image_url:
-        return re.sub(r"\{\{\s*IMAGE\s*\}\}\s*", "", body, flags=re.IGNORECASE).strip() + "\n"
+        return IMAGE_PLACEHOLDER_RE.sub("", body).strip() + "\n"
 
     image_markdown = f"![{title}]({image_url})"
-    if re.search(r"\{\{\s*IMAGE\s*\}\}", body, flags=re.IGNORECASE):
-        body = re.sub(r"\{\{\s*IMAGE\s*\}\}", image_markdown, body, count=1, flags=re.IGNORECASE)
+    if IMAGE_PLACEHOLDER_RE.search(body):
+        body = IMAGE_PLACEHOLDER_RE.sub(image_markdown, body, count=1)
         return body.strip() + "\n"
 
     lines = body.splitlines()
@@ -3092,6 +3107,154 @@ def _page_frontmatter(title, summary, tags):
     )
 
 
+def _source_file_url(source_file):
+    source_file = str(source_file or "").strip()
+    if not source_file or source_file.startswith("5e-filtered/") or not source_file.endswith(".md"):
+        return None
+    path = source_file[:-3]
+    if path.endswith("/index"):
+        path = path[:-6]
+    return f"/en/{path}/" if path else None
+
+
+def _wiki_link_for_name(name):
+    label = str(name or "").strip()
+    if not label:
+        return ""
+    lookup = None
+    if engine and getattr(engine, "_name_index", None):
+        lookup = engine._name_index.get(label.lower())
+    if not lookup:
+        escaped = html.escape(label)
+        return escaped
+
+    for entry in lookup:
+        url = _source_file_url(entry.get("source_file"))
+        if url:
+            return f'<a href="{html.escape(url)}">{html.escape(label)}</a>'
+    return html.escape(label)
+
+
+def _connection_target_for(connections, *relation_words):
+    words = tuple(word.lower() for word in relation_words)
+    for item in connections or []:
+        relation = str(item.get("relation") or "").lower()
+        target = str(item.get("target") or "").strip()
+        if target and any(word in relation for word in words):
+            return target
+    return ""
+
+
+def _infer_item_type(title, summary, markdown, image_prompt):
+    text = f"{title} {summary} {markdown} {image_prompt}".lower()
+    checks = [
+        ("scimitar", "Scimitar"),
+        ("sword", "Sword"),
+        ("blade", "Blade"),
+        ("dagger", "Dagger"),
+        ("knife", "Knife"),
+        ("coin", "Coin"),
+        ("key", "Key"),
+        ("mask", "Mask"),
+        ("book", "Book"),
+        ("tome", "Tome"),
+        ("ring", "Ring"),
+        ("amulet", "Amulet"),
+        ("cloak", "Cloak"),
+        ("staff", "Staff"),
+        ("wand", "Wand"),
+        ("lantern", "Lantern"),
+    ]
+    for needle, label in checks:
+        if needle in text:
+            return label
+    return "Item"
+
+
+def _infer_item_category(title, summary, markdown, image_prompt):
+    text = f"{title} {summary} {markdown} {image_prompt}".lower()
+    if any(word in text for word in ("weapon", "scimitar", "sword", "blade", "dagger")):
+        return "Magic weapon" if any(word in text for word in ("magic", "magical", "enchanted", "charge", "attunement")) else "Weapon"
+    if any(word in text for word in ("magic", "magical", "enchanted", "charge", "spell", "attunement")):
+        return "Magic item"
+    return "Named item"
+
+
+def _item_card_row(label, value):
+    if not value:
+        return ""
+    return (
+        '<div><span style="color: #8b7355; letter-spacing: 0.18em; '
+        'text-transform: uppercase; font-size: 0.7rem; font-weight: 600;">'
+        f'{html.escape(label)}</span> &nbsp;&middot;&nbsp; {value}</div>\n'
+    )
+
+
+def _render_item_markdown(title, summary, markdown, image_url, connections, image_prompt):
+    body = _strip_generated_images(_strip_markdown_title(markdown))
+    item_type = _infer_item_type(title, summary, body, image_prompt)
+    category = _infer_item_category(title, summary, body, image_prompt)
+    owner = _connection_target_for(connections, "owner", "holder", "carried")
+    prior_owner = _connection_target_for(connections, "prior", "previous", "former")
+
+    rows = [
+        _item_card_row("Category", html.escape(category)),
+        _item_card_row("Type", html.escape(item_type)),
+        _item_card_row("Owner", _wiki_link_for_name(owner)) if owner else "",
+        _item_card_row("Prior Owner", _wiki_link_for_name(prior_owner)) if prior_owner else "",
+    ]
+    image_block = ""
+    if image_url:
+        image_block = (
+            '\n<div style="flex-shrink: 0;">\n'
+            f'<img src="{html.escape(image_url)}" alt="{html.escape(title)}" '
+            'style="width: 280px; max-width: 100%; border-radius: 4px; '
+            'box-shadow: 0 10px 36px rgba(0, 0, 0, 0.8); '
+            'border: 1px solid rgba(139, 115, 85, 0.5);">\n'
+            '</div>\n'
+        )
+
+    quote = html.escape((summary or "").strip() or f"A named item in the Vallombrosa campaign.")
+    card = f"""<div style="display: flex; gap: 2rem; align-items: flex-start; margin: 0 0 2.5rem; padding: 1.5rem 1.75rem; background: linear-gradient(135deg, rgba(20, 18, 24, 0.55) 0%, rgba(36, 28, 18, 0.4) 100%); border: 1px solid rgba(139, 115, 85, 0.35); border-radius: 6px; box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6); flex-wrap: wrap;">
+
+<div style="flex: 1; min-width: 240px;">
+<div style="font-family: 'Cinzel', Georgia, serif; font-size: 2rem; letter-spacing: 0.08em; color: #d4a574; line-height: 1.1; margin-bottom: 0.75rem; text-transform: uppercase;">{html.escape(title)}</div>
+<div style="height: 1px; background: linear-gradient(90deg, rgba(212, 165, 116, 0.7), rgba(139, 115, 85, 0.2) 60%, transparent); margin-bottom: 1.25rem;"></div>
+
+<div style="font-family: Georgia, serif; font-size: 0.95rem; color: #e8dcc8; line-height: 1.85;">
+{''.join(rows).rstrip()}
+</div>
+<div style="margin-top: 1.25rem; padding-left: 1rem; border-left: 2px solid rgba(212, 165, 116, 0.4); font-style: italic; color: rgba(212, 165, 116, 0.9); font-family: 'IM Fell English', Georgia, serif; font-size: 1rem;">"{quote}"</div>
+</div>
+{image_block}
+</div>"""
+
+    if not body:
+        body = f"{summary}\n\n## Connections\n\n" + _connections_markdown(connections)
+    return f"# {title}\n\n{card}\n\n{body.strip()}\n"
+
+
+def _connections_markdown(connections):
+    lines = []
+    for item in connections or []:
+        relation = str(item.get("relation") or "Connection").strip()
+        target = str(item.get("target") or "").strip()
+        note = str(item.get("note") or "").strip()
+        if not target:
+            continue
+        line = f"- **{target}** — {relation}"
+        if note:
+            line += f"; {note}"
+        lines.append(line)
+    return "\n".join(lines) if lines else "- No connections were provided."
+
+
+def _render_published_markdown(kind, title, summary, markdown, image_url, connections, image_prompt):
+    if kind == "item":
+        return _render_item_markdown(title, summary, markdown, image_url, connections, image_prompt)
+    return _markdown_with_image(markdown, title, image_url)
+
+
 def _copy_draft_image(submission_id, kind, slug):
     draft_image = LORE_DRAFT_IMAGES_DIR / f"{submission_id}.png"
     if not draft_image.exists():
@@ -3103,6 +3266,49 @@ def _copy_draft_image(submission_id, kind, slug):
     shutil.copyfile(draft_image, image_target)
     _chown_like_site(image_target)
     return f"/{image_rel}"
+
+
+def _remove_index_link(text, page_url):
+    escaped = re.escape(page_url.rstrip("/"))
+    lines = [
+        line for line in (text or "").splitlines()
+        if not re.search(rf"\]\({escaped}/?\)", line)
+    ]
+    cleaned = "\n".join(lines).rstrip() + "\n"
+    cleaned = re.sub(
+        r"\n---\n\n## Player Additions\n\n(?:\s*)$",
+        "\n",
+        cleaned,
+        flags=re.IGNORECASE,
+    )
+    return cleaned
+
+
+def _append_to_markdown_list(text, bullet):
+    lines = text.rstrip().splitlines()
+    last_bullet = None
+    for idx, line in enumerate(lines):
+        if line.startswith("- "):
+            last_bullet = idx
+    if last_bullet is None:
+        return text.rstrip() + "\n\n" + bullet + "\n"
+    lines.insert(last_bullet + 1, bullet)
+    return "\n".join(lines).rstrip() + "\n"
+
+
+def _append_to_named_markdown_section(text, section_title, bullet):
+    heading = f"## {section_title}"
+    if heading not in text:
+        return text.rstrip() + f"\n\n---\n\n{heading}\n\n{bullet}\n"
+    pattern = re.compile(
+        rf"({re.escape(heading)}\n\n)(.*?)(\n---\n|\n## |\Z)",
+        re.DOTALL,
+    )
+    match = pattern.search(text)
+    if not match:
+        return text.rstrip() + "\n" + bullet + "\n"
+    replacement = match.group(1) + match.group(2).rstrip() + "\n" + bullet + match.group(3)
+    return text[:match.start()] + replacement + text[match.end():]
 
 
 def _append_index_link(kind, title, slug, summary):
@@ -3117,7 +3323,7 @@ def _append_index_link(kind, title, slug, summary):
     except Exception:
         logging.exception("Could not read index %s", index_path)
         return False
-    if page_url in text:
+    if page_url in text and config["index_mode"] not in {"simple-markdown", "other-markdown"}:
         return True
 
     clean_summary = (summary or "").strip()[:220] or f"Player-submitted {config['label'].lower()}."
@@ -3139,11 +3345,11 @@ def _append_index_link(kind, title, slug, summary):
             text = text.rstrip() + f"\n\n- **[{title}]({page_url})** — {clean_summary}\n"
     else:
         bullet = f"- **[{title}]({page_url})** — {clean_summary}"
-        if "## Player Additions" not in text:
-            text = text.rstrip() + "\n\n---\n\n## Player Additions\n\n"
+        text = _remove_index_link(text, page_url)
+        if config["index_mode"] == "simple-markdown":
+            text = _append_to_markdown_list(text, bullet)
         else:
-            text = text.rstrip() + "\n"
-        text += bullet + "\n"
+            text = _append_to_named_markdown_section(text, "Other Locations", bullet)
 
     try:
         index_path.write_text(text, encoding="utf-8")
@@ -3218,7 +3424,10 @@ def _publish_lore_submission(submission_id, body):
         }, 409
 
     image_url = _copy_draft_image(submission_id, kind, slug)
-    body_markdown = _markdown_with_image(markdown, title, image_url)
+    connections = _json_loads(row["connections_json"], [])
+    body_markdown = _render_published_markdown(
+        kind, title, summary, markdown, image_url, connections, image_prompt
+    )
     markdown_path.write_text(
         _page_frontmatter(title, summary, config["tags"]) + body_markdown,
         encoding="utf-8",
