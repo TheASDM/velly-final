@@ -14,7 +14,13 @@ services:
       OLLAMA_API_KEY: ${OLLAMA_API_KEY:-${OPENWEBUI_API_KEY:-}}
       TEMPERATURE: ${TEMPERATURE:-0.2}
       APP_DB_PATH: ${APP_DB_PATH:-/app/app-data/vallombrosa.sqlite3}
-      ADMIN_TOKEN: ${ADMIN_TOKEN:-}
+      # DM Google OAuth — replaces the old ADMIN_TOKEN. The DM page reports
+      # "isn't configured" if any of these three are empty. Default JWT
+      # TTL is 7 days (604800s).
+      GOOGLE_OAUTH_CLIENT_ID: ${GOOGLE_OAUTH_CLIENT_ID:-}
+      ALLOWED_DM_EMAILS: ${ALLOWED_DM_EMAILS:-}
+      SESSION_JWT_SECRET: ${SESSION_JWT_SECRET:-}
+      SESSION_JWT_TTL_SECONDS: ${SESSION_JWT_TTL_SECONDS:-604800}
       AUTH_TOKEN_SECRET: ${AUTH_TOKEN_SECRET:-}
       AUTH_TOKEN_TTL_SECONDS: ${AUTH_TOKEN_TTL_SECONDS:-15552000}
       PLAYER_LOGIN_CODES: ${PLAYER_LOGIN_CODES:-}
