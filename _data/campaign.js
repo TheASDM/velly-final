@@ -14,6 +14,10 @@ module.exports = {
   nextGathering: {
     eventId: "2026-05-30-cask-and-cube",
     date: "May 30, 2026",
+    // ISO 8601 date (or full datetime with "T" if you have a start time).
+    // Drives the home + calendar countdown and the .ics export. Treated
+    // as an all-day event when there's no time component.
+    dateIso: "2026-05-30",
     timeLocation: "The Cask and Cube / short campaign-character scene",
     timefulUrl: "",
     notes: [

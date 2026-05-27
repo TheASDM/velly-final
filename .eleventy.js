@@ -140,6 +140,71 @@ module.exports = function (eleventyConfig) {
   }
   eleventyConfig.addFilter("activeNavTab", resolveActiveTabId);
 
+  // ── Filter: render the next gathering as an .ics file body.
+  // Used by calendar-next-ics.njk to emit /calendar/next.ics. Date-only
+  // entries produce an all-day VEVENT; datetime entries get DTSTART/DTEND
+  // with optional durationHours (default 4h).
+  function _icsEscape(value) {
+    return String(value == null ? "" : value)
+      .replace(/\\/g, "\\\\")
+      .replace(/([,;])/g, "\\$1")
+      .replace(/\r?\n/g, "\\n");
+  }
+  function _icsCompact(iso) {
+    return iso.replace(/[-:]/g, "").split(".")[0];
+  }
+  function _icsStamp() {
+    return new Date().toISOString().replace(/[-:]/g, "").split(".")[0] + "Z";
+  }
+  eleventyConfig.addFilter("icsNextGathering", (campaign) => {
+    const ng = campaign && campaign.nextGathering;
+    if (!ng || !ng.dateIso) return "";
+
+    const isDateOnly = ng.dateIso.length <= 10;
+    let dtstart;
+    let dtend;
+    if (isDateOnly) {
+      dtstart = `DTSTART;VALUE=DATE:${_icsCompact(ng.dateIso)}`;
+      const next = new Date(ng.dateIso + "T00:00:00");
+      next.setDate(next.getDate() + 1);
+      dtend = `DTEND;VALUE=DATE:${_icsCompact(next.toISOString().slice(0, 10))}`;
+    } else {
+      dtstart = `DTSTART:${_icsCompact(ng.dateIso)}`;
+      const start = new Date(ng.dateIso);
+      const hours = typeof ng.durationHours === "number" ? ng.durationHours : 4;
+      const end = new Date(start.getTime() + hours * 3600 * 1000);
+      dtend = `DTEND:${_icsCompact(end.toISOString().slice(0, 19))}`;
+    }
+
+    const summary = ng.title || "Vallombrosa session";
+    const location = ng.timeLocation || "";
+    // Join with real newlines; _icsEscape turns those into the ICS
+    // line-break escape sequence ("\n", two characters in the file).
+    const description = (Array.isArray(ng.notes) && ng.notes.length)
+      ? ng.notes.join("\n")
+      : (ng.timeLocation || "");
+    const uid = `${ng.eventId || "next-gathering"}@vallombrosa`;
+
+    return [
+      "BEGIN:VCALENDAR",
+      "VERSION:2.0",
+      "PRODID:-//Vallombrosa//Foglight//EN",
+      "CALSCALE:GREGORIAN",
+      "METHOD:PUBLISH",
+      "BEGIN:VEVENT",
+      `UID:${_icsEscape(uid)}`,
+      `DTSTAMP:${_icsStamp()}`,
+      dtstart,
+      dtend,
+      `SUMMARY:${_icsEscape(summary)}`,
+      `LOCATION:${_icsEscape(location)}`,
+      `DESCRIPTION:${_icsEscape(description)}`,
+      "END:VEVENT",
+      "END:VCALENDAR",
+      "",
+    ].join("\r\n");
+  });
+
   // ── Collection: the 5 most recent player-facing published pages.
   // Used by home.md to surface a news feed. Requires explicit
   // `published: true` so authors opt in (most wiki entries already do).
