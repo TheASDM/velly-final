@@ -84,6 +84,12 @@ if IMAGE_MODEL and IMAGE_MODEL not in ALLOWED_IMAGE_MODELS:
 # 0 disables the quota check entirely (useful for local dev).
 STUDIO_MONTHLY_QUOTA = int(os.environ.get("STUDIO_MONTHLY_QUOTA", "30"))
 
+# Query expansion: TTL'd in-memory cache per worker. Setting
+# QUERY_EXPANSION_ENABLED=0 disables it (saves a Haiku call per chat).
+QUERY_EXPANSION_ENABLED = os.environ.get("QUERY_EXPANSION_ENABLED", "1") != "0"
+QUERY_EXPANSION_CACHE_TTL = int(os.environ.get("QUERY_EXPANSION_CACHE_TTL", "3600"))
+QUERY_EXPANSION_CACHE_MAX = int(os.environ.get("QUERY_EXPANSION_CACHE_MAX", "256"))
+
 # Rate limits applied to /api/chat. Keyed by player auth token when
 # present, falling back to remote IP otherwise. Override either via env;
 # accepts any Flask-Limiter syntax (e.g. "60/hour;10/minute").
@@ -894,6 +900,10 @@ class Loremaster:
         self._tier1 = ""
         self._vector_store = None
         self._name_index = {}
+        # Per-process cache for query expansion. Key: sha256(query.lower()),
+        # value: (timestamp, expanded_text). Bounded + TTL'd so a long-
+        # running worker doesn't grow unbounded.
+        self._query_expansion_cache = {}
 
     # ── Data loading ─────────────────────────────────────────────────────
 
@@ -1050,6 +1060,79 @@ class Loremaster:
         )
         return None
 
+    # ── Query expansion ──────────────────────────────────────────────────
+
+    def _expand_query(self, text):
+        """Ask Haiku for 3-5 alternate phrasings of the user query and
+        append them to the original. Embedding the expanded text widens
+        recall without changing the visible query. Cached for
+        QUERY_EXPANSION_CACHE_TTL seconds per process."""
+        cleaned = (text or "").strip()
+        if not cleaned or len(cleaned) < 8:
+            return text
+        if not ANTHROPIC_API_KEY:
+            return text
+
+        key = hashlib.sha256(cleaned.lower().encode()).hexdigest()
+        now = time.time()
+        cached = self._query_expansion_cache.get(key)
+        if cached and (now - cached[0]) < QUERY_EXPANSION_CACHE_TTL:
+            logging.debug("  Query expansion: cache hit")
+            return cached[1]
+
+        try:
+            resp = http_requests.post(
+                "https://api.anthropic.com/v1/messages",
+                headers=self._anthropic_headers(),
+                json={
+                    "model": ANTHROPIC_MODEL,
+                    "max_tokens": 200,
+                    "system": (
+                        "You are a query expansion helper for a wiki search "
+                        "system. Given a user query, suggest 3-5 alternate "
+                        "phrasings or alias terms that might appear in the "
+                        "wiki. Return ONLY the expansions, one per line. No "
+                        "preamble, no numbering, no quotes, no markdown. "
+                        "Skip the original query."
+                    ),
+                    "messages": [{"role": "user", "content": cleaned}],
+                    "temperature": 0.2,
+                },
+                timeout=8,
+            )
+            if resp.status_code != 200:
+                logging.warning(
+                    "  Query expansion HTTP %d: %s",
+                    resp.status_code, resp.text[:200],
+                )
+                return text
+            data = resp.json()
+            lines = []
+            for block in data.get("content") or []:
+                if block.get("type") != "text":
+                    continue
+                for raw in (block.get("text") or "").splitlines():
+                    stripped = raw.strip().lstrip("-*•0123456789. ").strip()
+                    if stripped and stripped.lower() != cleaned.lower():
+                        lines.append(stripped)
+            if lines:
+                expanded = cleaned + "\n" + "\n".join(lines[:5])
+            else:
+                expanded = text
+
+            if len(self._query_expansion_cache) >= QUERY_EXPANSION_CACHE_MAX:
+                oldest = min(self._query_expansion_cache.items(), key=lambda kv: kv[1][0])
+                self._query_expansion_cache.pop(oldest[0], None)
+            self._query_expansion_cache[key] = (now, expanded)
+            logging.debug(
+                "  Query expansion: %d → %d chars (+%d aliases)",
+                len(cleaned), len(expanded), len(lines),
+            )
+            return expanded
+        except Exception as e:
+            logging.warning("  Query expansion failed: %s", e)
+            return text
+
     # ── RAG retrieval ────────────────────────────────────────────────────
 
     def retrieve(self, query, rules=False):
@@ -1088,8 +1171,13 @@ class Loremaster:
             for m in auto_inject:
                 logging.info("    KEYWORD-INJECT: %s (%s)", m["name"], m["source_file"])
 
-        # Phase 2: vector similarity search
-        query_vec = self._embed_query(query)
+        # Phase 2: vector similarity search. Run the query through
+        # Haiku-based expansion first so a short user message gets a
+        # wider semantic net cast for retrieval. The keyword matcher
+        # above already used the original query so we don't dilute
+        # exact name matches.
+        embed_input = self._expand_query(query) if QUERY_EXPANSION_ENABLED else query
+        query_vec = self._embed_query(embed_input)
         if not query_vec:
             logging.warning("  RAG: embedding failed, skipping vector search")
             return auto_inject, []
