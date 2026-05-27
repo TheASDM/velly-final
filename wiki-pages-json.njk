@@ -1,0 +1,6 @@
+---
+permalink: /data/wiki-pages.json
+layout: false
+eleventyExcludeFromCollections: true
+---
+{{- collections.all | wikiPagesJson | safe -}}

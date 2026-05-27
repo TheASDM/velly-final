@@ -150,6 +150,48 @@ module.exports = function (eleventyConfig) {
   }
   eleventyConfig.addFilter("activeNavTab", resolveActiveTabId);
 
+  // ── Filter: emit the wiki-pages index as JSON for the dm.md In Play
+  // editor's autocomplete. Includes title, url, and a derived "kind"
+  // string from the page's directory (PC/NPC/Location/Item/etc.).
+  const KIND_PREFIXES = [
+    ["/en/Venturia/Characters/PCs/", "PC"],
+    ["/en/Venturia/Characters/NPCs/", "NPC"],
+    ["/en/Venturia/Characters/", "Character"],
+    ["/en/Venturia/Locations/", "Location"],
+    ["/en/Venturia/Lore/", "Lore"],
+    ["/en/Venturia/Factions/", "Faction"],
+    ["/en/Venturia/Items/", "Item"],
+    ["/en/Venturia/Maps/", "Map"],
+    ["/en/Venturia/Creatures/", "Creature"],
+    ["/en/Venturia/Culture/", "Culture"],
+    ["/en/Venturia/Government/", "Government"],
+    ["/en/Venturia/College-of-the-Masquerade-Bard/", "Masquerade-Bard"],
+    ["/en/Articles/", "Article"],
+    ["/en/Updates/", "Update"],
+    ["/en/Session-Chronicles/", "Session"],
+  ];
+  function deriveWikiKind(url) {
+    if (!url) return "";
+    for (const [prefix, kind] of KIND_PREFIXES) {
+      if (url.startsWith(prefix)) return kind;
+    }
+    return "";
+  }
+  eleventyConfig.addFilter("wikiPagesJson", (pages) => {
+    const items = (pages || [])
+      .filter((p) => p.data && p.data.published === true)
+      .filter((p) => p.url && p.url.startsWith("/en/"))
+      .filter((p) => !(p.url || "").startsWith("/en/Venturia/DM/"))
+      .filter((p) => p.data && p.data.title)
+      .map((p) => ({
+        url: p.url,
+        title: p.data.title,
+        kind: deriveWikiKind(p.url),
+      }))
+      .sort((a, b) => a.title.localeCompare(b.title));
+    return JSON.stringify(items);
+  });
+
   // ── Filter: render the next gathering as an .ics file body.
   // Used by calendar-next-ics.njk to emit /calendar/next.ics. Date-only
   // entries produce an all-day VEVENT; datetime entries get DTSTART/DTEND

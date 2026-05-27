@@ -270,11 +270,15 @@ permalink: /dm/
 }
 .vos-dm-inplay-row {
   display: grid;
-  grid-template-columns: 1.2fr 1.2fr 0.9fr 0.5fr 1.6fr auto;
+  grid-template-columns: 1.6fr 1.4fr 0.9fr 0.7fr auto;
   gap: 0.5rem;
   align-items: center;
 }
-.vos-dm-inplay-row input {
+.vos-dm-inplay-row.is-wiki-linked .vos-dm-inplay-name {
+  border-color: rgba(168, 224, 168, 0.4);
+}
+.vos-dm-inplay-row input,
+.vos-dm-inplay-row select {
   width: 100%;
   min-height: 36px;
   padding: 0.35rem 0.55rem;
@@ -285,10 +289,14 @@ permalink: /dm/
   font-family: 'Crimson Text', Georgia, serif;
   font-size: 0.94rem;
 }
-.vos-dm-inplay-row input:focus {
+.vos-dm-inplay-row input:focus,
+.vos-dm-inplay-row select:focus {
   outline: none;
   border-color: rgba(212, 165, 116, 0.6);
   background: rgba(7, 6, 10, 0.75);
+}
+.vos-dm-inplay-row .vos-dm-inplay-emblem-custom[hidden] {
+  display: none !important;
 }
 .vos-dm-inplay-row button {
   width: 36px;
@@ -557,7 +565,8 @@ permalink: /dm/
         <button class="vos-dm-button" id="vos-dm-inplay-save" type="button">Save</button>
       </div>
     </div>
-    <p class="vos-dm-helper">Replaces the live "Currently In Play" rail on Home and the In Play panel on the Venturia hub. The static fallback in <code>_data/campaign.js</code> shows until this loads.</p>
+    <p class="vos-dm-helper">Pick a wiki entry to auto-link, or type a custom name. Replaces the live "Currently In Play" rail on Home and the In Play panel on the Venturia hub. The static fallback in <code>_data/campaign.js</code> shows until this loads.</p>
+    <datalist id="vos-dm-inplay-pages"></datalist>
     <div class="vos-dm-inplay-list" id="vos-dm-inplay-list"></div>
     <div class="vos-dm-status" id="vos-dm-inplay-status" role="status" aria-live="polite"></div>
   </section>
@@ -1333,23 +1342,126 @@ permalink: /dm/
   if (loreBulkRejectEl) loreBulkRejectEl.addEventListener('click', bulkRejectSelected);
 
   // ── Currently In Play editor ──────────────────────────────────────
+  const EMBLEM_PRESETS = ['PC', 'NPC', 'DM', 'Loc', 'Fac', 'Lore', 'Item', 'Map', 'Cre', 'Cul', 'Gov', 'Ses', 'Upd', 'Tbl'];
+  const EMBLEM_SKIP_WORDS = new Set(['the', 'a', 'an', 'of', 'and', 'or', 'on', 'to']);
+  let wikiPagesByTitle = null;
+
+  // Best-effort 2-3 char emblem from a name: initials of significant
+  // words, or the first 2 chars when there's only one word. Used as the
+  // "Auto" fallback when the DM hasn't picked a preset.
+  function autoEmblem(name) {
+    const words = String(name || '')
+      .replace(/['']/g, '')
+      .split(/\s+/)
+      .map((w) => w.toLowerCase())
+      .filter((w) => w && !EMBLEM_SKIP_WORDS.has(w));
+    if (!words.length) return '';
+    if (words.length === 1) return words[0].slice(0, 2).toUpperCase();
+    return words.slice(0, 3).map((w) => w[0].toUpperCase()).join('');
+  }
+
+  async function loadWikiPages() {
+    if (wikiPagesByTitle) return wikiPagesByTitle;
+    try {
+      const response = await fetch('/data/wiki-pages.json', { cache: 'default' });
+      if (!response.ok) return new Map();
+      const data = await response.json();
+      const map = new Map();
+      const datalist = document.getElementById('vos-dm-inplay-pages');
+      if (datalist) datalist.innerHTML = '';
+      (Array.isArray(data) ? data : []).forEach((entry) => {
+        if (!entry || !entry.title) return;
+        map.set(entry.title, entry);
+        if (datalist) {
+          const option = document.createElement('option');
+          option.value = entry.title;
+          datalist.appendChild(option);
+        }
+      });
+      wikiPagesByTitle = map;
+      return map;
+    } catch (error) {
+      return new Map();
+    }
+  }
+
+  function buildEmblemOptions(currentEmblem) {
+    const seen = new Set();
+    const options = [{ value: '', label: 'Auto (from name)' }];
+    EMBLEM_PRESETS.forEach((e) => {
+      if (!seen.has(e)) { seen.add(e); options.push({ value: e, label: e }); }
+    });
+    // Keep the existing emblem visible if it's not in the preset list
+    // (e.g. legacy two-letter codes like FW / OV / CC). Add it as its own
+    // option above "Custom" so the dropdown round-trips cleanly.
+    if (currentEmblem && !seen.has(currentEmblem) && currentEmblem !== '__custom__') {
+      options.push({ value: currentEmblem, label: currentEmblem });
+      seen.add(currentEmblem);
+    }
+    options.push({ value: '__custom__', label: 'Custom…' });
+    return options;
+  }
+
   function renderInPlayRow(item) {
     const row = document.createElement('div');
     row.className = 'vos-dm-inplay-row';
+    const initialEmblem = (item && item.emblem) || '';
+    const optionsHtml = buildEmblemOptions(initialEmblem)
+      .map((o) => `<option value="${o.value}"${o.value === initialEmblem ? ' selected' : ''}>${o.label}</option>`)
+      .join('');
+
     row.innerHTML =
-      `<input class="vos-dm-inplay-name" placeholder="Name" maxlength="120">` +
-      `<input class="vos-dm-inplay-role" placeholder="Role / context" maxlength="120">` +
-      `<input class="vos-dm-inplay-kind" placeholder="PC / NPC / Location / ..." maxlength="40">` +
-      `<input class="vos-dm-inplay-emblem" placeholder="Emblem" maxlength="8">` +
-      `<input class="vos-dm-inplay-link" placeholder="/en/Venturia/..." maxlength="300">` +
-      `<button class="vos-dm-button is-danger" type="button" aria-label="Remove row">×</button>`;
+      `<input class="vos-dm-inplay-name" list="vos-dm-inplay-pages" placeholder="Pick a wiki entry or type a custom name" maxlength="120">` +
+      `<input class="vos-dm-inplay-role" placeholder="Role / context (e.g. 'Missing fiance')" maxlength="120">` +
+      `<select class="vos-dm-inplay-emblem-select">${optionsHtml}</select>` +
+      `<input class="vos-dm-inplay-emblem-custom" placeholder="2-3 char" maxlength="8" hidden>` +
+      `<button class="vos-dm-button is-danger" type="button" aria-label="Remove row">×</button>` +
+      `<input type="hidden" class="vos-dm-inplay-link">` +
+      `<input type="hidden" class="vos-dm-inplay-kind">`;
+
+    const nameEl = row.querySelector('.vos-dm-inplay-name');
+    const roleEl = row.querySelector('.vos-dm-inplay-role');
+    const linkEl = row.querySelector('.vos-dm-inplay-link');
+    const kindEl = row.querySelector('.vos-dm-inplay-kind');
+    const emblemSelectEl = row.querySelector('.vos-dm-inplay-emblem-select');
+    const emblemCustomEl = row.querySelector('.vos-dm-inplay-emblem-custom');
+
     if (item) {
-      row.querySelector('.vos-dm-inplay-name').value = item.name || '';
-      row.querySelector('.vos-dm-inplay-role').value = item.role || '';
-      row.querySelector('.vos-dm-inplay-kind').value = item.kind || '';
-      row.querySelector('.vos-dm-inplay-emblem').value = item.emblem || '';
-      row.querySelector('.vos-dm-inplay-link').value = item.link || '';
+      nameEl.value = item.name || '';
+      roleEl.value = item.role || '';
+      linkEl.value = item.link || '';
+      kindEl.value = item.kind || '';
     }
+
+    // Sync the link/kind hidden fields whenever the title matches a known
+    // wiki entry. Manually-typed entries leave them blank — the in-play
+    // chip just shows the name without a hyperlink.
+    function syncWikiLookup() {
+      if (!wikiPagesByTitle) return;
+      const match = wikiPagesByTitle.get(nameEl.value.trim());
+      if (match) {
+        linkEl.value = match.url || '';
+        kindEl.value = match.kind || '';
+        row.classList.add('is-wiki-linked');
+      } else {
+        if (linkEl.value && wikiPagesByTitle.has(nameEl.dataset.lastMatchedTitle || '')) {
+          linkEl.value = '';
+          kindEl.value = '';
+        }
+        row.classList.remove('is-wiki-linked');
+      }
+      nameEl.dataset.lastMatchedTitle = match ? match.title : '';
+    }
+    nameEl.addEventListener('input', syncWikiLookup);
+    nameEl.addEventListener('change', syncWikiLookup);
+    syncWikiLookup();
+
+    function syncEmblemCustomVisibility() {
+      emblemCustomEl.hidden = emblemSelectEl.value !== '__custom__';
+    }
+    emblemSelectEl.addEventListener('change', syncEmblemCustomVisibility);
+    syncEmblemCustomVisibility();
+
     row.querySelector('button').addEventListener('click', () => row.remove());
     return row;
   }
@@ -1362,6 +1474,7 @@ permalink: /dm/
   async function refreshInPlay() {
     setStatus(inPlayStatusEl, 'Loading...');
     try {
+      await loadWikiPages();
       const response = await fetch('/api/in-play', { cache: 'no-store' });
       const data = await response.json().catch(() => ({}));
       if (!response.ok) throw new Error(data.error || `HTTP ${response.status}`);
@@ -1376,13 +1489,19 @@ permalink: /dm/
     const token = getToken(inPlayStatusEl);
     if (!token) return;
     const rows = Array.from(inPlayListEl.querySelectorAll('.vos-dm-inplay-row'));
-    const items = rows.map((row) => ({
-      name: row.querySelector('.vos-dm-inplay-name').value.trim(),
-      role: row.querySelector('.vos-dm-inplay-role').value.trim(),
-      kind: row.querySelector('.vos-dm-inplay-kind').value.trim(),
-      emblem: row.querySelector('.vos-dm-inplay-emblem').value.trim(),
-      link: row.querySelector('.vos-dm-inplay-link').value.trim(),
-    })).filter((item) => item.name);
+    const items = rows.map((row) => {
+      const name = row.querySelector('.vos-dm-inplay-name').value.trim();
+      const role = row.querySelector('.vos-dm-inplay-role').value.trim();
+      const link = row.querySelector('.vos-dm-inplay-link').value.trim();
+      const kind = row.querySelector('.vos-dm-inplay-kind').value.trim();
+      const selectVal = row.querySelector('.vos-dm-inplay-emblem-select').value;
+      const customVal = row.querySelector('.vos-dm-inplay-emblem-custom').value.trim();
+      let emblem = '';
+      if (selectVal === '__custom__') emblem = customVal;
+      else if (selectVal) emblem = selectVal;
+      else emblem = autoEmblem(name);
+      return { name, role, kind, emblem, link };
+    }).filter((item) => item.name);
 
     inPlaySaveEl.disabled = true;
     setStatus(inPlayStatusEl, 'Saving...');
