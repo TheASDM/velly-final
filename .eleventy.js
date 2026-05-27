@@ -140,6 +140,19 @@ module.exports = function (eleventyConfig) {
   }
   eleventyConfig.addFilter("activeNavTab", resolveActiveTabId);
 
+  // ── Collection: the 5 most recent player-facing published pages.
+  // Used by home.md to surface a news feed. Requires explicit
+  // `published: true` so authors opt in (most wiki entries already do).
+  eleventyConfig.addCollection("news", (collectionApi) => {
+    return collectionApi.getAll()
+      .filter((p) => p.data && p.data.published === true)
+      .filter((p) => p.url && p.url.startsWith("/en/"))
+      .filter((p) => !(p.url || "").startsWith("/en/Venturia/DM/"))
+      .filter((p) => p.data && p.data.date && p.data.title)
+      .sort((a, b) => new Date(b.data.date) - new Date(a.data.date))
+      .slice(0, 5);
+  });
+
   // ── Filter: derive the app-bar { title, eyebrow } for a URL. Falls back
   // to the page's frontmatter title for non-tab pages, using "Wiki" as the
   // eyebrow for anything under /en/ so wiki pages get a consistent label.

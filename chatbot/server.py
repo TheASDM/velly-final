@@ -591,6 +591,28 @@ def _run_app_migrations():
                 ("006_lore_submissions", _utc_now_iso()),
             )
 
+        if "007_message_dismissals" not in done:
+            # Recipient-side soft delete for DM messages. A broadcast
+            # ("all") message is dismissed per-player here; targeted
+            # messages still live in message_recipients but a row here
+            # hides them from that one recipient's home feed.
+            conn.execute("""
+                CREATE TABLE IF NOT EXISTS message_dismissals (
+                    message_id INTEGER NOT NULL,
+                    player_name TEXT NOT NULL,
+                    dismissed_at TEXT NOT NULL,
+                    PRIMARY KEY (message_id, player_name)
+                )
+            """)
+            conn.execute("""
+                CREATE INDEX IF NOT EXISTS idx_message_dismissals_player
+                ON message_dismissals (player_name, message_id)
+            """)
+            conn.execute(
+                "INSERT INTO schema_migrations (name, applied_at) VALUES (?, ?)",
+                ("007_message_dismissals", _utc_now_iso()),
+            )
+
 
 def _skip_rag(message):
     """Return True if the message is too short/casual to benefit from RAG."""
@@ -2026,6 +2048,11 @@ def dm_messages():
         except ValueError:
             limit = 5
         limit = max(1, min(limit, 20))
+        try:
+            offset = int(request.args.get("offset", "0"))
+        except ValueError:
+            offset = 0
+        offset = max(0, offset)
 
         if _auth_login_required():
             name, auth_error = _logged_in_player_name()
@@ -2049,9 +2076,15 @@ def dm_messages():
                               AND message_recipients.player_name = ?
                         )
                       )
+                      AND NOT EXISTS (
+                        SELECT 1
+                        FROM message_dismissals
+                        WHERE message_dismissals.message_id = messages.id
+                          AND message_dismissals.player_name = ?
+                      )
                     ORDER BY created_at DESC, id DESC
-                    LIMIT ?
-                """, (name, limit)))
+                    LIMIT ? OFFSET ?
+                """, (name, name, limit, offset)))
             else:
                 rows = list(conn.execute("""
                     SELECT id, title, body, url, target_type, created_at, deleted_at
@@ -2059,8 +2092,8 @@ def dm_messages():
                     WHERE deleted_at IS NULL
                       AND target_type = 'all'
                     ORDER BY created_at DESC, id DESC
-                    LIMIT ?
-                """, (limit,)))
+                    LIMIT ? OFFSET ?
+                """, (limit, offset)))
 
         return jsonify({"messages": [_message_payload(row) for row in rows]})
 
@@ -2113,6 +2146,50 @@ def dm_messages():
         "message": _message_payload(row, recipients=recipients or []),
         "push": push_result,
     }), 201
+
+
+@app.route("/api/messages/<int:message_id>", methods=["DELETE"])
+def dismiss_message(message_id):
+    """Recipient-side dismissal. Inserts a row into message_dismissals so
+    this player's future /api/messages calls hide the message. The
+    underlying message row is left intact (admins still see it via
+    /api/admin/messages, and other recipients of a broadcast are
+    unaffected)."""
+    if _auth_login_required():
+        name, auth_error = _logged_in_player_name()
+        if auth_error:
+            return auth_error
+    else:
+        name = _player_name_from_request()
+
+    if not name:
+        return jsonify({"error": "Player name required"}), 400
+
+    with _app_db() as conn:
+        row = conn.execute("""
+            SELECT id, target_type
+            FROM messages
+            WHERE id = ? AND deleted_at IS NULL
+        """, (message_id,)).fetchone()
+        if not row:
+            return jsonify({"error": "Message not found"}), 404
+
+        if row["target_type"] != "all":
+            recipient = conn.execute("""
+                SELECT 1
+                FROM message_recipients
+                WHERE message_id = ? AND player_name = ?
+            """, (message_id, name)).fetchone()
+            if not recipient:
+                return jsonify({"error": "Not your message"}), 403
+
+        conn.execute("""
+            INSERT OR REPLACE INTO message_dismissals
+                (message_id, player_name, dismissed_at)
+            VALUES (?, ?, ?)
+        """, (message_id, name, _utc_now_iso()))
+
+    return jsonify({"ok": True})
 
 
 @app.route("/api/admin/messages", methods=["GET"])

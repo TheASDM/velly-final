@@ -319,6 +319,8 @@ templateEngineOverride: njk
   font-size: 1.03rem;
   line-height: 1.48;
   white-space: pre-wrap;
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 .vos-message-meta {
   margin-top: 0.75rem;
@@ -327,6 +329,75 @@ templateEngineOverride: njk
   font-size: 0.56rem;
   letter-spacing: 0.16em;
   text-transform: uppercase;
+}
+.vos-messages-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+.vos-message-item {
+  position: relative;
+  padding: 0.2rem 0 0;
+  border-top: 1px solid rgba(201,161,74,0.16);
+}
+.vos-message-item:first-child {
+  border-top: 0;
+  padding-top: 0;
+}
+.vos-message-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.6rem;
+}
+.vos-message-head .vos-message-title {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.vos-message-dismiss {
+  flex: 0 0 auto;
+  width: 28px;
+  height: 28px;
+  border: 1px solid rgba(212, 165, 116, 0.28);
+  border-radius: 50%;
+  background: transparent;
+  color: rgba(212, 199, 173, 0.78);
+  cursor: pointer;
+  font-size: 1.05rem;
+  line-height: 1;
+  padding: 0;
+}
+.vos-message-dismiss:hover {
+  color: var(--vos-cream);
+  border-color: rgba(212, 165, 116, 0.6);
+  background: rgba(212, 165, 116, 0.08);
+}
+.vos-message-dismiss:disabled {
+  cursor: wait;
+  opacity: 0.5;
+}
+.vos-messages-empty {
+  margin: 0.4rem 0;
+  color: rgba(212, 199, 173, 0.6);
+  font-style: italic;
+  font-size: 0.95rem;
+}
+.vos-messages-load-more {
+  margin-top: 0.85rem;
+  align-self: flex-start;
+}
+.vos-home-news .vos-news-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.55rem;
+}
+.vos-home-news .vos-news-list li {
+  margin: 0;
 }
 .vos-thread-list {
   flex: 1 1 auto;
@@ -664,10 +735,10 @@ templateEngineOverride: njk
 <section class="vos-home-dashboard" aria-label="Campaign dashboard">
   <div class="vos-dash">
     <article class="vos-dash-card vos-dash-side-card vos-message-card" id="vos-message-card" aria-labelledby="vos-message-heading" hidden>
-      <h3 id="vos-message-heading">DM Message</h3>
-      <div class="vos-message-title" id="vos-message-title"></div>
-      <p class="vos-message-body" id="vos-message-body"></p>
-      <div class="vos-message-meta" id="vos-message-meta"></div>
+      <h3 id="vos-message-heading">DM Messages</h3>
+      <ul class="vos-messages-list" id="vos-messages-list"></ul>
+      <div class="vos-messages-empty" id="vos-messages-empty" hidden>No new messages.</div>
+      <button class="vos-button vos-messages-load-more" id="vos-messages-load-more" type="button" hidden>Show older</button>
     </article>
     <article class="vos-dash-card vos-dash-side-card vos-next-card" aria-labelledby="vos-next-heading">
       <h3 id="vos-next-heading">Next Gathering</h3>
@@ -723,6 +794,32 @@ templateEngineOverride: njk
   </div>
 </section>
 
+<!-- ── LATEST FROM THE CODEX ───────────────────────────────────────── -->
+{%- if collections.news and collections.news.length -%}
+<section class="vos-home-dashboard vos-home-news" aria-labelledby="vos-news-heading">
+  <div class="vos-home-sec-head">
+    <h2 id="vos-news-heading">Latest From The Codex</h2>
+    <span class="vos-home-sec-line"></span>
+    <a class="vos-home-sec-more" href="/en/Venturia/">Browse the wiki &rarr;</a>
+  </div>
+  <ul class="vos-news-list">
+    {%- for entry in collections.news -%}
+    <li>
+      <a class="vos-row-chip" href="{{ entry.url }}">
+        <span>
+          <span class="vos-row-chip-title">{{ entry.data.title }}</span>
+          {%- if entry.data.description -%}
+          <span class="vos-row-chip-meta">{{ entry.data.description }}</span>
+          {%- endif -%}
+        </span>
+        <span class="vos-row-chip-arrow" aria-hidden="true">›</span>
+      </a>
+    </li>
+    {%- endfor -%}
+  </ul>
+</section>
+{%- endif -%}
+
 <!-- ── FRESH FROM THE STUDIO ───────────────────────────────────────── -->
 <section class="vos-home-dashboard vos-home-studio" aria-labelledby="vos-studio-heading">
   <div class="vos-home-sec-head">
@@ -739,12 +836,17 @@ templateEngineOverride: njk
 
 <script>
 (function () {
+  const PAGE_SIZE = 5;
+
   window.addEventListener('DOMContentLoaded', () => {
     const card = document.getElementById('vos-message-card');
-    const title = document.getElementById('vos-message-title');
-    const body = document.getElementById('vos-message-body');
-    const meta = document.getElementById('vos-message-meta');
-    if (!card || !title || !body || !meta) return;
+    const list = document.getElementById('vos-messages-list');
+    const empty = document.getElementById('vos-messages-empty');
+    const loadMore = document.getElementById('vos-messages-load-more');
+    if (!card || !list || !empty || !loadMore) return;
+
+    let offset = 0;
+    let playerName = null;
 
     function formatDate(value) {
       const date = new Date(value);
@@ -757,29 +859,132 @@ templateEngineOverride: njk
       });
     }
 
-    async function loadMessage() {
-      const pwa = window.VOS_PWA;
-      const name = pwa && pwa.ensureIdentity ? await pwa.ensureIdentity().catch(() => null) : null;
-      const headers = pwa && pwa.authHeaders ? pwa.authHeaders() : {};
-      const url = name
-        ? `/api/messages?limit=1&name=${encodeURIComponent(name)}`
-        : '/api/messages?limit=1';
-      const response = await fetch(url, { cache: 'no-store', headers });
-      if (!response.ok) return;
-      const data = await response.json().catch(() => null);
-      const message = data && data.messages && data.messages[0];
-      if (!message) return;
+    function renderMessage(message) {
+      const item = document.createElement('li');
+      item.className = 'vos-message-item';
+      item.dataset.messageId = String(message.id);
+
+      const head = document.createElement('div');
+      head.className = 'vos-message-head';
+      const title = document.createElement('div');
+      title.className = 'vos-message-title';
       title.textContent = message.title || 'DM Message';
+      head.appendChild(title);
+
+      // Dismiss button is only meaningful when we know who's dismissing.
+      if (playerName) {
+        const dismiss = document.createElement('button');
+        dismiss.type = 'button';
+        dismiss.className = 'vos-message-dismiss';
+        dismiss.textContent = '×';
+        dismiss.setAttribute('aria-label', 'Dismiss');
+        dismiss.addEventListener('click', () => dismissMessage(message.id, item, dismiss));
+        head.appendChild(dismiss);
+      }
+      item.appendChild(head);
+
+      const body = document.createElement('p');
+      body.className = 'vos-message-body';
       body.textContent = message.body || '';
+      item.appendChild(body);
+
+      const meta = document.createElement('div');
+      meta.className = 'vos-message-meta';
       meta.textContent = formatDate(message.created_at);
-      card.hidden = false;
-      try {
-        localStorage.setItem('vos.dmMessage.seenId', String(message.id));
-        window.dispatchEvent(new CustomEvent('vos:avatar-badge-refresh'));
-      } catch (error) {}
+      item.appendChild(meta);
+
+      return item;
     }
 
-    loadMessage().catch(() => {});
+    async function dismissMessage(id, item, button) {
+      const pwa = window.VOS_PWA;
+      const headers = pwa && pwa.authHeaders ? pwa.authHeaders() : {};
+      button.disabled = true;
+      try {
+        const response = await fetch(`/api/messages/${id}`, {
+          method: 'DELETE',
+          headers,
+        });
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        item.remove();
+        // Pull in a replacement so the list stays full. If there are no
+        // more messages and the list is empty, show the empty state.
+        const fetched = await loadPage(offset > 0 ? offset - 1 : offset, 1);
+        if (fetched && fetched.length) {
+          list.appendChild(renderMessage(fetched[0]));
+        }
+        if (!list.children.length) {
+          empty.hidden = false;
+          loadMore.hidden = true;
+        }
+        try {
+          window.dispatchEvent(new CustomEvent('vos:avatar-badge-refresh'));
+        } catch (error) {}
+      } catch (error) {
+        button.disabled = false;
+      }
+    }
+
+    // Fetch one page of messages without touching the DOM. Returns the
+    // raw array (or empty on failure).
+    async function loadPage(startOffset, limit) {
+      const pwa = window.VOS_PWA;
+      const headers = pwa && pwa.authHeaders ? pwa.authHeaders() : {};
+      const params = new URLSearchParams({ limit: String(limit), offset: String(startOffset) });
+      if (playerName) params.set('name', playerName);
+      try {
+        const response = await fetch(`/api/messages?${params.toString()}`, {
+          cache: 'no-store',
+          headers,
+        });
+        if (!response.ok) return [];
+        const data = await response.json().catch(() => null);
+        return (data && data.messages) || [];
+      } catch (error) {
+        return [];
+      }
+    }
+
+    async function loadAndAppend() {
+      const messages = await loadPage(offset, PAGE_SIZE);
+      messages.forEach((message) => list.appendChild(renderMessage(message)));
+      offset += messages.length;
+
+      // If we got a full page back, there may be more — show the button.
+      // If we got less, we've reached the end.
+      loadMore.hidden = messages.length < PAGE_SIZE;
+
+      const hasAny = list.children.length > 0;
+      card.hidden = false;
+      empty.hidden = hasAny;
+      if (!hasAny) loadMore.hidden = true;
+
+      // Mark the newest message as seen so the avatar badge resolves.
+      if (hasAny) {
+        const firstId = list.children[0].dataset.messageId;
+        if (firstId) {
+          try {
+            localStorage.setItem('vos.dmMessage.seenId', firstId);
+            window.dispatchEvent(new CustomEvent('vos:avatar-badge-refresh'));
+          } catch (error) {}
+        }
+      }
+    }
+
+    loadMore.addEventListener('click', () => {
+      loadMore.disabled = true;
+      loadAndAppend().finally(() => {
+        loadMore.disabled = false;
+      });
+    });
+
+    (async () => {
+      const pwa = window.VOS_PWA;
+      playerName = pwa && pwa.ensureIdentity
+        ? await pwa.ensureIdentity().catch(() => null)
+        : null;
+      await loadAndAppend();
+    })();
   });
 })();
 </script>
