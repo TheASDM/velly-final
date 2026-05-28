@@ -34,7 +34,7 @@ Roxanya — Roxy — is a nineteen-year-old forest gnome who didn't know she was
 ---
 
 ## Concept
-An Arcane Trickster Rogue. A forest gnome — three feet tall, sun-tanned and freckled, with wild curly red hair and swashbuckler's dress she picked up after meeting Lotan. There's always a taxidermy owl riding her shoulder.
+An Arcane Trickster Rogue. Roxy is an adult forest gnome woman, nineteen years old but with the mature adult features of a gnome: defined cheekbones, a slightly prominent nose, a strong jawline, and faint laugh lines at the eyes, not a round childlike face. She has sun-tanned skin weathered from outdoor life, scattered freckles across her nose and cheeks, wild curly copper-red hair pulled into twin buns with loose strands escaping, sharp green eyes, pointed ears, and a knowing, wry expression often shaped into a sly half-smile or mischievous smirk rather than wide-eyed innocence. She stands about three feet tall with adult gnome proportions: compact but mature build, confident grounded stance, unmistakably an adult gnome and not a human child. Her layered brown leather swashbuckler's garb is feathered, well-worn, and lived-in. There's always a taxidermy owl perched on her arm.
 
 ---
 
