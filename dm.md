@@ -1113,7 +1113,7 @@ permalink: /dm/
     if (!window.confirm('Delete this DM message from player views?')) return;
     setStatus(historyStatusEl, 'Deleting...');
     try {
-      await adminJson(`/api/messages/${encodeURIComponent(id)}`, token, { method: 'DELETE' });
+      await adminJson(`/api/admin/messages/${encodeURIComponent(id)}`, token, { method: 'DELETE' });
       await refreshMessages();
       setStatus(historyStatusEl, 'Deleted.');
     } catch (error) {

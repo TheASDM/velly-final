@@ -3790,7 +3790,7 @@ def admin_messages():
     return jsonify({"messages": messages})
 
 
-@app.route("/api/messages/<int:message_id>", methods=["DELETE"])
+@app.route("/api/admin/messages/<int:message_id>", methods=["DELETE"])
 def dm_message_delete(message_id):
     admin_error = _admin_error_response()
     if admin_error:
