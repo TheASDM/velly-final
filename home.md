@@ -727,7 +727,7 @@ templateEngineOverride: njk
 <!-- ── HERO ─────────────────────────────────────────────────────────── -->
 <section class="vos-home-hero">
   <div class="vos-hero-banner-wrap">
-    <img src="/images/hero3.png" alt="Valley of Shadows" class="vos-hero-banner">
+    <img src="/images/logos/foglight-logo-5to1.jpg" alt="Foglight" class="vos-hero-banner">
   </div>
 </section>
 
