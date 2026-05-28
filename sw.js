@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'foglight-pwa-v26';
+const CACHE_VERSION = 'foglight-pwa-v27';
 const PRECACHE = `${CACHE_VERSION}-precache`;
 const PAGES = `${CACHE_VERSION}-pages`;
 const ASSETS = `${CACHE_VERSION}-assets`;
@@ -23,11 +23,11 @@ const APP_SHELL = [
   '/data/players.json',
   '/pagefind/pagefind-ui.css',
   '/pagefind/pagefind-ui.js',
-  '/images/foglight.png',
-  '/images/foglight-apple-touch-icon.png',
-  '/images/foglight-192.png',
-  '/images/foglight-512.png',
-  '/images/foglight-maskable-512.png',
+  '/images/app-icon/favicon.png',
+  '/images/app-icon/apple-touch-icon.png',
+  '/images/app-icon/icon-192.png',
+  '/images/app-icon/icon-512.png',
+  '/images/app-icon/icon-maskable-512.png',
   '/images/masklogosquare.png',
   '/images/vallombrosa-logo.png',
   '/images/smalltitle.png',
@@ -163,8 +163,8 @@ self.addEventListener('push', (event) => {
   const title = data.title || 'Foglight';
   const options = {
     body: data.body || '',
-    icon: '/images/foglight-192.png',
-    badge: '/images/foglight-192.png',
+    icon: '/images/app-icon/icon-192.png',
+    badge: '/images/app-icon/icon-192.png',
     data: {
       url: data.url || '/',
     },
