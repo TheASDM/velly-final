@@ -22,9 +22,17 @@
       window.navigator.standalone === true;
   }
 
+  function isAndroid() {
+    return /android/i.test(window.navigator.userAgent || '');
+  }
+
   function isIOS() {
     return /iphone|ipad|ipod/i.test(window.navigator.userAgent) ||
       (window.navigator.platform === 'MacIntel' && window.navigator.maxTouchPoints > 1);
+  }
+
+  function shouldAutoApplyUpdates() {
+    return isStandalone() && isAndroid();
   }
 
   function wasDismissed() {
@@ -93,12 +101,31 @@
     if (updateCard) updateCard.hidden = false;
   }
 
+  function applyWaitingUpdate(worker) {
+    waitingWorker = worker || waitingWorker;
+    if (!waitingWorker) return false;
+    if (updateCard) updateCard.hidden = true;
+    reloadAfterControllerChange = true;
+    waitingWorker.postMessage({ type: 'SKIP_WAITING' });
+    return true;
+  }
+
+  function maybeApplyAndroidUpdate(worker) {
+    waitingWorker = worker || waitingWorker;
+    if (!waitingWorker || !shouldAutoApplyUpdates()) return false;
+    if (document.visibilityState === 'hidden') return false;
+    return applyWaitingUpdate(waitingWorker);
+  }
+
+  function handleUpdateReady(worker) {
+    waitingWorker = worker || waitingWorker;
+    if (maybeApplyAndroidUpdate(waitingWorker)) return;
+    if (!shouldAutoApplyUpdates()) showUpdatePrompt(waitingWorker);
+  }
+
   if (refreshButton) {
     refreshButton.addEventListener('click', () => {
-      if (waitingWorker) {
-        reloadAfterControllerChange = true;
-        waitingWorker.postMessage({ type: 'SKIP_WAITING' });
-      } else {
+      if (!applyWaitingUpdate(waitingWorker)) {
         window.location.reload();
       }
     });
@@ -113,14 +140,14 @@
           if (!worker) return;
           worker.addEventListener('statechange', () => {
             if (worker.state === 'installed' && navigator.serviceWorker.controller) {
-              showUpdatePrompt(worker);
+              handleUpdateReady(worker);
             }
           });
         }
 
         watchWorker(registration.installing);
         if (registration.waiting && navigator.serviceWorker.controller) {
-          showUpdatePrompt(registration.waiting);
+          handleUpdateReady(registration.waiting);
         }
         registration.addEventListener('updatefound', () => {
           watchWorker(registration.installing);
@@ -128,7 +155,7 @@
 
         navigator.serviceWorker.addEventListener('message', (event) => {
           if (event.data && event.data.type === 'VOS_SW_UPDATED' && hadControllerAtLoad) {
-            showUpdatePrompt(registration.waiting);
+            handleUpdateReady(registration.waiting);
           }
         });
 
@@ -136,6 +163,20 @@
           if (!reloadAfterControllerChange) return;
           window.location.reload();
         });
+
+        const checkForUpdates = () => registration.update().catch(() => null);
+        if (shouldAutoApplyUpdates()) {
+          document.addEventListener('visibilitychange', () => {
+            if (document.visibilityState !== 'visible') return;
+            maybeApplyAndroidUpdate(registration.waiting);
+            checkForUpdates();
+          });
+          window.addEventListener('focus', () => {
+            maybeApplyAndroidUpdate(registration.waiting);
+            checkForUpdates();
+          });
+        }
+        checkForUpdates();
       } catch (error) {
         console.warn('Service worker registration failed', error);
       }
