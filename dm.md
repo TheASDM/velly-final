@@ -473,7 +473,10 @@ permalink: /dm/
       <button type="button" class="vos-dm-button" id="vos-dm-sign-out">Sign out</button>
     </div>
     <div class="vos-dm-auth-blocked" id="vos-dm-auth-blocked" hidden>
-      <p class="vos-dm-helper">DM authentication isn't configured on this server. Set <code>GOOGLE_OAUTH_CLIENT_ID</code>, <code>ALLOWED_DM_EMAILS</code>, and <code>SESSION_JWT_SECRET</code> in <code>.env</code> and rebuild the chatbot container.</p>
+      <p class="vos-dm-helper">Sign in through the site menu with the DM Discord account, then return here.</p>
+      <div class="vos-dm-actions">
+        <a class="vos-dm-button" id="vos-dm-site-login" href="/api/auth/oauth/discord/start?next=/dm/">Sign in with Discord</a>
+      </div>
     </div>
   </section>
 
@@ -641,7 +644,9 @@ permalink: /dm/
 <script>
 (function () {
   const SESSION_KEY = 'vos.dmSession';
+  const COOKIE_AUTH_TOKEN = '__vos_cookie_auth__';
   let dmSession = null;
+  let adminDataLoaded = false;
   try {
     const raw = localStorage.getItem(SESSION_KEY);
     if (raw) dmSession = JSON.parse(raw);
@@ -654,6 +659,7 @@ permalink: /dm/
       else localStorage.removeItem(SESSION_KEY);
     } catch (e) {}
     renderAuthState();
+    if (isSessionLive()) loadAdminDataOnce();
   }
 
   function isSessionLive() {
@@ -671,6 +677,14 @@ permalink: /dm/
     if (live) {
       authEmailEl.textContent = dmSession.email || 'DM';
     }
+  }
+
+  function loadAdminDataOnce() {
+    if (adminDataLoaded || !isSessionLive()) return;
+    adminDataLoaded = true;
+    refreshLoreSubmissions();
+    refreshMessages();
+    refreshRsvps();
   }
   const DEFAULT_PLAYERS = [
     'Caravel "Car" Asteri',
@@ -754,12 +768,23 @@ permalink: /dm/
   function getToken(statusTarget) {
     if (!isSessionLive()) {
       if (statusTarget) {
-        setStatus(statusTarget, 'Sign in with Google first.', true);
+        setStatus(statusTarget, 'Sign in as DM first.', true);
       }
       return null;
     }
-    if (dmSession.cookie_auth) return "";
+    if (dmSession.cookie_auth) return COOKIE_AUTH_TOKEN;
     return dmSession.session_token;
+  }
+
+  function isCookieAuthToken(token) {
+    return token === COOKIE_AUTH_TOKEN;
+  }
+
+  function authHeaders(token, headers) {
+    return {
+      ...(headers || {}),
+      ...(token && !isCookieAuthToken(token) ? { 'Authorization': 'Bearer ' + token } : {}),
+    };
   }
 
   // ── Google sign-in wiring ───────────────────────────────────────────
@@ -894,10 +919,7 @@ permalink: /dm/
   }
 
   async function adminJson(url, token, options) {
-    const headers = {
-      ...(token ? { 'Authorization': 'Bearer ' + token } : {}),
-      ...(options && options.headers ? options.headers : {}),
-    };
+    const headers = authHeaders(token, options && options.headers);
     const response = await fetch(url, {
       cache: 'no-store',
       ...options,
@@ -1488,7 +1510,7 @@ permalink: /dm/
 
     try {
       const response = await fetch(`/api/rsvp?eventId=${encodeURIComponent(eventId)}`, {
-        headers: { 'Authorization': 'Bearer ' + token },
+        headers: authHeaders(token),
         cache: 'no-store',
       });
       const data = await response.json().catch(() => ({}));
@@ -1751,11 +1773,7 @@ permalink: /dm/
   });
 
   initRecipientPickers().then(() => {
-    if (tokenEl.value.trim()) {
-      refreshLoreSubmissions();
-      refreshMessages();
-      refreshRsvps();
-    }
+    loadAdminDataOnce();
   });
 })();
 </script>
