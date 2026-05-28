@@ -60,6 +60,8 @@ dateCreated: 2026-05-24T00:00:00.000Z
   align-items: center;
   gap: 0.55rem;
   flex: 0 0 auto;
+  flex-wrap: wrap;
+  justify-content: flex-end;
 }
 .vos-art-anchor {
   display: inline-flex;
@@ -86,10 +88,7 @@ dateCreated: 2026-05-24T00:00:00.000Z
 }
 
 .vos-art-workbench {
-  display: grid;
-  grid-template-columns: minmax(0, 1.15fr) minmax(290px, 0.72fr);
-  gap: clamp(0.85rem, 2vw, 1.15rem);
-  align-items: start;
+  max-width: 820px;
 }
 
 .vos-art-studio {
@@ -239,54 +238,8 @@ dateCreated: 2026-05-24T00:00:00.000Z
   line-height: 1.35;
 }
 
-.vos-art-recent {
-  min-width: 0;
-}
-.vos-art-recent .vos-art-gallery-head {
-  margin-top: 0;
-}
-.vos-art-recent .vos-gallery-carousel {
-  min-height: 100%;
-}
 .vos-art-gallery-section {
   margin-top: 1.65rem;
-}
-.vos-art-my-jobs {
-  margin-top: 1.2rem;
-  padding: 0.95rem;
-  border: 1px solid rgba(176, 143, 100, 0.22);
-  border-radius: 8px;
-  background: rgba(7, 6, 10, 0.42);
-}
-.vos-art-job-list {
-  display: grid;
-  gap: 0.45rem;
-}
-.vos-art-job-row {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  gap: 0.6rem;
-  align-items: center;
-  min-height: 42px;
-  padding: 0.55rem 0.65rem;
-  border: 1px solid rgba(212, 165, 116, 0.16);
-  border-radius: 6px;
-  background: rgba(8, 7, 11, 0.52);
-}
-.vos-art-job-title {
-  min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  color: rgba(232, 220, 200, 0.9);
-}
-.vos-art-job-status {
-  color: var(--art-gold);
-  font-family: 'Cinzel', Georgia, serif;
-  font-size: 0.58rem;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
 }
 
 /* Generate button + status row ─────────────────────────────────────── */
@@ -964,6 +917,18 @@ dateCreated: 2026-05-24T00:00:00.000Z
   font-size: 0.96rem;
   line-height: 1.45;
 }
+.vos-art-lightbox-caption strong {
+  display: block;
+  color: #f0d4a5;
+  font-family: 'Cinzel', Georgia, serif;
+  font-style: normal;
+  font-size: 0.86rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.vos-art-lightbox-prompt {
+  margin-top: 0.5rem;
+}
 .vos-art-lightbox-byline {
   font-family: 'Cinzel', Georgia, serif;
   font-style: normal;
@@ -1238,6 +1203,7 @@ body.is-dm-mode .vos-art-lightbox-delete { display: inline-flex; }
     <h1>Studio</h1>
   </div>
   <div class="vos-art-app-actions">
+    <a class="vos-art-anchor" href="/art-submissions/">Art Submissions</a>
     <a class="vos-art-anchor" href="#vos-art-gallery-section">Gallery</a>
   </div>
 </header>
@@ -1304,28 +1270,7 @@ body.is-dm-mode .vos-art-lightbox-delete { display: inline-flex; }
   </div>
 </section>
 
-<section class="vos-art-recent" aria-labelledby="vos-art-recent-title">
-  <div class="vos-art-gallery-head">
-    <h2 id="vos-art-recent-title">Recent</h2>
-    <div class="vos-art-gallery-count">Latest shared pieces</div>
-  </div>
-  {% set carouselLimit = 5 %}
-  {% set carouselLabel = "Featured recent shared gallery images" %}
-  {% include "partials/gallery-carousel.njk" %}
-</section>
-
 </div>
-
-<section class="vos-art-my-jobs" id="vos-art-my-jobs" aria-labelledby="vos-art-my-jobs-title">
-  <div class="vos-art-gallery-head">
-    <h2 id="vos-art-my-jobs-title">Art Submissions</h2>
-    <div class="vos-art-gallery-tools">
-      <button id="vos-art-jobs-refresh" class="vos-art-refresh" type="button" aria-label="Refresh art submissions" title="Refresh art submissions">↻</button>
-      <div class="vos-art-gallery-count" id="vos-art-jobs-status">Recent jobs</div>
-    </div>
-  </div>
-  <div class="vos-art-job-list" id="vos-art-job-list"></div>
-</section>
 
 <section class="vos-art-gallery-section" id="vos-art-gallery-section" aria-labelledby="vos-art-gallery-title">
   <div class="vos-art-gallery-head">
@@ -1397,9 +1342,6 @@ body.is-dm-mode .vos-art-lightbox-delete { display: inline-flex; }
   const countEl          = $('vos-art-gallery-count');
   const gallerySection   = $('vos-art-gallery-section');
   const refreshGalleryEl = $('vos-art-gallery-refresh');
-  const jobListEl        = $('vos-art-job-list');
-  const jobsStatusEl     = $('vos-art-jobs-status');
-  const jobsRefreshEl    = $('vos-art-jobs-refresh');
   const lightbox         = $('vos-art-lightbox');
   const lightImg         = $('vos-art-lightbox-img');
   const lightCap         = $('vos-art-lightbox-caption');
@@ -1431,6 +1373,7 @@ body.is-dm-mode .vos-art-lightbox-delete { display: inline-flex; }
   let pollTimer = null;
   let isSubmitting = false;
   let galleryHasLoaded = false;
+  let statusTimer = null;
 
   try {
     const lastEnhance = localStorage.getItem(ENHANCE_KEY);
@@ -1563,6 +1506,10 @@ body.is-dm-mode .vos-art-lightbox-delete { display: inline-flex; }
       : API_BASE + url;
   }
 
+  function entryTitle(e) {
+    return (e && (e.title || e.prompt)) || 'Gallery piece';
+  }
+
   function buildGalleryCard(e) {
     const card = document.createElement('a');
     card.className = 'vos-art-card';
@@ -1626,12 +1573,12 @@ body.is-dm-mode .vos-art-lightbox-delete { display: inline-flex; }
 
     const img = document.createElement('img');
     img.loading = 'lazy';
-    img.alt = e.prompt || 'Gallery piece';
+    img.alt = entryTitle(e);
     img.src = assetUrl(e.image_url);
     card.appendChild(img);
     const meta = document.createElement('div');
     meta.className = 'vos-art-card-meta';
-    meta.textContent = e.prompt || '(no prompt recorded)';
+    meta.textContent = entryTitle(e);
     if (e.grounded_in && e.grounded_in.length) {
       const chips = document.createElement('div');
       chips.className = 'vos-art-grounded';
@@ -1820,10 +1767,8 @@ body.is-dm-mode .vos-art-lightbox-delete { display: inline-flex; }
   // it as an image attachment rather than just a link.
   async function shareEntry(entry) {
     const url = absoluteUrl(entry.image_url);
-    const title = entry.prompt
-      ? `Vallombrosa: ${entry.prompt.slice(0, 80)}`
-      : 'Vallombrosa gallery';
-    const text = entry.prompt || 'From the Vallombrosa Art Studio.';
+    const title = `Vallombrosa: ${entryTitle(entry).slice(0, 80)}`;
+    const text = entryTitle(entry);
 
     let file = null;
     try {
@@ -1980,7 +1925,7 @@ body.is-dm-mode .vos-art-lightbox-delete { display: inline-flex; }
     currentLightboxEntry = e;
     if (pinMenuEl) pinMenuEl.hidden = true;
     lightImg.src = assetUrl(e.image_url);
-    lightImg.alt = e.prompt || '';
+    lightImg.alt = entryTitle(e);
     if (lightFavorite) {
       lightFavorite.dataset.favoriteId = e.id;
       const isFav = favoriteIds.has(e.id);
@@ -1988,7 +1933,10 @@ body.is-dm-mode .vos-art-lightbox-delete { display: inline-flex; }
       lightFavorite.textContent = isFav ? '♥' : '♡';
     }
     const who = e.created_by ? `By ${escapeHtml(e.created_by)}` : 'Anonymous';
-    let html = escapeHtml(e.prompt || '(no prompt recorded)');
+    let html = `<strong>${escapeHtml(entryTitle(e))}</strong>`;
+    if (e.prompt && e.prompt !== e.title) {
+      html += `<div class="vos-art-lightbox-prompt">${escapeHtml(e.prompt)}</div>`;
+    }
     if (e.grounded_in && e.grounded_in.length) {
       const chips = e.grounded_in.map(n =>
         `<span class="vos-art-grounded-chip">${escapeHtml(n)}</span>`
@@ -2176,9 +2124,20 @@ body.is-dm-mode .vos-art-lightbox-delete { display: inline-flex; }
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeLightbox(); });
 
   // ── Generate ─────────────────────────────────────────────────────────
-  function setStatus(text, isError) {
+  function setStatus(text, isError, options = {}) {
+    if (statusTimer) {
+      clearTimeout(statusTimer);
+      statusTimer = null;
+    }
     statusEl.textContent = text || '';
     statusEl.classList.toggle('is-error', !!isError);
+    if (text && !isError && options.clearAfter) {
+      statusTimer = setTimeout(() => {
+        statusEl.textContent = '';
+        statusEl.classList.remove('is-error');
+        statusTimer = null;
+      }, options.clearAfter);
+    }
   }
 
   // ── DM mode ─────────────────────────────────────────────────────────
@@ -2264,7 +2223,7 @@ body.is-dm-mode .vos-art-lightbox-delete { display: inline-flex; }
     const passphrase = getDM();
     if (!passphrase) return;
     const ok = confirm(
-      `Delete this image?\n\n"${entry.prompt || '(no prompt)'}"\n\n` +
+      `Delete this image?\n\n"${entryTitle(entry)}"\n\n` +
       `This is permanent — the PNG and its manifest entry are removed from the server.`
     );
     if (!ok) return;
@@ -2296,57 +2255,6 @@ body.is-dm-mode .vos-art-lightbox-delete { display: inline-flex; }
     }
   }
 
-  async function loadMyJobs() {
-    if (!jobListEl || !jobsStatusEl) return;
-    const creator = getCurrentCreatorName();
-    if (!creator || !hasAuthenticatedCreator()) {
-      jobListEl.innerHTML = '<div class="vos-art-empty">Log in to see your recent art submissions.</div>';
-      jobsStatusEl.textContent = 'Sign in required';
-      return;
-    }
-    if (jobsRefreshEl) jobsRefreshEl.disabled = true;
-    jobsStatusEl.textContent = 'Loading...';
-    try {
-      const url = API_BASE + '/api/studio/jobs?mine=1&name=' + encodeURIComponent(creator);
-      const response = await fetch(url, { cache: 'no-store', headers: requestHeaders() });
-      const data = await response.json().catch(() => ({}));
-      if (!response.ok) throw new Error(data.error || 'HTTP ' + response.status);
-      const jobs = Array.isArray(data.jobs) ? data.jobs : [];
-      jobListEl.innerHTML = '';
-      if (!jobs.length) {
-        jobListEl.innerHTML = '<div class="vos-art-empty">No art submissions yet.</div>';
-      } else {
-        jobs.forEach((job) => {
-          const row = document.createElement('div');
-          row.className = 'vos-art-job-row';
-          const title = document.createElement('div');
-          title.className = 'vos-art-job-title';
-          title.textContent = job.prompt || 'Untitled prompt';
-          const status = document.createElement('div');
-          status.className = 'vos-art-job-status';
-          status.textContent = job.status || 'pending';
-          row.append(title, status);
-          if (job.result_url) {
-            row.setAttribute('role', 'button');
-            row.tabIndex = 0;
-            row.addEventListener('click', () => {
-              gallerySection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            });
-          }
-          jobListEl.appendChild(row);
-        });
-      }
-      jobsStatusEl.textContent = `${jobs.length} recent`;
-    } catch (error) {
-      jobsStatusEl.textContent = 'Unavailable';
-      jobListEl.innerHTML = '<div class="vos-art-empty">Could not load art submissions.</div>';
-    } finally {
-      if (jobsRefreshEl) jobsRefreshEl.disabled = false;
-    }
-  }
-
-  if (jobsRefreshEl) jobsRefreshEl.addEventListener('click', loadMyJobs);
-
   // ── Server-owned generation jobs ─────────────────────────────────────
   function storeActiveJob(jobId) {
     activeJobId = jobId || null;
@@ -2358,6 +2266,10 @@ body.is-dm-mode .vos-art-lightbox-delete { display: inline-flex; }
 
   function getStoredActiveJob() {
     try { return localStorage.getItem(ACTIVE_JOB_KEY) || ''; } catch (e) { return ''; }
+  }
+
+  function getSeenDoneJob() {
+    try { return localStorage.getItem(SEEN_DONE_JOB_KEY) || ''; } catch (e) { return ''; }
   }
 
   function clearPoll() {
@@ -2407,16 +2319,17 @@ body.is-dm-mode .vos-art-lightbox-delete { display: inline-flex; }
       localStorage.setItem(SEEN_DONE_JOB_KEY, String(job.id || job.jobId));
       window.dispatchEvent(new CustomEvent('vos:avatar-badge-refresh'));
     } catch (e) {}
+    storeActiveJob(null);
     latestImg.src = assetUrl(job.result_url);
-    latestImg.alt = job.prompt || 'Generated art';
+    latestImg.alt = job.title || job.prompt || 'Generated art';
     latestDetails.style.display = 'none';
     latestEnhanced.innerHTML = '';
-    latestCap.innerHTML = `Done. Saved to the shared gallery. <a href="#vos-art-gallery-section">View in gallery &rarr;</a>`;
+    const title = escapeHtml(job.title || job.prompt || 'Generated art');
+    latestCap.innerHTML = `${title}<br><a href="#vos-art-gallery-section">View in gallery &rarr;</a> · <a href="/art-submissions/">Art submissions &rarr;</a>`;
     latestEl.classList.remove('has-error');
     latestEl.classList.add('is-shown', 'has-image');
     setGenerateButton(false);
-    setStatus('Done. The shared gallery refreshed below.');
-    loadMyJobs();
+    setStatus('Done. Saved to your Art Submissions and the shared gallery.', false, { clearAfter: 5000 });
   }
 
   function copyForErrorCode(code, fallback, extras) {
@@ -2460,6 +2373,7 @@ body.is-dm-mode .vos-art-lightbox-delete { display: inline-flex; }
   }
 
   function showJobError(job) {
+    storeActiveJob(null);
     latestImg.removeAttribute('src');
     latestImg.alt = '';
     pendingPromptEl.textContent = '';
@@ -2560,7 +2474,19 @@ body.is-dm-mode .vos-art-lightbox-delete { display: inline-flex; }
       const stored = getStoredActiveJob();
       const job = jobs.find((candidate) => candidate.id === stored || candidate.jobId === stored)
         || jobs.find((candidate) => candidate.status === 'pending');
-      if (!job) return;
+      if (!job) {
+        if (stored) storeActiveJob(null);
+        return;
+      }
+      const jobId = String(job.id || job.jobId || '');
+      if (job.status === 'done' && stored) {
+        const updatedAt = Date.parse(job.updated_at || job.created_at || '');
+        const staleDone = Number.isFinite(updatedAt) && Date.now() - updatedAt > 15 * 60 * 1000;
+        if (getSeenDoneJob() === jobId || staleDone) {
+          storeActiveJob(null);
+          return;
+        }
+      }
       renderJob(job);
       if (job.status === 'pending') startPolling(job.jobId || job.id);
     } catch (e) {}
@@ -2621,7 +2547,6 @@ body.is-dm-mode .vos-art-lightbox-delete { display: inline-flex; }
       storeActiveJob(jobId);
       promptEl.value = '';
       showGenerating({ jobId, prompt, status: 'pending' });
-      loadMyJobs();
       startPolling(jobId);
     } catch (e) {
       console.error(e);
@@ -2636,12 +2561,10 @@ body.is-dm-mode .vos-art-lightbox-delete { display: inline-flex; }
   window.addEventListener('DOMContentLoaded', () => {
     updateGenerateAccess();
     restoreStudioJobs();
-    loadMyJobs();
   });
   window.addEventListener('vos:identity', () => {
     updateGenerateAccess();
     restoreStudioJobs();
-    loadMyJobs();
   });
   window.addEventListener('focus', () => loadGallery({ quiet: true }));
   updateGenerateAccess();

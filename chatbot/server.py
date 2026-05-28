@@ -889,6 +889,22 @@ def _run_app_migrations():
                 ("012_gallery_favorites", _utc_now_iso()),
             )
 
+        if "013_studio_job_details" not in done:
+            # Preserve the prompt lineage for each generated image so the
+            # player-facing submissions page can show what they typed, what
+            # Enzo sent to the image model, and the saved gallery image.
+            cols = _table_columns(conn, "studio_jobs")
+            if "enhanced_prompt" not in cols:
+                conn.execute("ALTER TABLE studio_jobs ADD COLUMN enhanced_prompt TEXT")
+            if "gallery_id" not in cols:
+                conn.execute("ALTER TABLE studio_jobs ADD COLUMN gallery_id TEXT")
+            if "title" not in cols:
+                conn.execute("ALTER TABLE studio_jobs ADD COLUMN title TEXT")
+            conn.execute(
+                "INSERT INTO schema_migrations (name, applied_at) VALUES (?, ?)",
+                ("013_studio_job_details", _utc_now_iso()),
+            )
+
 
 def _skip_rag(message):
     """Return True if the message is too short/casual to benefit from RAG."""
@@ -2296,7 +2312,7 @@ def _write_manifest_atomic(entries):
 
 def _save_gallery_entry(
     image_bytes, prompt, full_prompt, style_key, created_by, model,
-    enhanced_prompt=None, grounded_in=None,
+    enhanced_prompt=None, grounded_in=None, title=None,
 ):
     """Persist a generated image + append to the manifest.
 
@@ -2317,6 +2333,7 @@ def _save_gallery_entry(
             "id": slug,
             "filename": filename,
             "created_at": now.isoformat(),
+            "title": (title or "")[:220] or None,
             "prompt": prompt[:1000],
             "enhanced_prompt": (enhanced_prompt or "")[:2000] or None,
             "grounded_in": list(grounded_in or [])[:8],
@@ -2368,6 +2385,8 @@ ENHANCE_MAX_TOKENS = int(os.environ.get("ENHANCE_MAX_TOKENS", "900"))
 ENHANCE_TIMEOUT_S = int(os.environ.get("ENHANCE_TIMEOUT_S", "30"))
 ENHANCE_MAX_ENTITIES = int(os.environ.get("ENHANCE_MAX_ENTITIES", "6"))
 ENHANCE_ENTITY_CHARS = int(os.environ.get("ENHANCE_ENTITY_CHARS", "3000"))
+IMAGE_TITLE_MODEL = os.environ.get("IMAGE_TITLE_MODEL", ENHANCE_MODEL)
+IMAGE_TITLE_TIMEOUT_S = int(os.environ.get("IMAGE_TITLE_TIMEOUT_S", "12"))
 
 # Hand-curated visual-description grounding for the art enhancer. Lives in
 # the repo at chatbot/descriptions.json; the container bind-mounts the repo
@@ -2686,6 +2705,84 @@ def _enhance_image_prompt(raw_prompt, style_key, matched_entries):
     except Exception:
         logging.exception("Prompt enhancement crashed")
         return fallback
+
+
+def _clean_image_title(text):
+    text = re.sub(r"\s+", " ", str(text or "")).strip()
+    text = text.strip("\"'“”‘’")
+    text = re.sub(r"^(title|description)\s*:\s*", "", text, flags=re.I).strip()
+    if not text:
+        return ""
+
+    # Keep it to one sentence even if the model gets chatty.
+    match = re.match(r"^(.+?[.!?])(?:\s|$)", text)
+    if match:
+        text = match.group(1).strip()
+    if len(text) > 160:
+        text = text[:157].rstrip(" ,;:-") + "..."
+    return text
+
+
+def _fallback_image_title(raw_prompt):
+    title = _clean_image_title(raw_prompt)
+    if title:
+        return title
+    return "Generated Vallombrosa image."
+
+
+def _generate_image_title(raw_prompt, enhanced_prompt=None, grounded_in=None):
+    """Generate a short gallery title from prompt text. Falls back locally."""
+    fallback = _fallback_image_title(raw_prompt)
+    if not ANTHROPIC_API_KEY:
+        return fallback
+
+    entity_text = ", ".join(grounded_in or []) or "none"
+    system = (
+        "You write concise gallery titles for fantasy campaign art. "
+        "Return exactly one sentence, 8 to 18 words, no markdown, no quotes, "
+        "no labels, and no invented proper nouns beyond names provided."
+    )
+    user_msg = (
+        f"Player prompt:\n{raw_prompt}\n\n"
+        f"Enzo image prompt:\n{enhanced_prompt or raw_prompt}\n\n"
+        f"Named campaign entities: {entity_text}\n\n"
+        "Write the title sentence."
+    )
+    payload = {
+        "model": IMAGE_TITLE_MODEL,
+        "max_tokens": 80,
+        "temperature": 0.2,
+        "system": system,
+        "messages": [{"role": "user", "content": user_msg}],
+    }
+
+    try:
+        r = http_requests.post(
+            "https://api.anthropic.com/v1/messages",
+            headers={
+                "x-api-key": ANTHROPIC_API_KEY,
+                "anthropic-version": "2023-06-01",
+                "content-type": "application/json",
+            },
+            json=payload,
+            timeout=IMAGE_TITLE_TIMEOUT_S,
+        )
+        if r.status_code != 200:
+            logging.warning("Image title generation %d: %s", r.status_code, r.text[:200])
+            return fallback
+        data = r.json()
+        for block in data.get("content") or []:
+            if block.get("type") == "text":
+                title = _clean_image_title(block.get("text") or "")
+                if title:
+                    return title
+    except Exception:
+        logging.exception("Image title generation crashed")
+    return fallback
+
+
+def _gallery_entry_title(entry):
+    return _clean_image_title((entry or {}).get("title")) or _fallback_image_title((entry or {}).get("prompt"))
 
 
 # ── Flask app ────────────────────────────────────────────────────────────────
@@ -4242,6 +4339,7 @@ def _generate_image_payload(
             except Exception:
                 logging.exception("Failed to persist generated image to %s", image_output_path)
 
+        image_title = _generate_image_title(prompt, enhanced_prompt, grounded_in)
         gallery_entry = None
         if image_bytes and save_gallery:
             gallery_entry = _save_gallery_entry(
@@ -4253,6 +4351,7 @@ def _generate_image_payload(
                 model=image_model,
                 enhanced_prompt=enhanced_prompt,
                 grounded_in=grounded_in,
+                title=image_title,
             )
 
         response = {
@@ -4262,6 +4361,7 @@ def _generate_image_payload(
             "raw_prompt": prompt,
             "enhanced_prompt": enhanced_prompt,
             "grounded_in": grounded_in,
+            "title": image_title,
             "model": image_model,
             "style": style_label,
             "image_saved": bool(image_saved_path),
@@ -4269,6 +4369,7 @@ def _generate_image_payload(
         if gallery_entry:
             response["gallery"] = {
                 "id": gallery_entry["id"],
+                "title": _gallery_entry_title(gallery_entry),
                 "image_url": f"/api/gallery/image/{gallery_entry['filename']}",
                 "created_at": gallery_entry["created_at"],
             }
@@ -4301,10 +4402,13 @@ def _studio_job_payload(row):
         "id": row["id"],
         "jobId": row["id"],
         "creator": row["creator"],
+        "title": row["title"],
         "prompt": row["prompt"],
+        "enhanced_prompt": row["enhanced_prompt"],
         "style": row["style"],
         "status": row["status"],
         "result_url": row["result_url"],
+        "gallery_id": row["gallery_id"],
         "error_message": row["error_message"],
         "error_code": _infer_studio_error_code(row["error_message"]),
         "created_at": row["created_at"],
@@ -4312,16 +4416,28 @@ def _studio_job_payload(row):
     }
 
 
-def _update_studio_job(job_id, status, result_url=None, error_message=None):
+def _update_studio_job(
+    job_id, status, result_url=None, error_message=None,
+    enhanced_prompt=None, gallery_id=None, title=None,
+):
     with _app_db() as conn:
         conn.execute("""
             UPDATE studio_jobs
-            SET status = ?, result_url = ?, error_message = ?, updated_at = ?
+            SET status = ?,
+                result_url = ?,
+                error_message = ?,
+                enhanced_prompt = COALESCE(?, enhanced_prompt),
+                gallery_id = COALESCE(?, gallery_id),
+                title = COALESCE(?, title),
+                updated_at = ?
             WHERE id = ?
         """, (
             status,
             result_url,
             error_message,
+            enhanced_prompt,
+            gallery_id,
+            title,
             _utc_now_iso(),
             job_id,
         ))
@@ -4419,7 +4535,14 @@ def _run_studio_job(job_id, prompt, style_key, creator, enhance):
             _update_studio_job(job_id, "error", error_message="Image generation finished without an image URL.")
             return
 
-        _update_studio_job(job_id, "done", result_url=result_url)
+        _update_studio_job(
+            job_id,
+            "done",
+            result_url=result_url,
+            enhanced_prompt=data.get("enhanced_prompt"),
+            gallery_id=gallery.get("id"),
+            title=data.get("title") or gallery.get("title"),
+        )
         _notify_art_ready(creator, result_url, gallery_id=gallery.get("id"))
     except Exception as exc:
         logging.exception("Studio job failed")
@@ -5800,6 +5923,11 @@ def studio_jobs():
     mine = request.args.get("mine") == "1"
     if not mine:
         return jsonify({"error": "Only mine=1 is supported"}), 400
+    try:
+        limit = int(request.args.get("limit", 30))
+    except (TypeError, ValueError):
+        limit = 30
+    limit = max(1, min(limit, 100))
     creator, auth_error = _logged_in_player_name()
     if auth_error:
         return auth_error
@@ -5807,13 +5935,14 @@ def studio_jobs():
         return jsonify({"jobs": []})
     with _app_db() as conn:
         rows = list(conn.execute("""
-            SELECT id, creator, prompt, style, status, result_url,
-                   error_message, created_at, updated_at
+            SELECT id, creator, title, prompt, enhanced_prompt, style,
+                   status, result_url, gallery_id, error_message,
+                   created_at, updated_at
             FROM studio_jobs
             WHERE creator = ?
             ORDER BY updated_at DESC
-            LIMIT 10
-        """, (creator,)))
+            LIMIT ?
+        """, (creator, limit)))
     return jsonify({"jobs": [_studio_job_payload(row) for row in rows]})
 
 
@@ -5821,8 +5950,9 @@ def studio_jobs():
 def studio_job(job_id):
     with _app_db() as conn:
         row = conn.execute("""
-            SELECT id, creator, prompt, style, status, result_url,
-                   error_message, created_at, updated_at
+            SELECT id, creator, title, prompt, enhanced_prompt, style,
+                   status, result_url, gallery_id, error_message,
+                   created_at, updated_at
             FROM studio_jobs
             WHERE id = ?
         """, (job_id,)).fetchone()
@@ -5923,6 +6053,7 @@ def list_gallery():
         {
             "id": e["id"],
             "image_url": f"/api/gallery/image/{e['filename']}",
+            "title": _gallery_entry_title(e),
             "prompt": e.get("prompt", ""),
             "enhanced_prompt": e.get("enhanced_prompt"),
             "grounded_in": e.get("grounded_in") or [],
@@ -6079,7 +6210,7 @@ def gallery_pin(gallery_id):
     if not filename:
         return jsonify({"error": "Gallery entry has no filename", "error_code": "invalid"}), 500
     image_url = f"/api/gallery/image/{filename}"
-    alt_text = entry.get("prompt") or "Pinned from the Studio"
+    alt_text = _gallery_entry_title(entry) or "Pinned from the Studio"
 
     try:
         modified = _append_image_to_wiki_gallery(
