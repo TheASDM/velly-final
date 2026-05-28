@@ -465,7 +465,7 @@ body.vos-is-enzo-page #chatbot-container {
     right: 0;
     bottom: calc(var(--vos-vv-bottom) + var(--vos-app-nav-h) + env(safe-area-inset-bottom)) !important;
     left: 0;
-    z-index: 900;
+    z-index: 900 !important;
     display: block !important;
 }
 body.vos-is-enzo-page main.vos-content {
