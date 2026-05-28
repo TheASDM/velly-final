@@ -15,6 +15,7 @@
   let roster = [];
   let rosterPromise = null;
   let authSession = null;
+  let authReturnStatus;
 
   function loadRoster() {
     if (rosterPromise) return rosterPromise;
@@ -54,6 +55,35 @@
 
   function removeStorage(key) {
     try { localStorage.removeItem(key); } catch (error) {}
+  }
+
+  function getAuthReturnStatus() {
+    if (authReturnStatus !== undefined) return authReturnStatus;
+    try {
+      const url = new URL(window.location.href);
+      authReturnStatus = url.searchParams.get('auth') || '';
+      if (authReturnStatus && window.history && window.history.replaceState) {
+        url.searchParams.delete('auth');
+        const cleaned = `${url.pathname}${url.search}${url.hash}`;
+        window.history.replaceState(window.history.state, '', cleaned);
+      }
+    } catch (error) {
+      authReturnStatus = '';
+    }
+    return authReturnStatus;
+  }
+
+  function renderAuthReturnStatus(statusEl) {
+    if (!statusEl) return;
+    const status = getAuthReturnStatus();
+    if (!status) return;
+    if (status === 'ok') {
+      statusEl.textContent = 'Discord approved the login, but this browser did not keep the session. Try again.';
+      statusEl.classList.add('is-error');
+      return;
+    }
+    statusEl.textContent = 'That OAuth account is not mapped to a Foglight player yet.';
+    statusEl.classList.add('is-error');
   }
 
   function announceIdentity(name) {
@@ -446,6 +476,7 @@
         </div>
       `;
       const cancelOnly = card.querySelector('.vos-identity-cancel');
+      renderAuthReturnStatus(card.querySelector('.vos-identity-status'));
       cancelOnly.addEventListener('click', () => {
         const activeName = getActivePlayerName(config);
         identityPromise = null;
@@ -482,6 +513,7 @@
     const status = card.querySelector('.vos-identity-status');
     const cancel = card.querySelector('.vos-identity-cancel');
     const submit = card.querySelector('.vos-identity-submit');
+    renderAuthReturnStatus(status);
 
     players.forEach((name) => {
       const option = document.createElement('option');

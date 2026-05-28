@@ -173,13 +173,18 @@ LOGIN_NAME_ALIASES = {
     "noname": "Noname",
     "no name": "Noname",
     "no-name": "Noname",
+    "noanme": "Noname",
     "orabella": "Orabella",
+    "orabell": "Orabella",
     "roxy": 'Roxanya "Roxy"',
     "roxanya": 'Roxanya "Roxy"',
     'roxanya "roxy"': 'Roxanya "Roxy"',
     "valen": "Valentro",
+    "val": "Valentro",
     "valentro": "Valentro",
     "dustin": "DM",
+    "me": "DM",
+    "me (dustin, dm)": "DM",
     "dm": "DM",
 }
 AUTH_TOKEN_TTL_SECONDS = int(os.environ.get("AUTH_TOKEN_TTL_SECONDS", str(180 * 24 * 60 * 60)))
@@ -260,12 +265,23 @@ def _parse_principal_map(raw):
     return parsed
 
 
+def _normalize_discord_principal(value):
+    text = str(value or "").strip()
+    match = re.search(r"\b\d{15,25}\b", text)
+    if match:
+        return match.group(0)
+    return text.lower()
+
+
 GOOGLE_PLAYER_MAP = _parse_principal_map(os.environ.get("GOOGLE_PLAYER_MAP", ""))
-DISCORD_PLAYER_MAP = _parse_principal_map(os.environ.get("DISCORD_PLAYER_MAP", ""))
+DISCORD_PLAYER_MAP = {
+    _normalize_discord_principal(principal): player
+    for principal, player in _parse_principal_map(os.environ.get("DISCORD_PLAYER_MAP", "")).items()
+}
 ALLOWED_DM_DISCORD_IDS = {
-    value.strip()
+    _normalize_discord_principal(value)
     for value in os.environ.get("ALLOWED_DM_DISCORD_IDS", "").split(",")
-    if value.strip()
+    if _normalize_discord_principal(value)
 }
 
 # Style preset keys are stable strings sent from the UI; the corresponding
@@ -3036,14 +3052,20 @@ def _resolve_oauth_player(profile):
             return GOOGLE_PLAYER_MAP[email], False
 
     if provider == "discord":
-        if profile.get("principal") in ALLOWED_DM_DISCORD_IDS:
+        discord_principal = _normalize_discord_principal(profile.get("principal"))
+        if discord_principal in ALLOWED_DM_DISCORD_IDS:
             return "DM", True
-        if principal in DISCORD_PLAYER_MAP:
-            return DISCORD_PLAYER_MAP[principal], False
+        if discord_principal in DISCORD_PLAYER_MAP:
+            return DISCORD_PLAYER_MAP[discord_principal], False
 
     raise ValueError(
-        "This OAuth account is not mapped to a player. Add it to "
-        "GOOGLE_PLAYER_MAP or DISCORD_PLAYER_MAP."
+        "This OAuth account is not mapped to a player. "
+        f"provider={provider or 'unknown'} "
+        f"principal={principal or 'unknown'} "
+        f"display={profile.get('display') or 'unknown'} "
+        f"discord_map_entries={len(DISCORD_PLAYER_MAP)} "
+        f"discord_dm_ids={len(ALLOWED_DM_DISCORD_IDS)} "
+        "Add it to GOOGLE_PLAYER_MAP or DISCORD_PLAYER_MAP."
     )
 
 
