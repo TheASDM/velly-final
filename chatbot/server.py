@@ -3285,6 +3285,36 @@ def auth_logout():
     return response
 
 
+@app.route("/api/calendar/<event_id>.ics", methods=["GET"])
+def calendar_event_ics(event_id):
+    """Serve generated calendar files with headers iOS recognizes.
+
+    Static nginx MIME config is easy to miss during deploys because the
+    generated _site files update without restarting nginx. The API route
+    keeps the Add to Calendar button correct as long as the Flask app was
+    restarted with the new build.
+    """
+    if not re.fullmatch(r"[A-Za-z0-9._-]{1,120}", event_id or ""):
+        abort(404)
+    filename = f"{event_id}.ics"
+    calendar_dir = SITE_SOURCE_DIR / "_site" / "calendar"
+    if not (calendar_dir / filename).is_file():
+        abort(404)
+
+    response = send_from_directory(
+        calendar_dir,
+        filename,
+        mimetype="text/calendar",
+        as_attachment=True,
+        download_name=f"vallombrosa-{filename}",
+        max_age=0,
+    )
+    response.headers["Content-Type"] = "text/calendar; charset=utf-8; method=PUBLISH"
+    response.headers["Content-Disposition"] = f'attachment; filename="vallombrosa-{filename}"'
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    return response
+
+
 @app.route("/api/push/config", methods=["GET"])
 def push_config():
     return jsonify({

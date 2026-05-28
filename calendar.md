@@ -135,7 +135,7 @@ templateEngineOverride: njk
       <a class="vos-calendar-link" href="{{ gathering.timefulUrl }}" target="_blank" rel="noopener">Set Availability in Timeful</a>
       {%- endif %}
       {%- if gathering.dateIso %}
-      <a class="vos-calendar-link" href="/calendar/{{ gathering.eventId }}.ics">Add to Calendar</a>
+      <a class="vos-calendar-link" href="/api/calendar/{{ gathering.eventId }}.ics">Add to Calendar</a>
       {%- endif %}
     </div>
   </section>
