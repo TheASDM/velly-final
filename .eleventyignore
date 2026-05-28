@@ -35,3 +35,5 @@ pwa.md
 *.zip
 __pycache__
 *.tmp.json
+* 2.*
+**/* 2.*

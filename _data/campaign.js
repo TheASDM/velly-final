@@ -1,17 +1,6 @@
 // ===== CAMPAIGN STATE - edit after each session, then rebuild =====
-module.exports = {
-  latestSession: {
-    number: "Update 4",
-    arc: "Road to Session 1",
-    title: "Campaign Update #4 - 5/21/2026",
-    lastPlayed: "May 21, 2026",
-    updated: "May 22, 2026",
-    recap:
-      "The table is moving from setup into play: scheduling has moved to Timeful, the new Eldryn and Venturia maps are live, and the first in-character scene will begin with troubling news from the Overlook.",
-    link: "/en/Updates/campaign-update-4",
-  },
-
-  nextGathering: {
+const nextGatherings = [
+  {
     eventId: "2026-05-30-cask-and-cube",
     date: "May 30, 2026",
     // ISO 8601 date (or full datetime with "T" if you have a start time).
@@ -35,6 +24,22 @@ module.exports = {
       },
     ],
   },
+];
+
+module.exports = {
+  latestSession: {
+    number: "Update 4",
+    arc: "Road to Session 1",
+    title: "Campaign Update #4 - 5/21/2026",
+    lastPlayed: "May 21, 2026",
+    updated: "May 22, 2026",
+    recap:
+      "The table is moving from setup into play: scheduling has moved to Timeful, the new Eldryn and Venturia maps are live, and the first in-character scene will begin with troubling news from the Overlook.",
+    link: "/en/Updates/campaign-update-4",
+  },
+
+  nextGathering: nextGatherings[0],
+  nextGatherings,
 
   openThreads: [
     {

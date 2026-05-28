@@ -443,24 +443,20 @@
     justify-content: center;
     gap: 0.45rem;
 }
-.chat-empty-chips button {
+.chat-empty-chips span {
+    display: inline-flex;
+    align-items: center;
     min-height: 34px;
     border: 1px solid rgba(201, 168, 76, 0.24);
     border-radius: 999px;
     background: rgba(201, 168, 76, 0.07);
     color: rgba(232, 220, 200, 0.84);
-    cursor: pointer;
     font-family: 'Cinzel', Georgia, serif;
     font-size: 0.62rem;
     font-weight: 700;
     letter-spacing: 0.08em;
     padding: 0.42rem 0.68rem;
     text-transform: uppercase;
-}
-.chat-empty-chips button:hover {
-    color: #e8cd84;
-    border-color: rgba(201, 168, 76, 0.45);
-    background: rgba(201, 168, 76, 0.12);
 }
 
 body.vos-is-enzo-page #chatbot-container {

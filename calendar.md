@@ -7,8 +7,10 @@ templateEngineOverride: njk
 
 <style>
 .vos-calendar {
-  max-width: 760px;
+  max-width: 960px;
   margin: 0 auto;
+  display: grid;
+  gap: 0.9rem;
 }
 .vos-calendar-panel {
   border: 1px solid rgba(201,161,74,0.24);
@@ -102,15 +104,20 @@ templateEngineOverride: njk
 </style>
 
 <div class="vos-calendar">
-  <section class="vos-calendar-panel" aria-labelledby="vos-next-gathering-title">
+  {%- set gatherings = campaign.nextGatherings -%}
+  {%- if not gatherings or not gatherings.length -%}
+    {%- set gatherings = [campaign.nextGathering] -%}
+  {%- endif -%}
+  {%- for gathering in gatherings %}
+  <section class="vos-calendar-panel" aria-labelledby="vos-next-gathering-title-{{ loop.index }}">
     <div class="vos-calendar-kicker">Next Gathering</div>
-    <h2 id="vos-next-gathering-title" class="vos-calendar-date">{{ campaign.nextGathering.date }}</h2>
-    {%- if campaign.nextGathering.dateIso %}
-    <div class="vos-calendar-countdown" id="vos-calendar-countdown" data-date-iso="{{ campaign.nextGathering.dateIso }}" hidden aria-live="polite">…</div>
+    <h2 id="vos-next-gathering-title-{{ loop.index }}" class="vos-calendar-date">{{ gathering.date }}</h2>
+    {%- if gathering.dateIso %}
+    <div class="vos-calendar-countdown" data-date-iso="{{ gathering.dateIso }}" hidden aria-live="polite">...</div>
     {%- endif %}
-    <div class="vos-calendar-where">{{ campaign.nextGathering.timeLocation }}</div>
+    <div class="vos-calendar-where">{{ gathering.timeLocation }}</div>
     <ul class="vos-task-list vos-calendar-tasks">
-      {%- for task in campaign.nextGathering.tasks %}
+      {%- for task in gathering.tasks %}
       <li class="vos-task-row"{% if task.dueIso %} data-reminder-date="{{ task.dueIso }}"{% endif %}>
         <span class="vos-task-check" aria-hidden="true">✓</span>
         <span class="vos-task-main">{{ task.text }}</span>
@@ -120,33 +127,29 @@ templateEngineOverride: njk
     </ul>
     <div class="vos-rsvp">
       <div class="vos-calendar-kicker">RSVP</div>
+      {% set rsvpEventId = gathering.eventId %}
       {% include "partials/rsvp-control.njk" %}
     </div>
     <div class="vos-calendar-actions">
-      {%- if campaign.nextGathering.timefulUrl %}
-      <a class="vos-calendar-link" href="{{ campaign.nextGathering.timefulUrl }}" target="_blank" rel="noopener">Set Availability in Timeful</a>
+      {%- if gathering.timefulUrl %}
+      <a class="vos-calendar-link" href="{{ gathering.timefulUrl }}" target="_blank" rel="noopener">Set Availability in Timeful</a>
       {%- endif %}
-      {%- if campaign.nextGathering.dateIso %}
-      <a class="vos-calendar-link" href="/calendar/next.ics" download="vallombrosa-next.ics">Add to Calendar</a>
+      {%- if gathering.dateIso %}
+      <a class="vos-calendar-link" href="/calendar/{{ gathering.eventId }}.ics" download="vallombrosa-{{ gathering.eventId }}.ics">Add to Calendar</a>
       {%- endif %}
     </div>
   </section>
+  {%- endfor %}
 </div>
 
 <script>
 (function () {
-  const el = document.getElementById('vos-calendar-countdown');
-  if (!el) return;
-  const iso = el.getAttribute('data-date-iso');
-  if (!iso) return;
-
-  const isDateOnly = iso.length <= 10;
-
   function startOfDay(date) {
     return new Date(date.getFullYear(), date.getMonth(), date.getDate());
   }
 
-  function relative() {
+  function relative(iso) {
+    const isDateOnly = iso.length <= 10;
     const now = new Date();
     const target = new Date(isDateOnly ? iso + 'T00:00:00' : iso);
     if (Number.isNaN(target.getTime())) return null;
@@ -177,16 +180,19 @@ templateEngineOverride: njk
     return weeks === 1 ? 'In 1 week' : `In ${weeks} weeks`;
   }
 
-  function tick() {
-    const text = relative();
+  function tickOne(el) {
+    const iso = el.getAttribute('data-date-iso');
+    if (!iso) return;
+    const text = relative(iso);
     if (!text) return;
     el.textContent = text;
     el.hidden = false;
   }
 
-  tick();
+  const countdowns = Array.from(document.querySelectorAll('.vos-calendar-countdown[data-date-iso]'));
+  countdowns.forEach(tickOne);
   // Once a minute is plenty for the date-only case and not wasteful for
   // datetime entries — the label only changes on hour/day boundaries.
-  setInterval(tick, 60 * 1000);
+  setInterval(() => countdowns.forEach(tickOne), 60 * 1000);
 })();
 </script>

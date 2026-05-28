@@ -10,14 +10,30 @@ services:
     environment:
       ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY}
       ANTHROPIC_MODEL: ${ANTHROPIC_MODEL:-claude-haiku-4-5-20251001}
+      MAX_TOKENS: ${MAX_TOKENS:-2048}
       OLLAMA_URL: ${OLLAMA_URL:-https://ai.raptornet.dev/ollama}
       OLLAMA_API_KEY: ${OLLAMA_API_KEY:-${OPENWEBUI_API_KEY:-}}
+      EMBEDDING_MODEL: ${EMBEDDING_MODEL:-nomic-embed-text:latest}
+      RAG_TOP_K: ${RAG_TOP_K:-3}
+      RAG_AUTO_THRESHOLD: ${RAG_AUTO_THRESHOLD:-0.3}
+      RAG_LIST_THRESHOLD: ${RAG_LIST_THRESHOLD:-0.4}
       TEMPERATURE: ${TEMPERATURE:-0.2}
+      NEXT_SESSION_DATE: ${NEXT_SESSION_DATE:-}
       APP_DB_PATH: ${APP_DB_PATH:-/app/app-data/vallombrosa.sqlite3}
-      # DM Google OAuth — replaces the old ADMIN_TOKEN. The DM page reports
-      # "isn't configured" if any of these three are empty. Default JWT
-      # TTL is 7 days (604800s).
+      ADMIN_TOKEN: ${ADMIN_TOKEN:-}
+      # DM Google fallback for the standalone /dm page. App-level OAuth uses
+      # AUTH_TOKEN_SECRET and the player/DM maps below.
       GOOGLE_OAUTH_CLIENT_ID: ${GOOGLE_OAUTH_CLIENT_ID:-}
+      GOOGLE_OAUTH_CLIENT_SECRET: ${GOOGLE_OAUTH_CLIENT_SECRET:-}
+      GOOGLE_OAUTH_REDIRECT_URI: ${GOOGLE_OAUTH_REDIRECT_URI:-}
+      DISCORD_OAUTH_CLIENT_ID: ${DISCORD_OAUTH_CLIENT_ID:-}
+      DISCORD_OAUTH_CLIENT_SECRET: ${DISCORD_OAUTH_CLIENT_SECRET:-}
+      DISCORD_OAUTH_REDIRECT_URI: ${DISCORD_OAUTH_REDIRECT_URI:-}
+      GOOGLE_PLAYER_MAP: ${GOOGLE_PLAYER_MAP:-}
+      DISCORD_PLAYER_MAP: ${DISCORD_PLAYER_MAP:-}
+      ALLOWED_DM_DISCORD_IDS: ${ALLOWED_DM_DISCORD_IDS:-}
+      PUBLIC_BASE_URL: ${PUBLIC_BASE_URL:-}
+      AUTH_COOKIE_SECURE: ${AUTH_COOKIE_SECURE:-1}
       ALLOWED_DM_EMAILS: ${ALLOWED_DM_EMAILS:-}
       SESSION_JWT_SECRET: ${SESSION_JWT_SECRET:-}
       SESSION_JWT_TTL_SECONDS: ${SESSION_JWT_TTL_SECONDS:-604800}
@@ -38,7 +54,12 @@ services:
       # OpenAI image generation (used by the /art slash command)
       OPENAI_KEY: ${OPENAI_KEY:-}
       IMAGE_MODEL: ${IMAGE_MODEL:-gpt-image-2}
+      IMAGE_QUALITY: ${IMAGE_QUALITY:-high}
+      IMAGE_SIZE: ${IMAGE_SIZE:-1024x1024}
       IMAGE_STYLE_PROMPT: ${IMAGE_STYLE_PROMPT:-}
+      STUDIO_MONTHLY_QUOTA: ${STUDIO_MONTHLY_QUOTA:-30}
+      GALLERY_MAX_ENTRIES: ${GALLERY_MAX_ENTRIES:-2000}
+      GALLERY_PAGE_LIMIT: ${GALLERY_PAGE_LIMIT:-60}
       # DM passphrase gates the Art Studio gallery delete button.
       # Unset = delete disabled (gallery is append-only via the API).
       DM_PASSPHRASE: ${DM_PASSPHRASE:-}
@@ -49,6 +70,9 @@ services:
       CHAT_RATE_LIMIT: ${CHAT_RATE_LIMIT:-30/hour;5/minute}
       # Max bytes of conversation_history accepted per /api/chat call.
       MAX_CONVERSATION_BYTES: ${MAX_CONVERSATION_BYTES:-60000}
+      QUERY_EXPANSION_ENABLED: ${QUERY_EXPANSION_ENABLED:-1}
+      QUERY_EXPANSION_CACHE_TTL: ${QUERY_EXPANSION_CACHE_TTL:-3600}
+      QUERY_EXPANSION_CACHE_MAX: ${QUERY_EXPANSION_CACHE_MAX:-256}
     volumes:
       # Campaign data files + vector stores (read-only)
       - ./campaign-data:/app/data:ro

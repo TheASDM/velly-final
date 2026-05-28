@@ -14,6 +14,7 @@
   // is unreachable, and to resolve display names + avatars.
   let roster = [];
   let rosterPromise = null;
+  let authSession = null;
 
   function loadRoster() {
     if (rosterPromise) return rosterPromise;
@@ -56,7 +57,13 @@
   }
 
   function announceIdentity(name) {
-    window.dispatchEvent(new CustomEvent('vos:identity', { detail: { name } }));
+    window.dispatchEvent(new CustomEvent('vos:identity', {
+      detail: {
+        name,
+        isDm: !!(authSession && authSession.isDm),
+        authenticated: isAuthenticated(),
+      },
+    }));
   }
 
   function removeNode(node) {
@@ -212,6 +219,8 @@
     removeStorage(PLAYER_KEY);
     removeStorage(AUTH_TOKEN_KEY);
     removeStorage(PUSH_DISMISSED_KEY);
+    authSession = null;
+    fetch('/api/auth/logout', { method: 'POST', cache: 'no-store' }).catch(() => {});
     setAvatarBadge(false);
     updateIdentityControls();
   }
@@ -219,8 +228,39 @@
   function getActivePlayerName(config = null) {
     const name = getStorage(PLAYER_KEY);
     if (!name) return null;
-    if (config && config.loginRequired && !getStorage(AUTH_TOKEN_KEY)) return null;
+    if (config && config.loginRequired && !getStorage(AUTH_TOKEN_KEY) && !(authSession && authSession.ok)) return null;
     return name;
+  }
+
+  function isAuthenticated(config = null) {
+    const name = getStorage(PLAYER_KEY);
+    if (!name) return false;
+    if (config && config.loginRequired === false) return true;
+    return !!(getStorage(AUTH_TOKEN_KEY) || (authSession && authSession.ok));
+  }
+
+  async function syncAuthSession(config = null) {
+    const activeConfig = config || await getAuthConfig();
+    if (!activeConfig.loginRequired) {
+      authSession = { ok: true, loginRequired: false, isDm: getStorage(PLAYER_KEY) === 'DM' };
+      return authSession;
+    }
+    try {
+      const response = await fetch('/api/auth/session', { cache: 'no-store' });
+      if (!response.ok) {
+        authSession = null;
+        removeStorage(AUTH_TOKEN_KEY);
+        return null;
+      }
+      const data = await response.json().catch(() => null);
+      if (data && data.playerName) {
+        authSession = data;
+        setStorage(PLAYER_KEY, data.playerName);
+        return authSession;
+      }
+    } catch (error) {}
+    authSession = null;
+    return null;
   }
 
   function setAvatarBadge(active) {
@@ -283,8 +323,8 @@
     const label = document.getElementById('vos-app-identity-label');
     const identityButton = document.getElementById('vos-app-identity-button');
     const profileButton = document.getElementById('vos-profile-button');
-    const text = name ? `Welcome, ${displayName}` : 'Log in';
-    const action = name ? 'Switch player' : 'Log in';
+    const text = name ? displayName : 'Log in';
+    const action = name ? 'User menu' : 'Log in';
 
     if (label) label.textContent = text;
     if (identityButton) {
@@ -296,44 +336,46 @@
       profileButton.setAttribute('aria-label', name ? `Open profile — ${displayName}` : action);
       profileButton.title = name ? `Open profile — ${displayName}` : action;
     }
+    updateUserMenuState();
     updateProfileAvatar(name);
+  }
+
+  function updateUserMenuState() {
+    const name = getStorage(PLAYER_KEY);
+    const menu = document.getElementById('vos-user-menu');
+    const dmSection = document.getElementById('vos-user-menu-dm');
+    const signInItem = document.getElementById('vos-user-menu-sign-in');
+    const signOutItem = document.getElementById('vos-user-menu-sign-out');
+    const displayNameEl = document.getElementById('vos-user-menu-name');
+    const isDm = !!((authSession && authSession.isDm) || name === 'DM');
+    if (dmSection) dmSection.hidden = !isDm;
+    if (signInItem) signInItem.hidden = !!name;
+    if (signOutItem) signOutItem.hidden = !name;
+    if (displayNameEl) displayNameEl.textContent = name ? getProfileDisplayName(name) : 'Not signed in';
+    if (menu && !name) menu.hidden = true;
+  }
+
+  function closeUserMenu() {
+    const menu = document.getElementById('vos-user-menu');
+    const button = document.getElementById('vos-app-identity-button');
+    if (menu) menu.hidden = true;
+    if (button) button.setAttribute('aria-expanded', 'false');
+  }
+
+  function toggleUserMenu() {
+    const menu = document.getElementById('vos-user-menu');
+    const button = document.getElementById('vos-app-identity-button');
+    if (!menu || !button) return;
+    const open = menu.hidden;
+    updateUserMenuState();
+    menu.hidden = !open;
+    button.setAttribute('aria-expanded', open ? 'true' : 'false');
   }
 
   async function syncAvatarBadge(config = null) {
     const activeConfig = config || await getAuthConfig();
     const name = getActivePlayerName(activeConfig);
-    if (!name) {
-      setAvatarBadge(false);
-      return;
-    }
-
-    let hasBadge = false;
-    try {
-      const url = `/api/messages?limit=1&name=${encodeURIComponent(name)}`;
-      const response = await fetch(url, { cache: 'no-store', headers: authHeaders() });
-      if (response.ok) {
-        const data = await response.json().catch(() => ({}));
-        const message = data && data.messages && data.messages[0];
-        if (message && message.id && getStorage(DM_SEEN_KEY) !== String(message.id)) {
-          hasBadge = true;
-        }
-      }
-    } catch (error) {}
-
-    try {
-      const url = `/api/studio/jobs?mine=1&name=${encodeURIComponent(name)}`;
-      const response = await fetch(url, { cache: 'no-store', headers: authHeaders() });
-      if (response.ok) {
-        const data = await response.json().catch(() => ({}));
-        const jobs = Array.isArray(data.jobs) ? data.jobs : [];
-        const done = jobs.find((job) => job.status === 'done');
-        if (done && getStorage(STUDIO_SEEN_JOB_KEY) !== String(done.id || done.jobId)) {
-          hasBadge = true;
-        }
-      }
-    } catch (error) {}
-
-    setAvatarBadge(hasBadge);
+    setAvatarBadge(!!name);
   }
 
   function urlBase64ToUint8Array(base64String) {
@@ -372,13 +414,52 @@
   }
 
   function renderLoginIdentity(card, config, resolve) {
+    const providers = Array.isArray(config.providers) ? config.providers : [];
     const players = Array.isArray(config.players) && config.players.length ? config.players : rosterNames();
     const existing = getStorage(PLAYER_KEY);
     const titleText = existing ? 'Switch player' : 'Log in';
     const buttonText = existing ? 'Switch' : 'Log in';
+    const next = encodeURIComponent(window.location.pathname + window.location.search + window.location.hash);
+    const providerHtml = providers.length ? `
+        <div class="vos-identity-oauth-options">
+          ${providers.map((provider) => {
+            const href = `${provider.login_url}?next=${next}`;
+            const primary = provider.primary ? ' is-primary' : '';
+            const disabled = provider.configured ? '' : ' is-disabled';
+            const label = provider.label || `Continue with ${provider.id}`;
+            return provider.configured
+              ? `<a class="vos-identity-oauth${primary}" href="${href}">${label}</a>`
+              : `<span class="vos-identity-oauth${disabled}">${label} unavailable</span>`;
+          }).join('')}
+        </div>
+      ` : '';
+
+    if (providerHtml && !config.legacyCodeLogin) {
+      card.innerHTML = `
+        <div class="vos-identity-form">
+          <div class="vos-identity-title" id="vos-identity-title">${titleText}</div>
+          ${providerHtml}
+          <div class="vos-identity-status" role="status" aria-live="polite"></div>
+          <div class="vos-identity-actions">
+            <button class="vos-identity-cancel" type="button">Cancel</button>
+          </div>
+        </div>
+      `;
+      const cancelOnly = card.querySelector('.vos-identity-cancel');
+      cancelOnly.addEventListener('click', () => {
+        const activeName = getActivePlayerName(config);
+        identityPromise = null;
+        removeNode(card);
+        resolve(activeName);
+      });
+      return;
+    }
+
     card.innerHTML = `
       <form class="vos-identity-form">
         <div class="vos-identity-title" id="vos-identity-title">${titleText}</div>
+        ${providerHtml}
+        ${providerHtml ? '<div class="vos-identity-divider">or use an invite code</div>' : ''}
         <label class="vos-identity-field">
           <span>Player</span>
           <select name="name" required></select>
@@ -430,6 +511,12 @@
         if (!response.ok) throw new Error(data.error || `HTTP ${response.status}`);
         setStorage(PLAYER_KEY, data.playerName || name);
         setStorage(AUTH_TOKEN_KEY, data.token || '');
+        authSession = {
+          ok: true,
+          playerName: data.playerName || name,
+          isDm: (data.playerName || name) === 'DM',
+          loginRequired: true,
+        };
         updateIdentityControls(config);
         announceIdentity(data.playerName || name);
         identityPromise = null;
@@ -456,11 +543,12 @@
   function ensureIdentity(options = {}) {
     if (identityPromise) return identityPromise;
 
-    identityPromise = getAuthConfig().then((config) => new Promise((resolve) => {
+    identityPromise = getAuthConfig().then(async (config) => {
+      await syncAuthSession(config);
+      return new Promise((resolve) => {
       const existing = getStorage(PLAYER_KEY);
-      const token = getStorage(AUTH_TOKEN_KEY);
       const loginRequired = !!config.loginRequired;
-      if (existing && !options.force && (!loginRequired || token)) {
+      if (existing && !options.force && (!loginRequired || isAuthenticated(config))) {
         updateIdentityControls(config);
         resolve(existing);
         return;
@@ -500,7 +588,8 @@
           removeNode(card);
         },
       });
-    })).finally(() => {
+    });
+    }).finally(() => {
       identityPromise = null;
     });
 
@@ -785,6 +874,9 @@
   window.VOS_PWA = {
     getPlayerName: () => getStorage(PLAYER_KEY),
     getAuthToken: () => getStorage(AUTH_TOKEN_KEY),
+    isAuthenticated: () => isAuthenticated(),
+    isDm: () => !!((authSession && authSession.isDm) || getStorage(PLAYER_KEY) === 'DM'),
+    getAuthSession: () => authSession,
     authHeaders,
     ensureIdentity,
     openIdentitySettings: () => ensureIdentity({ force: true }),
@@ -806,12 +898,44 @@
     // reachable from the "Welcome, X" pill on the right of the app bar).
     const identityButton = document.getElementById('vos-app-identity-button');
     if (identityButton) {
-      identityButton.addEventListener('click', () => ensureIdentity({ force: true }));
+      identityButton.addEventListener('click', async (event) => {
+        event.stopPropagation();
+        const config = await getAuthConfig();
+        if (!getActivePlayerName(config)) {
+          await ensureIdentity({ force: true });
+          return;
+        }
+        toggleUserMenu();
+      });
     }
+    const signInItem = document.getElementById('vos-user-menu-sign-in');
+    if (signInItem) signInItem.addEventListener('click', (event) => {
+      event.preventDefault();
+      closeUserMenu();
+      ensureIdentity({ force: true });
+    });
+    const signOutItem = document.getElementById('vos-user-menu-sign-out');
+    if (signOutItem) signOutItem.addEventListener('click', (event) => {
+      event.preventDefault();
+      closeUserMenu();
+      clearIdentity();
+      announceIdentity(null);
+    });
+    document.addEventListener('click', (event) => {
+      const menu = document.getElementById('vos-user-menu');
+      const button = document.getElementById('vos-app-identity-button');
+      if (!menu || menu.hidden) return;
+      if (menu.contains(event.target) || (button && button.contains(event.target))) return;
+      closeUserMenu();
+    });
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') closeUserMenu();
+    });
     // Load the player roster first so display names + avatars resolve on
     // the first paint, then fan out the rest of the startup work.
     loadRoster().then(() => {
-      getAuthConfig().then((config) => {
+      getAuthConfig().then(async (config) => {
+        await syncAuthSession(config);
         updateIdentityControls(config);
         const activeName = getActivePlayerName(config);
         if (activeName) announceIdentity(activeName);

@@ -208,8 +208,7 @@ module.exports = function (eleventyConfig) {
   function _icsStamp() {
     return new Date().toISOString().replace(/[-:]/g, "").split(".")[0] + "Z";
   }
-  eleventyConfig.addFilter("icsNextGathering", (campaign) => {
-    const ng = campaign && campaign.nextGathering;
+  function buildGatheringIcs(ng) {
     if (!ng || !ng.dateIso) return "";
 
     const isDateOnly = ng.dateIso.length <= 10;
@@ -255,6 +254,12 @@ module.exports = function (eleventyConfig) {
       "END:VCALENDAR",
       "",
     ].join("\r\n");
+  }
+
+  eleventyConfig.addFilter("icsGathering", (gathering) => buildGatheringIcs(gathering));
+  eleventyConfig.addFilter("icsNextGathering", (campaign) => {
+    const ng = campaign && campaign.nextGathering;
+    return buildGatheringIcs(ng);
   });
 
   // ── Collection: the 5 most recent player-facing published pages.

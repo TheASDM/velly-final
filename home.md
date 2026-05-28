@@ -31,7 +31,7 @@ templateEngineOverride: njk
   display: flex; flex-direction: column;
   align-items: center;
   text-align: center;
-  padding: 1.8rem 0 1.45rem;
+  padding: 1.15rem 0 0.8rem;
 }
 .vos-hero-banner {
   display: block;
@@ -49,7 +49,7 @@ templateEngineOverride: njk
   width: 100%;
   max-width: 1440px;
   aspect-ratio: 2712 / 517;
-  margin: 0 auto 2.25rem;
+  margin: 0 auto 1rem;
 }
 .vos-hero-banner-wrap::after {
   content: '';
@@ -160,8 +160,7 @@ templateEngineOverride: njk
   grid-template-columns: minmax(0, 1.25fr) minmax(360px, 0.85fr);
   grid-template-areas:
     "message next"
-    "threads next"
-    "inplay inplay"
+    "inplay next"
     "story story";
   gap: 1rem;
   align-items: start;
@@ -675,13 +674,12 @@ templateEngineOverride: njk
     --vos-home-wide: calc(100vw - 2rem);
     margin: -2.25rem 0 0;
   }
-  .vos-home-hero { padding: 1.25rem 0 1.35rem; }
+  .vos-home-hero { padding: 0.85rem 0 0.95rem; }
   .vos-dash {
     grid-template-columns: 1fr;
     grid-template-areas:
       "message"
       "next"
-      "threads"
       "inplay"
       "story";
   }
@@ -731,6 +729,17 @@ templateEngineOverride: njk
   </div>
 </section>
 
+<!-- ── CONTRIBUTE LORE (top) ───────────────────────────────────────── -->
+<section class="vos-home-dashboard vos-home-cta">
+  <a class="vos-row-chip vos-row-chip-cta vos-row-chip-cta-compact" href="/submit-lore/">
+    <span>
+      <span class="vos-row-chip-title">Contribute Lore</span>
+      <span class="vos-row-chip-meta">Draft an entry — AI writes it, the DM approves.</span>
+    </span>
+    <span class="vos-row-chip-arrow" aria-hidden="true">›</span>
+  </a>
+</section>
+
 <!-- ── LIVING DASHBOARD ─────────────────────────────────────────────── -->
 <section class="vos-home-dashboard" aria-label="Campaign dashboard">
   <div class="vos-dash">
@@ -757,6 +766,7 @@ templateEngineOverride: njk
         {% include "partials/rsvp-control.njk" %}
       </div>
     </article>
+    {#
     <article class="vos-dash-card vos-dash-side-card vos-threads-card" aria-labelledby="vos-threads-heading">
       <h3 id="vos-threads-heading">Open Threads</h3>
       <div class="vos-thread-list">
@@ -771,6 +781,7 @@ templateEngineOverride: njk
         {%- endfor %}
       </div>
     </article>
+    #}
     <article class="vos-dash-card vos-inplay-card" aria-labelledby="vos-inplay-heading">
       <h3 id="vos-inplay-heading">Currently In Play</h3>
       <div class="vos-play-rail" data-in-play-container="home">
@@ -819,32 +830,6 @@ templateEngineOverride: njk
   </ul>
 </section>
 {%- endif -%}
-
-<!-- ── CONTRIBUTE LORE (small) ─────────────────────────────────────── -->
-<section class="vos-home-dashboard vos-home-cta">
-  <a class="vos-row-chip vos-row-chip-cta vos-row-chip-cta-compact" href="/submit-lore/">
-    <span>
-      <span class="vos-row-chip-title">Contribute Lore</span>
-      <span class="vos-row-chip-meta">Draft an entry — AI writes it, the DM approves.</span>
-    </span>
-    <span class="vos-row-chip-arrow" aria-hidden="true">›</span>
-  </a>
-</section>
-
-<!-- ── FRESH FROM THE STUDIO ───────────────────────────────────────── -->
-<section class="vos-home-dashboard vos-home-studio" aria-labelledby="vos-studio-heading">
-  <div class="vos-home-sec-head">
-    <h2 id="vos-studio-heading">My Favorites</h2>
-    <span class="vos-home-sec-line"></span>
-    <a class="vos-home-sec-more" href="/en/Tools/art/">Open the Art Studio &rarr;</a>
-  </div>
-  {% set carouselLimit = 8 %}
-  {% set carouselSource = "favorites" %}
-  {% set carouselLabel = "Gallery images you've hearted" %}
-  {% set carouselEmptyMessage = "You haven't hearted anything yet. Tap ♥ on a piece in the Studio gallery to feature it here." %}
-  {% set carouselEmptySignedOut = "Sign in to see your favorite gallery pieces here." %}
-  {% include "partials/gallery-carousel.njk" %}
-</section>
 
 </div>
 

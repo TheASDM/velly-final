@@ -657,7 +657,8 @@ permalink: /dm/
   }
 
   function isSessionLive() {
-    if (!dmSession || !dmSession.session_token) return false;
+    if (!dmSession || (!dmSession.session_token && !dmSession.cookie_auth)) return false;
+    if (dmSession.cookie_auth) return true;
     if (dmSession.expires_at && Date.now() >= dmSession.expires_at) return false;
     return true;
   }
@@ -757,6 +758,7 @@ permalink: /dm/
       }
       return null;
     }
+    if (dmSession.cookie_auth) return "";
     return dmSession.session_token;
   }
 
@@ -764,6 +766,19 @@ permalink: /dm/
   let googleClientId = null;
 
   async function bootAdminAuth() {
+    const appSession = await fetch('/api/admin/session', { cache: 'no-store' }).catch(() => null);
+    if (appSession && appSession.ok) {
+      const data = await appSession.json().catch(() => ({}));
+      if (data && data.signed_in && data.app_auth) {
+        persistSession({
+          session_token: '',
+          cookie_auth: true,
+          email: data.email || 'DM',
+        });
+        return;
+      }
+    }
+
     try {
       const r = await fetch('/api/admin/config', { cache: 'no-store' });
       if (!r.ok) throw new Error('admin/config ' + r.status);
@@ -784,7 +799,7 @@ permalink: /dm/
       // Server-side re-check so a revoked allowlist takes effect promptly.
       const r = await fetch('/api/admin/session', {
         cache: 'no-store',
-        headers: { Authorization: 'Bearer ' + dmSession.session_token },
+        headers: dmSession.session_token ? { Authorization: 'Bearer ' + dmSession.session_token } : {},
       });
       if (r.ok) {
         const data = await r.json().catch(() => ({}));
@@ -849,6 +864,9 @@ permalink: /dm/
   }
 
   function signOut() {
+    if (dmSession && dmSession.cookie_auth) {
+      fetch('/api/auth/logout', { method: 'POST', cache: 'no-store' }).catch(() => {});
+    }
     persistSession(null);
     // Re-render the Google button so the user can sign back in.
     initGoogleButton();
@@ -877,7 +895,7 @@ permalink: /dm/
 
   async function adminJson(url, token, options) {
     const headers = {
-      'Authorization': 'Bearer ' + token,
+      ...(token ? { 'Authorization': 'Bearer ' + token } : {}),
       ...(options && options.headers ? options.headers : {}),
     };
     const response = await fetch(url, {

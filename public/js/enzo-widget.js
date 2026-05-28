@@ -52,9 +52,9 @@
           <div id="chat-empty-state" class="chat-empty-state">
             <div class="chat-empty-title">Ask Enzo</div>
             <div class="chat-empty-chips" aria-label="Suggested prompts">
-              <button type="button">Who is…</button>
-              <button type="button">Where is…</button>
-              <button type="button">Rules question…</button>
+              <span>Who is…</span>
+              <span>Where is…</span>
+              <span>Rules question…</span>
             </div>
           </div>
         </div>

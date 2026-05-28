@@ -730,18 +730,12 @@ class LoreMasterChatbot {
         empty.innerHTML = `
             <div class="chat-empty-title">Ask Enzo</div>
             <div class="chat-empty-chips" aria-label="Suggested prompts">
-                <button type="button" data-chat-suggestion="Who is Roxy?">Who is…</button>
-                <button type="button" data-chat-suggestion="Where is the Overlook?">Where is…</button>
-                <button type="button" data-chat-suggestion="How does stealth work in 5e?">Rules question…</button>
+                <span>Who is…</span>
+                <span>Where is…</span>
+                <span>Rules question…</span>
             </div>
         `;
         messagesContainer.appendChild(empty);
-        empty.querySelectorAll('[data-chat-suggestion]').forEach((button) => {
-            button.addEventListener('click', () => {
-                const prompt = button.getAttribute('data-chat-suggestion') || '';
-                this.submitPrompt(prompt);
-            });
-        });
     }
     removeEmptyState() {
         const empty = document.getElementById('chat-empty-state');

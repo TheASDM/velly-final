@@ -62,9 +62,31 @@
         <div class="vos-app-eyebrow">{{ appEyebrow }}</div>
         <div class="vos-app-title">{{ appTitle }}</div>
       </div>
-      <button class="vos-app-identity" id="vos-app-identity-button" type="button" aria-label="Log in" title="Log in">
-        <span class="vos-app-identity-label" id="vos-app-identity-label">Log in</span>
-      </button>
+      <div class="vos-app-user-menu-wrap">
+        <button class="vos-app-identity" id="vos-app-identity-button" type="button" aria-label="Log in" title="Log in" aria-haspopup="menu" aria-expanded="false">
+          <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M4 7h16"/><path d="M4 12h16"/><path d="M4 17h16"/></svg>
+          <span class="vos-app-identity-label" id="vos-app-identity-label">Log in</span>
+        </button>
+        <div class="vos-user-menu" id="vos-user-menu" role="menu" hidden>
+          <div class="vos-user-menu-head" id="vos-user-menu-name">Not signed in</div>
+          <a role="menuitem" href="/messages/">Messages</a>
+          <a role="menuitem" href="/calendar/">RSVPs</a>
+          <a role="menuitem" href="/submit-lore/#vos-submit-mine-title">Lore Submissions</a>
+          <a role="menuitem" href="/en/Tools/art/#vos-art-my-jobs">Art Submissions</a>
+          <a role="menuitem" href="/en/Tools/art/?favorites=1#vos-art-gallery-section">Favorites</a>
+          <a role="menuitem" href="/settings/">Settings</a>
+          <button role="menuitem" id="vos-user-menu-sign-in" type="button">Sign in</button>
+          <div class="vos-user-menu-group" id="vos-user-menu-dm" hidden>
+            <div class="vos-user-menu-label">DM</div>
+            <a role="menuitem" href="/dm/">DM Dashboard</a>
+            <a role="menuitem" href="/dm/#vos-dm-lore-title">Review Lore</a>
+            <a role="menuitem" href="/dm/#vos-dm-message-title">DM Messages</a>
+            <a role="menuitem" href="/dm/#vos-dm-rsvp-title">RSVP Summary</a>
+            <a role="menuitem" href="/dm/#vos-dm-inplay-title">Currently In Play</a>
+          </div>
+          <button role="menuitem" id="vos-user-menu-sign-out" type="button" hidden>Sign out</button>
+        </div>
+      </div>
     </div>
     {%- if crumbs.length > 1 -%}
     <nav aria-label="Breadcrumb">

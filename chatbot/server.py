@@ -26,9 +26,10 @@ import time
 import unicodedata
 from datetime import datetime, timezone
 from pathlib import Path
+from urllib.parse import urlencode
 
 import requests as http_requests
-from flask import Flask, Response, abort, jsonify, request, send_from_directory, stream_with_context
+from flask import Flask, Response, abort, jsonify, make_response, redirect, request, send_from_directory, stream_with_context
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 
@@ -118,11 +119,10 @@ if not SITE_SOURCE_DIR.exists():
 LORE_DRAFT_DIR = Path(os.environ.get("LORE_DRAFT_DIR", "/app/app-data/lore-drafts"))
 LORE_DRAFT_IMAGES_DIR = LORE_DRAFT_DIR / "images"
 # ── DM authentication (Google OAuth + signed session JWT) ───────────────
-# Replaces the old static ADMIN_TOKEN. To log in as DM, a user signs in
-# with Google in the browser; we verify the resulting Google ID token
-# server-side, check the email against ALLOWED_DM_EMAILS, and mint a
-# 7-day HS256 JWT used as a session cookie via the Authorization header.
+# Standalone /dm fallback auth. App-level OAuth can also grant DM access via
+# ALLOWED_DM_EMAILS or ALLOWED_DM_DISCORD_IDS and the player auth cookie.
 GOOGLE_OAUTH_CLIENT_ID = os.environ.get("GOOGLE_OAUTH_CLIENT_ID", "").strip()
+GOOGLE_OAUTH_CLIENT_SECRET = os.environ.get("GOOGLE_OAUTH_CLIENT_SECRET", "").strip()
 ALLOWED_DM_EMAILS = {
     email.strip().lower()
     for email in os.environ.get("ALLOWED_DM_EMAILS", "").split(",")
@@ -130,9 +130,17 @@ ALLOWED_DM_EMAILS = {
 }
 SESSION_JWT_SECRET = os.environ.get("SESSION_JWT_SECRET", "").strip()
 SESSION_JWT_TTL_SECONDS = int(os.environ.get("SESSION_JWT_TTL_SECONDS", str(7 * 24 * 3600)))
+DISCORD_OAUTH_CLIENT_ID = os.environ.get("DISCORD_OAUTH_CLIENT_ID", "").strip()
+DISCORD_OAUTH_CLIENT_SECRET = os.environ.get("DISCORD_OAUTH_CLIENT_SECRET", "").strip()
+GOOGLE_OAUTH_REDIRECT_URI = os.environ.get("GOOGLE_OAUTH_REDIRECT_URI", "").strip()
+DISCORD_OAUTH_REDIRECT_URI = os.environ.get("DISCORD_OAUTH_REDIRECT_URI", "").strip()
+PUBLIC_BASE_URL = os.environ.get("PUBLIC_BASE_URL", "").strip().rstrip("/")
+AUTH_COOKIE_NAME = "vos_player_token"
+AUTH_COOKIE_SECURE = os.environ.get("AUTH_COOKIE_SECURE", "1") != "0"
 VAPID_PUBLIC_KEY = os.environ.get("VAPID_PUBLIC_KEY", "").strip()
 VAPID_PRIVATE_KEY = os.environ.get("VAPID_PRIVATE_KEY", "").strip()
 VAPID_SUBJECT = os.environ.get("VAPID_SUBJECT", "mailto:dm@valleyofshadows.wiki").strip()
+ADMIN_TOKEN = os.environ.get("ADMIN_TOKEN", "").strip()
 RSVP_STATUSES = {"going", "maybe", "out"}
 
 DEFAULT_PLAYERS = [
@@ -232,6 +240,33 @@ PLAYER_LOGIN_CODES = (
     or _parse_login_codes(os.environ.get("PLAYER_LOGIN_CODES", ""))
 )
 PLAYER_NAMES = list(PLAYER_LOGIN_CODES.keys()) or DEFAULT_PLAYERS
+
+
+def _parse_principal_map(raw):
+    """Parse env maps like `email@example.com=Lotan,123456=DM`.
+
+    Values must resolve to one of PLAYER_NAMES. Unknown player labels are
+    ignored so a typo cannot mint tokens for a non-roster identity.
+    """
+    parsed = {}
+    for part in re.split(r"[,;\n]+", raw or ""):
+        if "=" not in part:
+            continue
+        principal, player = part.split("=", 1)
+        principal = principal.strip().lower()
+        player = _canonical_login_name(player)
+        if principal and player in PLAYER_NAMES:
+            parsed[principal] = player
+    return parsed
+
+
+GOOGLE_PLAYER_MAP = _parse_principal_map(os.environ.get("GOOGLE_PLAYER_MAP", ""))
+DISCORD_PLAYER_MAP = _parse_principal_map(os.environ.get("DISCORD_PLAYER_MAP", ""))
+ALLOWED_DM_DISCORD_IDS = {
+    value.strip()
+    for value in os.environ.get("ALLOWED_DM_DISCORD_IDS", "").split(",")
+    if value.strip()
+}
 
 # Style preset keys are stable strings sent from the UI; the corresponding
 # prompt prefix is prepended to the user prompt at generation time. Keep
@@ -372,16 +407,35 @@ def _b64url_decode(value):
     return base64.urlsafe_b64decode((value + padding).encode("ascii"))
 
 
+def _google_oauth_configured():
+    return bool(GOOGLE_OAUTH_CLIENT_ID and GOOGLE_OAUTH_CLIENT_SECRET)
+
+
+def _discord_oauth_configured():
+    return bool(DISCORD_OAUTH_CLIENT_ID and DISCORD_OAUTH_CLIENT_SECRET)
+
+
+def _oauth_login_configured():
+    return _discord_oauth_configured() or _google_oauth_configured()
+
+
 def _auth_login_required():
-    return bool(PLAYER_LOGIN_CODES)
+    return bool(PLAYER_LOGIN_CODES or _oauth_login_configured())
 
 
-def _issue_player_token(player_name):
+def _is_dm_player(player_name):
+    return player_name == "DM"
+
+
+def _issue_player_token(player_name, is_dm=False, provider="", principal=""):
     if not AUTH_TOKEN_SECRET:
         return None
     now = int(time.time())
     payload = {
         "name": player_name,
+        "is_dm": bool(is_dm or _is_dm_player(player_name)),
+        "provider": provider,
+        "principal": principal,
         "iat": now,
         "exp": now + AUTH_TOKEN_TTL_SECONDS,
     }
@@ -394,7 +448,7 @@ def _issue_player_token(player_name):
     return f"{payload_b64}.{_b64url_encode(sig)}"
 
 
-def _verify_player_token(token):
+def _verify_player_token_payload(token):
     if not token or not AUTH_TOKEN_SECRET:
         return None
     try:
@@ -421,7 +475,14 @@ def _verify_player_token(token):
     name = payload.get("name")
     if not isinstance(name, str) or not name:
         return None
-    return name
+    return payload
+
+
+def _verify_player_token(token):
+    payload = _verify_player_token_payload(token)
+    if not payload:
+        return None
+    return payload.get("name")
 
 
 def _extract_player_token(body=None):
@@ -433,7 +494,9 @@ def _extract_player_token(body=None):
     if header_token:
         return header_token
     token = body.get("token") or request.args.get("token")
-    return token.strip() if isinstance(token, str) else ""
+    if isinstance(token, str) and token.strip():
+        return token.strip()
+    return request.cookies.get(AUTH_COOKIE_NAME, "").strip()
 
 
 def _authenticated_player_name(body=None):
@@ -2724,19 +2787,7 @@ def _verify_google_id_token(credential):
     """Validate a Google-issued ID token against Google's public keys.
     Returns the verified email on success, or raises a ValueError with a
     short, user-safe reason on any failure."""
-    if not credential:
-        raise ValueError("No Google credential supplied")
-    try:
-        from google.oauth2 import id_token as google_id_token
-        from google.auth.transport import requests as google_requests
-    except ImportError as exc:
-        raise ValueError(f"google-auth not installed: {exc}")
-    try:
-        idinfo = google_id_token.verify_oauth2_token(
-            credential, google_requests.Request(), GOOGLE_OAUTH_CLIENT_ID
-        )
-    except Exception as exc:
-        raise ValueError(f"Google rejected the credential: {exc}")
+    idinfo = _verify_google_oauth_id_token(credential)
     email = (idinfo.get("email") or "").lower()
     if not email or not idinfo.get("email_verified"):
         raise ValueError("Google did not return a verified email")
@@ -2781,6 +2832,11 @@ def _verify_session_jwt(token):
 
 
 def _admin_error_response():
+    player_payload = _verify_player_token_payload(_extract_player_token())
+    if player_payload and bool(player_payload.get("is_dm") or _is_dm_player(player_payload.get("name"))):
+        request.dm_email = player_payload.get("principal") or player_payload.get("name") or "DM"
+        return None
+
     if not _admin_auth_configured():
         return jsonify({
             "error": (
@@ -2797,13 +2853,310 @@ def _admin_error_response():
     return None
 
 
+def _safe_next_url(value):
+    if not isinstance(value, str) or not value.startswith("/") or value.startswith("//"):
+        return "/"
+    return value[:300]
+
+
+def _with_auth_status(next_url, status):
+    next_url = _safe_next_url(next_url)
+    base, sep, frag = next_url.partition("#")
+    glue = "&" if "?" in base else "?"
+    url = f"{base}{glue}auth={status}"
+    return f"{url}#{frag}" if sep else url
+
+
+def _oauth_redirect_uri(provider):
+    if provider == "discord" and DISCORD_OAUTH_REDIRECT_URI:
+        return DISCORD_OAUTH_REDIRECT_URI
+    if provider == "google" and GOOGLE_OAUTH_REDIRECT_URI:
+        return GOOGLE_OAUTH_REDIRECT_URI
+    base = PUBLIC_BASE_URL or request.host_url.rstrip("/")
+    return f"{base}/api/auth/oauth/{provider}/callback"
+
+
+def _oauth_state_secret():
+    return AUTH_TOKEN_SECRET or SESSION_JWT_SECRET or VAPID_PRIVATE_KEY or ANTHROPIC_API_KEY
+
+
+def _issue_oauth_state(provider, next_url):
+    secret = _oauth_state_secret()
+    if not secret:
+        return None
+    payload = {
+        "provider": provider,
+        "next": _safe_next_url(next_url),
+        "nonce": secrets.token_urlsafe(16),
+        "exp": int(time.time()) + 10 * 60,
+    }
+    payload_b64 = _b64url_encode(json.dumps(payload, separators=(",", ":")).encode("utf-8"))
+    sig = hmac.new(secret.encode("utf-8"), payload_b64.encode("ascii"), hashlib.sha256).digest()
+    return f"{payload_b64}.{_b64url_encode(sig)}"
+
+
+def _verify_oauth_state(state, provider):
+    secret = _oauth_state_secret()
+    if not state or not secret:
+        return None
+    try:
+        payload_b64, sig_b64 = state.split(".", 1)
+    except ValueError:
+        return None
+    expected = hmac.new(secret.encode("utf-8"), payload_b64.encode("ascii"), hashlib.sha256).digest()
+    try:
+        actual = _b64url_decode(sig_b64)
+    except Exception:
+        return None
+    if not hmac.compare_digest(actual, expected):
+        return None
+    try:
+        payload = json.loads(_b64url_decode(payload_b64).decode("utf-8"))
+    except Exception:
+        return None
+    if payload.get("provider") != provider:
+        return None
+    if int(payload.get("exp", 0)) < int(time.time()):
+        return None
+    return payload
+
+
+def _auth_provider_list():
+    providers = []
+    if DISCORD_OAUTH_CLIENT_ID:
+        providers.append({
+            "id": "discord",
+            "label": "Continue with Discord",
+            "primary": True,
+            "configured": _discord_oauth_configured(),
+            "login_url": "/api/auth/oauth/discord/start",
+        })
+    if GOOGLE_OAUTH_CLIENT_ID:
+        providers.append({
+            "id": "google",
+            "label": "Continue with Google",
+            "primary": not providers,
+            "configured": _google_oauth_configured(),
+            "login_url": "/api/auth/oauth/google/start",
+        })
+    return providers
+
+
+def _verify_google_oauth_id_token(credential):
+    if not credential:
+        raise ValueError("No Google credential supplied")
+    try:
+        from google.oauth2 import id_token as google_id_token
+        from google.auth.transport import requests as google_requests
+    except ImportError as exc:
+        raise ValueError(f"google-auth not installed: {exc}")
+    try:
+        return google_id_token.verify_oauth2_token(
+            credential, google_requests.Request(), GOOGLE_OAUTH_CLIENT_ID
+        )
+    except Exception as exc:
+        raise ValueError(f"Google rejected the credential: {exc}")
+
+
+def _exchange_google_code(code):
+    response = http_requests.post(
+        "https://oauth2.googleapis.com/token",
+        data={
+            "code": code,
+            "client_id": GOOGLE_OAUTH_CLIENT_ID,
+            "client_secret": GOOGLE_OAUTH_CLIENT_SECRET,
+            "redirect_uri": _oauth_redirect_uri("google"),
+            "grant_type": "authorization_code",
+        },
+        timeout=20,
+    )
+    if response.status_code >= 400:
+        raise ValueError("Google rejected the authorization code")
+    token_data = response.json()
+    idinfo = _verify_google_oauth_id_token(token_data.get("id_token"))
+    email = (idinfo.get("email") or "").lower()
+    if not email or not idinfo.get("email_verified"):
+        raise ValueError("Google did not return a verified email")
+    return {
+        "provider": "google",
+        "principal": email,
+        "email": email,
+        "display": idinfo.get("name") or email,
+    }
+
+
+def _exchange_discord_code(code):
+    response = http_requests.post(
+        "https://discord.com/api/oauth2/token",
+        data={
+            "client_id": DISCORD_OAUTH_CLIENT_ID,
+            "client_secret": DISCORD_OAUTH_CLIENT_SECRET,
+            "grant_type": "authorization_code",
+            "code": code,
+            "redirect_uri": _oauth_redirect_uri("discord"),
+        },
+        headers={"Content-Type": "application/x-www-form-urlencoded"},
+        timeout=20,
+    )
+    if response.status_code >= 400:
+        raise ValueError("Discord rejected the authorization code")
+    token_data = response.json()
+    access_token = token_data.get("access_token")
+    if not access_token:
+        raise ValueError("Discord did not return an access token")
+    user_response = http_requests.get(
+        "https://discord.com/api/users/@me",
+        headers={"Authorization": f"Bearer {access_token}"},
+        timeout=20,
+    )
+    if user_response.status_code >= 400:
+        raise ValueError("Discord profile lookup failed")
+    user = user_response.json()
+    discord_id = str(user.get("id") or "").strip()
+    if not discord_id:
+        raise ValueError("Discord did not return a user id")
+    display = user.get("global_name") or user.get("username") or "Discord user"
+    return {
+        "provider": "discord",
+        "principal": discord_id,
+        "email": (user.get("email") or "").lower(),
+        "display": display,
+    }
+
+
+def _resolve_oauth_player(profile):
+    provider = profile.get("provider")
+    principal = (profile.get("principal") or "").lower()
+    email = (profile.get("email") or "").lower()
+
+    if provider == "google":
+        if email in ALLOWED_DM_EMAILS:
+            return "DM", True
+        if email in GOOGLE_PLAYER_MAP:
+            return GOOGLE_PLAYER_MAP[email], False
+
+    if provider == "discord":
+        if profile.get("principal") in ALLOWED_DM_DISCORD_IDS:
+            return "DM", True
+        if principal in DISCORD_PLAYER_MAP:
+            return DISCORD_PLAYER_MAP[principal], False
+
+    raise ValueError(
+        "This OAuth account is not mapped to a player. Add it to "
+        "GOOGLE_PLAYER_MAP or DISCORD_PLAYER_MAP."
+    )
+
+
+def _auth_session_payload(token):
+    payload = _verify_player_token_payload(token)
+    if not payload:
+        return None
+    name = payload.get("name")
+    return {
+        "ok": True,
+        "loginRequired": _auth_login_required(),
+        "playerName": name,
+        "isDm": bool(payload.get("is_dm") or _is_dm_player(name)),
+        "provider": payload.get("provider") or "",
+    }
+
+
 @app.route("/api/auth/config", methods=["GET"])
 def auth_config():
     return jsonify({
         "loginRequired": _auth_login_required(),
-        "authConfigured": bool(AUTH_TOKEN_SECRET) or not _auth_login_required(),
+        "authConfigured": bool((AUTH_TOKEN_SECRET and (PLAYER_LOGIN_CODES or _oauth_login_configured())) or not _auth_login_required()),
         "players": PLAYER_NAMES,
+        "providers": _auth_provider_list(),
+        "legacyCodeLogin": bool(PLAYER_LOGIN_CODES),
     })
+
+
+@app.route("/api/auth/oauth/<provider>/start", methods=["GET"])
+def auth_oauth_start(provider):
+    provider = (provider or "").lower()
+    next_url = _safe_next_url(request.args.get("next") or request.referrer or "/")
+    state = _issue_oauth_state(provider, next_url)
+    if not state:
+        return jsonify({"error": "OAuth state signing is not configured"}), 503
+
+    if provider == "discord":
+        if not DISCORD_OAUTH_CLIENT_ID:
+            return jsonify({"error": "Discord OAuth client id is not configured"}), 503
+        params = urlencode({
+            "client_id": DISCORD_OAUTH_CLIENT_ID,
+            "redirect_uri": _oauth_redirect_uri("discord"),
+            "response_type": "code",
+            "scope": "identify email",
+            "state": state,
+            "prompt": "consent",
+        })
+        return redirect(f"https://discord.com/api/oauth2/authorize?{params}")
+
+    if provider == "google":
+        if not GOOGLE_OAUTH_CLIENT_ID:
+            return jsonify({"error": "Google OAuth client id is not configured"}), 503
+        params = urlencode({
+            "client_id": GOOGLE_OAUTH_CLIENT_ID,
+            "redirect_uri": _oauth_redirect_uri("google"),
+            "response_type": "code",
+            "scope": "openid email profile",
+            "state": state,
+            "prompt": "select_account",
+            "access_type": "online",
+        })
+        return redirect(f"https://accounts.google.com/o/oauth2/v2/auth?{params}")
+
+    return jsonify({"error": "Unknown OAuth provider"}), 404
+
+
+@app.route("/api/auth/oauth/<provider>/callback", methods=["GET"])
+def auth_oauth_callback(provider):
+    provider = (provider or "").lower()
+    state_data = _verify_oauth_state(request.args.get("state", ""), provider)
+    next_url = _safe_next_url((state_data or {}).get("next") or "/")
+    if not state_data:
+        return redirect(_with_auth_status(next_url, "error"))
+    if request.args.get("error"):
+        return redirect(_with_auth_status(next_url, "error"))
+    code = request.args.get("code", "")
+    if not code:
+        return redirect(_with_auth_status(next_url, "error"))
+
+    try:
+        if provider == "discord":
+            if not _discord_oauth_configured():
+                raise ValueError("Discord OAuth is not fully configured")
+            profile = _exchange_discord_code(code)
+        elif provider == "google":
+            if not _google_oauth_configured():
+                raise ValueError("Google OAuth is not fully configured")
+            profile = _exchange_google_code(code)
+        else:
+            raise ValueError("Unknown OAuth provider")
+        player_name, is_dm = _resolve_oauth_player(profile)
+        token = _issue_player_token(
+            player_name,
+            is_dm=is_dm,
+            provider=profile.get("provider") or provider,
+            principal=profile.get("principal") or "",
+        )
+        if not token:
+            raise ValueError("Auth token signing is not configured")
+    except Exception:
+        logging.exception("OAuth callback failed for provider %s", provider)
+        return redirect(_with_auth_status(next_url, "error"))
+
+    response = make_response(redirect(_with_auth_status(next_url, "ok")))
+    response.set_cookie(
+        AUTH_COOKIE_NAME,
+        token,
+        max_age=AUTH_TOKEN_TTL_SECONDS,
+        httponly=True,
+        secure=AUTH_COOKIE_SECURE,
+        samesite="Lax",
+    )
+    return response
 
 
 @app.route("/api/admin/config", methods=["GET"])
@@ -2847,6 +3200,14 @@ def admin_session():
     """Return who the caller is logged in as (or 401). Used by the DM
     page on load to decide whether to show the sign-in button or the
     signed-in chrome."""
+    player_payload = _verify_player_token_payload(_extract_player_token())
+    if player_payload and bool(player_payload.get("is_dm") or _is_dm_player(player_payload.get("name"))):
+        return jsonify({
+            "configured": True,
+            "signed_in": True,
+            "email": player_payload.get("principal") or player_payload.get("name") or "DM",
+            "app_auth": True,
+        })
     if not _admin_auth_configured():
         return jsonify({"configured": False}), 200
     email, reason = _verify_session_jwt(_extract_bearer_token())
@@ -2889,10 +3250,17 @@ def auth_login():
 def auth_session():
     if not _auth_login_required():
         return jsonify({"ok": True, "loginRequired": False})
-    name = _verify_player_token(_extract_player_token())
-    if not name:
+    payload = _auth_session_payload(_extract_player_token())
+    if not payload:
         return jsonify({"error": "Login required"}), 401
-    return jsonify({"ok": True, "playerName": name})
+    return jsonify(payload)
+
+
+@app.route("/api/auth/logout", methods=["POST"])
+def auth_logout():
+    response = jsonify({"ok": True})
+    response.delete_cookie(AUTH_COOKIE_NAME, samesite="Lax")
+    return response
 
 
 @app.route("/api/push/config", methods=["GET"])
