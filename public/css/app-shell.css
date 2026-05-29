@@ -1958,10 +1958,8 @@
      so the floating layer doesn't reserve a 560px box. */
   #chatbot-container.vos-enzo-pill { width: auto; }
 
-  @media (max-width: 1023px) {
-    body:not(.vos-is-enzo-page) #chatbot-container {
-      display: none !important;
-    }
+  body:not(.vos-is-enzo-page) #chatbot-container {
+    display: none !important;
   }
 
   /* Critical collapsed Enzo styles live inline so the widget never flashes
