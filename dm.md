@@ -499,6 +499,7 @@ permalink: /dm/
       <h2 id="vos-dm-wiki-title">Wiki Editor</h2>
       <div class="vos-dm-actions">
         <button id="vos-dm-wiki-load" type="button">Load</button>
+        <button id="vos-dm-wiki-rebuild" type="button">Rebuild Now</button>
       </div>
     </div>
     <p class="vos-dm-helper">Edit an existing published wiki source file. Choose a title or paste a wiki URL such as <code>/en/Venturia/Characters/PCs/roxanya/</code>.</p>
@@ -788,6 +789,7 @@ permalink: /dm/
 
   const wikiQueryEl = document.getElementById('vos-dm-wiki-query');
   const wikiLoadEl = document.getElementById('vos-dm-wiki-load');
+  const wikiRebuildEl = document.getElementById('vos-dm-wiki-rebuild');
   const wikiForm = document.getElementById('vos-dm-wiki-form');
   const wikiContentRowEl = document.getElementById('vos-dm-wiki-content-row');
   const wikiContentEl = document.getElementById('vos-dm-wiki-content');
@@ -1002,6 +1004,63 @@ permalink: /dm/
     return data;
   }
 
+  let rebuildPollTimer = null;
+
+  function rebuildStatusText(rebuild) {
+    if (!rebuild) return '';
+    const state = rebuild.state || 'idle';
+    if (state === 'queued') return 'Rebuild queued.';
+    if (state === 'running') {
+      const step = rebuild.current_step && rebuild.current_step !== 'starting'
+        ? ` (${rebuild.current_step})`
+        : '';
+      return `Rebuild running${step}.`;
+    }
+    if (state === 'succeeded') return 'Rebuild complete.';
+    if (state === 'failed') return `Rebuild failed: ${rebuild.error || 'check logs'}`;
+    if (state === 'disabled') return 'Auto rebuild is disabled.';
+    return '';
+  }
+
+  function setStatusWithRebuild(target, base, rebuild) {
+    const extra = rebuildStatusText(rebuild);
+    setStatus(target, [base, extra].filter(Boolean).join(' '), rebuild && rebuild.state === 'failed');
+  }
+
+  function pollRebuildStatus(target) {
+    if (rebuildPollTimer) window.clearTimeout(rebuildPollTimer);
+    const token = getToken(target);
+    if (!token) return;
+    rebuildPollTimer = window.setTimeout(async () => {
+      try {
+        const data = await adminJson('/api/admin/rebuild', token);
+        const rebuild = data.rebuild || {};
+        setStatusWithRebuild(target, '', rebuild);
+        if (rebuild.state === 'queued' || rebuild.state === 'running') {
+          pollRebuildStatus(target);
+        }
+      } catch (error) {
+        setStatus(target, error.message, true);
+      }
+    }, 2500);
+  }
+
+  async function triggerRebuild(target, reason) {
+    const token = getToken(target);
+    if (!token) return null;
+    const data = await adminJson('/api/admin/rebuild', token, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ reason, knowledge: true }),
+    });
+    const rebuild = data.rebuild || {};
+    setStatusWithRebuild(target, '', rebuild);
+    if (rebuild.state === 'queued' || rebuild.state === 'running') {
+      pollRebuildStatus(target);
+    }
+    return rebuild;
+  }
+
   async function postJson(url, token, body) {
     return adminJson(url, token, {
       method: 'POST',
@@ -1091,8 +1150,10 @@ permalink: /dm/
         }),
       });
       renderWikiEntry(data.entry || {});
-      const steps = (data.next_steps || []).join(' then ');
-      setStatus(wikiStatusEl, `Saved. Rebuild next: ${steps}`);
+      setStatusWithRebuild(wikiStatusEl, 'Saved.', data.rebuild);
+      if (data.rebuild && (data.rebuild.state === 'queued' || data.rebuild.state === 'running')) {
+        pollRebuildStatus(wikiStatusEl);
+      }
     } catch (error) {
       setStatus(wikiStatusEl, error.message, true);
     } finally {
@@ -1404,9 +1465,9 @@ permalink: /dm/
         // Empty body — server falls back to stored title/slug/markdown/etc.
         // Retry once with overwrite=true so already-published rows refresh.
         try {
-          await postJson(`/api/admin/lore-submissions/${encodeURIComponent(id)}/publish`, token, {});
+          await postJson(`/api/admin/lore-submissions/${encodeURIComponent(id)}/publish`, token, { auto_rebuild: false });
         } catch (firstError) {
-          await postJson(`/api/admin/lore-submissions/${encodeURIComponent(id)}/publish`, token, { overwrite: true });
+          await postJson(`/api/admin/lore-submissions/${encodeURIComponent(id)}/publish`, token, { overwrite: true, auto_rebuild: false });
         }
         ok += 1;
       } catch (error) {
@@ -1422,6 +1483,13 @@ permalink: /dm/
         : `Published ${ok}.`,
       failed > 0
     );
+    if (ok > 0) {
+      try {
+        await triggerRebuild(loreStatusEl, `bulk lore publish: ${ok}`);
+      } catch (error) {
+        setStatus(loreStatusEl, error.message, true);
+      }
+    }
   }
 
   async function bulkRejectSelected() {
@@ -1615,8 +1683,10 @@ permalink: /dm/
         payload
       );
       await refreshLoreSubmissions();
-      const steps = (data.next_steps || []).join(' then ');
-      setStatus(loreStatusEl, `Published: ${data.url}. Rebuild next: ${steps}`);
+      setStatusWithRebuild(loreStatusEl, `Published: ${data.url}.`, data.rebuild);
+      if (data.rebuild && (data.rebuild.state === 'queued' || data.rebuild.state === 'running')) {
+        pollRebuildStatus(loreStatusEl);
+      }
     } catch (error) {
       setStatus(loreStatusEl, error.message, true);
     } finally {
@@ -1716,6 +1786,17 @@ permalink: /dm/
   if (loreBulkPublishEl) loreBulkPublishEl.addEventListener('click', bulkPublishSelected);
   if (loreBulkRejectEl) loreBulkRejectEl.addEventListener('click', bulkRejectSelected);
   if (wikiLoadEl) wikiLoadEl.addEventListener('click', loadWikiEntry);
+  if (wikiRebuildEl) wikiRebuildEl.addEventListener('click', async () => {
+    wikiRebuildEl.disabled = true;
+    setStatus(wikiStatusEl, 'Starting rebuild...');
+    try {
+      await triggerRebuild(wikiStatusEl, 'manual wiki editor rebuild');
+    } catch (error) {
+      setStatus(wikiStatusEl, error.message, true);
+    } finally {
+      wikiRebuildEl.disabled = false;
+    }
+  });
   if (wikiForm) wikiForm.addEventListener('submit', saveWikiEntry);
   if (wikiQueryEl) {
     wikiQueryEl.addEventListener('keydown', (event) => {

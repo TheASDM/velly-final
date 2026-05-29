@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'foglight-pwa-v36';
+const CACHE_VERSION = 'foglight-pwa-v37';
 const PRECACHE = `${CACHE_VERSION}-precache`;
 const PAGES = `${CACHE_VERSION}-pages`;
 const ASSETS = `${CACHE_VERSION}-assets`;
@@ -7,6 +7,7 @@ const GALLERY = `${CACHE_VERSION}-gallery`;
 const APP_SHELL = [
   '/',
   '/messages/',
+  '/notes/',
   '/settings/',
   '/submit-lore/',
   '/art-submissions/',

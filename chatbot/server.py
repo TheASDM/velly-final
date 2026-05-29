@@ -21,6 +21,7 @@ import secrets
 import shutil
 import sqlite3
 import string
+import subprocess
 import threading
 import time
 import unicodedata
@@ -116,6 +117,11 @@ VECTOR_SQLITE_PATH = APP_DB_PATH.parent / "vector_store.sqlite3"
 SITE_SOURCE_DIR = Path(os.environ.get("SITE_SOURCE_DIR", "/site"))
 if not SITE_SOURCE_DIR.exists():
     SITE_SOURCE_DIR = Path(__file__).resolve().parents[1]
+REBUILD_STATUS_PATH = APP_DB_PATH.parent / "rebuild-status.json"
+REBUILD_LOCK_PATH = APP_DB_PATH.parent / "rebuild.lock"
+AUTO_REBUILD_ON_WIKI_SAVE = os.environ.get("AUTO_REBUILD_ON_WIKI_SAVE", "1") != "0"
+AUTO_KNOWLEDGE_ON_WIKI_SAVE = os.environ.get("AUTO_KNOWLEDGE_ON_WIKI_SAVE", "1") != "0"
+REBUILD_COMMAND_TIMEOUT_SECONDS = int(os.environ.get("REBUILD_COMMAND_TIMEOUT_SECONDS", "900"))
 LORE_DRAFT_DIR = Path(os.environ.get("LORE_DRAFT_DIR", "/app/app-data/lore-drafts"))
 LORE_DRAFT_IMAGES_DIR = LORE_DRAFT_DIR / "images"
 # ── DM authentication (Google OAuth + signed session JWT) ───────────────
@@ -905,6 +911,221 @@ def _run_app_migrations():
                 ("013_studio_job_details", _utc_now_iso()),
             )
 
+        if "014_notes" not in done:
+            # Runtime notes are intentionally SQLite-backed instead of
+            # markdown-backed: they should save instantly and never require
+            # a static rebuild.
+            conn.execute("""
+                CREATE TABLE IF NOT EXISTS notes (
+                    id TEXT PRIMARY KEY,
+                    owner TEXT NOT NULL,
+                    scope TEXT NOT NULL CHECK(scope IN ('private', 'dm')),
+                    title TEXT NOT NULL,
+                    body TEXT NOT NULL,
+                    created_at TEXT NOT NULL,
+                    updated_at TEXT NOT NULL,
+                    deleted_at TEXT
+                )
+            """)
+            conn.execute("""
+                CREATE INDEX IF NOT EXISTS idx_notes_owner_scope_updated
+                ON notes (owner, scope, deleted_at, updated_at DESC)
+            """)
+            conn.execute(
+                "INSERT INTO schema_migrations (name, applied_at) VALUES (?, ?)",
+                ("014_notes", _utc_now_iso()),
+            )
+
+
+def _trim_output(text, max_chars=6000):
+    text = str(text or "")
+    if len(text) <= max_chars:
+        return text
+    return text[-max_chars:]
+
+
+def _join_process_output(*parts):
+    output = []
+    for part in parts:
+        if not part:
+            continue
+        if isinstance(part, bytes):
+            output.append(part.decode("utf-8", "replace"))
+        else:
+            output.append(str(part))
+    return "\n".join(output)
+
+
+def _write_rebuild_status(status):
+    REBUILD_STATUS_PATH.parent.mkdir(parents=True, exist_ok=True)
+    payload = dict(status or {})
+    payload["updated_at"] = _utc_now_iso()
+    tmp = REBUILD_STATUS_PATH.with_name(REBUILD_STATUS_PATH.name + f".{secrets.token_hex(4)}.tmp")
+    try:
+        tmp.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
+        os.replace(tmp, REBUILD_STATUS_PATH)
+    finally:
+        try:
+            if tmp.exists():
+                tmp.unlink()
+        except OSError:
+            pass
+    return payload
+
+
+def _read_rebuild_status():
+    try:
+        return json.loads(REBUILD_STATUS_PATH.read_text(encoding="utf-8"))
+    except Exception:
+        return {
+            "state": "idle",
+            "updated_at": None,
+            "commands": [],
+        }
+
+
+def _run_rebuild_command(command, label):
+    started_at = _utc_now_iso()
+    result = subprocess.run(
+        command,
+        cwd=str(SITE_SOURCE_DIR),
+        text=True,
+        capture_output=True,
+        timeout=REBUILD_COMMAND_TIMEOUT_SECONDS,
+    )
+    output = _join_process_output(result.stdout, result.stderr)
+    return {
+        "label": label,
+        "command": " ".join(command),
+        "returncode": result.returncode,
+        "started_at": started_at,
+        "finished_at": _utc_now_iso(),
+        "output_tail": _trim_output(output),
+    }
+
+
+def _run_rebuild_job(lock_file, job_id, reason, include_knowledge):
+    commands = [("site", ["npm", "run", "build"])]
+    if include_knowledge:
+        commands.append(("knowledge", ["npm", "run", "knowledge"]))
+
+    status = {
+        "job_id": job_id,
+        "state": "running",
+        "reason": reason,
+        "include_knowledge": include_knowledge,
+        "started_at": _utc_now_iso(),
+        "finished_at": None,
+        "current_step": "starting",
+        "commands": [],
+    }
+    _write_rebuild_status(status)
+    try:
+        for label, command in commands:
+            status["current_step"] = label
+            _write_rebuild_status(status)
+            step = _run_rebuild_command(command, label)
+            status["commands"].append(step)
+            if step["returncode"] != 0:
+                status.update({
+                    "state": "failed",
+                    "finished_at": _utc_now_iso(),
+                    "current_step": label,
+                    "error": f"{step['command']} exited {step['returncode']}",
+                })
+                _write_rebuild_status(status)
+                logging.error("Rebuild job %s failed at %s", job_id, label)
+                return
+
+        if include_knowledge:
+            try:
+                engine.reload_if_stale(force=True)
+            except Exception:
+                logging.exception("Rebuild job %s could not hot-reload Enzo", job_id)
+
+        status.update({
+            "state": "succeeded",
+            "finished_at": _utc_now_iso(),
+            "current_step": "done",
+            "error": "",
+        })
+        _write_rebuild_status(status)
+        logging.info("Rebuild job %s completed", job_id)
+    except subprocess.TimeoutExpired as exc:
+        output = _join_process_output(exc.stdout, exc.stderr)
+        status["commands"].append({
+            "label": status.get("current_step") or "unknown",
+            "command": " ".join(exc.cmd) if isinstance(exc.cmd, list) else str(exc.cmd),
+            "returncode": None,
+            "started_at": status.get("updated_at"),
+            "finished_at": _utc_now_iso(),
+            "output_tail": _trim_output(output),
+        })
+        status.update({
+            "state": "failed",
+            "finished_at": _utc_now_iso(),
+            "error": f"Rebuild timed out after {REBUILD_COMMAND_TIMEOUT_SECONDS}s",
+        })
+        _write_rebuild_status(status)
+        logging.exception("Rebuild job %s timed out", job_id)
+    except Exception as exc:
+        status.update({
+            "state": "failed",
+            "finished_at": _utc_now_iso(),
+            "error": str(exc),
+        })
+        _write_rebuild_status(status)
+        logging.exception("Rebuild job %s failed", job_id)
+    finally:
+        try:
+            fcntl.flock(lock_file.fileno(), fcntl.LOCK_UN)
+        except Exception:
+            pass
+        try:
+            lock_file.close()
+        except Exception:
+            pass
+
+
+def _start_rebuild_job(reason, include_knowledge=True):
+    if not AUTO_REBUILD_ON_WIKI_SAVE:
+        return {
+            "state": "disabled",
+            "reason": reason,
+            "include_knowledge": include_knowledge,
+            "updated_at": _utc_now_iso(),
+        }
+
+    REBUILD_LOCK_PATH.parent.mkdir(parents=True, exist_ok=True)
+    lock_file = open(REBUILD_LOCK_PATH, "a+")
+    try:
+        fcntl.flock(lock_file.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
+    except BlockingIOError:
+        lock_file.close()
+        status = _read_rebuild_status()
+        if status.get("state") not in {"queued", "running"}:
+            status["state"] = "running"
+        return status
+
+    job_id = secrets.token_hex(6)
+    status = _write_rebuild_status({
+        "job_id": job_id,
+        "state": "queued",
+        "reason": reason,
+        "include_knowledge": include_knowledge,
+        "started_at": None,
+        "finished_at": None,
+        "current_step": "queued",
+        "commands": [],
+    })
+    thread = threading.Thread(
+        target=_run_rebuild_job,
+        args=(lock_file, job_id, reason, include_knowledge),
+        daemon=True,
+    )
+    thread.start()
+    return status
+
 
 def _skip_rag(message):
     """Return True if the message is too short/casual to benefit from RAG."""
@@ -1007,70 +1228,100 @@ class Loremaster:
         self._vec_db = None
         self._vec_dim = 0
         self._entries_by_id = {}
+        self._loaded_data_signature = None
+        self._load_lock = threading.RLock()
 
     # ── Data loading ─────────────────────────────────────────────────────
 
     def load(self):
         """Preload tier1 and vector store at startup."""
-        tier1_path = DATA_DIR / "tier1.md"
-        try:
-            self._tier1 = tier1_path.read_text()
-            logging.info("Loaded tier1.md (%d chars)", len(self._tier1))
-        except Exception as e:
-            logging.error("Failed to load tier1.md: %s", e)
-            self._tier1 = ""
+        with self._load_lock:
+            if self._vec_db is not None:
+                try:
+                    self._vec_db.close()
+                except Exception:
+                    pass
+                self._vec_db = None
 
-        vector_path = DATA_DIR / "vector_store.json"
-        try:
-            with open(vector_path) as f:
-                raw = json.load(f)
-            # Accept both shapes: the legacy `[entry, ...]` and the new
-            # `{meta: {...}, entries: [...]}`. Once every deploy is on
-            # the new format we can drop the legacy branch.
-            if isinstance(raw, dict) and isinstance(raw.get("entries"), list):
-                self._vector_store = raw["entries"]
-                meta = raw.get("meta") or {}
-                logging.info(
-                    "Loaded vector_store.json (%d entries, built %s, model %s)",
-                    len(self._vector_store),
-                    meta.get("built_at", "?"),
-                    meta.get("embedding_model", "?"),
-                )
-                # Stale-deploy warning: if tier1.md on disk doesn't
-                # match the hash baked into the vector store, the
-                # embeddings might be out of sync with the system prompt.
-                tier1_hash = meta.get("tier1_hash") or ""
-                if tier1_hash and self._tier1:
-                    actual = hashlib.sha256(self._tier1.encode("utf-8")).hexdigest()
-                    if actual != tier1_hash:
-                        logging.warning(
-                            "vector_store.json tier1_hash mismatch — "
-                            "vectors may be stale (rerun build_vectors.py)"
-                        )
-            elif isinstance(raw, list):
-                self._vector_store = raw
-                logging.info(
-                    "Loaded vector_store.json (%d entries, legacy shape)",
-                    len(self._vector_store),
-                )
-            else:
-                logging.error("vector_store.json has unexpected shape — empty store")
+            tier1_path = DATA_DIR / "tier1.md"
+            try:
+                self._tier1 = tier1_path.read_text()
+                logging.info("Loaded tier1.md (%d chars)", len(self._tier1))
+            except Exception as e:
+                logging.error("Failed to load tier1.md: %s", e)
+                self._tier1 = ""
+
+            vector_path = DATA_DIR / "vector_store.json"
+            try:
+                with open(vector_path) as f:
+                    raw = json.load(f)
+                # Accept both shapes: the legacy `[entry, ...]` and the new
+                # `{meta: {...}, entries: [...]}`. Once every deploy is on
+                # the new format we can drop the legacy branch.
+                if isinstance(raw, dict) and isinstance(raw.get("entries"), list):
+                    self._vector_store = raw["entries"]
+                    meta = raw.get("meta") or {}
+                    logging.info(
+                        "Loaded vector_store.json (%d entries, built %s, model %s)",
+                        len(self._vector_store),
+                        meta.get("built_at", "?"),
+                        meta.get("embedding_model", "?"),
+                    )
+                    # Stale-deploy warning: if tier1.md on disk doesn't
+                    # match the hash baked into the vector store, the
+                    # embeddings might be out of sync with the system prompt.
+                    tier1_hash = meta.get("tier1_hash") or ""
+                    if tier1_hash and self._tier1:
+                        actual = hashlib.sha256(self._tier1.encode("utf-8")).hexdigest()
+                        if actual != tier1_hash:
+                            logging.warning(
+                                "vector_store.json tier1_hash mismatch — "
+                                "vectors may be stale (rerun build_vectors.py)"
+                            )
+                elif isinstance(raw, list):
+                    self._vector_store = raw
+                    logging.info(
+                        "Loaded vector_store.json (%d entries, legacy shape)",
+                        len(self._vector_store),
+                    )
+                else:
+                    logging.error("vector_store.json has unexpected shape — empty store")
+                    self._vector_store = []
+            except Exception as e:
+                logging.error("Failed to load vector_store.json: %s", e)
                 self._vector_store = []
-        except Exception as e:
-            logging.error("Failed to load vector_store.json: %s", e)
-            self._vector_store = []
 
-        # ID→entry map for the sqlite-vec retrieval path (and a few
-        # other lookups). Built before _init_vector_sqlite because
-        # that uses it implicitly via self._vector_store.
-        self._entries_by_id = {
-            e.get("id"): e
-            for e in (self._vector_store or [])
-            if e.get("id")
-        }
+            # ID→entry map for the sqlite-vec retrieval path (and a few
+            # other lookups). Built before _init_vector_sqlite because
+            # that uses it implicitly via self._vector_store.
+            self._entries_by_id = {
+                e.get("id"): e
+                for e in (self._vector_store or [])
+                if e.get("id")
+            }
 
-        self._build_name_index()
-        self._init_vector_sqlite()
+            self._build_name_index()
+            self._init_vector_sqlite()
+            self._loaded_data_signature = self._data_signature()
+
+    def _data_signature(self):
+        signature = []
+        for filename in ("tier1.md", "vector_store.json"):
+            path = DATA_DIR / filename
+            try:
+                stat = path.stat()
+                signature.append((filename, stat.st_mtime_ns, stat.st_size))
+            except OSError:
+                signature.append((filename, None, None))
+        return tuple(signature)
+
+    def reload_if_stale(self, force=False):
+        signature = self._data_signature()
+        if not force and signature == self._loaded_data_signature:
+            return False
+        logging.info("Reloading Enzo knowledge after source rebuild")
+        self.load()
+        return True
 
     @staticmethod
     def _normalize(text):
@@ -1943,6 +2194,7 @@ class Loremaster:
 
     def chat(self, message, conversation_history, rules=False, vibe=None):
         """Process a chat message. Returns (response_text, updated_history, rules, vibe)."""
+        self.reload_if_stale()
         t_start = time.time()
         logging.info(
             "── Chat request ── rules=%s, vibe=%s, history=%d msgs",
@@ -2136,6 +2388,7 @@ class Loremaster:
         For command toggles (/rules on/off, /vibe ...), there's nothing
         to stream — yields a single token event with the full reply
         followed by the meta event. Keeps the client renderer uniform."""
+        self.reload_if_stale()
         cmd = (message or "").strip().lower()
 
         # Run the same toggle handling as chat() but yield instead of
@@ -3335,6 +3588,26 @@ def admin_session():
     return jsonify({"configured": True, "signed_in": True, "email": email})
 
 
+@app.route("/api/admin/rebuild", methods=["GET", "POST"])
+def admin_rebuild():
+    admin_error = _admin_error_response()
+    if admin_error:
+        return admin_error
+
+    if request.method == "GET":
+        return jsonify({"rebuild": _read_rebuild_status()})
+
+    body = request.get_json(silent=True) or {}
+    include_knowledge = body.get("knowledge")
+    if include_knowledge is None:
+        include_knowledge = AUTO_KNOWLEDGE_ON_WIKI_SAVE
+    rebuild = _start_rebuild_job(
+        str(body.get("reason") or "manual DM rebuild").strip()[:160],
+        include_knowledge=bool(include_knowledge),
+    )
+    return jsonify({"ok": rebuild.get("state") != "disabled", "rebuild": rebuild})
+
+
 @app.route("/api/admin/wiki-entry", methods=["GET", "PUT"])
 def admin_wiki_entry():
     admin_error = _admin_error_response()
@@ -3389,13 +3662,15 @@ def admin_wiki_entry():
                 pass
         _chown_like_site(source_path)
         entry = _read_wiki_source_payload(source_path)
+        rebuild = _start_rebuild_job(
+            f"wiki edit: {entry.get('source_file') or wiki_url}",
+            include_knowledge=AUTO_KNOWLEDGE_ON_WIKI_SAVE,
+        )
         return jsonify({
             "ok": True,
             "entry": entry,
-            "next_steps": [
-                "npm run knowledge",
-                "docker compose up -d --build chatbot nginx",
-            ],
+            "rebuild": rebuild,
+            "next_steps": [],
         })
     except Exception as exc:
         logging.exception("Failed to save wiki source %s", wiki_url)
@@ -3885,6 +4160,137 @@ def dismiss_message(message_id):
         """, (message_id, name, _utc_now_iso()))
 
     return jsonify({"ok": True})
+
+
+def _note_scope(body=None):
+    body = body or {}
+    raw = body.get("scope") or request.args.get("scope") or "private"
+    raw = str(raw or "").strip().lower()
+    return "dm" if raw in {"dm", "dm_notes", "dm-notes"} else "private"
+
+
+def _note_owner_for_scope(player_name, scope):
+    if scope == "dm":
+        if not _is_dm_player(player_name):
+            return None, (jsonify({"error": "DM access required"}), 403)
+        return "DM", None
+    return player_name, None
+
+
+def _note_payload(row):
+    return {
+        "id": row["id"],
+        "scope": row["scope"],
+        "title": row["title"],
+        "body": row["body"],
+        "created_at": row["created_at"],
+        "updated_at": row["updated_at"],
+    }
+
+
+def _sanitize_note_body(value):
+    if not isinstance(value, str):
+        return ""
+    return value.strip()[:50000]
+
+
+def _sanitize_note_title(value, body=""):
+    if isinstance(value, str) and value.strip():
+        return value.strip()[:140]
+    first = next((line.strip() for line in str(body or "").splitlines() if line.strip()), "")
+    return (first[:140] if first else "Untitled Note")
+
+
+@app.route("/api/notes", methods=["GET", "POST"])
+def notes_endpoint():
+    player_name, auth_error = _logged_in_player_name()
+    if auth_error:
+        return auth_error
+
+    if request.method == "GET":
+        scope = _note_scope()
+        owner, scope_error = _note_owner_for_scope(player_name, scope)
+        if scope_error:
+            return scope_error
+        with _app_db() as conn:
+            rows = list(conn.execute("""
+                SELECT id, owner, scope, title, body, created_at, updated_at
+                FROM notes
+                WHERE owner = ? AND scope = ? AND deleted_at IS NULL
+                ORDER BY updated_at DESC, created_at DESC
+                LIMIT 200
+            """, (owner, scope)))
+        return jsonify({
+            "notes": [_note_payload(row) for row in rows],
+            "scope": scope,
+        })
+
+    body = request.get_json(silent=True) or {}
+    scope = _note_scope(body)
+    owner, scope_error = _note_owner_for_scope(player_name, scope)
+    if scope_error:
+        return scope_error
+
+    note_body = _sanitize_note_body(body.get("body"))
+    title = _sanitize_note_title(body.get("title"), note_body)
+    now = _utc_now_iso()
+    note_id = secrets.token_urlsafe(12)
+    with _app_db() as conn:
+        conn.execute("""
+            INSERT INTO notes (id, owner, scope, title, body, created_at, updated_at)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+        """, (note_id, owner, scope, title, note_body, now, now))
+        row = conn.execute("""
+            SELECT id, owner, scope, title, body, created_at, updated_at
+            FROM notes
+            WHERE id = ?
+        """, (note_id,)).fetchone()
+    return jsonify({"ok": True, "note": _note_payload(row)}), 201
+
+
+@app.route("/api/notes/<note_id>", methods=["PUT", "PATCH", "DELETE"])
+def note_endpoint(note_id):
+    player_name, auth_error = _logged_in_player_name()
+    if auth_error:
+        return auth_error
+
+    with _app_db() as conn:
+        row = conn.execute("""
+            SELECT id, owner, scope, title, body, created_at, updated_at
+            FROM notes
+            WHERE id = ? AND deleted_at IS NULL
+        """, (note_id,)).fetchone()
+        if not row:
+            return jsonify({"error": "Note not found"}), 404
+        if row["scope"] == "dm":
+            if not _is_dm_player(player_name):
+                return jsonify({"error": "DM access required"}), 403
+        elif row["owner"] != player_name:
+            return jsonify({"error": "Not your note"}), 403
+
+        if request.method == "DELETE":
+            conn.execute("""
+                UPDATE notes
+                SET deleted_at = ?, updated_at = ?
+                WHERE id = ?
+            """, (_utc_now_iso(), _utc_now_iso(), note_id))
+            return jsonify({"ok": True, "id": note_id})
+
+        body = request.get_json(silent=True) or {}
+        note_body = _sanitize_note_body(body.get("body"))
+        title = _sanitize_note_title(body.get("title"), note_body)
+        updated_at = _utc_now_iso()
+        conn.execute("""
+            UPDATE notes
+            SET title = ?, body = ?, updated_at = ?
+            WHERE id = ?
+        """, (title, note_body, updated_at, note_id))
+        row = conn.execute("""
+            SELECT id, owner, scope, title, body, created_at, updated_at
+            FROM notes
+            WHERE id = ?
+        """, (note_id,)).fetchone()
+    return jsonify({"ok": True, "note": _note_payload(row)})
 
 
 @app.route("/api/in-play", methods=["GET", "PUT"])
@@ -5712,6 +6118,14 @@ def _publish_lore_submission(submission_id, body):
         """, (title, slug, markdown, summary, image_prompt,
               card_fields_json, now, now, submission_id))
 
+    auto_rebuild = body.get("auto_rebuild", True) is not False
+    rebuild = None
+    if auto_rebuild:
+        rebuild = _start_rebuild_job(
+            f"lore publish: {config['url_prefix']}/{slug}/",
+            include_knowledge=AUTO_KNOWLEDGE_ON_WIKI_SAVE,
+        )
+
     return {
         "ok": True,
         "id": submission_id,
@@ -5722,10 +6136,8 @@ def _publish_lore_submission(submission_id, body):
         "image_url": image_url,
         "index_updated": index_updated,
         "descriptions_updated": descriptions_updated,
-        "next_steps": [
-            "npm run knowledge",
-            "docker compose up -d --build chatbot nginx",
-        ],
+        "rebuild": rebuild,
+        "next_steps": [],
     }, 200
 
 
