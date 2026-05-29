@@ -79,6 +79,7 @@
           <div class="vos-user-menu-group" id="vos-user-menu-dm" hidden>
             <div class="vos-user-menu-label">DM</div>
             <a role="menuitem" href="/dm/">DM Dashboard</a>
+            <a role="menuitem" href="/dm/#vos-dm-wiki-title">Wiki Editor</a>
             <a role="menuitem" href="/dm/#vos-dm-lore-title">Review Lore</a>
             <a role="menuitem" href="/dm/#vos-dm-message-title">DM Messages</a>
             <a role="menuitem" href="/dm/#vos-dm-rsvp-title">RSVP Summary</a>
@@ -111,6 +112,10 @@
   <article class="vos-page-shell{% if page.filePathStem == '/home' %} vos-home-shell{% endif %}{% if page.url == '/en/Venturia/' %} vos-wiki-home-shell{% endif %}">
     {{ content | safe }}
   </article>
+
+  {%- if isWikiPage -%}
+  <a class="vos-wiki-edit-link" id="vos-wiki-edit-link" href="/dm/?wiki={{ page.url }}#vos-dm-wiki-title" data-wiki-url="{{ page.url }}" hidden>Edit Wiki</a>
+  {%- endif -%}
 
   {%- if page.filePathStem and page.filePathStem.endsWith('/index') and autoIndex != false -%}
     {%- set tree = collections.all | descendantTree(page.url) -%}

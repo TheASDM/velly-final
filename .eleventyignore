@@ -11,6 +11,9 @@ public
 ssl
 logs
 images
+image
+generated-art
+files
 
 # Top-level repo docs that aren't wiki content
 ARCHITECTURE.md

@@ -3335,6 +3335,73 @@ def admin_session():
     return jsonify({"configured": True, "signed_in": True, "email": email})
 
 
+@app.route("/api/admin/wiki-entry", methods=["GET", "PUT"])
+def admin_wiki_entry():
+    admin_error = _admin_error_response()
+    if admin_error:
+        return admin_error
+
+    if request.method == "GET":
+        wiki_url = (request.args.get("url") or "").strip()
+        source_path = _wiki_url_to_source_path(wiki_url)
+        if not source_path:
+            return jsonify({"error": f"No wiki source found for {wiki_url or '(blank)'}"}), 404
+        try:
+            return jsonify({"entry": _read_wiki_source_payload(source_path)})
+        except Exception as exc:
+            logging.exception("Failed to read wiki source %s", wiki_url)
+            return jsonify({"error": str(exc), "error_code": "read_failed"}), 500
+
+    body = request.get_json(silent=True) or {}
+    wiki_url = (body.get("url") or "").strip()
+    content = body.get("content")
+    expected_hash = (body.get("expected_hash") or body.get("hash") or "").strip()
+    if not isinstance(content, str):
+        return jsonify({"error": "content must be a string", "error_code": "invalid"}), 400
+    if len(content.encode("utf-8")) > 750_000:
+        return jsonify({"error": "Wiki entry is too large to save here", "error_code": "invalid"}), 413
+
+    source_path = _wiki_url_to_source_path(wiki_url)
+    if not source_path:
+        return jsonify({"error": f"No wiki source found for {wiki_url or '(blank)'}"}), 404
+
+    try:
+        current_text = source_path.read_text(encoding="utf-8")
+        current_hash = _wiki_source_hash(current_text)
+        if expected_hash and expected_hash != current_hash:
+            return jsonify({
+                "error": "This wiki file changed since you loaded it. Reload before saving.",
+                "error_code": "conflict",
+                "current_hash": current_hash,
+            }), 409
+
+        if content and not content.endswith("\n"):
+            content += "\n"
+        tmp = source_path.with_name(source_path.name + f".{secrets.token_hex(6)}.tmp")
+        try:
+            tmp.write_text(content, encoding="utf-8")
+            os.replace(tmp, source_path)
+        finally:
+            try:
+                if tmp.exists():
+                    tmp.unlink()
+            except OSError:
+                pass
+        _chown_like_site(source_path)
+        entry = _read_wiki_source_payload(source_path)
+        return jsonify({
+            "ok": True,
+            "entry": entry,
+            "next_steps": [
+                "npm run knowledge",
+                "docker compose up -d --build chatbot nginx",
+            ],
+        })
+    except Exception as exc:
+        logging.exception("Failed to save wiki source %s", wiki_url)
+        return jsonify({"error": str(exc), "error_code": "save_failed"}), 500
+
+
 @app.route("/api/auth/login", methods=["POST"])
 def auth_login():
     if not _auth_login_required():
@@ -5148,6 +5215,14 @@ def _source_file_url(source_file):
     return f"/en/{path}/" if path else None
 
 
+def _source_path_to_wiki_url(source_path):
+    try:
+        rel = source_path.resolve().relative_to(SITE_SOURCE_DIR.resolve()).as_posix()
+    except (ValueError, OSError):
+        return None
+    return _source_file_url(rel)
+
+
 def _wiki_url_to_source_path(wiki_url):
     """Inverse of _source_file_url: '/en/Venturia/Items/foo/' -> the on-
     disk SITE_SOURCE_DIR/Venturia/Items/foo.md (or .../index.md for
@@ -5178,6 +5253,32 @@ def _wiki_url_to_source_path(wiki_url):
         if path.exists() and path.is_file():
             return path
     return None
+
+
+def _wiki_source_hash(text):
+    return hashlib.sha256((text or "").encode("utf-8")).hexdigest()
+
+
+def _read_wiki_source_payload(source_path):
+    text = source_path.read_text(encoding="utf-8")
+    rel = source_path.resolve().relative_to(SITE_SOURCE_DIR.resolve()).as_posix()
+    stat = source_path.stat()
+    title_match = re.search(r"(?m)^title:\s*(.+?)\s*$", text)
+    title = ""
+    if title_match:
+        raw = title_match.group(1).strip()
+        try:
+            title = json.loads(raw)
+        except Exception:
+            title = raw.strip("'\"")
+    return {
+        "url": _source_path_to_wiki_url(source_path),
+        "source_file": rel,
+        "title": title,
+        "content": text,
+        "hash": _wiki_source_hash(text),
+        "updated_at": datetime.fromtimestamp(stat.st_mtime, timezone.utc).isoformat(),
+    }
 
 
 # Match the start of any "## Gallery" heading, leading whitespace tolerated.

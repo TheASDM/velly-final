@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'foglight-pwa-v34';
+const CACHE_VERSION = 'foglight-pwa-v35';
 const PRECACHE = `${CACHE_VERSION}-precache`;
 const PAGES = `${CACHE_VERSION}-pages`;
 const ASSETS = `${CACHE_VERSION}-assets`;
@@ -10,6 +10,7 @@ const APP_SHELL = [
   '/settings/',
   '/submit-lore/',
   '/art-submissions/',
+  '/dm/',
   '/offline/',
   '/pwa-client.js',
   '/manifest.webmanifest',

@@ -405,6 +405,20 @@ permalink: /dm/
   font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   font-size: 0.86rem;
 }
+.vos-dm-wiki-editor textarea#vos-dm-wiki-content {
+  min-height: 520px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.86rem;
+  line-height: 1.45;
+}
+.vos-dm-wiki-meta {
+  min-height: 1.35em;
+  color: rgba(233,225,208,0.62);
+  font-size: 0.9rem;
+}
+.vos-dm-wiki-meta code {
+  color: var(--vos-cream);
+}
 .vos-dm-toggle {
   display: inline-flex;
   align-items: center;
@@ -478,6 +492,33 @@ permalink: /dm/
         <a class="vos-dm-button" id="vos-dm-site-login" href="/api/auth/oauth/discord/start?next=/dm/">Sign in with Discord</a>
       </div>
     </div>
+  </section>
+
+  <section class="vos-dm-panel" aria-labelledby="vos-dm-wiki-title">
+    <div class="vos-dm-panel-head">
+      <h2 id="vos-dm-wiki-title">Wiki Editor</h2>
+      <div class="vos-dm-actions">
+        <button id="vos-dm-wiki-load" type="button">Load</button>
+      </div>
+    </div>
+    <p class="vos-dm-helper">Edit an existing published wiki source file. Choose a title or paste a wiki URL such as <code>/en/Venturia/Characters/PCs/roxanya/</code>.</p>
+    <datalist id="vos-dm-wiki-pages"></datalist>
+    <form class="vos-dm-form vos-dm-wiki-editor" id="vos-dm-wiki-form">
+      <label>
+        Wiki Page
+        <input id="vos-dm-wiki-query" list="vos-dm-wiki-pages" type="text" autocomplete="off" placeholder="Start typing a page title or paste /en/...">
+      </label>
+      <div class="vos-dm-wiki-meta" id="vos-dm-wiki-meta"></div>
+      <label id="vos-dm-wiki-content-row" hidden>
+        Source Markdown
+        <textarea id="vos-dm-wiki-content" spellcheck="false"></textarea>
+      </label>
+      <div class="vos-dm-actions">
+        <a class="vos-dm-button" id="vos-dm-wiki-open" href="#" hidden>Open Page</a>
+        <button class="vos-dm-button" id="vos-dm-wiki-save" type="submit" disabled>Save Wiki Entry</button>
+      </div>
+    </form>
+    <div class="vos-dm-status" id="vos-dm-wiki-status" role="status" aria-live="polite"></div>
   </section>
 
   <section class="vos-dm-panel" aria-labelledby="vos-dm-lore-title">
@@ -682,6 +723,11 @@ permalink: /dm/
   function loadAdminDataOnce() {
     if (adminDataLoaded || !isSessionLive()) return;
     adminDataLoaded = true;
+    loadWikiPages();
+    if (pendingWikiAutoLoad) {
+      loadWikiEntry();
+      pendingWikiAutoLoad = null;
+    }
     refreshLoreSubmissions();
     refreshMessages();
     refreshRsvps();
@@ -740,6 +786,16 @@ permalink: /dm/
   const loreBulkRejectEl = document.getElementById('vos-dm-lore-bulk-reject');
   const selectedLoreIds = new Set();
 
+  const wikiQueryEl = document.getElementById('vos-dm-wiki-query');
+  const wikiLoadEl = document.getElementById('vos-dm-wiki-load');
+  const wikiForm = document.getElementById('vos-dm-wiki-form');
+  const wikiContentRowEl = document.getElementById('vos-dm-wiki-content-row');
+  const wikiContentEl = document.getElementById('vos-dm-wiki-content');
+  const wikiMetaEl = document.getElementById('vos-dm-wiki-meta');
+  const wikiOpenEl = document.getElementById('vos-dm-wiki-open');
+  const wikiSaveEl = document.getElementById('vos-dm-wiki-save');
+  const wikiStatusEl = document.getElementById('vos-dm-wiki-status');
+
   const inPlayListEl = document.getElementById('vos-dm-inplay-list');
   const inPlayStatusEl = document.getElementById('vos-dm-inplay-status');
   const inPlayAddEl = document.getElementById('vos-dm-inplay-add');
@@ -761,6 +817,16 @@ permalink: /dm/
   const lorePublishEl = document.getElementById('vos-dm-lore-publish');
   let selectedLoreId = null;
   let selectedLoreStatus = null;
+  let loadedWikiEntry = null;
+  let pendingWikiAutoLoad = null;
+  let wikiPagesByTitle = null;
+  let wikiPages = [];
+
+  try {
+    const params = new URLSearchParams(window.location.search);
+    pendingWikiAutoLoad = params.get('wiki') || '';
+    if (pendingWikiAutoLoad && wikiQueryEl) wikiQueryEl.value = pendingWikiAutoLoad;
+  } catch (e) {}
 
   // Returns the session JWT to send as `Authorization: Bearer <token>`,
   // or null when the user is signed out. Mirrors the old getToken
@@ -942,6 +1008,96 @@ permalink: /dm/
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body),
     });
+  }
+
+  function escapeHtml(s) {
+    return String(s ?? '')
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  }
+
+  function resolveWikiQuery(value) {
+    const raw = String(value || '').trim();
+    if (!raw) return null;
+    if (raw.startsWith('/en/')) return raw;
+    const exact = wikiPagesByTitle && wikiPagesByTitle.get(raw);
+    if (exact) return exact.url;
+    const lower = raw.toLowerCase();
+    const match = wikiPages.find((entry) =>
+      (entry.title || '').toLowerCase() === lower ||
+      (entry.url || '').toLowerCase() === lower
+    );
+    return match ? match.url : null;
+  }
+
+  function renderWikiEntry(entry) {
+    loadedWikiEntry = entry;
+    wikiContentEl.value = entry.content || '';
+    wikiContentRowEl.hidden = false;
+    wikiSaveEl.disabled = false;
+    wikiOpenEl.hidden = !entry.url;
+    if (entry.url) wikiOpenEl.href = entry.url;
+    const title = entry.title || entry.url || 'Wiki entry';
+    wikiMetaEl.innerHTML = `${escapeHtml(title)} · <code>${escapeHtml(entry.source_file || '')}</code>`;
+  }
+
+  async function loadWikiEntry() {
+    const token = getToken(wikiStatusEl);
+    if (!token) return;
+    await loadWikiPages();
+    const wikiUrl = resolveWikiQuery(wikiQueryEl.value);
+    loadedWikiEntry = null;
+    wikiContentEl.value = '';
+    wikiContentRowEl.hidden = true;
+    wikiOpenEl.hidden = true;
+    wikiSaveEl.disabled = true;
+    wikiMetaEl.textContent = '';
+    if (!wikiUrl) {
+      setStatus(wikiStatusEl, 'Choose a known wiki page or paste a /en/... URL.', true);
+      return;
+    }
+    wikiLoadEl.disabled = true;
+    setStatus(wikiStatusEl, 'Loading wiki source...');
+    try {
+      const data = await adminJson(`/api/admin/wiki-entry?url=${encodeURIComponent(wikiUrl)}`, token);
+      renderWikiEntry(data.entry || {});
+      if (wikiQueryEl.value.trim().startsWith('/en/')) {
+        wikiQueryEl.value = (data.entry && data.entry.url) || wikiUrl;
+      }
+      setStatus(wikiStatusEl, 'Loaded.');
+    } catch (error) {
+      setStatus(wikiStatusEl, error.message, true);
+    } finally {
+      wikiLoadEl.disabled = false;
+      wikiSaveEl.disabled = !loadedWikiEntry;
+    }
+  }
+
+  async function saveWikiEntry(event) {
+    event.preventDefault();
+    const token = getToken(wikiStatusEl);
+    if (!token || !loadedWikiEntry) return;
+    if (!window.confirm('Save this wiki source file?')) return;
+    wikiSaveEl.disabled = true;
+    setStatus(wikiStatusEl, 'Saving wiki source...');
+    try {
+      const data = await adminJson('/api/admin/wiki-entry', token, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          url: loadedWikiEntry.url,
+          content: wikiContentEl.value,
+          expected_hash: loadedWikiEntry.hash,
+        }),
+      });
+      renderWikiEntry(data.entry || {});
+      const steps = (data.next_steps || []).join(' then ');
+      setStatus(wikiStatusEl, `Saved. Rebuild next: ${steps}`);
+    } catch (error) {
+      setStatus(wikiStatusEl, error.message, true);
+    } finally {
+      wikiSaveEl.disabled = false;
+    }
   }
 
   async function loadPlayers() {
@@ -1559,11 +1715,20 @@ permalink: /dm/
   if (loreSelectAllEl) loreSelectAllEl.addEventListener('change', toggleSelectAll);
   if (loreBulkPublishEl) loreBulkPublishEl.addEventListener('click', bulkPublishSelected);
   if (loreBulkRejectEl) loreBulkRejectEl.addEventListener('click', bulkRejectSelected);
+  if (wikiLoadEl) wikiLoadEl.addEventListener('click', loadWikiEntry);
+  if (wikiForm) wikiForm.addEventListener('submit', saveWikiEntry);
+  if (wikiQueryEl) {
+    wikiQueryEl.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        loadWikiEntry();
+      }
+    });
+  }
 
   // ── Currently In Play editor ──────────────────────────────────────
   const EMBLEM_PRESETS = ['PC', 'NPC', 'DM', 'Loc', 'Fac', 'Lore', 'Item', 'Map', 'Cre', 'Cul', 'Gov', 'Ses', 'Upd', 'Tbl'];
   const EMBLEM_SKIP_WORDS = new Set(['the', 'a', 'an', 'of', 'and', 'or', 'on', 'to']);
-  let wikiPagesByTitle = null;
 
   // Best-effort 2-3 char emblem from a name: initials of significant
   // words, or the first 2 chars when there's only one word. Used as the
@@ -1585,17 +1750,22 @@ permalink: /dm/
       const response = await fetch('/data/wiki-pages.json', { cache: 'default' });
       if (!response.ok) return new Map();
       const data = await response.json();
+      wikiPages = Array.isArray(data) ? data : [];
       const map = new Map();
-      const datalist = document.getElementById('vos-dm-inplay-pages');
-      if (datalist) datalist.innerHTML = '';
-      (Array.isArray(data) ? data : []).forEach((entry) => {
+      const datalists = [
+        document.getElementById('vos-dm-inplay-pages'),
+        document.getElementById('vos-dm-wiki-pages'),
+      ].filter(Boolean);
+      datalists.forEach((datalist) => { datalist.innerHTML = ''; });
+      wikiPages.forEach((entry) => {
         if (!entry || !entry.title) return;
         map.set(entry.title, entry);
-        if (datalist) {
+        datalists.forEach((datalist) => {
           const option = document.createElement('option');
           option.value = entry.title;
+          option.label = entry.url || '';
           datalist.appendChild(option);
-        }
+        });
       });
       wikiPagesByTitle = map;
       return map;

@@ -370,6 +370,18 @@
     updateProfileAvatar(name);
   }
 
+  function updateWikiEditLink() {
+    const link = document.getElementById('vos-wiki-edit-link');
+    if (!link) return;
+    const name = getStorage(PLAYER_KEY);
+    const isDm = !!((authSession && authSession.isDm) || name === 'DM');
+    const wikiUrl = link.getAttribute('data-wiki-url') || window.location.pathname;
+    link.hidden = !isDm;
+    if (isDm && wikiUrl) {
+      link.href = `/dm/?wiki=${encodeURIComponent(wikiUrl)}#vos-dm-wiki-title`;
+    }
+  }
+
   function updateUserMenuState() {
     const name = getStorage(PLAYER_KEY);
     const menu = document.getElementById('vos-user-menu');
@@ -383,6 +395,7 @@
     if (signOutItem) signOutItem.hidden = !name;
     if (displayNameEl) displayNameEl.textContent = name ? getProfileDisplayName(name) : 'Not signed in';
     if (menu && !name) menu.hidden = true;
+    updateWikiEditLink();
   }
 
   function closeUserMenu() {
