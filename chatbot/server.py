@@ -61,7 +61,9 @@ TEMPERATURE = float(os.environ.get("TEMPERATURE", "0.2"))
 
 # ── Art Studio configuration ──────────────────────────────────────────────────
 # Generated images are persisted on a docker-mounted volume so they survive
-# container rebuilds and can be served as a shared gallery to the codex site.
+# container rebuilds. New Studio pieces are private to their creator and the
+# DM until explicitly shared; older manifest rows without a visibility field
+# are treated as shared for backward compatibility.
 GALLERY_DIR = Path(os.environ.get("GALLERY_DIR", "/app/generated-art"))
 GALLERY_IMAGES_DIR = GALLERY_DIR / "images"
 GALLERY_MANIFEST = GALLERY_DIR / "gallery.json"
@@ -100,12 +102,6 @@ CHAT_RATE_LIMIT = os.environ.get("CHAT_RATE_LIMIT", "30/hour;5/minute")
 # total bytes to stop pathological clients from sending megabytes of
 # replayed history per request.
 MAX_CONVERSATION_BYTES = int(os.environ.get("MAX_CONVERSATION_BYTES", str(60_000)))
-
-# DM passphrase gates the gallery delete endpoint. When unset, the delete
-# route is disabled entirely — you can still purge images by editing files
-# on the host directly (see README). Match is case-insensitive and ignores
-# surrounding whitespace so "prima volta" and " Prima Volta " both work.
-DM_PASSPHRASE = os.environ.get("DM_PASSPHRASE", "").strip()
 
 # ── PWA runtime configuration ────────────────────────────────────────────────
 # One SQLite file for small read/write app state. This keeps the PWA layer
@@ -2563,6 +2559,118 @@ def _write_manifest_atomic(entries):
     os.replace(tmp, GALLERY_MANIFEST)
 
 
+def _gallery_lock_path():
+    return GALLERY_MANIFEST.parent / ".manifest.lock"
+
+
+def _gallery_entry_visibility(entry):
+    visibility = str((entry or {}).get("visibility") or "").strip().lower()
+    if visibility in {"private", "shared"}:
+        return visibility
+    # Backward compatibility: art generated before privacy existed was shown
+    # in the group gallery, so missing visibility remains shared.
+    return "shared"
+
+
+def _gallery_entry_is_shared(entry):
+    return _gallery_entry_visibility(entry) == "shared"
+
+
+def _gallery_entry_creator(entry):
+    return str((entry or {}).get("created_by") or "").strip()
+
+
+def _gallery_viewer_context():
+    """Return (player_name, is_dm) for the current request, if authenticated.
+
+    Player auth uses the PWA bearer token or auth cookie. The Google DM session
+    path is kept for older admin clients, but Studio normally uses player auth.
+    """
+    payload = _verify_player_token_payload(_extract_player_token())
+    if payload:
+        name = str(payload.get("name") or "").strip()
+        return name, bool(payload.get("is_dm") or _is_dm_player(name))
+
+    email = None
+    if _admin_auth_configured():
+        email, _reason = _verify_session_jwt(_extract_bearer_token())
+    if email:
+        return f"DM ({email})", True
+
+    if not _auth_login_required():
+        name = _player_name_from_request()
+        return name, _is_dm_player(name)
+
+    return "", False
+
+
+def _gallery_can_view(entry, viewer_name=None, viewer_is_dm=False):
+    if _gallery_entry_is_shared(entry):
+        return True
+    if viewer_is_dm:
+        return True
+    creator = _gallery_entry_creator(entry)
+    return bool(creator and viewer_name and creator == viewer_name)
+
+
+def _gallery_can_share(entry, viewer_name=None, viewer_is_dm=False):
+    if viewer_is_dm:
+        return True
+    creator = _gallery_entry_creator(entry)
+    return bool(creator and viewer_name and creator == viewer_name)
+
+
+def _gallery_public_payload(entry, viewer_name=None, viewer_is_dm=False):
+    visibility = _gallery_entry_visibility(entry)
+    creator = _gallery_entry_creator(entry)
+    can_share = _gallery_can_share(entry, viewer_name, viewer_is_dm)
+    return {
+        "id": entry["id"],
+        "image_url": f"/api/gallery/image/{entry['filename']}",
+        "title": _gallery_entry_title(entry),
+        "prompt": entry.get("prompt", ""),
+        "enhanced_prompt": entry.get("enhanced_prompt"),
+        "grounded_in": entry.get("grounded_in") or [],
+        "style": entry.get("style"),
+        "created_by": creator or None,
+        "created_at": entry.get("created_at"),
+        "model": entry.get("model"),
+        "visibility": visibility,
+        "is_shared": visibility == "shared",
+        "shared_at": entry.get("shared_at"),
+        "can_share": can_share,
+        "can_delete": bool(viewer_is_dm),
+    }
+
+
+def _find_gallery_entry(entries, gallery_id):
+    return next((e for e in entries if e.get("id") == gallery_id), None)
+
+
+def _set_gallery_visibility(gallery_id, visibility, actor):
+    visibility = "shared" if visibility == "shared" else "private"
+    now = _utc_now_iso()
+    _ensure_gallery_dirs()
+    with open(_gallery_lock_path(), "a+") as lock:
+        try:
+            fcntl.flock(lock.fileno(), fcntl.LOCK_EX)
+            entries = _load_manifest()
+            entry = _find_gallery_entry(entries, gallery_id)
+            if not entry:
+                return None
+            entry["visibility"] = visibility
+            if visibility == "shared":
+                entry["shared_at"] = entry.get("shared_at") or now
+                entry["shared_by"] = (actor or "")[:96] or None
+            else:
+                entry["shared_at"] = None
+                entry["shared_by"] = None
+            _write_manifest_atomic(entries)
+            return dict(entry)
+        finally:
+            fcntl.flock(lock.fileno(), fcntl.LOCK_UN)
+
+
 def _save_gallery_entry(
     image_bytes, prompt, full_prompt, style_key, created_by, model,
     enhanced_prompt=None, grounded_in=None, title=None,
@@ -2594,12 +2702,15 @@ def _save_gallery_entry(
             "style": style_key,
             "created_by": (created_by or "").strip()[:64] or None,
             "model": model,
+            "visibility": "private",
+            "shared_at": None,
+            "shared_by": None,
         }
 
         # Append under a coarse lock so concurrent workers don't trample
         # each other's manifests. We re-read inside the lock to pick up any
         # entries another worker wrote since we last loaded.
-        with open(GALLERY_MANIFEST.parent / ".manifest.lock", "a+") as lock:
+        with open(_gallery_lock_path(), "a+") as lock:
             try:
                 fcntl.flock(lock.fileno(), fcntl.LOCK_EX)
                 entries = _load_manifest()
@@ -3222,7 +3333,7 @@ logging.basicConfig(
 
 
 _CORS_METHODS = "GET, POST, PUT, DELETE, OPTIONS"
-_CORS_HEADERS = "Content-Type, Authorization, X-DM-Passphrase, X-Admin-Token, X-Player-Token"
+_CORS_HEADERS = "Content-Type, Authorization, X-Admin-Token, X-Player-Token"
 
 # Comma-separated list of allowed origins. When unset we fall open to
 # "*" so local dev (no env vars, file://, etc.) keeps working. Set in
@@ -3837,12 +3948,21 @@ def auth_login():
     token = _issue_player_token(name)
     if not token:
         return jsonify({"error": "Login is not configured on this server"}), 503
-    return jsonify({
+    response = jsonify({
         "ok": True,
         "playerName": name,
         "token": token,
         "expiresIn": AUTH_TOKEN_TTL_SECONDS,
     })
+    response.set_cookie(
+        AUTH_COOKIE_NAME,
+        token,
+        max_age=AUTH_TOKEN_TTL_SECONDS,
+        httponly=True,
+        secure=AUTH_COOKIE_SECURE,
+        samesite="Lax",
+    )
+    return response
 
 
 @app.route("/api/auth/session", methods=["GET"])
@@ -4984,6 +5104,8 @@ def _generate_image_payload(
                 "title": _gallery_entry_title(gallery_entry),
                 "image_url": f"/api/gallery/image/{gallery_entry['filename']}",
                 "created_at": gallery_entry["created_at"],
+                "visibility": _gallery_entry_visibility(gallery_entry),
+                "is_shared": _gallery_entry_is_shared(gallery_entry),
             }
         return response, 200
     except Exception as e:
@@ -5107,9 +5229,9 @@ def _notify_art_ready(creator, result_url, gallery_id=None):
     # Deep-link straight to the same lightbox a gallery click opens.
     # Studio reads ?image=<id> on load and opens the matching entry; if
     # nothing matches (image already deleted, etc.), it falls back to
-    # the normal gallery grid.
+    # the private library grid.
     if gallery_id:
-        target_url = f"/en/Tools/art/?image={gallery_id}"
+        target_url = f"/en/Tools/art/?gallery=mine&image={gallery_id}"
     else:
         target_url = result_url or "/en/Tools/art/"
     try:
@@ -5117,7 +5239,7 @@ def _notify_art_ready(creator, result_url, gallery_id=None):
             _fanout_push(
                 conn,
                 "Your Vallombrosa art is ready",
-                "Your Studio piece has finished and is in the shared gallery.",
+                "Your Studio piece has finished in your private library.",
                 target_url,
                 recipients=[creator],
             )
@@ -6667,6 +6789,7 @@ def list_gallery():
     Query params:
         limit   — max entries to return (default 60, capped at 200)
         offset  — pagination offset (default 0)
+        scope   — shared (default), mine, private, or all (DM only)
     """
     try:
         limit = int(request.args.get("limit", GALLERY_PAGE_LIMIT))
@@ -6680,46 +6803,80 @@ def list_gallery():
     offset = max(0, offset)
 
     favorites_only = request.args.get("favorites") == "1"
-    filter_name = (request.args.get("name") or "").strip()
+    raw_scope = (request.args.get("scope") or "").strip().lower()
+    scope = raw_scope if raw_scope in {"shared", "mine", "private", "all"} else "shared"
+    if favorites_only and not raw_scope:
+        scope = "visible"
 
-    entries = list(reversed(_load_manifest()))  # newest first
+    viewer_name, viewer_is_dm = _gallery_viewer_context()
 
-    # Optional filter: when ?favorites=1&name=X, intersect with
-    # gallery_favorites for that player. The Home page's "My Favorites"
-    # carousel hits this. Empty list when the player has no favorites
-    # yet — the client renders an inviting empty state.
-    if favorites_only and filter_name:
+    favorite_ids = None
+    if favorites_only:
+        if _auth_login_required():
+            player, auth_error = _logged_in_player_name()
+            if auth_error:
+                return auth_error
+        else:
+            player = _player_name_from_request()
+        if not player:
+            return jsonify({
+                "total": 0,
+                "offset": offset,
+                "limit": limit,
+                "scope": scope,
+                "entries": [],
+            })
+        viewer_name = player
+        viewer_is_dm = viewer_is_dm or _is_dm_player(player)
         with _app_db() as conn:
             rows = conn.execute(
                 "SELECT gallery_id FROM gallery_favorites WHERE player = ?",
-                (filter_name,),
+                (player,),
             ).fetchall()
         favorite_ids = {row["gallery_id"] for row in rows}
+
+    entries = list(reversed(_load_manifest()))  # newest first
+
+    if favorite_ids is not None:
         entries = [e for e in entries if e.get("id") in favorite_ids]
+
+    if scope == "mine":
+        if not viewer_name:
+            return jsonify({"error": "Login required", "error_code": "auth"}), 401
+        entries = [e for e in entries if _gallery_entry_creator(e) == viewer_name]
+    elif scope == "private":
+        if not viewer_name:
+            return jsonify({"error": "Login required", "error_code": "auth"}), 401
+        entries = [
+            e for e in entries
+            if _gallery_entry_creator(e) == viewer_name and not _gallery_entry_is_shared(e)
+        ]
+    elif scope == "all":
+        if not viewer_is_dm:
+            return jsonify({"error": "DM access required", "error_code": "auth"}), 403
+    elif scope == "visible":
+        entries = [
+            e for e in entries
+            if _gallery_can_view(e, viewer_name, viewer_is_dm)
+        ]
+    else:
+        scope = "shared"
+        entries = [e for e in entries if _gallery_entry_is_shared(e)]
 
     page = entries[offset:offset + limit]
 
     # Don't leak `full_prompt` (it includes the style prefix; not useful to
     # the UI and longer than necessary). Return public-safe fields only.
     public = [
-        {
-            "id": e["id"],
-            "image_url": f"/api/gallery/image/{e['filename']}",
-            "title": _gallery_entry_title(e),
-            "prompt": e.get("prompt", ""),
-            "enhanced_prompt": e.get("enhanced_prompt"),
-            "grounded_in": e.get("grounded_in") or [],
-            "style": e.get("style"),
-            "created_by": e.get("created_by"),
-            "created_at": e.get("created_at"),
-            "model": e.get("model"),
-        }
+        _gallery_public_payload(e, viewer_name, viewer_is_dm)
         for e in page
+        if _gallery_can_view(e, viewer_name, viewer_is_dm)
     ]
     return jsonify({
         "total": len(entries),
         "offset": offset,
         "limit": limit,
+        "scope": scope,
         "entries": public,
     })
 
@@ -6769,7 +6926,16 @@ def gallery_favorite(gallery_id):
     if not player:
         return jsonify({"error": "Player name required", "error_code": "auth"}), 400
 
+    entries = _load_manifest()
+    entry = _find_gallery_entry(entries, gallery_id)
+    viewer_name, viewer_is_dm = _gallery_viewer_context()
+    if entry and player:
+        viewer_name = player
+        viewer_is_dm = viewer_is_dm or _is_dm_player(player)
+
     if request.method == "POST":
+        if not entry or not _gallery_can_view(entry, viewer_name, viewer_is_dm):
+            return jsonify({"error": "Gallery image not found", "error_code": "not_found"}), 404
         with _app_db() as conn:
             conn.execute("""
                 INSERT OR REPLACE INTO gallery_favorites
@@ -6805,7 +6971,50 @@ def gallery_favorites_list():
             WHERE player = ?
             ORDER BY favorited_at DESC
         """, (player,)))
-    return jsonify({"ids": [r["gallery_id"] for r in rows]})
+    favorite_ids = [r["gallery_id"] for r in rows]
+    if not favorite_ids:
+        return jsonify({"ids": []})
+
+    entries = _load_manifest()
+    by_id = {e.get("id"): e for e in entries}
+    viewer_name, viewer_is_dm = _gallery_viewer_context()
+    viewer_name = player
+    viewer_is_dm = viewer_is_dm or _is_dm_player(player)
+    visible_ids = [
+        gallery_id for gallery_id in favorite_ids
+        if by_id.get(gallery_id) and _gallery_can_view(by_id[gallery_id], viewer_name, viewer_is_dm)
+    ]
+    return jsonify({"ids": visible_ids})
+
+
+@app.route("/api/gallery/<gallery_id>/share", methods=["POST", "DELETE"])
+def gallery_share(gallery_id):
+    """Publish or unpublish one gallery image.
+
+    POST makes the image visible in the shared group gallery. DELETE returns
+    it to creator+DM visibility. The image creator or a signed-in DM can act.
+    """
+    entries = _load_manifest()
+    entry = _find_gallery_entry(entries, gallery_id)
+    if not entry:
+        return jsonify({"error": "Gallery image not found", "error_code": "not_found"}), 404
+
+    viewer_name, viewer_is_dm = _gallery_viewer_context()
+    if not _gallery_can_share(entry, viewer_name, viewer_is_dm):
+        return jsonify({
+            "error": "Only the image creator or DM can change sharing.",
+            "error_code": "auth",
+        }), 403
+
+    visibility = "shared" if request.method == "POST" else "private"
+    actor = viewer_name or getattr(request, "dm_email", "") or "DM"
+    updated = _set_gallery_visibility(gallery_id, visibility, actor)
+    if not updated:
+        return jsonify({"error": "Gallery image not found", "error_code": "not_found"}), 404
+    return jsonify({
+        "ok": True,
+        "entry": _gallery_public_payload(updated, viewer_name, viewer_is_dm),
+    })
 
 
 @app.route("/api/gallery/<gallery_id>/pin", methods=["POST"])
@@ -6832,20 +7041,13 @@ def gallery_pin(gallery_id):
         return jsonify({"error": "Gallery image not found", "error_code": "not_found"}), 404
 
     # Auth: image creator OR signed-in DM.
-    creator = (entry.get("created_by") or "").strip()
-    actor = None
-    player, _player_err = _logged_in_player_name({"name": creator})
-    if player and player == creator:
-        actor = player
-    else:
-        dm_email, _dm_err = _verify_session_jwt(_extract_bearer_token())
-        if dm_email:
-            actor = f"DM ({dm_email})"
-    if not actor:
+    actor, actor_is_dm = _gallery_viewer_context()
+    if not _gallery_can_share(entry, actor, actor_is_dm):
         return jsonify({
             "error": "Only the image creator or a signed-in DM can pin this image.",
             "error_code": "auth",
         }), 403
+    actor = actor or "DM"
 
     source_path = _wiki_url_to_source_path(wiki_url)
     if not source_path:
@@ -6859,6 +7061,12 @@ def gallery_pin(gallery_id):
     filename = entry.get("filename")
     if not filename:
         return jsonify({"error": "Gallery entry has no filename", "error_code": "invalid"}), 500
+
+    # A wiki page is visible to the table, so the pinned image must be shared
+    # too. The user's pin action is the explicit publication step.
+    if not _gallery_entry_is_shared(entry):
+        entry = _set_gallery_visibility(gallery_id, "shared", actor) or entry
+
     image_url = f"/api/gallery/image/{filename}"
     alt_text = _gallery_entry_title(entry) or "Pinned from the Studio"
 
@@ -6883,37 +7091,21 @@ def gallery_pin(gallery_id):
 def gallery_image(filename):
     """Serve a single persisted gallery image."""
     # send_from_directory does its own safe-path validation against ..
-    # and absolute-path tricks, so this is safe to expose.
+    # and absolute-path tricks. We still check the manifest first because
+    # private images must not be reachable by filename alone.
     if not GALLERY_IMAGES_DIR.exists():
+        abort(404)
+    entries = _load_manifest()
+    entry = next((e for e in entries if e.get("filename") == filename), None)
+    if not entry:
+        abort(404)
+    viewer_name, viewer_is_dm = _gallery_viewer_context()
+    if not _gallery_can_view(entry, viewer_name, viewer_is_dm):
         abort(404)
     return send_from_directory(
         GALLERY_IMAGES_DIR,
         filename,
         max_age=3600,
-    )
-
-
-def _extract_passphrase():
-    """Pull a DM passphrase candidate from the request — header takes
-    precedence, then JSON body. Returns the trimmed string (possibly empty)."""
-    header = request.headers.get("X-DM-Passphrase", "")
-    if header:
-        return header.strip()
-    body = request.get_json(silent=True) or {}
-    return (body.get("passphrase") or "").strip()
-
-
-def _check_dm_passphrase(candidate):
-    """Constant-time compare of the candidate against DM_PASSPHRASE.
-    Returns False when DM mode is disabled (env unset) so we never
-    accidentally allow blank passwords."""
-    if not DM_PASSPHRASE:
-        return False
-    if not candidate:
-        return False
-    import hmac
-    return hmac.compare_digest(
-        DM_PASSPHRASE.lower(), candidate.strip().lower()
     )
 
 
@@ -6923,16 +7115,11 @@ def gallery_delete(gallery_id):
 
     Removes both the PNG on disk and the manifest entry, under the same
     file lock that guards manifest writes so a concurrent /api/generate-image
-    can't corrupt the JSON. Returns 403 on bad/missing passphrase,
-    404 if no entry has that id, 200 on success.
-
-    The passphrase is accepted via X-DM-Passphrase header (preferred —
-    keeps it out of URLs and access logs) or a JSON body {"passphrase": ...}.
+    can't corrupt the JSON. Uses the real player/admin DM auth path.
     """
-    if not DM_PASSPHRASE:
-        return jsonify({"error": "DM mode not configured on this server"}), 503
-    if not _check_dm_passphrase(_extract_passphrase()):
-        return jsonify({"error": "Forbidden"}), 403
+    admin_error = _admin_error_response()
+    if admin_error:
+        return admin_error
 
     # Sanity-check the id shape — the manifest uses
     # YYYYMMDD-HHMMSS-<8 hex chars> so reject anything else without
@@ -6942,7 +7129,7 @@ def gallery_delete(gallery_id):
 
     try:
         _ensure_gallery_dirs()
-        with open(GALLERY_MANIFEST.parent / ".manifest.lock", "a+") as lock:
+        with open(_gallery_lock_path(), "a+") as lock:
             try:
                 fcntl.flock(lock.fileno(), fcntl.LOCK_EX)
                 entries = _load_manifest()

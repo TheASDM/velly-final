@@ -1,6 +1,6 @@
 ---
 title: Art Studio
-description: Generate campaign art with Enzo and contribute to the shared player gallery. Choose a style, write a prompt, and the result is auto-saved for everyone to see.
+description: Generate campaign art with Enzo. New art saves privately to its creator and the DM, then can be shared to the group gallery when ready.
 published: true
 date: 2026-05-24T00:00:00.000Z
 tags: tools, art, gallery, enzo
@@ -791,6 +791,45 @@ dateCreated: 2026-05-24T00:00:00.000Z
   align-items: center;
   gap: 0.55rem;
 }
+.vos-art-gallery-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin: 0 0 0.9rem;
+}
+.vos-art-gallery-tab {
+  appearance: none;
+  min-height: 38px;
+  padding: 0.5rem 0.78rem;
+  border: 1px solid rgba(221, 183, 127, 0.28);
+  border-radius: 6px;
+  background: rgba(7, 6, 10, 0.52);
+  color: rgba(221, 183, 127, 0.74);
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.vos-art-gallery-tab:hover {
+  border-color: rgba(221, 183, 127, 0.5);
+  color: var(--vos-cream);
+}
+.vos-art-gallery-tab.is-active {
+  border-color: var(--art-border-strong);
+  background: rgba(221, 183, 127, 0.14);
+  color: #f0d4a5;
+}
+.vos-art-gallery-tab[hidden] { display: none; }
+.vos-art-gallery-note {
+  margin: -0.35rem 0 0.95rem;
+  color: rgba(232, 220, 200, 0.62);
+  font-family: 'Crimson Text', Georgia, serif;
+  font-style: italic;
+  font-size: 0.94rem;
+  line-height: 1.35;
+}
 .vos-art-refresh {
   appearance: none;
   width: 2.15rem;
@@ -872,6 +911,62 @@ dateCreated: 2026-05-24T00:00:00.000Z
   color: var(--art-gold-dim);
   margin-top: 0.4rem;
   display: block;
+}
+.vos-art-card-meta-title {
+  display: block;
+  overflow-wrap: anywhere;
+}
+.vos-art-visibility-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.42rem;
+  margin-top: 0.55rem;
+}
+.vos-art-visibility {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  padding: 0.14rem 0.48rem;
+  border: 1px solid rgba(123, 183, 173, 0.35);
+  border-radius: 999px;
+  color: rgba(168, 220, 211, 0.88);
+  background: rgba(123, 183, 173, 0.08);
+  font-family: 'Cinzel', Georgia, serif;
+  font-style: normal;
+  font-size: 0.54rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.vos-art-visibility.is-private {
+  border-color: rgba(159, 79, 93, 0.48);
+  color: #e7a2ae;
+  background: rgba(159, 79, 93, 0.12);
+}
+.vos-art-share-toggle {
+  appearance: none;
+  min-height: 28px;
+  padding: 0.24rem 0.6rem;
+  border: 1px solid rgba(221, 183, 127, 0.34);
+  border-radius: 999px;
+  background: rgba(221, 183, 127, 0.08);
+  color: var(--art-gold);
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.56rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.vos-art-share-toggle:hover {
+  border-color: var(--art-border-strong);
+  color: var(--vos-cream);
+  background: rgba(221, 183, 127, 0.14);
+}
+.vos-art-share-toggle[disabled] {
+  cursor: wait;
+  opacity: 0.6;
 }
 
 /* Lightbox modal ───────────────────────────────────────────────────── */
@@ -965,116 +1060,13 @@ dateCreated: 2026-05-24T00:00:00.000Z
   background: rgba(7, 6, 10, 0.4);
 }
 
-/* DM mode — discrete row at the bottom of the page. Idle = a single
-   small link; active = a pill showing "DM mode" with an exit affordance.
-   The passphrase prompt expands inline only on click; nothing about the
-   surface should hint that delete is possible until DM toggles it. */
-.vos-art-dm-row {
-  margin: 1.5rem 0 0.5rem;
-  text-align: right;
-  font-family: 'Cinzel', Georgia, serif;
-  font-size: 0.62rem;
-  letter-spacing: 0.3em;
-  text-transform: uppercase;
-}
-.vos-art-dm-link {
-  background: none; border: none;
-  color: rgba(139, 115, 85, 0.55);
-  cursor: pointer;
-  padding: 0.4rem 0.6rem;
-  font: inherit;
-  letter-spacing: inherit;
-  text-transform: inherit;
-  border-radius: 3px;
-  transition: color 0.15s, background 0.15s;
-}
-.vos-art-dm-link:hover { color: var(--art-gold); background: rgba(212, 165, 116, 0.06); }
-
-.vos-art-dm-prompt {
-  display: none;
-  margin-top: 0.65rem;
-  padding: 0.65rem 0.8rem;
-  background: rgba(7, 6, 10, 0.65);
-  border: 1px solid var(--art-border);
-  border-radius: 4px;
-  text-align: left;
-  font-family: 'Crimson Text', Georgia, serif;
-  text-transform: none;
-  letter-spacing: 0;
-}
-.vos-art-dm-prompt.is-open { display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap; }
-.vos-art-dm-prompt input {
-  flex: 1; min-width: 180px;
-  background: rgba(7, 6, 10, 0.85);
-  border: 1px solid var(--art-border);
-  border-radius: 3px;
-  color: var(--vos-cream);
-  font-family: inherit;
-  font-size: 0.92rem;
-  padding: 0.4rem 0.55rem;
-}
-.vos-art-dm-prompt input:focus {
-  outline: none;
-  border-color: var(--art-border-strong);
-  box-shadow: 0 0 0 3px rgba(212, 165, 116, 0.12);
-}
-.vos-art-dm-prompt button {
-  background: linear-gradient(180deg, #e6c08a 0%, #c9a371 100%);
-  color: #0d0b11;
-  border: 1px solid rgba(255,255,255,0.18);
-  border-radius: 3px;
-  font-family: 'Cinzel', Georgia, serif;
-  font-size: 0.65rem;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  padding: 0.45rem 0.9rem;
-  cursor: pointer;
-}
-.vos-art-dm-prompt-msg {
-  flex: 1 1 100%;
-  font-size: 0.8rem;
-  font-style: italic;
-  color: rgba(212, 165, 116, 0.6);
-  margin-top: 0.2rem;
-}
-.vos-art-dm-prompt-msg.is-error { color: #d8645c; }
-
-/* Active-DM pill replaces the link once a valid passphrase is held. */
-.vos-art-dm-pill {
-  display: none;
-  align-items: center; gap: 0.5rem;
-  padding: 0.35rem 0.7rem;
-  background: rgba(212, 165, 116, 0.12);
-  color: var(--art-gold);
-  border: 1px solid var(--art-border-strong);
-  border-radius: 999px;
-  font-family: 'Cinzel', Georgia, serif;
-  font-size: 0.6rem;
-  letter-spacing: 0.28em;
-  text-transform: uppercase;
-}
-.vos-art-dm-pill.is-active { display: inline-flex; }
-.vos-art-dm-pill::before { content: '✦'; }
-.vos-art-dm-exit {
-  background: none; border: none; padding: 0;
-  color: rgba(212, 165, 116, 0.7);
-  font: inherit;
-  letter-spacing: inherit;
-  cursor: pointer;
-  text-transform: uppercase;
-  border-left: 1px solid rgba(212, 165, 116, 0.3);
-  padding-left: 0.5rem;
-  margin-left: 0.2rem;
-}
-.vos-art-dm-exit:hover { color: var(--vos-cream); }
-
-/* Delete buttons — visible only when body.is-dm-mode. The card variant
-   sits in the top-right of each tile; the lightbox variant lives next
+/* Delete buttons — visible only for a signed-in DM. The card variant
+   sits opposite the normal card actions; the lightbox variant lives next
    to the close button. Both are red-tinged so they read as destructive
    without overpowering the gold theme. */
 .vos-art-delete {
   position: absolute;
-  top: 0.5rem; right: 0.5rem;
+  top: 0.5rem; left: 0.5rem;
   z-index: 5;
   display: none;
   width: 1.9rem; height: 1.9rem;
@@ -1274,29 +1266,23 @@ body.is-dm-mode .vos-art-lightbox-delete { display: inline-flex; }
 
 <section class="vos-art-gallery-section" id="vos-art-gallery-section" aria-labelledby="vos-art-gallery-title">
   <div class="vos-art-gallery-head">
-    <h2 id="vos-art-gallery-title">Shared Gallery</h2>
+    <h2 id="vos-art-gallery-title">Studio Library</h2>
     <div class="vos-art-gallery-tools">
       <button id="vos-art-gallery-refresh" class="vos-art-refresh" type="button" aria-label="Refresh gallery" title="Refresh gallery">↻</button>
       <div class="vos-art-gallery-count" id="vos-art-gallery-count">Loading…</div>
     </div>
   </div>
+  <div class="vos-art-gallery-tabs" id="vos-art-gallery-tabs" role="tablist" aria-label="Gallery views">
+    <button class="vos-art-gallery-tab" type="button" data-gallery-scope="mine">My Studio</button>
+    <button class="vos-art-gallery-tab" type="button" data-gallery-scope="shared">Group Gallery</button>
+    <button class="vos-art-gallery-tab" type="button" data-gallery-scope="favorites">Favorites</button>
+    <button class="vos-art-gallery-tab" type="button" data-gallery-scope="all" hidden>DM All</button>
+  </div>
+  <div class="vos-art-gallery-note" id="vos-art-gallery-note"></div>
 
   <div id="vos-art-gallery" class="vos-art-gallery"></div>
   <button id="vos-art-load-more" class="vos-art-load-more" type="button" hidden>Load more</button>
 </section>
-
-<div class="vos-art-dm-row">
-  <span id="vos-art-dm-pill" class="vos-art-dm-pill">
-    <span>DM mode</span>
-    <button id="vos-art-dm-exit" class="vos-art-dm-exit" type="button">exit</button>
-  </span>
-  <button id="vos-art-dm-link" class="vos-art-dm-link" type="button" aria-expanded="false">DM access</button>
-  <div id="vos-art-dm-prompt" class="vos-art-dm-prompt">
-    <input id="vos-art-dm-input" type="password" autocomplete="current-password" placeholder="DM passphrase" aria-label="DM passphrase">
-    <button id="vos-art-dm-submit" type="button">unlock</button>
-    <div id="vos-art-dm-msg" class="vos-art-dm-prompt-msg" role="status" aria-live="polite"></div>
-  </div>
-</div>
 
 <div id="vos-art-lightbox" class="vos-art-lightbox" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="vos-art-lightbox-caption">
   <div class="vos-art-lightbox-inner">
@@ -1322,7 +1308,12 @@ body.is-dm-mode .vos-art-lightbox-delete { display: inline-flex; }
   const ACTIVE_JOB_KEY = 'velly.artStudio.activeJobId';
   const SEEN_DONE_JOB_KEY = 'vos.studio.seenDoneJobId';
   const POLL_MS = 2500;
-  const galleryFavoritesOnly = new URLSearchParams(window.location.search).get('favorites') === '1';
+  const urlParams = new URLSearchParams(window.location.search);
+  const galleryFavoritesOnly = urlParams.get('favorites') === '1';
+  const requestedGalleryScope = (urlParams.get('gallery') || urlParams.get('scope') || '').toLowerCase();
+  const initialGalleryScope = galleryFavoritesOnly
+    ? 'favorites'
+    : (['mine', 'shared', 'all'].includes(requestedGalleryScope) ? requestedGalleryScope : 'mine');
 
   const $ = (id) => document.getElementById(id);
   const promptEl         = $('vos-art-prompt');
@@ -1342,17 +1333,13 @@ body.is-dm-mode .vos-art-lightbox-delete { display: inline-flex; }
   const countEl          = $('vos-art-gallery-count');
   const gallerySection   = $('vos-art-gallery-section');
   const refreshGalleryEl = $('vos-art-gallery-refresh');
+  const galleryTitleEl   = $('vos-art-gallery-title');
+  const galleryTabsEl    = $('vos-art-gallery-tabs');
+  const galleryNoteEl    = $('vos-art-gallery-note');
   const lightbox         = $('vos-art-lightbox');
   const lightImg         = $('vos-art-lightbox-img');
   const lightCap         = $('vos-art-lightbox-caption');
   const lightDelete      = $('vos-art-lightbox-delete');
-  const dmPill           = $('vos-art-dm-pill');
-  const dmLink           = $('vos-art-dm-link');
-  const dmPromptEl       = $('vos-art-dm-prompt');
-  const dmInput          = $('vos-art-dm-input');
-  const dmSubmit         = $('vos-art-dm-submit');
-  const dmMsg            = $('vos-art-dm-msg');
-  const dmExit           = $('vos-art-dm-exit');
 
   const ENHANCE_KEY = 'velly.artStudio.enhance';
 
@@ -1374,6 +1361,7 @@ body.is-dm-mode .vos-art-lightbox-delete { display: inline-flex; }
   let isSubmitting = false;
   let galleryHasLoaded = false;
   let statusTimer = null;
+  let currentGalleryScope = initialGalleryScope;
 
   try {
     const lastEnhance = localStorage.getItem(ENHANCE_KEY);
@@ -1417,6 +1405,13 @@ body.is-dm-mode .vos-art-lightbox-delete { display: inline-flex; }
     return !!(getCurrentCreatorName() && getCurrentAuthToken());
   }
 
+  function isCurrentDm() {
+    if (window.VOS_PWA && typeof window.VOS_PWA.isDm === 'function') {
+      return !!window.VOS_PWA.isDm();
+    }
+    return getCurrentCreatorName() === 'DM';
+  }
+
   async function openStudioLogin() {
     if (window.VOS_PWA && window.VOS_PWA.ensureIdentity) {
       await window.VOS_PWA.ensureIdentity({ force: true });
@@ -1428,7 +1423,10 @@ body.is-dm-mode .vos-art-lightbox-delete { display: inline-flex; }
     return getCurrentCreatorName();
   }
 
-  function requestHeaders(headers) {
+  function requestHeaders(headers = {}) {
+    if (window.VOS_PWA && typeof window.VOS_PWA.authHeaders === 'function') {
+      return window.VOS_PWA.authHeaders(headers);
+    }
     const token = window.VOS_PWA && window.VOS_PWA.getAuthToken
       ? window.VOS_PWA.getAuthToken()
       : '';
@@ -1506,8 +1504,133 @@ body.is-dm-mode .vos-art-lightbox-delete { display: inline-flex; }
       : API_BASE + url;
   }
 
+  function clearObjectUrl(img) {
+    if (!img || !img.dataset || !img.dataset.objectUrl) return;
+    try { URL.revokeObjectURL(img.dataset.objectUrl); } catch (e) {}
+    delete img.dataset.objectUrl;
+  }
+
+  async function setImageSrc(img, url, entry, forceAuth = false) {
+    if (!img) return;
+    clearObjectUrl(img);
+    const resolved = assetUrl(url);
+    if (!resolved) {
+      img.removeAttribute('src');
+      return;
+    }
+    const privateEntry = entry && !(entry.is_shared || entry.visibility === 'shared');
+    if ((privateEntry || forceAuth) && getCurrentAuthToken()) {
+      try {
+        const response = await fetch(resolved, {
+          cache: privateEntry ? 'no-store' : 'force-cache',
+          headers: requestHeaders(),
+        });
+        if (!response.ok) throw new Error('HTTP ' + response.status);
+        const blob = await response.blob();
+        const objectUrl = URL.createObjectURL(blob);
+        img.dataset.objectUrl = objectUrl;
+        img.src = objectUrl;
+        return;
+      } catch (e) {
+        if (privateEntry) {
+          img.removeAttribute('src');
+          return;
+        }
+      }
+    }
+    img.src = resolved;
+  }
+
   function entryTitle(e) {
     return (e && (e.title || e.prompt)) || 'Gallery piece';
+  }
+
+  const GALLERY_SCOPES = {
+    mine: {
+      title: 'My Studio',
+      noun: 'piece',
+      note: 'New pieces start private here. Share table-safe art to the group gallery when ready.',
+      empty: 'Your private Studio library is empty. Generate a piece above and it will appear here.',
+    },
+    shared: {
+      title: 'Group Gallery',
+      noun: 'piece',
+      note: 'Shared art is visible to the table.',
+      empty: 'No shared art yet.',
+    },
+    favorites: {
+      title: 'Favorites',
+      noun: 'favorite',
+      note: 'Saved pieces you can still view.',
+      empty: 'No favorites yet.',
+    },
+    all: {
+      title: 'DM All Art',
+      noun: 'piece',
+      note: 'DM view includes private and shared art from every creator.',
+      empty: 'No Studio art has been generated yet.',
+    },
+  };
+
+  function normalizeGalleryScope(scope) {
+    const candidate = GALLERY_SCOPES[scope] ? scope : 'mine';
+    if (candidate === 'all' && !isCurrentDm()) return 'mine';
+    return candidate;
+  }
+
+  function syncDmMode() {
+    const dm = isCurrentDm();
+    document.body.classList.toggle('is-dm-mode', dm);
+    const dmTab = galleryTabsEl && galleryTabsEl.querySelector('[data-gallery-scope="all"]');
+    if (dmTab) dmTab.hidden = !dm;
+    if (!dm && currentGalleryScope === 'all') currentGalleryScope = 'mine';
+  }
+
+  function syncGalleryChrome() {
+    currentGalleryScope = normalizeGalleryScope(currentGalleryScope);
+    const config = GALLERY_SCOPES[currentGalleryScope] || GALLERY_SCOPES.mine;
+    if (galleryTitleEl) galleryTitleEl.textContent = config.title;
+    if (galleryNoteEl) galleryNoteEl.textContent = config.note;
+    syncDmMode();
+    if (galleryTabsEl) {
+      galleryTabsEl.querySelectorAll('[data-gallery-scope]').forEach((button) => {
+        const active = button.dataset.galleryScope === currentGalleryScope;
+        button.classList.toggle('is-active', active);
+        button.setAttribute('aria-selected', String(active));
+      });
+    }
+  }
+
+  function updateGalleryUrl() {
+    try {
+      const url = new URL(window.location.href);
+      url.searchParams.delete('favorites');
+      url.searchParams.set('gallery', currentGalleryScope);
+      window.history.replaceState({}, '', url.toString());
+    } catch (e) {}
+  }
+
+  function setGalleryScope(scope, options = {}) {
+    currentGalleryScope = normalizeGalleryScope(scope);
+    galleryHasLoaded = false;
+    galleryOffset = 0;
+    syncGalleryChrome();
+    if (!options.keepUrl) updateGalleryUrl();
+    return loadGallery({ quiet: !!options.quiet });
+  }
+
+  function visibilityBadge(entry) {
+    const badge = document.createElement('span');
+    const shared = !!entry.is_shared || entry.visibility === 'shared';
+    badge.className = 'vos-art-visibility' + (shared ? '' : ' is-private');
+    badge.textContent = shared ? 'Shared' : 'Private';
+    return badge;
+  }
+
+  function shareToggleLabel(entry) {
+    return entry && (entry.is_shared || entry.visibility === 'shared')
+      ? 'Make Private'
+      : 'Share to Group Gallery';
   }
 
   function buildGalleryCard(e) {
@@ -1521,8 +1644,6 @@ body.is-dm-mode .vos-art-lightbox-delete { display: inline-flex; }
       openLightbox(e);
     });
 
-    // Top-right actions: favorite, share. Delete button (existing) is
-    // separately positioned and only visible in DM mode.
     const actions = document.createElement('div');
     actions.className = 'vos-art-card-actions';
 
@@ -1544,8 +1665,8 @@ body.is-dm-mode .vos-art-lightbox-delete { display: inline-flex; }
     const shareBtn = document.createElement('button');
     shareBtn.type = 'button';
     shareBtn.className = 'vos-art-icon-btn';
-    shareBtn.setAttribute('aria-label', 'Share this image');
-    shareBtn.title = 'Share';
+    shareBtn.setAttribute('aria-label', 'Export this image');
+    shareBtn.title = 'Export image';
     shareBtn.textContent = '↗';
     shareBtn.addEventListener('click', (evt) => {
       evt.preventDefault();
@@ -1556,29 +1677,32 @@ body.is-dm-mode .vos-art-lightbox-delete { display: inline-flex; }
     actions.append(favBtn, shareBtn);
     card.appendChild(actions);
 
-    // Delete button (CSS-hidden unless body.is-dm-mode). Stop propagation
-    // so clicking it doesn't also trigger the lightbox open.
-    const del = document.createElement('button');
-    del.type = 'button';
-    del.className = 'vos-art-delete';
-    del.title = 'Delete (DM)';
-    del.setAttribute('aria-label', 'Delete this image');
-    del.textContent = '✕';
-    del.addEventListener('click', (evt) => {
-      evt.preventDefault();
-      evt.stopPropagation();
-      deleteEntry(e, del);
-    });
-    card.appendChild(del);
+    if (e.can_delete) {
+      const del = document.createElement('button');
+      del.type = 'button';
+      del.className = 'vos-art-delete';
+      del.title = 'Delete';
+      del.setAttribute('aria-label', 'Delete this image');
+      del.textContent = '✕';
+      del.addEventListener('click', (evt) => {
+        evt.preventDefault();
+        evt.stopPropagation();
+        deleteEntry(e, del);
+      });
+      card.appendChild(del);
+    }
 
     const img = document.createElement('img');
     img.loading = 'lazy';
     img.alt = entryTitle(e);
-    img.src = assetUrl(e.image_url);
+    setImageSrc(img, e.image_url, e);
     card.appendChild(img);
     const meta = document.createElement('div');
     meta.className = 'vos-art-card-meta';
-    meta.textContent = entryTitle(e);
+    const title = document.createElement('span');
+    title.className = 'vos-art-card-meta-title';
+    title.textContent = entryTitle(e);
+    meta.appendChild(title);
     if (e.grounded_in && e.grounded_in.length) {
       const chips = document.createElement('div');
       chips.className = 'vos-art-grounded';
@@ -1590,6 +1714,22 @@ body.is-dm-mode .vos-art-lightbox-delete { display: inline-flex; }
       });
       meta.appendChild(chips);
     }
+    const visibilityRow = document.createElement('div');
+    visibilityRow.className = 'vos-art-visibility-row';
+    visibilityRow.appendChild(visibilityBadge(e));
+    if (e.can_share) {
+      const shareToggle = document.createElement('button');
+      shareToggle.type = 'button';
+      shareToggle.className = 'vos-art-share-toggle';
+      shareToggle.textContent = shareToggleLabel(e);
+      shareToggle.addEventListener('click', (evt) => {
+        evt.preventDefault();
+        evt.stopPropagation();
+        toggleGalleryShare(e, shareToggle);
+      });
+      visibilityRow.appendChild(shareToggle);
+    }
+    meta.appendChild(visibilityRow);
     const byline = document.createElement('span');
     byline.className = 'vos-art-card-byline';
     const who = e.created_by ? `By ${e.created_by}` : 'Anonymous';
@@ -1600,13 +1740,15 @@ body.is-dm-mode .vos-art-lightbox-delete { display: inline-flex; }
   }
 
   function renderGallery(entries, total) {
+    syncGalleryChrome();
     galleryEl.innerHTML = '';
-    const noun = galleryFavoritesOnly ? 'favorite' : 'piece';
+    const config = GALLERY_SCOPES[currentGalleryScope] || GALLERY_SCOPES.mine;
+    const noun = config.noun;
     countEl.textContent = total === 0
-      ? (galleryFavoritesOnly ? 'No favorites yet.' : 'No art yet — be the first.')
-      : `${total} ${noun}${total === 1 ? '' : 's'} in the gallery`;
+      ? config.empty
+      : `${total} ${noun}${total === 1 ? '' : 's'}`;
     if (!entries.length) {
-      galleryEl.innerHTML = `<div class="vos-art-empty">The gallery is empty. Generate something above and it will land here.</div>`;
+      galleryEl.innerHTML = `<div class="vos-art-empty">${escapeHtml(config.empty)}</div>`;
       if (loadMoreEl) loadMoreEl.hidden = true;
       return;
     }
@@ -1652,7 +1794,9 @@ body.is-dm-mode .vos-art-lightbox-delete { display: inline-flex; }
     } catch (e) {}
   }
 
-  function loadGallery(options = {}) {
+  async function loadGallery(options = {}) {
+    currentGalleryScope = normalizeGalleryScope(currentGalleryScope);
+    syncGalleryChrome();
     const quiet = !!options.quiet;
     const append = !!options.append;
     if (!quiet || !galleryHasLoaded) countEl.textContent = 'Loading…';
@@ -1664,50 +1808,54 @@ body.is-dm-mode .vos-art-lightbox-delete { display: inline-flex; }
       loadMoreEl.disabled = true;
       loadMoreEl.textContent = append ? 'Loading…' : 'Load more';
     }
-    if (galleryFavoritesOnly && !getCurrentCreatorName()) {
-      galleryEl.innerHTML = `<div class="vos-art-empty">Log in to see your favorite gallery pieces.</div>`;
-      countEl.textContent = 'Favorites';
+
+    if (['mine', 'favorites'].includes(currentGalleryScope) && !hasAuthenticatedCreator()) {
+      galleryEl.innerHTML = `<div class="vos-art-empty">Log in to view your private Studio library.</div>`;
+      countEl.textContent = currentGalleryScope === 'favorites' ? 'Favorites' : 'My Studio';
       setGalleryRefreshing(false);
       if (loadMoreEl) loadMoreEl.hidden = true;
-      return Promise.resolve();
+      return;
     }
+
     const params = new URLSearchParams({ limit: String(GALLERY_PAGE), offset: String(galleryOffset) });
-    if (galleryFavoritesOnly) {
+    if (currentGalleryScope === 'favorites') {
       const creator = getCurrentCreatorName();
       params.set('favorites', '1');
       if (creator) params.set('name', creator);
+    } else {
+      params.set('scope', currentGalleryScope);
     }
     const url = API_BASE + '/api/gallery?' + params.toString();
-    return fetch(url)
-      .then(r => r.json())
-      .then(data => {
-        galleryHasLoaded = true;
-        const entries = data.entries || [];
-        galleryTotal = data.total || 0;
-        if (append) {
-          appendGallery(entries);
-        } else {
-          renderGallery(entries, galleryTotal);
-        }
-        galleryOffset += entries.length;
-        if (loadMoreEl) {
-          loadMoreEl.hidden = galleryOffset >= galleryTotal;
-          loadMoreEl.disabled = false;
-          loadMoreEl.textContent = 'Load more';
-        }
-        // Make sure heart states reflect the latest favorites snapshot.
-        fetchFavorites();
-      })
-      .catch(() => {
-        countEl.textContent = 'Gallery unavailable.';
-        if (!galleryHasLoaded) {
-          galleryEl.innerHTML = `<div class="vos-art-empty">Couldn't reach the gallery. Try again in a moment.</div>`;
-        }
-        if (loadMoreEl) {
-          loadMoreEl.disabled = false;
-        }
-      })
-      .finally(() => setGalleryRefreshing(false));
+    try {
+      const r = await fetch(url, { cache: 'no-store', headers: requestHeaders() });
+      const data = await r.json().catch(() => ({}));
+      if (!r.ok) throw new Error(data.error || `HTTP ${r.status}`);
+      galleryHasLoaded = true;
+      const entries = data.entries || [];
+      galleryTotal = data.total || 0;
+      if (append) {
+        appendGallery(entries);
+      } else {
+        renderGallery(entries, galleryTotal);
+      }
+      galleryOffset += entries.length;
+      if (loadMoreEl) {
+        loadMoreEl.hidden = galleryOffset >= galleryTotal;
+        loadMoreEl.disabled = false;
+        loadMoreEl.textContent = 'Load more';
+      }
+      fetchFavorites();
+    } catch (error) {
+      countEl.textContent = 'Gallery unavailable.';
+      if (!galleryHasLoaded) {
+        galleryEl.innerHTML = `<div class="vos-art-empty">${escapeHtml(error.message || 'Could not reach the gallery.')}</div>`;
+      }
+      if (loadMoreEl) {
+        loadMoreEl.disabled = false;
+      }
+    } finally {
+      setGalleryRefreshing(false);
+    }
   }
 
   function appendGallery(entries) {
@@ -1715,12 +1863,20 @@ body.is-dm-mode .vos-art-lightbox-delete { display: inline-flex; }
     const frag = document.createDocumentFragment();
     entries.forEach((e) => frag.appendChild(buildGalleryCard(e)));
     galleryEl.appendChild(frag);
-    const noun = galleryFavoritesOnly ? 'favorite' : 'piece';
-    countEl.textContent = `${galleryTotal} ${noun}${galleryTotal === 1 ? '' : 's'} in the gallery`;
+    const config = GALLERY_SCOPES[currentGalleryScope] || GALLERY_SCOPES.mine;
+    const noun = config.noun;
+    countEl.textContent = `${galleryTotal} ${noun}${galleryTotal === 1 ? '' : 's'}`;
     // Honor a pending deep-link if the requested image has now arrived.
     if (pendingOpenImageId) tryOpenPending();
   }
 
+  if (galleryTabsEl) {
+    galleryTabsEl.addEventListener('click', (evt) => {
+      const button = evt.target.closest('[data-gallery-scope]');
+      if (!button) return;
+      setGalleryScope(button.dataset.galleryScope);
+    });
+  }
   loadGallery();
   refreshGalleryEl.addEventListener('click', () => loadGallery({ quiet: true }));
   if (loadMoreEl) {
@@ -1760,6 +1916,43 @@ body.is-dm-mode .vos-art-lightbox-delete { display: inline-flex; }
     }
   }
 
+  async function toggleGalleryShare(entry, button) {
+    if (!entry || !entry.can_share) return;
+    if (!hasAuthenticatedCreator()) {
+      setStatus('Log in before changing gallery sharing.', true);
+      await openStudioLogin();
+      return;
+    }
+    const makeShared = !(entry.is_shared || entry.visibility === 'shared');
+    const method = makeShared ? 'POST' : 'DELETE';
+    const originalText = button ? button.textContent : '';
+    if (button) {
+      button.disabled = true;
+      button.textContent = makeShared ? 'Sharing…' : 'Updating…';
+    }
+    try {
+      const r = await fetch(
+        API_BASE + '/api/gallery/' + encodeURIComponent(entry.id) + '/share',
+        { method, headers: requestHeaders() }
+      );
+      const data = await r.json().catch(() => ({}));
+      if (!r.ok) throw new Error(data.error || `HTTP ${r.status}`);
+      const updated = data.entry || {};
+      setStatus(makeShared ? 'Shared to the group gallery.' : 'Returned to private.', false, { clearAfter: 4000 });
+      if (currentLightboxEntry && currentLightboxEntry.id === entry.id) {
+        currentLightboxEntry = { ...currentLightboxEntry, ...updated };
+        openLightbox(currentLightboxEntry);
+      }
+      await loadGallery({ quiet: true });
+    } catch (error) {
+      setStatus('Sharing update failed: ' + error.message, true);
+      if (button) {
+        button.disabled = false;
+        button.textContent = originalText;
+      }
+    }
+  }
+
   // ── Share helpers ───────────────────────────────────────────────────
   // Tries the native share sheet first (best UX on mobile — gives Insta
   // / Messages / etc. options); falls back to clipboard. The image is
@@ -1772,7 +1965,7 @@ body.is-dm-mode .vos-art-lightbox-delete { display: inline-flex; }
 
     let file = null;
     try {
-      const r = await fetch(url, { cache: 'force-cache' });
+      const r = await fetch(url, { cache: 'force-cache', headers: requestHeaders() });
       if (r.ok) {
         const blob = await r.blob();
         file = new File([blob], 'vallombrosa.png', { type: blob.type || 'image/png' });
@@ -1795,7 +1988,10 @@ body.is-dm-mode .vos-art-lightbox-delete { display: inline-flex; }
     // Fallback: copy the URL to clipboard. Always offer a download too.
     try {
       await navigator.clipboard.writeText(url);
-      setStatus('Image link copied to clipboard.');
+      const shared = entry && (entry.is_shared || entry.visibility === 'shared');
+      setStatus(shared
+        ? 'Image link copied to clipboard.'
+        : 'Private image link copied. Only you and the DM can open it.');
     } catch (e) {
       setStatus('Couldn’t share automatically — long-press the image to save.', true);
       return;
@@ -1924,7 +2120,7 @@ body.is-dm-mode .vos-art-lightbox-delete { display: inline-flex; }
   function openLightbox(e) {
     currentLightboxEntry = e;
     if (pinMenuEl) pinMenuEl.hidden = true;
-    lightImg.src = assetUrl(e.image_url);
+    setImageSrc(lightImg, e.image_url, e);
     lightImg.alt = entryTitle(e);
     if (lightFavorite) {
       lightFavorite.dataset.favoriteId = e.id;
@@ -1951,6 +2147,20 @@ body.is-dm-mode .vos-art-lightbox-delete { display: inline-flex; }
     }
     html += `<div class="vos-art-lightbox-byline">${who} · ${fmtRel(e.created_at)}</div>`;
     lightCap.innerHTML = html;
+    const row = document.createElement('div');
+    row.className = 'vos-art-visibility-row';
+    row.style.justifyContent = 'center';
+    row.appendChild(visibilityBadge(e));
+    if (e.can_share) {
+      const shareToggle = document.createElement('button');
+      shareToggle.type = 'button';
+      shareToggle.className = 'vos-art-share-toggle';
+      shareToggle.textContent = shareToggleLabel(e);
+      shareToggle.addEventListener('click', () => toggleGalleryShare(e, shareToggle));
+      row.appendChild(shareToggle);
+    }
+    lightCap.appendChild(row);
+    if (lightDelete) lightDelete.hidden = !e.can_delete;
     lightbox.classList.add('is-open');
     lightbox.setAttribute('aria-hidden', 'false');
     // Scroll the lightbox back to top so the image is visible whenever a
@@ -1960,9 +2170,11 @@ body.is-dm-mode .vos-art-lightbox-delete { display: inline-flex; }
   function closeLightbox() {
     lightbox.classList.remove('is-open');
     lightbox.setAttribute('aria-hidden', 'true');
+    clearObjectUrl(lightImg);
     lightImg.src = '';
     currentLightboxEntry = null;
     if (pinMenuEl) pinMenuEl.hidden = true;
+    if (lightDelete) lightDelete.hidden = true;
   }
   document.addEventListener('vos:open-gallery-piece', (evt) => {
     if (!evt.detail) return;
@@ -2140,88 +2352,11 @@ body.is-dm-mode .vos-art-lightbox-delete { display: inline-flex; }
     }
   }
 
-  // ── DM mode ─────────────────────────────────────────────────────────
-  // The DM passphrase is held in sessionStorage so it survives reloads
-  // within a tab but evaporates when the tab closes. Every delete request
-  // re-sends the passphrase via the X-DM-Passphrase header; a stale or
-  // server-changed value returns 403 and we drop back to player mode.
-  const DM_KEY = 'velly.artStudio.dm';
-
-  function getDM() {
-    try { return sessionStorage.getItem(DM_KEY) || ''; } catch (e) { return ''; }
-  }
-  function setDM(value) {
-    try {
-      if (value) sessionStorage.setItem(DM_KEY, value);
-      else sessionStorage.removeItem(DM_KEY);
-    } catch (e) {}
-    document.body.classList.toggle('is-dm-mode', !!value);
-    dmPill.classList.toggle('is-active', !!value);
-    dmLink.style.display = value ? 'none' : '';
-  }
-  // Restore mode on page load.
-  if (getDM()) setDM(getDM());
-
-  function setDmMsg(text, isError) {
-    dmMsg.textContent = text || '';
-    dmMsg.classList.toggle('is-error', !!isError);
-  }
-
-  dmLink.addEventListener('click', () => {
-    const open = dmPromptEl.classList.toggle('is-open');
-    dmLink.setAttribute('aria-expanded', String(open));
-    if (open) {
-      dmInput.value = '';
-      setDmMsg('');
-      setTimeout(() => dmInput.focus(), 50);
-    }
-  });
-
-  async function tryUnlock() {
-    const candidate = dmInput.value.trim();
-    if (!candidate) { setDmMsg('Enter a passphrase.', true); return; }
-    dmSubmit.disabled = true;
-    try {
-      const res = await fetch(API_BASE + '/api/dm-check', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ passphrase: candidate }),
-      });
-      if (res.status === 503) {
-        setDmMsg('DM mode is not configured on this server.', true);
-        return;
-      }
-      if (!res.ok) {
-        setDmMsg('That passphrase did not match.', true);
-        return;
-      }
-      setDM(candidate);
-      dmPromptEl.classList.remove('is-open');
-      dmLink.setAttribute('aria-expanded', 'false');
-      setDmMsg('');
-      // Re-render the gallery to expose delete buttons on existing cards.
-      loadGallery();
-    } catch (e) {
-      setDmMsg('Could not verify — try again.', true);
-    } finally {
-      dmSubmit.disabled = false;
-    }
-  }
-  dmSubmit.addEventListener('click', tryUnlock);
-  dmInput.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') { e.preventDefault(); tryUnlock(); }
-    if (e.key === 'Escape') { dmPromptEl.classList.remove('is-open'); }
-  });
-  dmExit.addEventListener('click', () => {
-    setDM('');
-    setDmMsg('');
-    closeLightbox();
-    loadGallery();
-  });
-
   async function deleteEntry(entry, sourceButton) {
-    const passphrase = getDM();
-    if (!passphrase) return;
+    if (!entry || !entry.can_delete || !isCurrentDm()) {
+      setStatus('DM login required to delete gallery art.', true);
+      return;
+    }
     const ok = confirm(
       `Delete this image?\n\n"${entryTitle(entry)}"\n\n` +
       `This is permanent — the PNG and its manifest entry are removed from the server.`
@@ -2231,14 +2366,8 @@ body.is-dm-mode .vos-art-lightbox-delete { display: inline-flex; }
     try {
       const res = await fetch(API_BASE + '/api/gallery/' + encodeURIComponent(entry.id), {
         method: 'DELETE',
-        headers: { 'X-DM-Passphrase': passphrase },
+        headers: requestHeaders(),
       });
-      if (res.status === 403) {
-        // Stale passphrase — drop back to player mode.
-        setDM('');
-        alert('Server rejected the passphrase. DM mode disabled.');
-        return;
-      }
       if (!res.ok) {
         const err = await res.json().catch(() => ({}));
         throw new Error(err.error || `HTTP ${res.status}`);
@@ -2301,6 +2430,7 @@ body.is-dm-mode .vos-art-lightbox-delete { display: inline-flex; }
   }
 
   function showGenerating(job) {
+    clearObjectUrl(latestImg);
     latestImg.removeAttribute('src');
     latestImg.alt = '';
     latestCap.innerHTML = '';
@@ -2320,16 +2450,19 @@ body.is-dm-mode .vos-art-lightbox-delete { display: inline-flex; }
       window.dispatchEvent(new CustomEvent('vos:avatar-badge-refresh'));
     } catch (e) {}
     storeActiveJob(null);
-    latestImg.src = assetUrl(job.result_url);
+    setImageSrc(latestImg, job.result_url, { visibility: 'private' }, true);
     latestImg.alt = job.title || job.prompt || 'Generated art';
     latestDetails.style.display = 'none';
     latestEnhanced.innerHTML = '';
     const title = escapeHtml(job.title || job.prompt || 'Generated art');
-    latestCap.innerHTML = `${title}<br><a href="#vos-art-gallery-section">View in gallery &rarr;</a> · <a href="/art-submissions/">Art submissions &rarr;</a>`;
+    const privateHref = job.gallery_id
+      ? `/Tools/art/?gallery=mine&image=${encodeURIComponent(job.gallery_id)}`
+      : '#vos-art-gallery-section';
+    latestCap.innerHTML = `${title}<br><a href="${privateHref}">Open private piece &rarr;</a> · <a href="/art-submissions/">Art submissions &rarr;</a>`;
     latestEl.classList.remove('has-error');
     latestEl.classList.add('is-shown', 'has-image');
     setGenerateButton(false);
-    setStatus('Done. Saved to your Art Submissions and the shared gallery.', false, { clearAfter: 5000 });
+    setStatus('Done. Saved privately. Share it to the group gallery when it is table-safe.', false, { clearAfter: 6500 });
   }
 
   function copyForErrorCode(code, fallback, extras) {
@@ -2374,6 +2507,7 @@ body.is-dm-mode .vos-art-lightbox-delete { display: inline-flex; }
 
   function showJobError(job) {
     storeActiveJob(null);
+    clearObjectUrl(latestImg);
     latestImg.removeAttribute('src');
     latestImg.alt = '';
     pendingPromptEl.textContent = '';
@@ -2409,6 +2543,7 @@ body.is-dm-mode .vos-art-lightbox-delete { display: inline-flex; }
   function showIdle() {
     latestEl.classList.remove('is-shown', 'has-image');
     latestEl.classList.remove('has-error');
+    clearObjectUrl(latestImg);
     latestImg.removeAttribute('src');
     latestCap.innerHTML = '';
     pendingPromptEl.textContent = '';
@@ -2428,6 +2563,8 @@ body.is-dm-mode .vos-art-lightbox-delete { display: inline-flex; }
     clearPoll();
     if (job.status === 'done') {
       showJobDone(job);
+      currentGalleryScope = 'mine';
+      syncGalleryChrome();
       loadGallery({ quiet: true });
       return;
     }
@@ -2559,14 +2696,21 @@ body.is-dm-mode .vos-art-lightbox-delete { display: inline-flex; }
 
   generateEl.addEventListener('click', generate);
   window.addEventListener('DOMContentLoaded', () => {
+    syncGalleryChrome();
     updateGenerateAccess();
     restoreStudioJobs();
   });
   window.addEventListener('vos:identity', () => {
+    syncGalleryChrome();
     updateGenerateAccess();
     restoreStudioJobs();
+    loadGallery({ quiet: true });
   });
-  window.addEventListener('focus', () => loadGallery({ quiet: true }));
+  window.addEventListener('focus', () => {
+    syncGalleryChrome();
+    loadGallery({ quiet: true });
+  });
+  syncGalleryChrome();
   updateGenerateAccess();
 
   // Enter submits, Shift+Enter inserts a newline — same pattern as the
