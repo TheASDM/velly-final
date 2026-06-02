@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'foglight-pwa-v37';
+const CACHE_VERSION = 'foglight-pwa-v38';
 const PRECACHE = `${CACHE_VERSION}-precache`;
 const PAGES = `${CACHE_VERSION}-pages`;
 const ASSETS = `${CACHE_VERSION}-assets`;
