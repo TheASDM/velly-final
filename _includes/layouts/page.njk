@@ -23,7 +23,7 @@
 <link href="/css/app-shell.css" rel="stylesheet">
 
 </head>
-<body class="{% if page.url == '/enzo/' %}vos-is-enzo-page{% endif %}{% if page.url and page.url.startsWith('/en/') and page.url != '/en/Tools/art/' %} vos-is-wiki-page{% endif %}{% if page.filePathStem and page.filePathStem.endsWith('/index') %} vos-is-index-page{% endif %}">
+<body class="{% if page.url == '/enzo/' %}vos-is-enzo-page{% endif %}{% if page.url == '/messages/' %}vos-is-messages-page{% endif %}{% if page.url and page.url.startsWith('/en/') and page.url != '/en/Tools/art/' %} vos-is-wiki-page{% endif %}{% if page.filePathStem and page.filePathStem.endsWith('/index') %} vos-is-index-page{% endif %}">
 
 <div class="vos-backdrop" aria-hidden="true"></div>
 

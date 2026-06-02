@@ -6,13 +6,13 @@ published: false
 autoIndex: false
 ---
 
-<section class="vos-compact-panel" aria-labelledby="vos-messages-page-title">
-  <div class="vos-panel-head">
-    <h2 class="vos-panel-title" id="vos-messages-page-title">Messages</h2>
-    <button class="vos-button" id="vos-messages-page-refresh" type="button">Refresh</button>
+<section class="vos-messages-page" aria-labelledby="vos-messages-page-title">
+  <div class="vos-messages-page-head">
+    <h2 class="vos-messages-page-title" id="vos-messages-page-title">DM Inbox</h2>
+    <button class="vos-button vos-messages-page-refresh" id="vos-messages-page-refresh" type="button">Refresh</button>
   </div>
-  <div class="vos-row-chip-list" id="vos-messages-page-list"></div>
-  <div class="vos-settings-status" id="vos-messages-page-status" role="status" aria-live="polite">Loading...</div>
+  <div class="vos-messages-page-list" id="vos-messages-page-list"></div>
+  <div class="vos-messages-page-status" id="vos-messages-page-status" role="status" aria-live="polite">Loading...</div>
 </section>
 
 <script>
@@ -51,14 +51,14 @@ autoIndex: false
     listEl.innerHTML = '';
     if (!messages.length) {
       const empty = document.createElement('p');
-      empty.className = 'vos-submit-empty';
+      empty.className = 'vos-messages-page-empty';
       empty.textContent = 'No messages right now.';
       listEl.appendChild(empty);
       return;
     }
     messages.forEach((message) => {
       const row = document.createElement('article');
-      row.className = 'vos-row-chip';
+      row.className = 'vos-message-entry';
       if (message.url) {
         row.classList.add('is-clickable');
         row.setAttribute('role', 'link');
@@ -74,15 +74,15 @@ autoIndex: false
         });
       }
       row.innerHTML = `
-        <div class="vos-row-chip-copy">
-          <span class="vos-row-chip-title"></span>
-          <div class="vos-row-chip-meta vos-safe-markdown"></div>
+        <div class="vos-message-entry-head">
+          <span class="vos-message-entry-title"></span>
+          <span class="vos-message-entry-date"></span>
         </div>
-        <span class="vos-row-chip-badge" aria-hidden="true"></span>
+        <div class="vos-message-entry-body vos-safe-markdown"></div>
       `;
-      row.querySelector('.vos-row-chip-title').textContent = message.title || 'DM Message';
-      row.querySelector('.vos-row-chip-meta').innerHTML = renderMarkdown(message.body || '');
-      row.querySelector('.vos-row-chip-badge').textContent = formatDate(message.created_at);
+      row.querySelector('.vos-message-entry-title').textContent = message.title || 'DM Message';
+      row.querySelector('.vos-message-entry-date').textContent = formatDate(message.created_at);
+      row.querySelector('.vos-message-entry-body').innerHTML = renderMarkdown(message.body || '');
       listEl.appendChild(row);
     });
   }
