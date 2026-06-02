@@ -62,9 +62,6 @@ services:
       IMAGE_TITLE_TIMEOUT_S: ${IMAGE_TITLE_TIMEOUT_S:-12}
       GALLERY_MAX_ENTRIES: ${GALLERY_MAX_ENTRIES:-2000}
       GALLERY_PAGE_LIMIT: ${GALLERY_PAGE_LIMIT:-60}
-      # DM passphrase gates the Art Studio gallery delete button.
-      # Unset = delete disabled (gallery is append-only via the API).
-      DM_PASSPHRASE: ${DM_PASSPHRASE:-}
       # CORS allowlist (comma-separated origins). Unset = fall open to
       # "*" for local dev.
       ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:-}
