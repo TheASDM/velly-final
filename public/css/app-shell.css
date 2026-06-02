@@ -24,6 +24,7 @@
     --vos-top-bar-h: var(--vos-app-bar-content-h);
     --vos-top-h: var(--vos-app-bar-h);
     --vos-app-nav-h: 72px;
+    --vos-nav-y: 0px;
     --vos-vv-bottom: 0px;
   }
 
@@ -1688,9 +1689,10 @@
   /* ── PWA app rail + prompts ───────────────────────────────────────── */
   .vos-app-nav {
     position: fixed;
+    top: auto;
     left: 0;
     right: 0;
-    bottom: 0;
+    bottom: var(--vos-vv-bottom);
     z-index: 1150;
     min-height: calc(var(--vos-app-nav-h) + env(safe-area-inset-bottom));
     padding:
@@ -1704,6 +1706,9 @@
       radial-gradient(ellipse 70% 80% at 50% 100%, rgba(212, 165, 116, 0.07), transparent 70%);
     box-shadow: 0 -12px 34px rgba(0, 0, 0, 0.58);
     backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    transform: translate3d(0, var(--vos-nav-y), 0);
+    -webkit-transform: translate3d(0, var(--vos-nav-y), 0);
   }
   @media (min-width: 1024px) {
     .vos-app-nav { left: var(--vos-nav-w); }

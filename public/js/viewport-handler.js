@@ -4,6 +4,7 @@
 // PWA cards, identity card) reference for their `bottom:` offset.
 (function () {
   const root = document.documentElement;
+  let navRepairFrame = 0;
 
   function measureVisualViewportBottom() {
     const viewport = window.visualViewport;
@@ -22,10 +23,36 @@
 
   function syncVisualViewportBottom() {
     root.style.setProperty('--vos-vv-bottom', `${measureVisualViewportBottom().toFixed(2)}px`);
+    syncBottomNavPosition();
+  }
+
+  function syncBottomNavPosition() {
+    const nav = document.querySelector('.vos-app-nav');
+    if (!nav) return;
+
+    if (navRepairFrame) cancelAnimationFrame(navRepairFrame);
+    navRepairFrame = requestAnimationFrame(() => {
+      navRepairFrame = 0;
+      const rect = nav.getBoundingClientRect();
+      const expectedBottom = window.innerHeight;
+      const delta = expectedBottom - rect.bottom;
+      if (!Number.isFinite(delta) || Math.abs(delta) < 3) return;
+
+      // If fixed positioning gets stranded after iOS resumes/restores a page,
+      // move the nav back to the viewport bottom. Cap only truly impossible
+      // values; legitimate failures can be surprisingly large.
+      const currentRepair = Number.parseFloat(
+        getComputedStyle(root).getPropertyValue('--vos-nav-y')
+      ) || 0;
+      const nextRepair = currentRepair + delta;
+      const maxRepair = window.innerHeight * 0.9;
+      root.style.setProperty('--vos-nav-y', `${Math.abs(nextRepair) <= maxRepair ? nextRepair.toFixed(2) : 0}px`);
+    });
   }
 
   function resyncVisualViewportBottom() {
     root.style.setProperty('--vos-vv-bottom', '0px');
+    root.style.setProperty('--vos-nav-y', '0px');
     requestAnimationFrame(syncVisualViewportBottom);
     setTimeout(syncVisualViewportBottom, 120);
     setTimeout(syncVisualViewportBottom, 450);
@@ -33,14 +60,19 @@
 
   resyncVisualViewportBottom();
   window.addEventListener('resize', syncVisualViewportBottom, { passive: true });
+  window.addEventListener('scroll', syncBottomNavPosition, { passive: true });
   window.addEventListener('focus', resyncVisualViewportBottom, { passive: true });
   window.addEventListener('pageshow', resyncVisualViewportBottom, { passive: true });
   document.addEventListener('visibilitychange', () => {
-    if (document.hidden) root.style.setProperty('--vos-vv-bottom', '0px');
+    if (document.hidden) {
+      root.style.setProperty('--vos-vv-bottom', '0px');
+      root.style.setProperty('--vos-nav-y', '0px');
+    }
     else resyncVisualViewportBottom();
   });
   window.addEventListener('orientationchange', () => {
     root.style.setProperty('--vos-vv-bottom', '0px');
+    root.style.setProperty('--vos-nav-y', '0px');
     requestAnimationFrame(resyncVisualViewportBottom);
     setTimeout(syncVisualViewportBottom, 250);
   }, { passive: true });
