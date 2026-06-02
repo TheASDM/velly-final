@@ -321,6 +321,19 @@ templateEngineOverride: njk
   overflow-wrap: break-word;
   word-break: break-word;
 }
+.vos-message-body.vos-safe-markdown {
+  white-space: normal;
+}
+.vos-message-body.vos-safe-markdown p,
+.vos-message-body.vos-safe-markdown ul,
+.vos-message-body.vos-safe-markdown ol,
+.vos-message-body.vos-safe-markdown blockquote,
+.vos-message-body.vos-safe-markdown pre {
+  font-size: 1rem;
+}
+.vos-message-body.vos-safe-markdown h4 {
+  font-size: 0.84rem;
+}
 .vos-message-meta {
   margin-top: 0.75rem;
   color: rgba(147,138,120,0.95);
@@ -858,6 +871,21 @@ templateEngineOverride: njk
       });
     }
 
+    function escapeHtml(value) {
+      return String(value ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    function renderMarkdown(value) {
+      const renderer = window.VOS_RENDER_MARKDOWN || (window.VOS_PWA && window.VOS_PWA.renderSafeMarkdown);
+      if (renderer) return renderer(value || '');
+      return escapeHtml(value).replace(/\r\n?/g, '\n').replace(/\n/g, '<br>');
+    }
+
     function renderMessage(message) {
       const item = document.createElement('li');
       item.className = 'vos-message-item';
@@ -882,9 +910,9 @@ templateEngineOverride: njk
       }
       item.appendChild(head);
 
-      const body = document.createElement('p');
-      body.className = 'vos-message-body';
-      body.textContent = message.body || '';
+      const body = document.createElement('div');
+      body.className = 'vos-message-body vos-safe-markdown';
+      body.innerHTML = renderMarkdown(message.body || '');
       item.appendChild(body);
 
       const meta = document.createElement('div');
