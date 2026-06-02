@@ -68,3 +68,9 @@ The lower city — salt, trade, old loyalties, and waterways that don't always b
 Where the city ends and Vallombrosa begins.
 
 - [The Fog Wardens' Garrison](/en/Venturia/Locations/fog-wardens-garrison)
+
+---
+
+## Other Locations
+
+- **[The Cask & Cube](/en/Venturia/Locations/the-cask-cube)** — The real-world gaming space where the Valley of Shadows campaign takes place. A meticulously renovated room featuring professional lighting, custom woodwork, and purpose-built gaming infrastructure.

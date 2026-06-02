@@ -200,7 +200,7 @@
         "Val",
         "the gardener-ranger"
       ],
-      "desc": "Elf man (he/him), 19; fair/pale skin; thin, lean build; tousled blonde shoulder-length hair, light stubble, blue eyes, pointed ears; a weathered green cloak over leather, bow and quiver across his back; a faint arcane mark on the back of one hand; warm and quiet."
+      "desc": "Elf man (he/him), 19; fair/pale skin; thin, lean build; unmistakably pale platinum-blonde shoulder-length hair, tousled and light-catching, with light stubble, blue eyes, pointed ears; a weathered green cloak over leather, bow and quiver across his back; a faint arcane mark on the back of one hand; warm and quiet."
     },
     "Kryton Novelli": {
       "aliases": [
@@ -475,6 +475,15 @@
         "the Lock in her prime"
       ],
       "desc": "A great volcanic sphinx — a woman's face, a lion's body, broad wings — her hide cracked basalt, soot and ash like a mantle, lava-like veins blazing bright through the cuts across her body. Regal, powerful, fearsome and unbroken — depicted in her prime, before the imprisonment."
+    },
+    "Brownie": {
+      "aliases": [
+        "Brownie",
+        "Brownies",
+        "Wooly",
+        "Wully"
+      ],
+      "desc": "A small fey creature, approximately 5 inches tall, with disheveled spiked dark brown hair and striking attractive features. The face is clearly that of a mature adult — weathered with defined features, a set jawline, and the lived-in character of someone well into adulthood, with no youthful or childlike qualities whatsoever. Shirtless, wearing a deer-hide loin cloth and boots, with a rabbit-fur cape draped across the shoulders. Dull red and blue body paint marks the arms. The brownie stands in front of a small cave dwelling carved into a rocky mountainside, with a modest porch. Feathers are woven into the hair and clothing. The setting is a wooded, mountainous region with natural light filtering through the trees."
     }
   },
   "items": {

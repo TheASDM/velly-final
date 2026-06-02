@@ -58,3 +58,10 @@ He sailed into Venturia from abroad and has stayed on land ever since. On the cr
 ## Possessions
 
 - **[Kaligor](/en/Venturia/Items/kaligor)** — A rare magic scimitar and heirloom of the Kaligor line.
+
+---
+
+## Gallery
+
+<!-- pinned by DM, gallery_id 20260526-153157-95d39b44, 2026-05-27T21:04:16.954888Z -->
+![Lotan plays with his sword of fire](/api/gallery/image/20260526-153157-95d39b44.png)

@@ -46,3 +46,10 @@ Strider works within the culture of the Gardens rather than above it. The garden
 - **[The Tiered Gardens](/en/Venturia/Locations/tiered-gardens)** - Strider's work and teaching ground.
 - **[The Gardener's Guild](/en/Venturia/Factions/gardeners-guild)** - The craft tradition around the Gardens.
 - **[Liminal House](/en/Venturia/Locations/liminal-house)** - Part of the web of people and places that raised Valentro.
+
+---
+
+## Gallery
+
+<!-- pinned by DM, gallery_id 20260527-043119-c7ee3253, 2026-05-27T21:04:33.314877Z -->
+![a 12 year old Valen is chased through the Tiered Gardens by a spirit of a Goose as Strider looks on](/api/gallery/image/20260527-043119-c7ee3253.png)

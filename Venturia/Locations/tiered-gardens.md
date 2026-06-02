@@ -63,3 +63,10 @@ These closures can last days or weeks. During them, strange sounds and lights ar
 
 - **[Strider](/en/Venturia/Characters/NPCs/strider)** — Names this location in its connections.
 - **[The Market Tiers](/en/Venturia/Locations/market-tiers)** — Cross-references this location.
+
+---
+
+## Gallery
+
+<!-- pinned by DM, gallery_id 20260527-043119-c7ee3253, 2026-05-27T21:04:30.332815Z -->
+![a 12 year old Valen is chased through the Tiered Gardens by a spirit of a Goose as Strider looks on](/api/gallery/image/20260527-043119-c7ee3253.png)

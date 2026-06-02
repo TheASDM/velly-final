@@ -55,3 +55,10 @@ While he was working, his gardening shears broke, and for an instant he saw them
 - **[Orabella](/en/Venturia/Characters/PCs/orabella)** — Another of Liminal House's children, though they were never especially close.
 - **[Kryton Novelli](/en/Venturia/Characters/PCs/kryton-novelli)** — A face he may know in passing from the Gardens.
 - **[The Gardener's Guild](/en/Venturia/Factions/gardeners-guild)** — Names this character in its connections.
+
+---
+
+## Gallery
+
+<!-- pinned by DM, gallery_id 20260527-043119-c7ee3253, 2026-05-27T18:43:41.916112Z -->
+![a 12 year old Valen is chased through the Tiered Gardens by a spirit of a Goose as Strider looks on](/api/gallery/image/20260527-043119-c7ee3253.png)

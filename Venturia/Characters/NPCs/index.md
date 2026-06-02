@@ -70,5 +70,6 @@ autoIndex: false
     <a class="vos-row-chip" href="/en/Venturia/Characters/NPCs/tolomeo-lucente/"><span><span class="vos-row-chip-title">Tolomeo Lucente</span><span class="vos-row-chip-meta">A scholar and explorer in the margins of old records.</span></span><span class="vos-row-chip-arrow" aria-hidden="true">&rsaquo;</span></a>
     <a class="vos-row-chip" href="/en/Venturia/Characters/NPCs/valeria-tessere/"><span><span class="vos-row-chip-title">Valeria Tessere</span><span class="vos-row-chip-meta">Masked leader of the Veil Court.</span></span><span class="vos-row-chip-arrow" aria-hidden="true">&rsaquo;</span></a>
     <a class="vos-row-chip" href="/en/Venturia/Characters/NPCs/ysmena-starweaver/"><span><span class="vos-row-chip-title">High Oracle Ysmena Starweaver</span><span class="vos-row-chip-meta">An ageless elf oracle speaking for smaller mystery cults.</span></span><span class="vos-row-chip-arrow" aria-hidden="true">&rsaquo;</span></a>
+    <a class="vos-row-chip" href="/en/Venturia/Characters/NPCs/brownie/"><span><span class="vos-row-chip-title">Brownie</span><span class="vos-row-chip-meta">Tiny adult fey, 4–6 inches tall, with mature features, disheveled adornment, and rummage communities in wooded and mountainous regions.</span></span><span class="vos-row-chip-arrow" aria-hidden="true">&rsaquo;</span></a>
   </div>
 </section>

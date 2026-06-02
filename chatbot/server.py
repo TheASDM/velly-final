@@ -2633,11 +2633,13 @@ def _save_gallery_entry(
 # the enhancement step succeeding.
 
 ENHANCE_MODEL = os.environ.get("ENHANCE_MODEL", ANTHROPIC_MODEL)
-ENHANCE_TEMPERATURE = float(os.environ.get("ENHANCE_TEMPERATURE", "0.6"))
+ENHANCE_TEMPERATURE = float(os.environ.get("ENHANCE_TEMPERATURE", "0.2"))
 ENHANCE_MAX_TOKENS = int(os.environ.get("ENHANCE_MAX_TOKENS", "900"))
 ENHANCE_TIMEOUT_S = int(os.environ.get("ENHANCE_TIMEOUT_S", "30"))
 ENHANCE_MAX_ENTITIES = int(os.environ.get("ENHANCE_MAX_ENTITIES", "6"))
 ENHANCE_ENTITY_CHARS = int(os.environ.get("ENHANCE_ENTITY_CHARS", "3000"))
+IMAGE_PROMPT_MAX_CHARS = int(os.environ.get("IMAGE_PROMPT_MAX_CHARS", "3900"))
+FINAL_GROUNDING_MAX_CHARS = int(os.environ.get("FINAL_GROUNDING_MAX_CHARS", "2800"))
 IMAGE_TITLE_MODEL = os.environ.get("IMAGE_TITLE_MODEL", ENHANCE_MODEL)
 IMAGE_TITLE_TIMEOUT_S = int(os.environ.get("IMAGE_TITLE_TIMEOUT_S", "12"))
 
@@ -2650,6 +2652,13 @@ DEFAULT_DESCRIPTIONS_FILE = Path("/site/chatbot/descriptions.json")
 if not DEFAULT_DESCRIPTIONS_FILE.exists():
     DEFAULT_DESCRIPTIONS_FILE = Path(__file__).resolve().parent / "descriptions.json"
 DESCRIPTIONS_FILE = Path(os.environ.get("ART_DESCRIPTIONS_FILE", str(DEFAULT_DESCRIPTIONS_FILE)))
+_DESCRIPTIONS_CACHE_LOCK = threading.RLock()
+_DESCRIPTIONS_CACHE = {
+    "path": None,
+    "mtime_ns": None,
+    "raw": {},
+    "index": {},
+}
 
 # Aliases shorter than this rarely identify a unique entity (e.g. "lo",
 # "tl", "rox"); we still let them through, but the loader excludes
@@ -2738,19 +2747,147 @@ def _flatten_descriptions(raw):
     return index
 
 
-def _load_descriptions_index():
-    """Read descriptions.json and return its flattened lookup index, or {}
-    on any failure. Called on every request so live edits don't require a
-    container restart — the file is small (~10 KB)."""
+def _load_descriptions_data():
+    """Read descriptions.json once per mtime and return (raw, flattened_index).
+
+    Live edits still take effect without a restart, but normal generation no
+    longer reparses and reflattens the same file for every request.
+    """
     try:
-        with open(DESCRIPTIONS_FILE, "r", encoding="utf-8") as f:
-            raw = json.load(f)
-        return _flatten_descriptions(raw)
+        stat = DESCRIPTIONS_FILE.stat()
+    except FileNotFoundError:
+        return {}, {}
+
+    path_key = str(DESCRIPTIONS_FILE)
+    with _DESCRIPTIONS_CACHE_LOCK:
+        if (
+            _DESCRIPTIONS_CACHE["path"] == path_key
+            and _DESCRIPTIONS_CACHE["mtime_ns"] == stat.st_mtime_ns
+        ):
+            return _DESCRIPTIONS_CACHE["raw"], _DESCRIPTIONS_CACHE["index"]
+
+        try:
+            with open(DESCRIPTIONS_FILE, "r", encoding="utf-8") as f:
+                raw = json.load(f)
+            index = _flatten_descriptions(raw)
+        except Exception:
+            logging.exception("Failed to load %s", DESCRIPTIONS_FILE)
+            raw, index = {}, {}
+
+        _DESCRIPTIONS_CACHE.update({
+            "path": path_key,
+            "mtime_ns": stat.st_mtime_ns,
+            "raw": raw if isinstance(raw, dict) else {},
+            "index": index if isinstance(index, dict) else {},
+        })
+        return _DESCRIPTIONS_CACHE["raw"], _DESCRIPTIONS_CACHE["index"]
+
+
+def _load_descriptions_index():
+    """Return the flattened descriptions lookup index, or {} on failure."""
+    try:
+        _raw, index = _load_descriptions_data()
+        return index
     except FileNotFoundError:
         return {}
     except Exception:
         logging.exception("Failed to load %s", DESCRIPTIONS_FILE)
         return {}
+
+
+def _grounded_entity_names(matched_entries):
+    names, seen = [], set()
+    for m in matched_entries or []:
+        name = (m.get("name") or "").strip()
+        key = name.lower()
+        if not name or key in seen:
+            continue
+        seen.add(key)
+        names.append(name)
+    return names
+
+
+def _compact_grounding_text(text, max_chars=360):
+    text = re.sub(r"\s+", " ", str(text or "")).strip()
+    if len(text) <= max_chars:
+        return text
+    cut = text[:max_chars].rsplit(" ", 1)[0].rstrip(" ,;:")
+    return (cut or text[:max_chars]).rstrip() + "..."
+
+
+def _final_visual_grounding_block(matched_entries):
+    """Build the non-LLM character/location lock added to the image prompt.
+
+    Only curated descriptions.json entries are treated as final visual facts.
+    RAG fallback entries can still guide Haiku, but wiki snippets are not always
+    visual enough to inject as hard constraints into the image model.
+    """
+    lines, seen = [], set()
+    header = (
+        "Canonical visual reference, required for named campaign entities: "
+        "use these facts exactly; keep ancestry, age, body scale, hair color, "
+        "skin tone, distinctive features, and signature items unchanged unless "
+        "the player explicitly asks for a disguise or transformation."
+    )
+    remaining = max(FINAL_GROUNDING_MAX_CHARS - len(header) - 2, 0)
+    if remaining <= 0:
+        return ""
+
+    for m in matched_entries or []:
+        if m.get("source_file") != "descriptions.json":
+            continue
+        name = (m.get("name") or "").strip()
+        key = name.lower()
+        if not name or key in seen:
+            continue
+        seen.add(key)
+        raw_desc = m.get("text") or ""
+        # Group descriptions intentionally carry multiple characters. Give
+        # them more room so prompts like "the party" still preserve each PC's
+        # identity details instead of only the first few names in the list.
+        desc_max = 2400 if str(raw_desc).startswith("Group reference") else 520
+        desc = _compact_grounding_text(raw_desc, max_chars=desc_max)
+        if not desc:
+            continue
+        line = f"- {name}: {desc}"
+        projected = sum(len(existing) + 1 for existing in lines) + len(line)
+        if projected > remaining:
+            available = remaining - sum(len(existing) + 1 for existing in lines)
+            if available > 120:
+                lines.append(_compact_grounding_text(line, available))
+            break
+        lines.append(line)
+
+    if not lines:
+        return ""
+    return header + "\n" + "\n".join(lines)
+
+
+def _compose_final_image_prompt(style_prefix, image_prompt_body, matched_entries):
+    """Join style, deterministic visual grounding, and scene text.
+
+    The visual reference block is preserved first and the scene text is trimmed
+    only if the combined prompt would exceed the configured image prompt cap.
+    """
+    image_prompt_body = str(image_prompt_body or "").strip()
+    grounding = _final_visual_grounding_block(matched_entries)
+    fixed_parts = [p.strip() for p in (style_prefix, grounding) if p and p.strip()]
+    fixed = "\n\n".join(fixed_parts)
+    full_prompt = "\n\n".join(p for p in (fixed, image_prompt_body) if p).strip()
+    if len(full_prompt) <= IMAGE_PROMPT_MAX_CHARS:
+        return full_prompt
+
+    if not image_prompt_body:
+        return fixed[:IMAGE_PROMPT_MAX_CHARS].rstrip()
+
+    separator_len = 2 if fixed else 0
+    body_budget = IMAGE_PROMPT_MAX_CHARS - len(fixed) - separator_len
+    if body_budget < 300:
+        body_budget = max(0, IMAGE_PROMPT_MAX_CHARS - separator_len)
+        fixed = ""
+
+    trimmed_body = _compact_grounding_text(image_prompt_body, max_chars=body_budget)
+    return "\n\n".join(p for p in (fixed, trimmed_body) if p).strip()
 
 
 def _match_descriptions(prompt, index):
@@ -2855,15 +2992,14 @@ def _enhance_image_prompt(raw_prompt, style_key, matched_entries):
     Returns a dict {prompt, grounded_in[]} on success, or the raw prompt
     string when Anthropic is unavailable. Never raises.
     """
-    fallback = {"prompt": raw_prompt, "grounded_in": []}
+    grounded_in = _grounded_entity_names(matched_entries)
+    fallback = {"prompt": raw_prompt, "grounded_in": grounded_in}
     if not ANTHROPIC_API_KEY:
         return fallback
 
-    grounded_in = []
     entity_blocks = []
     for m in matched_entries:
         name = m.get("name") or "Unknown"
-        grounded_in.append(name)
         snippet = (m.get("text") or "")[:ENHANCE_ENTITY_CHARS]
         entity_blocks.append(f"### {name}\n{snippet}")
     entity_section = (
@@ -2887,7 +3023,9 @@ def _enhance_image_prompt(raw_prompt, style_key, matched_entries):
         "CAMPAIGN ENTITIES section, faithfully weave their canonical "
         "visual details (appearance, distinctive features, setting) into "
         "the prompt. Stay true to the page — do NOT invent new physical "
-        "traits, races, ages, or items not in the source.\n"
+        "traits, races, ages, or items not in the source. Hair color, skin "
+        "tone, ancestry/species, body scale, horns/ears, and signature gear "
+        "are identity facts; preserve them plainly.\n"
         "4. Preserve exact ancestry, species, body scale, and height cues "
         "from CAMPAIGN ENTITIES. If an entity is described as about three "
         "feet tall, six inches tall, an orc, a gnome, a dwarf, a satyr, "
@@ -4729,25 +4867,26 @@ def _generate_image_payload(
         style_prefix = ""
         style_label = None
 
-    # Have Haiku turn the raw prompt into a vivid scene description,
-    # weaving in canonical descriptions for any named campaign entities.
-    # Falls back to the raw prompt on any failure.
+    # Resolve campaign references regardless of whether the player wants the
+    # LLM rewrite. The rewrite is optional; canonical visual locking is cheap
+    # and should still protect named characters from model drift.
     enhanced_prompt = None
-    grounded_in = []
+    matched = _extract_campaign_entities(prompt)
+    grounded_in = _grounded_entity_names(matched)
     if enhance:
-        matched = _extract_campaign_entities(prompt)
         result = _enhance_image_prompt(prompt, style_key, matched)
         if isinstance(result, dict):
             enhanced_prompt = result.get("prompt")
             grounded_in = result.get("grounded_in") or []
+    if matched and not grounded_in:
+        grounded_in = _grounded_entity_names(matched)
 
     # The text we actually send to OpenAI is: style prefix + enhanced (or
-    # raw) prompt. Keep the original raw prompt around for the gallery so
-    # human readers see what the player typed, not the rewrite.
+    # raw) prompt, with matched curated visual references pinned between the
+    # style and scene text. Keep the original raw prompt around for the gallery
+    # so human readers see what the player typed, not the rewrite.
     image_prompt_body = enhanced_prompt or prompt
-    full_prompt = (
-        style_prefix + "\n\n" + image_prompt_body
-    ).strip() if style_prefix else image_prompt_body
+    full_prompt = _compose_final_image_prompt(style_prefix, image_prompt_body, matched)
 
     payload = {
         "model": image_model,
@@ -6591,10 +6730,8 @@ def list_descriptions():
     grouped by category. Used by the Studio's 'Available references'
     panel so players can see what entities they can mention without
     describing them visually."""
-    try:
-        with open(DEFAULT_DESCRIPTIONS_FILE, "r", encoding="utf-8") as fh:
-            data = json.load(fh)
-    except Exception:
+    data, _index = _load_descriptions_data()
+    if not data:
         return jsonify({"categories": []})
 
     category_labels = {
