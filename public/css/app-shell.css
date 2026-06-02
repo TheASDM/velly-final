@@ -712,6 +712,13 @@
     background: rgba(212, 165, 116, 0.075);
     border-bottom-color: rgba(212, 165, 116, 0.48);
   }
+  .vos-row-chip.is-clickable {
+    cursor: pointer;
+  }
+  .vos-row-chip.is-clickable:focus-visible {
+    outline: 2px solid rgba(212, 165, 116, 0.78);
+    outline-offset: 3px;
+  }
   /* CTA variant — used for the prominent "Contribute Lore" tile on the
      Venturia hub and the smaller version on Home. */
   .vos-row-chip-cta {
@@ -750,6 +757,9 @@
     min-width: 0;
     overflow-wrap: anywhere;
   }
+  .vos-row-chip-copy {
+    min-width: 0;
+  }
   .vos-row-chip-title {
     color: var(--vos-cream);
     font-family: 'Cinzel', Georgia, serif;
@@ -765,6 +775,80 @@
     font-size: 0.9rem;
     font-style: italic;
     line-height: 1.25;
+  }
+  .vos-safe-markdown {
+    overflow-wrap: anywhere;
+  }
+  .vos-row-chip-meta.vos-safe-markdown {
+    font-style: normal;
+    line-height: 1.35;
+  }
+  .vos-dm-message-body.vos-safe-markdown {
+    white-space: normal;
+  }
+  .vos-safe-markdown p {
+    margin: 0.35rem 0 0;
+  }
+  .vos-safe-markdown p:first-child,
+  .vos-safe-markdown h4:first-child,
+  .vos-safe-markdown pre:first-child,
+  .vos-safe-markdown blockquote:first-child,
+  .vos-safe-markdown ul:first-child,
+  .vos-safe-markdown ol:first-child {
+    margin-top: 0;
+  }
+  .vos-safe-markdown ul,
+  .vos-safe-markdown ol {
+    margin: 0.4rem 0 0.4rem 1.1rem;
+    padding-left: 0.9rem;
+  }
+  .vos-safe-markdown li + li {
+    margin-top: 0.18rem;
+  }
+  .vos-safe-markdown blockquote {
+    margin: 0.45rem 0;
+    padding: 0.35rem 0.62rem;
+    border-left: 2px solid rgba(212, 165, 116, 0.42);
+    background: rgba(212, 165, 116, 0.06);
+    color: rgba(233, 225, 208, 0.84);
+  }
+  .vos-safe-markdown h4 {
+    margin: 0.55rem 0 0.25rem;
+    color: var(--vos-gold-bright);
+    font-family: 'Cinzel', Georgia, serif;
+    font-size: 0.76rem;
+    letter-spacing: 0.08em;
+    line-height: 1.2;
+    text-transform: uppercase;
+  }
+  .vos-safe-markdown code {
+    padding: 0.08rem 0.28rem;
+    border-radius: 3px;
+    background: rgba(0, 0, 0, 0.28);
+    color: var(--vos-cream);
+    font-size: 0.88em;
+  }
+  .vos-safe-markdown pre {
+    margin: 0.45rem 0;
+    padding: 0.55rem 0.65rem;
+    border-radius: 6px;
+    background: rgba(0, 0, 0, 0.32);
+    overflow-x: auto;
+    white-space: pre-wrap;
+  }
+  .vos-safe-markdown pre code {
+    padding: 0;
+    background: none;
+  }
+  .vos-safe-markdown a {
+    color: var(--vos-gold-bright);
+    text-decoration: underline;
+    text-underline-offset: 0.15em;
+  }
+  .vos-safe-markdown hr {
+    margin: 0.55rem 0;
+    border: 0;
+    border-top: 1px solid rgba(212, 165, 116, 0.28);
   }
   .vos-row-chip-badge {
     display: inline-flex;

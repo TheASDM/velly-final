@@ -57,6 +57,124 @@
     try { localStorage.removeItem(key); } catch (error) {}
   }
 
+  function escapeHtml(value) {
+    return String(value ?? '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  function escapeAttr(value) {
+    return escapeHtml(value).replace(/`/g, '&#96;');
+  }
+
+  function decodeMarkdownUrl(value) {
+    return String(value || '')
+      .replace(/&amp;/g, '&')
+      .replace(/&quot;/g, '"')
+      .replace(/&#39;/g, "'")
+      .trim();
+  }
+
+  function safeMarkdownUrl(value) {
+    const url = decodeMarkdownUrl(value);
+    if (!url || /[\u0000-\u001f\s]/.test(url)) return '';
+    if (url.startsWith('/') && !url.startsWith('//')) return url;
+    if (url.startsWith('#')) return url;
+    try {
+      const parsed = new URL(url, window.location.origin);
+      if (['http:', 'https:', 'mailto:'].includes(parsed.protocol)) return url;
+    } catch (error) {}
+    return '';
+  }
+
+  function renderMarkdownEmphasis(html) {
+    html = html.replace(/\*\*([^*\n]+)\*\*/g, '<strong>$1</strong>');
+    html = html.replace(/__([^_\n]+)__/g, '<strong>$1</strong>');
+    html = html.replace(/\*([^*\n]+)\*/g, '<em>$1</em>');
+    html = html.replace(/_([^_\n]+)_/g, '<em>$1</em>');
+    return html;
+  }
+
+  function renderSafeMarkdownInline(value) {
+    const tokens = [];
+    const stashToken = (markup) => {
+      const index = tokens.length;
+      tokens.push(markup);
+      return `\u0000MDTOKEN${index}\u0000`;
+    };
+
+    let html = escapeHtml(value);
+    html = html.replace(/`([^`\n]+)`/g, (_match, code) => stashToken(`<code>${code}</code>`));
+    html = html.replace(/\[([^\]\n]{1,180})\]\(([^)\n]{1,500})\)/g, (_match, label, url) => {
+      const safeUrl = safeMarkdownUrl(url);
+      const safeLabel = renderMarkdownEmphasis(label);
+      if (!safeUrl) return safeLabel;
+      const external = /^(https?:|mailto:)/i.test(safeUrl);
+      const attrs = external ? ' target="_blank" rel="noopener noreferrer"' : '';
+      return stashToken(`<a href="${escapeAttr(safeUrl)}"${attrs}>${safeLabel}</a>`);
+    });
+    html = renderMarkdownEmphasis(html);
+    tokens.forEach((token, index) => {
+      html = html.replace(new RegExp(`\\u0000MDTOKEN${index}\\u0000`, 'g'), token);
+    });
+    return html;
+  }
+
+  function renderSafeMarkdownBlocks(text) {
+    return String(text || '')
+      .split(/\n{2,}/)
+      .map((rawBlock) => {
+        const block = rawBlock.trim();
+        if (!block) return '';
+        const lines = block.split('\n');
+        if (/^---+$/.test(block)) {
+          return '<hr>';
+        }
+        const heading = block.match(/^#{1,4}\s+(.+)$/);
+        if (heading && lines.length === 1) {
+          return `<h4>${renderSafeMarkdownInline(heading[1])}</h4>`;
+        }
+        if (lines.every((line) => /^\s*[-*+]\s+/.test(line))) {
+          const items = lines
+            .map((line) => `<li>${renderSafeMarkdownInline(line.replace(/^\s*[-*+]\s+/, ''))}</li>`)
+            .join('');
+          return `<ul>${items}</ul>`;
+        }
+        if (lines.every((line) => /^\s*\d+[.)]\s+/.test(line))) {
+          const items = lines
+            .map((line) => `<li>${renderSafeMarkdownInline(line.replace(/^\s*\d+[.)]\s+/, ''))}</li>`)
+            .join('');
+          return `<ol>${items}</ol>`;
+        }
+        if (lines.every((line) => /^\s*>\s?/.test(line))) {
+          const quote = lines
+            .map((line) => renderSafeMarkdownInline(line.replace(/^\s*>\s?/, '')))
+            .join('<br>');
+          return `<blockquote>${quote}</blockquote>`;
+        }
+        return `<p>${lines.map(renderSafeMarkdownInline).join('<br>')}</p>`;
+      })
+      .join('');
+  }
+
+  function renderSafeMarkdown(value) {
+    const text = String(value || '').replace(/\r\n?/g, '\n').trim();
+    if (!text) return '';
+    const parts = text.split(/(```[\s\S]*?```)/g);
+    return parts.map((part, index) => {
+      if (index % 2 === 1) {
+        const code = part.replace(/^```[^\n]*\n?/, '').replace(/```$/, '');
+        return `<pre><code>${escapeHtml(code)}</code></pre>`;
+      }
+      return renderSafeMarkdownBlocks(part);
+    }).join('');
+  }
+
+  window.VOS_RENDER_MARKDOWN = renderSafeMarkdown;
+
   function getAuthReturnStatus() {
     if (authReturnStatus !== undefined) return authReturnStatus;
     try {
@@ -933,6 +1051,7 @@
     getRoster: () => roster.slice(),
     lookupPlayer: lookupRoster,
     getProfileDisplayName,
+    renderSafeMarkdown,
   };
 
   window.addEventListener('DOMContentLoaded', () => {

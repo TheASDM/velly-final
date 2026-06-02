@@ -32,6 +32,21 @@ autoIndex: false
     return date.toLocaleString([], { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
   }
 
+  function escapeHtml(value) {
+    return String(value ?? '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  function renderMarkdown(value) {
+    const renderer = window.VOS_RENDER_MARKDOWN || (window.VOS_PWA && window.VOS_PWA.renderSafeMarkdown);
+    if (renderer) return renderer(value || '');
+    return escapeHtml(value).replace(/\r\n?/g, '\n').replace(/\n/g, '<br>');
+  }
+
   function render(messages) {
     listEl.innerHTML = '';
     if (!messages.length) {
@@ -42,18 +57,31 @@ autoIndex: false
       return;
     }
     messages.forEach((message) => {
-      const row = document.createElement(message.url ? 'a' : 'div');
+      const row = document.createElement('article');
       row.className = 'vos-row-chip';
-      if (message.url) row.href = message.url;
+      if (message.url) {
+        row.classList.add('is-clickable');
+        row.setAttribute('role', 'link');
+        row.tabIndex = 0;
+        row.addEventListener('click', (event) => {
+          if (event.target.closest('a, button')) return;
+          window.location.href = message.url;
+        });
+        row.addEventListener('keydown', (event) => {
+          if (event.key !== 'Enter' && event.key !== ' ') return;
+          event.preventDefault();
+          window.location.href = message.url;
+        });
+      }
       row.innerHTML = `
-        <span>
+        <div class="vos-row-chip-copy">
           <span class="vos-row-chip-title"></span>
-          <span class="vos-row-chip-meta"></span>
-        </span>
+          <div class="vos-row-chip-meta vos-safe-markdown"></div>
+        </div>
         <span class="vos-row-chip-badge" aria-hidden="true"></span>
       `;
       row.querySelector('.vos-row-chip-title').textContent = message.title || 'DM Message';
-      row.querySelector('.vos-row-chip-meta').textContent = message.body || '';
+      row.querySelector('.vos-row-chip-meta').innerHTML = renderMarkdown(message.body || '');
       row.querySelector('.vos-row-chip-badge').textContent = formatDate(message.created_at);
       listEl.appendChild(row);
     });

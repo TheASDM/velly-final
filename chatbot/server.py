@@ -4135,6 +4135,29 @@ def _message_recipients(conn, message_id):
     ]
 
 
+def _markdown_to_push_text(value):
+    text = str(value or "")
+    text = re.sub(r"```[^\n]*\n?(.*?)```", lambda match: match.group(1), text, flags=re.S)
+    text = re.sub(r"\[([^\]\n]{1,180})\]\(([^)\n]{1,500})\)", r"\1", text)
+    text = re.sub(r"(?m)^\s{0,3}#{1,6}\s*", "", text)
+    text = re.sub(r"(?m)^\s*>\s?", "", text)
+    text = re.sub(r"(?m)^---+$", "", text)
+    text = re.sub(r"(?m)^\s*[-*+]\s+", "- ", text)
+    text = re.sub(r"(?m)^\s*\d+[.)]\s+", "- ", text)
+    text = re.sub(r"`([^`\n]+)`", r"\1", text)
+    for pattern in (
+        r"\*\*([^*\n]+)\*\*",
+        r"__([^_\n]+)__",
+        r"\*([^*\n]+)\*",
+        r"_([^_\n]+)_",
+    ):
+        text = re.sub(pattern, r"\1", text)
+    text = re.sub(r"[ \t]+", " ", text)
+    text = re.sub(r"\n[ \t]+", "\n", text)
+    text = re.sub(r"\n{3,}", "\n\n", text).strip()
+    return text[:500] or "DM message"
+
+
 def _fanout_push(conn, title, message, url, recipients=None, message_id=None):
     payload = json.dumps({
         "title": title.strip()[:120],
@@ -4367,7 +4390,14 @@ def dm_messages():
             FROM messages
             WHERE id = ?
         """, (message_id,)).fetchone()
-        push_result = _fanout_push(conn, title, message, url, recipients=recipients, message_id=message_id)
+        push_result = _fanout_push(
+            conn,
+            title,
+            _markdown_to_push_text(message),
+            url,
+            recipients=recipients,
+            message_id=message_id,
+        )
 
     return jsonify({
         "ok": True,

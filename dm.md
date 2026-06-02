@@ -586,8 +586,8 @@ permalink: /dm/
         <input id="vos-dm-message-heading" type="text" value="Message from the DM">
       </label>
       <label>
-        Message
-        <textarea id="vos-dm-message-body"></textarea>
+        Message (Markdown)
+        <textarea id="vos-dm-message-body" placeholder="Use **bold**, _italics_, bullets, quotes, and links like [Wiki](/en/venturia/)."></textarea>
       </label>
       <label>
         URL
@@ -1075,6 +1075,12 @@ permalink: /dm/
       .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
   }
 
+  function renderMarkdown(s) {
+    const renderer = window.VOS_RENDER_MARKDOWN || (window.VOS_PWA && window.VOS_PWA.renderSafeMarkdown);
+    if (renderer) return renderer(s || '');
+    return escapeHtml(s).replace(/\r\n?/g, '\n').replace(/\n/g, '<br>');
+  }
+
   function resolveWikiQuery(value) {
     const raw = String(value || '').trim();
     if (!raw) return null;
@@ -1264,7 +1270,7 @@ permalink: /dm/
       const head = document.createElement('div');
       const title = document.createElement('h3');
       const actions = document.createElement('div');
-      const body = document.createElement('p');
+      const body = document.createElement('div');
       const meta = document.createElement('div');
       const badges = document.createElement('div');
       const push = document.createElement('span');
@@ -1274,12 +1280,12 @@ permalink: /dm/
       head.className = 'vos-dm-message-head';
       title.className = 'vos-dm-message-title';
       actions.className = 'vos-dm-actions';
-      body.className = 'vos-dm-message-body';
+      body.className = 'vos-dm-message-body vos-safe-markdown';
       meta.className = 'vos-dm-meta';
       badges.className = 'vos-dm-badges';
 
       title.textContent = message.title || 'DM Message';
-      body.textContent = message.body || '';
+      body.innerHTML = renderMarkdown(message.body || '');
       meta.textContent = `${formatDate(message.created_at)}${message.deleted_at ? ' · deleted' : ''}`;
 
       const targets = message.target_type === 'all'
