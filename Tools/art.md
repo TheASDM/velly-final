@@ -53,6 +53,9 @@ dateCreated: 2026-05-24T00:00:00.000Z
   letter-spacing: 0.04em;
   line-height: 0.98;
   text-shadow: 0 10px 34px rgba(0, 0, 0, 0.75);
+  white-space: nowrap;
+  overflow-wrap: normal;
+  word-break: normal;
 }
 .vos-art-app-head h1::after { content: none; }
 .vos-art-app-actions {
@@ -1111,8 +1114,8 @@ body.is-dm-mode .vos-art-lightbox-delete { display: inline-flex; }
     padding: 0;
   }
   .vos-art-app-head {
-    align-items: center;
-    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: start;
+    grid-template-columns: 1fr;
     gap: 0.65rem;
     padding: 0.1rem 0 0.85rem;
   }
@@ -1121,6 +1124,7 @@ body.is-dm-mode .vos-art-lightbox-delete { display: inline-flex; }
   }
   .vos-art-app-actions {
     width: auto;
+    justify-content: flex-start;
   }
   .vos-art-anchor {
     width: auto;
