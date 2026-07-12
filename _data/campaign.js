@@ -65,12 +65,5 @@ module.exports = {
       emblem: "VB",
       link: "/en/Venturia/Locations/vallombrosa",
     },
-    {
-      name: "The Cask and Cube",
-      role: "Next gathering",
-      kind: "Table",
-      emblem: "CC",
-      link: "/en/Updates/campaign-update-4",
-    },
   ],
 };
