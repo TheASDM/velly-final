@@ -371,47 +371,43 @@ button.vos-avail-day:disabled {
 </style>
 
 <div class="vos-calendar">
-  {%- set gatherings = campaign.nextGatherings -%}
-  {%- if not gatherings or not gatherings.length -%}
-    {%- set gatherings = [campaign.nextGathering] -%}
-  {%- endif -%}
-  {%- for gathering in gatherings %}
-  <section class="vos-calendar-panel" aria-labelledby="vos-next-gathering-title-{{ loop.index }}">
+  <nav class="vos-seg" data-vos-tabs role="tablist" aria-label="Calendar sections">
+    <button class="vos-seg-btn" type="button" data-view="next">Next Session</button>
+    <button class="vos-seg-btn" type="button" data-view="calendar">Calendar</button>
+    <button class="vos-seg-btn" type="button" data-view="availability">
+      Availability
+      <span class="vos-seg-dot" id="vos-avail-dot" hidden aria-label="Availability not submitted"></span>
+    </button>
+  </nav>
+
+  <section class="vos-calendar-panel" data-vos-view="next" data-next-gathering aria-labelledby="vos-next-gathering-title">
     <div class="vos-calendar-kicker">Next Gathering</div>
-    <h2 id="vos-next-gathering-title-{{ loop.index }}" class="vos-calendar-date">{{ gathering.date }}</h2>
-    {%- if gathering.dateIso %}
-    <div class="vos-calendar-countdown" data-date-iso="{{ gathering.dateIso }}" hidden aria-live="polite">...</div>
-    {%- endif %}
-    <div class="vos-calendar-where">{{ gathering.timeLocation }}</div>
-    <ul class="vos-task-list vos-calendar-tasks">
-      {%- for task in gathering.tasks %}
-      <li class="vos-task-row"{% if task.dueIso %} data-reminder-date="{{ task.dueIso }}"{% endif %}>
-        <span class="vos-task-check" aria-hidden="true">✓</span>
-        <span class="vos-task-main">{{ task.text }}</span>
-        {%- if task.due %}<span class="vos-task-date">Due {{ task.due }}</span>{%- endif %}
-      </li>
-      {%- endfor %}
-    </ul>
-    <div class="vos-rsvp">
-      <div class="vos-calendar-kicker">RSVP</div>
-      {% set rsvpEventId = gathering.eventId %}
-      {% include "partials/rsvp-control.njk" %}
+    <div data-ng-empty hidden>
+      <h2 id="vos-next-gathering-title" class="vos-calendar-date">Nothing scheduled yet</h2>
+      <div class="vos-calendar-where">The DM hasn&rsquo;t put the next session on the books. Mark your availability so it&rsquo;s easy to pick a day.</div>
     </div>
-    <div class="vos-calendar-actions">
-      {%- if gathering.dateIso %}
-      <a class="vos-calendar-link" href="/api/calendar/{{ gathering.eventId }}.ics">Add to Calendar</a>
-      {%- endif %}
+    <div data-ng-body>
+      <h2 class="vos-calendar-date" data-ng-date>Loading&hellip;</h2>
+      <div class="vos-calendar-countdown" data-ng-countdown hidden aria-live="polite"></div>
+      <div class="vos-calendar-where" data-ng-where></div>
+      <ul class="vos-task-list vos-calendar-tasks" data-ng-tasks hidden></ul>
+      <div class="vos-rsvp">
+        <div class="vos-calendar-kicker">RSVP</div>
+        {% include "partials/rsvp-control.njk" %}
+      </div>
+      <div class="vos-calendar-actions">
+        <a class="vos-calendar-link" data-ng-ics href="#" hidden>Add to Calendar</a>
+      </div>
     </div>
   </section>
-  {%- endfor %}
 
-  <section class="vos-calendar-panel" aria-labelledby="vos-schedule-title">
+  <section class="vos-calendar-panel" data-vos-view="calendar" hidden aria-labelledby="vos-schedule-title">
     <div class="vos-calendar-kicker">Schedule</div>
-    <h2 id="vos-schedule-title" class="vos-calendar-section-title">The Next Three Months</h2>
+    <h2 id="vos-schedule-title" class="vos-calendar-section-title">Group Calendar</h2>
     <div id="vos-cal-months" class="vos-cal-months">Loading the calendar…</div>
   </section>
 
-  <section class="vos-calendar-panel" aria-labelledby="vos-availability-title">
+  <section class="vos-calendar-panel" data-vos-view="availability" hidden aria-labelledby="vos-availability-title">
     <div class="vos-calendar-kicker">Your Availability</div>
     <h2 id="vos-availability-title" class="vos-calendar-section-title">When Can You Play?</h2>
     <div class="vos-avail-legend">
@@ -434,58 +430,5 @@ button.vos-avail-day:disabled {
   </section>
 </div>
 
-<script>
-(function () {
-  function startOfDay(date) {
-    return new Date(date.getFullYear(), date.getMonth(), date.getDate());
-  }
-
-  function relative(iso) {
-    const isDateOnly = iso.length <= 10;
-    const now = new Date();
-    const target = new Date(isDateOnly ? iso + 'T00:00:00' : iso);
-    if (Number.isNaN(target.getTime())) return null;
-
-    if (isDateOnly) {
-      const days = Math.round((startOfDay(target) - startOfDay(now)) / 86400000);
-      if (days < 0) return 'In the past';
-      if (days === 0) return 'Today';
-      if (days === 1) return 'Tomorrow';
-      if (days < 14) return `In ${days} days`;
-      if (days < 60) {
-        const weeks = Math.round(days / 7);
-        return weeks === 1 ? 'In 1 week' : `In ${weeks} weeks`;
-      }
-      return target.toLocaleDateString();
-    }
-
-    const ms = target - now;
-    if (ms < -60000) return 'In the past';
-    if (ms < 60000) return 'Starting now';
-    const minutes = Math.floor(ms / 60000);
-    if (minutes < 60) return minutes === 1 ? 'In 1 minute' : `In ${minutes} minutes`;
-    const hours = Math.floor(ms / 3600000);
-    if (hours < 24) return hours === 1 ? 'In 1 hour' : `In ${hours} hours`;
-    const days = Math.floor(ms / 86400000);
-    if (days < 14) return days === 1 ? 'Tomorrow' : `In ${days} days`;
-    const weeks = Math.round(days / 7);
-    return weeks === 1 ? 'In 1 week' : `In ${weeks} weeks`;
-  }
-
-  function tickOne(el) {
-    const iso = el.getAttribute('data-date-iso');
-    if (!iso) return;
-    const text = relative(iso);
-    if (!text) return;
-    el.textContent = text;
-    el.hidden = false;
-  }
-
-  const countdowns = Array.from(document.querySelectorAll('.vos-calendar-countdown[data-date-iso]'));
-  countdowns.forEach(tickOne);
-  // Once a minute is plenty for the date-only case and not wasteful for
-  // datetime entries — the label only changes on hour/day boundaries.
-  setInterval(() => countdowns.forEach(tickOne), 60 * 1000);
-})();
-</script>
+<script src="/js/vos-tabs.js" defer></script>
 <script src="/js/vos-calendar.js" defer></script>

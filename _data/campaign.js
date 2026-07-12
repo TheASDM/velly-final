@@ -1,30 +1,7 @@
 // ===== CAMPAIGN STATE - edit after each session, then rebuild =====
-const nextGatherings = [
-  {
-    eventId: "2026-05-30-cask-and-cube",
-    date: "May 30, 2026",
-    // ISO 8601 date (or full datetime with "T" if you have a start time).
-    // Drives the home + calendar countdown and the .ics export. Treated
-    // as an all-day event when there's no time component.
-    dateIso: "2026-05-30",
-    timeLocation: "The Cask and Cube / short campaign-character scene",
-    timefulUrl: "",
-    notes: [
-      "Bring something small to add to the tavern if you have it.",
-      "Send 4-8 sentences about your character's typical day by May 28.",
-    ],
-    tasks: [
-      {
-        text: "Bring something small to add to the tavern if you have it.",
-      },
-      {
-        text: "Send 4-8 sentences about your character's typical day.",
-        due: "May 28",
-        dueIso: "2026-05-28",
-      },
-    ],
-  },
-];
+// The next gathering is no longer defined here: it lives in the
+// calendar_events table (DM-scheduled from /dm/) and pages hydrate it
+// from /api/calendar/next.
 
 module.exports = {
   latestSession: {
@@ -37,9 +14,6 @@ module.exports = {
       "The table is moving from setup into play: scheduling has moved to Timeful, the new Eldryn and Venturia maps are live, and the first in-character scene will begin with troubling news from the Overlook.",
     link: "/en/Updates/campaign-update-4",
   },
-
-  nextGathering: nextGatherings[0],
-  nextGatherings,
 
   openThreads: [
     {

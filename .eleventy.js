@@ -74,6 +74,8 @@ module.exports = function (eleventyConfig) {
   eleventyConfig.addPassthroughCopy({ "public/js/settings.js": "js/settings.js" });
   eleventyConfig.addPassthroughCopy({ "public/js/in-play-live.js": "js/in-play-live.js" });
   eleventyConfig.addPassthroughCopy({ "public/js/vos-calendar.js": "js/vos-calendar.js" });
+  eleventyConfig.addPassthroughCopy({ "public/js/vos-tabs.js": "js/vos-tabs.js" });
+  eleventyConfig.addPassthroughCopy({ "public/js/vos-dm.js": "js/vos-dm.js" });
   // Player roster — also lives in _data/players.json so templates can read
   // it as `players`. Passed through so the PWA client can fetch it at
   // /data/players.json (used as a fallback when /api/auth/config is down).
@@ -191,76 +193,6 @@ module.exports = function (eleventyConfig) {
       }))
       .sort((a, b) => a.title.localeCompare(b.title));
     return JSON.stringify(items);
-  });
-
-  // ── Filter: render the next gathering as an .ics file body.
-  // Used by calendar-next-ics.njk to emit /calendar/next.ics. Date-only
-  // entries produce an all-day VEVENT; datetime entries get DTSTART/DTEND
-  // with optional durationHours (default 4h).
-  function _icsEscape(value) {
-    return String(value == null ? "" : value)
-      .replace(/\\/g, "\\\\")
-      .replace(/([,;])/g, "\\$1")
-      .replace(/\r?\n/g, "\\n");
-  }
-  function _icsCompact(iso) {
-    return iso.replace(/[-:]/g, "").split(".")[0];
-  }
-  function _icsStamp() {
-    return new Date().toISOString().replace(/[-:]/g, "").split(".")[0] + "Z";
-  }
-  function buildGatheringIcs(ng) {
-    if (!ng || !ng.dateIso) return "";
-
-    const isDateOnly = ng.dateIso.length <= 10;
-    let dtstart;
-    let dtend;
-    if (isDateOnly) {
-      dtstart = `DTSTART;VALUE=DATE:${_icsCompact(ng.dateIso)}`;
-      const next = new Date(ng.dateIso + "T00:00:00");
-      next.setDate(next.getDate() + 1);
-      dtend = `DTEND;VALUE=DATE:${_icsCompact(next.toISOString().slice(0, 10))}`;
-    } else {
-      dtstart = `DTSTART:${_icsCompact(ng.dateIso)}`;
-      const start = new Date(ng.dateIso);
-      const hours = typeof ng.durationHours === "number" ? ng.durationHours : 4;
-      const end = new Date(start.getTime() + hours * 3600 * 1000);
-      dtend = `DTEND:${_icsCompact(end.toISOString().slice(0, 19))}`;
-    }
-
-    const summary = ng.title || "Vallombrosa session";
-    const location = ng.timeLocation || "";
-    // Join with real newlines; _icsEscape turns those into the ICS
-    // line-break escape sequence ("\n", two characters in the file).
-    const description = (Array.isArray(ng.notes) && ng.notes.length)
-      ? ng.notes.join("\n")
-      : (ng.timeLocation || "");
-    const uid = `${ng.eventId || "next-gathering"}@vallombrosa`;
-
-    return [
-      "BEGIN:VCALENDAR",
-      "VERSION:2.0",
-      "PRODID:-//Vallombrosa//Foglight//EN",
-      "CALSCALE:GREGORIAN",
-      "METHOD:PUBLISH",
-      "BEGIN:VEVENT",
-      `UID:${_icsEscape(uid)}`,
-      `DTSTAMP:${_icsStamp()}`,
-      dtstart,
-      dtend,
-      `SUMMARY:${_icsEscape(summary)}`,
-      `LOCATION:${_icsEscape(location)}`,
-      `DESCRIPTION:${_icsEscape(description)}`,
-      "END:VEVENT",
-      "END:VCALENDAR",
-      "",
-    ].join("\r\n");
-  }
-
-  eleventyConfig.addFilter("icsGathering", (gathering) => buildGatheringIcs(gathering));
-  eleventyConfig.addFilter("icsNextGathering", (campaign) => {
-    const ng = campaign && campaign.nextGathering;
-    return buildGatheringIcs(ng);
   });
 
   // ── Collection: the 5 most recent player-facing published pages.

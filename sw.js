@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'foglight-pwa-v41';
+const CACHE_VERSION = 'foglight-pwa-v42';
 const PRECACHE = `${CACHE_VERSION}-precache`;
 const PAGES = `${CACHE_VERSION}-pages`;
 const ASSETS = `${CACHE_VERSION}-assets`;
@@ -25,6 +25,8 @@ const APP_SHELL = [
   '/js/settings.js',
   '/js/in-play-live.js',
   '/js/vos-calendar.js',
+  '/js/vos-tabs.js',
+  '/js/vos-dm.js',
   '/data/players.json',
   '/pagefind/pagefind-ui.css',
   '/pagefind/pagefind-ui.js',

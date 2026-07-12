@@ -25,7 +25,7 @@ import subprocess
 import threading
 import time
 import unicodedata
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from urllib.parse import urlencode
 
@@ -983,6 +983,20 @@ def _run_app_migrations():
             conn.execute(
                 "INSERT INTO schema_migrations (name, applied_at) VALUES (?, ?)",
                 ("016_availability", _utc_now_iso()),
+            )
+
+        if "017_calendar_event_tasks" not in done:
+            # Player-facing prep tasks per event (JSON list of {text, due}).
+            # Lets the DM-scheduled session carry the "bring X / send Y by
+            # date" lines the old campaign.js nextGathering had.
+            cols = _table_columns(conn, "calendar_events")
+            if "tasks" not in cols:
+                conn.execute(
+                    "ALTER TABLE calendar_events ADD COLUMN tasks TEXT NOT NULL DEFAULT '[]'"
+                )
+            conn.execute(
+                "INSERT INTO schema_migrations (name, applied_at) VALUES (?, ?)",
+                ("017_calendar_event_tasks", _utc_now_iso()),
             )
 
 
@@ -4909,7 +4923,34 @@ def _date_range_from_request(body=None):
     return date_from, date_to, None
 
 
+def _calendar_event_tasks(raw):
+    """Normalize tasks from a JSON string (DB) or a list (request body)."""
+    if isinstance(raw, list):
+        tasks = raw
+    else:
+        try:
+            tasks = json.loads(raw or "[]")
+        except (TypeError, ValueError):
+            return []
+    if not isinstance(tasks, list):
+        return []
+    cleaned = []
+    for task in tasks:
+        if not isinstance(task, dict):
+            continue
+        text = str(task.get("text") or "").strip()
+        if not text:
+            continue
+        entry = {"text": text[:300]}
+        due = task.get("due")
+        if isinstance(due, str) and _parse_iso_date(due):
+            entry["due"] = due.strip()
+        cleaned.append(entry)
+    return cleaned[:20]
+
+
 def _calendar_event_json(row):
+    keys = row.keys()
     return {
         "id": row["id"],
         "date": row["date"],
@@ -4918,8 +4959,22 @@ def _calendar_event_json(row):
         "location": row["location"] or "",
         "notes": row["notes"] or "",
         "kind": row["kind"],
+        "tasks": _calendar_event_tasks(row["tasks"] if "tasks" in keys else "[]"),
+        "eventKey": f"cal-{row['id']}",
+        "icsUrl": f"/api/calendar/events/{row['id']}.ics",
         "updated_at": row["updated_at"],
     }
+
+
+def _ics_escape(value):
+    return (
+        str(value or "")
+        .replace("\\", "\\\\")
+        .replace(";", "\\;")
+        .replace(",", "\\,")
+        .replace("\r\n", "\\n")
+        .replace("\n", "\\n")
+    )
 
 
 def _availability_times_json(raw):
@@ -4982,8 +5037,8 @@ def calendar_events():
     with _app_db() as conn:
         cursor = conn.execute("""
             INSERT INTO calendar_events
-                (date, title, time_label, location, notes, kind, created_at, updated_at)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                (date, title, time_label, location, notes, kind, tasks, created_at, updated_at)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
         """, (
             event_date.isoformat(),
             title,
@@ -4991,6 +5046,7 @@ def calendar_events():
             str(body.get("location") or "").strip()[:200] or None,
             str(body.get("notes") or "").strip()[:2000] or None,
             kind,
+            json.dumps(_calendar_event_tasks(body.get("tasks"))),
             now,
             now,
         ))
@@ -5045,6 +5101,9 @@ def calendar_event_detail(event_id):
             if field in body:
                 updates.append(f"{column} = ?")
                 params.append(str(body.get(field) or "").strip()[:limit] or None)
+        if "tasks" in body:
+            updates.append("tasks = ?")
+            params.append(json.dumps(_calendar_event_tasks(body.get("tasks"))))
         if not updates:
             return jsonify({"error": "Nothing to update"}), 400
 
@@ -5058,6 +5117,69 @@ def calendar_event_detail(event_id):
             "SELECT * FROM calendar_events WHERE id = ?", (event_id,)
         ).fetchone()
     return jsonify({"ok": True, "event": _calendar_event_json(row)})
+
+
+@app.route("/api/calendar/next", methods=["GET"])
+def calendar_next():
+    """The next upcoming session event — the app's 'Next Gathering'."""
+    today = datetime.now(timezone.utc).date().isoformat()
+    with _app_db() as conn:
+        row = conn.execute("""
+            SELECT * FROM calendar_events
+            WHERE kind = 'session' AND date >= ?
+            ORDER BY date, id
+            LIMIT 1
+        """, (today,)).fetchone()
+    return jsonify({"gathering": _calendar_event_json(row) if row else None})
+
+
+@app.route("/api/calendar/events/<int:event_id>.ics", methods=["GET"])
+def calendar_event_db_ics(event_id):
+    """ICS generated straight from the calendar_events row, so 'Add to
+    Calendar' works without an Eleventy rebuild."""
+    with _app_db() as conn:
+        row = conn.execute(
+            "SELECT * FROM calendar_events WHERE id = ?", (event_id,)
+        ).fetchone()
+    if not row:
+        abort(404)
+    event_date = _parse_iso_date(row["date"])
+    if not event_date:
+        abort(404)
+    day_after = event_date + timedelta(days=1)
+    description = " / ".join(
+        part for part in (
+            row["time_label"] or "",
+            row["notes"] or "",
+        ) if part
+    )
+    lines = [
+        "BEGIN:VCALENDAR",
+        "VERSION:2.0",
+        "PRODID:-//Vallombrosa//Calendar//EN",
+        "CALSCALE:GREGORIAN",
+        "METHOD:PUBLISH",
+        "BEGIN:VEVENT",
+        f"UID:cal-{row['id']}@vallombrosa",
+        f"DTSTAMP:{datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ')}",
+        f"DTSTART;VALUE=DATE:{event_date.strftime('%Y%m%d')}",
+        f"DTEND;VALUE=DATE:{day_after.strftime('%Y%m%d')}",
+        f"SUMMARY:{_ics_escape(row['title'])}",
+    ]
+    if row["location"]:
+        lines.append(f"LOCATION:{_ics_escape(row['location'])}")
+    if description:
+        lines.append(f"DESCRIPTION:{_ics_escape(description)}")
+    lines += ["END:VEVENT", "END:VCALENDAR"]
+
+    response = Response("\r\n".join(lines) + "\r\n")
+    response.headers["Content-Type"] = "text/calendar; charset=utf-8; method=PUBLISH"
+    response.headers["Content-Disposition"] = (
+        f'attachment; filename="vallombrosa-cal-{row["id"]}.ics"'
+    )
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    response.headers["Cache-Control"] = "no-store"
+    return response
 
 
 @app.route("/api/availability", methods=["GET", "POST"])

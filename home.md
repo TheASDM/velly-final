@@ -762,21 +762,18 @@ templateEngineOverride: njk
       <div class="vos-messages-empty" id="vos-messages-empty" hidden>No new messages.</div>
       <button class="vos-button vos-messages-load-more" id="vos-messages-load-more" type="button" hidden>Show older</button>
     </article>
-    <article class="vos-dash-card vos-dash-side-card vos-next-card" aria-labelledby="vos-next-heading">
+    <article class="vos-dash-card vos-dash-side-card vos-next-card" aria-labelledby="vos-next-heading" data-next-gathering>
       <h3 id="vos-next-heading">Next Gathering</h3>
-      <div class="vos-next-date">{{ campaign.nextGathering.date }}</div>
-      <div class="vos-next-where">{{ campaign.nextGathering.timeLocation }}</div>
-      <ul class="vos-task-list">
-        {%- for task in campaign.nextGathering.tasks %}
-        <li class="vos-task-row"{% if task.dueIso %} data-reminder-date="{{ task.dueIso }}"{% endif %}>
-          <span class="vos-task-check" aria-hidden="true">✓</span>
-          <span class="vos-task-main">{{ task.text }}</span>
-          {%- if task.due %}<span class="vos-task-date">Due {{ task.due }}</span>{%- endif %}
-        </li>
-        {%- endfor %}
-      </ul>
-      <div class="vos-next-rsvp" aria-label="RSVP for the next gathering">
-        {% include "partials/rsvp-control.njk" %}
+      <div data-ng-empty hidden>
+        <div class="vos-next-where">Nothing on the books yet — the DM will schedule the next session soon.</div>
+      </div>
+      <div data-ng-body>
+        <div class="vos-next-date" data-ng-date>Loading…</div>
+        <div class="vos-next-where" data-ng-where></div>
+        <ul class="vos-task-list" data-ng-tasks hidden></ul>
+        <div class="vos-next-rsvp" aria-label="RSVP for the next gathering">
+          {% include "partials/rsvp-control.njk" %}
+        </div>
       </div>
     </article>
     {#

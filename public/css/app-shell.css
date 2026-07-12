@@ -2217,3 +2217,111 @@
       max-height: calc(86vh - 52px - 74px) !important;
     }
   }
+
+  /* ── Segmented sub-navigation (calendar hub, DM panel) ─────────────── */
+  .vos-seg {
+    position: sticky;
+    top: calc(var(--vos-app-bar-h) + 6px);
+    z-index: 30;
+    display: flex;
+    gap: 4px;
+    padding: 4px;
+    border: 1px solid var(--vos-border);
+    border-radius: 10px;
+    background: var(--vos-bg-panel-solid);
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.5);
+  }
+  .vos-seg-btn {
+    position: relative;
+    flex: 1;
+    min-height: 44px;
+    padding: 0.5rem 0.4rem;
+    border: 1px solid transparent;
+    border-radius: 7px;
+    background: transparent;
+    color: var(--vos-text);
+    font-family: 'Cinzel', Georgia, serif;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .vos-seg-btn.is-active {
+    border-color: var(--vos-border-strong);
+    background: var(--vos-gold-faint);
+    color: var(--vos-gold-bright);
+  }
+  .vos-seg-dot {
+    position: absolute;
+    top: 7px;
+    right: 9px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--vos-quest-bright);
+    box-shadow: 0 0 6px rgba(212, 77, 63, 0.8);
+  }
+
+  /* ── Month pager (calendar grids) ───────────────────────────────────── */
+  .vos-cal-pager {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0 0 0.9rem;
+  }
+  .vos-cal-pager-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.3rem;
+    min-height: 46px;
+    padding: 0.55rem 0.9rem;
+    border: 1px solid var(--vos-border-strong);
+    border-radius: 8px;
+    background: var(--vos-gold-faint);
+    color: var(--vos-gold-bright);
+    font-family: 'Cinzel', Georgia, serif;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .vos-cal-pager-btn:disabled {
+    opacity: 0.3;
+    cursor: default;
+  }
+  .vos-cal-pager-label {
+    flex: 1;
+    text-align: center;
+    color: var(--vos-gold-bright);
+    font-family: 'Cinzel', Georgia, serif;
+    font-size: clamp(0.95rem, 3.5vw, 1.2rem);
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    line-height: 1.2;
+  }
+  .vos-cal-pager-dots {
+    display: flex;
+    justify-content: center;
+    gap: 5px;
+    margin-top: 4px;
+  }
+  .vos-cal-pager-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    border: 1px solid var(--vos-gold-dim);
+    background: transparent;
+  }
+  .vos-cal-pager-dot.is-filled {
+    background: var(--vos-gold-bright);
+    border-color: var(--vos-gold-bright);
+  }
+  .vos-cal-pager-dot.is-current {
+    box-shadow: 0 0 5px rgba(212, 165, 116, 0.9);
+  }

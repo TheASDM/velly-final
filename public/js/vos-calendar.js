@@ -1,9 +1,11 @@
-/* Calendar page: DM-scheduled event grid + player availability form.
+/* Calendar hub: DM-scheduled event grid + player availability form.
  *
- * Two independent surfaces, both driven from here:
- *  - #vos-cal-months     read-only month grids showing calendar_events
- *  - #vos-avail-months   interactive month grids where players mark
- *                        availability and submit it as a batch
+ * Both surfaces render every month section up front (so availability marks
+ * survive month flips) and a pager shows one month at a time:
+ *  - #vos-cal-months     read-only grids of calendar_events, current month
+ *                        through +6, big Prev/Next controls
+ *  - #vos-avail-months   interactive 3-month availability window; the
+ *                        Submit button always sends the whole window
  *
  * Availability rules (mirrors server-side validation):
  *  - Sat/Sun: tap cycles preferred -> available -> unavailable -> clear
@@ -16,15 +18,14 @@
   const availRoot = document.getElementById('vos-avail-months');
   if (!calRoot && !availRoot) return;
 
-  const MONTHS_TO_SHOW = 3;
+  const AVAIL_MONTHS = 3;   // availability submission window
+  const CAL_MONTHS = 7;     // group calendar paging horizon
   const DOW_LABELS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
   const TIME_SLOTS = ['morning', 'afternoon', 'evening'];
   const RATING_CYCLE = ['preferred', 'available', 'unavailable'];
   const RATING_SYMBOLS = { preferred: '★', available: '✓', unavailable: '✕' };
 
   const today = new Date();
-  const rangeStart = new Date(today.getFullYear(), today.getMonth(), 1);
-  const rangeEnd = new Date(today.getFullYear(), today.getMonth() + MONTHS_TO_SHOW, 0);
 
   function isoDate(date) {
     const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -33,8 +34,14 @@
   }
 
   const todayIso = isoDate(today);
-  const rangeFrom = isoDate(rangeStart);
-  const rangeTo = isoDate(rangeEnd);
+  const availFrom = isoDate(new Date(today.getFullYear(), today.getMonth(), 1));
+  const availTo = isoDate(new Date(today.getFullYear(), today.getMonth() + AVAIL_MONTHS, 0));
+  const calFrom = availFrom;
+  const calTo = isoDate(new Date(today.getFullYear(), today.getMonth() + CAL_MONTHS, 0));
+
+  function monthDateAt(offset) {
+    return new Date(today.getFullYear(), today.getMonth() + offset, 1);
+  }
 
   function monthTitle(date) {
     return date.toLocaleDateString(undefined, { month: 'long', year: 'numeric' });
@@ -89,6 +96,68 @@
     return grid;
   }
 
+  // One-month-at-a-time pager. sections[i] is the month section for offset
+  // i; showDots adds the per-month fill indicators (availability only).
+  function attachPager(root, sections, options) {
+    const pager = document.createElement('div');
+    pager.className = 'vos-cal-pager';
+
+    const prev = document.createElement('button');
+    prev.type = 'button';
+    prev.className = 'vos-cal-pager-btn';
+    prev.textContent = '◀ Prev';
+    prev.setAttribute('aria-label', 'Previous month');
+
+    const label = document.createElement('div');
+    label.className = 'vos-cal-pager-label';
+    const labelText = document.createElement('div');
+    label.appendChild(labelText);
+    let dots = null;
+    if (options && options.showDots) {
+      dots = document.createElement('div');
+      dots.className = 'vos-cal-pager-dots';
+      sections.forEach(() => {
+        const dot = document.createElement('span');
+        dot.className = 'vos-cal-pager-dot';
+        dots.appendChild(dot);
+      });
+      label.appendChild(dots);
+    }
+
+    const next = document.createElement('button');
+    next.type = 'button';
+    next.className = 'vos-cal-pager-btn';
+    next.textContent = 'Next ▶';
+    next.setAttribute('aria-label', 'Next month');
+
+    pager.append(prev, label, next);
+    root.prepend(pager);
+
+    let current = 0;
+    function show(index) {
+      current = Math.max(0, Math.min(sections.length - 1, index));
+      sections.forEach((section, i) => { section.hidden = i !== current; });
+      labelText.textContent = monthTitle(monthDateAt(current));
+      prev.disabled = current === 0;
+      next.disabled = current === sections.length - 1;
+      if (dots) refreshDots();
+    }
+    function refreshDots() {
+      if (!dots) return;
+      Array.from(dots.children).forEach((dot, i) => {
+        dot.classList.toggle('is-current', i === current);
+        dot.classList.toggle(
+          'is-filled',
+          !!(options.monthHasContent && options.monthHasContent(i))
+        );
+      });
+    }
+    prev.addEventListener('click', () => show(current - 1));
+    next.addEventListener('click', () => show(current + 1));
+    show(0);
+    return { show, refreshDots };
+  }
+
   // ── Event calendar (read-only) ──────────────────────────────────────
 
   async function initEventCalendar() {
@@ -96,7 +165,7 @@
     let events = [];
     try {
       const response = await fetch(
-        `/api/calendar/events?from=${rangeFrom}&to=${rangeTo}`,
+        `/api/calendar/events?from=${calFrom}&to=${calTo}`,
         { cache: 'no-store' }
       );
       const data = await response.json();
@@ -112,15 +181,12 @@
     });
 
     calRoot.textContent = '';
-    for (let offset = 0; offset < MONTHS_TO_SHOW; offset += 1) {
-      const monthDate = new Date(today.getFullYear(), today.getMonth() + offset, 1);
+    const sections = [];
+    for (let offset = 0; offset < CAL_MONTHS; offset += 1) {
+      const monthDate = monthDateAt(offset);
       const section = document.createElement('section');
       section.className = 'vos-cal-month';
-
-      const title = document.createElement('h3');
-      title.className = 'vos-cal-month-title';
-      title.textContent = monthTitle(monthDate);
-      section.appendChild(title);
+      section.hidden = true;
 
       section.appendChild(buildMonthGrid(monthDate, (date, iso) => {
         const cell = document.createElement('div');
@@ -143,7 +209,8 @@
         return cell;
       }));
 
-      const monthEvents = events.filter((event) => event.date.slice(0, 7) === isoDate(monthDate).slice(0, 7));
+      const monthKey = isoDate(monthDate).slice(0, 7);
+      const monthEvents = events.filter((event) => event.date.slice(0, 7) === monthKey);
       if (monthEvents.length) {
         const list = document.createElement('ul');
         list.className = 'vos-cal-events';
@@ -170,11 +237,13 @@
       } else {
         const empty = document.createElement('div');
         empty.className = 'vos-cal-empty';
-        empty.textContent = 'Nothing scheduled yet.';
+        empty.textContent = 'Nothing scheduled this month.';
         section.appendChild(empty);
       }
+      sections.push(section);
       calRoot.appendChild(section);
     }
+    attachPager(calRoot, sections, {});
   }
 
   // ── Availability form ───────────────────────────────────────────────
@@ -184,16 +253,26 @@
     const statusEl = document.getElementById('vos-avail-status');
     const submitBtn = document.getElementById('vos-avail-submit');
     const updatedEl = document.getElementById('vos-avail-updated');
+    const segDot = document.getElementById('vos-avail-dot');
 
     // date iso -> { rating, times: [] }
     const marks = new Map();
     const cells = new Map();
     const timeRows = new Map(); // month key -> container element
+    let pager = null;
 
     function setStatus(text, isError) {
       if (!statusEl) return;
       statusEl.textContent = text || '';
       statusEl.classList.toggle('is-error', !!isError);
+    }
+
+    function monthHasContent(offset) {
+      const key = isoDate(monthDateAt(offset)).slice(0, 7);
+      for (const iso of marks.keys()) {
+        if (iso.slice(0, 7) === key) return true;
+      }
+      return false;
     }
 
     function paintCell(iso) {
@@ -215,6 +294,7 @@
       };
       cell.setAttribute('aria-pressed', mark ? 'true' : 'false');
       cell.setAttribute('aria-label', `${shortDate(iso)}${mark ? ': ' + labels[mark.rating] : ''}`);
+      if (pager) pager.refreshDots();
     }
 
     function isGreenSaturday(iso) {
@@ -295,16 +375,13 @@
     }
 
     availRoot.textContent = '';
-    for (let offset = 0; offset < MONTHS_TO_SHOW; offset += 1) {
-      const monthDate = new Date(today.getFullYear(), today.getMonth() + offset, 1);
+    const sections = [];
+    for (let offset = 0; offset < AVAIL_MONTHS; offset += 1) {
+      const monthDate = monthDateAt(offset);
       const monthKey = isoDate(monthDate).slice(0, 7);
       const section = document.createElement('section');
       section.className = 'vos-cal-month';
-
-      const title = document.createElement('h3');
-      title.className = 'vos-cal-month-title';
-      title.textContent = monthTitle(monthDate);
-      section.appendChild(title);
+      section.hidden = true;
 
       section.appendChild(buildMonthGrid(monthDate, (date, iso) => {
         const isPast = iso < todayIso;
@@ -337,19 +414,22 @@
       timeRows.set(monthKey, times);
       section.appendChild(times);
 
+      sections.push(section);
       availRoot.appendChild(section);
     }
+    pager = attachPager(availRoot, sections, { showDots: true, monthHasContent });
 
     async function prefill() {
       const pwa = await whenPwaReady();
       const name = pwa && pwa.getPlayerName ? pwa.getPlayerName() : null;
       if (!name) {
         setStatus('Choose your name (tap Submit) to load your saved availability.');
+        if (segDot) segDot.hidden = false;
         return;
       }
       try {
         const response = await fetch(
-          `/api/availability?from=${rangeFrom}&to=${rangeTo}&name=${encodeURIComponent(name)}`,
+          `/api/availability?from=${availFrom}&to=${availTo}&name=${encodeURIComponent(name)}`,
           { cache: 'no-store', headers: authHeaders() }
         );
         if (!response.ok) return;
@@ -365,6 +445,8 @@
         if (updatedEl && data.updated_at) {
           updatedEl.textContent = `Last submitted ${new Date(data.updated_at).toLocaleDateString()}`;
         }
+        if (segDot) segDot.hidden = (data.entries || []).length > 0;
+        pager.refreshDots();
       } catch (error) {
         /* prefill is best-effort */
       }
@@ -378,7 +460,7 @@
         return;
       }
       const entries = Array.from(marks.entries())
-        .filter(([iso]) => iso >= rangeFrom && iso <= rangeTo)
+        .filter(([iso]) => iso >= availFrom && iso <= availTo)
         .map(([date, mark]) => ({
           date,
           rating: mark.rating,
@@ -391,12 +473,13 @@
         const response = await fetch('/api/availability', {
           method: 'POST',
           headers: authHeaders({ 'Content-Type': 'application/json' }),
-          body: JSON.stringify({ from: rangeFrom, to: rangeTo, name, entries }),
+          body: JSON.stringify({ from: availFrom, to: availTo, name, entries }),
         });
         const data = await response.json().catch(() => ({}));
         if (!response.ok) throw new Error(data.error || `HTTP ${response.status}`);
         setStatus(`Saved ${data.saved} day${data.saved === 1 ? '' : 's'}. Thanks!`);
         if (updatedEl) updatedEl.textContent = 'Last submitted just now';
+        if (segDot) segDot.hidden = entries.length > 0;
       } catch (error) {
         setStatus(error.message, true);
       } finally {
