@@ -161,6 +161,7 @@ templateEngineOverride: njk
   grid-template-areas:
     "message next"
     "inplay next"
+    "inplay rumor"
     "story story";
   gap: 1rem;
   align-items: start;
@@ -197,6 +198,39 @@ templateEngineOverride: njk
 .vos-message-card[hidden],
 .vos-dash-card[hidden] { display: none !important; }
 .vos-next-card { grid-area: next; }
+.vos-rumor-card { grid-area: rumor; }
+.vos-rumor-text {
+  margin: 0.55rem 0 0.85rem;
+  color: var(--vos-cream, #e8dcc8);
+  font-family: 'IM Fell English', 'Crimson Text', Georgia, serif;
+  font-style: italic;
+  font-size: 1.02rem;
+  line-height: 1.5;
+  min-height: 3.1em;
+}
+.vos-rumor-roll {
+  align-self: start;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  min-height: 44px;
+  padding: 0.55rem 1rem;
+  border: 1px solid rgba(212,165,116,0.45);
+  border-radius: 6px;
+  background: rgba(212,165,116,0.08);
+  color: var(--vos-gold-bright, #d4a574);
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.vos-rumor-roll:hover {
+  background: rgba(212,165,116,0.14);
+}
+.vos-rumor-roll:disabled { opacity: 0.6; cursor: default; }
 .vos-threads-card { grid-area: threads; }
 .vos-dash-side-card {
   padding: 1.1rem 1.2rem 1.2rem;
@@ -693,6 +727,7 @@ templateEngineOverride: njk
     grid-template-areas:
       "message"
       "next"
+      "rumor"
       "inplay"
       "story";
   }
@@ -776,6 +811,14 @@ templateEngineOverride: njk
         </div>
       </div>
     </article>
+    <article class="vos-dash-card vos-dash-side-card vos-rumor-card" aria-labelledby="vos-rumor-heading">
+      <h3 id="vos-rumor-heading">Rumors at the Cask and Cube</h3>
+      <div class="vos-rumor-text" id="vos-rumor-text" aria-live="polite">Buy the room a round and see what the tavern is saying.</div>
+      <button class="vos-rumor-roll" id="vos-rumor-roll" type="button">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><path d="M12 2.2 20.5 7.4 V16.6 L12 21.8 L3.5 16.6 V7.4 Z"/><path d="M12 2.2 V8.2 M3.5 7.4 L12 8.2 L20.5 7.4 M12 8.2 L6.6 11.2 L5.2 16.2 M12 8.2 L17.4 11.2 L18.8 16.2 M6.6 11.2 L12 21.8 M17.4 11.2 L12 21.8 M6.6 11.2 H17.4"/></svg>
+        Roll a rumor
+      </button>
+    </article>
     {#
     <article class="vos-dash-card vos-dash-side-card vos-threads-card" aria-labelledby="vos-threads-heading">
       <h3 id="vos-threads-heading">Open Threads</h3>
@@ -842,6 +885,34 @@ templateEngineOverride: njk
 {%- endif -%}
 
 </div>
+
+<script>
+(function () {
+  const rollButton = document.getElementById('vos-rumor-roll');
+  const rumorText = document.getElementById('vos-rumor-text');
+  if (!rollButton || !rumorText) return;
+  let lastId = null;
+  rollButton.addEventListener('click', async () => {
+    rollButton.disabled = true;
+    try {
+      const url = '/api/rumors/roll' + (lastId ? `?not=${lastId}` : '');
+      const response = await fetch(url, { cache: 'no-store' });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(data.error || `HTTP ${response.status}`);
+      if (!data.rumor) {
+        rumorText.textContent = 'The tavern is strangely quiet tonight.';
+        return;
+      }
+      lastId = data.rumor.id;
+      rumorText.textContent = '“' + data.rumor.text + '”';
+    } catch (error) {
+      rumorText.textContent = 'The barkeep shrugs. (Could not reach the server.)';
+    } finally {
+      rollButton.disabled = false;
+    }
+  });
+})();
+</script>
 
 <script>
 (function () {

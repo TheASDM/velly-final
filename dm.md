@@ -516,6 +516,25 @@ permalink: /dm/
   display: grid;
   gap: 1rem;
 }
+.vos-dm-npc {
+  display: grid;
+  gap: 0.55rem;
+}
+.vos-dm-npc-card {
+  padding: 0.65rem 0.8rem;
+  border: 1px solid rgba(139,115,85,0.3);
+  border-left: 3px solid var(--vos-gold-bright);
+  border-radius: 6px;
+  background: rgba(18,16,23,0.55);
+  color: var(--vos-cream);
+  font-size: 0.92rem;
+  line-height: 1.5;
+}
+.vos-dm-npc-card strong {
+  color: var(--vos-gold-bright);
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.9rem;
+}
 .vos-dm-avail-summary {
   display: grid;
   gap: 0.9rem;
@@ -896,6 +915,38 @@ permalink: /dm/
     </div>
     <ul class="vos-dm-rsvps" id="vos-dm-records-list"></ul>
     <div class="vos-dm-status" id="vos-dm-records-status" role="status" aria-live="polite"></div>
+  </section>
+
+  <section class="vos-dm-panel" aria-labelledby="vos-dm-rumors-title">
+    <div class="vos-dm-panel-head">
+      <h2 id="vos-dm-rumors-title">Tavern Rumors</h2>
+      <div class="vos-dm-actions">
+        <button id="vos-dm-rumors-refresh" type="button">Refresh</button>
+      </div>
+    </div>
+    <form class="vos-dm-form" id="vos-dm-rumor-form">
+      <label>
+        New rumor
+        <textarea id="vos-dm-rumor-text" placeholder="What are they whispering at the Cask and Cube?"></textarea>
+      </label>
+      <div class="vos-dm-actions">
+        <button id="vos-dm-rumor-add" type="submit">Add Rumor</button>
+      </div>
+    </form>
+    <ul class="vos-dm-cal-events" id="vos-dm-rumors-list"></ul>
+    <div class="vos-dm-status" id="vos-dm-rumors-status" role="status" aria-live="polite"></div>
+  </section>
+
+  <section class="vos-dm-panel" aria-labelledby="vos-dm-npc-title">
+    <div class="vos-dm-panel-head">
+      <h2 id="vos-dm-npc-title">Quick NPC</h2>
+      <div class="vos-dm-actions">
+        <button id="vos-dm-npc-roll" type="button">Roll NPC</button>
+      </div>
+    </div>
+    <div class="vos-dm-npc" id="vos-dm-npc-result">
+      <div class="vos-dm-avail-empty">Roll when the party corners a stranger.</div>
+    </div>
   </section>
 
 

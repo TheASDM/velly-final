@@ -163,7 +163,29 @@
     textarea.dataset.answerKey = question.key;
     textarea.value = answers[question.key] || '';
     textarea.addEventListener('input', markDirty);
-    wrap.append(label, textarea);
+
+    // Suggestion die: appends an inspiration line instead of replacing
+    // whatever the player already wrote.
+    const suggestTable = question.suggest && state.data.tables[question.suggest];
+    if (suggestTable) {
+      const row = el('div', 'rollrow');
+      const die = el('button', 'die js-roll');
+      die.type = 'button';
+      die.innerHTML = DIE_SVG;
+      die.title = 'Stuck? Roll a suggestion — it adds a line you can edit or delete.';
+      die.setAttribute('aria-label', die.title);
+      die.addEventListener('click', () => {
+        const pick = suggestTable[Math.floor(Math.random() * suggestTable.length)];
+        textarea.value = textarea.value.trim()
+          ? textarea.value.replace(/\s+$/, '') + '\n' + pick
+          : pick;
+        markDirty();
+      });
+      row.append(textarea, die);
+      wrap.append(label, row);
+    } else {
+      wrap.append(label, textarea);
+    }
     return wrap;
   }
 

@@ -60,6 +60,7 @@
     },
     table: () => {
       refreshQuestionnaires();
+      refreshRumors();
     },
   };
 
@@ -146,6 +147,14 @@
   const calEventsEl = document.getElementById('vos-dm-cal-events');
   const calStatusEl = document.getElementById('vos-dm-cal-status');
   const calRefreshEl = document.getElementById('vos-dm-cal-refresh');
+  const rumorFormEl = document.getElementById('vos-dm-rumor-form');
+  const rumorTextEl = document.getElementById('vos-dm-rumor-text');
+  const rumorAddEl = document.getElementById('vos-dm-rumor-add');
+  const rumorsListEl = document.getElementById('vos-dm-rumors-list');
+  const rumorsStatusEl = document.getElementById('vos-dm-rumors-status');
+  const rumorsRefreshEl = document.getElementById('vos-dm-rumors-refresh');
+  const npcRollEl = document.getElementById('vos-dm-npc-roll');
+  const npcResultEl = document.getElementById('vos-dm-npc-result');
   const recordsListEl = document.getElementById('vos-dm-records-list');
   const recordsStatusEl = document.getElementById('vos-dm-records-status');
   const recordsRefreshEl = document.getElementById('vos-dm-records-refresh');
@@ -1383,6 +1392,124 @@
     }
   }
 
+  // ── Tavern rumors ───────────────────────────────────────────────────
+
+  async function refreshRumors() {
+    const token = getToken(rumorsStatusEl);
+    if (!token) return;
+    setStatus(rumorsStatusEl, 'Loading...');
+    try {
+      const response = await fetch('/api/rumors', {
+        headers: authHeaders(token),
+        cache: 'no-store',
+      });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(data.error || `HTTP ${response.status}`);
+      rumorsListEl.innerHTML = '';
+      (data.rumors || []).forEach((rumor) => {
+        const li = document.createElement('li');
+        li.className = 'vos-dm-cal-event';
+        const text = document.createElement('span');
+        text.textContent = rumor.text;
+        const remove = document.createElement('button');
+        remove.type = 'button';
+        remove.textContent = 'Delete';
+        remove.addEventListener('click', () => deleteRumor(rumor));
+        li.append(text, remove);
+        rumorsListEl.appendChild(li);
+      });
+      if (!rumorsListEl.children.length) {
+        const li = document.createElement('li');
+        li.className = 'vos-dm-avail-empty';
+        li.textContent = 'No rumors on the wind. Add some.';
+        rumorsListEl.appendChild(li);
+      }
+      setStatus(rumorsStatusEl, '');
+    } catch (error) {
+      setStatus(rumorsStatusEl, error.message, true);
+    }
+  }
+
+  async function addRumor(eventArg) {
+    eventArg.preventDefault();
+    const token = getToken(rumorsStatusEl);
+    if (!token) return;
+    const text = rumorTextEl.value.trim();
+    if (!text) {
+      setStatus(rumorsStatusEl, 'Write the rumor first.', true);
+      return;
+    }
+    rumorAddEl.disabled = true;
+    setStatus(rumorsStatusEl, 'Adding...');
+    try {
+      const response = await fetch('/api/rumors', {
+        method: 'POST',
+        headers: authHeaders(token, { 'Content-Type': 'application/json' }),
+        body: JSON.stringify({ text }),
+      });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(data.error || `HTTP ${response.status}`);
+      rumorTextEl.value = '';
+      setStatus(rumorsStatusEl, 'Added.');
+      await refreshRumors();
+    } catch (error) {
+      setStatus(rumorsStatusEl, error.message, true);
+    } finally {
+      rumorAddEl.disabled = false;
+    }
+  }
+
+  async function deleteRumor(rumor) {
+    const token = getToken(rumorsStatusEl);
+    if (!token) return;
+    setStatus(rumorsStatusEl, 'Deleting...');
+    try {
+      const response = await fetch(`/api/rumors/${rumor.id}`, {
+        method: 'DELETE',
+        headers: authHeaders(token),
+      });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(data.error || `HTTP ${response.status}`);
+      setStatus(rumorsStatusEl, 'Deleted.');
+      await refreshRumors();
+    } catch (error) {
+      setStatus(rumorsStatusEl, error.message, true);
+    }
+  }
+
+  // ── Quick NPC (client-side mash of the questionnaire roll tables) ────
+
+  let npcTables = null;
+
+  async function rollNpc() {
+    if (!npcTables) {
+      try {
+        const response = await fetch('/data/questionnaire.json', { cache: 'default' });
+        const data = await response.json();
+        npcTables = data.tables || {};
+      } catch (error) {
+        npcTables = null;
+        if (npcResultEl) npcResultEl.textContent = 'Could not load the tables.';
+        return;
+      }
+    }
+    const pick = (name) => {
+      const table = npcTables[name] || [];
+      return table[Math.floor(Math.random() * table.length)] || '';
+    };
+    const card = document.createElement('div');
+    card.className = 'vos-dm-npc-card';
+    const who = document.createElement('strong');
+    who.textContent = `${pick('npcFirst')} ${pick('npcFamily')} — ${pick('npcRole')}`;
+    const detail = document.createElement('div');
+    detail.textContent = `Tell: ${pick('tells')} Mark: ${pick('marks')}. Voice: ${pick('voice')}`;
+    card.append(who, detail);
+    const placeholder = npcResultEl.querySelector('.vos-dm-avail-empty');
+    if (placeholder) placeholder.remove();
+    npcResultEl.prepend(card);
+    while (npcResultEl.children.length > 5) npcResultEl.lastChild.remove();
+  }
+
   function availabilityChip(entry) {
     const chip = document.createElement('span');
     chip.className = `vos-dm-avail-chip is-${entry.rating}`;
@@ -1533,6 +1660,9 @@
   calRefreshEl.addEventListener('click', refreshCalendarEvents);
   availRefreshEl.addEventListener('click', refreshAvailabilitySummary);
   if (recordsRefreshEl) recordsRefreshEl.addEventListener('click', refreshQuestionnaires);
+  if (rumorFormEl) rumorFormEl.addEventListener('submit', addRumor);
+  if (rumorsRefreshEl) rumorsRefreshEl.addEventListener('click', refreshRumors);
+  if (npcRollEl) npcRollEl.addEventListener('click', rollNpc);
   historyRefreshEl.addEventListener('click', refreshMessages);
   showDeletedEl.addEventListener('change', refreshMessages);
   loreRefreshEl.addEventListener('click', refreshLoreSubmissions);
