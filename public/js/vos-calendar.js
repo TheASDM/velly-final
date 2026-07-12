@@ -357,12 +357,13 @@
     function handleDayTap(iso, dayOfWeek) {
       const mark = marks.get(iso);
       if (dayOfWeek === 0 || dayOfWeek === 6) {
+        // Weekends start grey (unrated) and cycle through the three
+        // ratings forever — once rated, there's no going back to grey.
         if (!mark) {
           marks.set(iso, { rating: RATING_CYCLE[0], times: [] });
         } else {
-          const next = RATING_CYCLE.indexOf(mark.rating) + 1;
-          if (next >= RATING_CYCLE.length) marks.delete(iso);
-          else marks.set(iso, { rating: RATING_CYCLE[next], times: next === 2 ? [] : mark.times });
+          const next = (RATING_CYCLE.indexOf(mark.rating) + 1) % RATING_CYCLE.length;
+          marks.set(iso, { rating: RATING_CYCLE[next], times: next === 2 ? [] : mark.times });
         }
       } else {
         // Weekdays: red toggle only ("can't make that evening").

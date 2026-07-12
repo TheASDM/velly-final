@@ -221,7 +221,11 @@ button.vos-avail-day:disabled {
   cursor: default;
 }
 .vos-avail-day.is-weekend {
-  border-color: rgba(201,161,74,0.4);
+  /* Unrated weekends read as grey "rate me" slots; the rating classes
+     below override this once tapped. */
+  background: rgba(140,145,155,0.16);
+  border-color: rgba(160,165,175,0.42);
+  color: #cfd2d8;
 }
 .vos-avail-day.is-preferred {
   background: rgba(38,110,52,0.75);
@@ -416,7 +420,8 @@ button.vos-avail-day:disabled {
       <div class="vos-avail-legend-row"><span class="vos-avail-swatch is-unavailable">✕</span> Can&rsquo;t make it</div>
     </div>
     <p class="vos-avail-help">
-      Tap Saturdays and Sundays to cycle through the three marks. On weekdays,
+      Saturdays and Sundays start grey until you rate them &mdash; tap to cycle
+      ★ &rarr; ✓ &rarr; ✕ and keep tapping to change your answer. On weekdays,
       only mark the evenings you <strong>can&rsquo;t</strong> make &mdash; one tap marks
       a weekday red, another clears it. For Saturdays you can make, pick which
       times of day work. Nothing is shared until you hit Submit.
