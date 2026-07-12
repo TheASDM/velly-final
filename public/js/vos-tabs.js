@@ -38,6 +38,13 @@
     if (updateHash && location.hash !== '#' + view) {
       history.replaceState(null, '', '#' + view);
     }
+    // Keep the active chip visible when the index scrolls horizontally.
+    const active = buttons.find((button) => button.dataset.view === view);
+    if (active && active.scrollIntoView) {
+      try {
+        active.scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'smooth' });
+      } catch (error) {}
+    }
     window.dispatchEvent(new CustomEvent('vos:view-shown', { detail: { view } }));
   }
 

@@ -38,30 +38,31 @@
     }
   }
 
-  // Each sub-tab loads its data the first time it is shown, instead of
+  // Each tool view loads its data the first time it is shown, instead of
   // firing every fetch at sign-in.
   const loadedTabs = new Set();
   const TAB_LOADERS = {
-    sessions: () => {
-      refreshCalendarEvents();
-      refreshAvailabilitySummary();
-      refreshRsvps();
-    },
-    messages: () => {
-      refreshMessages();
-    },
+    schedule: () => refreshCalendarEvents(),
+    availability: () => refreshAvailabilitySummary(),
+    rsvps: () => refreshRsvps(),
+    message: () => {},
+    history: () => refreshMessages(),
+    push: () => {},
     wiki: () => {
       loadWikiPages();
-      refreshLoreSubmissions();
       if (pendingWikiAutoLoad) {
         loadWikiEntry();
         pendingWikiAutoLoad = null;
       }
     },
-    table: () => {
-      refreshQuestionnaires();
-      refreshRumors();
+    lore: () => {
+      loadWikiPages(); // lore editor reuses the wiki page list
+      refreshLoreSubmissions();
     },
+    records: () => refreshQuestionnaires(),
+    rumors: () => refreshRumors(),
+    npc: () => {},
+    inplay: () => {},
   };
 
   function loadTabData(view) {
@@ -72,7 +73,7 @@
 
   function activeTab() {
     const section = document.querySelector('[data-vos-view]:not([hidden])');
-    return section ? section.dataset.vosView : 'sessions';
+    return section ? section.dataset.vosView : 'schedule';
   }
 
   window.addEventListener('vos:view-shown', (event) => {

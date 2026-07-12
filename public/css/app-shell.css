@@ -2325,3 +2325,18 @@
   .vos-cal-pager-dot.is-current {
     box-shadow: 0 0 5px rgba(212, 165, 116, 0.9);
   }
+
+  /* Index variant: many chips, horizontally scrollable (DM panel) */
+  .vos-seg--index {
+    justify-content: flex-start;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    scroll-padding-inline: 8px;
+  }
+  .vos-seg--index::-webkit-scrollbar { display: none; }
+  .vos-seg--index .vos-seg-btn {
+    flex: 0 0 auto;
+    padding-inline: 0.85rem;
+    white-space: nowrap;
+  }

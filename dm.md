@@ -12,6 +12,7 @@ permalink: /dm/
   gap: 1rem;
 }
 .vos-dm-panel {
+  min-width: 0;
   border: 1px solid rgba(201,161,74,0.24);
   border-radius: 8px;
   background:
@@ -475,14 +476,22 @@ permalink: /dm/
 }
 .vos-dm-cal-event {
   display: flex;
+  flex-wrap: wrap;
   align-items: baseline;
-  gap: 0.6rem;
+  gap: 0.4rem 0.6rem;
   padding: 0.5rem 0.65rem;
   border: 1px solid rgba(212,165,116,0.3);
   border-radius: 6px;
   background: rgba(212,165,116,0.06);
   color: var(--vos-cream);
   font-size: 0.92rem;
+}
+/* The title/detail span must be allowed to shrink and wrap, or a long
+   event line forces the whole page wider than the viewport on mobile. */
+.vos-dm-cal-event > span:not(.vos-dm-cal-next-badge) {
+  flex: 1 1 14ch;
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 .vos-dm-cal-event strong {
   color: var(--vos-gold-bright);
@@ -650,14 +659,22 @@ permalink: /dm/
   </section>
 
 
-  <nav class="vos-seg" data-vos-tabs role="tablist" aria-label="DM sections">
-    <button class="vos-seg-btn" type="button" data-view="sessions">Sessions</button>
-    <button class="vos-seg-btn" type="button" data-view="messages">Messages</button>
+  <nav class="vos-seg vos-seg--index" data-vos-tabs role="tablist" aria-label="DM tools">
+    <button class="vos-seg-btn" type="button" data-view="schedule">Schedule</button>
+    <button class="vos-seg-btn" type="button" data-view="availability">Availability</button>
+    <button class="vos-seg-btn" type="button" data-view="rsvps">RSVPs</button>
+    <button class="vos-seg-btn" type="button" data-view="message">Message</button>
+    <button class="vos-seg-btn" type="button" data-view="history">History</button>
+    <button class="vos-seg-btn" type="button" data-view="push">Push</button>
     <button class="vos-seg-btn" type="button" data-view="wiki">Wiki</button>
-    <button class="vos-seg-btn" type="button" data-view="table">Table</button>
+    <button class="vos-seg-btn" type="button" data-view="lore">Lore</button>
+    <button class="vos-seg-btn" type="button" data-view="records">Records</button>
+    <button class="vos-seg-btn" type="button" data-view="rumors">Rumors</button>
+    <button class="vos-seg-btn" type="button" data-view="npc">Quick NPC</button>
+    <button class="vos-seg-btn" type="button" data-view="inplay">In Play</button>
   </nav>
 
-  <div class="vos-dm-view" data-vos-view="sessions">
+  <div class="vos-dm-view" data-vos-view="schedule">
 
   <section class="vos-dm-panel" aria-labelledby="vos-dm-cal-title-h">
     <div class="vos-dm-panel-head">
@@ -708,6 +725,10 @@ permalink: /dm/
     <div class="vos-dm-status" id="vos-dm-cal-status" role="status" aria-live="polite"></div>
   </section>
 
+  </div>
+
+  <div class="vos-dm-view" data-vos-view="availability" hidden>
+
   <section class="vos-dm-panel" aria-labelledby="vos-dm-avail-title">
     <div class="vos-dm-panel-head">
       <h2 id="vos-dm-avail-title">Player Availability</h2>
@@ -719,6 +740,10 @@ permalink: /dm/
     <div class="vos-dm-avail-summary" id="vos-dm-avail-summary"></div>
     <div class="vos-dm-status" id="vos-dm-avail-status" role="status" aria-live="polite"></div>
   </section>
+
+  </div>
+
+  <div class="vos-dm-view" data-vos-view="rsvps" hidden>
 
   <section class="vos-dm-panel" aria-labelledby="vos-dm-rsvp-title">
     <h2 id="vos-dm-rsvp-title">RSVP Summary</h2>
@@ -736,7 +761,7 @@ permalink: /dm/
 
   </div>
 
-  <div class="vos-dm-view" data-vos-view="messages" hidden>
+  <div class="vos-dm-view" data-vos-view="message" hidden>
 
   <section class="vos-dm-panel" aria-labelledby="vos-dm-message-title">
     <h2 id="vos-dm-message-title">DM Message</h2>
@@ -768,6 +793,10 @@ permalink: /dm/
     <div class="vos-dm-status" id="vos-dm-message-status" role="status" aria-live="polite"></div>
   </section>
 
+  </div>
+
+  <div class="vos-dm-view" data-vos-view="history" hidden>
+
   <section class="vos-dm-panel" aria-labelledby="vos-dm-history-title">
     <div class="vos-dm-panel-head">
       <h2 id="vos-dm-history-title">Message History</h2>
@@ -782,6 +811,10 @@ permalink: /dm/
     <div class="vos-dm-history" id="vos-dm-history"></div>
     <div class="vos-dm-status" id="vos-dm-history-status" role="status" aria-live="polite"></div>
   </section>
+
+  </div>
+
+  <div class="vos-dm-view" data-vos-view="push" hidden>
 
   <section class="vos-dm-panel" aria-labelledby="vos-dm-push-title">
     <h2 id="vos-dm-push-title">Test Push</h2>
@@ -845,6 +878,10 @@ permalink: /dm/
     <div class="vos-dm-status" id="vos-dm-wiki-status" role="status" aria-live="polite"></div>
   </section>
 
+  </div>
+
+  <div class="vos-dm-view" data-vos-view="lore" hidden>
+
   <section class="vos-dm-panel" aria-labelledby="vos-dm-lore-title">
     <div class="vos-dm-panel-head">
       <h2 id="vos-dm-lore-title">Lore Submissions</h2>
@@ -903,7 +940,7 @@ permalink: /dm/
 
   </div>
 
-  <div class="vos-dm-view" data-vos-view="table" hidden>
+  <div class="vos-dm-view" data-vos-view="records" hidden>
 
   <section class="vos-dm-panel" aria-labelledby="vos-dm-records-title">
     <div class="vos-dm-panel-head">
@@ -916,6 +953,10 @@ permalink: /dm/
     <ul class="vos-dm-rsvps" id="vos-dm-records-list"></ul>
     <div class="vos-dm-status" id="vos-dm-records-status" role="status" aria-live="polite"></div>
   </section>
+
+  </div>
+
+  <div class="vos-dm-view" data-vos-view="rumors" hidden>
 
   <section class="vos-dm-panel" aria-labelledby="vos-dm-rumors-title">
     <div class="vos-dm-panel-head">
@@ -937,6 +978,10 @@ permalink: /dm/
     <div class="vos-dm-status" id="vos-dm-rumors-status" role="status" aria-live="polite"></div>
   </section>
 
+  </div>
+
+  <div class="vos-dm-view" data-vos-view="npc" hidden>
+
   <section class="vos-dm-panel" aria-labelledby="vos-dm-npc-title">
     <div class="vos-dm-panel-head">
       <h2 id="vos-dm-npc-title">Quick NPC</h2>
@@ -949,6 +994,9 @@ permalink: /dm/
     </div>
   </section>
 
+  </div>
+
+  <div class="vos-dm-view" data-vos-view="inplay" hidden>
 
   <section class="vos-dm-panel" aria-labelledby="vos-dm-inplay-title">
     <div class="vos-dm-panel-head">
