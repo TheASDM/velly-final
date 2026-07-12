@@ -848,7 +848,16 @@
   }
 
   async function maybeShowPushPrompt() {
-    if (!isStandalone()) return;
+    // Offer push anywhere the browser actually supports it. On iOS that
+    // means the installed app only (Safari tabs can't subscribe — the
+    // install card in pwa-manager.js handles the nudge there); desktop
+    // browsers qualify without installing.
+    const pushCapable = 'Notification' in window
+      && 'serviceWorker' in navigator
+      && 'PushManager' in window;
+    if (!pushCapable) return;
+    const isIosBrowser = /iPad|iPhone|iPod/.test(navigator.userAgent);
+    if (isIosBrowser && !isStandalone()) return;
     if (getStorage(PUSH_DISMISSED_KEY) === '1') return;
     if (window.Notification && Notification.permission === 'denied') return;
     const authConfig = await getAuthConfig();
