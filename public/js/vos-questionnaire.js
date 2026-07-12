@@ -8,9 +8,10 @@
  * autosaved as they type (debounced), plus a manual Save button and a
  * "Seal and send" submit that marks the record submitted.
  *
- * Dice rolls lock once rolled — persisted via "_rolled:<field>" marker
- * keys alongside the answers. The DM sees a character picker with
- * everyone's answers read-only (full view lives in the DM panel too).
+ * Dice rolls are rerollable — the result is just an answer the player
+ * can overwrite. The DM gets a character picker and a fully interactive
+ * proofing mode: every control works, but nothing is ever saved to the
+ * player's record.
  */
 (function () {
   const root = document.getElementById('vos-q-root');
@@ -21,7 +22,7 @@
     data: null,
     charKey: null,
     playerName: null,
-    readOnly: false,
+    proofing: false, // DM preview: everything works, nothing saves
     dirty: false,
     saveTimer: null,
     saving: false,
@@ -86,9 +87,6 @@
       const value = input.value.trim();
       if (value) answers[input.dataset.answerKey] = input.value;
     });
-    root.querySelectorAll('[data-rolled-key]').forEach((input) => {
-      answers['_rolled:' + input.dataset.rolledKey] = '1';
-    });
     return answers;
   }
 
@@ -100,7 +98,7 @@
   }
 
   async function save(submit) {
-    if (state.readOnly || state.saving) return;
+    if (state.proofing || state.saving) return;
     state.saving = true;
     clearTimeout(state.saveTimer);
     setSaveState(submit ? 'Sealing…' : 'Saving…');
@@ -131,7 +129,7 @@
   }
 
   function markDirty() {
-    if (state.readOnly) return;
+    if (state.proofing) return;
     state.dirty = true;
     setSaveState('Unsaved changes…');
     clearTimeout(state.saveTimer);
@@ -164,7 +162,6 @@
     textarea.rows = rowsDefault;
     textarea.dataset.answerKey = question.key;
     textarea.value = answers[question.key] || '';
-    textarea.disabled = state.readOnly;
     textarea.addEventListener('input', markDirty);
     wrap.append(label, textarea);
     return wrap;
@@ -186,14 +183,12 @@
     input.type = 'text';
     input.dataset.answerKey = field.key;
     const saved = answers[field.key];
-    const rolled = answers['_rolled:' + field.key];
     input.value = saved !== undefined ? saved : (field.value || '');
     if (field.placeholder) input.placeholder = field.placeholder;
     else if (!field.onFile) input.placeholder = '…';
-    input.disabled = state.readOnly;
     input.addEventListener('input', markDirty);
 
-    if (field.onFile && !state.readOnly) {
+    if (field.onFile) {
       input.readOnly = true;
       const chip = el('span', 'onfile', 'on file');
       const edit = el('button', 'js-edit', 'edit');
@@ -213,24 +208,12 @@
       const die = el('button', 'die js-roll');
       die.type = 'button';
       die.innerHTML = DIE_SVG;
-      die.title = 'Roll a random result. It locks once you roll.';
+      die.title = 'Roll a random result. Roll again if you change your mind, or type your own.';
       die.setAttribute('aria-label', die.title);
-      function lockDie(value) {
-        input.readOnly = true;
-        input.classList.add('rolled');
-        input.dataset.rolledKey = field.key;
-        die.classList.add('rolled');
-        die.setAttribute('aria-disabled', 'true');
-        die.dataset.done = '1';
-        if (value) die.title = 'Rolled: ' + value + ' (locked)';
-      }
-      if (rolled) lockDie(input.value);
       die.addEventListener('click', () => {
-        if (die.dataset.done || state.readOnly) return;
         const table = tables[field.roll];
-        const pick = table[Math.floor(Math.random() * table.length)];
-        input.value = pick;
-        lockDie(pick);
+        input.value = table[Math.floor(Math.random() * table.length)];
+        die.title = 'Rolled: ' + input.value + ' — roll again or type your own.';
         markDirty();
       });
       row.append(input, die);
@@ -246,10 +229,10 @@
     const character = data.characters[charKey];
     root.textContent = '';
 
-    if (state.readOnly) {
+    if (state.proofing) {
       root.appendChild(renderDmPicker(charKey));
       root.appendChild(el('p', 'dm-note',
-        `Viewing ${character.player}'s record read-only. Answers update as they save.`));
+        `Proofing as ${character.player} — everything works, but nothing you type or roll here is saved.`));
     }
 
     const doc = el('div', 'doc');
@@ -299,13 +282,12 @@
     codaArea.placeholder = data.codaPrompt;
     codaArea.dataset.answerKey = data.codaKey;
     codaArea.value = answers[data.codaKey] || '';
-    codaArea.disabled = state.readOnly;
     codaArea.addEventListener('input', markDirty);
     codaField.append(codaLabel, codaArea);
     coda.appendChild(codaField);
     doc.appendChild(coda);
 
-    if (!state.readOnly) {
+    if (!state.proofing) {
       const savebar = el('div', 'savebar');
       const saveButton = el('button', 'btn-save', 'Save');
       saveButton.type = 'button';
@@ -329,7 +311,7 @@
     root.appendChild(doc);
     root.appendChild(footer);
 
-    if (!state.readOnly && state.status === 'submitted') {
+    if (!state.proofing && state.status === 'submitted') {
       setSaveState('Sealed and sent ✓ You can still edit and re-seal.', 'is-saved');
     }
   }
@@ -355,7 +337,7 @@
   }
 
   async function initDm() {
-    state.readOnly = true;
+    state.proofing = true;
     try {
       const response = await fetch('/api/questionnaire/all', {
         cache: 'no-store', headers: authHeaders(),
