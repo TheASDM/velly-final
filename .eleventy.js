@@ -76,6 +76,10 @@ module.exports = function (eleventyConfig) {
   eleventyConfig.addPassthroughCopy({ "public/js/vos-calendar.js": "js/vos-calendar.js" });
   eleventyConfig.addPassthroughCopy({ "public/js/vos-tabs.js": "js/vos-tabs.js" });
   eleventyConfig.addPassthroughCopy({ "public/js/vos-dm.js": "js/vos-dm.js" });
+  eleventyConfig.addPassthroughCopy({ "public/js/vos-questionnaire.js": "js/vos-questionnaire.js" });
+  // Question definitions for /questionnaire/ — also available to templates
+  // as `questionnaire` via _data.
+  eleventyConfig.addPassthroughCopy({ "_data/questionnaire.json": "data/questionnaire.json" });
   // Player roster — also lives in _data/players.json so templates can read
   // it as `players`. Passed through so the PWA client can fetch it at
   // /data/players.json (used as a fallback when /api/auth/config is down).

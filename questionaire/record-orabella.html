@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Orabella : Character Record</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;0,900;1,500;1,700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0b0e14; --panel:#121722; --panel-2:#0f141d;
+    --line:#28303d; --bone:#e9e3d5; --muted:#8b8778;
+    --accent:#8fb4cf;
+    --display:"Playfair Display",Georgia,serif;
+    --body:"Newsreader",Georgia,serif;
+    --util:"Inter",system-ui,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    margin:0; background:var(--ink); color:var(--bone);
+    font-family:var(--body); font-size:17px; line-height:1.5;
+    background-image:radial-gradient(120% 60% at 50% -8%, color-mix(in srgb, var(--accent) 12%, transparent), transparent 60%);
+    background-repeat:no-repeat;
+  }
+  .sheet{max-width:760px; margin:0 auto; padding:clamp(12px,4vw,44px)}
+  .doc{
+    border:1px solid var(--line); background:linear-gradient(180deg,var(--panel),var(--panel-2));
+    padding:clamp(18px,5vw,56px);
+    box-shadow:0 0 0 1px rgba(0,0,0,.4), inset 0 0 0 1px color-mix(in srgb, var(--accent) 10%, transparent);
+  }
+  header{text-align:center; padding-bottom:24px; border-bottom:1px solid var(--line); margin-bottom:28px}
+  .crest{width:92px; height:auto; display:block; margin:0 auto 14px}
+  .eyebrow{font-family:var(--util); text-transform:uppercase; letter-spacing:.34em;
+    font-size:11px; color:var(--muted); margin:0 0 10px}
+  h1{font-family:var(--display); font-weight:900; font-size:clamp(2rem,7vw,3.3rem);
+    line-height:1.04; margin:0 0 10px; color:var(--bone)}
+  .role{font-family:var(--body); font-style:italic; color:var(--accent); font-size:1.02rem; margin:0}
+  .intro{color:var(--muted); font-size:.98rem; max-width:52ch; margin:18px auto 0}
+  .aside{font-family:var(--util); font-size:12.5px; color:var(--muted); line-height:1.55;
+    border-left:2px solid color-mix(in srgb,var(--accent) 60%,transparent);
+    padding:8px 0 8px 14px; margin:16px auto 0; max-width:56ch; text-align:left}
+  .part{margin-top:36px}
+  .part-head{display:flex; align-items:baseline; gap:14px; margin:0 0 18px}
+  .roman{font-family:var(--display); font-weight:700; font-style:italic;
+    font-size:1.9rem; color:var(--accent); line-height:1}
+  .part-title{font-family:var(--util); text-transform:uppercase; letter-spacing:.22em;
+    font-size:12px; color:var(--bone)}
+  .part-title small{display:block; letter-spacing:.02em; text-transform:none;
+    font-family:var(--body); font-style:italic; color:var(--muted); font-size:13.5px; margin-top:3px}
+  .rule{flex:1; height:1px; background:var(--line); align-self:center; min-width:16px}
+  .field{margin:0 0 18px}
+  label{display:block; font-family:var(--body); color:var(--bone); font-size:1.04rem; margin:0 0 8px}
+  .num{font-family:var(--util); font-size:11px; color:var(--accent); letter-spacing:.1em;
+    margin-right:10px; vertical-align:1px}
+  label strong{font-weight:600}
+  textarea,input[type=text]{
+    width:100%; background:#0c1119; color:var(--bone);
+    border:1px solid var(--line); border-radius:2px; padding:11px 12px;
+    font-family:var(--body); font-size:16px; resize:vertical;
+  }
+  textarea{min-height:74px; line-height:1.5}
+  textarea::placeholder,input::placeholder{color:#4c5566}
+  textarea:focus,input:focus{outline:none; border-color:var(--accent);
+    box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 22%,transparent)}
+  :focus-visible{outline:2px solid var(--accent); outline-offset:2px}
+  .vgroup{font-family:var(--util); text-transform:uppercase; letter-spacing:.2em; font-size:11px;
+    color:var(--accent); margin:24px 0 12px; padding-bottom:6px; border-bottom:1px dashed var(--line)}
+  .vgrid{display:grid; grid-template-columns:repeat(auto-fit,minmax(210px,1fr)); gap:14px 18px}
+  .vfield.wide{grid-column:1 / -1}
+  .vfield label{font-family:var(--util); font-size:11.5px; letter-spacing:.05em; text-transform:uppercase;
+    color:var(--muted); margin-bottom:6px; display:flex; align-items:center; flex-wrap:wrap; gap:6px}
+  .onfile{color:var(--accent); font-size:10px; letter-spacing:.12em;
+    border:1px solid color-mix(in srgb,var(--accent) 45%,transparent); border-radius:2px;
+    padding:1px 5px; text-transform:uppercase}
+  .js-edit{background:none; border:none; color:var(--accent); font-family:var(--util);
+    font-size:10px; letter-spacing:.12em; text-transform:uppercase; cursor:pointer; padding:0;
+    text-decoration:underline; text-underline-offset:2px}
+  input[readonly]{color:var(--muted); border-style:dashed; background:#0a0f16}
+  input.unlocked{color:var(--bone); border-style:solid; background:#0c1119}
+  .rollrow{display:flex; gap:8px; align-items:stretch}
+  .rollrow input{flex:1; min-width:0}
+  .die{flex:0 0 auto; width:46px; display:inline-flex; align-items:center; justify-content:center;
+    background:transparent; color:var(--accent);
+    border:1px solid color-mix(in srgb,var(--accent) 45%,transparent); border-radius:2px; cursor:pointer;
+    transition:box-shadow .15s ease, transform .1s ease}
+  .die:hover{box-shadow:0 0 14px color-mix(in srgb,var(--accent) 30%,transparent); border-color:var(--accent)}
+  .die:active{transform:translateY(1px)}
+  .die.rolled{color:var(--muted); border-style:dashed; cursor:default; box-shadow:none; transform:none}
+  input.rolled{color:var(--accent); border-style:dashed; border-color:color-mix(in srgb,var(--accent) 45%,transparent)}
+  .coda .part-title{color:var(--bone)}
+  .seal{text-align:center; margin-top:40px; padding-top:28px; border-top:1px solid var(--line)}
+  .btn-seal{
+    font-family:var(--util); font-weight:600; letter-spacing:.14em; text-transform:uppercase;
+    font-size:12.5px; color:var(--ink); background:var(--accent); border:none; border-radius:2px;
+    padding:15px 34px; cursor:pointer;
+    box-shadow:0 0 0 1px color-mix(in srgb,var(--accent) 40%,transparent), 0 0 22px color-mix(in srgb,var(--accent) 25%,transparent);
+    transition:transform .12s ease, box-shadow .2s ease;
+  }
+  .btn-seal:hover{box-shadow:0 0 0 1px var(--accent), 0 0 30px color-mix(in srgb,var(--accent) 40%,transparent)}
+  .btn-seal:active{transform:translateY(1px)}
+  .seal p{color:var(--muted); font-size:12.5px; font-family:var(--util); margin:14px 0 0}
+  footer{text-align:center; color:#3f4756; font-family:var(--util); font-size:10.5px;
+    letter-spacing:.28em; text-transform:uppercase; margin:24px 0 6px}
+  @media (max-width:560px){
+    .sheet{padding:8px}
+    .doc{padding:20px 15px}
+    header{padding-bottom:20px; margin-bottom:22px}
+    .crest{width:78px}
+    h1{font-size:1.9rem}
+    .part-head{flex-wrap:wrap; gap:8px}
+    .roman{font-size:1.6rem}
+    .vgrid{grid-template-columns:1fr; gap:12px}
+    .btn-seal{width:100%}
+    .aside{margin-left:0; margin-right:0}
+  }
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+  <div class="sheet">
+    <div class="doc">
+      <header>
+        <svg class="crest" viewBox="0 0 140 66" aria-hidden="true">
+  <path d="M14,22 C14,10 42,7 70,16 C98,7 126,10 126,22 C130,42 106,61 70,61 C34,61 10,42 14,22 Z"
+        fill="var(--accent)" fill-opacity="0.12" stroke="var(--accent)" stroke-width="1.4"/>
+  <ellipse cx="49" cy="31" rx="15" ry="9" fill="var(--ink)" stroke="var(--accent)" stroke-width="1.2"/>
+  <ellipse cx="91" cy="31" rx="15" ry="9" fill="var(--ink)" stroke="var(--accent)" stroke-width="1.2"/>
+  <path d="M70,16 L70,26" stroke="var(--accent)" stroke-width="1.2"/>
+</svg>
+        <p class="eyebrow">Valley of Shadows · Character Record</p>
+        <h1>Orabella</h1>
+        <p class="role">Human · Cleric of the Art, St. Viro’s Respite · twenty four</p>
+        <p class="intro">In place of writing five hundred words. Answer in a phrase or a sentence. The small, mundane details are the ones that end up on the table. Skip anything that doesn't fit, but say that you skipped it. There are no wrong answers.</p>
+        <p class="aside">Fog children: if your character has no 'before,' that's an answer. Write what the fog and Liminal House gave you instead. Don't invent a life you don't remember.</p>
+      </header>
+
+      <!-- ============================================================= -->
+      <!-- FORMSPREE: paste your endpoint into the action below.          -->
+      <!--   1. Create a form at https://formspree.io                     -->
+      <!--   2. Replace YOUR_FORM_ID with the id it gives you.            -->
+      <!--   3. (Optional) set _next to a thank-you page URL.             -->
+      <!--   Note: submitting only works once this page is hosted online. -->
+      <!-- ============================================================= -->
+      <form action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
+        <input type="hidden" name="character" value="Orabella">
+        <input type="hidden" name="_subject" value="Valley of Shadows: Orabella record">
+        <!-- optional: <input type="hidden" name="_next" value="https://your-site/thanks.html"> -->
+        <input type="text" name="_gotcha" style="display:none" tabindex="-1" autocomplete="off" aria-hidden="true">
+
+        <section class="part">
+          <div class="part-head"><span class="roman">I</span>
+            <span class="part-title">Part One<small>Everyone answers these</small></span>
+            <span class="rule"></span></div>
+      <div class="field">
+        <label for="P1 - called / real name"><span class="num">01</span>What do people call you day to day, and is that your real name?</label>
+        <textarea id="P1 - called / real name" name="P1 - called / real name" rows="3"></textarea>
+      </div>
+      <div class="field">
+        <label for="P1 - age & how you read"><span class="num">02</span>How old are you, and how old do people guess?</label>
+        <textarea id="P1 - age & how you read" name="P1 - age &amp; how you read" rows="3"></textarea>
+      </div>
+      <div class="field">
+        <label for="P1 - first impression"><span class="num">03</span>What do strangers assume the moment you walk in, and are they right?</label>
+        <textarea id="P1 - first impression" name="P1 - first impression" rows="3"></textarea>
+      </div>
+      <div class="field">
+        <label for="P1 - where you sleep"><span class="num">04</span>Where do you sleep most nights? Whose roof, which district, and do you pay for it?</label>
+        <textarea id="P1 - where you sleep" name="P1 - where you sleep" rows="3"></textarea>
+      </div>
+      <div class="field">
+        <label for="P1 - your room in a line"><span class="num">05</span>Your room, bunk, or corner in one line: the first thing someone would notice.</label>
+        <textarea id="P1 - your room in a line" name="P1 - your room in a line" rows="3"></textarea>
+      </div>
+      <div class="field">
+        <label for="P1 - wake & sleep rites"><span class="num">06</span>First thing you do when you wake, and the last thing before you sleep.</label>
+        <textarea id="P1 - wake & sleep rites" name="P1 - wake &amp; sleep rites" rows="3"></textarea>
+      </div>
+      <div class="field">
+        <label for="P1 - eating when broke"><span class="num">07</span>What do you eat when you&#x27;re broke, or when no one&#x27;s watching?</label>
+        <textarea id="P1 - eating when broke" name="P1 - eating when broke" rows="3"></textarea>
+      </div>
+      <div class="field">
+        <label for="P1 - how coin reaches you"><span class="num">08</span>How do coins actually reach your hand? Wage, patron, theft, favors, charity?</label>
+        <textarea id="P1 - how coin reaches you" name="P1 - how coin reaches you" rows="3"></textarea>
+      </div>
+      <div class="field">
+        <label for="P1 - who you owe"><span class="num">09</span>Who do you owe, whether money, a favor, or worse, and what happens if you don&#x27;t pay? Debts have teeth here.</label>
+        <textarea id="P1 - who you owe" name="P1 - who you owe" rows="3"></textarea>
+      </div>
+      <div class="field">
+        <label for="P1 - who owes you"><span class="num">10</span>Does anyone owe you?</label>
+        <textarea id="P1 - who owes you" name="P1 - who owes you" rows="3"></textarea>
+      </div>
+      <div class="field">
+        <label for="P1 - family"><span class="num">11</span>Family: who&#x27;s living, who&#x27;s dead, who you don&#x27;t speak to?</label>
+        <textarea id="P1 - family" name="P1 - family" rows="3"></textarea>
+      </div>
+      <div class="field">
+        <label for="P1 - your 3am person"><span class="num">12</span>Who would you go to at three in the morning, bleeding, no questions asked?</label>
+        <textarea id="P1 - your 3am person" name="P1 - your 3am person" rows="3"></textarea>
+      </div>
+      <div class="field">
+        <label for="P1 - who you avoid"><span class="num">13</span>Who do you cross the street to avoid?</label>
+        <textarea id="P1 - who you avoid" name="P1 - who you avoid" rows="3"></textarea>
+      </div>
+      <div class="field">
+        <label for="P1 - who'd notice you gone"><span class="num">14</span>Who, outside this group, would notice if you walked into the fog and didn&#x27;t come back?</label>
+        <textarea id="P1 - who'd notice you gone" name="P1 - who&#x27;d notice you gone" rows="3"></textarea>
+      </div>
+      <div class="field">
+        <label for="P1 - who you'd regret obeying"><span class="num">15</span>Who could ask you for something you know you&#x27;d regret, and you&#x27;d do it anyway?</label>
+        <textarea id="P1 - who you'd regret obeying" name="P1 - who you&#x27;d regret obeying" rows="3"></textarea>
+      </div>
+      <div class="field">
+        <label for="P1 - your mask"><span class="num">16</span>You may already own a mask, or you can buy one now if your character would. Describe it, and tell me when you actually wear it. If you&#x27;re picking one up now rather than already having it, it can&#x27;t have any obvious magical powers.</label>
+        <textarea id="P1 - your mask" name="P1 - your mask" rows="3"></textarea>
+      </div>
+      <div class="field">
+        <label for="P1 - luck & warding"><span class="num">17</span>What do you do for luck, or to keep the bad off? A shrine coin, a knock, a prayer, a name you won&#x27;t say?</label>
+        <textarea id="P1 - luck & warding" name="P1 - luck &amp; warding" rows="3"></textarea>
+      </div>
+      <div class="field">
+        <label for="P1 - where you feel most yourself"><span class="num">18</span>Where in the city do you feel most yourself, and where can&#x27;t you breathe?</label>
+        <textarea id="P1 - where you feel most yourself" name="P1 - where you feel most yourself" rows="3"></textarea>
+      </div>
+      <div class="field">
+        <label for="P1 - a mark you can't hide"><span class="num">19</span>A scar, mark, or feature you can&#x27;t hide. Where&#x27;s it from?</label>
+        <textarea id="P1 - a mark you can't hide" name="P1 - a mark you can&#x27;t hide" rows="3"></textarea>
+      </div>
+      <div class="field">
+        <label for="P1 - your tell"><span class="num">20</span>Your tell: what do your hands, eyes, or voice do when you&#x27;re lying or scared?</label>
+        <textarea id="P1 - your tell" name="P1 - your tell" rows="3"></textarea>
+      </div>
+      <div class="field">
+        <label for="P1 - your vice"><span class="num">21</span>Your vice: the thing you reach for on a bad night.</label>
+        <textarea id="P1 - your vice" name="P1 - your vice" rows="3"></textarea>
+      </div>
+      <div class="field">
+        <label for="P1 - earliest clear memory"><span class="num">22</span>Your earliest clear memory.</label>
+        <textarea id="P1 - earliest clear memory" name="P1 - earliest clear memory" rows="3"></textarea>
+      </div>
+      <div class="field">
+        <label for="P1 - an unspoken fear"><span class="num">23</span>One thing you&#x27;re afraid of that you&#x27;d never say aloud.</label>
+        <textarea id="P1 - an unspoken fear" name="P1 - an unspoken fear" rows="3"></textarea>
+      </div>
+      <div class="field">
+        <label for="P1 - a small comfort"><span class="num">24</span>One small comfort that makes a bad day survivable.</label>
+        <textarea id="P1 - a small comfort" name="P1 - a small comfort" rows="3"></textarea>
+      </div>
+      <div class="field">
+        <label for="P1 - what you want"><span class="num">25</span>What do you want that you&#x27;d admit to the group, and what do you want that you wouldn&#x27;t?</label>
+        <textarea id="P1 - what you want" name="P1 - what you want" rows="3"></textarea>
+      </div>
+        </section>
+
+        <section class="part">
+          <div class="part-head"><span class="roman">II</span>
+            <span class="part-title">Part Two<small>Your character's own questions</small></span>
+            <span class="rule"></span></div>
+      <div class="field">
+        <label for="P2 - No before"><span class="num">01</span><strong>No before.</strong> The fog gave you no past. You walked into Liminal House a girl with nothing behind her. What&#x27;s your first real memory, the earliest thing that&#x27;s genuinely yours?</label>
+        <textarea id="P2 - No before" name="P2 - No before" rows="4"></textarea>
+      </div>
+      <div class="field">
+        <label for="P2 - Faith"><span class="num">02</span><strong>Faith.</strong> You&#x27;re a cleric of the Art. Where does that devotion actually come from for you, and what does your daily practice look like on the ward?</label>
+        <textarea id="P2 - Faith" name="P2 - Faith" rows="4"></textarea>
+      </div>
+      <div class="field">
+        <label for="P2 - Your patients"><span class="num">03</span><strong>Your patients.</strong> You tend the hardest cases at Viro&#x27;s, including a childhood acquaintance and a scarred man no one can name. What&#x27;s the small kindness you do for the ones who can&#x27;t thank you?</label>
+        <textarea id="P2 - Your patients" name="P2 - Your patients" rows="4"></textarea>
+      </div>
+      <div class="field">
+        <label for="P2 - Between shifts"><span class="num">04</span><strong>Between shifts.</strong> Where do you sleep and eat? A cell at Viro&#x27;s, a room in the House, the chapel? What makes it yours?</label>
+        <textarea id="P2 - Between shifts" name="P2 - Between shifts" rows="4"></textarea>
+      </div>
+      <div class="field">
+        <label for="P2 - Celina Cross"><span class="num">05</span><strong>Celina Cross.</strong> You rarely miss a performance. What is it about watching someone become someone else that you can&#x27;t look away from? You don&#x27;t need to explain it. Just what it does to you.</label>
+        <textarea id="P2 - Celina Cross" name="P2 - Celina Cross" rows="4"></textarea>
+      </div>
+      <div class="field">
+        <label for="P2 - The dreams"><span class="num">06</span><strong>The dreams.</strong> They come first person, in bodies that aren&#x27;t yours. You don&#x27;t have to interpret them. Tell me instead: what do you do when you wake from one, and who, if anyone, have you ever told?</label>
+        <textarea id="P2 - The dreams" name="P2 - The dreams" rows="4"></textarea>
+      </div>
+      <div class="field">
+        <label for="P2 - Asking"><span class="num">07</span><strong>Asking.</strong> When you started asking what the dreams meant, the House and the clergy shut you down. What did that teach you about asking questions in this city?</label>
+        <textarea id="P2 - Asking" name="P2 - Asking" rows="4"></textarea>
+      </div>
+        </section>
+
+        <section class="part">
+          <div class="part-head"><span class="roman">III</span>
+            <span class="part-title">Part Three<small>Vitals and dossier. Fields marked 'on file' are set, but tap edit to change them. A few can be rolled with the die.</small></span>
+            <span class="rule"></span></div>
+      <h3 class="vgroup">Identity</h3>
+      <div class="vgrid">
+        <div class="vfield">
+          <label>Full / true name <span class="onfile">on file</span> <button type="button" class="js-edit" data-target="orabella-full_name">edit</button></label>
+          <input id="orabella-full_name" type="text" name="vitals - Full / true name" value="Orabella" readonly>
+        </div>
+        <div class="vfield">
+          <label>Called</label>
+          <input id="orabella-called" type="text" name="vitals - Called" placeholder="…">
+        </div>
+        <div class="vfield">
+          <label>Pronouns <span class="onfile">on file</span> <button type="button" class="js-edit" data-target="orabella-pronouns">edit</button></label>
+          <input id="orabella-pronouns" type="text" name="vitals - Pronouns" value="she / her" readonly>
+        </div>
+        <div class="vfield">
+          <label>Age <span class="onfile">on file</span> <button type="button" class="js-edit" data-target="orabella-age">edit</button></label>
+          <input id="orabella-age" type="text" name="vitals - Age" value="24" readonly>
+        </div>
+        <div class="vfield">
+          <label>Ancestry <span class="onfile">on file</span> <button type="button" class="js-edit" data-target="orabella-ancestry">edit</button></label>
+          <input id="orabella-ancestry" type="text" name="vitals - Ancestry" value="Human" readonly>
+        </div>
+        <div class="vfield wide">
+          <label>Role <span class="onfile">on file</span> <button type="button" class="js-edit" data-target="orabella-role">edit</button></label>
+          <input id="orabella-role" type="text" name="vitals - Role" value="Cleric of the Art, St. Viro&#x27;s Respite" readonly>
+        </div>
+      </div>
+      <h3 class="vgroup">Appearance</h3>
+      <div class="vgrid">
+        <div class="vfield">
+          <label>Height</label>
+          <input id="orabella-height" type="text" name="vitals - Height" placeholder="…">
+        </div>
+        <div class="vfield">
+          <label>Build</label>
+          <input id="orabella-build" type="text" name="vitals - Build" placeholder="…">
+        </div>
+        <div class="vfield">
+          <label>Hair</label>
+          <input id="orabella-hair" type="text" name="vitals - Hair" placeholder="…">
+        </div>
+        <div class="vfield">
+          <label>Eyes</label>
+          <div class="rollrow">
+            <input id="orabella-eyes" type="text" name="vitals - Eyes" placeholder="describe your own, or roll">
+            <button type="button" class="die js-roll" data-target="orabella-eyes" data-table="eyes" title="Roll a random eye color. It locks once you roll." aria-label="Roll a random eye color. It locks once you roll."><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><path d="M12 2.2 20.5 7.4 V16.6 L12 21.8 L3.5 16.6 V7.4 Z"/><path d="M12 2.2 V8.2 M3.5 7.4 L12 8.2 L20.5 7.4 M12 8.2 L6.6 11.2 L5.2 16.2 M12 8.2 L17.4 11.2 L18.8 16.2 M6.6 11.2 L12 21.8 M17.4 11.2 L12 21.8 M6.6 11.2 H17.4"/></svg></button>
+          </div>
+        </div>
+        <div class="vfield wide">
+          <label>Skin &amp; features</label>
+          <input id="orabella-skin" type="text" name="vitals - Skin &amp; features" placeholder="…">
+        </div>
+        <div class="vfield wide">
+          <label>Distinguishing marks</label>
+          <div class="rollrow">
+            <input id="orabella-marks" type="text" name="vitals - Distinguishing marks" placeholder="describe your own, or roll">
+            <button type="button" class="die js-roll" data-target="orabella-marks" data-table="marks" title="Roll a random mark. It locks once you roll." aria-label="Roll a random mark. It locks once you roll."><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><path d="M12 2.2 20.5 7.4 V16.6 L12 21.8 L3.5 16.6 V7.4 Z"/><path d="M12 2.2 V8.2 M3.5 7.4 L12 8.2 L20.5 7.4 M12 8.2 L6.6 11.2 L5.2 16.2 M12 8.2 L17.4 11.2 L18.8 16.2 M6.6 11.2 L12 21.8 M17.4 11.2 L12 21.8 M6.6 11.2 H17.4"/></svg></button>
+          </div>
+        </div>
+        <div class="vfield wide">
+          <label>Dress &amp; style</label>
+          <input id="orabella-dress" type="text" name="vitals - Dress &amp; style" placeholder="…">
+        </div>
+        <div class="vfield wide">
+          <label>Mask</label>
+          <input id="orabella-mask" type="text" name="vitals - Mask" placeholder="…">
+        </div>
+        <div class="vfield">
+          <label>Voice / accent</label>
+          <input id="orabella-voice" type="text" name="vitals - Voice / accent" placeholder="…">
+        </div>
+        <div class="vfield">
+          <label>Dominant hand</label>
+          <input id="orabella-hand" type="text" name="vitals - Dominant hand" placeholder="…">
+        </div>
+        <div class="vfield wide">
+          <label>First impression (one line)</label>
+          <input id="orabella-impression" type="text" name="vitals - First impression (one line)" placeholder="…">
+        </div>
+      </div>
+      <h3 class="vgroup">Origins &amp; family</h3>
+      <div class="vgrid">
+        <div class="vfield wide">
+          <label>Birthplace <span class="onfile">on file</span> <button type="button" class="js-edit" data-target="orabella-birthplace">edit</button></label>
+          <input id="orabella-birthplace" type="text" name="vitals - Birthplace" value="A fog child. No memory of any life before Venturia" readonly>
+        </div>
+        <div class="vfield wide">
+          <label>Parents (names + living status) <span class="onfile">on file</span> <button type="button" class="js-edit" data-target="orabella-parents">edit</button></label>
+          <input id="orabella-parents" type="text" name="vitals - Parents (names + living status)" value="None known. A fog child" readonly>
+        </div>
+        <div class="vfield wide">
+          <label>Siblings</label>
+          <input id="orabella-siblings" type="text" name="vitals - Siblings" placeholder="…">
+        </div>
+        <div class="vfield wide">
+          <label>Raised by <span class="onfile">on file</span> <button type="button" class="js-edit" data-target="orabella-raised_by">edit</button></label>
+          <input id="orabella-raised_by" type="text" name="vitals - Raised by" value="Liminal House" readonly>
+        </div>
+        <div class="vfield wide">
+          <label>Other notable kin</label>
+          <input id="orabella-kin" type="text" name="vitals - Other notable kin" placeholder="…">
+        </div>
+      </div>
+      <h3 class="vgroup">Life now</h3>
+      <div class="vgrid">
+        <div class="vfield wide">
+          <label>Residence (district)</label>
+          <input id="orabella-residence" type="text" name="vitals - Residence (district)" placeholder="…">
+        </div>
+        <div class="vfield wide">
+          <label>Occupation &amp; employer <span class="onfile">on file</span> <button type="button" class="js-edit" data-target="orabella-occupation">edit</button></label>
+          <input id="orabella-occupation" type="text" name="vitals - Occupation &amp; employer" value="Cleric and healer, St. Viro&#x27;s Respite" readonly>
+        </div>
+        <div class="vfield wide">
+          <label>Affiliation / guild</label>
+          <input id="orabella-affiliation" type="text" name="vitals - Affiliation / guild" placeholder="…">
+        </div>
+        <div class="vfield">
+          <label>Income</label>
+          <input id="orabella-income" type="text" name="vitals - Income" placeholder="…">
+        </div>
+        <div class="vfield wide">
+          <label>Notable possessions</label>
+          <input id="orabella-possessions" type="text" name="vitals - Notable possessions" placeholder="…">
+        </div>
+      </div>
+      <h3 class="vgroup">The small stuff</h3>
+      <div class="vgrid">
+        <div class="vfield wide">
+          <label>Faith / devotion <span class="onfile">on file</span> <button type="button" class="js-edit" data-target="orabella-faith">edit</button></label>
+          <input id="orabella-faith" type="text" name="vitals - Faith / devotion" value="Cleric of the Art" readonly>
+        </div>
+        <div class="vfield">
+          <label>Literacy</label>
+          <input id="orabella-literacy" type="text" name="vitals - Literacy" placeholder="…">
+        </div>
+        <div class="vfield">
+          <label>Favorite color</label>
+          <input id="orabella-fav_color" type="text" name="vitals - Favorite color" placeholder="…">
+        </div>
+        <div class="vfield">
+          <label>Favorite food or drink</label>
+          <input id="orabella-fav_food" type="text" name="vitals - Favorite food or drink" placeholder="…">
+        </div>
+        <div class="vfield">
+          <label>Vice</label>
+          <input id="orabella-vice" type="text" name="vitals - Vice" placeholder="…">
+        </div>
+        <div class="vfield wide">
+          <label>Three small facts</label>
+          <input id="orabella-small_facts" type="text" name="vitals - Three small facts" placeholder="…">
+        </div>
+      </div>
+        </section>
+
+        <section class="part coda">
+          <div class="part-head">
+            <span class="part-title">One more thing<small>Anything you want me to know that the questions didn't ask</small></span>
+            <span class="rule"></span></div>
+          <div class="field">
+            <label for="orabella-anything">Anything else?</label>
+            <textarea id="orabella-anything" name="Anything else" rows="6" placeholder="Loose ideas, questions for me, lines you want your character to say, things you're unsure about. Whatever you like."></textarea>
+          </div>
+        </section>
+
+        <div class="seal">
+          <button type="submit" class="btn-seal">Seal and send</button>
+          <p>Once you seal it, it comes straight to me.</p>
+        </div>
+      </form>
+
+      <footer>Venturia · Seravalle</footer>
+    </div>
+  </div>
+<script>
+(function(){
+  var TABLES = {"eyes": ["dark brown, nearly black", "warm hazel", "pale grey, like canal fog", "deep forest green", "amber", "one blue, one brown", "washed-out blue", "black with no visible iris", "tarnished gold", "storm grey", "brown ringed with gold", "green flecked with rust", "hard flint grey", "copper-brown", "sea green", "near colorless, unsettling to meet"], "marks": ["a thin scar through one eyebrow", "rope-burn scarring across one palm", "a faded brand on the inside of the wrist", "a missing fingertip", "ink stains that never fully wash out", "a birthmark like a splash below one ear", "a chipped front tooth", "old burn scars along one forearm", "a nose set badly after a break", "a shrine-token tattoo, half regretted", "a white streak in dark hair", "a notch cut from one ear", "calloused knuckles that never soften", "a long scar down the shin", "a gap-toothed smile", "a permanent squint in one eye"]};
+  document.addEventListener('click', function(e){
+    var ed = e.target.closest('.js-edit');
+    if(ed){
+      var inp = document.getElementById(ed.getAttribute('data-target'));
+      if(inp){ inp.readOnly = false; inp.classList.add('unlocked'); inp.focus();
+        var chip = ed.parentNode.querySelector('.onfile'); if(chip){ chip.textContent = 'editing'; }
+        ed.remove();
+      }
+      return;
+    }
+    var die = e.target.closest('.js-roll');
+    if(die){
+      if(die.getAttribute('data-done')) return;
+      var inp = document.getElementById(die.getAttribute('data-target'));
+      var table = TABLES[die.getAttribute('data-table')] || [];
+      if(inp && table.length){
+        var pick = table[Math.floor(Math.random()*table.length)];
+        inp.value = pick; inp.readOnly = true; inp.classList.add('rolled');
+        die.setAttribute('data-done','1'); die.classList.add('rolled'); die.setAttribute('aria-disabled','true');
+        die.title = 'Rolled: ' + pick + ' (locked)';
+      }
+      return;
+    }
+  });
+})();
+</script>
+</body>
+</html>

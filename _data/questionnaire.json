@@ -1,0 +1,1994 @@
+{
+  "part1": [
+    {
+      "key": "P1 - called / real name",
+      "prompt": "What do people call you day to day, and is that your real name?"
+    },
+    {
+      "key": "P1 - age & how you read",
+      "prompt": "How old are you, and how old do people guess?"
+    },
+    {
+      "key": "P1 - first impression",
+      "prompt": "What do strangers assume the moment you walk in, and are they right?"
+    },
+    {
+      "key": "P1 - where you sleep",
+      "prompt": "Where do you sleep most nights? Whose roof, which district, and do you pay for it?"
+    },
+    {
+      "key": "P1 - your room in a line",
+      "prompt": "Your room, bunk, or corner in one line: the first thing someone would notice."
+    },
+    {
+      "key": "P1 - wake & sleep rites",
+      "prompt": "First thing you do when you wake, and the last thing before you sleep."
+    },
+    {
+      "key": "P1 - eating when broke",
+      "prompt": "What do you eat when you're broke, or when no one's watching?"
+    },
+    {
+      "key": "P1 - how coin reaches you",
+      "prompt": "How do coins actually reach your hand? Wage, patron, theft, favors, charity?"
+    },
+    {
+      "key": "P1 - who you owe",
+      "prompt": "Who do you owe, whether money, a favor, or worse, and what happens if you don't pay? Debts have teeth here."
+    },
+    {
+      "key": "P1 - who owes you",
+      "prompt": "Does anyone owe you?"
+    },
+    {
+      "key": "P1 - family",
+      "prompt": "Family: who's living, who's dead, who you don't speak to?"
+    },
+    {
+      "key": "P1 - your 3am person",
+      "prompt": "Who would you go to at three in the morning, bleeding, no questions asked?"
+    },
+    {
+      "key": "P1 - who you avoid",
+      "prompt": "Who do you cross the street to avoid?"
+    },
+    {
+      "key": "P1 - who'd notice you gone",
+      "prompt": "Who, outside this group, would notice if you walked into the fog and didn't come back?"
+    },
+    {
+      "key": "P1 - who you'd regret obeying",
+      "prompt": "Who could ask you for something you know you'd regret, and you'd do it anyway?"
+    },
+    {
+      "key": "P1 - your mask",
+      "prompt": "You may already own a mask, or you can buy one now if your character would. Describe it, and tell me when you actually wear it. If you're picking one up now rather than already having it, it can't have any obvious magical powers."
+    },
+    {
+      "key": "P1 - luck & warding",
+      "prompt": "What do you do for luck, or to keep the bad off? A shrine coin, a knock, a prayer, a name you won't say?"
+    },
+    {
+      "key": "P1 - where you feel most yourself",
+      "prompt": "Where in the city do you feel most yourself, and where can't you breathe?"
+    },
+    {
+      "key": "P1 - a mark you can't hide",
+      "prompt": "A scar, mark, or feature you can't hide. Where's it from?"
+    },
+    {
+      "key": "P1 - your tell",
+      "prompt": "Your tell: what do your hands, eyes, or voice do when you're lying or scared?"
+    },
+    {
+      "key": "P1 - your vice",
+      "prompt": "Your vice: the thing you reach for on a bad night."
+    },
+    {
+      "key": "P1 - earliest clear memory",
+      "prompt": "Your earliest clear memory."
+    },
+    {
+      "key": "P1 - an unspoken fear",
+      "prompt": "One thing you're afraid of that you'd never say aloud."
+    },
+    {
+      "key": "P1 - a small comfort",
+      "prompt": "One small comfort that makes a bad day survivable."
+    },
+    {
+      "key": "P1 - what you want",
+      "prompt": "What do you want that you'd admit to the group, and what do you want that you wouldn't?"
+    }
+  ],
+  "tables": {
+    "eyes": [
+      "dark brown, nearly black",
+      "warm hazel",
+      "pale grey, like canal fog",
+      "deep forest green",
+      "amber",
+      "one blue, one brown",
+      "washed-out blue",
+      "black with no visible iris",
+      "tarnished gold",
+      "storm grey",
+      "brown ringed with gold",
+      "green flecked with rust",
+      "hard flint grey",
+      "copper-brown",
+      "sea green",
+      "near colorless, unsettling to meet"
+    ],
+    "marks": [
+      "a thin scar through one eyebrow",
+      "rope-burn scarring across one palm",
+      "a faded brand on the inside of the wrist",
+      "a missing fingertip",
+      "ink stains that never fully wash out",
+      "a birthmark like a splash below one ear",
+      "a chipped front tooth",
+      "old burn scars along one forearm",
+      "a nose set badly after a break",
+      "a shrine-token tattoo, half regretted",
+      "a white streak in dark hair",
+      "a notch cut from one ear",
+      "calloused knuckles that never soften",
+      "a long scar down the shin",
+      "a gap-toothed smile",
+      "a permanent squint in one eye"
+    ]
+  },
+  "codaKey": "Anything else",
+  "codaPrompt": "Loose ideas, questions for me, lines you want your character to say, things you're unsure about. Whatever you like.",
+  "characters": {
+    "car": {
+      "player": "Caravel \"Car\" Asteri",
+      "name": "Caravel “Car” Asteri",
+      "role": "Satyr · Masquerade Bard, apprentice of the Masquers’ Sodality · nineteen",
+      "intro": "In place of writing five hundred words. Answer in a phrase or a sentence. The small, mundane details are the ones that end up on the table. Skip anything that doesn't fit, but say that you skipped it. There are no wrong answers.",
+      "aside": "Fog children: if your character has no 'before,' that's an answer. Write what the fog and Liminal House gave you instead. Don't invent a life you don't remember.",
+      "part2": [
+        {
+          "key": "P2 - The family trade",
+          "prompt": "You grew up in and around the Covenant Archive, the windowless black-stone vault in the High Quarter where the city's promises are sealed. You still see your family a few times a month; things are tenuous but holding. What did living with the family trade feel like day to day, and what house rule can you still not shake?",
+          "title": "The family trade"
+        },
+        {
+          "key": "P2 - The twin",
+          "prompt": "Your sister was the favored one, the perfect one. What's her name, what is she doing now, and how are things between you two these days?",
+          "title": "The twin"
+        },
+        {
+          "key": "P2 - Where you sleep now",
+          "prompt": "You've moved out. A Sodality cot, a rented room, someone's floor? And does your family know where to find you?",
+          "title": "Where you sleep now"
+        },
+        {
+          "key": "P2 - Money",
+          "prompt": "Apprentices don't earn much. How do you actually cover rent, keep yourself fed, and pay for a night out?",
+          "title": "Money"
+        },
+        {
+          "key": "P2 - The friend you lost",
+          "prompt": "Before the Masquerade night, who were they to you? Give me one ordinary memory, the kind that has nothing to do with how it ended.",
+          "title": "The friend you lost"
+        },
+        {
+          "key": "P2 - The morning after",
+          "prompt": "You don't have to narrate finding the body. Just: what detail does your mind still snag on, and what did you do in the first hour after?",
+          "title": "The morning after"
+        },
+        {
+          "key": "P2 - Secrets now",
+          "prompt": "You hate them, and you apprenticed into a guild of masks anyway. What do you tell people when they ask why? What's the honest answer you don't give?",
+          "title": "Secrets now"
+        },
+        {
+          "key": "P2 - On and off the stage",
+          "prompt": "What do you do when you perform that you'd never do offstage, and what do you do offstage that you'd never let an audience see?",
+          "title": "On and off the stage"
+        }
+      ],
+      "vitals": [
+        {
+          "group": "Identity",
+          "fields": [
+            {
+              "key": "vitals - Full / true name",
+              "label": "Full / true name",
+              "wide": false,
+              "onFile": true,
+              "value": "Caravel Asteri"
+            },
+            {
+              "key": "vitals - Called",
+              "label": "Called",
+              "wide": false,
+              "onFile": true,
+              "value": "Car"
+            },
+            {
+              "key": "vitals - Pronouns",
+              "label": "Pronouns",
+              "wide": false,
+              "onFile": true,
+              "value": "they / them"
+            },
+            {
+              "key": "vitals - Age",
+              "label": "Age",
+              "wide": false,
+              "onFile": true,
+              "value": "19"
+            },
+            {
+              "key": "vitals - Ancestry",
+              "label": "Ancestry",
+              "wide": false,
+              "onFile": true,
+              "value": "Satyr"
+            },
+            {
+              "key": "vitals - Role",
+              "label": "Role",
+              "wide": true,
+              "onFile": true,
+              "value": "Masquerade Bard, apprentice of the Masquers' Sodality"
+            }
+          ]
+        },
+        {
+          "group": "Appearance",
+          "fields": [
+            {
+              "key": "vitals - Height",
+              "label": "Height",
+              "wide": false
+            },
+            {
+              "key": "vitals - Build",
+              "label": "Build",
+              "wide": false
+            },
+            {
+              "key": "vitals - Hair",
+              "label": "Hair",
+              "wide": false
+            },
+            {
+              "key": "vitals - Eyes",
+              "label": "Eyes",
+              "wide": false,
+              "placeholder": "describe your own, or roll",
+              "roll": "eyes"
+            },
+            {
+              "key": "vitals - Skin & features",
+              "label": "Skin & features",
+              "wide": true,
+              "placeholder": "satyr horns and digitigrade legs. Describe the horns, the coat, the skin"
+            },
+            {
+              "key": "vitals - Distinguishing marks",
+              "label": "Distinguishing marks",
+              "wide": true,
+              "placeholder": "describe your own, or roll",
+              "roll": "marks"
+            },
+            {
+              "key": "vitals - Dress & style",
+              "label": "Dress & style",
+              "wide": true
+            },
+            {
+              "key": "vitals - Mask",
+              "label": "Mask",
+              "wide": true
+            },
+            {
+              "key": "vitals - Voice / accent",
+              "label": "Voice / accent",
+              "wide": false
+            },
+            {
+              "key": "vitals - Dominant hand",
+              "label": "Dominant hand",
+              "wide": false
+            },
+            {
+              "key": "vitals - First impression (one line)",
+              "label": "First impression (one line)",
+              "wide": true
+            }
+          ]
+        },
+        {
+          "group": "Origins & family",
+          "fields": [
+            {
+              "key": "vitals - Birthplace",
+              "label": "Birthplace",
+              "wide": true,
+              "onFile": true,
+              "value": "Venturia"
+            },
+            {
+              "key": "vitals - Parents (names + living status)",
+              "label": "Parents (names + living status)",
+              "wide": true,
+              "onFile": true,
+              "value": "Father: Loren. The family runs the Covenant Archive."
+            },
+            {
+              "key": "vitals - Siblings",
+              "label": "Siblings",
+              "wide": true,
+              "placeholder": "your twin sister, the favored one. Her name and where she is now"
+            },
+            {
+              "key": "vitals - Raised by",
+              "label": "Raised by",
+              "wide": true,
+              "onFile": true,
+              "value": "Birth family, the Covenant Archive. You still see them a few times a month."
+            },
+            {
+              "key": "vitals - Other notable kin",
+              "label": "Other notable kin",
+              "wide": true
+            }
+          ]
+        },
+        {
+          "group": "Life now",
+          "fields": [
+            {
+              "key": "vitals - Residence (district)",
+              "label": "Residence (district)",
+              "wide": true
+            },
+            {
+              "key": "vitals - Occupation & employer",
+              "label": "Occupation & employer",
+              "wide": true,
+              "onFile": true,
+              "value": "Apprentice bard, Masquers' Sodality"
+            },
+            {
+              "key": "vitals - Affiliation / guild",
+              "label": "Affiliation / guild",
+              "wide": true,
+              "onFile": true,
+              "value": "Masquers' Sodality. Family: the Covenant Archive"
+            },
+            {
+              "key": "vitals - Income",
+              "label": "Income",
+              "wide": false
+            },
+            {
+              "key": "vitals - Notable possessions",
+              "label": "Notable possessions",
+              "wide": true
+            }
+          ]
+        },
+        {
+          "group": "The small stuff",
+          "fields": [
+            {
+              "key": "vitals - Faith / devotion",
+              "label": "Faith / devotion",
+              "wide": true
+            },
+            {
+              "key": "vitals - Literacy",
+              "label": "Literacy",
+              "wide": false
+            },
+            {
+              "key": "vitals - Favorite color",
+              "label": "Favorite color",
+              "wide": false
+            },
+            {
+              "key": "vitals - Favorite food or drink",
+              "label": "Favorite food or drink",
+              "wide": false
+            },
+            {
+              "key": "vitals - Vice",
+              "label": "Vice",
+              "wide": false
+            },
+            {
+              "key": "vitals - Three small facts",
+              "label": "Three small facts",
+              "wide": true
+            }
+          ]
+        }
+      ]
+    },
+    "kryton": {
+      "player": "Kryton Novelli",
+      "name": "Kryton Novelli",
+      "role": "Human · Mage of the Academy of Veiled Arts · once a wizard, now something else",
+      "intro": "In place of writing five hundred words. Answer in a phrase or a sentence. The small, mundane details are the ones that end up on the table. Skip anything that doesn't fit, but say that you skipped it. There are no wrong answers.",
+      "aside": "Fog children: if your character has no 'before,' that's an answer. Write what the fog and Liminal House gave you instead. Don't invent a life you don't remember.",
+      "part2": [
+        {
+          "key": "P2 - The wizard you were",
+          "prompt": "What was your specialty at the Academy, and what was the specific arrogance that came with it, the thing colleagues rolled their eyes at behind your back?",
+          "title": "The wizard you were"
+        },
+        {
+          "key": "P2 - First taste of the tables",
+          "prompt": "What brought you to the Undertow originally, and what were you winning back when you still won?",
+          "title": "First taste of the tables"
+        },
+        {
+          "key": "P2 - The night it was taken",
+          "prompt": "You lost your memories and your craft there, and you decide how. A bet you were sure of? A debt called in? A theft you never saw coming? Something you agreed to and can't believe you did? And do you know you chose it, or only suspect?",
+          "title": "The night it was taken"
+        },
+        {
+          "key": "P2 - What the hunt cost",
+          "prompt": "When Maruk vanished and the Academy gave you nothing, you went obsessive. Name one thing that obsession cost you that had nothing to do with magic. A friendship, your post's respect, someone's trust, a night you're ashamed of.",
+          "title": "What the hunt cost"
+        },
+        {
+          "key": "P2 - The won memory",
+          "prompt": "You won someone else's memory at the tables: a figure sealing a pact with a great sphinx. What single detail do you keep returning to, the thing that felt like it was meant for you?",
+          "title": "The won memory"
+        },
+        {
+          "key": "P2 - The fog line, and the gap",
+          "prompt": "You walked to the barrier meaning to cross. You remember deciding, then you remember waking. Give me the last image before the gap, and the first image after.",
+          "title": "The fog line, and the gap"
+        },
+        {
+          "key": "P2 - The loophole",
+          "prompt": "You're certain the pact is temporary and you're clever enough to slip it. What, exactly, is the plan? It doesn't have to be right. It has to be yours.",
+          "title": "The loophole"
+        },
+        {
+          "key": "P2 - When the bond stirs",
+          "prompt": "Sometimes you feel the patron: no words, just wrongness, or grief, or a rage that isn't yours. What do you do with your body when it hits, and what do you tell yourself it is?",
+          "title": "When the bond stirs"
+        }
+      ],
+      "vitals": [
+        {
+          "group": "Identity",
+          "fields": [
+            {
+              "key": "vitals - Full / true name",
+              "label": "Full / true name",
+              "wide": false,
+              "onFile": true,
+              "value": "Kryton Novelli"
+            },
+            {
+              "key": "vitals - Called",
+              "label": "Called",
+              "wide": false
+            },
+            {
+              "key": "vitals - Pronouns",
+              "label": "Pronouns",
+              "wide": false,
+              "onFile": true,
+              "value": "he / him"
+            },
+            {
+              "key": "vitals - Age",
+              "label": "Age",
+              "wide": false,
+              "placeholder": "middle years, mid career. Pin a number"
+            },
+            {
+              "key": "vitals - Ancestry",
+              "label": "Ancestry",
+              "wide": false,
+              "onFile": true,
+              "value": "Human"
+            },
+            {
+              "key": "vitals - Role",
+              "label": "Role",
+              "wide": true,
+              "onFile": true,
+              "value": "Mage, Academy of Veiled Arts"
+            }
+          ]
+        },
+        {
+          "group": "Appearance",
+          "fields": [
+            {
+              "key": "vitals - Height",
+              "label": "Height",
+              "wide": false
+            },
+            {
+              "key": "vitals - Build",
+              "label": "Build",
+              "wide": false
+            },
+            {
+              "key": "vitals - Hair",
+              "label": "Hair",
+              "wide": false
+            },
+            {
+              "key": "vitals - Eyes",
+              "label": "Eyes",
+              "wide": false,
+              "placeholder": "describe your own, or roll",
+              "roll": "eyes"
+            },
+            {
+              "key": "vitals - Skin & features",
+              "label": "Skin & features",
+              "wide": true
+            },
+            {
+              "key": "vitals - Distinguishing marks",
+              "label": "Distinguishing marks",
+              "wide": true,
+              "placeholder": "describe your own, or roll",
+              "roll": "marks"
+            },
+            {
+              "key": "vitals - Dress & style",
+              "label": "Dress & style",
+              "wide": true
+            },
+            {
+              "key": "vitals - Mask",
+              "label": "Mask",
+              "wide": true
+            },
+            {
+              "key": "vitals - Voice / accent",
+              "label": "Voice / accent",
+              "wide": false
+            },
+            {
+              "key": "vitals - Dominant hand",
+              "label": "Dominant hand",
+              "wide": false
+            },
+            {
+              "key": "vitals - First impression (one line)",
+              "label": "First impression (one line)",
+              "wide": true
+            }
+          ]
+        },
+        {
+          "group": "Origins & family",
+          "fields": [
+            {
+              "key": "vitals - Birthplace",
+              "label": "Birthplace",
+              "wide": true
+            },
+            {
+              "key": "vitals - Parents (names + living status)",
+              "label": "Parents (names + living status)",
+              "wide": true
+            },
+            {
+              "key": "vitals - Siblings",
+              "label": "Siblings",
+              "wide": true
+            },
+            {
+              "key": "vitals - Raised by",
+              "label": "Raised by",
+              "wide": true
+            },
+            {
+              "key": "vitals - Other notable kin",
+              "label": "Other notable kin",
+              "wide": true
+            }
+          ]
+        },
+        {
+          "group": "Life now",
+          "fields": [
+            {
+              "key": "vitals - Residence (district)",
+              "label": "Residence (district)",
+              "wide": true
+            },
+            {
+              "key": "vitals - Occupation & employer",
+              "label": "Occupation & employer",
+              "wide": true,
+              "onFile": true,
+              "value": "Faculty mage, Academy of Veiled Arts"
+            },
+            {
+              "key": "vitals - Affiliation / guild",
+              "label": "Affiliation / guild",
+              "wide": true,
+              "onFile": true,
+              "value": "The Academy. A standing tab at the Undertow"
+            },
+            {
+              "key": "vitals - Income",
+              "label": "Income",
+              "wide": false
+            },
+            {
+              "key": "vitals - Notable possessions",
+              "label": "Notable possessions",
+              "wide": true
+            }
+          ]
+        },
+        {
+          "group": "The small stuff",
+          "fields": [
+            {
+              "key": "vitals - Faith / devotion",
+              "label": "Faith / devotion",
+              "wide": true,
+              "onFile": true,
+              "value": "Bound to a patron he cannot name and won't discuss"
+            },
+            {
+              "key": "vitals - Literacy",
+              "label": "Literacy",
+              "wide": false
+            },
+            {
+              "key": "vitals - Favorite color",
+              "label": "Favorite color",
+              "wide": false
+            },
+            {
+              "key": "vitals - Favorite food or drink",
+              "label": "Favorite food or drink",
+              "wide": false
+            },
+            {
+              "key": "vitals - Vice",
+              "label": "Vice",
+              "wide": false
+            },
+            {
+              "key": "vitals - Three small facts",
+              "label": "Three small facts",
+              "wide": true
+            }
+          ]
+        }
+      ]
+    },
+    "lotan": {
+      "player": "Lotan",
+      "name": "Lotan Kaligor",
+      "role": "Red tiefling · Fighter & Warlock · washed ashore from a world no one here has heard of",
+      "intro": "In place of writing five hundred words. Answer in a phrase or a sentence. The small, mundane details are the ones that end up on the table. Skip anything that doesn't fit, but say that you skipped it. There are no wrong answers.",
+      "aside": "Fog children: if your character has no 'before,' that's an answer. Write what the fog and Liminal House gave you instead. Don't invent a life you don't remember.",
+      "part2": [
+        {
+          "key": "P2 - The crossing",
+          "prompt": "You are from Faerun, a world no one in Eldryn has heard of. What ship carried you here, and what happened the night it went down at Venturia's shore?",
+          "title": "The crossing"
+        },
+        {
+          "key": "P2 - The pact",
+          "prompt": "As the ship sank, something vast in the water reached for you, and something older cut in first. You came up bound to the Keeper of Faces. What do you remember of that moment, and what do you tell yourself the bargain bought you?",
+          "title": "The pact"
+        },
+        {
+          "key": "P2 - How you met Roxy",
+          "prompt": "Her ship's people pulled you out of the water. Neither of you had ever set foot in Eldryn, but you played the seasoned local anyway. What is the most confident thing you made up about this city, and did she ever catch you?",
+          "title": "How you met Roxy"
+        },
+        {
+          "key": "P2 - Ashore",
+          "prompt": "You can't go back to sea, and this is not your world. Where does a landlocked pirate actually live in Venturia, and how close to the water do you dare?",
+          "title": "Ashore"
+        },
+        {
+          "key": "P2 - The winery",
+          "prompt": "You keep a winery here, the way you kept one back home. What is it called, where is it, and are you the owner or the hired hand? What does it make, and does anyone buy it?",
+          "title": "The winery"
+        },
+        {
+          "key": "P2 - Kaligor, the sword",
+          "prompt": "Give me the short version: what the blade is, where it came from, and what it means to you.",
+          "title": "Kaligor, the sword"
+        },
+        {
+          "key": "P2 - Your heirship",
+          "prompt": "Give me the quick-reference version of your inheritance and your line. I'll dig deeper when the story needs it, so tell me two things: which parts you most want pulled into play, and which you'd rather I simply keep in mind. They can be the same parts.",
+          "title": "Your heirship"
+        },
+        {
+          "key": "P2 - The manner",
+          "prompt": "You've talked your way off worse decks than this one. What's the line you reach for when a room turns against you?",
+          "title": "The manner"
+        }
+      ],
+      "vitals": [
+        {
+          "group": "Identity",
+          "fields": [
+            {
+              "key": "vitals - Full / true name",
+              "label": "Full / true name",
+              "wide": false,
+              "onFile": true,
+              "value": "Lotan Kaligor"
+            },
+            {
+              "key": "vitals - Called",
+              "label": "Called",
+              "wide": false
+            },
+            {
+              "key": "vitals - Pronouns",
+              "label": "Pronouns",
+              "wide": false,
+              "onFile": true,
+              "value": "he / him"
+            },
+            {
+              "key": "vitals - Age",
+              "label": "Age",
+              "wide": false,
+              "placeholder": "late 30s to 40s. Pin a number"
+            },
+            {
+              "key": "vitals - Ancestry",
+              "label": "Ancestry",
+              "wide": false,
+              "onFile": true,
+              "value": "Tiefling (red)"
+            },
+            {
+              "key": "vitals - Role",
+              "label": "Role",
+              "wide": true,
+              "onFile": true,
+              "value": "Fighter and Warlock. Former pirate, far from home"
+            }
+          ]
+        },
+        {
+          "group": "Appearance",
+          "fields": [
+            {
+              "key": "vitals - Height",
+              "label": "Height",
+              "wide": false
+            },
+            {
+              "key": "vitals - Build",
+              "label": "Build",
+              "wide": false
+            },
+            {
+              "key": "vitals - Hair",
+              "label": "Hair",
+              "wide": false
+            },
+            {
+              "key": "vitals - Eyes",
+              "label": "Eyes",
+              "wide": false,
+              "placeholder": "describe your own, or roll",
+              "roll": "eyes"
+            },
+            {
+              "key": "vitals - Skin & features",
+              "label": "Skin & features",
+              "wide": true,
+              "onFile": true,
+              "value": "Red-skinned tiefling. Horns and tail."
+            },
+            {
+              "key": "vitals - Distinguishing marks",
+              "label": "Distinguishing marks",
+              "wide": true,
+              "placeholder": "describe your own, or roll",
+              "roll": "marks"
+            },
+            {
+              "key": "vitals - Dress & style",
+              "label": "Dress & style",
+              "wide": true
+            },
+            {
+              "key": "vitals - Mask",
+              "label": "Mask",
+              "wide": true
+            },
+            {
+              "key": "vitals - Voice / accent",
+              "label": "Voice / accent",
+              "wide": false
+            },
+            {
+              "key": "vitals - Dominant hand",
+              "label": "Dominant hand",
+              "wide": false
+            },
+            {
+              "key": "vitals - First impression (one line)",
+              "label": "First impression (one line)",
+              "wide": true
+            }
+          ]
+        },
+        {
+          "group": "Origins & family",
+          "fields": [
+            {
+              "key": "vitals - Birthplace",
+              "label": "Birthplace",
+              "wide": true,
+              "onFile": true,
+              "value": "Faerun (a world unknown in Eldryn)"
+            },
+            {
+              "key": "vitals - Parents (names + living status)",
+              "label": "Parents (names + living status)",
+              "wide": true
+            },
+            {
+              "key": "vitals - Siblings",
+              "label": "Siblings",
+              "wide": true
+            },
+            {
+              "key": "vitals - Raised by",
+              "label": "Raised by",
+              "wide": true
+            },
+            {
+              "key": "vitals - Other notable kin",
+              "label": "Other notable kin",
+              "wide": true,
+              "placeholder": "of the Kaligor line. Anyone left of it?"
+            }
+          ]
+        },
+        {
+          "group": "Life now",
+          "fields": [
+            {
+              "key": "vitals - Residence (district)",
+              "label": "Residence (district)",
+              "wide": true
+            },
+            {
+              "key": "vitals - Occupation & employer",
+              "label": "Occupation & employer",
+              "wide": true,
+              "placeholder": "your winery in Venturia. What's it called?"
+            },
+            {
+              "key": "vitals - Affiliation / guild",
+              "label": "Affiliation / guild",
+              "wide": true
+            },
+            {
+              "key": "vitals - Income",
+              "label": "Income",
+              "wide": false
+            },
+            {
+              "key": "vitals - Notable possessions",
+              "label": "Notable possessions",
+              "wide": true,
+              "onFile": true,
+              "value": "Kaligor, a rare magic scimitar and heirloom of his line"
+            }
+          ]
+        },
+        {
+          "group": "The small stuff",
+          "fields": [
+            {
+              "key": "vitals - Faith / devotion",
+              "label": "Faith / devotion",
+              "wide": true,
+              "onFile": true,
+              "value": "The Keeper of Faces"
+            },
+            {
+              "key": "vitals - Literacy",
+              "label": "Literacy",
+              "wide": false
+            },
+            {
+              "key": "vitals - Favorite color",
+              "label": "Favorite color",
+              "wide": false
+            },
+            {
+              "key": "vitals - Favorite food or drink",
+              "label": "Favorite food or drink",
+              "wide": false
+            },
+            {
+              "key": "vitals - Vice",
+              "label": "Vice",
+              "wide": false
+            },
+            {
+              "key": "vitals - Three small facts",
+              "label": "Three small facts",
+              "wide": true
+            }
+          ]
+        }
+      ]
+    },
+    "noname": {
+      "player": "Noname",
+      "name": "Noname",
+      "role": "Orc · Fog Warden of the Overlook · twenty four",
+      "intro": "In place of writing five hundred words. Answer in a phrase or a sentence. The small, mundane details are the ones that end up on the table. Skip anything that doesn't fit, but say that you skipped it. There are no wrong answers.",
+      "aside": "Fog children: if your character has no 'before,' that's an answer. Write what the fog and Liminal House gave you instead. Don't invent a life you don't remember.",
+      "part2": [
+        {
+          "key": "P2 - The name",
+          "prompt": "'Noname'. Who gave it to you, or did you take it? What do the people who love you call you?",
+          "title": "The name"
+        },
+        {
+          "key": "P2 - Liminal House",
+          "prompt": "You came up there after your parents died. What was your corner of that house? A bed by a window, a job you were handed, a kid you looked after or fought?",
+          "title": "Liminal House"
+        },
+        {
+          "key": "P2 - Your father was a fog child",
+          "prompt": "He walked out of Vallombrosa with no past. Growing up, what did you decide that meant about you?",
+          "title": "Your father was a fog child"
+        },
+        {
+          "key": "P2 - The Warden's life",
+          "prompt": "You're posted at the Overlook, at the fog line. Walk me through the most ordinary shift: the boredom, the ritual, the thing you do to stay sane staring at that.",
+          "title": "The Warden's life"
+        },
+        {
+          "key": "P2 - The rage",
+          "prompt": "You're built for it and trying to master it. What sets it off that you're ashamed of, and what brings you back down?",
+          "title": "The rage"
+        },
+        {
+          "key": "P2 - How Maruk asked",
+          "prompt": "He proposed to you at some point before everything went grey. Give me the details: where you were, how he did it, what you said. Something small and real from before.",
+          "title": "How Maruk asked"
+        },
+        {
+          "key": "P2 - That night",
+          "prompt": "What do you actually remember? And more importantly, which part feels wrong when you reach for it, like a word stuck on the tip of your tongue?",
+          "title": "That night"
+        }
+      ],
+      "vitals": [
+        {
+          "group": "Identity",
+          "fields": [
+            {
+              "key": "vitals - Full / true name",
+              "label": "Full / true name",
+              "wide": false,
+              "placeholder": "your true name, if you have one"
+            },
+            {
+              "key": "vitals - Called",
+              "label": "Called",
+              "wide": false,
+              "onFile": true,
+              "value": "Noname"
+            },
+            {
+              "key": "vitals - Pronouns",
+              "label": "Pronouns",
+              "wide": false,
+              "onFile": true,
+              "value": "she / her"
+            },
+            {
+              "key": "vitals - Age",
+              "label": "Age",
+              "wide": false,
+              "onFile": true,
+              "value": "24"
+            },
+            {
+              "key": "vitals - Ancestry",
+              "label": "Ancestry",
+              "wide": false,
+              "onFile": true,
+              "value": "Orc"
+            },
+            {
+              "key": "vitals - Role",
+              "label": "Role",
+              "wide": true,
+              "onFile": true,
+              "value": "Fog Warden of the Overlook"
+            }
+          ]
+        },
+        {
+          "group": "Appearance",
+          "fields": [
+            {
+              "key": "vitals - Height",
+              "label": "Height",
+              "wide": false
+            },
+            {
+              "key": "vitals - Build",
+              "label": "Build",
+              "wide": false
+            },
+            {
+              "key": "vitals - Hair",
+              "label": "Hair",
+              "wide": false
+            },
+            {
+              "key": "vitals - Eyes",
+              "label": "Eyes",
+              "wide": false,
+              "placeholder": "describe your own, or roll",
+              "roll": "eyes"
+            },
+            {
+              "key": "vitals - Skin & features",
+              "label": "Skin & features",
+              "wide": true,
+              "placeholder": "orcish tusks and powerful build. The details"
+            },
+            {
+              "key": "vitals - Distinguishing marks",
+              "label": "Distinguishing marks",
+              "wide": true,
+              "placeholder": "describe your own, or roll",
+              "roll": "marks"
+            },
+            {
+              "key": "vitals - Dress & style",
+              "label": "Dress & style",
+              "wide": true
+            },
+            {
+              "key": "vitals - Mask",
+              "label": "Mask",
+              "wide": true
+            },
+            {
+              "key": "vitals - Voice / accent",
+              "label": "Voice / accent",
+              "wide": false
+            },
+            {
+              "key": "vitals - Dominant hand",
+              "label": "Dominant hand",
+              "wide": false
+            },
+            {
+              "key": "vitals - First impression (one line)",
+              "label": "First impression (one line)",
+              "wide": true
+            }
+          ]
+        },
+        {
+          "group": "Origins & family",
+          "fields": [
+            {
+              "key": "vitals - Birthplace",
+              "label": "Birthplace",
+              "wide": true
+            },
+            {
+              "key": "vitals - Parents (names + living status)",
+              "label": "Parents (names + living status)",
+              "wide": true,
+              "placeholder": "both died young. Your father was a fog child. Their names"
+            },
+            {
+              "key": "vitals - Siblings",
+              "label": "Siblings",
+              "wide": true
+            },
+            {
+              "key": "vitals - Raised by",
+              "label": "Raised by",
+              "wide": true,
+              "onFile": true,
+              "value": "Liminal House"
+            },
+            {
+              "key": "vitals - Other notable kin",
+              "label": "Other notable kin",
+              "wide": true,
+              "onFile": true,
+              "value": "Maruk Grommarg, her missing fiance"
+            }
+          ]
+        },
+        {
+          "group": "Life now",
+          "fields": [
+            {
+              "key": "vitals - Residence (district)",
+              "label": "Residence (district)",
+              "wide": true
+            },
+            {
+              "key": "vitals - Occupation & employer",
+              "label": "Occupation & employer",
+              "wide": true,
+              "onFile": true,
+              "value": "Fog Wardens' Garrison"
+            },
+            {
+              "key": "vitals - Affiliation / guild",
+              "label": "Affiliation / guild",
+              "wide": true,
+              "onFile": true,
+              "value": "The Fog Wardens"
+            },
+            {
+              "key": "vitals - Income",
+              "label": "Income",
+              "wide": false
+            },
+            {
+              "key": "vitals - Notable possessions",
+              "label": "Notable possessions",
+              "wide": true
+            }
+          ]
+        },
+        {
+          "group": "The small stuff",
+          "fields": [
+            {
+              "key": "vitals - Faith / devotion",
+              "label": "Faith / devotion",
+              "wide": true
+            },
+            {
+              "key": "vitals - Literacy",
+              "label": "Literacy",
+              "wide": false
+            },
+            {
+              "key": "vitals - Favorite color",
+              "label": "Favorite color",
+              "wide": false
+            },
+            {
+              "key": "vitals - Favorite food or drink",
+              "label": "Favorite food or drink",
+              "wide": false
+            },
+            {
+              "key": "vitals - Vice",
+              "label": "Vice",
+              "wide": false
+            },
+            {
+              "key": "vitals - Three small facts",
+              "label": "Three small facts",
+              "wide": true
+            }
+          ]
+        }
+      ]
+    },
+    "orabella": {
+      "player": "Orabella",
+      "name": "Orabella",
+      "role": "Human · Cleric of the Art, St. Viro’s Respite · twenty four",
+      "intro": "In place of writing five hundred words. Answer in a phrase or a sentence. The small, mundane details are the ones that end up on the table. Skip anything that doesn't fit, but say that you skipped it. There are no wrong answers.",
+      "aside": "Fog children: if your character has no 'before,' that's an answer. Write what the fog and Liminal House gave you instead. Don't invent a life you don't remember.",
+      "part2": [
+        {
+          "key": "P2 - No before",
+          "prompt": "The fog gave you no past. You walked into Liminal House a girl with nothing behind her. What's your first real memory, the earliest thing that's genuinely yours?",
+          "title": "No before"
+        },
+        {
+          "key": "P2 - Faith",
+          "prompt": "You're a cleric of the Art. Where does that devotion actually come from for you, and what does your daily practice look like on the ward?",
+          "title": "Faith"
+        },
+        {
+          "key": "P2 - Your patients",
+          "prompt": "You tend the hardest cases at Viro's, including a childhood acquaintance and a scarred man no one can name. What's the small kindness you do for the ones who can't thank you?",
+          "title": "Your patients"
+        },
+        {
+          "key": "P2 - Between shifts",
+          "prompt": "Where do you sleep and eat? A cell at Viro's, a room in the House, the chapel? What makes it yours?",
+          "title": "Between shifts"
+        },
+        {
+          "key": "P2 - Celina Cross",
+          "prompt": "You rarely miss a performance. What is it about watching someone become someone else that you can't look away from? You don't need to explain it. Just what it does to you.",
+          "title": "Celina Cross"
+        },
+        {
+          "key": "P2 - The dreams",
+          "prompt": "They come first person, in bodies that aren't yours. You don't have to interpret them. Tell me instead: what do you do when you wake from one, and who, if anyone, have you ever told?",
+          "title": "The dreams"
+        },
+        {
+          "key": "P2 - Asking",
+          "prompt": "When you started asking what the dreams meant, the House and the clergy shut you down. What did that teach you about asking questions in this city?",
+          "title": "Asking"
+        }
+      ],
+      "vitals": [
+        {
+          "group": "Identity",
+          "fields": [
+            {
+              "key": "vitals - Full / true name",
+              "label": "Full / true name",
+              "wide": false,
+              "onFile": true,
+              "value": "Orabella"
+            },
+            {
+              "key": "vitals - Called",
+              "label": "Called",
+              "wide": false
+            },
+            {
+              "key": "vitals - Pronouns",
+              "label": "Pronouns",
+              "wide": false,
+              "onFile": true,
+              "value": "she / her"
+            },
+            {
+              "key": "vitals - Age",
+              "label": "Age",
+              "wide": false,
+              "onFile": true,
+              "value": "24"
+            },
+            {
+              "key": "vitals - Ancestry",
+              "label": "Ancestry",
+              "wide": false,
+              "onFile": true,
+              "value": "Human"
+            },
+            {
+              "key": "vitals - Role",
+              "label": "Role",
+              "wide": true,
+              "onFile": true,
+              "value": "Cleric of the Art, St. Viro's Respite"
+            }
+          ]
+        },
+        {
+          "group": "Appearance",
+          "fields": [
+            {
+              "key": "vitals - Height",
+              "label": "Height",
+              "wide": false
+            },
+            {
+              "key": "vitals - Build",
+              "label": "Build",
+              "wide": false
+            },
+            {
+              "key": "vitals - Hair",
+              "label": "Hair",
+              "wide": false
+            },
+            {
+              "key": "vitals - Eyes",
+              "label": "Eyes",
+              "wide": false,
+              "placeholder": "describe your own, or roll",
+              "roll": "eyes"
+            },
+            {
+              "key": "vitals - Skin & features",
+              "label": "Skin & features",
+              "wide": true
+            },
+            {
+              "key": "vitals - Distinguishing marks",
+              "label": "Distinguishing marks",
+              "wide": true,
+              "placeholder": "describe your own, or roll",
+              "roll": "marks"
+            },
+            {
+              "key": "vitals - Dress & style",
+              "label": "Dress & style",
+              "wide": true
+            },
+            {
+              "key": "vitals - Mask",
+              "label": "Mask",
+              "wide": true
+            },
+            {
+              "key": "vitals - Voice / accent",
+              "label": "Voice / accent",
+              "wide": false
+            },
+            {
+              "key": "vitals - Dominant hand",
+              "label": "Dominant hand",
+              "wide": false
+            },
+            {
+              "key": "vitals - First impression (one line)",
+              "label": "First impression (one line)",
+              "wide": true
+            }
+          ]
+        },
+        {
+          "group": "Origins & family",
+          "fields": [
+            {
+              "key": "vitals - Birthplace",
+              "label": "Birthplace",
+              "wide": true,
+              "onFile": true,
+              "value": "A fog child. No memory of any life before Venturia"
+            },
+            {
+              "key": "vitals - Parents (names + living status)",
+              "label": "Parents (names + living status)",
+              "wide": true,
+              "onFile": true,
+              "value": "None known. A fog child"
+            },
+            {
+              "key": "vitals - Siblings",
+              "label": "Siblings",
+              "wide": true
+            },
+            {
+              "key": "vitals - Raised by",
+              "label": "Raised by",
+              "wide": true,
+              "onFile": true,
+              "value": "Liminal House"
+            },
+            {
+              "key": "vitals - Other notable kin",
+              "label": "Other notable kin",
+              "wide": true
+            }
+          ]
+        },
+        {
+          "group": "Life now",
+          "fields": [
+            {
+              "key": "vitals - Residence (district)",
+              "label": "Residence (district)",
+              "wide": true
+            },
+            {
+              "key": "vitals - Occupation & employer",
+              "label": "Occupation & employer",
+              "wide": true,
+              "onFile": true,
+              "value": "Cleric and healer, St. Viro's Respite"
+            },
+            {
+              "key": "vitals - Affiliation / guild",
+              "label": "Affiliation / guild",
+              "wide": true
+            },
+            {
+              "key": "vitals - Income",
+              "label": "Income",
+              "wide": false
+            },
+            {
+              "key": "vitals - Notable possessions",
+              "label": "Notable possessions",
+              "wide": true
+            }
+          ]
+        },
+        {
+          "group": "The small stuff",
+          "fields": [
+            {
+              "key": "vitals - Faith / devotion",
+              "label": "Faith / devotion",
+              "wide": true,
+              "onFile": true,
+              "value": "Cleric of the Art"
+            },
+            {
+              "key": "vitals - Literacy",
+              "label": "Literacy",
+              "wide": false
+            },
+            {
+              "key": "vitals - Favorite color",
+              "label": "Favorite color",
+              "wide": false
+            },
+            {
+              "key": "vitals - Favorite food or drink",
+              "label": "Favorite food or drink",
+              "wide": false
+            },
+            {
+              "key": "vitals - Vice",
+              "label": "Vice",
+              "wide": false
+            },
+            {
+              "key": "vitals - Three small facts",
+              "label": "Three small facts",
+              "wide": true
+            }
+          ]
+        }
+      ]
+    },
+    "roxy": {
+      "player": "Roxanya \"Roxy\"",
+      "name": "Roxanya “Roxy”",
+      "role": "Forest Gnome · Arcane Trickster · at the Academy on a lie · nineteen",
+      "intro": "In place of writing five hundred words. Answer in a phrase or a sentence. The small, mundane details are the ones that end up on the table. Skip anything that doesn't fit, but say that you skipped it. There are no wrong answers.",
+      "aside": "Fog children: if your character has no 'before,' that's an answer. Write what the fog and Liminal House gave you instead. Don't invent a life you don't remember.",
+      "part2": [
+        {
+          "key": "P2 - The rummage",
+          "prompt": "You were raised by Brownies as one of their own. What did 'home' look like? The cave or the tree, the food, the rules, the thing you miss that no one here would understand?",
+          "title": "The rummage"
+        },
+        {
+          "key": "P2 - Wooly",
+          "prompt": "Your best friend, five inches tall. What's the last thing he said to you before you left, and do you have any way to reach him?",
+          "title": "Wooly"
+        },
+        {
+          "key": "P2 - The owl",
+          "prompt": "There's always a taxidermy owl on your arm. Where did it come from, does it have a name, and what do you tell people who ask?",
+          "title": "The owl"
+        },
+        {
+          "key": "P2 - The lie",
+          "prompt": "You're enrolled at the Academy claiming training you don't have. How do you get through a day of classes without being caught, and how close have you come?",
+          "title": "The lie"
+        },
+        {
+          "key": "P2 - Sleep",
+          "prompt": "Eighteen years outdoors means you can't sleep in your dorm, so you slip out to the Tiered Gardens each night. What's your spot, and who's clocked that you're never in bed?",
+          "title": "Sleep"
+        },
+        {
+          "key": "P2 - The Penny Shrine",
+          "prompt": "You tried to rob it and a god showed up instead. What were you actually after that night, and what does Garl ask of you that you didn't expect?",
+          "title": "The Penny Shrine"
+        },
+        {
+          "key": "P2 - The mission",
+          "prompt": "Your people are being taken. What do you tell yourself you'll do when you finally have the power to stop it?",
+          "title": "The mission"
+        }
+      ],
+      "vitals": [
+        {
+          "group": "Identity",
+          "fields": [
+            {
+              "key": "vitals - Full / true name",
+              "label": "Full / true name",
+              "wide": false,
+              "onFile": true,
+              "value": "Roxanya"
+            },
+            {
+              "key": "vitals - Called",
+              "label": "Called",
+              "wide": false,
+              "onFile": true,
+              "value": "Roxy"
+            },
+            {
+              "key": "vitals - Pronouns",
+              "label": "Pronouns",
+              "wide": false,
+              "onFile": true,
+              "value": "she / her"
+            },
+            {
+              "key": "vitals - Age",
+              "label": "Age",
+              "wide": false,
+              "onFile": true,
+              "value": "19"
+            },
+            {
+              "key": "vitals - Ancestry",
+              "label": "Ancestry",
+              "wide": false,
+              "onFile": true,
+              "value": "Forest Gnome (raised believing she was a Brownie)"
+            },
+            {
+              "key": "vitals - Role",
+              "label": "Role",
+              "wide": true,
+              "onFile": true,
+              "value": "Arcane Trickster. Academy student, on a lie"
+            }
+          ]
+        },
+        {
+          "group": "Appearance",
+          "fields": [
+            {
+              "key": "vitals - Height",
+              "label": "Height",
+              "wide": false,
+              "onFile": true,
+              "value": "about three feet"
+            },
+            {
+              "key": "vitals - Build",
+              "label": "Build",
+              "wide": false,
+              "onFile": true,
+              "value": "compact, mature adult gnome proportions. Grounded, confident stance"
+            },
+            {
+              "key": "vitals - Hair",
+              "label": "Hair",
+              "wide": false,
+              "onFile": true,
+              "value": "wild curly copper red, twin buns"
+            },
+            {
+              "key": "vitals - Eyes",
+              "label": "Eyes",
+              "wide": false,
+              "onFile": true,
+              "value": "sharp green"
+            },
+            {
+              "key": "vitals - Skin & features",
+              "label": "Skin & features",
+              "wide": true,
+              "onFile": true,
+              "value": "sun tanned and freckled across nose and cheeks. Pointed ears. Defined adult gnome features"
+            },
+            {
+              "key": "vitals - Distinguishing marks",
+              "label": "Distinguishing marks",
+              "wide": true,
+              "placeholder": "describe your own, or roll",
+              "roll": "marks"
+            },
+            {
+              "key": "vitals - Dress & style",
+              "label": "Dress & style",
+              "wide": true,
+              "onFile": true,
+              "value": "layered brown leather swashbuckler's garb, feathered and well worn"
+            },
+            {
+              "key": "vitals - Mask",
+              "label": "Mask",
+              "wide": true
+            },
+            {
+              "key": "vitals - Voice / accent",
+              "label": "Voice / accent",
+              "wide": false
+            },
+            {
+              "key": "vitals - Dominant hand",
+              "label": "Dominant hand",
+              "wide": false
+            },
+            {
+              "key": "vitals - First impression (one line)",
+              "label": "First impression (one line)",
+              "wide": true
+            }
+          ]
+        },
+        {
+          "group": "Origins & family",
+          "fields": [
+            {
+              "key": "vitals - Birthplace",
+              "label": "Birthplace",
+              "wide": true,
+              "onFile": true,
+              "value": "Abandoned as an infant in the mainland forests"
+            },
+            {
+              "key": "vitals - Parents (names + living status)",
+              "label": "Parents (names + living status)",
+              "wide": true,
+              "onFile": true,
+              "value": "Birth parents unknown. She doesn't much care"
+            },
+            {
+              "key": "vitals - Siblings",
+              "label": "Siblings",
+              "wide": true
+            },
+            {
+              "key": "vitals - Raised by",
+              "label": "Raised by",
+              "wide": true,
+              "onFile": true,
+              "value": "A Brownie rummage"
+            },
+            {
+              "key": "vitals - Other notable kin",
+              "label": "Other notable kin",
+              "wide": true,
+              "onFile": true,
+              "value": "Wooly, her best friend, a brownie"
+            }
+          ]
+        },
+        {
+          "group": "Life now",
+          "fields": [
+            {
+              "key": "vitals - Residence (district)",
+              "label": "Residence (district)",
+              "wide": true,
+              "onFile": true,
+              "value": "Enrolled at the Academy. Sleeps nightly in the Tiered Gardens"
+            },
+            {
+              "key": "vitals - Occupation & employer",
+              "label": "Occupation & employer",
+              "wide": true
+            },
+            {
+              "key": "vitals - Affiliation / guild",
+              "label": "Affiliation / guild",
+              "wide": true,
+              "onFile": true,
+              "value": "The Academy, on a lie"
+            },
+            {
+              "key": "vitals - Income",
+              "label": "Income",
+              "wide": false
+            },
+            {
+              "key": "vitals - Notable possessions",
+              "label": "Notable possessions",
+              "wide": true,
+              "placeholder": "your taxidermy owl. Does it have a name? And anything else you carry"
+            }
+          ]
+        },
+        {
+          "group": "The small stuff",
+          "fields": [
+            {
+              "key": "vitals - Faith / devotion",
+              "label": "Faith / devotion",
+              "wide": true,
+              "onFile": true,
+              "value": "Garl Glittergold. A pact she keeps from the Academy"
+            },
+            {
+              "key": "vitals - Literacy",
+              "label": "Literacy",
+              "wide": false
+            },
+            {
+              "key": "vitals - Favorite color",
+              "label": "Favorite color",
+              "wide": false
+            },
+            {
+              "key": "vitals - Favorite food or drink",
+              "label": "Favorite food or drink",
+              "wide": false
+            },
+            {
+              "key": "vitals - Vice",
+              "label": "Vice",
+              "wide": false
+            },
+            {
+              "key": "vitals - Three small facts",
+              "label": "Three small facts",
+              "wide": true
+            }
+          ]
+        }
+      ]
+    },
+    "valentro": {
+      "player": "Valentro",
+      "name": "Valentro",
+      "role": "Elf · Ranger and gardener of the Tiered Gardens",
+      "intro": "In place of writing five hundred words. Answer in a phrase or a sentence. The small, mundane details are the ones that end up on the table. Skip anything that doesn't fit, but say that you skipped it. There are no wrong answers.",
+      "aside": "Fog children: if your character has no 'before,' that's an answer. Write what the fog and Liminal House gave you instead. Don't invent a life you don't remember.",
+      "part2": [
+        {
+          "key": "P2 - The gardens",
+          "prompt": "You keep the Tiered Gardens in the way of the leaf. What's your patch, your favorite hour there, and the task you'd do even if no one paid you?",
+          "title": "The gardens"
+        },
+        {
+          "key": "P2 - Strider",
+          "prompt": "Your mentor. What did he teach you first, what's his one maddening habit, and what do you call him when he's not listening?",
+          "title": "Strider"
+        },
+        {
+          "key": "P2 - Your father",
+          "prompt": "He was a Fog Warden who simply disappeared. Your mother died before him. Raised at Liminal House after, what did you tell yourself as a kid had happened to him?",
+          "title": "Your father"
+        },
+        {
+          "key": "P2 - Steadying",
+          "prompt": "Where do you sleep and eat now? A gardener's shed, a room at the House, somewhere in the terraces? What's the routine that keeps you level?",
+          "title": "Steadying"
+        },
+        {
+          "key": "P2 - The quiet life",
+          "prompt": "You'd have called yourself a quiet man with quiet work. What's the small, unremarkable thing that made that life good, before any of this started?",
+          "title": "The quiet life"
+        },
+        {
+          "key": "P2 - The sword moment",
+          "prompt": "Your shears became short swords for a heartbeat and your hands knew. You don't have to explain it. Just: what did your body feel, and what did you do in the seconds after?",
+          "title": "The sword moment"
+        },
+        {
+          "key": "P2 - Roxy",
+          "prompt": "She's been training you since. What's it like being taught to fight by someone half your size who won't say how she knew you'd need it?",
+          "title": "Roxy"
+        }
+      ],
+      "vitals": [
+        {
+          "group": "Identity",
+          "fields": [
+            {
+              "key": "vitals - Full / true name",
+              "label": "Full / true name",
+              "wide": false,
+              "onFile": true,
+              "value": "Valentro"
+            },
+            {
+              "key": "vitals - Called",
+              "label": "Called",
+              "wide": false
+            },
+            {
+              "key": "vitals - Pronouns",
+              "label": "Pronouns",
+              "wide": false,
+              "onFile": true,
+              "value": "he / him"
+            },
+            {
+              "key": "vitals - Age",
+              "label": "Age",
+              "wide": false,
+              "placeholder": "adult elf. Pin a number"
+            },
+            {
+              "key": "vitals - Ancestry",
+              "label": "Ancestry",
+              "wide": false,
+              "onFile": true,
+              "value": "Elf"
+            },
+            {
+              "key": "vitals - Role",
+              "label": "Role",
+              "wide": true,
+              "onFile": true,
+              "value": "Ranger and gardener of the Tiered Gardens"
+            }
+          ]
+        },
+        {
+          "group": "Appearance",
+          "fields": [
+            {
+              "key": "vitals - Height",
+              "label": "Height",
+              "wide": false
+            },
+            {
+              "key": "vitals - Build",
+              "label": "Build",
+              "wide": false
+            },
+            {
+              "key": "vitals - Hair",
+              "label": "Hair",
+              "wide": false
+            },
+            {
+              "key": "vitals - Eyes",
+              "label": "Eyes",
+              "wide": false,
+              "placeholder": "describe your own, or roll",
+              "roll": "eyes"
+            },
+            {
+              "key": "vitals - Skin & features",
+              "label": "Skin & features",
+              "wide": true
+            },
+            {
+              "key": "vitals - Distinguishing marks",
+              "label": "Distinguishing marks",
+              "wide": true,
+              "placeholder": "describe your own, or roll",
+              "roll": "marks"
+            },
+            {
+              "key": "vitals - Dress & style",
+              "label": "Dress & style",
+              "wide": true
+            },
+            {
+              "key": "vitals - Mask",
+              "label": "Mask",
+              "wide": true
+            },
+            {
+              "key": "vitals - Voice / accent",
+              "label": "Voice / accent",
+              "wide": false
+            },
+            {
+              "key": "vitals - Dominant hand",
+              "label": "Dominant hand",
+              "wide": false
+            },
+            {
+              "key": "vitals - First impression (one line)",
+              "label": "First impression (one line)",
+              "wide": true
+            }
+          ]
+        },
+        {
+          "group": "Origins & family",
+          "fields": [
+            {
+              "key": "vitals - Birthplace",
+              "label": "Birthplace",
+              "wide": true
+            },
+            {
+              "key": "vitals - Parents (names + living status)",
+              "label": "Parents (names + living status)",
+              "wide": true,
+              "placeholder": "mother died first. Father, a Fog Warden, vanished. Their names"
+            },
+            {
+              "key": "vitals - Siblings",
+              "label": "Siblings",
+              "wide": true
+            },
+            {
+              "key": "vitals - Raised by",
+              "label": "Raised by",
+              "wide": true,
+              "onFile": true,
+              "value": "Liminal House"
+            },
+            {
+              "key": "vitals - Other notable kin",
+              "label": "Other notable kin",
+              "wide": true,
+              "onFile": true,
+              "value": "Strider, his mentor. Roxy, who trains him"
+            }
+          ]
+        },
+        {
+          "group": "Life now",
+          "fields": [
+            {
+              "key": "vitals - Residence (district)",
+              "label": "Residence (district)",
+              "wide": true
+            },
+            {
+              "key": "vitals - Occupation & employer",
+              "label": "Occupation & employer",
+              "wide": true,
+              "onFile": true,
+              "value": "Gardener, the Tiered Gardens"
+            },
+            {
+              "key": "vitals - Affiliation / guild",
+              "label": "Affiliation / guild",
+              "wide": true
+            },
+            {
+              "key": "vitals - Income",
+              "label": "Income",
+              "wide": false
+            },
+            {
+              "key": "vitals - Notable possessions",
+              "label": "Notable possessions",
+              "wide": true,
+              "placeholder": "gardening tools, and a pair of short swords your hands seem to remember"
+            }
+          ]
+        },
+        {
+          "group": "The small stuff",
+          "fields": [
+            {
+              "key": "vitals - Faith / devotion",
+              "label": "Faith / devotion",
+              "wide": true
+            },
+            {
+              "key": "vitals - Literacy",
+              "label": "Literacy",
+              "wide": false
+            },
+            {
+              "key": "vitals - Favorite color",
+              "label": "Favorite color",
+              "wide": false
+            },
+            {
+              "key": "vitals - Favorite food or drink",
+              "label": "Favorite food or drink",
+              "wide": false
+            },
+            {
+              "key": "vitals - Vice",
+              "label": "Vice",
+              "wide": false
+            },
+            {
+              "key": "vitals - Three small facts",
+              "label": "Three small facts",
+              "wide": true
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

@@ -14,6 +14,9 @@ images
 image
 generated-art
 files
+# Raw character-record sources — served via /questionnaire/ + _data/questionnaire.json,
+# never published directly (each player must only see their own record)
+questionaire
 
 # Top-level repo docs that aren't wiki content
 ARCHITECTURE.md

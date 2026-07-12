@@ -58,7 +58,9 @@
         pendingWikiAutoLoad = null;
       }
     },
-    table: () => {},
+    table: () => {
+      refreshQuestionnaires();
+    },
   };
 
   function loadTabData(view) {
@@ -144,6 +146,9 @@
   const calEventsEl = document.getElementById('vos-dm-cal-events');
   const calStatusEl = document.getElementById('vos-dm-cal-status');
   const calRefreshEl = document.getElementById('vos-dm-cal-refresh');
+  const recordsListEl = document.getElementById('vos-dm-records-list');
+  const recordsStatusEl = document.getElementById('vos-dm-records-status');
+  const recordsRefreshEl = document.getElementById('vos-dm-records-refresh');
   const availSummaryEl = document.getElementById('vos-dm-avail-summary');
   const availSubmittedEl = document.getElementById('vos-dm-avail-submitted');
   const availStatusEl = document.getElementById('vos-dm-avail-status');
@@ -1340,6 +1345,44 @@
     }
   }
 
+  async function refreshQuestionnaires() {
+    const token = getToken(recordsStatusEl);
+    if (!token) return;
+    setStatus(recordsStatusEl, 'Loading...');
+    try {
+      const response = await fetch('/api/questionnaire/all', {
+        headers: authHeaders(token),
+        cache: 'no-store',
+      });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(data.error || `HTTP ${response.status}`);
+      const byPlayer = {};
+      (data.records || []).forEach((record) => {
+        byPlayer[record.playerName] = record;
+      });
+      recordsListEl.innerHTML = '';
+      DEFAULT_PLAYERS.filter((name) => name !== 'DM').forEach((name) => {
+        const record = byPlayer[name];
+        const li = document.createElement('li');
+        const who = document.createElement('strong');
+        who.textContent = name;
+        const status = document.createElement('span');
+        if (!record) {
+          status.textContent = 'not started';
+        } else if (record.status === 'submitted') {
+          status.textContent = 'sealed ' + new Date(record.submitted_at).toLocaleDateString();
+        } else {
+          status.textContent = 'draft · ' + new Date(record.updated_at).toLocaleDateString();
+        }
+        li.append(who, status);
+        recordsListEl.appendChild(li);
+      });
+      setStatus(recordsStatusEl, 'Updated.');
+    } catch (error) {
+      setStatus(recordsStatusEl, error.message, true);
+    }
+  }
+
   function availabilityChip(entry) {
     const chip = document.createElement('span');
     chip.className = `vos-dm-avail-chip is-${entry.rating}`;
@@ -1489,6 +1532,7 @@
   if (calCancelEl) calCancelEl.addEventListener('click', exitEditMode);
   calRefreshEl.addEventListener('click', refreshCalendarEvents);
   availRefreshEl.addEventListener('click', refreshAvailabilitySummary);
+  if (recordsRefreshEl) recordsRefreshEl.addEventListener('click', refreshQuestionnaires);
   historyRefreshEl.addEventListener('click', refreshMessages);
   showDeletedEl.addEventListener('change', refreshMessages);
   loreRefreshEl.addEventListener('click', refreshLoreSubmissions);

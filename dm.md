@@ -886,6 +886,19 @@ permalink: /dm/
 
   <div class="vos-dm-view" data-vos-view="table" hidden>
 
+  <section class="vos-dm-panel" aria-labelledby="vos-dm-records-title">
+    <div class="vos-dm-panel-head">
+      <h2 id="vos-dm-records-title">Character Records</h2>
+      <div class="vos-dm-actions">
+        <a class="vos-dm-button" href="/questionnaire/">Read Records</a>
+        <button id="vos-dm-records-refresh" type="button">Refresh</button>
+      </div>
+    </div>
+    <ul class="vos-dm-rsvps" id="vos-dm-records-list"></ul>
+    <div class="vos-dm-status" id="vos-dm-records-status" role="status" aria-live="polite"></div>
+  </section>
+
+
   <section class="vos-dm-panel" aria-labelledby="vos-dm-inplay-title">
     <div class="vos-dm-panel-head">
       <h2 id="vos-dm-inplay-title">Currently In Play</h2>
