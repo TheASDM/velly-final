@@ -93,12 +93,279 @@ templateEngineOverride: njk
 .vos-calendar-tasks {
   margin-top: 1rem;
 }
+.vos-calendar-section-title {
+  margin: 0.25rem 0 0.9rem;
+  color: var(--vos-gold-bright);
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: clamp(1.25rem, 4vw, 1.7rem);
+  line-height: 1.15;
+}
+.vos-cal-months {
+  display: grid;
+  gap: 1.4rem;
+  color: var(--vos-cream);
+}
+.vos-cal-month-title {
+  margin: 0 0 0.5rem;
+  color: var(--vos-gold-dim);
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.vos-cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 3px;
+}
+.vos-cal-dow {
+  padding: 0.2rem 0;
+  color: var(--vos-gold-dim);
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-align: center;
+  text-transform: uppercase;
+}
+.vos-cal-day {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1px;
+  min-height: 44px;
+  padding: 0.2rem 0;
+  border: 1px solid rgba(139,115,85,0.22);
+  border-radius: 6px;
+  background: rgba(18,16,23,0.6);
+  color: var(--vos-cream);
+  font-size: 0.85rem;
+  line-height: 1;
+}
+.vos-cal-day.is-today {
+  border-color: var(--vos-gold-bright);
+  box-shadow: 0 0 0 1px rgba(212,165,116,0.45);
+}
+.vos-cal-day.is-past {
+  opacity: 0.35;
+}
+.vos-cal-day.has-event {
+  border-color: rgba(212,165,116,0.65);
+  background: rgba(212,165,116,0.12);
+}
+.vos-cal-day-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--vos-gold-bright);
+}
+.vos-cal-day-flag {
+  font-size: 0.7rem;
+  min-height: 0.75rem;
+}
+.vos-cal-blank {
+  min-height: 44px;
+}
+.vos-cal-events {
+  margin: 0.7rem 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 0.45rem;
+}
+.vos-cal-event {
+  display: grid;
+  gap: 0.1rem;
+  padding: 0.5rem 0.65rem;
+  border: 1px solid rgba(212,165,116,0.3);
+  border-left: 3px solid var(--vos-gold-bright);
+  border-radius: 6px;
+  background: rgba(212,165,116,0.07);
+}
+.vos-cal-event.kind-deadline {
+  border-left-color: #b3402f;
+}
+.vos-cal-event-date {
+  color: var(--vos-gold-bright);
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.vos-cal-event-title {
+  color: var(--vos-cream);
+  font-size: 0.95rem;
+}
+.vos-cal-event-notes {
+  color: rgba(232,220,200,0.7);
+  font-size: 0.82rem;
+}
+.vos-cal-empty {
+  margin-top: 0.6rem;
+  color: rgba(232,220,200,0.55);
+  font-size: 0.85rem;
+  font-style: italic;
+}
+/* Availability marking */
+button.vos-avail-day {
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.85rem;
+  -webkit-tap-highlight-color: transparent;
+}
+button.vos-avail-day:disabled {
+  cursor: default;
+}
+.vos-avail-day.is-weekend {
+  border-color: rgba(201,161,74,0.4);
+}
+.vos-avail-day.is-preferred {
+  background: rgba(38,110,52,0.75);
+  border-color: rgba(76,175,80,0.8);
+  color: #eaf5e6;
+}
+.vos-avail-day.is-available {
+  background: rgba(104,159,56,0.4);
+  border-color: rgba(156,204,101,0.7);
+  color: #eaf5e6;
+}
+.vos-avail-day.is-unavailable {
+  background: rgba(140,44,32,0.55);
+  border-color: rgba(198,83,64,0.75);
+  color: #f6e2dd;
+}
+.vos-avail-legend {
+  display: grid;
+  gap: 0.35rem;
+  margin: 0 0 0.75rem;
+}
+.vos-avail-legend-row {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  color: var(--vos-cream);
+  font-size: 0.88rem;
+}
+.vos-avail-swatch {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 6px;
+  border: 1px solid rgba(139,115,85,0.4);
+  font-size: 0.75rem;
+}
+.vos-avail-swatch.is-preferred {
+  background: rgba(38,110,52,0.75);
+  border-color: rgba(76,175,80,0.8);
+  color: #eaf5e6;
+}
+.vos-avail-swatch.is-available {
+  background: rgba(104,159,56,0.4);
+  border-color: rgba(156,204,101,0.7);
+  color: #eaf5e6;
+}
+.vos-avail-swatch.is-unavailable {
+  background: rgba(140,44,32,0.55);
+  border-color: rgba(198,83,64,0.75);
+  color: #f6e2dd;
+}
+.vos-avail-help {
+  margin: 0 0 1rem;
+  color: rgba(232,220,200,0.78);
+  font-size: 0.88rem;
+  line-height: 1.5;
+}
+.vos-avail-times {
+  margin-top: 0.7rem;
+  display: grid;
+  gap: 0.45rem;
+}
+.vos-avail-times-heading {
+  color: var(--vos-gold-dim);
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.vos-avail-times-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+}
+.vos-avail-times-date {
+  min-width: 6.2rem;
+  color: var(--vos-cream);
+  font-size: 0.85rem;
+}
+.vos-avail-time-chip {
+  padding: 0.35rem 0.7rem;
+  min-height: 34px;
+  border: 1px solid rgba(139,115,85,0.4);
+  border-radius: 999px;
+  background: rgba(18,16,23,0.6);
+  color: var(--vos-cream);
+  font-size: 0.78rem;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.vos-avail-time-chip.is-selected {
+  background: rgba(38,110,52,0.7);
+  border-color: rgba(76,175,80,0.8);
+  color: #eaf5e6;
+}
+.vos-avail-footer {
+  margin-top: 1.1rem;
+  display: grid;
+  gap: 0.45rem;
+  justify-items: start;
+}
+.vos-avail-submit {
+  border-color: var(--vos-gold-bright);
+  background: rgba(212,165,116,0.12);
+  cursor: pointer;
+  font: inherit;
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+.vos-avail-submit:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+.vos-avail-status {
+  color: var(--vos-cream);
+  font-size: 0.85rem;
+  min-height: 1.1em;
+}
+.vos-avail-status.is-error {
+  color: #e08573;
+}
+.vos-avail-updated {
+  color: rgba(232,220,200,0.55);
+  font-size: 0.78rem;
+}
 @media (max-width: 560px) {
   .vos-calendar-panel {
     padding: 1rem;
   }
   .vos-calendar-date {
     font-size: 1.75rem;
+  }
+  .vos-cal-day,
+  .vos-cal-blank {
+    min-height: 40px;
+  }
+  .vos-avail-times-date {
+    min-width: 100%;
   }
 }
 </style>
@@ -131,15 +398,40 @@ templateEngineOverride: njk
       {% include "partials/rsvp-control.njk" %}
     </div>
     <div class="vos-calendar-actions">
-      {%- if gathering.timefulUrl %}
-      <a class="vos-calendar-link" href="{{ gathering.timefulUrl }}" target="_blank" rel="noopener">Set Availability in Timeful</a>
-      {%- endif %}
       {%- if gathering.dateIso %}
       <a class="vos-calendar-link" href="/api/calendar/{{ gathering.eventId }}.ics">Add to Calendar</a>
       {%- endif %}
     </div>
   </section>
   {%- endfor %}
+
+  <section class="vos-calendar-panel" aria-labelledby="vos-schedule-title">
+    <div class="vos-calendar-kicker">Schedule</div>
+    <h2 id="vos-schedule-title" class="vos-calendar-section-title">The Next Three Months</h2>
+    <div id="vos-cal-months" class="vos-cal-months">Loading the calendar…</div>
+  </section>
+
+  <section class="vos-calendar-panel" aria-labelledby="vos-availability-title">
+    <div class="vos-calendar-kicker">Your Availability</div>
+    <h2 id="vos-availability-title" class="vos-calendar-section-title">When Can You Play?</h2>
+    <div class="vos-avail-legend">
+      <div class="vos-avail-legend-row"><span class="vos-avail-swatch is-preferred">★</span> Most preferred</div>
+      <div class="vos-avail-legend-row"><span class="vos-avail-swatch is-available">✓</span> Can make it, but prefer another day</div>
+      <div class="vos-avail-legend-row"><span class="vos-avail-swatch is-unavailable">✕</span> Can&rsquo;t make it</div>
+    </div>
+    <p class="vos-avail-help">
+      Tap Saturdays and Sundays to cycle through the three marks. On weekdays,
+      only mark the evenings you <strong>can&rsquo;t</strong> make &mdash; one tap marks
+      a weekday red, another clears it. For Saturdays you can make, pick which
+      times of day work. Nothing is shared until you hit Submit.
+    </p>
+    <div id="vos-avail-months" class="vos-cal-months"></div>
+    <div class="vos-avail-footer">
+      <button id="vos-avail-submit" class="vos-calendar-link vos-avail-submit" type="button">Submit Availability</button>
+      <div id="vos-avail-status" class="vos-avail-status" role="status" aria-live="polite"></div>
+      <div id="vos-avail-updated" class="vos-avail-updated"></div>
+    </div>
+  </section>
 </div>
 
 <script>
@@ -196,3 +488,4 @@ templateEngineOverride: njk
   setInterval(() => countdowns.forEach(tickOne), 60 * 1000);
 })();
 </script>
+<script src="/js/vos-calendar.js" defer></script>

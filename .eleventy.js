@@ -73,6 +73,7 @@ module.exports = function (eleventyConfig) {
   eleventyConfig.addPassthroughCopy({ "public/js/search-init.js": "js/search-init.js" });
   eleventyConfig.addPassthroughCopy({ "public/js/settings.js": "js/settings.js" });
   eleventyConfig.addPassthroughCopy({ "public/js/in-play-live.js": "js/in-play-live.js" });
+  eleventyConfig.addPassthroughCopy({ "public/js/vos-calendar.js": "js/vos-calendar.js" });
   // Player roster — also lives in _data/players.json so templates can read
   // it as `players`. Passed through so the PWA client can fetch it at
   // /data/players.json (used as a fallback when /api/auth/config is down).

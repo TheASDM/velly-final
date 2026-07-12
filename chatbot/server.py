@@ -932,6 +932,59 @@ def _run_app_migrations():
                 ("014_notes", _utc_now_iso()),
             )
 
+        if "015_calendar_events" not in done:
+            # DM-scheduled calendar entries. SQLite-backed (not campaign.js)
+            # so the DM can schedule from the app without a static rebuild.
+            conn.execute("""
+                CREATE TABLE IF NOT EXISTS calendar_events (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    date TEXT NOT NULL,
+                    title TEXT NOT NULL,
+                    time_label TEXT,
+                    location TEXT,
+                    notes TEXT,
+                    kind TEXT NOT NULL DEFAULT 'session'
+                        CHECK(kind IN ('session', 'deadline', 'other')),
+                    created_at TEXT NOT NULL,
+                    updated_at TEXT NOT NULL
+                )
+            """)
+            conn.execute("""
+                CREATE INDEX IF NOT EXISTS idx_calendar_events_date
+                ON calendar_events (date)
+            """)
+            conn.execute(
+                "INSERT INTO schema_migrations (name, applied_at) VALUES (?, ?)",
+                ("015_calendar_events", _utc_now_iso()),
+            )
+
+        if "016_availability" not in done:
+            # Player availability marks, one row per player per day.
+            # Weekends: preferred/available/unavailable. Weekdays: only
+            # 'unavailable' (meaning "can't make that evening"); an
+            # unmarked day has no row. times is a JSON array of
+            # morning/afternoon/evening, only used on green Saturdays.
+            conn.execute("""
+                CREATE TABLE IF NOT EXISTS availability (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    player_name TEXT NOT NULL,
+                    date TEXT NOT NULL,
+                    rating TEXT NOT NULL
+                        CHECK(rating IN ('preferred', 'available', 'unavailable')),
+                    times TEXT NOT NULL DEFAULT '[]',
+                    updated_at TEXT NOT NULL,
+                    UNIQUE(player_name, date)
+                )
+            """)
+            conn.execute("""
+                CREATE INDEX IF NOT EXISTS idx_availability_date
+                ON availability (date)
+            """)
+            conn.execute(
+                "INSERT INTO schema_migrations (name, applied_at) VALUES (?, ?)",
+                ("016_availability", _utc_now_iso()),
+            )
+
 
 def _trim_output(text, max_chars=6000):
     text = str(text or "")
@@ -4820,6 +4873,328 @@ def rsvp():
         "status": status,
         "updated_at": updated_at,
         "counts": counts,
+    })
+
+
+# ── Calendar events + player availability ───────────────────────────────
+
+AVAILABILITY_RATINGS = {"preferred", "available", "unavailable"}
+AVAILABILITY_TIMES = ("morning", "afternoon", "evening")
+CALENDAR_EVENT_KINDS = {"session", "deadline", "other"}
+
+
+def _parse_iso_date(value):
+    if not isinstance(value, str):
+        return None
+    try:
+        return datetime.strptime(value.strip(), "%Y-%m-%d").date()
+    except ValueError:
+        return None
+
+
+def _date_range_from_request(body=None):
+    """Read from/to as YYYY-MM-DD from the query string or body.
+    Returns (from_date, to_date, error_response)."""
+    body = body or {}
+    raw_from = request.args.get("from") or body.get("from") or ""
+    raw_to = request.args.get("to") or body.get("to") or ""
+    date_from = _parse_iso_date(raw_from)
+    date_to = _parse_iso_date(raw_to)
+    if raw_from and not date_from:
+        return None, None, (jsonify({"error": "Invalid 'from' date"}), 400)
+    if raw_to and not date_to:
+        return None, None, (jsonify({"error": "Invalid 'to' date"}), 400)
+    if date_from and date_to and date_to < date_from:
+        return None, None, (jsonify({"error": "'to' is before 'from'"}), 400)
+    return date_from, date_to, None
+
+
+def _calendar_event_json(row):
+    return {
+        "id": row["id"],
+        "date": row["date"],
+        "title": row["title"],
+        "timeLabel": row["time_label"] or "",
+        "location": row["location"] or "",
+        "notes": row["notes"] or "",
+        "kind": row["kind"],
+        "updated_at": row["updated_at"],
+    }
+
+
+def _availability_times_json(raw):
+    try:
+        times = json.loads(raw or "[]")
+    except (TypeError, ValueError):
+        return []
+    if not isinstance(times, list):
+        return []
+    return [t for t in AVAILABILITY_TIMES if t in times]
+
+
+def _normalized_times(date_obj, rating, times):
+    """Times only mean anything on a Saturday the player can make."""
+    if date_obj.weekday() != 5 or rating == "unavailable":
+        return []
+    if not isinstance(times, list):
+        return []
+    return [t for t in AVAILABILITY_TIMES if t in times]
+
+
+@app.route("/api/calendar/events", methods=["GET", "POST"])
+def calendar_events():
+    if request.method == "GET":
+        date_from, date_to, range_error = _date_range_from_request()
+        if range_error:
+            return range_error
+        query = "SELECT * FROM calendar_events"
+        clauses, params = [], []
+        if date_from:
+            clauses.append("date >= ?")
+            params.append(date_from.isoformat())
+        if date_to:
+            clauses.append("date <= ?")
+            params.append(date_to.isoformat())
+        if clauses:
+            query += " WHERE " + " AND ".join(clauses)
+        query += " ORDER BY date, id"
+        with _app_db() as conn:
+            rows = conn.execute(query, params).fetchall()
+        return jsonify({"events": [_calendar_event_json(row) for row in rows]})
+
+    admin_error = _admin_error_response()
+    if admin_error:
+        return admin_error
+    body = request.get_json(silent=True) or {}
+    event_date = _parse_iso_date(body.get("date"))
+    title = str(body.get("title") or "").strip()
+    kind = str(body.get("kind") or "session").strip()
+    if not event_date:
+        return jsonify({"error": "Missing or invalid date (YYYY-MM-DD)"}), 400
+    if not title:
+        return jsonify({"error": "Missing title"}), 400
+    if len(title) > 200:
+        return jsonify({"error": "Title too long"}), 400
+    if kind not in CALENDAR_EVENT_KINDS:
+        return jsonify({"error": "Invalid kind"}), 400
+
+    now = _utc_now_iso()
+    with _app_db() as conn:
+        cursor = conn.execute("""
+            INSERT INTO calendar_events
+                (date, title, time_label, location, notes, kind, created_at, updated_at)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        """, (
+            event_date.isoformat(),
+            title,
+            str(body.get("timeLabel") or "").strip()[:120] or None,
+            str(body.get("location") or "").strip()[:200] or None,
+            str(body.get("notes") or "").strip()[:2000] or None,
+            kind,
+            now,
+            now,
+        ))
+        row = conn.execute(
+            "SELECT * FROM calendar_events WHERE id = ?", (cursor.lastrowid,)
+        ).fetchone()
+    return jsonify({"ok": True, "event": _calendar_event_json(row)}), 201
+
+
+@app.route("/api/calendar/events/<int:event_id>", methods=["PUT", "DELETE"])
+def calendar_event_detail(event_id):
+    admin_error = _admin_error_response()
+    if admin_error:
+        return admin_error
+
+    with _app_db() as conn:
+        row = conn.execute(
+            "SELECT * FROM calendar_events WHERE id = ?", (event_id,)
+        ).fetchone()
+        if not row:
+            return jsonify({"error": "Event not found"}), 404
+
+        if request.method == "DELETE":
+            conn.execute("DELETE FROM calendar_events WHERE id = ?", (event_id,))
+            return jsonify({"ok": True, "deleted": event_id})
+
+        body = request.get_json(silent=True) or {}
+        updates, params = [], []
+        if "date" in body:
+            event_date = _parse_iso_date(body.get("date"))
+            if not event_date:
+                return jsonify({"error": "Invalid date (YYYY-MM-DD)"}), 400
+            updates.append("date = ?")
+            params.append(event_date.isoformat())
+        if "title" in body:
+            title = str(body.get("title") or "").strip()
+            if not title or len(title) > 200:
+                return jsonify({"error": "Invalid title"}), 400
+            updates.append("title = ?")
+            params.append(title)
+        if "kind" in body:
+            kind = str(body.get("kind") or "").strip()
+            if kind not in CALENDAR_EVENT_KINDS:
+                return jsonify({"error": "Invalid kind"}), 400
+            updates.append("kind = ?")
+            params.append(kind)
+        for field, column, limit in (
+            ("timeLabel", "time_label", 120),
+            ("location", "location", 200),
+            ("notes", "notes", 2000),
+        ):
+            if field in body:
+                updates.append(f"{column} = ?")
+                params.append(str(body.get(field) or "").strip()[:limit] or None)
+        if not updates:
+            return jsonify({"error": "Nothing to update"}), 400
+
+        updates.append("updated_at = ?")
+        params.append(_utc_now_iso())
+        params.append(event_id)
+        conn.execute(
+            f"UPDATE calendar_events SET {', '.join(updates)} WHERE id = ?", params
+        )
+        row = conn.execute(
+            "SELECT * FROM calendar_events WHERE id = ?", (event_id,)
+        ).fetchone()
+    return jsonify({"ok": True, "event": _calendar_event_json(row)})
+
+
+@app.route("/api/availability", methods=["GET", "POST"])
+def availability():
+    if request.method == "GET":
+        player_name, auth_error = _authenticated_player_name()
+        if auth_error:
+            return auth_error
+        if not player_name:
+            return jsonify({"error": "Missing player name"}), 400
+        date_from, date_to, range_error = _date_range_from_request()
+        if range_error:
+            return range_error
+        query = "SELECT date, rating, times, updated_at FROM availability WHERE player_name = ?"
+        params = [player_name]
+        if date_from:
+            query += " AND date >= ?"
+            params.append(date_from.isoformat())
+        if date_to:
+            query += " AND date <= ?"
+            params.append(date_to.isoformat())
+        query += " ORDER BY date"
+        with _app_db() as conn:
+            rows = conn.execute(query, params).fetchall()
+        last_updated = max((row["updated_at"] for row in rows), default=None)
+        return jsonify({
+            "playerName": player_name,
+            "entries": [
+                {
+                    "date": row["date"],
+                    "rating": row["rating"],
+                    "times": _availability_times_json(row["times"]),
+                }
+                for row in rows
+            ],
+            "updated_at": last_updated,
+        })
+
+    body = request.get_json(silent=True) or {}
+    player_name, auth_error = _authenticated_player_name(body)
+    if auth_error:
+        return auth_error
+    if not player_name:
+        return jsonify({"error": "Missing player name"}), 400
+    date_from, date_to, range_error = _date_range_from_request(body)
+    if range_error:
+        return range_error
+    if not date_from or not date_to:
+        return jsonify({"error": "Missing from/to range"}), 400
+
+    raw_entries = body.get("entries")
+    if not isinstance(raw_entries, list):
+        return jsonify({"error": "Missing entries list"}), 400
+    if len(raw_entries) > 400:
+        return jsonify({"error": "Too many entries"}), 400
+
+    cleaned = {}
+    for raw in raw_entries:
+        if not isinstance(raw, dict):
+            return jsonify({"error": "Invalid entry"}), 400
+        entry_date = _parse_iso_date(raw.get("date"))
+        rating = raw.get("rating")
+        if not entry_date:
+            return jsonify({"error": "Entry has invalid date"}), 400
+        if not (date_from <= entry_date <= date_to):
+            return jsonify({"error": f"Date {entry_date.isoformat()} outside submitted range"}), 400
+        if rating not in AVAILABILITY_RATINGS:
+            return jsonify({"error": f"Invalid rating for {entry_date.isoformat()}"}), 400
+        # Weekdays only carry "can't make that evening".
+        if entry_date.weekday() < 5 and rating != "unavailable":
+            return jsonify({
+                "error": f"{entry_date.isoformat()} is a weekday; only 'unavailable' is allowed"
+            }), 400
+        times = _normalized_times(entry_date, rating, raw.get("times"))
+        cleaned[entry_date.isoformat()] = (rating, times)
+
+    updated_at = _utc_now_iso()
+    with _app_db() as conn:
+        # Full replace within the range so cleared marks disappear.
+        conn.execute(
+            "DELETE FROM availability WHERE player_name = ? AND date >= ? AND date <= ?",
+            (player_name, date_from.isoformat(), date_to.isoformat()),
+        )
+        conn.executemany("""
+            INSERT INTO availability (player_name, date, rating, times, updated_at)
+            VALUES (?, ?, ?, ?, ?)
+        """, [
+            (player_name, entry_date, rating, json.dumps(times), updated_at)
+            for entry_date, (rating, times) in sorted(cleaned.items())
+        ])
+    return jsonify({
+        "ok": True,
+        "playerName": player_name,
+        "saved": len(cleaned),
+        "updated_at": updated_at,
+    })
+
+
+@app.route("/api/availability/summary", methods=["GET"])
+def availability_summary():
+    admin_error = _admin_error_response()
+    if admin_error:
+        return admin_error
+    date_from, date_to, range_error = _date_range_from_request()
+    if range_error:
+        return range_error
+
+    query = "SELECT player_name, date, rating, times, updated_at FROM availability"
+    clauses, params = [], []
+    if date_from:
+        clauses.append("date >= ?")
+        params.append(date_from.isoformat())
+    if date_to:
+        clauses.append("date <= ?")
+        params.append(date_to.isoformat())
+    if clauses:
+        query += " WHERE " + " AND ".join(clauses)
+    query += " ORDER BY date, player_name"
+
+    days = {}
+    submitted = {}
+    with _app_db() as conn:
+        for row in conn.execute(query, params):
+            days.setdefault(row["date"], []).append({
+                "player": row["player_name"],
+                "rating": row["rating"],
+                "times": _availability_times_json(row["times"]),
+            })
+            prev = submitted.get(row["player_name"])
+            if not prev or row["updated_at"] > prev:
+                submitted[row["player_name"]] = row["updated_at"]
+    return jsonify({
+        "days": days,
+        "submitted": [
+            {"player": name, "updated_at": stamp}
+            for name, stamp in sorted(submitted.items())
+        ],
     })
 
 

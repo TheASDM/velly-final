@@ -466,6 +466,123 @@ permalink: /dm/
   border-radius: 3px;
   font-size: 0.85rem;
 }
+.vos-dm-cal-events {
+  margin: 1rem 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 0.5rem;
+}
+.vos-dm-cal-event {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+  padding: 0.5rem 0.65rem;
+  border: 1px solid rgba(212,165,116,0.3);
+  border-radius: 6px;
+  background: rgba(212,165,116,0.06);
+  color: var(--vos-cream);
+  font-size: 0.92rem;
+}
+.vos-dm-cal-event strong {
+  color: var(--vos-gold-bright);
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.78rem;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+}
+.vos-dm-cal-event button {
+  margin-left: auto;
+  min-height: 32px;
+  padding: 0.2rem 0.6rem;
+  font-size: 0.72rem;
+}
+.vos-dm-avail-summary {
+  display: grid;
+  gap: 0.9rem;
+}
+.vos-dm-avail-group h3 {
+  margin: 0 0 0.45rem;
+  color: var(--vos-gold-dim);
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+.vos-dm-avail-day {
+  display: grid;
+  gap: 0.3rem;
+  padding: 0.55rem 0.65rem;
+  border: 1px solid rgba(139,115,85,0.28);
+  border-radius: 6px;
+  background: rgba(18,16,23,0.55);
+  margin-bottom: 0.45rem;
+}
+.vos-dm-avail-day-head {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  color: var(--vos-cream);
+}
+.vos-dm-avail-day-head strong {
+  color: var(--vos-gold-bright);
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.82rem;
+  letter-spacing: 0.04em;
+}
+.vos-dm-avail-score {
+  margin-left: auto;
+  color: rgba(232,220,200,0.6);
+  font-size: 0.78rem;
+}
+.vos-dm-avail-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+}
+.vos-dm-avail-chip {
+  padding: 0.18rem 0.55rem;
+  border-radius: 999px;
+  border: 1px solid rgba(139,115,85,0.4);
+  font-size: 0.76rem;
+  color: var(--vos-cream);
+}
+.vos-dm-avail-chip.is-preferred {
+  background: rgba(38,110,52,0.75);
+  border-color: rgba(76,175,80,0.8);
+  color: #eaf5e6;
+}
+.vos-dm-avail-chip.is-available {
+  background: rgba(104,159,56,0.4);
+  border-color: rgba(156,204,101,0.7);
+  color: #eaf5e6;
+}
+.vos-dm-avail-chip.is-unavailable {
+  background: rgba(140,44,32,0.55);
+  border-color: rgba(198,83,64,0.75);
+  color: #f6e2dd;
+}
+.vos-dm-avail-times {
+  color: rgba(232,220,200,0.75);
+  font-size: 0.8rem;
+}
+.vos-dm-avail-submitted {
+  margin-bottom: 0.8rem;
+  color: rgba(232,220,200,0.75);
+  font-size: 0.86rem;
+  line-height: 1.5;
+}
+.vos-dm-avail-submitted strong {
+  color: var(--vos-gold-bright);
+  font-weight: 600;
+}
+.vos-dm-avail-empty {
+  color: rgba(232,220,200,0.55);
+  font-style: italic;
+  font-size: 0.88rem;
+}
 </style>
 
 <script src="https://accounts.google.com/gsi/client" async defer></script>
@@ -637,6 +754,62 @@ permalink: /dm/
     <div class="vos-dm-status" id="vos-dm-rsvp-status" role="status" aria-live="polite"></div>
   </section>
 
+  <section class="vos-dm-panel" aria-labelledby="vos-dm-cal-title-h">
+    <div class="vos-dm-panel-head">
+      <h2 id="vos-dm-cal-title-h">Schedule Event</h2>
+      <div class="vos-dm-actions">
+        <button id="vos-dm-cal-refresh" type="button">Refresh</button>
+      </div>
+    </div>
+    <form class="vos-dm-form" id="vos-dm-cal-form">
+      <label>
+        Date
+        <input id="vos-dm-cal-date" type="date" required>
+      </label>
+      <label>
+        Title
+        <input id="vos-dm-cal-title" type="text" placeholder="Session — The Cask and Cube" required>
+      </label>
+      <label>
+        Time
+        <input id="vos-dm-cal-time" type="text" placeholder="Evening, 6pm">
+      </label>
+      <label>
+        Location
+        <input id="vos-dm-cal-location" type="text" placeholder="">
+      </label>
+      <label>
+        Notes
+        <textarea id="vos-dm-cal-notes" placeholder="Shown under the event on the calendar."></textarea>
+      </label>
+      <label>
+        Kind
+        <select id="vos-dm-cal-kind">
+          <option value="session">Session</option>
+          <option value="deadline">Deadline</option>
+          <option value="other">Other</option>
+        </select>
+      </label>
+      <div class="vos-dm-actions">
+        <button id="vos-dm-cal-save" type="submit">Add to Calendar</button>
+      </div>
+    </form>
+    <ul class="vos-dm-cal-events" id="vos-dm-cal-events"></ul>
+    <div class="vos-dm-status" id="vos-dm-cal-status" role="status" aria-live="polite"></div>
+  </section>
+
+  <section class="vos-dm-panel" aria-labelledby="vos-dm-avail-title">
+    <div class="vos-dm-panel-head">
+      <h2 id="vos-dm-avail-title">Player Availability</h2>
+      <div class="vos-dm-actions">
+        <button id="vos-dm-avail-refresh" type="button">Refresh</button>
+      </div>
+    </div>
+    <div class="vos-dm-avail-submitted" id="vos-dm-avail-submitted"></div>
+    <div class="vos-dm-avail-summary" id="vos-dm-avail-summary"></div>
+    <div class="vos-dm-status" id="vos-dm-avail-status" role="status" aria-live="polite"></div>
+  </section>
+
   <section class="vos-dm-panel" aria-labelledby="vos-dm-inplay-title">
     <div class="vos-dm-panel-head">
       <h2 id="vos-dm-inplay-title">Currently In Play</h2>
@@ -732,6 +905,8 @@ permalink: /dm/
     refreshLoreSubmissions();
     refreshMessages();
     refreshRsvps();
+    refreshCalendarEvents();
+    refreshAvailabilitySummary();
   }
   const DEFAULT_PLAYERS = [
     'Caravel "Car" Asteri',
@@ -779,6 +954,21 @@ permalink: /dm/
   const statusEl = document.getElementById('vos-dm-status');
   const sendEl = document.getElementById('vos-dm-send');
   const recipientPickers = new Map();
+  const calFormEl = document.getElementById('vos-dm-cal-form');
+  const calDateEl = document.getElementById('vos-dm-cal-date');
+  const calTitleEl = document.getElementById('vos-dm-cal-title');
+  const calTimeEl = document.getElementById('vos-dm-cal-time');
+  const calLocationEl = document.getElementById('vos-dm-cal-location');
+  const calNotesEl = document.getElementById('vos-dm-cal-notes');
+  const calKindEl = document.getElementById('vos-dm-cal-kind');
+  const calSaveEl = document.getElementById('vos-dm-cal-save');
+  const calEventsEl = document.getElementById('vos-dm-cal-events');
+  const calStatusEl = document.getElementById('vos-dm-cal-status');
+  const calRefreshEl = document.getElementById('vos-dm-cal-refresh');
+  const availSummaryEl = document.getElementById('vos-dm-avail-summary');
+  const availSubmittedEl = document.getElementById('vos-dm-avail-submitted');
+  const availStatusEl = document.getElementById('vos-dm-avail-status');
+  const availRefreshEl = document.getElementById('vos-dm-avail-refresh');
   const loreListEl = document.getElementById('vos-dm-lore-list');
   const loreBulkBarEl = document.getElementById('vos-dm-lore-bulk-bar');
   const loreSelectAllEl = document.getElementById('vos-dm-lore-select-all');
@@ -1780,7 +1970,264 @@ permalink: /dm/
     }
   }
 
+  // ── Calendar events + availability (mirrors the /calendar page range:
+  //    current month through the end of month + 2) ─────────────────────
+  const AVAIL_RANGE = (() => {
+    const now = new Date();
+    const pad = (n) => String(n).padStart(2, '0');
+    const iso = (d) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+    return {
+      from: iso(new Date(now.getFullYear(), now.getMonth(), 1)),
+      to: iso(new Date(now.getFullYear(), now.getMonth() + 3, 0)),
+    };
+  })();
+
+  function prettyDate(isoDate) {
+    return new Date(isoDate + 'T00:00:00').toLocaleDateString(undefined, {
+      weekday: 'short', month: 'short', day: 'numeric',
+    });
+  }
+
+  async function refreshCalendarEvents() {
+    setStatus(calStatusEl, 'Loading...');
+    try {
+      const response = await fetch(
+        `/api/calendar/events?from=${AVAIL_RANGE.from}`,
+        { cache: 'no-store' }
+      );
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(data.error || `HTTP ${response.status}`);
+      calEventsEl.innerHTML = '';
+      (data.events || []).forEach((event) => {
+        const li = document.createElement('li');
+        li.className = 'vos-dm-cal-event';
+        const when = document.createElement('strong');
+        when.textContent = prettyDate(event.date);
+        const what = document.createElement('span');
+        what.textContent = [event.title, event.timeLabel, event.location]
+          .filter(Boolean).join(' · ');
+        const remove = document.createElement('button');
+        remove.type = 'button';
+        remove.textContent = 'Delete';
+        remove.addEventListener('click', () => deleteCalendarEvent(event));
+        li.append(when, what, remove);
+        calEventsEl.appendChild(li);
+      });
+      if (!calEventsEl.children.length) {
+        const li = document.createElement('li');
+        li.className = 'vos-dm-avail-empty';
+        li.textContent = 'Nothing scheduled from this month on.';
+        calEventsEl.appendChild(li);
+      }
+      setStatus(calStatusEl, '');
+    } catch (error) {
+      setStatus(calStatusEl, error.message, true);
+    }
+  }
+
+  async function saveCalendarEvent(eventArg) {
+    eventArg.preventDefault();
+    const token = getToken(calStatusEl);
+    if (!token) return;
+    if (!calDateEl.value || !calTitleEl.value.trim()) {
+      setStatus(calStatusEl, 'Date and title are required.', true);
+      return;
+    }
+    calSaveEl.disabled = true;
+    setStatus(calStatusEl, 'Saving...');
+    try {
+      const response = await fetch('/api/calendar/events', {
+        method: 'POST',
+        headers: authHeaders(token, { 'Content-Type': 'application/json' }),
+        body: JSON.stringify({
+          date: calDateEl.value,
+          title: calTitleEl.value.trim(),
+          timeLabel: calTimeEl.value.trim(),
+          location: calLocationEl.value.trim(),
+          notes: calNotesEl.value.trim(),
+          kind: calKindEl.value,
+        }),
+      });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(data.error || `HTTP ${response.status}`);
+      calTitleEl.value = '';
+      calNotesEl.value = '';
+      setStatus(calStatusEl, 'Scheduled.');
+      await refreshCalendarEvents();
+    } catch (error) {
+      setStatus(calStatusEl, error.message, true);
+    } finally {
+      calSaveEl.disabled = false;
+    }
+  }
+
+  async function deleteCalendarEvent(event) {
+    const token = getToken(calStatusEl);
+    if (!token) return;
+    if (!window.confirm(`Delete "${event.title}" on ${prettyDate(event.date)}?`)) return;
+    setStatus(calStatusEl, 'Deleting...');
+    try {
+      const response = await fetch(`/api/calendar/events/${event.id}`, {
+        method: 'DELETE',
+        headers: authHeaders(token),
+      });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(data.error || `HTTP ${response.status}`);
+      setStatus(calStatusEl, 'Deleted.');
+      await refreshCalendarEvents();
+    } catch (error) {
+      setStatus(calStatusEl, error.message, true);
+    }
+  }
+
+  function availabilityChip(entry) {
+    const chip = document.createElement('span');
+    chip.className = `vos-dm-avail-chip is-${entry.rating}`;
+    const symbols = { preferred: '★', available: '✓', unavailable: '✕' };
+    chip.textContent = `${symbols[entry.rating]} ${entry.player}`;
+    return chip;
+  }
+
+  async function refreshAvailabilitySummary() {
+    const token = getToken(availStatusEl);
+    if (!token) return;
+    setStatus(availStatusEl, 'Loading...');
+    try {
+      const response = await fetch(
+        `/api/availability/summary?from=${AVAIL_RANGE.from}&to=${AVAIL_RANGE.to}`,
+        { headers: authHeaders(token), cache: 'no-store' }
+      );
+      const data = await response.json().catch(() => ({}));
+      if (response.status === 401) {
+        persistSession(null);
+        initGoogleButton();
+        throw new Error(data.error || 'Session expired — sign in again.');
+      }
+      if (!response.ok) throw new Error(data.error || `HTTP ${response.status}`);
+
+      const days = data.days || {};
+      const submitted = data.submitted || [];
+
+      // Who has and hasn't weighed in (the DM doesn't count).
+      const submittedNames = new Set(submitted.map((s) => s.player));
+      const missing = DEFAULT_PLAYERS.filter(
+        (name) => name !== 'DM' && !submittedNames.has(name)
+      );
+      availSubmittedEl.innerHTML = '';
+      const submittedLine = document.createElement('div');
+      submittedLine.append('Submitted: ');
+      const submittedStrong = document.createElement('strong');
+      submittedStrong.textContent = submitted.length
+        ? submitted.map((s) => s.player).join(', ')
+        : 'nobody yet';
+      submittedLine.appendChild(submittedStrong);
+      availSubmittedEl.appendChild(submittedLine);
+      if (missing.length) {
+        const missingLine = document.createElement('div');
+        missingLine.append('Waiting on: ');
+        const missingStrong = document.createElement('strong');
+        missingStrong.textContent = missing.join(', ');
+        missingLine.appendChild(missingStrong);
+        availSubmittedEl.appendChild(missingLine);
+      }
+
+      const weekendDays = [];
+      const weekdayDays = [];
+      Object.keys(days).sort().forEach((dateIso) => {
+        const dow = new Date(dateIso + 'T00:00:00').getDay();
+        (dow === 0 || dow === 6 ? weekendDays : weekdayDays).push(dateIso);
+      });
+
+      availSummaryEl.innerHTML = '';
+
+      const weekendGroup = document.createElement('div');
+      weekendGroup.className = 'vos-dm-avail-group';
+      const weekendHeading = document.createElement('h3');
+      weekendHeading.textContent = 'Weekends (best first)';
+      weekendGroup.appendChild(weekendHeading);
+      const scored = weekendDays.map((dateIso) => {
+        const entries = days[dateIso];
+        const counts = { preferred: 0, available: 0, unavailable: 0 };
+        entries.forEach((entry) => { counts[entry.rating] += 1; });
+        return {
+          dateIso,
+          entries,
+          counts,
+          score: counts.preferred * 2 + counts.available - counts.unavailable * 3,
+        };
+      }).sort((a, b) => b.score - a.score || a.dateIso.localeCompare(b.dateIso));
+      scored.forEach((day) => {
+        const box = document.createElement('div');
+        box.className = 'vos-dm-avail-day';
+        const head = document.createElement('div');
+        head.className = 'vos-dm-avail-day-head';
+        const label = document.createElement('strong');
+        label.textContent = prettyDate(day.dateIso);
+        const score = document.createElement('span');
+        score.className = 'vos-dm-avail-score';
+        score.textContent =
+          `★${day.counts.preferred} ✓${day.counts.available} ✕${day.counts.unavailable}`;
+        head.append(label, score);
+        const chips = document.createElement('div');
+        chips.className = 'vos-dm-avail-chips';
+        day.entries.forEach((entry) => chips.appendChild(availabilityChip(entry)));
+        box.append(head, chips);
+        const withTimes = day.entries.filter((entry) => entry.times && entry.times.length);
+        if (withTimes.length) {
+          const times = document.createElement('div');
+          times.className = 'vos-dm-avail-times';
+          times.textContent = withTimes
+            .map((entry) => `${entry.player}: ${entry.times.join(', ')}`)
+            .join(' · ');
+          box.appendChild(times);
+        }
+        weekendGroup.appendChild(box);
+      });
+      if (!scored.length) {
+        const empty = document.createElement('div');
+        empty.className = 'vos-dm-avail-empty';
+        empty.textContent = 'No weekend availability submitted yet.';
+        weekendGroup.appendChild(empty);
+      }
+      availSummaryEl.appendChild(weekendGroup);
+
+      const weekdayGroup = document.createElement('div');
+      weekdayGroup.className = 'vos-dm-avail-group';
+      const weekdayHeading = document.createElement('h3');
+      weekdayHeading.textContent = 'Weekday evening conflicts';
+      weekdayGroup.appendChild(weekdayHeading);
+      weekdayDays.forEach((dateIso) => {
+        const box = document.createElement('div');
+        box.className = 'vos-dm-avail-day';
+        const head = document.createElement('div');
+        head.className = 'vos-dm-avail-day-head';
+        const label = document.createElement('strong');
+        label.textContent = prettyDate(dateIso);
+        head.appendChild(label);
+        const chips = document.createElement('div');
+        chips.className = 'vos-dm-avail-chips';
+        days[dateIso].forEach((entry) => chips.appendChild(availabilityChip(entry)));
+        box.append(head, chips);
+        weekdayGroup.appendChild(box);
+      });
+      if (!weekdayDays.length) {
+        const empty = document.createElement('div');
+        empty.className = 'vos-dm-avail-empty';
+        empty.textContent = 'No weekday conflicts reported.';
+        weekdayGroup.appendChild(empty);
+      }
+      availSummaryEl.appendChild(weekdayGroup);
+
+      setStatus(availStatusEl, 'Updated.');
+    } catch (error) {
+      setStatus(availStatusEl, error.message, true);
+    }
+  }
+
   rsvpRefreshEl.addEventListener('click', refreshRsvps);
+  calFormEl.addEventListener('submit', saveCalendarEvent);
+  calRefreshEl.addEventListener('click', refreshCalendarEvents);
+  availRefreshEl.addEventListener('click', refreshAvailabilitySummary);
   historyRefreshEl.addEventListener('click', refreshMessages);
   showDeletedEl.addEventListener('change', refreshMessages);
   loreRefreshEl.addEventListener('click', refreshLoreSubmissions);
