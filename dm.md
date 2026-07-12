@@ -816,6 +816,17 @@ permalink: /dm/
 
   <div class="vos-dm-view" data-vos-view="push" hidden>
 
+  <section class="vos-dm-panel" aria-labelledby="vos-dm-subs-title">
+    <div class="vos-dm-panel-head">
+      <h2 id="vos-dm-subs-title">Who Has Alerts On</h2>
+      <div class="vos-dm-actions">
+        <button id="vos-dm-subs-refresh" type="button">Refresh</button>
+      </div>
+    </div>
+    <ul class="vos-dm-rsvps" id="vos-dm-push-subs"></ul>
+    <div class="vos-dm-status" id="vos-dm-subs-status" role="status" aria-live="polite"></div>
+  </section>
+
   <section class="vos-dm-panel" aria-labelledby="vos-dm-push-title">
     <h2 id="vos-dm-push-title">Test Push</h2>
     <form class="vos-dm-form" id="vos-dm-push-form">

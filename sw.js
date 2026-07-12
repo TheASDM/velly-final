@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'foglight-pwa-v46';
+const CACHE_VERSION = 'foglight-pwa-v47';
 const PRECACHE = `${CACHE_VERSION}-precache`;
 const PAGES = `${CACHE_VERSION}-pages`;
 const ASSETS = `${CACHE_VERSION}-assets`;
@@ -177,6 +177,8 @@ self.addEventListener('push', (event) => {
     badge: '/images/app-icon/icon-192.png',
     data: {
       url: data.url || '/',
+      messageId: data.messageId || null,
+      playerName: data.playerName || '',
     },
   };
 
@@ -185,7 +187,20 @@ self.addEventListener('push', (event) => {
 
 self.addEventListener('notificationclick', (event) => {
   event.notification.close();
-  const targetUrl = new URL(event.notification.data && event.notification.data.url || '/', self.location.origin);
+  const noteData = event.notification.data || {};
+  const targetUrl = new URL(noteData.url || '/', self.location.origin);
+
+  // Tap receipt — best effort, never blocks opening the app.
+  if (noteData.messageId) {
+    event.waitUntil(fetch('/api/push/opened', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        messageId: noteData.messageId,
+        name: noteData.playerName || '',
+      }),
+    }).catch(() => {}));
+  }
 
   event.waitUntil((async () => {
     const windows = await self.clients.matchAll({ type: 'window', includeUncontrolled: true });

@@ -1047,6 +1047,23 @@ def _run_app_migrations():
                 ("019_rumors", _utc_now_iso()),
             )
 
+        if "020_push_opens" not in done:
+            # Notification-tap receipts. The service worker beacons back
+            # when a player taps a push; only taps are recorded, so this
+            # is a floor on who saw it, never a ceiling.
+            conn.execute("""
+                CREATE TABLE IF NOT EXISTS push_opens (
+                    message_id INTEGER NOT NULL,
+                    player_name TEXT NOT NULL,
+                    opened_at TEXT NOT NULL,
+                    PRIMARY KEY (message_id, player_name)
+                )
+            """)
+            conn.execute(
+                "INSERT INTO schema_migrations (name, applied_at) VALUES (?, ?)",
+                ("020_push_opens", _utc_now_iso()),
+            )
+
 
 def _trim_output(text, max_chars=6000):
     text = str(text or "")
@@ -4274,11 +4291,12 @@ def _markdown_to_push_text(value):
 
 
 def _fanout_push(conn, title, message, url, recipients=None, message_id=None):
-    payload = json.dumps({
+    base_payload = {
         "title": title.strip()[:120],
         "body": message.strip()[:500],
         "url": _app_url(url),
-    })
+        "messageId": message_id,
+    }
 
     sent = 0
     failed = 0
@@ -4302,6 +4320,8 @@ def _fanout_push(conn, title, message, url, recipients=None, message_id=None):
 
     for row in rows:
         try:
+            # Per-recipient payload so the tap beacon can say who tapped.
+            payload = json.dumps({**base_payload, "playerName": row["player_name"]})
             send_webpush(
                 subscription_info=_subscription_info(row),
                 data=payload,
@@ -4357,6 +4377,58 @@ def _fanout_push(conn, title, message, url, recipients=None, message_id=None):
         "recipients": recipients or "all",
         "errors": errors[:10],
     }
+
+
+@app.route("/api/push/opened", methods=["POST"])
+def push_opened():
+    """Beacon from the service worker when a player taps a notification.
+    Auth rides on the httponly cookie (same-origin SW fetch sends it);
+    when login is off, the payload's name is trusted like everywhere else."""
+    body = request.get_json(silent=True) or {}
+    try:
+        message_id = int(body.get("messageId"))
+    except (TypeError, ValueError):
+        return jsonify({"error": "Missing messageId"}), 400
+    player_name, auth_error = _authenticated_player_name(body)
+    if auth_error:
+        return auth_error
+    if not player_name or player_name not in PLAYER_NAMES:
+        return jsonify({"error": "Unknown player"}), 400
+    with _app_db() as conn:
+        conn.execute("""
+            INSERT OR IGNORE INTO push_opens (message_id, player_name, opened_at)
+            VALUES (?, ?, ?)
+        """, (message_id, player_name, _utc_now_iso()))
+    return jsonify({"ok": True})
+
+
+@app.route("/api/push/subscribers", methods=["GET"])
+def push_subscribers():
+    admin_error = _admin_error_response()
+    if admin_error:
+        return admin_error
+    with _app_db() as conn:
+        rows = list(conn.execute("""
+            SELECT player_name, COUNT(*) AS devices, MAX(created_at) AS latest
+            FROM subscriptions
+            GROUP BY player_name
+            ORDER BY player_name COLLATE NOCASE
+        """))
+    subscribed_names = {row["player_name"] for row in rows}
+    return jsonify({
+        "subscribed": [
+            {
+                "player": row["player_name"],
+                "devices": row["devices"],
+                "latest": row["latest"],
+            }
+            for row in rows
+        ],
+        "missing": [
+            name for name in PLAYER_NAMES
+            if name != "DM" and name not in subscribed_names
+        ],
+    })
 
 
 @app.route("/api/push/send", methods=["POST"])
@@ -4780,15 +4852,28 @@ def admin_messages():
             ORDER BY created_at DESC, id DESC
             LIMIT ?
         """, (limit,)))
-        messages = [
-            _message_payload(
+        messages = []
+        for row in rows:
+            payload = _message_payload(
                 row,
                 recipients=_message_recipients(conn, row["id"]),
                 push_summary=_delivery_summary(conn, row["id"]),
                 include_deleted=True,
             )
-            for row in rows
-        ]
+            # Read receipts: dismissed the in-app card, or tapped the push.
+            payload["seenBy"] = [
+                r["player_name"] for r in conn.execute("""
+                    SELECT player_name FROM message_dismissals
+                    WHERE message_id = ? ORDER BY player_name COLLATE NOCASE
+                """, (row["id"],))
+            ]
+            payload["openedBy"] = [
+                r["player_name"] for r in conn.execute("""
+                    SELECT player_name FROM push_opens
+                    WHERE message_id = ? ORDER BY player_name COLLATE NOCASE
+                """, (row["id"],))
+            ]
+            messages.append(payload)
 
     return jsonify({"messages": messages})
 

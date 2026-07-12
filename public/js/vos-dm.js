@@ -47,7 +47,7 @@
     rsvps: () => refreshRsvps(),
     message: () => {},
     history: () => refreshMessages(),
-    push: () => {},
+    push: () => refreshPushSubscribers(),
     wiki: () => {
       loadWikiPages();
       if (pendingWikiAutoLoad) {
@@ -148,6 +148,9 @@
   const calEventsEl = document.getElementById('vos-dm-cal-events');
   const calStatusEl = document.getElementById('vos-dm-cal-status');
   const calRefreshEl = document.getElementById('vos-dm-cal-refresh');
+  const pushSubsEl = document.getElementById('vos-dm-push-subs');
+  const pushSubsStatusEl = document.getElementById('vos-dm-subs-status');
+  const pushSubsRefreshEl = document.getElementById('vos-dm-subs-refresh');
   const rumorFormEl = document.getElementById('vos-dm-rumor-form');
   const rumorTextEl = document.getElementById('vos-dm-rumor-text');
   const rumorAddEl = document.getElementById('vos-dm-rumor-add');
@@ -693,6 +696,28 @@
 
       head.append(title, actions);
       article.append(head, body, meta, badges);
+
+      // Read receipts: dismissed the card in-app ("seen"), tapped the
+      // push notification ("tapped"), or neither yet.
+      const audience = message.target_type === 'all'
+        ? DEFAULT_PLAYERS.filter((name) => name !== 'DM')
+        : (Array.isArray(message.recipients) ? message.recipients : []);
+      const seen = message.seenBy || [];
+      const opened = message.openedBy || [];
+      const noSignal = audience.filter(
+        (name) => !seen.includes(name) && !opened.includes(name)
+      );
+      const parts = [];
+      if (seen.length) parts.push('Seen in app: ' + seen.join(', '));
+      if (opened.length) parts.push('Tapped push: ' + opened.join(', '));
+      if (noSignal.length) parts.push('No sign yet: ' + noSignal.join(', '));
+      if (parts.length) {
+        const receipts = document.createElement('div');
+        receipts.className = 'vos-dm-meta';
+        receipts.textContent = parts.join(' · ');
+        article.appendChild(receipts);
+      }
+
       historyEl.appendChild(article);
     });
   }
@@ -1393,6 +1418,50 @@
     }
   }
 
+  // ── Push subscribers ────────────────────────────────────────────────
+
+  async function refreshPushSubscribers() {
+    const token = getToken(pushSubsStatusEl);
+    if (!token) return;
+    setStatus(pushSubsStatusEl, 'Loading...');
+    try {
+      const response = await fetch('/api/push/subscribers', {
+        headers: authHeaders(token),
+        cache: 'no-store',
+      });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(data.error || `HTTP ${response.status}`);
+      pushSubsEl.innerHTML = '';
+      (data.subscribed || []).forEach((sub) => {
+        const li = document.createElement('li');
+        const who = document.createElement('strong');
+        who.textContent = sub.player;
+        const status = document.createElement('span');
+        status.textContent = sub.devices === 1 ? '1 device' : `${sub.devices} devices`;
+        li.append(who, status);
+        pushSubsEl.appendChild(li);
+      });
+      (data.missing || []).forEach((name) => {
+        const li = document.createElement('li');
+        li.style.opacity = '0.55';
+        const who = document.createElement('strong');
+        who.textContent = name;
+        const status = document.createElement('span');
+        status.textContent = 'no alerts';
+        li.append(who, status);
+        pushSubsEl.appendChild(li);
+      });
+      if (!pushSubsEl.children.length) {
+        const li = document.createElement('li');
+        li.textContent = 'Nobody has enabled alerts yet.';
+        pushSubsEl.appendChild(li);
+      }
+      setStatus(pushSubsStatusEl, 'Stale devices only get pruned when a push to them fails.');
+    } catch (error) {
+      setStatus(pushSubsStatusEl, error.message, true);
+    }
+  }
+
   // ── Tavern rumors ───────────────────────────────────────────────────
 
   async function refreshRumors() {
@@ -1664,6 +1733,7 @@
   if (rumorFormEl) rumorFormEl.addEventListener('submit', addRumor);
   if (rumorsRefreshEl) rumorsRefreshEl.addEventListener('click', refreshRumors);
   if (npcRollEl) npcRollEl.addEventListener('click', rollNpc);
+  if (pushSubsRefreshEl) pushSubsRefreshEl.addEventListener('click', refreshPushSubscribers);
   historyRefreshEl.addEventListener('click', refreshMessages);
   showDeletedEl.addEventListener('change', refreshMessages);
   loreRefreshEl.addEventListener('click', refreshLoreSubmissions);
