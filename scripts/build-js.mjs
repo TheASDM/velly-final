@@ -1,4 +1,10 @@
-import { build } from 'esbuild';
+// esbuild is resolved through createRequire rather than a bare ESM import:
+// in the container it lives in /opt/eleventy/node_modules (outside the /site
+// bind mount) and is found via NODE_PATH, which Node honours for CommonJS
+// resolution but ignores entirely for ESM.
+import { createRequire } from 'node:module';
+
+const { build } = createRequire(import.meta.url)('esbuild');
 
 const scriptEntries = {
   'pwa-client': 'src/js/pwa/index.js',
