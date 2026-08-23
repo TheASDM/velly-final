@@ -1,0 +1,214 @@
+/* Filigree divider — the comedy/tragedy mask piece. */
+.vos-home-divider {
+  display: block;
+  margin: 3.5rem auto 3rem;
+  width: 280px; max-width: 80%;
+  filter: drop-shadow(0 4px 18px rgba(0,0,0,0.7));
+  opacity: 0.9;
+}
+
+/* SECTIONS ───────────────────────────────────────────────────────────── */
+.vos-home-section {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+.vos-home-section h2 {
+  font-family: 'Cinzel', Georgia, serif;
+  color: var(--vos-gold-bright);
+  font-size: 1.4rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  text-align: center;
+  margin: 0 0 2rem;
+  border: none;
+  padding: 0;
+}
+.vos-home-section h2::after { content: none; }
+
+/* TILES — stack on mobile, single row of 4 on desktop. At the 4-up
+   breakpoint we drop the long descriptions so each tile reads as an
+   icon (art + kicker + title + arrow). */
+.vos-tiles {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.25rem;
+  margin-bottom: 1rem;
+}
+@media (min-width: 560px) {
+  .vos-tiles { grid-template-columns: repeat(2, 1fr); }
+}
+.vos-tile {
+  position: relative;
+  display: block;
+  aspect-ratio: 1 / 1;
+  border-radius: 6px;
+  overflow: hidden;
+  text-decoration: none;
+  border: 1px solid rgba(212,165,116,0.18);
+  box-shadow: 0 10px 32px rgba(0,0,0,0.6);
+  transition: transform 0.35s cubic-bezier(0.2, 0.7, 0.3, 1), box-shadow 0.35s, border-color 0.35s;
+  isolation: isolate;
+}
+.vos-tile:hover {
+  transform: translateY(-6px);
+  border-color: rgba(212,165,116,0.6);
+  box-shadow:
+    0 18px 48px rgba(0,0,0,0.75),
+    0 0 24px rgba(212,165,116,0.18);
+}
+.vos-tile-art {
+  position: absolute; inset: 0; z-index: -2;
+  background-size: cover; background-position: center;
+  transition: transform 0.6s ease;
+}
+.vos-tile:hover .vos-tile-art { transform: scale(1.05); }
+.vos-tile-shade {
+  position: absolute; inset: 0; z-index: -1;
+  background: linear-gradient(180deg,
+    rgba(7,6,10,0.0) 0%,
+    rgba(7,6,10,0.1) 40%,
+    rgba(7,6,10,0.85) 100%);
+}
+.vos-tile-body {
+  position: absolute; inset: auto 0 0 0;
+  padding: 1.5rem 1.4rem 1.6rem;
+  text-align: left;
+}
+.vos-tile-kicker {
+  display: block;
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.36em;
+  text-transform: uppercase;
+  color: var(--vos-gold-bright);
+  margin-bottom: 0.55rem;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.85);
+}
+.vos-tile-title {
+  display: block;
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 1.6rem;
+  letter-spacing: 0.04em;
+  color: var(--vos-cream);
+  margin-bottom: 0.55rem;
+  line-height: 1.15;
+  text-shadow: 0 2px 12px rgba(0,0,0,0.95);
+}
+.vos-tile-desc {
+  display: block;
+  font-family: 'Crimson Text', Georgia, serif;
+  font-style: italic;
+  font-size: 0.95rem;
+  line-height: 1.45;
+  color: rgba(232,220,200,0.78);
+  text-shadow: 0 1px 6px rgba(0,0,0,0.95);
+}
+.vos-tile-arrow {
+  display: inline-block;
+  margin-top: 0.85rem;
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.65rem;
+  letter-spacing: 0.34em;
+  text-transform: uppercase;
+  color: var(--vos-gold-bright);
+  transition: letter-spacing 0.2s;
+}
+.vos-tile:hover .vos-tile-arrow { letter-spacing: 0.42em; }
+
+/* Desktop: 4-up row, compact tiles, descriptions hidden so each tile
+   reads as an icon (art + kicker + title + arrow). Placed AFTER the
+   base rules above so it actually wins (same specificity, later wins). */
+@media (min-width: 1024px) {
+  .vos-tiles { grid-template-columns: repeat(4, 1fr); gap: 1rem; }
+  .vos-tile { aspect-ratio: 4 / 5; }
+  .vos-tile-body { padding: 0.85rem 0.9rem 1rem; }
+  .vos-tile-kicker { font-size: 0.5rem; letter-spacing: 0.28em; margin-bottom: 0.4rem; }
+  .vos-tile-title { font-size: 0.95rem; line-height: 1.2; margin-bottom: 0.4rem; }
+  .vos-tile-desc { display: none; }
+  .vos-tile-arrow { font-size: 0.55rem; letter-spacing: 0.28em; margin-top: 0.4rem; }
+}
+
+/* CLOSING ────────────────────────────────────────────────────────────── */
+.vos-home-closing {
+  max-width: 700px;
+  margin: 5rem auto 4rem;
+  padding: 0 1.75rem;
+  text-align: center;
+  font-family: 'Crimson Text', Georgia, serif;
+  font-size: 1.1rem;
+  line-height: 1.75;
+  color: var(--vos-text-body);
+}
+.vos-home-closing h2 {
+  font-family: 'Cinzel', Georgia, serif;
+  color: var(--vos-gold-bright);
+  font-size: 1.6rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  margin: 0 0 1.5rem;
+  border: none; padding: 0;
+}
+.vos-home-closing h2::after { content: none; }
+.vos-home-closing blockquote {
+  border: none;
+  margin: 2.5rem 0 0;
+  padding: 0;
+  font-family: 'IM Fell English', Georgia, serif;
+  font-style: italic;
+  font-size: 1.15rem;
+  color: rgba(212,165,116,0.85);
+  letter-spacing: 0.03em;
+}
+
+@media (max-width: 768px) {
+  .vos-home {
+    --vos-home-wide: calc(100vw - 2rem);
+    margin: -2.25rem 0 0;
+  }
+  .vos-home-hero { padding: 0.85rem 0 0.95rem; }
+  .vos-dash {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "message"
+      "next"
+      "rumor"
+      "inplay"
+      "story";
+  }
+  .vos-home-sec-head {
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 0.55rem 0.85rem;
+  }
+  .vos-home-sec-head .vos-home-sec-line {
+    order: 3;
+    flex-basis: 100%;
+  }
+  .vos-story-card,
+  .vos-dash-side-card,
+  .vos-inplay-card {
+    padding: 1.1rem 1.05rem 1.2rem;
+  }
+  .vos-story-card {
+    grid-template-columns: 1fr;
+  }
+  .vos-story-card p,
+  .vos-story-read {
+    grid-column: 1;
+    grid-row: auto;
+  }
+  .vos-story-card p {
+    -webkit-line-clamp: 2;
+  }
+  .vos-home-section h2 { font-size: 1.1rem; }
+  .vos-tiles { grid-template-columns: 1fr 1fr; }
+  .vos-tile-title { font-size: 1.15rem; }
+  .vos-tile-kicker { font-size: 0.55rem; letter-spacing: 0.28em; }
+  .vos-tile-desc { font-size: 0.85rem; }
+}
+@media (max-width: 480px) {
+  .vos-tiles { grid-template-columns: 1fr; }
+  .vos-tile { aspect-ratio: 16 / 10; }
+}

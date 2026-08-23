@@ -1,0 +1,469 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Valley of Shadows — Living Chronicle</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0a090d;
+    --bg-2:#0e0c12;
+    --panel:#15121b;
+    --panel-2:#1a1622;
+    --ink:#e9e1d0;
+    --ink-soft:#c8bfac;
+    --muted:#938a78;
+    --muted-2:#6f6757;
+    --gold:#c9a14a;
+    --gold-bright:#e8cd84;
+    --gold-dim:#8a7338;
+    --crimson:#7a2230;
+    --crimson-soft:#9c3340;
+    --line:rgba(201,161,74,.20);
+    --line-soft:rgba(201,161,74,.10);
+    --shadow:0 18px 50px -20px rgba(0,0,0,.85);
+    --r:14px;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0;
+    background:
+      radial-gradient(1200px 600px at 70% -10%, rgba(122,34,48,.12), transparent 60%),
+      radial-gradient(900px 500px at 10% 110%, rgba(201,161,74,.06), transparent 55%),
+      var(--bg);
+    color:var(--ink);
+    font-family:"EB Garamond",Georgia,serif;
+    -webkit-font-smoothing:antialiased;
+    letter-spacing:.1px;
+  }
+  a{color:inherit;text-decoration:none}
+  ::selection{background:rgba(201,161,74,.28);color:#fff}
+
+  /* ---------- top bar ---------- */
+  header{
+    position:sticky;top:0;z-index:50;
+    display:flex;align-items:center;gap:24px;
+    padding:14px 28px;
+    background:linear-gradient(180deg, rgba(10,9,13,.96), rgba(10,9,13,.82));
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line-soft);
+  }
+  .brand-mark{
+    font-family:"Cinzel",serif;font-weight:700;letter-spacing:2.5px;
+    font-size:17px;color:var(--gold);
+    text-shadow:0 0 18px rgba(201,161,74,.25);
+    white-space:nowrap;
+  }
+  .brand-mark .of{color:var(--ink-soft);font-weight:500;font-size:13px;letter-spacing:4px}
+  .search{
+    flex:1;max-width:560px;margin:0 auto;position:relative;
+  }
+  .search input{
+    width:100%;padding:11px 16px 11px 42px;
+    background:rgba(255,255,255,.025);
+    border:1px solid var(--line);border-radius:999px;
+    color:var(--ink);font-family:"Cormorant Garamond",serif;font-size:17px;
+    outline:none;transition:.25s;
+  }
+  .search input::placeholder{color:var(--muted-2);font-style:italic}
+  .search input:focus{border-color:var(--gold);background:rgba(201,161,74,.05);box-shadow:0 0 0 3px rgba(201,161,74,.08)}
+  .search svg{position:absolute;left:15px;top:50%;transform:translateY(-50%);opacity:.55}
+  .pill{
+    display:flex;align-items:center;gap:8px;white-space:nowrap;
+    padding:9px 16px;border-radius:999px;border:1px solid var(--line);
+    font-family:"Cinzel",serif;font-size:11px;letter-spacing:1.5px;color:var(--ink-soft);
+    background:rgba(255,255,255,.02);transition:.25s;
+  }
+  .pill b{color:var(--gold);font-weight:700}
+  .pill:hover{border-color:var(--gold);background:rgba(201,161,74,.06)}
+  .pill.solid{background:linear-gradient(180deg,rgba(201,161,74,.16),rgba(201,161,74,.06));border-color:var(--gold-dim);color:var(--gold-bright)}
+  .pill.diamond::before{content:"✦";color:var(--gold);font-size:12px}
+
+  /* ---------- shell ---------- */
+  .shell{display:grid;grid-template-columns:248px 1fr;gap:0;max-width:1500px;margin:0 auto}
+
+  /* ---------- sidebar ---------- */
+  aside{
+    border-right:1px solid var(--line-soft);
+    padding:30px 22px 60px;
+    position:sticky;top:64px;align-self:start;height:calc(100vh - 64px);overflow:auto;
+  }
+  .crest{text-align:center;margin-bottom:24px}
+  .crest .ring{
+    width:120px;height:120px;margin:0 auto 12px;border-radius:50%;
+    display:grid;place-items:center;
+    background:
+      radial-gradient(circle at 50% 38%, rgba(201,161,74,.22), transparent 62%),
+      conic-gradient(from 0deg, rgba(122,34,48,.5), rgba(201,161,74,.35), rgba(122,34,48,.5));
+    border:1px solid var(--line);
+    box-shadow:inset 0 0 30px rgba(0,0,0,.6), 0 0 30px rgba(201,161,74,.12);
+  }
+  .crest .ring .mask{font-size:46px;filter:drop-shadow(0 2px 6px rgba(0,0,0,.6))}
+  .crest .sub{font-family:"Cormorant Garamond",serif;font-style:italic;color:var(--muted);font-size:16px;letter-spacing:.5px}
+  .navgroup{margin-top:26px}
+  .navgroup > .label{
+    font-family:"Cinzel",serif;font-size:11px;letter-spacing:2px;color:var(--gold);
+    padding-bottom:8px;margin-bottom:6px;border-bottom:1px solid var(--line-soft);
+    display:flex;align-items:center;gap:8px;
+  }
+  .navgroup > .label::before{content:"▾";font-size:9px;color:var(--gold-dim)}
+  nav a{
+    display:flex;align-items:center;gap:10px;
+    font-family:"Cinzel",serif;font-size:12.5px;letter-spacing:1.2px;
+    color:var(--ink-soft);padding:8px 10px;border-radius:8px;transition:.2s;position:relative;
+  }
+  nav a::before{content:"›";color:var(--gold-dim);font-size:14px;transition:.2s}
+  nav a:hover{background:rgba(201,161,74,.06);color:var(--gold-bright)}
+  nav a:hover::before{transform:translateX(2px);color:var(--gold)}
+  nav a .badge{margin-left:auto;font-family:"EB Garamond";font-size:11px;letter-spacing:0;
+    color:var(--gold);background:rgba(201,161,74,.12);border:1px solid var(--line-soft);
+    padding:1px 7px;border-radius:999px}
+
+  /* ---------- main ---------- */
+  main{padding:34px 40px 80px;min-width:0}
+
+  /* hero */
+  .hero{
+    position:relative;border-radius:18px;overflow:hidden;border:1px solid var(--line);
+    box-shadow:var(--shadow);aspect-ratio:21/8;min-height:280px;
+  }
+  .hero svg{position:absolute;inset:0;width:100%;height:100%}
+  .hero .wordmark{
+    position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    text-align:center;
+  }
+  .hero .wordmark h1{
+    margin:0;font-family:"Cinzel",serif;font-weight:700;
+    font-size:clamp(34px,5.5vw,74px);letter-spacing:3px;line-height:.95;
+    color:transparent;background:linear-gradient(180deg,#f6e7b4,#c9a14a 55%,#8a6f2c);
+    -webkit-background-clip:text;background-clip:text;
+    text-shadow:0 2px 30px rgba(201,161,74,.25);
+  }
+  .hero .rule{display:flex;align-items:center;gap:12px;margin-top:10px;opacity:.85}
+  .hero .rule span{height:1px;width:90px;background:linear-gradient(90deg,transparent,var(--gold))}
+  .hero .rule span:last-child{background:linear-gradient(90deg,var(--gold),transparent)}
+  .hero .rule .dia{color:var(--gold)}
+
+  .tagline{
+    text-align:center;font-family:"Cormorant Garamond",serif;font-style:italic;
+    color:var(--ink-soft);font-size:clamp(19px,2.1vw,26px);line-height:1.5;
+    max-width:680px;margin:30px auto 8px;
+  }
+
+  /* section heads */
+  .sec-head{display:flex;align-items:baseline;gap:14px;margin:46px 0 18px}
+  .sec-head h2{
+    font-family:"Cinzel",serif;font-weight:600;font-size:14px;letter-spacing:3px;
+    color:var(--gold);margin:0;white-space:nowrap;
+  }
+  .sec-head .line{flex:1;height:1px;background:linear-gradient(90deg,var(--line),transparent)}
+  .sec-head .more{font-family:"Cinzel",serif;font-size:11px;letter-spacing:1.5px;color:var(--muted);white-space:nowrap}
+  .sec-head .more:hover{color:var(--gold)}
+
+  /* dashboard grid */
+  .dash{display:grid;grid-template-columns:1.55fr 1fr;gap:20px}
+  .card{
+    background:linear-gradient(180deg,var(--panel),var(--bg-2));
+    border:1px solid var(--line);border-radius:var(--r);padding:24px 26px;
+    box-shadow:var(--shadow);position:relative;overflow:hidden;
+  }
+  .card::after{content:"";position:absolute;inset:0;border-radius:var(--r);pointer-events:none;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.04)}
+  .kicker{font-family:"Cinzel",serif;font-size:10.5px;letter-spacing:2.5px;color:var(--crimson-soft);margin-bottom:10px}
+
+  /* previously card */
+  .prev{display:grid;grid-template-columns:130px 1fr;gap:22px;align-items:start}
+  .prev .plate{
+    aspect-ratio:3/4;border-radius:10px;border:1px solid var(--line);overflow:hidden;
+    background:linear-gradient(160deg,#241a26,#0d0a12);position:relative;
+  }
+  .prev .plate svg{position:absolute;inset:0;width:100%;height:100%}
+  .prev h3{font-family:"Cinzel",serif;font-weight:600;font-size:22px;letter-spacing:.5px;margin:2px 0 4px;color:var(--ink)}
+  .prev .meta{font-family:"Cormorant Garamond",serif;font-style:italic;color:var(--muted);font-size:15px;margin-bottom:12px}
+  .prev p{font-size:17px;line-height:1.6;color:var(--ink-soft);margin:0 0 16px}
+  .prev .read{
+    display:inline-flex;align-items:center;gap:8px;font-family:"Cinzel",serif;font-size:11px;
+    letter-spacing:1.5px;color:var(--gold-bright);border:1px solid var(--line);
+    padding:8px 16px;border-radius:999px;transition:.25s;background:rgba(201,161,74,.04);
+  }
+  .prev .read:hover{background:rgba(201,161,74,.12);border-color:var(--gold);transform:translateX(2px)}
+
+  .stack{display:flex;flex-direction:column;gap:20px}
+
+  /* next session */
+  .next .date{font-family:"Cinzel",serif;font-weight:700;font-size:28px;color:var(--gold-bright);letter-spacing:1px;line-height:1}
+  .next .when{font-family:"Cormorant Garamond";font-style:italic;color:var(--muted);font-size:15px;margin:4px 0 16px}
+  .next .row{display:flex;gap:10px;align-items:flex-start;padding:9px 0;border-top:1px solid var(--line-soft);font-size:16px;color:var(--ink-soft)}
+  .next .row .ic{color:var(--gold);font-size:13px;margin-top:3px}
+  .next .row b{color:var(--ink);font-weight:500}
+
+  /* threads */
+  .thread{display:flex;gap:12px;align-items:flex-start;padding:11px 0;border-top:1px solid var(--line-soft);font-size:16px}
+  .thread:first-of-type{border-top:none}
+  .dot{width:8px;height:8px;border-radius:50%;margin-top:7px;flex:none;box-shadow:0 0 8px currentColor}
+  .dot.hot{background:var(--crimson-soft);color:var(--crimson-soft)}
+  .dot.warm{background:var(--gold);color:var(--gold)}
+  .dot.cool{background:#5a6b7a;color:#5a6b7a}
+  .thread .q{color:var(--ink-soft);line-height:1.45}
+  .thread .q .tag{font-family:"Cinzel";font-size:9.5px;letter-spacing:1.2px;color:var(--muted);display:block;margin-top:3px}
+
+  /* updates feed */
+  .feed{display:grid;grid-template-columns:1fr 1fr;gap:14px 28px}
+  .feed .item{display:flex;gap:12px;align-items:baseline;padding:10px 0;border-bottom:1px solid var(--line-soft)}
+  .feed .time{font-family:"Cinzel";font-size:10px;letter-spacing:1px;color:var(--muted-2);white-space:nowrap;min-width:62px}
+  .feed .what{font-size:16px;color:var(--ink-soft)}
+  .feed .what b{color:var(--gold-bright);font-weight:500}
+  .feed .what .type{font-family:"Cinzel";font-size:9px;letter-spacing:1px;color:var(--crimson-soft);margin-right:6px}
+
+  /* in play rail */
+  .rail{display:flex;flex-wrap:wrap;gap:10px}
+  .chip{
+    display:flex;align-items:center;gap:9px;padding:8px 14px 8px 9px;border-radius:999px;
+    border:1px solid var(--line);background:rgba(255,255,255,.02);transition:.22s;
+  }
+  .chip:hover{border-color:var(--gold);background:rgba(201,161,74,.07);transform:translateY(-2px)}
+  .chip .av{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font-size:13px;
+    background:radial-gradient(circle at 40% 35%,rgba(201,161,74,.3),rgba(122,34,48,.4));border:1px solid var(--line-soft)}
+  .chip .nm{font-family:"Cormorant Garamond",serif;font-size:17px;color:var(--ink)}
+  .chip .nm small{display:block;font-family:"Cinzel";font-size:8.5px;letter-spacing:1px;color:var(--muted)}
+
+  /* explore cards */
+  .cards{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+  .ecard{
+    border-radius:var(--r);overflow:hidden;border:1px solid var(--line);position:relative;
+    aspect-ratio:3/3.4;box-shadow:var(--shadow);transition:.3s;
+  }
+  .ecard svg{position:absolute;inset:0;width:100%;height:100%}
+  .ecard .scrim{position:absolute;inset:0;background:linear-gradient(180deg,transparent 35%,rgba(8,7,10,.92))}
+  .ecard .body{position:absolute;left:0;right:0;bottom:0;padding:18px}
+  .ecard .k{font-family:"Cinzel";font-size:9.5px;letter-spacing:2px;color:var(--crimson-soft);display:block;margin-bottom:5px}
+  .ecard .t{font-family:"Cinzel";font-weight:600;font-size:18px;letter-spacing:.5px;color:var(--ink);line-height:1.15}
+  .ecard:hover{transform:translateY(-5px);border-color:var(--gold)}
+  .ecard:hover .t{color:var(--gold-bright)}
+
+  footer{max-width:1500px;margin:0 auto;padding:30px 40px;border-top:1px solid var(--line-soft);
+    font-family:"Cormorant Garamond";font-style:italic;color:var(--muted-2);font-size:15px;text-align:center}
+
+  /* entrance */
+  .rise{opacity:0;transform:translateY(14px);animation:rise .7s cubic-bezier(.2,.7,.2,1) forwards}
+  @keyframes rise{to{opacity:1;transform:none}}
+
+  @media(max-width:1080px){
+    .shell{grid-template-columns:1fr}
+    aside{display:none}
+    .dash{grid-template-columns:1fr}
+    .cards{grid-template-columns:repeat(2,1fr)}
+    .feed{grid-template-columns:1fr}
+    .search{order:3;flex-basis:100%;max-width:none}
+    header{flex-wrap:wrap}
+    main{padding:24px 18px 60px}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand-mark">VALLEY <span class="of">OF</span> SHADOWS</div>
+  <div class="search">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#c9a14a" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+    <input placeholder="Search the chronicle — people, places, threads…">
+  </div>
+  <a class="pill"><span>NEXT SESSION</span> <b>SAT MAY 30</b></a>
+  <a class="pill diamond">ENZO</a>
+  <a class="pill solid diamond">PLAY ON FOUNDRY</a>
+</header>
+
+<div class="shell">
+  <aside>
+    <div class="crest">
+      <div class="ring"><div class="mask">🎭</div></div>
+      <div class="sub">Tales from the Valley</div>
+    </div>
+
+    <div class="navgroup">
+      <div class="label">OUR CAMPAIGN</div>
+      <nav>
+        <a>CHARACTERS</a>
+        <a>CULTURE</a>
+        <a>FACTIONS</a>
+        <a>GOVERNMENT</a>
+        <a>LOCATIONS</a>
+        <a>LORE</a>
+        <a>MAPS</a>
+        <a>SESSION CHRONICLES <span class="badge">17</span></a>
+      </nav>
+    </div>
+
+    <div class="navgroup">
+      <div class="label">PLAYER RESOURCES</div>
+      <nav>
+        <a>CAMPAIGN UPDATES <span class="badge">new</span></a>
+        <a>ARTICLES &amp; GUIDES</a>
+      </nav>
+    </div>
+
+    <div class="navgroup">
+      <div class="label">THE CHRONICLE</div>
+      <nav>
+        <a>OPEN THREADS</a>
+        <a>WHO'S WHO</a>
+        <a>RECENT CHANGES</a>
+      </nav>
+    </div>
+  </aside>
+
+  <main>
+    <!-- HERO -->
+    <div class="hero rise">
+      <svg viewBox="0 0 1200 460" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#1a1726"/><stop offset="0.5" stop-color="#100d18"/><stop offset="1" stop-color="#080610"/>
+          </linearGradient>
+          <radialGradient id="moon" cx="50%" cy="50%" r="50%">
+            <stop offset="0" stop-color="#f4eccf"/><stop offset="0.7" stop-color="#d9c98e"/><stop offset="1" stop-color="#d9c98e" stop-opacity="0"/>
+          </radialGradient>
+          <linearGradient id="fog" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#2a2436" stop-opacity="0"/><stop offset="1" stop-color="#3a3148" stop-opacity=".55"/>
+          </linearGradient>
+        </defs>
+        <rect width="1200" height="460" fill="url(#sky)"/>
+        <circle cx="930" cy="120" r="120" fill="url(#moon)" opacity=".5"/>
+        <path d="M895 70 a70 70 0 1 0 30 120 a86 86 0 1 1 -30 -120z" fill="#f1e8c6" opacity=".92"/>
+        <!-- distant spires -->
+        <g fill="#0c0a14" opacity=".9">
+          <path d="M0 460 L0 300 L40 300 L60 250 L80 300 L120 300 L120 230 L150 200 L180 230 L180 320 L240 320 L260 270 L280 320 L340 320 L340 260 L370 220 L400 260 L400 460Z"/>
+          <path d="M420 460 L420 280 L460 280 L480 220 L500 280 L540 280 L540 200 L575 160 L610 200 L610 300 L660 300 L680 250 L700 300 L740 300 L740 240 L770 200 L800 240 L800 460Z"/>
+          <path d="M820 460 L820 300 L860 300 L880 250 L900 300 L940 300 L940 220 L975 180 L1010 220 L1010 310 L1070 310 L1090 260 L1110 310 L1160 310 L1160 250 L1185 215 L1200 250 L1200 460Z"/>
+        </g>
+        <rect width="1200" height="460" fill="url(#fog)"/>
+        <!-- lantern post left -->
+        <g>
+          <rect x="70" y="250" width="6" height="160" fill="#0a0810"/>
+          <circle cx="73" cy="244" r="13" fill="#f6c969" opacity=".9"/>
+          <circle cx="73" cy="244" r="34" fill="#f6c969" opacity=".12"/>
+        </g>
+        <!-- floating leaves -->
+        <g fill="#b5762f" opacity=".75">
+          <path d="M1080 170 q8 -6 14 2 q-8 6 -14 -2z"/>
+          <path d="M1120 230 q7 -5 12 2 q-7 5 -12 -2z" opacity=".6"/>
+          <path d="M1040 280 q6 -4 10 2 q-6 4 -10 -2z" opacity=".5"/>
+        </g>
+      </svg>
+      <div class="wordmark">
+        <h1>VALLEY <span style="font-size:.7em">OF</span> SHADOWS</h1>
+        <div class="rule"><span></span><span class="dia">✦</span><span></span></div>
+      </div>
+    </div>
+
+    <p class="tagline rise" style="animation-delay:.08s">
+      A living chronicle of the masked city of Venturia and the fog-bound valley beyond it —
+      written between sessions, remembered together.
+    </p>
+
+    <!-- LIVING DASHBOARD -->
+    <div class="sec-head rise" style="animation-delay:.12s">
+      <h2>THE STORY SO FAR</h2><span class="line"></span><a class="more">ALL CHRONICLES →</a>
+    </div>
+
+    <div class="dash">
+      <div class="card prev rise" style="animation-delay:.16s">
+        <div class="plate">
+          <svg viewBox="0 0 120 160" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+            <rect width="120" height="160" fill="#140f1a"/>
+            <circle cx="60" cy="62" r="30" fill="none" stroke="#c9a14a" stroke-width="1.4" opacity=".5"/>
+            <path d="M42 60 q18 -22 36 0 q-18 18 -36 0z" fill="#7a2230" opacity=".7"/>
+            <circle cx="50" cy="58" r="3" fill="#0a090d"/><circle cx="70" cy="58" r="3" fill="#0a090d"/>
+            <path d="M0 160 L0 120 L30 110 L60 130 L90 105 L120 125 L120 160Z" fill="#0a0810" opacity=".8"/>
+          </svg>
+        </div>
+        <div>
+          <div class="kicker">SESSION XVII · THE LONG THREAD</div>
+          <h3>The Drowned Confession</h3>
+          <div class="meta">Last played Sat May 16 · updated 2 days ago</div>
+          <p>The masks came off in the flooded undercroft beneath the Doge's chapel. Seraphine's bargain with the Quiet House finally surfaced — and the canal took something back. The party left Venturia owing a debt no one can yet name.</p>
+          <a class="read">READ FULL CHRONICLE →</a>
+        </div>
+      </div>
+
+      <div class="stack">
+        <div class="card next rise" style="animation-delay:.20s">
+          <div class="kicker">NEXT GATHERING</div>
+          <div class="date">SAT · MAY 30</div>
+          <div class="when">7:00 PM · The Cask &amp; Cube / Foundry</div>
+          <div class="row"><span class="ic">✦</span><div>Opening on the <b>Ashfall Quarter</b>, with the Confession's debt now due.</div></div>
+          <div class="row"><span class="ic">✦</span><div>Bring: <b>updated character sheets</b> &amp; any masks earned in S17.</div></div>
+        </div>
+
+        <div class="card rise" style="animation-delay:.24s">
+          <div class="kicker">OPEN THREADS</div>
+          <div class="thread"><span class="dot hot"></span><div class="q">Who really drowned in the undercroft — and why did the water answer to a name?<span class="tag">UNRESOLVED · S17</span></div></div>
+          <div class="thread"><span class="dot warm"></span><div class="q">The Quiet House's price for Seraphine's bargain.<span class="tag">PENDING · S14–17</span></div></div>
+          <div class="thread"><span class="dot cool"></span><div class="q">Locating the third Carnival key before the Veiling.<span class="tag">SLOW BURN · S09</span></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RECENTLY UPDATED -->
+    <div class="sec-head rise" style="animation-delay:.28s">
+      <h2>FRESH INK</h2><span class="line"></span><a class="more">RECENT CHANGES →</a>
+    </div>
+    <div class="card rise" style="animation-delay:.30s">
+      <div class="feed">
+        <div class="item"><span class="time">2 DAYS</span><span class="what"><span class="type">CHRONICLE</span><b>The Drowned Confession</b> — full write-up posted</span></div>
+        <div class="item"><span class="time">2 DAYS</span><span class="what"><span class="type">CHARACTER</span><b>Seraphine Voss</b> — bargain &amp; secrets revised</span></div>
+        <div class="item"><span class="time">4 DAYS</span><span class="what"><span class="type">LOCATION</span><b>The Doge's Undercroft</b> — new entry added</span></div>
+        <div class="item"><span class="time">5 DAYS</span><span class="what"><span class="type">FACTION</span><b>The Quiet House</b> — known agents expanded</span></div>
+        <div class="item"><span class="time">1 WEEK</span><span class="what"><span class="type">LORE</span><b>The Veiling</b> — ritual timeline clarified</span></div>
+        <div class="item"><span class="time">1 WEEK</span><span class="what"><span class="type">MAP</span><b>Ashfall Quarter</b> — labelled &amp; uploaded</span></div>
+      </div>
+    </div>
+
+    <!-- CURRENTLY IN PLAY -->
+    <div class="sec-head rise" style="animation-delay:.34s">
+      <h2>CURRENTLY IN PLAY</h2><span class="line"></span><a class="more">WHO'S WHO →</a>
+    </div>
+    <div class="card rise" style="animation-delay:.36s">
+      <div class="rail">
+        <a class="chip"><span class="av">🗝️</span><span class="nm">Seraphine Voss<small>BROKER · ALLY?</small></span></a>
+        <a class="chip"><span class="av">🎭</span><span class="nm">The Pale Confessor<small>QUIET HOUSE</small></span></a>
+        <a class="chip"><span class="av">⚓</span><span class="nm">Doge Aurelio<small>VENTURIA</small></span></a>
+        <a class="chip"><span class="av">🕯️</span><span class="nm">The Undercroft<small>LOCATION</small></span></a>
+        <a class="chip"><span class="av">🌫️</span><span class="nm">Ashfall Quarter<small>LOCATION · NEXT</small></span></a>
+        <a class="chip"><span class="av">🔑</span><span class="nm">The Third Key<small>QUEST ITEM</small></span></a>
+      </div>
+    </div>
+
+    <!-- EXPLORE -->
+    <div class="sec-head rise" style="animation-delay:.40s">
+      <h2>EXPLORE THE VALLEY</h2><span class="line"></span>
+    </div>
+    <div class="cards">
+      <a class="ecard rise" style="animation-delay:.42s">
+        <svg viewBox="0 0 200 220" preserveAspectRatio="xMidYMid slice"><rect width="200" height="220" fill="#16131d"/><path d="M0 220 L0 150 L40 120 L80 160 L120 110 L160 150 L200 120 L200 220Z" fill="#0d0a14"/><circle cx="150" cy="55" r="22" fill="#d9c98e" opacity=".4"/></svg>
+        <div class="scrim"></div><div class="body"><span class="k">THE WORLD</span><span class="t">The Valley of Shadows</span></div>
+      </a>
+      <a class="ecard rise" style="animation-delay:.46s">
+        <svg viewBox="0 0 200 220" preserveAspectRatio="xMidYMid slice"><rect width="200" height="220" fill="#1d1622"/><circle cx="100" cy="95" r="46" fill="none" stroke="#c9a14a" stroke-width="2" opacity=".5"/><path d="M70 95 q30 -34 60 0 q-30 28 -60 0z" fill="#7a2230" opacity=".7"/></svg>
+        <div class="scrim"></div><div class="body"><span class="k">THE LONG THREAD</span><span class="t">Session Chronicles</span></div>
+      </a>
+      <a class="ecard rise" style="animation-delay:.50s">
+        <svg viewBox="0 0 200 220" preserveAspectRatio="xMidYMid slice"><rect width="200" height="220" fill="#1a1620"/><rect x="40" y="60" width="120" height="120" rx="6" fill="#241a26"/><circle cx="100" cy="100" r="26" fill="#c9a14a" opacity=".25"/></svg>
+        <div class="scrim"></div><div class="body"><span class="k">BETWEEN SESSIONS</span><span class="t">Campaign Updates</span></div>
+      </a>
+      <a class="ecard rise" style="animation-delay:.54s">
+        <svg viewBox="0 0 200 220" preserveAspectRatio="xMidYMid slice"><rect width="200" height="220" fill="#15131c"/><rect x="30" y="40" width="40" height="140" fill="#0d0a14"/><rect x="80" y="40" width="40" height="140" fill="#0d0a14"/><rect x="130" y="40" width="40" height="140" fill="#0d0a14"/><circle cx="100" cy="70" r="14" fill="#d9c98e" opacity=".35"/></svg>
+        <div class="scrim"></div><div class="body"><span class="k">THE LOREMASTER</span><span class="t">Enzo Readme</span></div>
+      </a>  
+    </div>
+  </main>
+</div>
+
+<footer>Venturia remembers what the mask conceals. — A living chronicle, written between sessions.</footer>
+
+</body>
+</html>

@@ -1,0 +1,411 @@
+/* ── Art Studio — page-scoped styles ─────────────────────────────────── */
+.vos-art {
+  --art-gold: #ddb77f;
+  --art-gold-soft: #b99062;
+  --art-gold-dim: #8d765b;
+  --art-ink: #08070b;
+  --art-panel: rgba(13, 11, 17, 0.9);
+  --art-panel-strong: rgba(18, 15, 22, 0.96);
+  --art-border: rgba(176, 143, 100, 0.26);
+  --art-border-strong: rgba(221, 183, 127, 0.58);
+  --art-teal: #7bb7ad;
+  --art-ruby: #9f4f5d;
+  max-width: 1180px;
+  margin: clamp(0.35rem, 2vw, 1.25rem) auto 2rem;
+  padding: 0 clamp(0.15rem, 1.5vw, 1rem);
+}
+
+.vos-art-app-head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  gap: 1rem;
+  margin: 0 0 1.1rem;
+  padding: 0.4rem 0 1rem;
+  border-bottom: 1px solid rgba(176, 143, 100, 0.18);
+}
+.vos-art-app-kicker {
+  color: var(--art-gold-dim);
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+.vos-art-app-head h1 {
+  margin: 0.1rem 0 0;
+  padding: 0;
+  border: 0;
+  color: #f0d4a5;
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: clamp(2rem, 4vw, 3.35rem);
+  letter-spacing: 0.04em;
+  line-height: 0.98;
+  text-shadow: 0 10px 34px rgba(0, 0, 0, 0.75);
+  white-space: nowrap;
+  overflow-wrap: normal;
+  word-break: normal;
+}
+.vos-art-app-head h1::after { content: none; }
+.vos-art-app-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  flex: 0 0 auto;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+.vos-art-anchor {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 42px;
+  padding: 0.58rem 0.95rem;
+  border: 1px solid rgba(221, 183, 127, 0.38);
+  border-radius: 6px;
+  background:
+    linear-gradient(180deg, rgba(221, 183, 127, 0.13), rgba(221, 183, 127, 0.04));
+  color: var(--art-gold);
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), 0 8px 22px rgba(0, 0, 0, 0.28);
+}
+.vos-art-anchor:hover {
+  border-color: var(--art-border-strong);
+  background: rgba(221, 183, 127, 0.12);
+  color: var(--vos-cream);
+}
+
+.vos-art-workbench {
+  max-width: 820px;
+}
+
+.vos-art-studio {
+  position: relative;
+  overflow: hidden;
+  margin: 0;
+  padding: clamp(1.05rem, 2.4vw, 1.55rem);
+  border-radius: 8px;
+  background:
+    radial-gradient(ellipse 90% 45% at 15% 0%, rgba(221, 183, 127, 0.11), transparent 62%),
+    radial-gradient(ellipse 70% 50% at 100% 0%, rgba(123, 183, 173, 0.08), transparent 62%),
+    linear-gradient(180deg, rgba(20, 18, 24, 0.88), rgba(7, 6, 10, 0.97));
+  border: 1px solid var(--art-border);
+  box-shadow: 0 18px 54px rgba(0, 0, 0, 0.58), inset 0 1px 0 rgba(255, 255, 255, 0.035);
+}
+.vos-art-studio::before {
+  content: '';
+  position: absolute;
+  left: 1rem;
+  right: 1rem;
+  top: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(221, 183, 127, 0.75), transparent);
+  opacity: 0.7;
+  pointer-events: none;
+}
+.vos-art-studio-title {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0.85rem;
+  font-family: 'Cinzel', Georgia, serif;
+  color: var(--art-gold);
+  font-size: 0.76rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+}
+.vos-art-studio-title::before {
+  content: '✦';
+  color: var(--art-gold);
+  font-size: 0.85rem;
+  margin-right: -0.2rem;
+}
+
+.vos-art-row {
+  display: grid;
+  grid-template-columns: minmax(0, 0.82fr) minmax(260px, 1.18fr);
+  gap: 0.85rem;
+  margin-bottom: 0.95rem;
+  align-items: stretch;
+}
+.vos-art-field {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.42rem;
+  margin-bottom: 0.9rem;
+}
+.vos-art-field-label {
+  font-family: 'Cinzel', Georgia, serif;
+  color: var(--art-gold);
+  font-size: 0.62rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.vos-art-prompt {
+  width: 100%;
+  background: rgba(4, 4, 8, 0.74);
+  border: 1px solid var(--art-border);
+  border-radius: 8px;
+  padding: 0.82rem 0.9rem;
+  color: var(--vos-cream);
+  font-family: 'Crimson Text', Georgia, serif;
+  font-size: 1.04rem;
+  line-height: 1.4;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  box-shadow: inset 0 1px 0 rgba(0, 0, 0, 0.55);
+  resize: vertical;
+}
+.vos-art-prompt { min-height: 8.3rem; }
+.vos-art-prompt:focus {
+  outline: none;
+  border-color: var(--art-border-strong);
+  box-shadow: inset 0 1px 0 rgba(0,0,0,0.4), 0 0 0 3px rgba(221, 183, 127, 0.14);
+}
+
+/* Style selector ───────────────────────────────────────────────────── */
+.vos-art-style-shell {
+  display: grid;
+  gap: 0.55rem;
+}
+.vos-art-select-wrap {
+  position: relative;
+}
+.vos-art-select-wrap::after {
+  content: '⌄';
+  position: absolute;
+  right: 0.95rem;
+  top: 50%;
+  transform: translateY(-55%);
+  color: var(--art-gold);
+  font-size: 1.15rem;
+  pointer-events: none;
+}
+.vos-art-style-select {
+  appearance: none;
+  width: 100%;
+  min-height: 54px;
+  padding: 0.78rem 2.5rem 0.78rem 0.92rem;
+  border: 1px solid var(--art-border-strong);
+  border-radius: 8px;
+  background:
+    linear-gradient(180deg, rgba(40, 32, 27, 0.86), rgba(17, 13, 18, 0.94));
+  color: #f2ddbd;
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  box-shadow:
+    0 10px 24px rgba(0, 0, 0, 0.32),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+.vos-art-style-select:focus {
+  outline: none;
+  box-shadow:
+    0 0 0 3px rgba(221, 183, 127, 0.16),
+    0 10px 24px rgba(0, 0, 0, 0.32),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+.vos-art-style-select option {
+  background: #100d14;
+  color: #f2ddbd;
+}
+.vos-art-style-summary {
+  min-height: 2.75rem;
+  padding: 0.68rem 0.78rem;
+  border-left: 2px solid rgba(123, 183, 173, 0.58);
+  border-radius: 0 8px 8px 0;
+  background: rgba(7, 6, 10, 0.42);
+  color: rgba(232, 220, 200, 0.76);
+  font-family: 'Crimson Text', Georgia, serif;
+  font-style: italic;
+  font-size: 0.9rem;
+  line-height: 1.35;
+}
+
+.vos-art-gallery-section {
+  margin-top: 1.65rem;
+}
+
+/* Generate button + status row ─────────────────────────────────────── */
+.vos-art-actions {
+  display: grid;
+  grid-template-columns: minmax(180px, 0.38fr) minmax(0, 1fr);
+  align-items: stretch;
+  gap: 0.8rem;
+  margin-top: 0.25rem;
+}
+.vos-art-btn {
+  appearance: none;
+  min-height: 52px;
+  background:
+    linear-gradient(180deg, #f0ca91 0%, #d4a96e 58%, #a87e52 100%);
+  color: #0d0b11;
+  border: 1px solid rgba(255,255,255,0.18);
+  border-radius: 8px;
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  padding: 0.9rem 1.3rem;
+  cursor: pointer;
+  box-shadow: 0 10px 28px rgba(221, 183, 127, 0.24),
+              inset 0 1px 0 rgba(255,255,255,0.35),
+              inset 0 -1px 0 rgba(0,0,0,0.25);
+  transition: transform 0.15s, box-shadow 0.15s, opacity 0.2s;
+}
+.vos-art-btn:hover { transform: translateY(-1px); box-shadow: 0 12px 32px rgba(221, 183, 127, 0.42), inset 0 1px 0 rgba(255,255,255,0.4); }
+.vos-art-btn:disabled { opacity: 0.55; cursor: progress; transform: none; }
+.vos-art-status {
+  min-height: 52px;
+  display: flex;
+  align-items: center;
+  padding: 0.7rem 0.85rem;
+  border: 1px solid rgba(176, 143, 100, 0.18);
+  border-radius: 8px;
+  background: rgba(7, 6, 10, 0.4);
+  font-family: 'IM Fell English', Georgia, serif;
+  font-style: italic;
+  font-size: 0.92rem;
+  color: rgba(221, 183, 127, 0.78);
+  line-height: 1.35;
+}
+.vos-art-status:empty { display: none; }
+.vos-art-status.is-error { color: #d8645c; }
+
+/* Latest preview slot ─────────────────────────────────────────────── */
+.vos-art-latest {
+  display: none;
+  margin-top: 1.5rem;
+  padding: 1rem;
+  background: rgba(7, 6, 10, 0.6);
+  border: 1px solid var(--art-border-strong);
+  border-radius: 6px;
+  text-align: center;
+}
+.vos-art-latest.is-shown { display: block; }
+
+/* The frame holds either the finished image OR the pending placeholder.
+   Aspect-ratio is locked to 1:1 because we always request 1024×1024 —
+   reserves the layout space the moment the user submits so nothing
+   jumps when the image arrives. */
+.vos-art-latest-frame {
+  position: relative;
+  width: 100%;
+  max-width: 720px;
+  margin: 0 auto;
+  aspect-ratio: 1 / 1;
+  border-radius: 4px;
+  overflow: hidden;
+  border: 1px solid var(--art-border);
+  box-shadow: 0 10px 36px rgba(0, 0, 0, 0.75);
+  background: #060509;
+}
+.vos-art-latest-frame img {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: contain;
+  display: block;
+  opacity: 0;
+  transition: opacity 0.35s ease;
+  background: #060509;
+}
+.vos-art-latest.has-image .vos-art-latest-frame img { opacity: 1; }
+
+/* Pending placeholder — shown the moment the user submits. The shimmer
+   sweep moves under a darkening gradient, the prompt text floats centered,
+   a slow gold pulse confirms work is happening. Replaced by the image
+   once it arrives. */
+.vos-art-latest-pending {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 0.85rem;
+  padding: 1.5rem 1.8rem;
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 50%, rgba(20, 18, 24, 0.35), rgba(7, 6, 10, 0.85));
+  opacity: 1;
+  transition: opacity 0.35s ease;
+}
+.vos-art-latest.has-image .vos-art-latest-pending { opacity: 0; pointer-events: none; }
+.vos-art-latest.has-error .vos-art-latest-frame {
+  display: none;
+}
+.vos-art-latest-pending::before {
+  /* Slow gold shimmer sweep — the visual heartbeat of "still working". */
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(115deg,
+    transparent 30%,
+    rgba(212, 165, 116, 0.10) 50%,
+    transparent 70%);
+  background-size: 250% 100%;
+  animation: vos-art-shimmer 3.2s ease-in-out infinite;
+  pointer-events: none;
+}
+@keyframes vos-art-shimmer {
+  0%   { background-position: 200% 50%; }
+  100% { background-position: -100% 50%; }
+}
+.vos-art-latest-spinner {
+  font-size: 2.4rem;
+  color: var(--art-gold);
+  text-shadow: 0 0 14px rgba(212, 165, 116, 0.55);
+  animation: vos-art-spin 2.8s linear infinite, vos-art-pulse 1.6s ease-in-out infinite;
+}
+@keyframes vos-art-spin { from { transform: rotate(0); } to { transform: rotate(360deg); } }
+@keyframes vos-art-pulse {
+  0%, 100% { opacity: 0.65; text-shadow: 0 0 10px rgba(212, 165, 116, 0.35); }
+  50%      { opacity: 1.0;  text-shadow: 0 0 22px rgba(212, 165, 116, 0.85); }
+}
+.vos-art-latest-pending-prompt {
+  font-family: 'Crimson Text', Georgia, serif;
+  font-style: italic;
+  font-size: 1rem;
+  line-height: 1.45;
+  color: rgba(232, 220, 200, 0.9);
+  max-width: 36rem;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.9);
+  /* Truncate long prompts so the placeholder stays tidy. */
+  display: -webkit-box;
+  -webkit-line-clamp: 5;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.vos-art-latest-pending-status {
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.6rem;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: rgba(212, 165, 116, 0.65);
+}
+.vos-art-latest-pending-status::after {
+  /* Trailing dots animate to underline that it's actively working. */
+  content: '';
+  display: inline-block;
+  width: 1.5em;
+  text-align: left;
+  animation: vos-art-dots 1.5s steps(4, end) infinite;
+}
+@keyframes vos-art-dots {
+  0%       { content: ''; }
+  25%      { content: '.'; }
+  50%      { content: '..'; }
+  75%, 100%{ content: '...'; }
+}
+
+.vos-art-latest-caption {
+  margin-top: 0.7rem;
+  font-family: 'Crimson Text', Georgia, serif;
+  font-style: italic;
+  color: rgba(232, 220, 200, 0.78);
+  font-size: 0.92rem;
+}

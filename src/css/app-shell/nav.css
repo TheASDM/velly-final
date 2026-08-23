@@ -1,0 +1,157 @@
+/* ── PWA app rail + prompts ───────────────────────────────────────── */
+  .vos-app-nav {
+    position: fixed;
+    top: auto;
+    left: 0;
+    right: 0;
+    bottom: var(--vos-vv-bottom);
+    z-index: 1150;
+    min-height: calc(var(--vos-app-nav-h) + env(safe-area-inset-bottom));
+    padding:
+      0.45rem
+      max(0.8rem, env(safe-area-inset-right))
+      calc(0.45rem + env(safe-area-inset-bottom))
+      max(0.8rem, env(safe-area-inset-left));
+    border-top: 1px solid rgba(212, 165, 116, 0.24);
+    background:
+      linear-gradient(180deg, rgba(13, 11, 17, 0.88), rgba(7, 6, 10, 0.98)),
+      radial-gradient(ellipse 70% 80% at 50% 100%, rgba(212, 165, 116, 0.07), transparent 70%);
+    box-shadow: 0 -12px 34px rgba(0, 0, 0, 0.58);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    transform: translate3d(0, var(--vos-nav-y), 0);
+    -webkit-transform: translate3d(0, var(--vos-nav-y), 0);
+  }
+  @media (min-width: 1024px) {
+    .vos-app-nav { left: var(--vos-nav-w); }
+  }
+  .vos-app-nav-inner {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 0.25rem;
+    width: min(560px, 100%);
+    margin: 0 auto;
+  }
+  .vos-app-tab {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-width: 0;
+    min-height: 54px;
+    gap: 0.18rem;
+    padding: 0.35rem 0.2rem;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    color: rgba(212, 199, 173, 0.85);
+    font-family: 'Cinzel', Georgia, serif;
+    font-size: 0.68rem;
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: 0;
+    text-decoration: none;
+  }
+  .vos-app-tab:hover {
+    color: var(--vos-cream);
+    border-bottom-color: transparent;
+    background: rgba(212, 165, 116, 0.07);
+  }
+  .vos-app-tab.is-active {
+    color: var(--vos-gold-bright);
+    border-color: rgba(212, 165, 116, 0.32);
+    background: rgba(212, 165, 116, 0.1);
+  }
+  .vos-app-tab svg {
+    width: 22px;
+    height: 22px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .vos-app-tab span {
+    display: block;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  @media (max-width: 380px) {
+    .vos-app-tab { font-size: 0.62rem; }
+    .vos-app-tab svg { width: 20px; height: 20px; }
+  }
+
+  .vos-pwa-card,
+  .vos-pwa-update {
+    position: fixed;
+    left: max(0.8rem, env(safe-area-inset-left));
+    right: max(0.8rem, env(safe-area-inset-right));
+    bottom: calc(var(--vos-vv-bottom) + var(--vos-app-nav-h) + env(safe-area-inset-bottom) + 0.85rem);
+    z-index: 1300;
+    max-width: 520px;
+    margin: 0 auto;
+    border: 1px solid rgba(212, 165, 116, 0.36);
+    border-radius: 8px;
+    background: rgba(10, 8, 14, 0.97);
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.68);
+    color: var(--vos-text-body);
+    padding: 0.9rem;
+  }
+  .vos-pwa-card[hidden],
+  .vos-pwa-update[hidden] {
+    display: none;
+  }
+  .vos-pwa-card-title,
+  .vos-pwa-update-title {
+    margin: 0 0 0.2rem;
+    color: var(--vos-gold-bright);
+    font-family: 'Cinzel', Georgia, serif;
+    font-size: 0.9rem;
+    font-weight: 700;
+    letter-spacing: 0;
+  }
+  .vos-pwa-card-text,
+  .vos-pwa-update-text {
+    margin: 0;
+    color: var(--vos-text);
+    font-size: 0.95rem;
+    line-height: 1.35;
+  }
+  .vos-pwa-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    margin-top: 0.8rem;
+  }
+  .vos-pwa-actions button {
+    min-height: 40px;
+    border-radius: 6px;
+    border: 1px solid rgba(212, 165, 116, 0.42);
+    background: rgba(212, 165, 116, 0.08);
+    color: var(--vos-gold-bright);
+    font-family: 'Cinzel', Georgia, serif;
+    font-size: 0.76rem;
+    font-weight: 700;
+    letter-spacing: 0;
+    cursor: pointer;
+  }
+  .vos-pwa-actions button:hover {
+    color: var(--vos-cream);
+    background: rgba(212, 165, 116, 0.14);
+  }
+  .vos-pwa-actions .vos-pwa-primary {
+    padding: 0.45rem 0.8rem;
+  }
+  .vos-pwa-actions .vos-pwa-dismiss {
+    width: 40px;
+    padding: 0;
+    font-size: 1.2rem;
+  }
+
+  .vos-enzo-page-panel,
+  .vos-offline-panel {
+    max-width: 740px;
+    margin: 0 auto;
+  }

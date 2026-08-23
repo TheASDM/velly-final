@@ -1,0 +1,98 @@
+/* ─── Home-only styles. Scoped to .vos-home so they don't leak. ─── */
+.vos-home {
+  --vos-home-wide: min(1440px, calc(100vw - 2rem));
+  position: relative;
+  left: 50%;
+  width: var(--vos-home-wide);
+  margin: -2.25rem 0 0;
+  transform: translateX(-50%);
+}
+@media (min-width: 1024px) {
+  .vos-home {
+    --vos-home-wide: min(1440px, calc(100vw - 3rem));
+  }
+}
+
+/* HERO — wide cinematic banner image (already includes the wordmark) ─ */
+.vos-home-hero {
+  position: relative;
+  display: flex; flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 1.15rem 0 0.8rem;
+}
+.vos-hero-banner {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  margin: 0 auto;
+  box-shadow:
+    0 20px 60px rgba(0,0,0,0.85),
+    0 0 0 1px rgba(212,165,116,0.18);
+  border-radius: 4px;
+}
+.vos-hero-banner-wrap {
+  position: relative;
+  width: 100%;
+  max-width: 1440px;
+  aspect-ratio: 2712 / 517;
+  margin: 0 auto 1rem;
+}
+.vos-hero-banner-wrap::after {
+  content: '';
+  position: absolute; left: 6%; right: 6%; bottom: -10px; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(212,165,116,0.6), transparent);
+}
+.vos-hero-divider {
+  width: 320px; max-width: 80%;
+  height: 1px; margin: 0 auto 2.25rem;
+  background: linear-gradient(90deg, transparent, rgba(212,165,116,0.55), transparent);
+}
+.vos-hero-ctas {
+  display: flex; flex-wrap: wrap; gap: 1rem;
+  justify-content: center;
+}
+.vos-hero-cta {
+  display: inline-flex; align-items: center; gap: 0.6rem;
+  padding: 0.95rem 1.6rem;
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.78rem; font-weight: 700;
+  letter-spacing: 0.28em; text-transform: uppercase;
+  color: #0d0b11; text-decoration: none;
+  background: linear-gradient(180deg, #e6c08a 0%, #c9a371 60%, #a8835a 100%);
+  border: 1px solid rgba(255,255,255,0.18);
+  border-radius: 3px;
+  box-shadow:
+    0 6px 24px rgba(212,165,116,0.35),
+    inset 0 1px 0 rgba(255,255,255,0.35),
+    inset 0 -1px 0 rgba(0,0,0,0.25);
+  transition: transform 0.18s ease, box-shadow 0.18s ease, color 0.18s;
+}
+.vos-hero-cta:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 10px 32px rgba(212,165,116,0.55),
+    inset 0 1px 0 rgba(255,255,255,0.4),
+    inset 0 -1px 0 rgba(0,0,0,0.3);
+  color: #0d0b11;
+  border-bottom: 1px solid rgba(255,255,255,0.18);
+}
+.vos-hero-cta--ghost {
+  background: transparent;
+  color: var(--vos-gold-bright);
+  border: 1px solid rgba(212,165,116,0.5);
+  box-shadow: none;
+}
+.vos-hero-cta--ghost:hover {
+  background: rgba(212,165,116,0.08);
+  color: var(--vos-cream);
+  box-shadow: 0 4px 14px rgba(212,165,116,0.18);
+  border-bottom: 1px solid rgba(212,165,116,0.7);
+}
+.vos-hero-cta .vos-cta-arrow {
+  font-family: serif;
+  font-weight: 400;
+  font-size: 1.05rem; letter-spacing: 0;
+  margin-left: 0.1rem;
+}

@@ -24,6 +24,7 @@ ENV PATH=/opt/eleventy/node_modules/.bin:$PATH
 
 WORKDIR /app
 COPY chatbot/server.py .
+COPY chatbot/vos ./vos
 
 EXPOSE 3001
 

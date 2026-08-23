@@ -1,0 +1,442 @@
+/* Living dashboard ─────────────────────────────────────────────────── */
+.vos-home-dashboard {
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0;
+}
+.vos-home-sec-head {
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+  margin: 2.75rem 0 1.1rem;
+}
+.vos-home-sec-head h2 {
+  margin: 0;
+  padding: 0;
+  border: none;
+  color: #e8cd84;
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.92rem;
+  font-weight: 700;
+  letter-spacing: 0.24em;
+  line-height: 1.2;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.vos-home-sec-head h2::after { content: none; }
+.vos-home-sec-head .vos-home-sec-line {
+  flex: 1 1 auto;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(201,161,74,0.5), transparent);
+}
+.vos-home-sec-head .vos-home-sec-more {
+  flex: 0 0 auto;
+  color: rgba(232,205,132,0.75);
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.65rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  border-bottom: none;
+  white-space: nowrap;
+}
+.vos-home-sec-head .vos-home-sec-more:hover {
+  color: var(--vos-cream);
+  border-bottom: none;
+}
+.vos-dash {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(360px, 0.85fr);
+  grid-template-areas:
+    "message next"
+    "inplay next"
+    "inplay rumor"
+    "story story";
+  gap: 1rem;
+  align-items: start;
+}
+.vos-dash-card {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid rgba(201,161,74,0.22);
+  border-radius: 8px;
+  background:
+    linear-gradient(180deg, rgba(18,16,23,0.95), rgba(8,7,11,0.98)),
+    radial-gradient(ellipse 80% 60% at 50% 0%, rgba(201,161,74,0.07), transparent 70%);
+  box-shadow: 0 18px 46px rgba(0,0,0,0.62);
+}
+.vos-dash-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
+}
+.vos-story-card {
+  grid-area: story;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  gap: 0.8rem 1rem;
+  padding: 1rem 1.15rem;
+}
+.vos-message-card { grid-area: message; }
+.vos-message-card[hidden],
+.vos-dash-card[hidden] { display: none !important; }
+.vos-next-card { grid-area: next; }
+.vos-rumor-card { grid-area: rumor; }
+.vos-rumor-text {
+  margin: 0.55rem 0 0.85rem;
+  color: var(--vos-cream, #e8dcc8);
+  font-family: 'IM Fell English', 'Crimson Text', Georgia, serif;
+  font-style: italic;
+  font-size: 1.02rem;
+  line-height: 1.5;
+  min-height: 3.1em;
+}
+.vos-rumor-roll {
+  align-self: start;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  min-height: 44px;
+  padding: 0.55rem 1rem;
+  border: 1px solid rgba(212,165,116,0.45);
+  border-radius: 6px;
+  background: rgba(212,165,116,0.08);
+  color: var(--vos-gold-bright, #d4a574);
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.vos-rumor-roll:hover {
+  background: rgba(212,165,116,0.14);
+}
+.vos-rumor-roll:disabled { opacity: 0.6; cursor: default; }
+.vos-threads-card { grid-area: threads; }
+.vos-dash-side-card {
+  padding: 1.1rem 1.2rem 1.2rem;
+}
+.vos-dash-kicker {
+  color: rgba(184,144,72,0.95);
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+.vos-story-card .vos-card-heading {
+  margin: 0.22rem 0 0;
+  padding: 0;
+  border: none;
+  color: #e8cd84;
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.9rem;
+  letter-spacing: 0.18em;
+  line-height: 1.25;
+  text-transform: uppercase;
+}
+.vos-story-card .vos-card-heading::after { content: none; }
+.vos-story-card h3 {
+  grid-column: 1 / -1;
+  margin: 0;
+  color: var(--vos-cream);
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: clamp(1.05rem, 2vw, 1.35rem);
+  letter-spacing: 0.02em;
+  line-height: 1.15;
+}
+.vos-story-meta {
+  display: none;
+  margin-bottom: 0.95rem;
+  color: rgba(147,138,120,0.95);
+  font-family: 'Cormorant Garamond', 'Crimson Text', Georgia, serif;
+  font-style: italic;
+  font-size: 0.98rem;
+}
+.vos-story-card p {
+  grid-column: 1;
+  flex: 0 1 auto;
+  display: -webkit-box;
+  margin: 0;
+  overflow: hidden;
+  color: rgba(233,225,208,0.84);
+  font-family: 'Cormorant Garamond', 'Crimson Text', Georgia, serif;
+  font-size: 1rem;
+  line-height: 1.38;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+}
+.vos-story-read {
+  grid-column: 2;
+  grid-row: 3;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.25rem;
+  padding: 0.48rem 0.95rem;
+  border: 1px solid rgba(201,161,74,0.32);
+  border-radius: 999px;
+  background: rgba(201,161,74,0.05);
+  color: #e8cd84;
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+.vos-story-read:hover {
+  color: var(--vos-cream);
+  border-color: rgba(232,205,132,0.8);
+  background: rgba(201,161,74,0.12);
+}
+.vos-dash-side-card h3,
+.vos-inplay-card h3 {
+  margin: 0.35rem 0 0.75rem;
+  color: #e8cd84;
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.9rem;
+  letter-spacing: 0.18em;
+  line-height: 1.25;
+  text-transform: uppercase;
+}
+.vos-next-date {
+  color: var(--vos-cream);
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: clamp(1.35rem, 2.7vw, 1.8rem);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  line-height: 1.1;
+}
+.vos-next-where {
+  margin: 0.25rem 0 0.75rem;
+  color: rgba(147,138,120,0.95);
+  font-family: 'Cormorant Garamond', 'Crimson Text', Georgia, serif;
+  font-style: italic;
+  font-size: 0.98rem;
+}
+.vos-next-rsvp {
+  margin-top: 0.85rem;
+  padding-top: 0.82rem;
+  border-top: 1px solid rgba(201,161,74,0.13);
+}
+.vos-message-title {
+  margin: 0.2rem 0 0.45rem;
+  color: var(--vos-cream);
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: clamp(1.1rem, 2vw, 1.35rem);
+  letter-spacing: 0.04em;
+  line-height: 1.18;
+}
+.vos-message-body {
+  margin: 0;
+  color: rgba(233,225,208,0.86);
+  font-size: 1.03rem;
+  line-height: 1.48;
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+.vos-message-body.vos-safe-markdown {
+  white-space: normal;
+}
+.vos-message-body.vos-safe-markdown p,
+.vos-message-body.vos-safe-markdown ul,
+.vos-message-body.vos-safe-markdown ol,
+.vos-message-body.vos-safe-markdown blockquote,
+.vos-message-body.vos-safe-markdown pre {
+  font-size: 1rem;
+}
+.vos-message-body.vos-safe-markdown h4 {
+  font-size: 0.84rem;
+}
+.vos-message-meta {
+  margin-top: 0.75rem;
+  color: rgba(147,138,120,0.95);
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.56rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+.vos-messages-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+.vos-message-item {
+  position: relative;
+  padding: 0.2rem 0 0;
+  border-top: 1px solid rgba(201,161,74,0.16);
+}
+.vos-message-item:first-child {
+  border-top: 0;
+  padding-top: 0;
+}
+.vos-message-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.6rem;
+}
+.vos-message-head .vos-message-title {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.vos-message-dismiss {
+  flex: 0 0 auto;
+  width: 28px;
+  height: 28px;
+  border: 1px solid rgba(212, 165, 116, 0.28);
+  border-radius: 50%;
+  background: transparent;
+  color: rgba(212, 199, 173, 0.78);
+  cursor: pointer;
+  font-size: 1.05rem;
+  line-height: 1;
+  padding: 0;
+}
+.vos-message-dismiss:hover {
+  color: var(--vos-cream);
+  border-color: rgba(212, 165, 116, 0.6);
+  background: rgba(212, 165, 116, 0.08);
+}
+.vos-message-dismiss:disabled {
+  cursor: wait;
+  opacity: 0.5;
+}
+.vos-messages-empty {
+  margin: 0.4rem 0;
+  color: rgba(212, 199, 173, 0.6);
+  font-style: italic;
+  font-size: 0.95rem;
+}
+.vos-messages-load-more {
+  margin-top: 0.85rem;
+  align-self: flex-start;
+}
+.vos-home-news .vos-news-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.55rem;
+}
+.vos-home-news .vos-news-list li {
+  margin: 0;
+}
+.vos-thread-list {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.vos-thread {
+  display: flex;
+  gap: 0.75rem;
+  padding: 0.72rem 0;
+  border-top: 1px solid rgba(201,161,74,0.11);
+}
+.vos-thread:first-of-type { border-top: none; padding-top: 0; }
+.vos-thread-dot {
+  flex: 0 0 auto;
+  width: 0.56rem;
+  height: 0.56rem;
+  border-radius: 50%;
+  margin-top: 0.48rem;
+  background: #c9a14a;
+  box-shadow: 0 0 10px currentColor;
+}
+.vos-thread-dot.hot { background: #b07732; color: #b07732; }
+.vos-thread-dot.pending { background: #c9a14a; color: #c9a14a; }
+.vos-thread-dot.slow { background: #647d8d; color: #647d8d; }
+.vos-thread-question {
+  color: rgba(233,225,208,0.84);
+  font-size: 1rem;
+  line-height: 1.42;
+}
+.vos-thread-tag {
+  display: block;
+  margin-top: 0.28rem;
+  color: rgba(147,138,120,0.92);
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.56rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+.vos-inplay-card {
+  grid-area: inplay;
+  padding: 1.05rem 1.15rem 1rem;
+}
+.vos-play-rail {
+  flex: 1 1 auto;
+  align-content: flex-start;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  overflow-x: visible;
+  padding: 0.1rem 0 0.35rem;
+}
+.vos-play-chip {
+  flex: 1 1 13rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  min-width: 0;
+  padding: 0.48rem 0.85rem 0.48rem 0.5rem;
+  border: 1px solid rgba(201,161,74,0.25);
+  border-radius: 999px;
+  background: rgba(255,255,255,0.025);
+  color: var(--vos-cream);
+  text-decoration: none;
+}
+.vos-play-chip:hover {
+  border-color: rgba(232,205,132,0.8);
+  background: rgba(201,161,74,0.08);
+  color: var(--vos-cream);
+}
+.vos-play-emblem {
+  flex: 0 0 auto;
+  width: 1.9rem;
+  height: 1.9rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(201,161,74,0.25);
+  border-radius: 50%;
+  background: radial-gradient(circle at 40% 35%, rgba(232,205,132,0.24), rgba(107,85,42,0.42));
+  color: #e8cd84;
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+.vos-play-name {
+  font-family: 'Cormorant Garamond', 'Crimson Text', Georgia, serif;
+  font-size: 1.02rem;
+  line-height: 1.1;
+}
+.vos-play-name small {
+  display: block;
+  margin-top: 0.18rem;
+  color: rgba(147,138,120,0.92);
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.54rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.vos-home-studio {
+  margin-bottom: 0.5rem;
+}
+.vos-home-studio .vos-home-sec-head {
+  margin-top: 1.35rem;
+}

@@ -1,0 +1,310 @@
+.vos-messages-page {
+    width: min(100%, 54rem);
+    margin: 0 auto;
+  }
+  .vos-messages-page-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.85rem;
+    padding-bottom: 0.95rem;
+    border-bottom: 1px solid rgba(212, 165, 116, 0.22);
+  }
+  .vos-messages-page-title {
+    margin: 0;
+    color: var(--vos-cream);
+    font-family: 'Cinzel', Georgia, serif;
+    font-size: clamp(1.15rem, 2.6vw, 1.55rem);
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    line-height: 1.1;
+    text-transform: uppercase;
+  }
+  .vos-messages-page-title::after {
+    content: none;
+  }
+  .vos-messages-page-refresh {
+    flex: 0 0 auto;
+  }
+  .vos-messages-page-list {
+    min-width: 0;
+  }
+  .vos-message-entry {
+    position: relative;
+    min-width: 0;
+    padding: 1.08rem 0 1.18rem;
+    border-bottom: 1px solid rgba(212, 165, 116, 0.16);
+    color: rgba(232, 220, 200, 0.9);
+  }
+  .vos-message-entry.is-clickable {
+    cursor: pointer;
+  }
+  .vos-message-entry.is-clickable:hover .vos-message-entry-title {
+    color: var(--vos-gold-bright);
+  }
+  .vos-message-entry.is-clickable:focus-visible {
+    outline: 2px solid rgba(212, 165, 116, 0.78);
+    outline-offset: 4px;
+  }
+  .vos-message-entry-head {
+    display: grid;
+    gap: 0.28rem;
+    min-width: 0;
+  }
+  .vos-message-entry-title {
+    display: block;
+    min-width: 0;
+    color: var(--vos-cream);
+    font-family: 'Cinzel', Georgia, serif;
+    font-size: clamp(0.98rem, 2.2vw, 1.16rem);
+    font-weight: 700;
+    letter-spacing: 0.075em;
+    line-height: 1.18;
+    text-transform: uppercase;
+    overflow-wrap: anywhere;
+  }
+  .vos-message-entry-date {
+    color: rgba(212, 165, 116, 0.68);
+    font-family: 'Cinzel', Georgia, serif;
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    line-height: 1.2;
+    text-transform: uppercase;
+  }
+  .vos-message-entry-body {
+    margin-top: 0.8rem;
+    color: rgba(212, 199, 173, 0.84);
+    font-size: clamp(1rem, 2.3vw, 1.08rem);
+    line-height: 1.5;
+  }
+  .vos-message-entry-body.vos-safe-markdown p {
+    margin-top: 0.55rem;
+  }
+  .vos-message-entry-body.vos-safe-markdown h4 {
+    margin-top: 0.9rem;
+    font-size: 0.9rem;
+    letter-spacing: 0.095em;
+  }
+  .vos-message-entry-body.vos-safe-markdown ul,
+  .vos-message-entry-body.vos-safe-markdown ol {
+    margin-top: 0.55rem;
+    margin-bottom: 0.55rem;
+    padding-left: 1rem;
+  }
+  .vos-message-entry-body.vos-safe-markdown li + li {
+    margin-top: 0.35rem;
+  }
+  .vos-messages-page-empty,
+  .vos-messages-page-status {
+    margin: 0.8rem 0 0;
+    color: rgba(212, 165, 116, 0.78);
+    font-family: 'IM Fell English', Georgia, serif;
+    font-style: italic;
+    font-size: 0.96rem;
+    line-height: 1.3;
+  }
+  .vos-messages-page-status.is-error {
+    color: #ffb3a6;
+  }
+  .vos-row-chip-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 2.1rem;
+    min-height: 2.1rem;
+    padding: 0.28rem;
+    border: 1px solid rgba(212, 165, 116, 0.28);
+    border-radius: 999px;
+    color: rgba(212, 165, 116, 0.86);
+    font-family: 'Cinzel', Georgia, serif;
+    font-size: 0.58rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    line-height: 1;
+  }
+  .vos-row-chip-arrow {
+    color: rgba(212, 165, 116, 0.7);
+    font-family: Georgia, serif;
+    font-size: 1.2rem;
+    line-height: 1;
+  }
+  .vos-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 42px;
+    padding: 0.55rem 0.85rem;
+    border: 1px solid rgba(212, 165, 116, 0.36);
+    border-radius: 8px;
+    background: rgba(212, 165, 116, 0.08);
+    color: var(--vos-gold-bright);
+    font-family: 'Cinzel', Georgia, serif;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    line-height: 1;
+    text-transform: uppercase;
+    text-decoration: none;
+    cursor: pointer;
+  }
+  .vos-button:hover {
+    color: var(--vos-cream);
+    border-color: rgba(212, 165, 116, 0.58);
+    background: rgba(212, 165, 116, 0.13);
+    border-bottom-color: rgba(212, 165, 116, 0.58);
+  }
+  .vos-rsvp-control {
+    display: grid;
+    gap: 0.42rem;
+    min-width: 0;
+  }
+  .vos-rsvp-segmented {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    min-height: 42px;
+    overflow: hidden;
+    border: 1px solid rgba(212, 165, 116, 0.28);
+    border-radius: 999px;
+    background: rgba(7, 6, 10, 0.58);
+  }
+  .vos-rsvp-segment {
+    min-width: 0;
+    min-height: 42px;
+    border: 0;
+    border-right: 1px solid rgba(212, 165, 116, 0.18);
+    border-radius: 0;
+    background: transparent;
+    color: rgba(212, 199, 173, 0.72);
+    cursor: pointer;
+    font-family: 'Cinzel', Georgia, serif;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0;
+    line-height: 1;
+    text-transform: uppercase;
+  }
+  .vos-rsvp-segment:last-child { border-right: 0; }
+  .vos-rsvp-segment:hover:not(:disabled) {
+    color: var(--vos-cream);
+    background: rgba(212, 165, 116, 0.09);
+  }
+  .vos-rsvp-segment.is-selected {
+    color: #0d0b11;
+    background: linear-gradient(180deg, #e6c08a 0%, #c9a371 65%, #a8835a 100%);
+  }
+  .vos-rsvp-segment:disabled {
+    cursor: wait;
+    opacity: 0.72;
+  }
+  .vos-rsvp-status {
+    min-height: 1.25em;
+    color: rgba(233, 225, 208, 0.66);
+    font-size: 0.86rem;
+    line-height: 1.25;
+  }
+  .vos-rsvp-status.is-error {
+    color: var(--vos-quest-bright);
+  }
+  .vos-task-list {
+    display: grid;
+    gap: 0.48rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .vos-task-row {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 0.65rem;
+    min-width: 0;
+    padding: 0.62rem 0;
+    border-top: 1px solid rgba(212, 165, 116, 0.13);
+  }
+  .vos-task-row:first-child { border-top: 0; }
+  .vos-task-check {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.22rem;
+    height: 1.22rem;
+    border: 1px solid rgba(212, 165, 116, 0.34);
+    border-radius: 50%;
+    color: rgba(212, 165, 116, 0.86);
+    font-size: 0.72rem;
+    line-height: 1;
+  }
+  .vos-task-main {
+    min-width: 0;
+    color: rgba(233, 225, 208, 0.86);
+    font-size: 0.98rem;
+    line-height: 1.32;
+  }
+  .vos-task-date {
+    justify-self: end;
+    color: rgba(212, 165, 116, 0.76);
+    font-family: 'Cinzel', Georgia, serif;
+    font-size: 0.58rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  @media (max-width: 420px) {
+    .vos-rsvp-segment { font-size: 0.62rem; }
+    .vos-task-row {
+      grid-template-columns: auto minmax(0, 1fr);
+      align-items: start;
+    }
+    .vos-task-date {
+      grid-column: 2;
+      justify-self: start;
+      margin-top: -0.2rem;
+    }
+  }
+
+  @media (max-width: 700px) {
+    .vos-app-bar {
+      padding-right: max(0.75rem, env(safe-area-inset-right));
+      padding-left: max(0.75rem, env(safe-area-inset-left));
+    }
+    .vos-app-bar-row {
+      gap: 0.58rem;
+    }
+    .vos-app-icon-button {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+    }
+    .vos-app-profile {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+    }
+    .vos-app-crumbs {
+      padding-left: 3.05rem;
+    }
+    .vos-app-title {
+      font-size: 1rem;
+      letter-spacing: 0.025em;
+    }
+    .vos-app-identity {
+      width: 38px;
+      min-width: 38px;
+      max-width: 38px;
+      min-height: 36px;
+      padding: 0;
+      font-size: 0.56rem;
+    }
+    .vos-section-subtitle {
+      font-size: 0.95rem;
+    }
+    .vos-row-chip-grid {
+      grid-template-columns: 1fr;
+    }
+    .vos-row-chip {
+      min-height: 46px;
+      padding: 0.68rem 0.72rem;
+    }
+  }

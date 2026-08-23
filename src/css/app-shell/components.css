@@ -1,0 +1,69 @@
+.vos-section-header {
+    min-width: 0;
+    display: grid;
+    gap: 0.22rem;
+    margin: 0 0 clamp(0.75rem, 1.8vw, 1rem);
+  }
+  .vos-section-kicker {
+    margin: 0;
+    color: rgba(212, 165, 116, 0.66);
+    font-family: 'Cinzel', Georgia, serif;
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    line-height: 1.1;
+    text-transform: uppercase;
+  }
+  .vos-section-title {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    color: var(--vos-cream);
+    font-family: 'Cinzel', Georgia, serif;
+    font-size: clamp(1.25rem, 3vw, 1.85rem);
+    letter-spacing: 0.04em;
+    line-height: 1.08;
+  }
+  .vos-section-title::after { content: none; }
+  .vos-section-subtitle {
+    margin: 0;
+    max-width: 48rem;
+    color: rgba(212, 199, 173, 0.76);
+    font-size: clamp(0.98rem, 1.8vw, 1.06rem);
+    line-height: 1.38;
+  }
+  .vos-compact-panel {
+    min-width: 0;
+    padding: clamp(0.86rem, 1.7vw, 1.12rem);
+    border: 1px solid rgba(212, 165, 116, 0.18);
+    border-radius: 8px;
+    background:
+      linear-gradient(180deg, rgba(18, 16, 23, 0.72), rgba(7, 6, 10, 0.9)),
+      radial-gradient(ellipse 80% 70% at 0% 0%, rgba(212, 165, 116, 0.055), transparent 70%);
+    box-shadow: 0 12px 34px rgba(0, 0, 0, 0.38);
+  }
+  .vos-panel-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.8rem;
+    margin-bottom: 0.7rem;
+  }
+  .vos-panel-title {
+    margin: 0;
+    color: var(--vos-cream);
+    font-family: 'Cinzel', Georgia, serif;
+    font-size: 0.88rem;
+    font-weight: 700;
+    letter-spacing: 0.13em;
+    line-height: 1.2;
+    text-transform: uppercase;
+  }
+  .vos-panel-title::after { content: none; }
+  .vos-panel-note {
+    color: rgba(212, 165, 116, 0.64);
+    font-family: 'IM Fell English', Georgia, serif;
+    font-style: italic;
+    font-size: 0.9rem;
+    line-height: 1.2;
+  }

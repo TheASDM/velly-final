@@ -1,0 +1,415 @@
+.vos-submit-lore {
+  --submit-gold: #ddb77f;
+  --submit-gold-dim: #9e815b;
+  --submit-ink: #08070b;
+  --submit-panel: rgba(13, 11, 17, 0.86);
+  --submit-panel-strong: rgba(19, 16, 23, 0.96);
+  --submit-border: rgba(221, 183, 127, 0.24);
+  --submit-border-strong: rgba(221, 183, 127, 0.52);
+  --submit-teal: #78b8ad;
+  --submit-ruby: #b45d70;
+  --submit-green: #8fbc83;
+  max-width: 1120px;
+  margin: 0 auto 2.5rem;
+  display: grid;
+  gap: 1rem;
+}
+.vos-submit-top {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 1rem;
+  align-items: end;
+  padding: 0.2rem 0 1rem;
+  border-bottom: 1px solid rgba(221, 183, 127, 0.18);
+}
+.vos-submit-kicker {
+  margin: 0;
+  color: var(--submit-gold-dim);
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+.vos-submit-top h1 {
+  margin: 0.12rem 0 0;
+  padding: 0;
+  border: 0;
+  color: #f0d4a5;
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: clamp(2rem, 4vw, 3.2rem);
+  letter-spacing: 0.04em;
+  line-height: 1;
+}
+.vos-submit-top h1::after { content: none; }
+.vos-submit-identity-card {
+  min-width: min(100%, 260px);
+  display: grid;
+  gap: 0.55rem;
+  justify-items: end;
+}
+.vos-submit-identity-text {
+  margin: 0;
+  color: rgba(232, 220, 200, 0.76);
+  font-family: 'Crimson Text', Georgia, serif;
+  font-size: 0.96rem;
+  line-height: 1.35;
+  text-align: right;
+}
+.vos-submit-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(260px, 0.34fr);
+  gap: 1rem;
+  align-items: start;
+}
+.vos-submit-panel {
+  border: 1px solid var(--submit-border);
+  border-radius: 8px;
+  background:
+    radial-gradient(ellipse 90% 50% at 18% 0%, rgba(221, 183, 127, 0.09), transparent 64%),
+    linear-gradient(180deg, var(--submit-panel-strong), rgba(7, 6, 10, 0.96));
+  box-shadow: 0 18px 54px rgba(0, 0, 0, 0.52), inset 0 1px 0 rgba(255, 255, 255, 0.035);
+}
+.vos-submit-panel-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 1rem 1.05rem 0;
+}
+.vos-submit-panel-title {
+  margin: 0;
+  color: var(--submit-gold);
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.82rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+.vos-submit-panel-note {
+  color: rgba(232, 220, 200, 0.58);
+  font-family: 'Crimson Text', Georgia, serif;
+  font-style: italic;
+  font-size: 0.92rem;
+}
+.vos-submit-form {
+  display: grid;
+  gap: 1rem;
+  padding: 1rem 1.05rem 1.1rem;
+}
+.vos-submit-kind-select {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+.vos-submit-type-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.55rem;
+}
+.vos-submit-type {
+  appearance: none;
+  min-height: 58px;
+  display: grid;
+  gap: 0.18rem;
+  align-content: center;
+  padding: 0.62rem 0.72rem;
+  border: 1px solid rgba(221, 183, 127, 0.26);
+  border-radius: 8px;
+  background: rgba(7, 6, 10, 0.54);
+  color: rgba(232, 220, 200, 0.78);
+  cursor: pointer;
+  text-align: left;
+}
+.vos-submit-type strong {
+  color: var(--submit-gold);
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.66rem;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+.vos-submit-type span {
+  font-family: 'Crimson Text', Georgia, serif;
+  font-size: 0.86rem;
+  line-height: 1.25;
+}
+.vos-submit-type:hover,
+.vos-submit-type.is-active {
+  border-color: var(--submit-border-strong);
+  background: rgba(221, 183, 127, 0.11);
+  color: var(--vos-cream);
+}
+.vos-submit-field {
+  display: grid;
+  gap: 0.42rem;
+}
+.vos-submit-field-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.75rem;
+}
+.vos-submit-label {
+  color: var(--submit-gold);
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.64rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+.vos-submit-count {
+  color: rgba(232, 220, 200, 0.46);
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.55rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.vos-submit-form input,
+.vos-submit-form textarea {
+  width: 100%;
+  border: 1px solid rgba(221, 183, 127, 0.26);
+  border-radius: 8px;
+  background: rgba(4, 4, 8, 0.74);
+  color: var(--vos-cream);
+  font: 1rem 'Crimson Text', Georgia, serif;
+  line-height: 1.45;
+  padding: 0.76rem 0.84rem;
+  box-shadow: inset 0 1px 0 rgba(0, 0, 0, 0.5);
+}
+.vos-submit-form input:focus,
+.vos-submit-form textarea:focus {
+  outline: none;
+  border-color: var(--submit-border-strong);
+  box-shadow: inset 0 1px 0 rgba(0, 0, 0, 0.42), 0 0 0 3px rgba(221, 183, 127, 0.14);
+}
+.vos-submit-form textarea {
+  min-height: 156px;
+  max-height: 520px;
+  resize: vertical;
+  overflow-y: auto;
+}
+#vos-submit-connections {
+  min-height: 118px;
+}
+#vos-submit-notes {
+  min-height: 128px;
+}
+.vos-submit-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  padding-top: 0.25rem;
+}
+.vos-submit-secondary {
+  appearance: none;
+  min-height: 38px;
+  padding: 0.5rem 0.78rem;
+  border: 1px solid rgba(221, 183, 127, 0.26);
+  border-radius: 6px;
+  background: rgba(7, 6, 10, 0.48);
+  color: rgba(221, 183, 127, 0.76);
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.vos-submit-secondary:hover {
+  border-color: var(--submit-border-strong);
+  color: var(--vos-cream);
+}
+.vos-submit-status {
+  min-height: 1.35em;
+  color: rgba(232, 220, 200, 0.72);
+  font-family: 'Crimson Text', Georgia, serif;
+  font-style: italic;
+  font-size: 0.95rem;
+  line-height: 1.35;
+}
+.vos-submit-status.is-error {
+  color: #ff9a91;
+}
+.vos-submit-side {
+  display: grid;
+  gap: 1rem;
+}
+.vos-submit-ready {
+  padding: 1rem;
+}
+.vos-submit-ready-list {
+  list-style: none;
+  margin: 0.85rem 0 0;
+  padding: 0;
+  display: grid;
+  gap: 0.5rem;
+}
+.vos-submit-ready-list li {
+  display: grid;
+  grid-template-columns: 1.2rem minmax(0, 1fr);
+  gap: 0.48rem;
+  align-items: start;
+  color: rgba(232, 220, 200, 0.62);
+  font-family: 'Crimson Text', Georgia, serif;
+  font-size: 0.94rem;
+  line-height: 1.32;
+}
+.vos-submit-ready-list li::before {
+  content: '';
+  width: 0.62rem;
+  height: 0.62rem;
+  margin-top: 0.33rem;
+  border-radius: 50%;
+  border: 1px solid rgba(221, 183, 127, 0.36);
+  background: rgba(7, 6, 10, 0.58);
+}
+.vos-submit-ready-list li.is-done {
+  color: rgba(232, 220, 200, 0.88);
+}
+.vos-submit-ready-list li.is-done::before {
+  border-color: rgba(143, 188, 131, 0.72);
+  background: var(--submit-green);
+}
+.vos-submit-draft-note {
+  margin: 0.85rem 0 0;
+  padding-top: 0.8rem;
+  border-top: 1px solid rgba(221, 183, 127, 0.14);
+  color: rgba(232, 220, 200, 0.58);
+  font-family: 'Crimson Text', Georgia, serif;
+  font-style: italic;
+  font-size: 0.92rem;
+  line-height: 1.35;
+}
+.vos-submit-list-panel {
+  padding: 1rem;
+}
+.vos-submit-list {
+  display: grid;
+  gap: 0.75rem;
+  margin-top: 0.85rem;
+}
+.vos-submit-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.9rem;
+  align-items: start;
+  padding: 0.9rem;
+  border: 1px solid rgba(221, 183, 127, 0.18);
+  border-radius: 8px;
+  background: rgba(7, 6, 10, 0.46);
+}
+.vos-submit-card.is-rejected {
+  border-color: rgba(180, 93, 112, 0.5);
+}
+.vos-submit-card h3 {
+  margin: 0;
+  color: #f0d4a5;
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.82rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.vos-submit-card p {
+  margin: 0.42rem 0 0;
+  color: rgba(232, 220, 200, 0.76);
+  font-family: 'Crimson Text', Georgia, serif;
+  line-height: 1.38;
+}
+.vos-submit-card img {
+  width: 104px;
+  aspect-ratio: 1;
+  object-fit: cover;
+  border: 1px solid rgba(221, 183, 127, 0.28);
+  border-radius: 6px;
+  background: #08070b;
+}
+.vos-submit-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-top: 0.62rem;
+}
+.vos-submit-chip {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  padding: 0.13rem 0.48rem;
+  border: 1px solid rgba(221, 183, 127, 0.24);
+  border-radius: 999px;
+  color: var(--submit-gold);
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.55rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.vos-submit-chip.is-needs-review {
+  border-color: rgba(120, 184, 173, 0.42);
+  color: #9dd8cf;
+}
+.vos-submit-chip.is-rejected {
+  border-color: rgba(180, 93, 112, 0.5);
+  color: #ee9faf;
+}
+.vos-submit-feedback {
+  margin-top: 0.72rem;
+  padding: 0.62rem 0.72rem;
+  border: 1px solid rgba(180, 93, 112, 0.42);
+  border-radius: 6px;
+  background: rgba(60, 22, 30, 0.42);
+  color: #f1d0d6;
+  font-family: 'Crimson Text', Georgia, serif;
+  line-height: 1.35;
+}
+.vos-submit-resubmit {
+  margin-top: 0.65rem;
+}
+.vos-submit-empty {
+  margin: 0;
+  padding: 1.2rem;
+  border: 1px dashed rgba(221, 183, 127, 0.24);
+  border-radius: 8px;
+  color: rgba(232, 220, 200, 0.58);
+  font-family: 'Crimson Text', Georgia, serif;
+  font-style: italic;
+  text-align: center;
+}
+@media (max-width: 900px) {
+  .vos-submit-top,
+  .vos-submit-layout {
+    grid-template-columns: 1fr;
+  }
+  .vos-submit-identity-card {
+    justify-items: start;
+  }
+  .vos-submit-identity-text {
+    text-align: left;
+  }
+  .vos-submit-type-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 560px) {
+  .vos-submit-lore {
+    gap: 0.85rem;
+  }
+  .vos-submit-type-grid {
+    grid-template-columns: 1fr;
+  }
+  .vos-submit-panel-head,
+  .vos-submit-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+  .vos-submit-card {
+    grid-template-columns: 1fr;
+  }
+  .vos-submit-card img {
+    width: 100%;
+    max-height: 240px;
+  }
+}

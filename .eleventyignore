@@ -17,6 +17,7 @@ files
 # Raw character-record sources — served via /questionnaire/ + _data/questionnaire.json,
 # never published directly (each player must only see their own record)
 questionaire
+Venturia/DM/
 
 # Top-level repo docs that aren't wiki content
 ARCHITECTURE.md
@@ -35,6 +36,12 @@ files/css.css
 README.md
 SITE.md
 pwa.md
+DEPLOY.md
+VISION.md
+FULL_AUDIT.md
+PATCH_NOTES_0.0.2.md
+APP_REDESIGN_PLAN.md
+CALENDAR_*_PLAN.md
 
 # Local junk
 .txt

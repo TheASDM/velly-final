@@ -1,0 +1,169 @@
+/* Dossiers — shell adaptation.
+ *
+ * The original mockup used a fixed full-height sidebar rail. This app already
+ * owns the left/bottom chrome (app bar + tab bar), so the roster becomes a
+ * horizontal strip above the content, following the same picker pattern the
+ * DM questionnaire view uses.
+ */
+
+.vos-dossiers {
+  max-width: 1180px;
+  margin: 0 auto;
+  --dossier-c: var(--vos-gold);
+}
+
+.vos-dossiers h1 {
+  margin-bottom: 0.35rem;
+}
+
+.vos-dossiers-lede {
+  color: var(--vos-text);
+  font-size: 0.95rem;
+  margin: 0 0 1.1rem;
+  max-width: 62ch;
+}
+
+/* ── Toolbar: search + gaps toggle ─────────────────────────────────── */
+
+.vos-dossiers-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  align-items: center;
+  margin-bottom: 0.9rem;
+}
+.vos-dossiers-toolbar[hidden] {
+  display: none;
+}
+
+.vos-dossiers-search {
+  position: relative;
+  flex: 1 1 260px;
+  min-width: 0;
+}
+.vos-dossiers-search input {
+  width: 100%;
+  min-height: 40px;
+  padding: 0.5rem 0.7rem 0.5rem 2rem;
+  background: rgba(8, 7, 11, 0.52);
+  border: 1px solid var(--vos-border);
+  border-radius: 8px;
+  color: var(--vos-cream);
+  font: inherit;
+  font-size: 0.95rem;
+}
+.vos-dossiers-search input:focus {
+  outline: none;
+  border-color: var(--vos-border-strong);
+  box-shadow: 0 0 0 3px rgba(212, 165, 116, 0.12);
+}
+.vos-dossiers-search .glyph {
+  position: absolute;
+  left: 0.65rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--vos-gold-dim);
+  pointer-events: none;
+}
+
+.vos-dossiers-blanks {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--vos-text);
+  cursor: pointer;
+  user-select: none;
+  min-height: 40px;
+}
+.vos-dossiers-blanks input {
+  accent-color: var(--vos-gold);
+  width: 15px;
+  height: 15px;
+  cursor: pointer;
+}
+
+/* ── Roster strip ──────────────────────────────────────────────────── */
+
+.vos-dossiers-nav {
+  display: flex;
+  gap: 0.4rem;
+  overflow-x: auto;
+  padding-bottom: 0.4rem;
+  margin-bottom: 1.4rem;
+  scrollbar-width: thin;
+}
+
+.vos-dossiers-nav .nav-item {
+  flex: 0 0 auto;
+  min-width: 132px;
+  text-align: left;
+  padding: 0.55rem 0.7rem;
+  background: rgba(8, 7, 11, 0.52);
+  border: 1px solid var(--vos-border);
+  border-top: 2px solid transparent;
+  border-radius: 8px;
+  color: var(--vos-text);
+  cursor: pointer;
+}
+.vos-dossiers-nav .nav-item:hover {
+  border-color: var(--vos-border-strong);
+}
+.vos-dossiers-nav .nav-item.is-on {
+  border-top-color: var(--c, var(--vos-gold));
+  background: rgba(212, 165, 116, 0.1);
+}
+.vos-dossiers-nav .nav-item.is-on .nav-name {
+  color: var(--c, var(--vos-gold));
+}
+
+.vos-dossiers-nav .nav-row {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+.vos-dossiers-nav .nav-name {
+  font-size: 1rem;
+  color: var(--vos-cream);
+}
+.vos-dossiers-nav .nav-meta {
+  margin-left: auto;
+  font-size: 0.65rem;
+  letter-spacing: 0.06em;
+  color: var(--vos-gold-dim);
+  white-space: nowrap;
+}
+.vos-dossiers-nav .nav-role {
+  display: block;
+  margin-top: 0.15rem;
+  font-size: 0.65rem;
+  letter-spacing: 0.04em;
+  color: var(--vos-gold-dim);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.vos-dossiers .meter {
+  display: block;
+  height: 2px;
+  margin-top: 0.45rem;
+  background: rgba(139, 115, 85, 0.28);
+  overflow: hidden;
+}
+.vos-dossiers .meter i {
+  display: block;
+  height: 100%;
+  background: var(--c, var(--vos-gold));
+  opacity: 0.85;
+}
+
+@media print {
+  .vos-dossiers-toolbar,
+  .vos-dossiers-nav,
+  .vos-dossiers .jump {
+    display: none;
+  }
+}

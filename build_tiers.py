@@ -17,6 +17,8 @@ import re
 import sys
 from pathlib import Path
 
+from campaign_lib.wiki import first_heading, iter_published_markdown, normalize_aliases
+
 ROOT         = Path(__file__).parent
 WIKI_ROOT    = ROOT
 FILTERED_DIR = ROOT / "campaign-data" / "5e-filtered"
@@ -38,71 +40,7 @@ WIKI_SECTIONS = [
     ("Updates",             ("Updates",    None)),
 ]
 
-# ── Frontmatter parser (no pyyaml dep) ────────────────────────────────────────
-
-
-def parse_frontmatter(content: str) -> tuple[dict, str]:
-    """Parse minimal YAML frontmatter. Returns (metadata, body)."""
-    if not content.startswith("---\n"):
-        return {}, content
-    end = content.find("\n---\n", 4)
-    if end == -1:
-        end = content.find("\n---", 4)  # trailing close without newline
-        if end == -1:
-            return {}, content
-        body_start = end + 4
-    else:
-        body_start = end + 5
-
-    yaml_block = content[4:end]
-    body = content[body_start:].lstrip("\n")
-
-    metadata: dict = {}
-    current_list_key: str | None = None
-
-    for raw in yaml_block.split("\n"):
-        if not raw.strip() or raw.lstrip().startswith("#"):
-            continue
-        # List item under current key
-        stripped = raw.lstrip()
-        if stripped.startswith("- "):
-            value = stripped[2:].strip()
-            value = _unquote(value)
-            if current_list_key:
-                metadata.setdefault(current_list_key, []).append(value)
-            continue
-        # key: value
-        if ":" in raw:
-            key, _, val = raw.partition(":")
-            key = key.strip()
-            val = val.strip()
-            if val:
-                current_list_key = None
-                metadata[key] = _coerce(_unquote(val))
-            else:
-                # Empty value — likely a list or block scalar follows
-                current_list_key = key
-                metadata.setdefault(key, [])
-    return metadata, body
-
-
-def _unquote(val: str) -> str:
-    if len(val) >= 2 and val[0] == val[-1] and val[0] in ("'", '"'):
-        return val[1:-1]
-    return val
-
-
-def _coerce(val):
-    if val in ("true", "True"):
-        return True
-    if val in ("false", "False"):
-        return False
-    return val
-
-
 # ── Wiki page loading ────────────────────────────────────────────────────────
-
-
 def slug_from_path(path: Path) -> str:
     """Filename without .md extension."""
     return path.stem
@@ -110,29 +48,18 @@ def slug_from_path(path: Path) -> str:
 
 def load_wiki_pages(rel_dir: str) -> list[dict]:
     """Load all .md pages under WIKI_ROOT/rel_dir (non-recursive)."""
-    full_dir = WIKI_ROOT / rel_dir
-    if not full_dir.exists():
-        return []
     pages = []
-    for path in sorted(full_dir.glob("*.md")):
-        try:
-            raw = path.read_text(encoding="utf-8")
-        except Exception as e:
-            print(f"  WARN: {path}: {e}", file=sys.stderr)
-            continue
-        meta, body = parse_frontmatter(raw)
-        # Skip unpublished pages (drafts / DM-only safety net)
-        if meta.get("published") is False:
-            continue
-        # Skip index pages — they're navigation, not content
-        if path.stem == "index":
-            continue
-        title = meta.get("title") or _first_heading(body) or path.stem
+    for path, meta, body in iter_published_markdown(
+        WIKI_ROOT,
+        rel_dir,
+        on_error=lambda failed_path, error: print(
+            f"  WARN: {failed_path}: {error}", file=sys.stderr
+        ),
+    ):
+        title = meta.get("title") or first_heading(body) or path.stem
         description = meta.get("description", "")
         tags = meta.get("tags", "")
-        aliases = meta.get("aliases", [])
-        if isinstance(aliases, str):
-            aliases = [a.strip() for a in aliases.split(",") if a.strip()]
+        aliases = normalize_aliases(meta.get("aliases"))
         pages.append({
             "slug": slug_from_path(path),
             "title": title,
@@ -143,15 +70,6 @@ def load_wiki_pages(rel_dir: str) -> list[dict]:
             "path": str(path.relative_to(WIKI_ROOT)),
         })
     return pages
-
-
-def _first_heading(body: str) -> str | None:
-    """Pull the first `# Heading` line from body markdown."""
-    for line in body.splitlines():
-        line = line.strip()
-        if line.startswith("# "):
-            return line[2:].strip()
-    return None
 
 
 # ── Tier1 compression for a wiki page ────────────────────────────────────────

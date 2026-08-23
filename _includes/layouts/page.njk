@@ -21,6 +21,8 @@
 
 <link href="/pagefind/pagefind-ui.css" rel="stylesheet">
 <link href="/css/app-shell.css" rel="stylesheet">
+{% for stylesheet in pageStyles %}<link href="{{ stylesheet }}" rel="stylesheet">
+{% endfor %}
 
 </head>
 <body class="{% if page.url == '/enzo/' %}vos-is-enzo-page{% endif %}{% if page.url == '/messages/' %}vos-is-messages-page{% endif %}{% if page.url and page.url.startsWith('/en/') and page.url != '/en/Tools/art/' %} vos-is-wiki-page{% endif %}{% if page.filePathStem and page.filePathStem.endsWith('/index') %} vos-is-index-page{% endif %}">
@@ -195,11 +197,13 @@
      a visual-only stub). See public/js/enzo-widget.js. -->
 <div id="chatbot-container"></div>
 
+{% for script in pageScripts %}<script src="{{ script }}" defer></script>
+{% endfor %}
 <script src="/js/in-play-live.js" defer></script>
 <script src="/js/enzo-widget.js" defer></script>
 <script src="/js/viewport-handler.js" defer></script>
 <script src="/js/pwa-manager.js" defer></script>
-<script src="/pwa-client.js" defer></script>
+<script src="/js/pwa-client.js" defer></script>
 
 <!-- ── Pagefind site search ─────────────────────────────────────────── -->
 <script src="/pagefind/pagefind-ui.js" defer></script>

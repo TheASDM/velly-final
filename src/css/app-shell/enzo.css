@@ -1,0 +1,65 @@
+/* ── Enzo widget container fix ────────────────────────────────────────
+     Float above the sidebar, but pin it firmly bottom-right so it can't
+     drift over the centered logo on the home page. */
+  #chatbot-container {
+    z-index: 1200 !important;
+    bottom: calc(var(--vos-vv-bottom) + var(--vos-app-nav-h) + env(safe-area-inset-bottom) + 1rem) !important;
+  }
+
+  /* When Enzo is collapsed to the pill, the OUTER container shrinks too
+     so the floating layer doesn't reserve a 560px box. */
+  #chatbot-container.vos-enzo-pill { width: auto; }
+
+  body:not(.vos-is-enzo-page) #chatbot-container {
+    display: none !important;
+  }
+
+  /* Critical collapsed Enzo styles live inline so the widget never flashes
+     open while the remote chatbot stylesheet is still loading. */
+  #chatbot-widget.chatbot-collapsed {
+    width: auto !important;
+    max-width: 180px;
+    max-height: 48px !important;
+    overflow: hidden;
+    border-radius: 999px;
+  }
+  #chatbot-widget.chatbot-collapsed .chatbot-body {
+    display: none !important;
+  }
+  #chatbot-widget.chatbot-collapsed .chatbot-header {
+    height: 48px;
+    padding: 0 0.85rem 0 0.5rem;
+    border-bottom: none;
+    border-radius: 999px;
+  }
+  #chatbot-widget.chatbot-collapsed .chatbot-avatar-header {
+    width: 32px;
+    height: 32px;
+    margin-right: 0;
+  }
+  #chatbot-widget.chatbot-collapsed #chat-clear-btn,
+  #chatbot-widget.chatbot-collapsed #dm-mode-badge,
+  #chatbot-widget.chatbot-collapsed #rules-badge,
+  #chatbot-widget.chatbot-collapsed #vibe-badge,
+  #chatbot-widget.chatbot-collapsed #art-badge {
+    display: none !important;
+  }
+
+  /* Desktop widget sizing. The input itself stays compact; chatbot.css owns
+     the growing textarea row. */
+  @media (min-width: 769px) {
+    #chatbot-widget {
+      width: 560px;
+      max-height: 86vh;
+    }
+    #chat-input {
+      min-height: 38px !important;
+      max-height: 116px !important;
+      white-space: pre-wrap !important;
+      word-wrap: break-word !important;
+    }
+    #chat-messages {
+      min-height: 200px !important;
+      max-height: calc(86vh - 52px - 74px) !important;
+    }
+  }

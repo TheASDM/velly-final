@@ -1,0 +1,317 @@
+/* ── Auto-index list (when a *index.md page renders) ─────────────────── */
+  .vos-auto-index {
+    margin: 1.5rem auto 0;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+    display: grid;
+    gap: 0.85rem;
+  }
+  .vos-auto-index h2.vos-auto-index-title {
+    color: var(--vos-gold-bright); font-family: 'Cinzel', Georgia, serif;
+    font-size: 1.4rem; letter-spacing: 0.06em; margin-top: 0;
+  }
+  .vos-auto-index .vos-auto-sub { margin: 0; }
+  .vos-auto-index .vos-auto-sub > h3 {
+    margin: 0 0 0.65rem; font-size: 0.88rem;
+    color: var(--vos-cream); font-family: 'Cinzel', Georgia, serif;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+  .vos-auto-index ul {
+    list-style: none; padding: 0; margin: 0.4rem 0 0 0;
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
+    gap: 0.5rem;
+  }
+  .vos-auto-index li { padding: 0; }
+  .vos-auto-index li a { font-size: 1rem; }
+  .vos-auto-index .vos-auto-sub {
+    min-width: 0;
+    padding: clamp(0.86rem, 1.7vw, 1.12rem);
+    border: 1px solid rgba(212, 165, 116, 0.18);
+    border-radius: 8px;
+    background:
+      linear-gradient(180deg, rgba(18, 16, 23, 0.72), rgba(7, 6, 10, 0.9)),
+      radial-gradient(ellipse 80% 70% at 0% 0%, rgba(212, 165, 116, 0.055), transparent 70%);
+    box-shadow: 0 12px 34px rgba(0, 0, 0, 0.38);
+  }
+
+  /* ── Wiki app reading/index surface ───────────────────────────────── */
+  .vos-is-wiki-page main.vos-content {
+    max-width: 1320px;
+  }
+  .vos-is-wiki-page .vos-page-shell:not(.vos-home-shell) {
+    border-color: rgba(212, 165, 116, 0.2);
+    padding: clamp(1rem, 2vw, 1.6rem);
+  }
+  .vos-is-wiki-page .vos-page-shell:not(.vos-home-shell) > h1 {
+    margin: 0 0 0.9rem;
+    padding-bottom: 0.45rem;
+    font-size: clamp(1.55rem, 3.2vw, 2rem);
+    letter-spacing: 0.035em;
+  }
+  .vos-is-wiki-page .vos-page-shell:not(.vos-home-shell) > h2 {
+    margin: 1.45rem 0 0.55rem;
+    font-size: clamp(1.12rem, 2.2vw, 1.35rem);
+    letter-spacing: 0.035em;
+  }
+  .vos-is-wiki-page .vos-page-shell:not(.vos-home-shell) > h3 {
+    margin: 1.05rem 0 0.4rem;
+    font-size: 1rem;
+    letter-spacing: 0.035em;
+  }
+  .vos-is-wiki-page .vos-page-shell:not(.vos-home-shell) > hr {
+    display: none;
+  }
+  .vos-is-wiki-page table {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .vos-is-wiki-page .vos-page-shell:not(.vos-home-shell) > p:first-of-type {
+    color: rgba(232, 220, 200, 0.88);
+    font-size: clamp(0.98rem, 1.35vw, 1.04rem);
+    line-height: 1.48;
+  }
+  .vos-wiki-search-panel {
+    display: grid;
+    gap: 0.65rem;
+  }
+  .vos-wiki-search-panel .pagefind-ui,
+  .vos-wiki-search-panel .pagefind-ui__form {
+    margin: 0 !important;
+  }
+  .vos-wiki-search-panel .pagefind-ui__search-input {
+    height: 46px !important;
+    font-size: 1.05rem !important;
+    border-radius: 8px !important;
+  }
+  .vos-wiki-search-panel .pagefind-ui__drawer {
+    position: static !important;
+    max-height: none !important;
+    margin-top: 0.65rem !important;
+    border: 1px solid rgba(201, 161, 74, 0.18);
+    border-radius: 8px;
+    background: rgba(8, 7, 11, 0.7);
+    box-shadow: none;
+  }
+  .vos-wiki-hub {
+    display: grid;
+    gap: clamp(0.85rem, 1.8vw, 1.15rem);
+  }
+  .vos-wiki-status-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.05fr) minmax(280px, 0.95fr);
+    gap: clamp(0.75rem, 1.8vw, 0.95rem);
+  }
+  .vos-wiki-sections {
+    display: grid;
+    gap: 0.7rem;
+  }
+  .vos-is-index-page .vos-auto-index {
+    margin-top: clamp(1rem, 2vw, 1.35rem);
+  }
+  .vos-is-wiki-page.vos-is-index-page .vos-page-shell:not(.vos-home-shell) {
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+  }
+  .vos-is-index-page .vos-auto-index-title {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+  }
+  .vos-is-index-page .vos-auto-index-title::before {
+    content: '✦';
+    color: var(--vos-gold-dim);
+    font-size: 0.9rem;
+  }
+  .vos-is-index-page .vos-auto-index .vos-auto-sub {
+    margin: 0;
+    min-width: 0;
+    padding: clamp(0.86rem, 1.7vw, 1.12rem);
+    border: 1px solid rgba(212, 165, 116, 0.18);
+    border-radius: 8px;
+    background:
+      linear-gradient(180deg, rgba(18, 16, 23, 0.72), rgba(7, 6, 10, 0.9)),
+      radial-gradient(ellipse 80% 70% at 0% 0%, rgba(212, 165, 116, 0.055), transparent 70%);
+  }
+  .vos-is-index-page .vos-auto-index {
+    display: grid;
+    gap: 0.85rem;
+  }
+  .vos-is-index-page .vos-auto-index > h2 {
+    margin-bottom: 0;
+  }
+  .vos-is-index-page .vos-auto-index .vos-auto-sub > h3 {
+    margin: 0 0 0.65rem;
+    font-size: 0.88rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+  .vos-is-index-page .vos-auto-index .vos-auto-sub > h3 a {
+    color: var(--vos-gold-bright);
+  }
+  .vos-is-index-page .vos-auto-index ul {
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr));
+    gap: 0.4rem;
+  }
+  .vos-is-index-page .vos-auto-index .vos-row-chip {
+    min-height: 48px;
+  }
+  .vos-is-wiki-page .vos-page-shell:not(.vos-home-shell) > ul,
+  .vos-is-wiki-page .vos-page-shell:not(.vos-home-shell) > ol {
+    padding-left: clamp(2.25rem, 3vw, 2.8rem);
+    list-style-position: outside;
+  }
+  .vos-is-wiki-page .vos-page-shell:not(.vos-home-shell) > ul li,
+  .vos-is-wiki-page .vos-page-shell:not(.vos-home-shell) > ol li {
+    margin: 0.35rem 0;
+    padding-left: 0.12rem;
+  }
+  .vos-is-wiki-page .vos-page-shell:not(.vos-home-shell) > ul li::marker,
+  .vos-is-wiki-page .vos-page-shell:not(.vos-home-shell) > ol li::marker {
+    color: rgba(232, 220, 200, 0.82);
+    font-size: 0.72em;
+  }
+  .vos-is-wiki-page .vos-page-shell:not(.vos-home-shell) > ul li > p,
+  .vos-is-wiki-page .vos-page-shell:not(.vos-home-shell) > ol li > p {
+    margin: 0.25rem 0;
+  }
+  .vos-is-wiki-page .vos-page-shell:not(.vos-home-shell) > ul li > ul,
+  .vos-is-wiki-page .vos-page-shell:not(.vos-home-shell) > ul li > ol,
+  .vos-is-wiki-page .vos-page-shell:not(.vos-home-shell) > ol li > ul,
+  .vos-is-wiki-page .vos-page-shell:not(.vos-home-shell) > ol li > ol {
+    margin-top: 0.35rem;
+    padding-left: 1.35rem;
+  }
+
+  @media (min-width: 701px) and (max-width: 1023px) {
+    .vos-is-wiki-page main.vos-content {
+      padding-left: max(1.15rem, env(safe-area-inset-left));
+      padding-right: max(1.15rem, env(safe-area-inset-right));
+    }
+    .vos-is-wiki-page .vos-page-shell:not(.vos-home-shell) {
+      padding: 1.35rem;
+    }
+    .vos-is-index-page .vos-auto-index {
+      padding: 0;
+    }
+  }
+
+  @media (max-width: 700px) {
+    .vos-is-wiki-page main.vos-content {
+      padding-left: max(0.75rem, env(safe-area-inset-left));
+      padding-right: max(0.75rem, env(safe-area-inset-right));
+    }
+    .vos-is-wiki-page .vos-page-shell:not(.vos-home-shell) {
+      padding: 0.95rem;
+      border-radius: 10px;
+    }
+    .vos-is-wiki-page .vos-page-shell:not(.vos-home-shell) > p,
+    .vos-is-wiki-page .vos-page-shell:not(.vos-home-shell) > ul,
+    .vos-is-wiki-page .vos-page-shell:not(.vos-home-shell) > ol,
+    .vos-is-wiki-page .vos-page-shell:not(.vos-home-shell) > blockquote {
+      padding: 0.78rem 0.82rem;
+      border-radius: 8px;
+      border-left-width: 1px;
+    }
+    .vos-is-wiki-page .vos-page-shell:not(.vos-home-shell) > ul,
+    .vos-is-wiki-page .vos-page-shell:not(.vos-home-shell) > ol {
+      padding-top: 0.78rem;
+      padding-right: 0.82rem;
+      padding-bottom: 0.78rem;
+      padding-left: 2.15rem;
+    }
+    .vos-is-wiki-page .vos-page-shell:not(.vos-home-shell) > ul li,
+    .vos-is-wiki-page .vos-page-shell:not(.vos-home-shell) > ol li {
+      margin: 0.42rem 0;
+      padding-left: 0.08rem;
+    }
+    .vos-is-index-page .vos-auto-index {
+      padding: 0;
+      border-radius: 10px;
+    }
+    .vos-is-index-page .vos-auto-index h2.vos-auto-index-title {
+      font-size: 1.08rem;
+      letter-spacing: 0.08em;
+    }
+    .vos-is-index-page .vos-auto-index .vos-auto-sub {
+      padding: 0.75rem;
+    }
+    .vos-is-index-page .vos-auto-index ul {
+      grid-template-columns: 1fr;
+    }
+    .vos-wiki-status-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .vos-is-wiki-page .vos-page-shell:not(.vos-home-shell) > .vos-linked-row-list {
+    display: grid;
+    gap: 0.5rem;
+    width: 100%;
+    max-width: none;
+    margin: 0.45rem 0 1rem;
+    padding: 0 !important;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+    list-style: none;
+  }
+  .vos-is-wiki-page .vos-page-shell:not(.vos-home-shell) > .vos-linked-row-list > .vos-linked-row {
+    position: relative;
+    margin: 0;
+    padding: 0.76rem 2.25rem 0.76rem 0.82rem;
+    border: 1px solid rgba(212, 165, 116, 0.16);
+    border-radius: 8px;
+    background: rgba(8, 7, 11, 0.5);
+    color: rgba(232, 220, 200, 0.86);
+    font-size: 0.96rem;
+    line-height: 1.36;
+    cursor: pointer;
+  }
+  .vos-is-wiki-page .vos-page-shell:not(.vos-home-shell) > .vos-linked-row-list > .vos-linked-row::marker {
+    content: '';
+  }
+  .vos-is-wiki-page .vos-page-shell:not(.vos-home-shell) > .vos-linked-row-list > .vos-linked-row::after {
+    content: '›';
+    position: absolute;
+    top: 50%;
+    right: 0.82rem;
+    color: rgba(212, 165, 116, 0.7);
+    font-family: Georgia, serif;
+    font-size: 1.2rem;
+    line-height: 1;
+    transform: translateY(-50%);
+  }
+  .vos-is-wiki-page .vos-page-shell:not(.vos-home-shell) > .vos-linked-row-list > .vos-linked-row:hover,
+  .vos-is-wiki-page .vos-page-shell:not(.vos-home-shell) > .vos-linked-row-list > .vos-linked-row:focus {
+    border-color: rgba(212, 165, 116, 0.48);
+    background: rgba(212, 165, 116, 0.075);
+    outline: none;
+  }
+  .vos-is-wiki-page .vos-page-shell:not(.vos-home-shell) > .vos-linked-row-list > .vos-linked-row:focus-visible {
+    box-shadow: 0 0 0 2px rgba(212, 165, 116, 0.34);
+  }
+  .vos-linked-row-list .vos-linked-row a {
+    border-bottom: 0;
+  }
+  .vos-linked-row-list .vos-linked-row > a:first-child,
+  .vos-linked-row-list .vos-linked-row > strong:first-child a {
+    color: var(--vos-gold-bright);
+    font-family: 'Cinzel', Georgia, serif;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.045em;
+    line-height: 1.18;
+    text-transform: uppercase;
+  }
+  .vos-linked-row-list .vos-linked-row > strong:first-child {
+    font-weight: 700;
+  }

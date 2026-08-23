@@ -1,10 +1,8 @@
 [
-  { "name": "Caravel \"Car\" Asteri", "display": "Car",     "avatar": "/images/app-profiles/avatar-caravel-asteri.png" },
-  { "name": "Kryton Novelli",        "display": "Kryton",  "avatar": "/images/app-profiles/avatar-kryton-novelli.png" },
-  { "name": "Lotan",                 "display": "Lotan",   "avatar": "/images/app-profiles/avatar-lotan.png"          },
-  { "name": "Noname",                "display": "Noname",  "avatar": "/images/app-profiles/avatar-noname.png"         },
-  { "name": "Orabella",              "display": "Orabella","avatar": "/images/app-profiles/avatar-orabella.png"       },
-  { "name": "Roxanya \"Roxy\"",      "display": "Roxy",    "avatar": "/images/app-profiles/avatar-roxanya.png"        },
-  { "name": "Valentro",              "display": "Valen",   "avatar": "/images/app-profiles/avatar-valentro.png"       },
-  { "name": "DM",                    "display": "Dustin",  "avatar": "/images/app-profiles/dustin.png"                }
+  {"name": "Caravel \"Car\" Asteri", "display": "Car", "color": "#D8B25C", "avatar": "/images/app-profiles/avatar-caravel-asteri.png"},
+  {"name": "Lotan", "display": "Lotan", "color": "#C4574B", "avatar": "/images/app-profiles/avatar-lotan.png"},
+  {"name": "Noname", "display": "Noname", "color": "#7FA6B8", "avatar": "/images/app-profiles/avatar-noname.png"},
+  {"name": "Roxanya \"Roxy\"", "display": "Roxy", "color": "#7CA85C", "avatar": "/images/app-profiles/avatar-roxanya.png"},
+  {"name": "Valentro", "display": "Valen", "color": "#4E9B86", "avatar": "/images/app-profiles/avatar-valentro.png"},
+  {"name": "DM", "display": "Dustin", "color": "#D0AE5E", "avatar": "/images/app-profiles/dustin.png"}
 ]

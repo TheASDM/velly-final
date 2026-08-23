@@ -132,6 +132,20 @@ permalink: /questionnaire/
   padding:8px 14px; cursor:pointer; min-height:38px;
 }
 .vos-q .dm-picker button.is-active{border-color:var(--accent); color:var(--accent)}
+.vos-q .dm-export{display:flex; flex-wrap:wrap; gap:8px; justify-content:center; align-items:center; margin-bottom:14px}
+.vos-q .dm-export button{
+  font-family:var(--util); font-size:11.5px; letter-spacing:.08em; text-transform:uppercase;
+  color:var(--muted); background:transparent; border:1px dashed var(--line); border-radius:2px;
+  padding:7px 13px; cursor:pointer; min-height:36px;
+}
+.vos-q .dm-export button:hover:not(:disabled){color:var(--accent); border-color:var(--accent)}
+.vos-q .dm-export button:disabled{opacity:.4; cursor:not-allowed}
+.vos-q .dm-export-note{font-family:var(--util); font-size:11px; color:var(--muted)}
+.vos-q .dm-export-link{
+  font-family:var(--util); font-size:11.5px; letter-spacing:.08em; text-transform:uppercase;
+  color:var(--accent); text-decoration:none; border-bottom:1px solid transparent; padding:7px 0;
+}
+.vos-q .dm-export-link:hover{border-bottom-color:var(--accent)}
 .vos-q .dm-note{font-family:var(--util); font-size:11.5px; color:var(--muted); text-align:center; margin:0 0 14px}
 @media (max-width:560px){
   .vos-q .doc{padding:20px 15px}

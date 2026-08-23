@@ -1,0 +1,346 @@
+/* Available references panel — collapsed by default; click to expand a
+   list of names the prompt enhancer recognises. */
+.vos-art-references {
+  margin: 0 0 0.85rem;
+  padding: 0;
+  border: 1px solid rgba(201, 161, 74, 0.22);
+  border-radius: 8px;
+  background: rgba(7, 6, 10, 0.4);
+}
+.vos-art-references > summary {
+  list-style: none;
+  cursor: pointer;
+  padding: 0.55rem 0.85rem;
+  color: var(--vos-gold-bright);
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.vos-art-references > summary::-webkit-details-marker { display: none; }
+.vos-art-references > summary::before {
+  content: '▸ ';
+  display: inline-block;
+  margin-right: 0.35rem;
+  transition: transform 0.18s ease;
+}
+.vos-art-references[open] > summary::before {
+  transform: rotate(90deg);
+}
+.vos-art-references-body {
+  padding: 0.65rem 0.85rem 0.9rem;
+  border-top: 1px solid rgba(201, 161, 74, 0.18);
+  display: grid;
+  gap: 0.7rem;
+}
+.vos-art-references-cat {
+  display: grid;
+  gap: 0.35rem;
+}
+.vos-art-references-cat h4 {
+  margin: 0;
+  color: rgba(212, 199, 173, 0.7);
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.vos-art-references-names {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+}
+.vos-art-references-name {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.18rem 0.55rem;
+  border: 1px solid rgba(201, 161, 74, 0.28);
+  border-radius: 999px;
+  background: rgba(212, 165, 116, 0.06);
+  color: var(--vos-cream);
+  font-family: 'Crimson Text', Georgia, serif;
+  font-size: 0.86rem;
+  cursor: pointer;
+  line-height: 1.2;
+}
+.vos-art-references-name:hover {
+  border-color: rgba(212, 165, 116, 0.6);
+  background: rgba(212, 165, 116, 0.14);
+}
+
+/* Per-card icon overlay (favorite + share). Sits in the top-right of
+   each tile alongside the existing DM delete button. */
+.vos-art-card-actions {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  display: flex;
+  gap: 0.3rem;
+  z-index: 2;
+}
+.vos-art-card-actions .vos-art-icon-btn {
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 1px solid rgba(212, 165, 116, 0.28);
+  border-radius: 50%;
+  background: rgba(7, 6, 10, 0.7);
+  color: rgba(212, 199, 173, 0.85);
+  font-size: 0.95rem;
+  line-height: 1;
+  cursor: pointer;
+  backdrop-filter: blur(4px);
+}
+.vos-art-card-actions .vos-art-icon-btn:hover {
+  color: var(--vos-cream);
+  border-color: rgba(212, 165, 116, 0.6);
+}
+.vos-art-card-actions .vos-art-icon-btn.is-favorited {
+  color: #ff7a8b;
+  border-color: rgba(255, 122, 139, 0.55);
+}
+
+/* Lightbox toolbar — favorite + share, mirrors the card actions. */
+.vos-art-lightbox-actions {
+  position: absolute;
+  top: 0.85rem;
+  right: 3rem;
+  display: flex;
+  gap: 0.4rem;
+  z-index: 12;
+}
+.vos-art-lightbox-actions .vos-art-icon-btn {
+  width: 36px;
+  height: 36px;
+  font-size: 1.05rem;
+}
+
+/* "Pin to wiki" menu — small popover anchored under the lightbox
+   action bar. Lists the grounded entities the image was tied to. */
+.vos-art-pin-menu {
+  position: absolute;
+  top: 3.5rem;
+  right: 1rem;
+  z-index: 14;
+  min-width: 240px;
+  max-width: min(360px, 80vw);
+  padding: 0.55rem;
+  border: 1px solid rgba(212, 165, 116, 0.45);
+  border-radius: 8px;
+  background: rgba(8, 6, 12, 0.96);
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.7);
+  display: grid;
+  gap: 0.3rem;
+}
+.vos-art-pin-menu[hidden] { display: none; }
+.vos-art-pin-menu-title {
+  margin: 0 0 0.2rem;
+  padding: 0 0.35rem;
+  color: rgba(212, 199, 173, 0.7);
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.vos-art-pin-option {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.45rem 0.55rem;
+  border: 1px solid rgba(201, 161, 74, 0.18);
+  border-radius: 6px;
+  background: rgba(7, 6, 10, 0.5);
+  color: var(--vos-cream);
+  font-family: 'Crimson Text', Georgia, serif;
+  font-size: 0.9rem;
+  text-align: left;
+  cursor: pointer;
+}
+.vos-art-pin-option:hover {
+  border-color: rgba(212, 165, 116, 0.55);
+  background: rgba(212, 165, 116, 0.1);
+}
+.vos-art-pin-option-kind {
+  color: rgba(212, 165, 116, 0.7);
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.55rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.vos-art-pin-empty {
+  padding: 0.55rem;
+  color: rgba(212, 199, 173, 0.6);
+  font-style: italic;
+  font-size: 0.88rem;
+}
+
+/* "Load more" button at gallery bottom. */
+.vos-art-load-more {
+  display: block;
+  margin: 1rem auto 0;
+  padding: 0.6rem 1.4rem;
+  border: 1px solid rgba(212, 165, 116, 0.36);
+  border-radius: 999px;
+  background: rgba(212, 165, 116, 0.08);
+  color: var(--vos-gold-bright);
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.vos-art-load-more:hover {
+  color: var(--vos-cream);
+  border-color: var(--vos-gold-bright);
+  background: rgba(212, 165, 116, 0.16);
+}
+.vos-art-load-more:disabled {
+  cursor: wait;
+  opacity: 0.6;
+}
+.vos-art-load-more[hidden] { display: none; }
+
+.vos-art-latest-error {
+  display: grid;
+  gap: 0.65rem;
+  justify-items: center;
+  padding: 0.35rem 0 0.2rem;
+}
+.vos-art-latest-error strong {
+  color: #d8645c;
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+.vos-art-latest-error p {
+  max-width: 42rem;
+  margin: 0;
+  color: rgba(232, 220, 200, 0.78);
+}
+.vos-art-retry {
+  appearance: none;
+  min-height: 2.35rem;
+  padding: 0.48rem 0.95rem;
+  border: 1px solid var(--art-border-strong);
+  border-radius: 999px;
+  background: rgba(221, 183, 127, 0.08);
+  color: var(--art-gold);
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+/* "Let Enzo refine my prompt" checkbox row ─────────────────────────── */
+.vos-art-enhance-toggle {
+  display: flex; gap: 0.8rem; align-items: center;
+  height: 100%;
+  cursor: pointer;
+  padding: 0.78rem 0.9rem;
+  background:
+    linear-gradient(180deg, rgba(123, 183, 173, 0.08), rgba(7, 6, 10, 0.48));
+  border: 1px solid var(--art-border);
+  border-radius: 8px;
+  transition: border-color 0.15s, background 0.15s;
+}
+.vos-art-enhance-toggle:hover { border-color: var(--art-border-strong); }
+.vos-art-enhance-toggle input[type="checkbox"] {
+  flex: 0 0 auto;
+  width: 1.08rem; height: 1.08rem; margin: 0;
+  accent-color: var(--art-gold);
+}
+.vos-art-enhance-text {
+  display: flex; flex-direction: column; gap: 0.2rem;
+}
+.vos-art-enhance-text strong {
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.68rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--art-gold);
+  font-weight: 700;
+}
+.vos-art-enhance-text em {
+  font-family: 'Crimson Text', Georgia, serif;
+  font-style: italic;
+  font-size: 0.85rem;
+  color: rgba(232, 220, 200, 0.72);
+  line-height: 1.35;
+}
+
+/* "How Enzo saw it" disclosure ─────────────────────────────────────── */
+.vos-art-details {
+  margin-top: 0.9rem;
+  text-align: left;
+  border-top: 1px dashed rgba(139, 115, 85, 0.25);
+  padding-top: 0.7rem;
+}
+.vos-art-details > summary {
+  cursor: pointer;
+  list-style: none;
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.62rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--art-gold-dim);
+  padding: 0.2rem 0;
+}
+.vos-art-details > summary::-webkit-details-marker { display: none; }
+.vos-art-details > summary::before {
+  content: '▸';
+  display: inline-block;
+  margin-right: 0.45rem;
+  transition: transform 0.18s;
+  color: var(--art-gold);
+  font-size: 0.72rem;
+}
+.vos-art-details[open] > summary::before { transform: rotate(90deg); }
+.vos-art-details > summary:hover { color: var(--art-gold); }
+.vos-art-enhanced {
+  margin: 0.55rem 0 0;
+  padding: 0.7rem 0.9rem;
+  background: rgba(13, 11, 17, 0.6);
+  border-left: 2px solid rgba(212, 165, 116, 0.45);
+  border-radius: 0 3px 3px 0;
+  font-family: 'Crimson Text', Georgia, serif;
+  font-style: italic;
+  color: rgba(232, 220, 200, 0.85);
+  font-size: 0.92rem;
+  line-height: 1.5;
+  white-space: pre-wrap;
+}
+
+/* Grounded-entity chips (gallery cards + lightbox) ─────────────────── */
+.vos-art-grounded {
+  display: flex; flex-wrap: wrap; gap: 0.3rem;
+  margin-top: 0.45rem;
+}
+.vos-art-grounded-chip {
+  display: inline-flex; align-items: center;
+  padding: 0.18rem 0.55rem;
+  background: rgba(212, 165, 116, 0.12);
+  color: var(--art-gold);
+  border: 1px solid rgba(212, 165, 116, 0.35);
+  border-radius: 999px;
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.55rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.vos-art-grounded-chip::before {
+  content: '✦';
+  margin-right: 0.3rem;
+  font-size: 0.6rem;
+  color: var(--art-gold);
+  opacity: 0.85;
+}

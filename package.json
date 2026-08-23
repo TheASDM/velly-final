@@ -4,8 +4,10 @@
   "private": true,
   "description": "Static PWA build for the Valley of Shadows campaign wiki, app shell, Enzo chatbot, calendar, and art studio.",
   "scripts": {
-    "dev": "eleventy && npm run search && eleventy --serve --port=8080",
-    "build": "eleventy && npm run search",
+    "dev": "npm run build:js && eleventy && npm run search && eleventy --serve --port=8080",
+    "build": "npm run build:js && eleventy && npm run search",
+    "build:js": "node scripts/build-js.mjs",
+    "lint:js": "eslint .eleventy.js sw.js scripts/build-js.mjs src/js lib",
     "knowledge": "npm run knowledge:tiers && npm run knowledge:vectors",
     "knowledge:tiers": "python3 build_tiers.py",
     "knowledge:vectors": "python3 build_vectors.py",
@@ -15,6 +17,9 @@
   },
   "devDependencies": {
     "@11ty/eleventy": "^3.0.0",
+    "esbuild": "^0.25.9",
+    "eslint": "^9.36.0",
+    "globals": "^16.4.0",
     "pagefind": "^1.1.0"
   }
 }

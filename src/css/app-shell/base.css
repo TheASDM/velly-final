@@ -1,0 +1,256 @@
+*, *::before, *::after { box-sizing: border-box; }
+  html,
+  body {
+    margin: 0;
+    padding: 0;
+    background: var(--vos-bg-deep);
+    color: var(--vos-text-body);
+    overflow-x: hidden;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+
+  /* Themed scrollbars */
+  * { scrollbar-width: thin; scrollbar-color: rgba(139, 115, 85, 0.45) transparent; }
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: rgba(139, 115, 85, 0.35); border-radius: 4px; border: 1px solid rgba(13, 11, 17, 0.6); }
+  ::-webkit-scrollbar-thumb:hover { background: rgba(212, 165, 116, 0.55); }
+  ::-webkit-scrollbar-corner { background: transparent; }
+  iframe { color-scheme: dark; }
+
+  body {
+    font-family: 'EB Garamond', 'Crimson Text', Georgia, serif;
+    font-size: 17px;
+    line-height: 1.65;
+    padding-top: 0;
+    min-height: 100vh;
+    position: relative;
+  }
+
+  /* ── Masquerade backdrop ─────────────────────────────────────────────
+     Fixed full-viewport image, dimmed and blurred, sitting behind the
+     content. A vignette + radial wash on top keeps text legible. */
+  .vos-backdrop {
+    position: fixed; inset: 0; z-index: -2; pointer-events: none;
+    background:
+      radial-gradient(ellipse 60% 40% at 50% 0%, rgba(212, 165, 116, 0.08), transparent 70%),
+      radial-gradient(ellipse 80% 60% at 50% 100%, rgba(13, 11, 17, 0.85), transparent 70%),
+      linear-gradient(180deg, rgba(7, 6, 10, 0.78) 0%, rgba(7, 6, 10, 0.94) 100%),
+      url('/images/masqueradebackground.png') center/cover no-repeat fixed,
+      var(--vos-bg-deep);
+    filter: saturate(0.85);
+  }
+  .vos-backdrop::after {
+    content: '';
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 90% 60% at 50% 50%, transparent 0%, rgba(7, 6, 10, 0.55) 100%);
+  }
+
+  /* ── Typography ──────────────────────────────────────────────────────── */
+  h1, h2 { font-family: 'Cinzel', Georgia, serif; color: var(--vos-gold-bright); letter-spacing: 0.06em; line-height: 1.2; }
+  h1, h2, h3 { overflow-wrap: anywhere; }
+  h1 {
+    font-size: 2.4rem; margin: 2rem 0 1.25rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--vos-border);
+    position: relative;
+  }
+  h1::after {
+    content: '✦';
+    position: absolute; left: 0; bottom: -0.55rem;
+    background: var(--vos-bg-deep); padding-right: 0.5rem;
+    color: var(--vos-gold-dim); font-size: 0.8rem;
+  }
+  h2 { font-size: 1.55rem; margin: 2.25rem 0 0.85rem; }
+  h3 { font-family: 'Cinzel', Georgia, serif; color: var(--vos-cream); font-size: 1.18rem; letter-spacing: 0.04em; margin: 1.5rem 0 0.5rem; }
+  h4, h5, h6 { color: var(--vos-cream); }
+  hr {
+    border: none;
+    height: 16px; margin: 2.5rem 0;
+    background: center/contain no-repeat url('/images/masqueradeline.png');
+    opacity: 0.55;
+  }
+
+  a { color: var(--vos-gold-bright); text-decoration: none; border-bottom: 1px solid transparent; transition: border-color 0.15s, color 0.15s; }
+  a:hover { border-bottom-color: var(--vos-gold-bright); color: #e8c084; }
+
+  blockquote { border-left: 3px solid var(--vos-gold-dim); margin: 1.5rem 0; padding: 0.5rem 1.25rem; color: var(--vos-text); font-style: italic; }
+
+  code { background: rgba(212, 165, 116, 0.12); color: var(--vos-cream); padding: 0.1rem 0.4rem; border-radius: 3px; font-size: 0.92em; }
+  pre { background: rgba(13, 11, 17, 0.65); border: 1px solid var(--vos-border); border-radius: 4px; padding: 1rem; overflow-x: auto; }
+  pre code { background: none; padding: 0; }
+
+  table { border-collapse: collapse; margin: 1.5rem 0; width: 100%; }
+  th, td { border: 1px solid var(--vos-border); padding: 0.5rem 0.75rem; text-align: left; }
+  th { background: rgba(212, 165, 116, 0.08); color: var(--vos-cream); font-family: 'Cinzel', Georgia, serif; font-size: 0.85rem; letter-spacing: 0.04em; text-transform: uppercase; }
+
+  img { max-width: 100%; height: auto; }
+
+  .vos-wiki-edit-link {
+    position: fixed;
+    right: calc(1rem + env(safe-area-inset-right, 0px));
+    bottom: calc(var(--vos-app-nav-h) + 0.85rem + env(safe-area-inset-bottom, 0px));
+    z-index: 720;
+    min-height: 38px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.48rem 0.78rem;
+    border: 1px solid rgba(212, 165, 116, 0.42);
+    border-radius: 999px;
+    background: rgba(10, 8, 14, 0.94);
+    color: var(--vos-gold-bright);
+    font-family: 'Cinzel', Georgia, serif;
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.52);
+  }
+  .vos-wiki-edit-link[hidden] {
+    display: none;
+  }
+
+  main.vos-content {
+    width: 100%;
+    max-width: 1440px;
+    min-width: 0;
+    margin: 0 auto;
+    padding:
+      clamp(1rem, 2vw, 1.8rem)
+      clamp(0.75rem, 2vw, 1.5rem)
+      calc(7rem + var(--vos-app-nav-h) + env(safe-area-inset-bottom));
+    position: relative;
+    z-index: 1;
+  }
+
+  .vos-page-shell {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    margin: 0 auto;
+    padding: clamp(1.25rem, 2.5vw, 2.35rem);
+    border: 1px solid rgba(201, 161, 74, 0.22);
+    border-radius: 8px;
+    background:
+      linear-gradient(180deg, rgba(18, 16, 23, 0.94), rgba(8, 7, 11, 0.98)),
+      radial-gradient(ellipse 80% 60% at 50% 0%, rgba(201, 161, 74, 0.07), transparent 70%);
+    box-shadow: 0 18px 46px rgba(0, 0, 0, 0.62);
+  }
+  .vos-home-shell {
+    padding: 0;
+    border: none;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+  }
+  .vos-wiki-home-shell {
+    padding: 0;
+    border: none;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+  }
+  .vos-is-messages-page .vos-page-shell {
+    max-width: 60rem;
+    padding: clamp(0.4rem, 1.5vw, 0.8rem);
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+  }
+  .vos-page-shell:not(.vos-home-shell) > h1:first-child { margin-top: 0; }
+  .vos-page-shell:not(.vos-home-shell) > h1::after {
+    background: rgba(12, 10, 15, 0.98);
+  }
+  .vos-page-shell:not(.vos-home-shell) > h1,
+  .vos-page-shell:not(.vos-home-shell) > h2,
+  .vos-page-shell:not(.vos-home-shell) > h3,
+  .vos-page-shell:not(.vos-home-shell) > h4,
+  .vos-page-shell:not(.vos-home-shell) > h5,
+  .vos-page-shell:not(.vos-home-shell) > h6 {
+    width: 100%;
+    max-width: none;
+  }
+  .vos-page-shell:not(.vos-home-shell) > p,
+  .vos-page-shell:not(.vos-home-shell) > ul,
+  .vos-page-shell:not(.vos-home-shell) > ol,
+  .vos-page-shell:not(.vos-home-shell) > blockquote {
+    width: 100%;
+    max-width: none;
+    overflow-wrap: anywhere;
+    padding: clamp(0.85rem, 1.4vw, 1.15rem) clamp(1rem, 1.8vw, 1.4rem);
+    border: 1px solid rgba(201, 161, 74, 0.14);
+    border-left: 2px solid rgba(201, 161, 74, 0.34);
+    border-radius: 6px;
+    background:
+      linear-gradient(180deg, rgba(18, 16, 23, 0.54), rgba(8, 7, 11, 0.34)),
+      radial-gradient(ellipse 80% 60% at 50% 0%, rgba(201, 161, 74, 0.035), transparent 70%);
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.28);
+  }
+  .vos-page-shell:not(.vos-home-shell) > ul,
+  .vos-page-shell:not(.vos-home-shell) > ol {
+    padding-left: clamp(2rem, 2.8vw, 2.5rem);
+    list-style-position: outside;
+  }
+  .vos-page-shell:not(.vos-home-shell) > blockquote {
+    color: rgba(232, 220, 200, 0.86);
+    font-family: 'IM Fell English', Georgia, serif;
+  }
+
+  @media (max-width: 700px) {
+    h1 {
+      font-size: 1.85rem;
+      letter-spacing: 0;
+      line-height: 1.12;
+    }
+    h2 {
+      font-size: 1.35rem;
+      letter-spacing: 0;
+    }
+    h3 {
+      letter-spacing: 0;
+    }
+    main.vos-content {
+      padding-left: max(1rem, env(safe-area-inset-left));
+      padding-right: max(1rem, env(safe-area-inset-right));
+    }
+    .vos-page-shell {
+      padding: 1rem;
+    }
+    .vos-page-shell:not(.vos-home-shell) > p,
+    .vos-page-shell:not(.vos-home-shell) > ul,
+    .vos-page-shell:not(.vos-home-shell) > ol,
+    .vos-page-shell:not(.vos-home-shell) > blockquote {
+      padding: 0.8rem 0.9rem;
+    }
+    .vos-page-shell:not(.vos-home-shell) > ul,
+    .vos-page-shell:not(.vos-home-shell) > ol {
+      padding-left: 2rem;
+    }
+    .vos-page-shell:not(.vos-home-shell) > div[style*="display: flex"][style*="gap: 2rem"] {
+      display: block !important;
+      gap: 1.1rem !important;
+      padding: 1.1rem !important;
+    }
+    .vos-page-shell:not(.vos-home-shell) > div[style*="display: flex"][style*="gap: 2rem"] > div:first-child {
+      flex-basis: 100% !important;
+      min-width: 0 !important;
+    }
+    .vos-page-shell:not(.vos-home-shell) > div[style*="display: flex"][style*="gap: 2rem"] > div:first-child > div:first-child {
+      font-size: 1.45rem !important;
+      letter-spacing: 0 !important;
+      overflow-wrap: anywhere;
+    }
+    .vos-page-shell:not(.vos-home-shell) > div[style*="display: flex"][style*="gap: 2rem"] > div:last-child {
+      width: 100%;
+      margin-top: 1rem;
+    }
+    .vos-page-shell:not(.vos-home-shell) > div[style*="display: flex"][style*="gap: 2rem"] > div:last-child img {
+      width: 100% !important;
+      max-height: 230px;
+      object-fit: cover;
+    }
+  }

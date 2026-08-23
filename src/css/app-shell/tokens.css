@@ -1,0 +1,29 @@
+/* ── Tokens ─────────────────────────────────────────────────────────── */
+  :root {
+    --vos-gold-bright: #d4a574;
+    --vos-gold: #c9a84c;
+    --vos-gold-dim: #8b7355;
+    --vos-gold-faint: rgba(212, 165, 116, 0.08);
+    --vos-cream: #e8dcc8;
+    --vos-text: #c9b896;
+    --vos-text-body: #d4c7ad;
+    --vos-bg: #0d0b11;
+    --vos-bg-deep: #07060a;
+    --vos-bg-panel: rgba(13, 11, 17, 0.92);
+    --vos-bg-panel-solid: rgba(10, 8, 14, 0.97);
+    --vos-border: rgba(139, 115, 85, 0.28);
+    --vos-border-strong: rgba(212, 165, 116, 0.45);
+    --vos-quest: #a0322a;
+    --vos-quest-bright: #d44d3f;
+    --vos-shadow: 0 24px 80px rgba(0, 0, 0, 0.7);
+
+    --vos-nav-w: 0px;
+    --vos-safe-top: env(safe-area-inset-top, 0px);
+    --vos-app-bar-content-h: 58px;
+    --vos-app-bar-h: calc(var(--vos-app-bar-content-h) + var(--vos-safe-top));
+    --vos-top-bar-h: var(--vos-app-bar-content-h);
+    --vos-top-h: var(--vos-app-bar-h);
+    --vos-app-nav-h: 72px;
+    --vos-nav-y: 0px;
+    --vos-vv-bottom: 0px;
+  }

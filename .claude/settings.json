@@ -1,7 +1,16 @@
 {
   "permissions": {
     "allow": [
-      "Bash(find /Users/dustinamodeo/Documents/coding/projects/velly-final -name '.DS_Store' -not -path '*/.git/*' -delete)"
+      "Bash(find /Users/dustinamodeo/Documents/coding/projects/velly-final -name '.DS_Store' -not -path '*/.git/*' -delete)",
+      "Bash(node --check public/js/settings.js)",
+      "Bash(node --check sw.js)",
+      "Bash(node --check public/js/in-play-live.js)",
+      "Bash(node --check public/js/chatbot.js)",
+      "Bash(ssh -o ConnectTimeout=10 -o BatchMode=yes vapp 'ls -la ~/ 2>/dev/null | head -20; echo \"--- repo ---\"; ls -d ~/vallombrosa ~/velly-final 2>/dev/null; echo \"--- db ---\"; find ~ -maxdepth 3 -name \"vallombrosa.sqlite3\" 2>/dev/null')",
+      "Bash(scp -q export_questionnaires.py vapp:~/vallombrosa/)",
+      "Bash(scp -qr vapp:~/vallombrosa/backups/questionnaires/20260807T075656Z backups/questionnaires/)",
+      "Bash(awk '{print $6,$7,$9}')",
+      "Bash(node --check .eleventy.js pwa-client.js sw.js)"
     ]
   }
 }

@@ -1,0 +1,299 @@
+.vos-dm {
+  max-width: 860px;
+  margin: 0 auto;
+  display: grid;
+  gap: 1rem;
+}
+.vos-dm-panel {
+  min-width: 0;
+  border: 1px solid rgba(201,161,74,0.24);
+  border-radius: 8px;
+  background:
+    linear-gradient(180deg, rgba(18,16,23,0.94), rgba(8,7,11,0.98)),
+    radial-gradient(ellipse 80% 60% at 50% 0%, rgba(201,161,74,0.06), transparent 70%);
+  box-shadow: 0 16px 42px rgba(0,0,0,0.55);
+  padding: clamp(1.2rem, 3vw, 1.8rem);
+}
+.vos-dm-panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.8rem;
+}
+.vos-dm-panel-head h2 {
+  margin: 0;
+}
+.vos-dm-form {
+  display: grid;
+  gap: 0.85rem;
+}
+.vos-dm-form label,
+.vos-dm-recipient-picker legend,
+.vos-dm-toggle {
+  color: var(--vos-gold-dim);
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+.vos-dm-form label {
+  display: grid;
+  gap: 0.35rem;
+}
+.vos-dm-form input,
+.vos-dm-form select,
+.vos-dm-form textarea {
+  width: 100%;
+  border: 1px solid rgba(201,168,76,0.25);
+  border-radius: 6px;
+  background: rgba(7,6,10,0.72);
+  color: var(--vos-cream);
+  font: 1rem 'EB Garamond', Georgia, serif;
+  line-height: 1.4;
+  padding: 0.65rem 0.75rem;
+}
+.vos-dm-form textarea {
+  min-height: 110px;
+  resize: vertical;
+}
+.vos-dm-recipient-picker {
+  border: 1px solid rgba(201,168,76,0.18);
+  border-radius: 8px;
+  padding: 0.85rem;
+  margin: 0;
+}
+.vos-dm-recipient-picker legend {
+  padding: 0 0.35rem;
+}
+.vos-dm-recipient-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 0.45rem;
+  margin-top: 0.65rem;
+}
+.vos-dm-check {
+  display: flex !important;
+  align-items: center;
+  gap: 0.55rem !important;
+  min-height: 42px;
+  padding: 0.52rem 0.65rem;
+  border: 1px solid rgba(201,168,76,0.18);
+  border-radius: 999px;
+  background: rgba(7,6,10,0.42);
+  color: var(--vos-text) !important;
+  cursor: pointer;
+  text-transform: none !important;
+}
+.vos-dm-check input {
+  width: 1rem;
+  min-width: 1rem;
+  height: 1rem;
+  accent-color: var(--vos-gold-bright);
+}
+.vos-dm-check:has(input:checked) {
+  border-color: rgba(212,165,116,0.62);
+  background: rgba(212,165,116,0.12);
+  color: var(--vos-cream) !important;
+}
+.vos-dm-check.is-disabled {
+  opacity: 0.45;
+}
+.vos-dm-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+.vos-dm-actions button,
+.vos-dm-button {
+  min-height: 44px;
+  padding: 0.55rem 1rem;
+  border: 1px solid rgba(212,165,116,0.44);
+  border-radius: 6px;
+  background: rgba(212,165,116,0.1);
+  color: var(--vos-gold-bright);
+  cursor: pointer;
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+.vos-dm-actions button:hover,
+.vos-dm-button:hover {
+  background: rgba(212,165,116,0.16);
+  color: var(--vos-cream);
+}
+.vos-dm-button.is-danger {
+  border-color: rgba(176,67,67,0.5);
+  color: #f0a0a0;
+}
+.vos-dm-status {
+  min-height: 1.4em;
+  margin-top: 0.85rem;
+  color: var(--vos-text);
+}
+.vos-dm-status.is-error {
+  color: var(--vos-quest-bright);
+}
+.vos-dm-counts {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.65rem;
+  margin: 0.85rem 0 1rem;
+}
+.vos-dm-count {
+  border: 1px solid rgba(201,168,76,0.22);
+  border-radius: 6px;
+  background: rgba(7,6,10,0.5);
+  padding: 0.75rem;
+  text-align: center;
+}
+.vos-dm-count strong {
+  display: block;
+  color: var(--vos-gold-bright);
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 1.35rem;
+}
+.vos-dm-count span {
+  color: rgba(233,225,208,0.72);
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.58rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+.vos-dm-rsvps,
+.vos-dm-history {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.vos-dm-rsvps li {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.55rem 0;
+  border-top: 1px solid rgba(139,115,85,0.24);
+}
+.vos-dm-rsvps span {
+  color: var(--vos-gold-dim);
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.62rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.vos-dm-message {
+  display: grid;
+  gap: 0.65rem;
+  border-top: 1px solid rgba(139,115,85,0.24);
+  padding: 1rem 0;
+}
+.vos-dm-message:first-child {
+  border-top: 0;
+}
+.vos-dm-message.is-deleted {
+  opacity: 0.55;
+}
+.vos-dm-message-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.vos-dm-message-title {
+  margin: 0;
+  color: var(--vos-cream);
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 1rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.vos-dm-message-body {
+  margin: 0;
+  color: var(--vos-text);
+  white-space: pre-wrap;
+}
+.vos-dm-meta,
+.vos-dm-badges {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+.vos-dm-meta {
+  color: rgba(233,225,208,0.62);
+  font-size: 0.9rem;
+}
+.vos-dm-badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 28px;
+  padding: 0.2rem 0.55rem;
+  border: 1px solid rgba(201,168,76,0.24);
+  border-radius: 999px;
+  color: var(--vos-gold-dim);
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+.vos-dm-empty {
+  color: rgba(233,225,208,0.64);
+  font-style: italic;
+}
+.vos-dm-helper {
+  margin: 0 0 0.6rem;
+  color: rgba(212, 199, 173, 0.7);
+  font-size: 0.88rem;
+  line-height: 1.4;
+}
+.vos-dm-helper code {
+  background: rgba(212, 165, 116, 0.12);
+  color: var(--vos-cream);
+  padding: 0.05rem 0.3rem;
+  border-radius: 3px;
+  font-size: 0.85rem;
+}
+.vos-dm-inplay-list {
+  display: grid;
+  gap: 0.5rem;
+}
+.vos-dm-inplay-row {
+  display: grid;
+  grid-template-columns: 1.6fr 1.4fr 0.9fr 0.7fr auto;
+  gap: 0.5rem;
+  align-items: center;
+}
+.vos-dm-inplay-row.is-wiki-linked .vos-dm-inplay-name {
+  border-color: rgba(168, 224, 168, 0.4);
+}
+.vos-dm-inplay-row input,
+.vos-dm-inplay-row select {
+  width: 100%;
+  min-height: 36px;
+  padding: 0.35rem 0.55rem;
+  border: 1px solid rgba(201, 168, 76, 0.22);
+  border-radius: 6px;
+  background: rgba(7, 6, 10, 0.55);
+  color: var(--vos-cream);
+  font-family: 'Crimson Text', Georgia, serif;
+  font-size: 0.94rem;
+}
+.vos-dm-inplay-row input:focus,
+.vos-dm-inplay-row select:focus {
+  outline: none;
+  border-color: rgba(212, 165, 116, 0.6);
+  background: rgba(7, 6, 10, 0.75);
+}
+.vos-dm-inplay-row .vos-dm-inplay-emblem-custom[hidden] {
+  display: none !important;
+}
+.vos-dm-inplay-row button {
+  width: 36px;
+  padding: 0;
+  font-size: 1.1rem;
+}

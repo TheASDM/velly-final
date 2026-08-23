@@ -30,6 +30,10 @@ from typing import Optional
 
 import requests
 
+from campaign_lib.chunking import emit_chunks
+from campaign_lib.fivetools import fivetools_entry_text, make_entry_id
+from campaign_lib.wiki import iter_published_markdown, normalize_aliases
+
 # ── Paths ────────────────────────────────────────────────────────────────────
 
 BASE_DIR     = Path(__file__).resolve().parent
@@ -52,74 +56,14 @@ WIKI_DIRS = [
     "Updates",
 ]
 
-# ── Frontmatter parser (shared format with build_tiers.py) ───────────────────
-
-
-def parse_frontmatter(content: str) -> tuple[dict, str]:
-    """Parse minimal YAML frontmatter. Returns (metadata, body)."""
-    if not content.startswith("---\n"):
-        return {}, content
-    end = content.find("\n---\n", 4)
-    if end == -1:
-        end = content.find("\n---", 4)
-        if end == -1:
-            return {}, content
-        body_start = end + 4
-    else:
-        body_start = end + 5
-    yaml_block = content[4:end]
-    body = content[body_start:].lstrip("\n")
-    metadata: dict = {}
-    current_list_key: str | None = None
-    for raw in yaml_block.split("\n"):
-        if not raw.strip() or raw.lstrip().startswith("#"):
-            continue
-        stripped = raw.lstrip()
-        if stripped.startswith("- "):
-            value = stripped[2:].strip()
-            value = _unquote(value)
-            if current_list_key:
-                metadata.setdefault(current_list_key, []).append(value)
-            continue
-        if ":" in raw:
-            key, _, val = raw.partition(":")
-            key = key.strip()
-            val = val.strip()
-            if val:
-                current_list_key = None
-                metadata[key] = _coerce(_unquote(val))
-            else:
-                current_list_key = key
-                metadata.setdefault(key, [])
-    return metadata, body
-
-
-def _unquote(val: str) -> str:
-    if len(val) >= 2 and val[0] == val[-1] and val[0] in ("'", '"'):
-        return val[1:-1]
-    return val
-
-
-def _coerce(val):
-    if val in ("true", "True"):
-        return True
-    if val in ("false", "False"):
-        return False
-    return val
-
-
 # ── Wiki page → embeddable text ──────────────────────────────────────────────
-
-
 def wiki_page_text(meta: dict, body: str) -> str:
     """Build the text that gets embedded for a wiki page."""
     parts = []
     title = meta.get("title", "")
     desc = meta.get("description", "")
     tags = meta.get("tags", "")
-    aliases = meta.get("aliases") or []
-    if isinstance(aliases, str):
-        aliases = [a.strip() for a in aliases.split(",") if a.strip()]
+    aliases = normalize_aliases(meta.get("aliases"))
 
     if title:
         parts.append(f"{title}.")
@@ -144,233 +88,6 @@ def wiki_page_text(meta: dict, body: str) -> str:
     if cleaned:
         parts.append(cleaned)
     return "\n".join(parts)
-
-
-# ── 5etools tag stripping & flattening (preserved) ───────────────────────────
-
-_5E_TAG_RE = re.compile(r"\{@\w+\s+([^}|]+?)(?:\|[^}]*)?\}")
-
-
-def strip_5e_tags(text: str) -> str:
-    if not isinstance(text, str):
-        return str(text)
-    return _5E_TAG_RE.sub(r"\1", text)
-
-
-def flatten_entries(entries, depth: int = 0) -> str:
-    if entries is None:
-        return ""
-    if isinstance(entries, str):
-        return strip_5e_tags(entries)
-    if isinstance(entries, dict):
-        return _flatten_entry_object(entries, depth)
-    if isinstance(entries, list):
-        parts = []
-        for item in entries:
-            text = flatten_entries(item, depth)
-            if text:
-                parts.append(text)
-        return " ".join(parts)
-    return str(entries)
-
-
-def _flatten_entry_object(obj: dict, depth: int) -> str:
-    parts = []
-    entry_type = obj.get("type", "")
-    name = obj.get("name", "")
-    if name:
-        parts.append(f"{strip_5e_tags(name)}.")
-    if "entries" in obj:
-        parts.append(flatten_entries(obj["entries"], depth + 1))
-    if "headerEntries" in obj:
-        parts.append(flatten_entries(obj["headerEntries"], depth + 1))
-    if "items" in obj and isinstance(obj["items"], list):
-        for item in obj["items"]:
-            parts.append(flatten_entries(item, depth + 1))
-    if entry_type == "table":
-        cols = obj.get("colLabels", [])
-        if cols:
-            parts.append("Columns: " + ", ".join(strip_5e_tags(c) for c in cols) + ".")
-        for row in obj.get("rows", []):
-            if isinstance(row, list):
-                parts.append(" | ".join(strip_5e_tags(str(cell)) for cell in row))
-    if "entry" in obj:
-        parts.append(flatten_entries(obj["entry"], depth + 1))
-    return " ".join(p for p in parts if p)
-
-
-# ── 5etools per-type text builders (preserved) ───────────────────────────────
-
-
-def _monster_text(entry: dict) -> str:
-    parts = [f"{entry['name']}."]
-    if "type" in entry:
-        t = entry["type"]
-        type_str = t if isinstance(t, str) else t.get("type", str(t))
-        parts.append(f"Type: {type_str}.")
-    size = entry.get("size", [])
-    if size:
-        size_map = {"T": "Tiny", "S": "Small", "M": "Medium", "L": "Large",
-                     "H": "Huge", "G": "Gargantuan"}
-        parts.append("Size: " + ", ".join(size_map.get(s, s) for s in size) + ".")
-    if "cr" in entry:
-        cr = entry["cr"]
-        cr_str = str(cr) if not isinstance(cr, dict) else cr.get("cr", str(cr))
-        parts.append(f"CR {cr_str}.")
-    for stat in ("str", "dex", "con", "int", "wis", "cha"):
-        val = entry.get(stat)
-        if val is not None:
-            parts.append(f"{stat.upper()} {val}")
-    hp = entry.get("hp", {})
-    if isinstance(hp, dict) and "average" in hp:
-        parts.append(f"HP {hp['average']}.")
-    ac = entry.get("ac", [])
-    if ac:
-        ac_val = ac[0] if isinstance(ac[0], int) else ac[0].get("ac", ac[0])
-        parts.append(f"AC {ac_val}.")
-    speed = entry.get("speed", {})
-    if isinstance(speed, dict):
-        speed_parts = []
-        for k, v in speed.items():
-            speed_parts.append(f"{k} {v}" if k != "walk" else str(v))
-        if speed_parts:
-            parts.append(f"Speed: {', '.join(speed_parts)}.")
-    langs = entry.get("languages", [])
-    if langs:
-        parts.append(f"Languages: {', '.join(langs)}.")
-    for section_key in ("trait", "action", "reaction", "legendary", "bonus",
-                         "spellcasting", "mythic"):
-        section = entry.get(section_key, [])
-        if isinstance(section, list):
-            for item in section:
-                if isinstance(item, dict):
-                    n = item.get("name", "")
-                    e = flatten_entries(item.get("entries", []))
-                    he = flatten_entries(item.get("headerEntries", []))
-                    text = f"{n}: {he} {e}".strip() if n else f"{he} {e}".strip()
-                    if text:
-                        parts.append(text)
-    return " ".join(parts)
-
-
-def _spell_text(entry: dict) -> str:
-    parts = [f"{entry['name']}."]
-    level = entry.get("level", 0)
-    school_map = {"A": "Abjuration", "C": "Conjuration", "D": "Divination",
-                  "E": "Enchantment", "V": "Evocation", "I": "Illusion",
-                  "N": "Necromancy", "T": "Transmutation"}
-    school = school_map.get(entry.get("school", ""), entry.get("school", ""))
-    parts.append(f"{school} cantrip." if level == 0 else f"Level {level} {school}.")
-    time_list = entry.get("time", [])
-    if time_list and isinstance(time_list[0], dict):
-        t = time_list[0]
-        parts.append(f"Casting time: {t.get('number', '')} {t.get('unit', '')}.")
-    rng = entry.get("range", {})
-    if isinstance(rng, dict):
-        dist = rng.get("distance", {})
-        if isinstance(dist, dict):
-            parts.append(f"Range: {dist.get('amount', '')} {dist.get('type', '')}.".strip())
-    comps = entry.get("components", {})
-    if isinstance(comps, dict):
-        comp_parts = []
-        if comps.get("v"): comp_parts.append("V")
-        if comps.get("s"): comp_parts.append("S")
-        if comps.get("m"):
-            m = comps["m"]
-            mat_text = m if isinstance(m, str) else m.get("text", str(m))
-            comp_parts.append(f"M ({strip_5e_tags(mat_text)})")
-        parts.append(f"Components: {', '.join(comp_parts)}.")
-    dur = entry.get("duration", [])
-    if dur and isinstance(dur[0], dict):
-        d = dur[0]
-        dtype = d.get("type", "")
-        if dtype == "instant":
-            parts.append("Duration: Instantaneous.")
-        elif dtype == "timed":
-            amt = d.get("duration", {}).get("amount", "")
-            unit = d.get("duration", {}).get("type", "")
-            conc = "Concentration, " if d.get("concentration") else ""
-            parts.append(f"Duration: {conc}{amt} {unit}.")
-    entries = flatten_entries(entry.get("entries", []))
-    if entries: parts.append(entries)
-    higher = flatten_entries(entry.get("entriesHigherLevel", []))
-    if higher: parts.append(f"At higher levels: {higher}")
-    return " ".join(parts)
-
-
-def _class_text(entry: dict, category_key: str) -> str:
-    parts = [f"{entry['name']}."]
-    cls = entry.get("className", "")
-    if cls: parts.append(f"Class: {cls}.")
-    subcls = entry.get("subclassShortName", "")
-    if subcls: parts.append(f"Subclass: {subcls}.")
-    level = entry.get("level")
-    if level: parts.append(f"Level: {level}.")
-    if category_key == "class":
-        hd = entry.get("hd", {})
-        if isinstance(hd, dict):
-            parts.append(f"Hit Die: d{hd.get('faces', '?')}.")
-        profs = entry.get("startingProficiencies", {})
-        armor = profs.get("armor", [])
-        if armor: parts.append(f"Armor proficiencies: {', '.join(str(a) for a in armor)}.")
-        weapons = profs.get("weapons", [])
-        if weapons: parts.append(f"Weapon proficiencies: {', '.join(str(w) for w in weapons)}.")
-    entries = flatten_entries(entry.get("entries", []))
-    if entries: parts.append(entries)
-    return " ".join(parts)
-
-
-def _item_text(entry: dict) -> str:
-    parts = [f"{entry['name']}."]
-    rarity = entry.get("rarity", "")
-    if rarity and rarity != "none": parts.append(f"Rarity: {rarity}.")
-    item_type = entry.get("type", "")
-    if item_type: parts.append(f"Type: {item_type}.")
-    weight = entry.get("weight")
-    if weight: parts.append(f"Weight: {weight} lb.")
-    if entry.get("reqAttune"): parts.append("Requires attunement.")
-    entries = flatten_entries(entry.get("entries", []))
-    if entries: parts.append(entries)
-    return " ".join(parts)
-
-
-def _generic_text(entry: dict) -> str:
-    parts = [f"{entry['name']}."]
-    entries = flatten_entries(entry.get("entries", []))
-    if entries: parts.append(entries)
-    return " ".join(parts)
-
-
-def fivetools_entry_text(entry: dict, category_key: str, filename: str) -> str:
-    if "name" not in entry:
-        return ""
-    if "bestiary" in filename:
-        return _monster_text(entry)
-    if "spell" in filename:
-        return _spell_text(entry)
-    if filename.startswith("class-") or category_key in ("class", "subclass",
-                                                           "classFeature",
-                                                           "subclassFeature"):
-        return _class_text(entry, category_key)
-    if filename in ("items.json", "items-base.json") or category_key in ("item", "itemGroup"):
-        return _item_text(entry)
-    return _generic_text(entry)
-
-
-def make_entry_id(entry: dict, category_key: str, filename: str, index: int) -> str:
-    name = entry.get("name", f"entry_{index}")
-    source = entry.get("source", "")
-    cls = entry.get("className", "")
-    subcls = entry.get("subclassShortName", "")
-    level = entry.get("level", "")
-    parts = [filename.replace(".json", ""), category_key, name]
-    if cls: parts.append(cls)
-    if subcls: parts.append(subcls)
-    if level: parts.append(str(level))
-    if source: parts.append(source)
-    parts.append(str(index))
-    raw = "_".join(parts)
-    return re.sub(r"[^a-zA-Z0-9_-]", "_", raw).lower()
 
 
 # ── Embedding ────────────────────────────────────────────────────────────────
@@ -402,96 +119,28 @@ def embed_text(text: str, ollama_url: str, api_key: str = "",
                 return None
 
 
-# ── Chunking ─────────────────────────────────────────────────────────────────
-
-# Target chunk size — well under nomic-embed-text's 8192-token context (~24K
-# chars), with headroom for embedding-time tokenization overhead.
-CHUNK_MAX_CHARS = 6000
-
-
-def chunk_text(text: str, max_chars: int = CHUNK_MAX_CHARS) -> list[str]:
-    """Split text into chunks of at most max_chars, breaking on paragraph
-    boundaries when possible. Returns [text] unchanged if short enough.
-    """
-    if len(text) <= max_chars:
-        return [text]
-    paras = re.split(r"\n\n+", text)
-    chunks: list[str] = []
-    current = ""
-    for p in paras:
-        if current and len(current) + 2 + len(p) > max_chars:
-            chunks.append(current.strip())
-            current = p
-        else:
-            current = current + "\n\n" + p if current else p
-    if current.strip():
-        chunks.append(current.strip())
-    # Hard-split any remaining oversized chunk (a single paragraph > max_chars)
-    final: list[str] = []
-    for chunk in chunks:
-        if len(chunk) <= max_chars:
-            final.append(chunk)
-            continue
-        for i in range(0, len(chunk), max_chars):
-            final.append(chunk[i:i + max_chars])
-    return final
-
-
 # ── Loading ──────────────────────────────────────────────────────────────────
 
 
-def _emit_chunks(page_id: str, name: str, aliases: list, source_file: str,
-                 text: str, is_campaign: bool) -> list[dict]:
-    """Split text into chunks, return one vector store entry per chunk."""
-    chunks = chunk_text(text)
-    total = len(chunks)
-    out: list[dict] = []
-    for i, chunk in enumerate(chunks):
-        eid = page_id if total == 1 else f"{page_id}_chunk_{i}"
-        out.append({
-            "id": eid,
-            "page_id": page_id,
-            "chunk_index": i,
-            "chunk_total": total,
-            "name": name,
-            "aliases": aliases,
-            "source_file": source_file,
-            "text": chunk,
-            "is_campaign": is_campaign,
-        })
-    return out
-
-
+def _warn_markdown(path: Path, error: Exception) -> None:
+    print(f"  WARN: {path}: {error}", file=sys.stderr)
 def load_wiki_entries() -> list[dict]:
     """Walk wiki content dirs, return one or more entries per published page
     (long pages chunked into multiple vector store entries)."""
     entries: list[dict] = []
     for rel_dir in WIKI_DIRS:
-        full_dir = WIKI_ROOT / rel_dir
-        if not full_dir.exists():
-            continue
-        for fpath in sorted(full_dir.glob("*.md")):
-            if fpath.stem == "index":
-                continue
-            try:
-                raw = fpath.read_text(encoding="utf-8")
-            except Exception as e:
-                print(f"  WARN: {fpath}: {e}", file=sys.stderr)
-                continue
-            meta, body = parse_frontmatter(raw)
-            if meta.get("published") is False:
-                continue
+        for fpath, meta, body in iter_published_markdown(
+            WIKI_ROOT, rel_dir, on_error=_warn_markdown
+        ):
             text = wiki_page_text(meta, body)
             if not text or len(text) < 20:
                 continue
             page_id = f"wiki_{rel_dir.replace('/', '_')}_{fpath.stem}".lower()
             page_id = re.sub(r"[^a-z0-9_-]", "_", page_id)
-            aliases = meta.get("aliases") or []
-            if isinstance(aliases, str):
-                aliases = [a.strip() for a in aliases.split(",") if a.strip()]
+            aliases = normalize_aliases(meta.get("aliases"))
             name = meta.get("title") or fpath.stem
             source_file = str(fpath.relative_to(WIKI_ROOT))
-            entries.extend(_emit_chunks(page_id, name, aliases, source_file,
+            entries.extend(emit_chunks(page_id, name, aliases, source_file,
                                           text, is_campaign=True))
     # home.md is intentionally excluded — it's a presentational landing page
     # (inline CSS/markup, no lore content) so embedding it just pollutes the
@@ -527,7 +176,7 @@ def load_5etools_entries() -> list[dict]:
                 if not text or len(text) < 20:
                     continue
                 page_id = make_entry_id(entry, key, fpath.name, i)
-                entries.extend(_emit_chunks(
+                entries.extend(emit_chunks(
                     page_id,
                     entry.get("name", ""),
                     [],

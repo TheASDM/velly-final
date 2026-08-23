@@ -29,6 +29,10 @@ app-data/**
 !app-data/
 !app-data/.gitkeep
 
+# Questionnaire exports written by export_questionnaires.py. These are the
+# players' own writing and this repo is public — never commit them.
+backups/
+
 # Generated Enzo knowledge artifacts (rebuilt on the deployment host)
 campaign-data/tier1.md
 campaign-data/vector_store.json
@@ -37,6 +41,11 @@ campaign-data/vector_store_player.json
 
 # Node modules
 node_modules/
+
+# Local Python tooling and bytecode
+.venv/
+__pycache__/
+*.py[cod]
 
 # Local archives (never intended for the repo)
 *.zip
@@ -59,3 +68,17 @@ Tools/image/
 # macOS Finder duplicates ("file 2.json" style — note: no quotes; literal
 # quotes in gitignore are matched as characters, not metacharacters)
 * 2.*
+claude-project-export/
+
+# Env/config backups — these are verbatim copies of .env and hold live secrets.
+# *.bak above does not catch the dated/suffixed forms.
+.env.*
+!.env.example
+*.bak-*
+*.before-pull
+
+# Dated content dumps staged for import. These carry DM-only spoiler material
+# ("never share with players") and per-character sheets synthesised from player
+# questionnaire answers ("DM EYES ONLY"). This repo is public — keep them out.
+files/[0-9][0-9]-[0-9][0-9]-[0-9][0-9][0-9][0-9]/
+files/*/campaign-dm-secrets-*.md

@@ -1,110 +1,151 @@
----
-title: CLAUDE
-description:
-published: false
-date: 2026-05-26T00:00:00.000Z
-tags:
-editor: markdown
-dateCreated: 2026-05-01T22:26:10.048Z
----
+# CLAUDE.md — Vallombrosa working guide
 
-# CLAUDE.md - Velly-Final Project Guide
+Project overview lives in [README.md](README.md). This file is the working
+guide: where things are, what the conventions are, and what will bite you.
 
-## What This Is
+## Shape
 
-Vallombrosa is a Docker-deployed PWA for the Valley of Shadows campaign:
+Docker-deployed PWA for the Valley of Shadows campaign. Two services, no
+separate database.
 
-1. **Markdown wiki** - Eleventy builds the campaign pages from this repo.
-2. **Home and calendar** - player-facing session status, DM messages, RSVP, and reminders.
-3. **Studio** - image generation and shared gallery.
-4. **Enzo** - RAG chatbot backed by the campaign corpus and 5e reference data.
-
-The repo is the source of truth. Markdown pages, templates, app shell code, API code, and deployment config all live here.
-
-## Services
-
-| Service | Container | Port | Purpose |
+| Service | Container | Port | Owns |
 |---|---:|---:|---|
-| nginx | `dnd_nginx` | `8080:80` | Serves `_site` and proxies `/api/*` |
-| Flask API | `dnd_chatbot` | `3001` internal | Enzo, image generation, push, RSVP, DM messages |
+| nginx | `dnd_nginx` | `127.0.0.1:8080:80` | Serves `_site`, proxies `/api/*` and `/health` |
+| Flask API | `dnd_chatbot` | `3001` internal | Enzo, Studio, push, auth, calendar, records |
 
-There is no separate database service. Runtime state lives in `app-data/vallombrosa.sqlite3`; generated images live in `generated-art/`.
+The **chatbot container runs the Eleventy build at startup** (`npm run build`
+against the mounted `/site`), then execs Gunicorn. Rebuilding that container is
+what refreshes the static site — nginx only serves what it finds.
 
-## Data Pipeline
+Runtime state is one SQLite file at `app-data/vallombrosa.sqlite3`. Generated
+images live in `generated-art/`.
 
-Enzo reads generated artifacts from `campaign-data/`:
+## Critical files
 
-- `build_tiers.py` builds `campaign-data/tier1.md` from published markdown and selected 5e data.
-- `build_vectors.py` builds `campaign-data/vector_store.json` using the configured Ollama embedding endpoint.
-- `Venturia/DM/` and pages with `published: false` are excluded from player-facing builds.
-
-Rebuild after content changes that Enzo should know about:
-
-```bash
-python3 build_tiers.py
-python3 build_vectors.py
-docker compose restart chatbot
-```
-
-## Critical Files
+### App shell and pages
 
 | Path | Purpose |
 |---|---|
 | `_includes/layouts/page.njk` | App shell, sticky app bar, bottom tabs, shared PWA styles |
-| `_includes/partials/` | Shared UI components |
+| `_includes/partials/` | `app-bottom-nav`, `rsvp-control`, `gallery-carousel`, `map-viewer` |
+| `.eleventy.js` | `/en/` permalink scheme, collections, `appBarMeta` / breadcrumb / tree filters |
+| `_data/navigation.js` | Single source of truth for bottom-nav tabs and app-bar titles |
+| `_data/players.json` | Canonical roster names — auth maps and records key off these |
+| `_data/campaign.js` | Latest session, open threads (edit after each session, then rebuild) |
 | `home.md`, `calendar.md`, `enzo.md` | Root tab surfaces |
-| `Tools/art.md` | Studio page |
-| `pwa-client.js` | App identity, push, install helpers, RSVP wiring |
-| `sw.js` | Service worker |
-| `chatbot/server.py` | Flask API and RAG orchestration |
-| `public/js/chatbot.js` | Enzo client UI |
-| `public/css/chatbot.css` | Enzo-specific CSS |
-| `docker-compose.yml` | Production compose stack |
-| `nginx/conf.d/dnd-site.conf` | Static serving and `/api/*` proxy |
+| `Tools/art.md` | Studio |
+| `dm.md`, `questionnaire.md`, `submit-lore.md`, `messages.md`, `notes.md`, `settings.md` | Player/DM surfaces |
 
-## Environment
+### Client
 
-Copy `.env.example` to `.env` on the VPS. Required production values:
+| Path | Purpose |
+|---|---|
+| `src/js/pwa/` | Identity, push, install, `authHeaders()`, RSVP wiring. Bundles to `/js/pwa-client.js` and exposes `window.VOS_PWA` |
+| `sw.js` | Service worker — four caches keyed off `CACHE_VERSION` |
+| `src/js/dm/` | DM console modules; esbuild emits `public/js/vos-dm.js` |
+| `public/js/vos-calendar.js` | Calendar, RSVP, availability grid |
+| `src/js/questionnaire/` | Character record + DM proofing view + export |
+| `src/js/chatbot/`, `src/js/studio/` | Enzo client and Studio UI modules |
+| `src/css/` | Layered source CSS; esbuild emits the files under `public/css/` |
 
-| Variable | Required | Notes |
-|---|---|---|
-| `ANTHROPIC_API_KEY` | Yes | Claude API key |
-| `OLLAMA_API_KEY` | Yes, for the current hosted endpoint | Bearer token for embeddings |
-| `OPENAI_KEY` | Yes, for Studio | Image generation |
-| `ADMIN_TOKEN` | Yes | DM/admin page actions |
-| `VAPID_PRIVATE_KEY` | Yes, for push | Keep private on server |
-| `VAPID_PUBLIC_KEY` | Yes, for push | Safe to ship to clients |
+### Server and pipelines
 
-## Deployment
-
-```bash
-git pull --ff-only
-docker compose up -d --build --remove-orphans
-docker compose logs -f chatbot nginx
-```
-
-Local VPS checks:
-
-```bash
-curl -I http://127.0.0.1:8080/
-curl -I http://127.0.0.1:8080/manifest.webmanifest
-curl -I http://127.0.0.1:8080/sw.js
-curl http://127.0.0.1:8080/health
-```
+| Path | Purpose |
+|---|---|
+| `chatbot/server.py`, `chatbot/vos/` | Gunicorn compatibility shim plus Flask blueprints, services, migrations, and RAG engine |
+| `campaign_lib/` | Shared frontmatter, wiki traversal, chunking, and 5e build helpers |
+| `build_tiers.py` | Published markdown + 5e data → `campaign-data/tier1.md` |
+| `build_vectors.py` | → `campaign-data/vector_store.json` via Ollama embeddings |
+| `build_questionnaire.py` | `questionaire/record-*.html` → `_data/questionnaire.json` |
+| `export_questionnaires.py` | Player records → gitignored `backups/questionnaires/<stamp>/` |
+| `docker-compose.yml`, `nginx/conf.d/dnd-site.conf` | Deployment |
 
 ## Conventions
 
 - Keep shared PWA UI in the layout or partials, not page-local one-offs.
+- Root-tab navigation belongs in the bottom tab bar; per-section navigation
+  stays inside each tab.
 - Use row chips for navigable entities.
-- Keep root-tab navigation in the bottom tab bar.
-- Keep per-section navigation inside each tab.
-- Do not expose `Venturia/DM/` content to player-facing builds or Enzo.
+- Page-local CSS and JavaScript live under `src/css/pages/` and `src/js/pages/`;
+  declare their built URLs with frontmatter `pageStyles` / `pageScripts`.
+- Every new wiki page gets `title` / `description` / `tags` frontmatter.
 - Rebuild vectors after meaningful campaign content changes.
-- Use `docker compose up -d --build --remove-orphans` for VPS updates so removed services are cleaned up.
+- Use `docker compose up -d --build --remove-orphans` so removed services are
+  cleaned up.
 
-## Runtime Data To Back Up
+## Gotchas
+
+**`published: false` means unlisted, not private by itself.** The entire
+`Venturia/DM/` tree and internal runbooks/plans are additionally excluded in
+`.eleventyignore`; keep sensitive additions covered there or set
+`permalink: false`.
+
+**Restarting nginx is not enough for content changes.** nginx serves a static
+build; the chatbot container produces it. Rebuild `chatbot` to pick up markdown,
+template, or client-JS changes.
+
+**Bump `CACHE_VERSION` in `sw.js`** when shipping client changes, or installed
+apps keep serving the old shell.
+
+**Auth is OAuth, not tokens.** `AUTH_TOKEN_SECRET` signs player tokens; DM
+status is `player_name == "DM"`. `ADMIN_TOKEN` and `PLAYER_LOGIN_CODES` are
+legacy fallbacks. `DM_PASSPHRASE` (the old `Prima Volta` chat toggle) is **dead
+config** — still in `.env.example`, read by nothing.
+
+**Admin endpoints accept two credentials.** `_admin_error_response()` takes
+either a DM player token or a Google session JWT, both as
+`Authorization: Bearer`. Client code sends it via `pwa.authHeaders()`.
+
+**Player names are the join key.** `_data/players.json` `name` values must match
+the `PLAYERS` map in `build_questionnaire.py` and the OAuth `*_PLAYER_MAP`
+entries. A rename silently orphans records.
+
+**The repo is public.** Never commit player-written content — questionnaire
+answers, lore submissions, notes. `backups/` is gitignored for this reason.
+
+**Browser wiki edits trigger an async rebuild** inside the container
+(`AUTO_REBUILD_ON_WIKI_SAVE`, `AUTO_KNOWLEDGE_ON_WIKI_SAVE`), refreshing `_site`
+and hot-reloading Enzo's corpus on the next chat. Local edits do not.
+
+## Common tasks
+
+```bash
+# Content changes Enzo should know about
+python3 build_tiers.py && python3 build_vectors.py && docker compose restart chatbot
+
+# Character-record questions changed
+python3 build_questionnaire.py       # regenerates _data/questionnaire.json
+
+# Back up player records (VPS: reads SQLite; laptop: needs --url + token)
+python3 export_questionnaires.py
+
+# Deploy
+git pull --ff-only && docker compose up -d --build --remove-orphans
+```
+
+Pre-deploy checks:
+
+```bash
+npm run clean && npm run build
+# node --check only reads its FIRST file argument — loop, don't list.
+for f in .eleventy.js sw.js scripts/build-js.mjs public/js/*.js; do node --check "$f" || break; done
+python3 -m py_compile chatbot/server.py
+git diff --check
+```
+
+## Environment
+
+`.env.example` documents the full set. Required in production:
+`ANTHROPIC_API_KEY`, `OLLAMA_API_KEY`, `OPENAI_KEY`, `AUTH_TOKEN_SECRET`,
+`DISCORD_OAUTH_CLIENT_ID` / `_SECRET`, `DISCORD_PLAYER_MAP`,
+`VAPID_PUBLIC_KEY` / `VAPID_PRIVATE_KEY`.
+
+Keep `VAPID_PRIVATE_KEY` and all secrets server-side only.
+
+## Runtime data to back up
 
 ```bash
 cp app-data/vallombrosa.sqlite3 "app-data/vallombrosa-$(date +%F).sqlite3"
 tar -czf "generated-art-$(date +%F).tgz" generated-art/
+python3 export_questionnaires.py
 ```
