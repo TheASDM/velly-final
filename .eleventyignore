@@ -18,6 +18,10 @@ files
 # never published directly (each player must only see their own record)
 questionaire
 Venturia/DM/
+# Exported player records. export_questionnaires.py writes these inside the
+# Eleventy input root, and .gitignore keeps them out of the repo but does
+# nothing about the build — without this they publish as wiki pages.
+backups
 
 # Top-level repo docs that aren't wiki content
 ARCHITECTURE.md
