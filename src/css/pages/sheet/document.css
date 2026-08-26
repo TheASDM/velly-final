@@ -1,0 +1,262 @@
+/* The rendered character sheet itself.
+ *
+ * Reads as a printed dossier rather than a web page: one narrow measure, a
+ * heavy display name, and facts set as label/value pairs that stay legible
+ * when they stack on a phone. --sheet-accent is set per player from the roster
+ * colour so each sheet feels like that character's.
+ */
+
+.vos-sheet {
+  --sheet-accent: var(--vos-gold-bright);
+  max-width: 44rem;
+  margin: 0 auto;
+  color: var(--vos-text-body);
+  font-family: 'EB Garamond', 'Crimson Text', Georgia, serif;
+  font-size: 1.06rem;
+  line-height: 1.62;
+}
+
+/* ── Head ──────────────────────────────────────────────────────────── */
+
+.vos-sheet-head {
+  position: relative;
+  padding: 0 0 1.6rem;
+  margin-bottom: 2rem;
+  border-bottom: 1px solid var(--vos-border);
+}
+
+.vos-sheet-eyebrow {
+  margin: 0 0 0.6rem;
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.68rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--vos-gold-dim);
+}
+
+.vos-sheet-name {
+  margin: 0;
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: clamp(1.75rem, 6vw, 2.6rem);
+  line-height: 1.08;
+  letter-spacing: 0.05em;
+  color: var(--sheet-accent);
+  text-wrap: balance;
+}
+
+/* The ·-separated tagline, split into chips so it wraps by fact. */
+.vos-sheet-tagline {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 0.5rem;
+  margin: 0.9rem 0 0;
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--vos-gold-dim);
+}
+
+.vos-sheet-chip {
+  padding: 0.2rem 0.55rem;
+  border: 1px solid var(--vos-border);
+  border-radius: 999px;
+  background: rgba(212, 165, 116, 0.05);
+  white-space: nowrap;
+}
+
+/* ── Sections ──────────────────────────────────────────────────────── */
+
+.vos-sheet-section {
+  margin: 0 0 2.2rem;
+  scroll-margin-top: calc(var(--vos-app-bar-h, 58px) + 1rem);
+}
+
+.vos-sheet-section-title {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  margin: 0 0 0.9rem;
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.82rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--vos-gold);
+}
+.vos-sheet-section-title::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, var(--vos-border) 0%, transparent 100%);
+}
+
+.vos-sheet p {
+  margin: 0 0 0.9rem;
+}
+.vos-sheet strong {
+  color: var(--vos-cream);
+  font-weight: 600;
+}
+.vos-sheet em {
+  color: var(--vos-text);
+}
+
+/* ── Premise / pull quotes ─────────────────────────────────────────── */
+
+.vos-sheet-quote {
+  margin: 1.2rem 0;
+  padding: 0.15rem 0 0.15rem 1.1rem;
+  border-left: 2px solid var(--sheet-accent);
+  font-family: 'Cormorant Garamond', 'EB Garamond', Georgia, serif;
+  font-size: 1.16rem;
+  font-style: italic;
+  line-height: 1.5;
+  color: var(--vos-cream);
+}
+.vos-sheet-quote p { margin: 0; }
+
+/* The single italic line a sheet closes on. */
+.vos-sheet-flourish {
+  margin-top: 1.4rem;
+  font-family: 'Cormorant Garamond', 'EB Garamond', Georgia, serif;
+  font-size: 1.1rem;
+  font-style: italic;
+  color: var(--vos-gold-dim);
+  text-align: center;
+}
+
+.vos-sheet-rule {
+  height: 0;
+  margin: 1.8rem 0;
+  border: 0;
+  border-top: 1px solid var(--vos-border);
+}
+
+/* ── Facts (**Label:** value runs) ─────────────────────────────────── */
+
+.vos-sheet-facts,
+.vos-sheet-people {
+  margin: 0 0 1.1rem;
+  padding: 0;
+}
+
+.vos-sheet-fact,
+.vos-sheet-person {
+  display: grid;
+  grid-template-columns: minmax(6rem, 9rem) 1fr;
+  gap: 0.2rem 1rem;
+  padding: 0.5rem 0;
+  border-top: 1px solid rgba(139, 115, 85, 0.16);
+}
+.vos-sheet-fact:first-child,
+.vos-sheet-person:first-child {
+  border-top: 0;
+}
+
+.vos-sheet-fact dt,
+.vos-sheet-person dt {
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--vos-gold-dim);
+  padding-top: 0.28rem;
+}
+.vos-sheet-person dt {
+  font-size: 0.78rem;
+  letter-spacing: 0.06em;
+  text-transform: none;
+  color: var(--sheet-accent);
+}
+
+.vos-sheet-fact dd,
+.vos-sheet-person dd {
+  margin: 0;
+  min-width: 0;
+}
+
+/* The source bolds the name inside these cells; let the term keep its own
+   colour rather than inheriting the generic strong treatment. */
+.vos-sheet-fact dt strong,
+.vos-sheet-person dt strong {
+  color: inherit;
+  font-weight: inherit;
+}
+
+.vos-sheet-blank {
+  color: var(--vos-gold-dim);
+}
+
+/* ── Tables ────────────────────────────────────────────────────────── */
+
+.vos-sheet-table-wrap {
+  margin: 0 0 1.2rem;
+  overflow-x: auto;
+  border: 1px solid var(--vos-border);
+  border-radius: 8px;
+}
+
+.vos-sheet-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.98rem;
+}
+.vos-sheet-table th {
+  position: sticky;
+  top: 0;
+  padding: 0.6rem 0.8rem;
+  background: rgba(212, 165, 116, 0.09);
+  color: var(--vos-cream);
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-align: left;
+  white-space: nowrap;
+}
+.vos-sheet-table td {
+  padding: 0.6rem 0.8rem;
+  border-top: 1px solid rgba(139, 115, 85, 0.16);
+  vertical-align: top;
+}
+.vos-sheet-table tbody tr:nth-child(even) {
+  background: rgba(255, 255, 255, 0.014);
+}
+/* Two-column comparison tables ("She believes | Actually") read best when the
+   second column is visibly the answer. */
+.vos-sheet-table td:last-child:not(:only-child) {
+  color: var(--vos-cream);
+}
+
+.vos-sheet-list {
+  margin: 0 0 1.1rem;
+  padding-left: 1.1rem;
+}
+.vos-sheet-list li {
+  margin-bottom: 0.35rem;
+}
+
+.vos-sheet code {
+  padding: 0.1rem 0.32rem;
+  border-radius: 4px;
+  background: rgba(212, 165, 116, 0.1);
+  font-size: 0.9em;
+  color: var(--vos-cream);
+}
+
+.vos-sheet a {
+  color: var(--sheet-accent);
+  text-underline-offset: 0.18em;
+}
+
+@media (max-width: 640px) {
+  .vos-sheet-fact,
+  .vos-sheet-person {
+    grid-template-columns: 1fr;
+    gap: 0.15rem;
+  }
+  .vos-sheet-fact dt,
+  .vos-sheet-person dt {
+    padding-top: 0;
+  }
+}

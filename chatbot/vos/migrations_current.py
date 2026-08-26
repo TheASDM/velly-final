@@ -217,4 +217,24 @@ def apply_current_migrations(conn, done):
             ("020_push_opens", _utc_now_iso()),
         )
 
+    if "021_character_sheets" not in done:
+        # Rendered character sheets, one row per player per variant. These are
+        # written from the DM's source markdown by import_sheets.py rather than
+        # edited in the app, and they live in SQLite for one reason: the repo is
+        # public and these hold player-written detail plus DM-only spoilers.
+        # Keying on (player_name, variant) lets the import re-run idempotently.
+        conn.execute("""
+            CREATE TABLE IF NOT EXISTS character_sheets (
+                player_name TEXT NOT NULL,
+                variant TEXT NOT NULL CHECK(variant IN ('player', 'dm')),
+                markdown TEXT NOT NULL,
+                updated_at TEXT NOT NULL,
+                PRIMARY KEY (player_name, variant)
+            )
+        """)
+        conn.execute(
+            "INSERT INTO schema_migrations (name, applied_at) VALUES (?, ?)",
+            ("021_character_sheets", _utc_now_iso()),
+        )
+
 __all__ = ['apply_current_migrations']

@@ -1,0 +1,166 @@
+/* Page furniture around the sheet: the DM's roster strip and variant toggle,
+ * the section jump list, and the empty states. */
+
+.vos-sheet-page {
+  padding-bottom: 2rem;
+}
+
+.vos-sheet-lede {
+  max-width: 44rem;
+  margin: 0 auto 1.4rem;
+  color: var(--vos-gold-dim);
+}
+
+/* ── Roster strip (DM) ─────────────────────────────────────────────── */
+
+.vos-sheets-nav {
+  display: flex;
+  gap: 0.4rem;
+  overflow-x: auto;
+  padding-bottom: 0.4rem;
+  margin-bottom: 1rem;
+  scrollbar-width: thin;
+}
+
+.vos-sheets-nav .nav-item {
+  flex: 0 0 auto;
+  min-width: 118px;
+  text-align: left;
+  padding: 0.55rem 0.7rem;
+  background: rgba(8, 7, 11, 0.52);
+  border: 1px solid var(--vos-border);
+  border-top: 2px solid transparent;
+  border-radius: 8px;
+  color: var(--vos-text);
+  cursor: pointer;
+}
+.vos-sheets-nav .nav-item:hover { border-color: var(--vos-border-strong); }
+.vos-sheets-nav .nav-item.is-on {
+  border-top-color: var(--c, var(--vos-gold));
+  background: rgba(212, 165, 116, 0.1);
+}
+.vos-sheets-nav .nav-item.is-on .nav-name { color: var(--c, var(--vos-gold)); }
+
+.vos-sheets-nav .nav-row { display: flex; align-items: baseline; gap: 0.5rem; }
+.vos-sheets-nav .nav-name {
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.92rem;
+  color: var(--vos-cream);
+}
+.vos-sheets-nav .nav-role {
+  display: block;
+  margin-top: 0.15rem;
+  font-size: 0.62rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--vos-gold-dim);
+}
+
+/* ── Variant toggle (DM) ───────────────────────────────────────────── */
+
+.vos-sheets-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  align-items: center;
+  margin-bottom: 1.6rem;
+}
+
+.vos-sheets-toolbar button {
+  padding: 0.4rem 0.9rem;
+  background: rgba(8, 7, 11, 0.52);
+  border: 1px solid var(--vos-border);
+  border-radius: 999px;
+  color: var(--vos-text);
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.vos-sheets-toolbar button:hover:not(:disabled) { border-color: var(--vos-border-strong); }
+.vos-sheets-toolbar button.is-on {
+  border-color: var(--vos-border-strong);
+  background: rgba(212, 165, 116, 0.14);
+  color: var(--vos-gold-bright);
+}
+.vos-sheets-toolbar button:disabled { opacity: 0.35; cursor: not-allowed; }
+
+/* The DM variant holds spoilers — mark it unmistakably. */
+.vos-sheets-toolbar button[data-variant="dm"].is-on {
+  border-color: rgba(212, 77, 63, 0.55);
+  background: rgba(160, 50, 42, 0.18);
+  color: var(--vos-quest-bright);
+}
+
+.vos-sheet-root.is-dm-variant .vos-sheet-eyebrow {
+  color: var(--vos-quest-bright);
+}
+.vos-sheet-root.is-dm-variant .vos-sheet {
+  --sheet-accent: var(--vos-quest-bright);
+}
+
+/* ── Section jump list ─────────────────────────────────────────────── */
+
+.vos-sheet-index {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  max-width: 44rem;
+  margin: 0 auto 1.6rem;
+  padding-bottom: 0.2rem;
+}
+
+.vos-sheet-index a {
+  padding: 0.22rem 0.6rem;
+  border: 1px solid var(--vos-border);
+  border-radius: 999px;
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.62rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--vos-gold-dim);
+  text-decoration: none;
+}
+.vos-sheet-index a:hover {
+  border-color: var(--vos-border-strong);
+  color: var(--vos-gold-bright);
+}
+
+/* ── Empty states ──────────────────────────────────────────────────── */
+
+.vos-sheet-page .empty-state {
+  max-width: 44rem;
+  margin: 1.4rem auto 0;
+  padding: 2rem;
+  border: 1px dashed var(--vos-border);
+  border-radius: 8px;
+  text-align: center;
+  color: var(--vos-gold-dim);
+}
+.vos-sheet-page .empty-state b {
+  display: block;
+  margin-bottom: 0.35rem;
+  font-size: 1.2rem;
+  font-weight: 400;
+  color: var(--vos-text-body);
+}
+
+/* ── Print ─────────────────────────────────────────────────────────── */
+
+@media print {
+  .vos-sheets-nav,
+  .vos-sheets-toolbar,
+  .vos-sheet-index,
+  .vos-sheet-lede { display: none !important; }
+
+  .vos-sheet {
+    max-width: none;
+    color: #000;
+  }
+  .vos-sheet-name,
+  .vos-sheet-section-title,
+  .vos-sheet-person dt { color: #000; }
+  .vos-sheet-section { break-inside: avoid; }
+  .vos-sheet-quote { border-left-color: #000; color: #000; }
+}

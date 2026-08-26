@@ -70,6 +70,7 @@ ROUTE_MODULES = [
         ".routes.rsvp",
         ".routes.availability",
         ".routes.questionnaire",
+        ".routes.sheets",
         ".routes.rumors",
         ".routes.chat",
         ".routes.lore",
