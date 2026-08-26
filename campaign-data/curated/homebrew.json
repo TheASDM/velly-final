@@ -17,7 +17,7 @@
       }
     ],
     "dateAdded": 1737417600,
-    "dateLastModified": 1787761647
+    "dateLastModified": 1787767911
   },
   "monster": [
     {
@@ -2673,9 +2673,8 @@
           "type": "entries",
           "name": "Donning a Mask",
           "entries": [
-            "As a Bonus Action, you can don one of your masks. While wearing a mask, you gain its passive benefit and access to its active abilities. The mask lasts for 10 minutes, until you are incapacitated, or until you remove it (no action required). You can only wear one mask at a time; donning a new mask ends the previous one.",
-            "You can don a mask a number of times equal to your proficiency bonus, and you regain all expended uses when you finish a Long Rest. If you have no uses remaining, you can expend a Bardic Inspiration die to don a mask instead.",
-            "Each mask also grants a permanent passive benefit that applies even when the mask is not worn, as listed in the mask's description."
+            "As a Bonus Action, you can don one of your masks. While wearing a mask, you can take the form of a creature of its type. The mask lasts for 10 minutes, until you are incapacitated, or until you remove it (no action required). You can only wear one mask at a time; donning a new mask ends the previous one.",
+            "You can don a mask a number of times equal to your proficiency bonus, and you regain all expended uses when you finish a Long Rest. If you have no uses remaining, you can expend a Bardic Inspiration die to don a mask instead."
           ]
         },
         {
@@ -2738,21 +2737,7 @@
         "fire"
       ],
       "entries": [
-        "A mask resembling the depths of hell and their vicious guardians.",
-        {
-          "type": "entries",
-          "name": "Permanent Passive",
-          "entries": [
-            "You have resistance to fire damage."
-          ]
-        },
-        {
-          "type": "entries",
-          "name": "While Worn — Infernal Presence",
-          "entries": [
-            "As an action, you can force each creature of your choice within 15 feet to make a Wisdom saving throw against your spell save DC. On a failure, a creature is frightened of you until the end of your next turn."
-          ]
-        }
+        "A mask resembling the depths of hell and their vicious guardians."
       ]
     },
     {
@@ -2775,21 +2760,7 @@
         }
       },
       "entries": [
-        "A mask that makes those beholding you feel as though they stand in an enchanted forest, speaking to the Fairy Queen herself.",
-        {
-          "type": "entries",
-          "name": "Permanent Passive",
-          "entries": [
-            "You are immune to the charmed condition."
-          ]
-        },
-        {
-          "type": "entries",
-          "name": "While Worn — Fey Step",
-          "entries": [
-            "You can cast {@spell misty step} as a Bonus Action without expending a spell slot. You can use this feature a number of times equal to your Charisma modifier (minimum of once), and you regain all expended uses when you finish a Long Rest."
-          ]
-        }
+        "A mask that makes those beholding you feel as though they stand in an enchanted forest, speaking to the Fairy Queen herself."
       ]
     },
     {
@@ -2804,21 +2775,7 @@
       "foundryImg": "assets/images/masquradeicon3.png",
       "isClassFeatureVariant": true,
       "entries": [
-        "A mask resembling the fields of Elysium, green gardens above and silk-like wings of the angels depicted in the most beautiful canvases.",
-        {
-          "type": "entries",
-          "name": "Permanent Passive",
-          "entries": [
-            "You learn the {@spell sacred flame} cantrip. It counts as a bard cantrip for you and doesn't count against the number of cantrips you know."
-          ]
-        },
-        {
-          "type": "entries",
-          "name": "While Worn — Radiant Judgment",
-          "entries": [
-            "Once per turn when you deal damage with a spell or weapon attack, you deal an additional {@damage 1d6} radiant damage."
-          ]
-        }
+        "A mask resembling the fields of Elysium, green gardens above and silk-like wings of the angels depicted in the most beautiful canvases."
       ]
     },
     {
@@ -2833,21 +2790,7 @@
       "foundryImg": "assets/images/masquradeicon3.png",
       "isClassFeatureVariant": true,
       "entries": [
-        "A mask that resembles the creature with the most potential: a humanoid.",
-        {
-          "type": "entries",
-          "name": "Permanent Passive",
-          "entries": [
-            "When you don this mask for the first time each day, you choose a skill or tool and gain proficiency in it until you finish a Long Rest."
-          ]
-        },
-        {
-          "type": "entries",
-          "name": "While Worn — Adaptive Talent",
-          "entries": [
-            "You have Expertise in any skill you are proficient in. If you already have Expertise in a skill from another source, this feature doesn't apply to that skill."
-          ]
-        }
+        "A mask that resembles the creature with the most potential: a humanoid."
       ]
     },
     {
@@ -2868,23 +2811,6 @@
           "name": "Inspired Masks",
           "entries": [
             "While wearing a mask, when you grant a creature a Bardic Inspiration die, that creature also gains temporary hit points equal to the number rolled."
-          ]
-        },
-        {
-          "type": "entries",
-          "name": "Mask Upgrades",
-          "entries": [
-            "Each mask you chose at 3rd level gains additional power:",
-            {
-              "type": "list",
-              "style": "list-hang-notitle",
-              "items": [
-                "{@bold Diabolica:} You can see through magical darkness out to 120 feet as if it were bright light. Your Infernal Presence range increases to 30 feet.",
-                "{@bold Fiabesco:} When you use Fey Step, you can bring one willing creature within 5 feet of you along with you. Additionally, when a creature you can see targets you with an attack, you can use your Reaction to impose Disadvantage on the attack roll as fey glamour distorts your position.",
-                "{@bold Angelico:} Your Radiant Judgment damage increases to {@damage 1d8}. Additionally, once per Long Rest, when an ally within 30 feet of you drops to 0 hit points while you are wearing this mask, you can use your Reaction to restore them to hit points equal to your bard level instead.",
-                "{@bold Umano:} You gain Expertise in two skills you are proficient in (if you don't already have Expertise in them from another source). Additionally, while wearing the mask, you can add half your proficiency bonus to any ability check you make that doesn't already include your proficiency bonus."
-              ]
-            }
           ]
         }
       ]
@@ -2911,24 +2837,7 @@
           "type": "entries",
           "name": "The Two-Faced",
           "entries": [
-            "Once per Long Rest, as an action, you can don both of your masks simultaneously. For 1 minute, you gain the passive and active benefits of both masks at once. While in this state, your Masked Resilience temporary hit points are doubled."
-          ]
-        },
-        {
-          "type": "entries",
-          "name": "Mask Upgrades",
-          "entries": [
-            "Each mask you chose at 3rd level reaches its full power:",
-            {
-              "type": "list",
-              "style": "list-hang-notitle",
-              "items": [
-                "{@bold Diabolica:} You are immune to fire and cold damage. When a creature fails its save against your Infernal Presence, it takes {@damage 2d6} psychic damage.",
-                "{@bold Fiabesco:} Instead of casting {@spell misty step} with Fey Step, you can expend one use to choose a creature within 60 feet and swap places with it. An unwilling creature must succeed on a Charisma saving throw against your spell save DC to resist. A willing creature can choose to fail.",
-                "{@bold Angelico:} You can sense lies automatically when spoken within 30 feet of you. Your Radiant Judgment damage increases to {@damage 1d10}.",
-                "{@bold Umano:} While wearing the mask, you are proficient with a saving throw of your choice. You can choose a new one when you finish a Long Rest."
-              ]
-            }
+            "Once per Long Rest, as an action, you can don both of your masks simultaneously. For 1 minute, you can take the form of a creature of either mask's type. While in this state, your Masked Resilience temporary hit points are doubled."
           ]
         }
       ]
