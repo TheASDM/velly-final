@@ -158,15 +158,27 @@ function hitDice(doc) {
 
 /* ── Items ─────────────────────────────────────────────────────────── */
 
-function usesOf(item) {
+/* Limited uses.
+ *
+ * The source item stores a formula — "@prof", "@scale.barbarian.rages" — so the
+ * number only exists on the prepared actor. The bridge captures it as
+ * derived.itemUses, which is preferred here; the source value is a fallback for
+ * the features whose maximum is a plain number, and for exports made before the
+ * bridge captured this.
+ */
+function usesOf(item, derivedUses) {
   const uses = item.system?.uses;
   if (!uses) return null;
-  const max = Number(uses.max);
-  if (!max) return null;
-  const spent = Number(uses.spent ?? 0);
-  const recovery = Array.isArray(uses.recovery) && uses.recovery.length
-    ? lookup(RECOVERY, uses.recovery[0].period, '')
-    : '';
+
+  const resolved = derivedUses?.[item._id];
+  const max = Number(resolved?.max ?? uses.max);
+  if (!Number.isFinite(max) || max <= 0) return null;
+
+  const spent = Number(resolved?.spent ?? uses.spent ?? 0) || 0;
+  const periods = resolved?.recovery
+    ?? (Array.isArray(uses.recovery) ? uses.recovery.map((r) => r?.period) : []);
+  const recovery = periods && periods.length ? lookup(RECOVERY, periods[0], '') : '';
+
   return { value: Math.max(0, max - spent), max, recovery };
 }
 
@@ -188,6 +200,7 @@ function featureKind(item) {
 }
 
 function features(doc) {
+  const derivedUses = doc.derived?.itemUses;
   const wanted = new Set(['feat', 'race', 'background', 'class', 'subclass']);
   const seen = new Set();
 
@@ -209,7 +222,7 @@ function features(doc) {
       source: [item.system?.source?.book, item.system?.source?.page].filter(Boolean).join(' '),
       rules: item.system?.source?.rules ?? '',
       activation: activationOf(item),
-      uses: usesOf(item),
+      uses: usesOf(item, derivedUses),
       description: richText(item.system?.description?.value),
       summary: plainText(item.system?.description?.value).slice(0, 220),
     }));

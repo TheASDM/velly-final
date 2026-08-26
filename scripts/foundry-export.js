@@ -36,6 +36,27 @@ function saveValue(ability) {
   return typeof save === 'object' ? (save.value ?? save.total ?? null) : save;
 }
 
+/* Limited uses are stored as formulas — "@prof", "max(1, @abilities.cha.mod)",
+ * "@scale.barbarian.rages" — and only the prepared item knows what they come to.
+ * Without this, a Barbarian's Rage and a Bard's mask uses arrive as unusable
+ * strings and the sheet shows no charges at all.
+ */
+function deriveItemUses(actor) {
+  const out = {};
+  for (const item of actor.items ?? []) {
+    const uses = item.system?.uses;
+    if (!uses) continue;
+    const max = Number(uses.max);
+    if (!Number.isFinite(max) || max <= 0) continue;
+    out[item.id] = {
+      max,
+      spent: Number(uses.spent ?? 0) || 0,
+      recovery: (uses.recovery ?? []).map((r) => r?.period).filter(Boolean),
+    };
+  }
+  return out;
+}
+
 function deriveActor(actor) {
   const sys = actor.system ?? {};
   const abilities = {};
@@ -102,6 +123,7 @@ function deriveActor(actor) {
     tools,
     spells,
     classes,
+    itemUses: deriveItemUses(actor),
     // Resolved labels for the id-pointers in details.
     raceName: actor.system?.details?.race?.name ?? actor.items?.find?.((i) => i.type === 'race')?.name ?? null,
     backgroundName: actor.system?.details?.background?.name

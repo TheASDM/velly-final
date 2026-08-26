@@ -46,6 +46,27 @@ function saveValue(ability) {
   return typeof save === 'object' ? (save.value ?? save.total ?? null) : save;
 }
 
+/* Limited uses are stored as formulas — "@prof", "max(1, @abilities.cha.mod)",
+ * "@scale.barbarian.rages" — and only the prepared item knows what they come to.
+ * Without this, a Barbarian's Rage and a Bard's mask uses arrive as unusable
+ * strings and the sheet shows no charges at all.
+ */
+function deriveItemUses(actor) {
+  const out = {};
+  for (const item of actor.items ?? []) {
+    const uses = item.system?.uses;
+    if (!uses) continue;
+    const max = Number(uses.max);
+    if (!Number.isFinite(max) || max <= 0) continue;
+    out[item.id] = {
+      max,
+      spent: Number(uses.spent ?? 0) || 0,
+      recovery: (uses.recovery ?? []).map((r) => r?.period).filter(Boolean),
+    };
+  }
+  return out;
+}
+
 /* Read the computed values off the prepared actor. Optional chaining
  * throughout on purpose: field locations move between dnd5e versions, and a
  * field we cannot find should arrive as null rather than throwing away the
@@ -120,6 +141,7 @@ function deriveActor(actor) {
     tools,
     spells,
     classes,
+    itemUses: deriveItemUses(actor),
     raceName: sys.details?.race?.name ?? actor.items.find((i) => i.type === 'race')?.name ?? null,
     backgroundName: sys.details?.background?.name
       ?? actor.items.find((i) => i.type === 'background')?.name ?? null,
