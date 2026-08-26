@@ -86,9 +86,12 @@ function renderVitals(model) {
   const hp = v.hp.max != null ? `${num(current)}<span class="vos-sb-of">/${num(v.hp.max)}</span>` : num(current);
   const temp = tempHp ? `<span class="vos-sb-temp">+${esc(tempHp)} temp</span>` : '';
 
+  /* Hit points lead and take the width, because they are the number that
+     changes. The other five are a single even row underneath — the old order
+     left hit dice stranded on a third row of its own. */
   const cells = [
+    { label: 'Hit Points', value: hp + temp, hero: true, play: { 'data-play': 'hp' } },
     { label: 'AC', value: num(v.ac) },
-    { label: 'Hit Points', value: hp + temp, wide: true, play: { 'data-play': 'hp' } },
     { label: 'Initiative', value: v.initiative == null ? '—' : esc(signed(v.initiative)) },
     { label: 'Speed', value: esc(v.speed || '—') },
     { label: 'Proficiency', value: v.prof == null ? '—' : esc(signed(v.prof)) },
@@ -102,7 +105,7 @@ function renderVitals(model) {
   const flags = [v.inspiration ? 'Inspiration' : ''].filter(Boolean);
 
   return `<div class="vos-sb-vitals">
-    ${cells.map((cell) => `<div class="vos-sb-vital${cell.wide ? ' is-wide' : ''}"${
+    ${cells.map((cell) => `<div class="vos-sb-vital${cell.hero ? ' is-hero' : ''}"${
       cell.play ? bind(cell.play) : ''
     }>
       <span class="vos-sb-vital-label">${esc(cell.label)}</span>
@@ -354,6 +357,89 @@ function renderInventory(model) {
   })).join('')}</ul>`;
 }
 
+/* ── Resources ─────────────────────────────────────────────────────── */
+
+/* Everything with a limited number of uses, at the top where it is read
+ * rather than buried in the feature that owns it.
+ *
+ * Uses were only ever shown inside the Features list, which meant a player
+ * had to remember they had Relentless Endurance before they could look up
+ * whether they still had it. That is exactly backwards: the count is what you
+ * scan for, and the description is what you open when the count surprises you.
+ *
+ * Features you switch on live here too. A switched-on one expands in place to
+ * say what it is doing, so there is one card per resource rather than a
+ * tracker in one section and a separate panel somewhere else contradicting it.
+ */
+function resourceList(model) {
+  const activatable = new Map((model.activatable ?? []).map((entry) => [entry.id, entry]));
+  return (model.features ?? [])
+    .filter((feature) => feature.uses && feature.uses.max > 0)
+    .map((feature) => ({
+      id: feature.id,
+      name: feature.name,
+      max: feature.uses.max,
+      recovery: feature.uses.recovery,
+      switchable: activatable.get(feature.id) ?? null,
+    }));
+}
+
+/* Pips while they can be counted at a glance; a number once they cannot. */
+const PIP_LIMIT = 6;
+
+function resourcePips(resource, left) {
+  if (resource.max > PIP_LIMIT) {
+    return `<span class="vos-sb-res-count">${left}<i>/${resource.max}</i></span>`;
+  }
+  return `<span class="vos-sb-res-pips">${
+    Array.from({ length: resource.max }, (_, i) => {
+      const spent = i >= left;
+      return `<span class="vos-sb-res-pip${spent ? ' is-spent' : ''}"${bind({
+        'data-play': 'charge-pip',
+        'data-feature': resource.id,
+        'data-max': resource.max,
+        'data-spent': spent ? '1' : '0',
+        role: 'button',
+        tabindex: '0',
+        'aria-label': spent
+          ? `Restore a use of ${resource.name}`
+          : `Spend a use of ${resource.name}`,
+      })}></span>`;
+    }).join('')
+  }</span>`;
+}
+
+function renderResource(model, resource) {
+  const left = Math.max(0, resource.max - spentUses(resource.id));
+  const on = Boolean(ctx && ctx.play && (ctx.play.active || {})[resource.id]);
+  const grants = on && resource.switchable ? resource.switchable.grants : [];
+
+  return `<li class="vos-sb-res${on ? ' is-on' : ''}${left ? '' : ' is-empty'}">
+    <div class="vos-sb-res-head">
+      <span class="vos-sb-res-name">${esc(resource.name)}</span>
+      ${on ? `<button type="button" class="vos-sb-res-end"${bind({
+        'data-play': 'end-feature', 'data-feature': resource.id,
+      })}>End</button>` : ''}
+      ${resource.switchable && !on ? `<button type="button" class="vos-sb-res-use"${bind({
+        'data-play': 'feature', 'data-feature': resource.id,
+      })}${left ? '' : ' disabled'}>Use</button>` : ''}
+    </div>
+    ${resourcePips(resource, left)}
+    ${resource.recovery ? `<span class="vos-sb-res-recovery">${esc(resource.recovery)}</span>` : ''}
+    ${grants.length ? `<ul class="vos-sb-res-grants">${
+      grants.map((grant) => `<li>${esc(grant)}</li>`).join('')
+    }</ul>` : ''}
+  </li>`;
+}
+
+function renderResources(model) {
+  const resources = resourceList(model);
+  if (!resources.length) return '';
+  return `<ul class="vos-sb-resources">${
+    resources.map((resource) => renderResource(model, resource)).join('')
+  }</ul>`;
+}
+
 /* ── Attacks ───────────────────────────────────────────────────────── */
 
 /* Which features are switched on right now, as the model knows them. */
@@ -432,31 +518,6 @@ function renderAttacks(model) {
   </ul>`;
 }
 
-/* ── Active features ───────────────────────────────────────────────── */
-
-/* What is switched on, and what it is doing. Shown as a panel rather than by
- * quietly editing the numbers elsewhere on the sheet: a player needs to know
- * that their Strength save is at advantage *because they are raging*, and that
- * it stops when the rage does. */
-function renderActive(model) {
-  const features = activeFeatures(model);
-  if (!features.length) return '';
-
-  return `<ul class="vos-sb-active">${features.map((feature) => `
-    <li class="vos-sb-active-item">
-      <div class="vos-sb-active-head">
-        <span class="vos-sb-active-name">${esc(feature.name)}</span>
-        <button type="button" class="vos-sb-active-end"${bind({
-          'data-play': 'end-feature',
-          'data-feature': feature.id,
-        })}>End</button>
-      </div>
-      <ul class="vos-sb-active-grants">${
-        feature.grants.map((grant) => `<li>${esc(grant)}</li>`).join('')
-      }</ul>
-    </li>`).join('')}</ul>`;
-}
-
 /* ── Entry point ───────────────────────────────────────────────────── */
 
 /* Conditions currently on the character. Dying is shown in the exhaustion row
@@ -487,7 +548,7 @@ export function renderStatblock(model, meta = {}) {
     ${warning}
     ${renderVitals(model)}
     ${renderConditions(model)}
-    ${section('Active', renderActive(model), { id: 'sb-active' })}
+    ${section('Resources', renderResources(model), { id: 'sb-resources' })}
     ${section('Attacks', renderAttacks(model), { id: 'sb-attacks' })}
     ${section('Abilities', renderAbilities(model), { id: 'sb-abilities' })}
     ${section('Skills', renderSkills(model), { id: 'sb-skills' })}

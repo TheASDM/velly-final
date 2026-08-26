@@ -105,6 +105,11 @@
   bottom: calc(var(--vos-vv-bottom, 0px) + var(--vos-app-nav-h, 72px) + env(safe-area-inset-bottom));
   display: flex;
   gap: 0.4rem;
+  /* A character with a switchable feature or two overran the width and the
+     last button fell off the edge. The row scrolls rather than clipping, and
+     the buttons give up their padding before they give up their labels. */
+  overflow-x: auto;
+  scrollbar-width: none;
   padding: 0.5rem max(0.8rem, env(safe-area-inset-left)) 0.5rem max(0.8rem, env(safe-area-inset-right));
   border-top: 1px solid var(--vos-border);
   background: linear-gradient(180deg, rgba(13, 11, 17, 0.94), rgba(7, 6, 10, 0.98));
@@ -112,10 +117,12 @@
   -webkit-backdrop-filter: blur(14px);
 }
 @media (min-width: 1024px) { .vos-play-bar { left: var(--vos-nav-w, 0px); } }
+.vos-play-bar::-webkit-scrollbar { display: none; }
 
 .vos-play-bar-hp {
   position: relative;
-  flex: 1 1 auto;
+  flex: 1 1 7rem;
+  min-width: 5.5rem;
   min-height: 46px;
   padding: 0.4rem 0.9rem;
   overflow: hidden;
@@ -166,16 +173,18 @@
 }
 
 .vos-play-bar-btn {
+  flex: 0 0 auto;
   min-height: 46px;
-  padding: 0.4rem 0.85rem;
+  padding: 0.4rem 0.7rem;
   border: 1px solid var(--vos-border);
   border-radius: 10px;
   background: rgba(8, 7, 11, 0.7);
   color: var(--vos-text);
   font-family: 'Cinzel', Georgia, serif;
   font-size: 0.62rem;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
+  white-space: nowrap;
   cursor: pointer;
 }
 .vos-play-bar-btn:hover { border-color: var(--vos-border-strong); color: var(--vos-cream); }

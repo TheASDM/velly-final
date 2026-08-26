@@ -55,11 +55,20 @@
 
 /* ── Vitals ────────────────────────────────────────────────────────── */
 
+/* Four columns on a phone: hit points take three of them and AC the fourth,
+   then the five remaining numbers sit in one even row. An auto-fit grid put
+   hit dice alone on a third row, which read as an afterthought. */
 .vos-sb-vitals {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(6.2rem, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 0.45rem;
   margin-bottom: 0.6rem;
+}
+.vos-sb-vital.is-hero { grid-column: span 3; }
+
+@media (min-width: 620px) {
+  .vos-sb-vitals { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+  .vos-sb-vital.is-hero { grid-column: span 2; }
 }
 .vos-sb-vital {
   display: flex;
@@ -73,7 +82,6 @@
   background: rgba(8, 7, 11, 0.5);
   text-align: center;
 }
-.vos-sb-vital.is-wide { grid-column: span 2; }
 
 .vos-sb-vital-label {
   font-family: 'Cinzel', Georgia, serif;
@@ -631,3 +639,122 @@ details[open] > .vos-sb-entry-head::before { transform: rotate(90deg); }
   text-transform: uppercase;
   opacity: 0.8;
 }
+
+/* ── Resource trackers ─────────────────────────────────────────────── */
+
+/* Two per row on a phone. Each card is the whole story for one resource: what
+   it is, how much is left, when it comes back, and — if it is switched on
+   right now — what it is doing. */
+
+.vos-sb-resources {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(9.5rem, 1fr));
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.vos-sb-res {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: 0.6rem 0.7rem;
+  border: 1px solid var(--vos-border);
+  border-radius: 10px;
+  background: rgba(8, 7, 11, 0.5);
+}
+/* Spent out. Still legible — the recovery line is the useful part now. */
+.vos-sb-res.is-empty { opacity: 0.62; }
+.vos-sb-res.is-on {
+  grid-column: 1 / -1;
+  border-color: rgba(200, 117, 47, 0.5);
+  background: rgba(200, 117, 47, 0.1);
+}
+
+.vos-sb-res-head {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.vos-sb-res-name {
+  flex: 1;
+  min-width: 0;
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.66rem;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--vos-gold);
+  overflow-wrap: anywhere;
+}
+.vos-sb-res.is-on .vos-sb-res-name { color: #e2a05e; }
+
+.vos-sb-res-use,
+.vos-sb-res-end {
+  flex: none;
+  min-height: 28px;
+  padding: 0.1rem 0.6rem;
+  border: 1px solid var(--vos-border-strong);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--vos-cream);
+  font-size: 0.6rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.vos-sb-res-use { border-color: rgba(200, 117, 47, 0.5); color: #e2a05e; }
+.vos-sb-res-use:hover:not([disabled]),
+.vos-sb-res-end:hover { background: rgba(200, 117, 47, 0.18); }
+.vos-sb-res-use[disabled] { opacity: 0.4; cursor: default; }
+
+/* Pips, so the count is read rather than parsed. */
+.vos-sb-res-pips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+}
+.vos-sb-res-pip {
+  width: 15px;
+  height: 15px;
+  border: 1px solid var(--vos-gold-dim);
+  border-radius: 50%;
+  background: var(--vos-gold);
+  cursor: pointer;
+}
+.vos-sb-res-pip.is-spent { background: transparent; opacity: 0.5; }
+.vos-sb-res-pip:hover { border-color: var(--vos-gold-bright); }
+
+/* Past a handful, pips stop being countable and a number is clearer. */
+.vos-sb-res-count {
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 1.1rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--vos-cream);
+}
+.vos-sb-res-count i { font-style: normal; font-size: 0.8rem; color: var(--vos-gold-dim); }
+
+.vos-sb-res-recovery {
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--vos-gold-dim);
+}
+.vos-sb-res-grants {
+  margin: 0.2rem 0 0;
+  padding-left: 1.05rem;
+  color: var(--vos-text-body);
+  font-size: 0.9rem;
+}
+.vos-sb-res-grants li { margin: 0.1rem 0; }
+
+/* A finger needs more than a 15px circle. */
+@media (pointer: coarse) {
+  .vos-sb-res-pip {
+    width: 22px;
+    height: 22px;
+  }
+  .vos-sb-res-use,
+  .vos-sb-res-end { min-height: 38px; padding-inline: 0.85rem; }
+}
+
+@media print { .vos-sb-res { break-inside: avoid; } }

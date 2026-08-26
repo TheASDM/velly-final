@@ -632,6 +632,18 @@ export function createControls(options) {
         apply({ op: 'useCharge', feature, max: Number(target.dataset.max) || undefined });
         break;
       }
+      /* A tracker pip works both ways, the way slot pips already do: tap a
+         full one to spend it, tap a spent one to take it back. Mis-taps during
+         a fight are common and a resource you cannot un-spend is a resource
+         people stop touching. */
+      case 'charge-pip': {
+        const feature = target.dataset.feature;
+        if (!feature) return;
+        apply(target.dataset.spent === '1'
+          ? { op: 'restoreCharge', feature }
+          : { op: 'useCharge', feature, max: Number(target.dataset.max) || undefined });
+        break;
+      }
       case 'feature':
         openFeature(target.dataset.feature);
         break;
