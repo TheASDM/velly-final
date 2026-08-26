@@ -586,6 +586,22 @@ def apply_op(state, op, limits):
     return working, (note or name)[:NOTE_MAX]
 
 
+def _spell_is_prepared(item):
+    """dnd5e 5.2 stores this as a number: 0 known, 1 prepared, 2 always.
+
+    Older exports used preparation.{mode,prepared}. Both are read, because the
+    field moved and reading only the new one would lose every older character.
+    Cantrips and always-prepared spells count as prepared — they are castable,
+    which is what the sheet is reporting.
+    """
+    system = item.get("system") or {}
+    value = system.get("prepared")
+    if isinstance(value, (int, float)) and not isinstance(value, bool):
+        return value >= 1
+    legacy = system.get("preparation") or {}
+    return bool(legacy.get("prepared")) or legacy.get("mode") in {"always", "atwill", "innate"}
+
+
 def seed_from_statblock(statblock):
     """Play state for a character we have not seen before.
 
@@ -610,6 +626,14 @@ def seed_from_statblock(statblock):
     hit_dice = derived.get("hitDice") or {}
     if hit_dice.get("max") is not None and hit_dice.get("value") is not None:
         state["hitDiceSpent"] = max(0, int(hit_dice["max"]) - int(hit_dice["value"]))
+
+    # What is prepared right now, taken from Foundry once. Without this a
+    # character arrives with nothing prepared and the sheet reports 0 of 6 while
+    # their actual choices sit unread in the export.
+    state["prepared"] = [
+        item.get("_id") for item in (statblock or {}).get("items") or []
+        if item.get("type") == "spell" and _spell_is_prepared(item)
+    ]
 
     state["seededAt"] = _utc_now_iso()
     return state
@@ -646,5 +670,6 @@ __all__ = [
     'STATE_VERSION', 'MAX_EXHAUSTION', 'PREPARED_MAX', 'MASK_MINUTES', 'CONDITIONS', 'OPS', 'OpError',
     '_mask_remaining',
     'default_state', 'limits_from_statblock', 'apply_op', 'seed_from_statblock',
+    '_spell_is_prepared',
     'reconcile',
 ]

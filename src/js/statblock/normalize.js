@@ -242,6 +242,32 @@ function spellMeta(item) {
   return bits;
 }
 
+/* Preparation, across two schema generations.
+ *
+ * dnd5e 5.2 replaced `preparation: {mode, prepared}` with `method` and a
+ * numeric `prepared`, where 0 is known but unprepared, 1 is prepared, and 2 is
+ * always prepared — which is what cantrips and granted spells are. Reading the
+ * old shape against a 5.2 export finds nothing at all, which is exactly what
+ * was happening, so both are read here.
+ */
+function preparationOf(item) {
+  const sys = item.system ?? {};
+  if (typeof sys.prepared === 'number') {
+    return {
+      prepared: sys.prepared >= 1,
+      always: sys.prepared >= 2,
+      method: lookup(SPELL_PREP, sys.method, ''),
+    };
+  }
+  const legacy = sys.preparation ?? {};
+  const mode = legacy.mode ?? '';
+  return {
+    prepared: legacy.prepared === true || mode === 'always' || mode === 'atwill',
+    always: mode === 'always' || mode === 'atwill' || mode === 'innate',
+    method: lookup(SPELL_PREP, mode, ''),
+  };
+}
+
 function spells(doc) {
   const slotSource = doc.derived?.spells ?? doc.system?.spells ?? {};
   const items = (doc.items ?? []).filter((item) => item.type === 'spell');
@@ -250,14 +276,17 @@ function spells(doc) {
   const byLevel = new Map();
   items.forEach((item) => {
     const level = Number(item.system?.level ?? 0);
+    const prep = preparationOf(item);
     if (!byLevel.has(level)) byLevel.set(level, []);
     byLevel.get(level).push({
       id: item._id,
       name: item.name,
       level,
       school: lookup(SPELL_SCHOOLS, item.system?.school, ''),
-      prepared: item.system?.preparation?.prepared === true,
-      mode: lookup(SPELL_PREP, item.system?.preparation?.mode, ''),
+      prepared: prep.prepared,
+      always: prep.always,
+      mode: prep.method,
+      sourceClass: item.system?.sourceClass ?? '',
       meta: spellMeta(item),
       description: richText(item.system?.description?.value),
     });

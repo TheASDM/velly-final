@@ -454,3 +454,45 @@ def test_the_dm_can_read_another_players_log(app, auth_headers):
     assert body["playerName"] == "Lotan"
     assert [(e["op"]["op"], e["appliedBy"]) for e in body["entries"]] == [
         ("heal", "DM"), ("damage", "Lotan")]
+
+
+# ── Preparation ───────────────────────────────────────────────────────
+
+PREPARED_BLOCK = {
+    "vosExport": {"version": 1},
+    "name": "DM Test Wizard",
+    "system": {},
+    "derived": {"level": 3, "prof": 2, "ac": 12, "hp": {"value": 20, "max": 20},
+                "spells": {"spell1": {"value": 4, "max": 4}}},
+    "items": [
+        {"_id": "c1", "type": "spell", "name": "Fire Bolt", "system": {"level": 0, "prepared": 2}},
+        {"_id": "s1", "type": "spell", "name": "Burning Hands", "system": {"level": 1, "prepared": 1}},
+        {"_id": "s2", "type": "spell", "name": "Charm Person", "system": {"level": 1, "prepared": 0}},
+        # An older export, to prove the previous shape still reads.
+        {"_id": "s3", "type": "spell", "name": "Shield",
+         "system": {"level": 1, "preparation": {"mode": "prepared", "prepared": True}}},
+    ],
+}
+
+
+def test_preparation_is_seeded_from_foundry(app, auth_headers, server_module):
+    """A character arrived with nothing prepared and the sheet said 0 of 6,
+    while their real choices sat unread in the export."""
+    with server_module._app_db() as conn:
+        conn.execute("UPDATE character_statblocks SET data = ? WHERE player_name = 'Lotan'",
+                     (json.dumps(PREPARED_BLOCK),))
+
+    state = get(app, auth_headers["player"]).get_json()["state"]
+    assert set(state["prepared"]) == {"c1", "s1", "s3"}   # not the unprepared one
+
+
+def test_the_numeric_and_legacy_shapes_both_read(server_module):
+    from vos.services.play_state import _spell_is_prepared
+
+    assert _spell_is_prepared({"system": {"prepared": 2}}) is True    # always
+    assert _spell_is_prepared({"system": {"prepared": 1}}) is True
+    assert _spell_is_prepared({"system": {"prepared": 0}}) is False
+    assert _spell_is_prepared({"system": {"preparation": {"prepared": True}}}) is True
+    assert _spell_is_prepared({"system": {"preparation": {"mode": "always"}}}) is True
+    assert _spell_is_prepared({"system": {"preparation": {"mode": "prepared"}}}) is False
+    assert _spell_is_prepared({"system": {}}) is False

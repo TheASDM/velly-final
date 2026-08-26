@@ -312,58 +312,61 @@ export function createControls(options) {
 
   /* Preparing spells.
    *
-   * A 2024 caster prepares from the whole class list, not from a smaller pool,
-   * so this is a real picker over a few hundred spells: grouped by level,
-   * searchable, with the count against the class table shown but never enforced
-   * — a feature this app has not modelled can legitimately raise it. */
+   * The list is the character's own, not the class's. That is what a wizard's
+   * spellbook is — thirteen spells scribed, six of them prepared — and it is
+   * equally right for everyone else, because Foundry already holds exactly the
+   * spells they have. Offering the whole class list instead would let a player
+   * prepare something they have never learned.
+   *
+   * Cantrips and always-prepared spells are shown but not toggleable: they are
+   * castable by definition and are not spending one of the slots.
+   */
   async function openPrepare() {
-    if (!spellList) spellList = await loadSpellList(spellListNameFor(model));
-    if (!spellList) {
-      toast('No spell list for this character.', { tone: 'error' });
+    const groups = (model && model.spells) || [];
+    if (!groups.length) {
+      toast('This character has no spells.', { tone: 'error' });
       return;
     }
 
-    const level = (model && model.level) || 0;
-    const cap = preparedLimit(spellList, level);
+    const cap = await preparedCap();
     const prepared = new Set(state.prepared || []);
-    const maxLevel = Math.max(0, ...Object.keys((limits || {}).slots || {}).map(Number));
-
-    const rows = spellList.spells
-      .filter((spell) => spell.level <= maxLevel)
-      .map((spell) => {
-        const key = spellKey(spell);
-        const meta = [spell.school, spell.time, spell.range, spell.duration]
-          .filter(Boolean).join(' · ');
-        return `<label class="vos-play-spell${prepared.has(key) ? ' is-on' : ''}"
-                       data-level="${spell.level}" data-name="${esc(spell.name.toLowerCase())}">
-          <input type="checkbox" data-spell="${esc(key)}"${prepared.has(key) ? ' checked' : ''}
-                 ${spell.level === 0 ? 'disabled' : ''}>
+    const rows = groups.map((group) => {
+      const spells = group.spells.map((spell) => {
+        const fixed = spell.always || spell.level === 0;
+        const on = fixed || prepared.has(spell.id);
+        const meta = [spell.school, ...spell.meta].filter(Boolean).join(' · ');
+        return `<label class="vos-play-spell${on ? ' is-on' : ''}${fixed ? ' is-fixed' : ''}"
+                       data-name="${esc(spell.name.toLowerCase())}">
+          <input type="checkbox" data-spell="${esc(spell.id)}"${on ? ' checked' : ''}${
+            fixed ? ' disabled' : ''}>
           <span class="vos-play-spell-name">${esc(spell.name)}${
-            spell.concentration ? '<i title="Concentration">C</i>' : ''
-          }${spell.ritual ? '<i title="Ritual">R</i>' : ''}</span>
+            fixed ? '<i title="Always available">always</i>' : ''}</span>
           <span class="vos-play-spell-meta">${esc(meta)}</span>
         </label>`;
       }).join('');
+      return `<h4 class="vos-play-spell-level">${esc(group.label)}</h4>${spells}`;
+    }).join('');
 
+    const counted = countPrepared();
     openSheet('Prepare spells', `
       <div class="vos-play-prep-head">
-        <span class="vos-play-prep-count" data-count>${prepared.size}${cap ? ` / ${cap}` : ''}</span>
-        <input type="search" class="vos-play-search" placeholder="Search ${spellList.spells.length} spells"
+        <span class="vos-play-prep-count" data-count>${counted}${cap ? ` / ${cap}` : ''}</span>
+        <input type="search" class="vos-play-search" placeholder="Search your spells"
                aria-label="Search spells">
       </div>
-      <p class="vos-play-note">Cantrips are always known. ${
-        cap ? `Your class prepares ${cap} at level ${level}; going over is allowed if something says so.`
-            : ''}</p>
+      <p class="vos-play-note">Your spellbook. Cantrips and always-prepared spells do not
+      count against the total.${cap ? ` Your class prepares ${cap} at this level; going over
+      is allowed if something says so.` : ''}</p>
       <div class="vos-play-spells">${rows}</div>
     `, (sheet) => {
       const count = sheet.querySelector('[data-count]');
       sheet.querySelectorAll('[data-spell]').forEach((box) => {
         box.addEventListener('change', () => {
           box.closest('.vos-play-spell').classList.toggle('is-on', box.checked);
-          const now = sheet.querySelectorAll('[data-spell]:checked').length;
+          apply({ op: 'togglePrepared', spell: box.dataset.spell }, { undoable: false });
+          const now = countPrepared(sheet);
           count.textContent = cap ? `${now} / ${cap}` : String(now);
           count.classList.toggle('is-over', Boolean(cap && now > cap));
-          apply({ op: 'togglePrepared', spell: box.dataset.spell }, { undoable: false });
         });
       });
       const search = sheet.querySelector('.vos-play-search');
@@ -374,6 +377,27 @@ export function createControls(options) {
         });
       });
     });
+  }
+
+  /* Only levelled, non-always spells count against the class's number. */
+  function countPrepared(sheet) {
+    if (sheet) {
+      return sheet.querySelectorAll('[data-spell]:checked:not(:disabled)').length;
+    }
+    const fixed = new Set();
+    ((model && model.spells) || []).forEach((group) => group.spells.forEach((spell) => {
+      if (spell.always || spell.level === 0) fixed.add(spell.id);
+    }));
+    return (state.prepared || []).filter((id) => !fixed.has(id)).length;
+  }
+
+  /* How many this class prepares, from its own table. Loaded lazily because it
+   * is the only thing here that needs the class data at all. */
+  async function preparedCap() {
+    if (!spellList) {
+      spellList = await loadSpellList(spellListNameFor(model)).catch(() => null);
+    }
+    return preparedLimit(spellList, (model && model.level) || 0);
   }
 
   /* ── The Masquerade ────────────────────────────────────────────── */

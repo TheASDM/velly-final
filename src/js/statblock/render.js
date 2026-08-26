@@ -250,7 +250,7 @@ function renderSpellcasting(model) {
     }</h4>
     <ul class="vos-sb-entries">${group.spells.map((spell) => renderEntry({
       name: spell.name,
-      marker: spell.prepared ? 'prepared' : '',
+      marker: spell.always ? 'always' : (spell.prepared ? 'prepared' : ''),
       meta: [spell.school, ...spell.meta],
       description: spell.description,
     })).join('')}</ul>

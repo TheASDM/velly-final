@@ -1047,3 +1047,17 @@
   text-decoration: none;
 }
 .vos-view-as:hover { border-color: var(--vos-border-strong); color: var(--vos-gold-bright); }
+
+/* A spell that is always available is shown but not offered as a choice. */
+.vos-play-spell.is-fixed { opacity: 0.75; }
+.vos-play-spell-name i {
+  font-style: normal;
+  margin-left: 0.35rem;
+  padding: 0 0.3rem;
+  border: 1px solid var(--vos-border);
+  border-radius: 3px;
+  font-size: 0.56rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--vos-gold-dim);
+}
