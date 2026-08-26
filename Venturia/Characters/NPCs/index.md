@@ -6,7 +6,6 @@ date: 2026-05-23T00:00:00.000Z
 tags: characters, npcs, index, navigation
 editor: markdown
 dateCreated: 2026-05-23T00:00:00.000Z
-autoIndex: false
 ---
 
 <section class="vos-section-header">
@@ -73,3 +72,7 @@ autoIndex: false
     <a class="vos-row-chip" href="/en/Venturia/Characters/NPCs/brownie/"><span><span class="vos-row-chip-title">Brownie</span><span class="vos-row-chip-meta">Tiny adult fey, 4–6 inches tall, with mature features, disheveled adornment, and rummage communities in wooded and mountainous regions.</span></span><span class="vos-row-chip-arrow" aria-hidden="true">&rsaquo;</span></a>
   </div>
 </section>
+
+---
+
+*The panels above are the cast in play. Everything else in this section is listed below.*

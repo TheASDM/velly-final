@@ -1,0 +1,36 @@
+---
+# A page per tag.
+#
+# Nearly every wiki page already carried tags and nothing ever read them. A tag
+# that collects two or more pages becomes a route here; one that collects a
+# single page stays a label, because a "collection" of one is a dead end.
+pagination:
+  data: collections.wikiTagList
+  size: 1
+  alias: tagEntry
+permalink: "/en/tags/{{ tagEntry.slug }}/"
+eleventyExcludeFromCollections: true
+layout: layouts/page.njk
+autoIndex: false
+title: "Tagged: {{ tagEntry.tag }}"
+description: "Every page tagged {{ tagEntry.tag }}."
+---
+<section class="vos-section-header">
+  <p class="vos-section-kicker">Tag</p>
+  <h1 class="vos-section-title">{{ tagEntry.tag }}</h1>
+</section>
+
+<p class="vos-tag-count">{{ tagEntry.count }} pages carry this tag.</p>
+
+<div class="vos-row-chip-list">
+  {%- for p in tagEntry.pages -%}
+  <a class="vos-row-chip" href="{{ p.url }}">
+    <span>
+      <span class="vos-row-chip-title">{{ p.title }}</span>
+      {%- if p.description %}<span class="vos-row-chip-meta">{{ p.description }}</span>{% endif -%}
+    </span>
+  </a>
+  {%- endfor -%}
+</div>
+
+<p><a href="/en/tags/">All tags &rarr;</a></p>

@@ -47,6 +47,13 @@ autoIndex: false
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 0.55rem;
 }
+.vos-wiki-category-count {
+  display: inline-block;
+  margin-left: 0.45rem;
+  font-size: 0.7rem;
+  font-variant-numeric: tabular-nums;
+  opacity: 0.55;
+}
 .vos-wiki-category {
   display: flex;
   align-items: center;
@@ -96,17 +103,16 @@ autoIndex: false
     <div class="vos-wiki-search-inline" id="vos-wiki-search"></div>
   </section>
 
+  {#- The section list is derived from the pages themselves. Hand-listing it is
+      how Creatures grew to sixty-two pages without ever appearing here. -#}
   <section class="vos-wiki-category-grid" aria-label="Wiki categories">
-    <a class="vos-wiki-category" href="/en/Venturia/Characters/">Characters</a>
-    <a class="vos-wiki-category" href="/en/Venturia/Culture/">Culture</a>
-    <a class="vos-wiki-category" href="/en/Venturia/Factions/">Factions</a>
-    <a class="vos-wiki-category" href="/en/Venturia/Government/">Government</a>
-    <a class="vos-wiki-category" href="/en/Venturia/Locations/">Locations</a>
-    <a class="vos-wiki-category" href="/en/Venturia/Lore/">Lore</a>
-    <a class="vos-wiki-category" href="/en/Venturia/Items/">Items</a>
-    <a class="vos-wiki-category" href="/en/Venturia/Maps/">Maps</a>
-    <a class="vos-wiki-category" href="/en/Session-Chronicles/">Session Chronicles</a>
-    <a class="vos-wiki-category" href="/en/Articles/">Articles</a>
+    {%- for section in collections.all | wikiSections -%}
+    <a class="vos-wiki-category" href="{{ section.url }}">
+      {{ section.title }}<span class="vos-wiki-category-count">{{ section.count }}</span>
+    </a>
+    {%- endfor -%}
+    <a class="vos-wiki-category" href="/en/tags/">Tags</a>
+    <a class="vos-wiki-category" href="/en/Archive/">All Posts</a>
     <a class="vos-wiki-category vos-wiki-contribute" href="/submit-lore/">Contribute Lore</a>
   </section>
 </div>

@@ -47,4 +47,4 @@ The house trades in goods that move through conversations as much as markets: ra
 
 - **[Aurelio Volante](/en/Venturia/Characters/NPCs/aurelio-volante)** - Proprietor and collector.
 - **[The Market Tiers](/en/Venturia/Locations/market-tiers)** - The business's home.
-- **[The Masquers' Sodality](/en/Venturia/Locations/masquers-sodality)** - A natural point of contact for rare dyes, masks, and craft talk.
+- **[The Masquers' Sodality](/en/Venturia/Factions/masquers-sodality)** - A natural point of contact for rare dyes, masks, and craft talk.

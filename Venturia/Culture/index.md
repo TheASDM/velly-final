@@ -14,7 +14,9 @@ Venturia has its own accent — not just in speech, but in everything. The way r
 
 ---
 
-## Language
+## Start Here
+
+### Language
 
 - [Venturian Vernacular](/en/Venturia/Culture/venturia-vernacular) — Slang, oaths, idioms, and expressions native to Venturia. From dockside curses to High Quarter jargon.
 

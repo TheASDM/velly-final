@@ -1,0 +1,36 @@
+---
+# Old URLs kept alive after a page moves.
+#
+# Renaming or re-sectioning a page breaks every link anyone ever shared, and
+# players share links. Each entry in _data/redirects.json emits a page at the
+# old address that forwards to the new one, so a move costs nothing to whoever
+# already had the address.
+#
+# Deliberately not published and not indexed: these are signposts, not content.
+pagination:
+  data: redirects
+  size: 1
+  alias: redirect
+permalink: "{{ redirect.from }}index.html"
+eleventyExcludeFromCollections: true
+layout: false
+---
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Moved</title>
+<link rel="canonical" href="{{ redirect.to }}">
+<meta name="robots" content="noindex">
+<meta http-equiv="refresh" content="0; url={{ redirect.to }}">
+<style>
+  body { background:#0a080e; color:#d9cfc0; font-family:Georgia,serif;
+         display:grid; place-items:center; min-height:100vh; margin:0; padding:2rem; }
+  a { color:#d4a574; }
+</style>
+</head>
+<body>
+  <p>This page moved. <a href="{{ redirect.to }}">Continue &rarr;</a></p>
+  <script>location.replace({{ redirect.to | dump | safe }});</script>
+</body>
+</html>

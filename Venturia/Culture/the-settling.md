@@ -21,7 +21,7 @@ Ask a Venturian which of those two things the season is named for and you will b
 
 **[Low Water](/en/Venturia/Culture/low-water).** The tide draws out, the old courses of the [Penny Shrine](/en/Venturia/Locations/penny-shrine) come up streaming, and Venturians go down to ask.
 
-**The Small Faces.** The first day masks may be worn in the street, and only children may wear them. Every child in the city is somebody else until sundown and adults are expected to play along and pretend not to recognize them. The [Masquers' Sodality](/en/Venturia/Locations/masquers-sodality) apprentices make and give away hundreds.
+**The Small Faces.** The first day masks may be worn in the street, and only children may wear them. Every child in the city is somebody else until sundown and adults are expected to play along and pretend not to recognize them. The [Masquers' Sodality](/en/Venturia/Factions/masquers-sodality) apprentices make and give away hundreds.
 
 **The Guilds' Table.** The night the great houses and the guilds host dinners. Invitations are a matter of standing, published nowhere, and declining one says something about a relationship that everybody hears.
 
@@ -41,4 +41,4 @@ Ask a Venturian which of those two things the season is named for and you will b
 - **[Low Water](/en/Venturia/Culture/low-water)** — The season's second day, and its oldest.
 - **[The Autumn Masquerade](/en/Venturia/Culture/autumn-masquerade)** — What the whole month is walking toward.
 - **[The Covenant Archive](/en/Venturia/Locations/covenant-archive)** — Busiest four weeks of its year.
-- **[The Masquers' Sodality](/en/Venturia/Locations/masquers-sodality)** — Workshops run day and night.
+- **[The Masquers' Sodality](/en/Venturia/Factions/masquers-sodality)** — Workshops run day and night.

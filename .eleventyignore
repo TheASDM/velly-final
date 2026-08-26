@@ -47,6 +47,13 @@ PATCH_NOTES_0.0.2.md
 APP_REDESIGN_PLAN.md
 CALENDAR_*_PLAN.md
 
+# Tooling and vendor directories that happen to contain a README. Without
+# these they build as wiki pages and surface as sections on the hub.
+.pytest_cache
+foundry
+.venv
+scripts
+
 # Local junk
 .txt
 *.zip

@@ -1,0 +1,21 @@
+---
+title: Tags
+description: Every subject the wiki collects, and how many pages sit under each.
+permalink: /en/tags/
+published: true
+autoIndex: false
+eleventyExcludeFromCollections: true
+layout: layouts/page.njk
+---
+<section class="vos-section-header">
+  <p class="vos-section-kicker">Browse</p>
+  <h1 class="vos-section-title">Tags</h1>
+</section>
+
+<p>Another way through the wiki: by subject rather than by section. A tag needs at least two pages to earn one.</p>
+
+<div class="vos-tag-cloud">
+  {%- for entry in collections.wikiTagList -%}
+  <a class="vos-tag-pill" href="/en/tags/{{ entry.slug }}/">{{ entry.tag }}<span>{{ entry.count }}</span></a>
+  {%- endfor -%}
+</div>

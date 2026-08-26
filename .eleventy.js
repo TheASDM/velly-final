@@ -10,7 +10,10 @@ const path = require("path");
 const navigationData = require("./_data/navigation.js");
 const { appBarMeta, resolveActiveTabId, wikiPagesJson } = require("./lib/eleventy/navigation.js");
 const { formatNextSession } = require("./lib/eleventy/session.js");
-const { descendantTree, wikiBreadcrumbs, wikiParentCrumb } = require("./lib/eleventy/wiki.js");
+const {
+  descendantTree, wikiBreadcrumbs, wikiParentCrumb, wikiSections,
+  wikiRecent, wikiTags, relatedPages, tagSlug,
+} = require("./lib/eleventy/wiki.js");
 
 // Tiny .env reader so templates can reference build-time vars (e.g.
 // NEXT_SESSION_DATE) without pulling in dotenv as a dep. Silently no-ops
@@ -138,6 +141,19 @@ module.exports = function (eleventyConfig) {
   eleventyConfig.addFilter("wikiBreadcrumbs", wikiBreadcrumbs);
   eleventyConfig.addFilter("wikiParentCrumb", wikiParentCrumb);
   eleventyConfig.addFilter("descendantTree", descendantTree);
+  eleventyConfig.addFilter("wikiSections", wikiSections);
+  eleventyConfig.addFilter("wikiRecent", wikiRecent);
+  eleventyConfig.addFilter("wikiTags", wikiTags);
+  eleventyConfig.addFilter("relatedPages", relatedPages);
+  eleventyConfig.addFilter("tagSlug", tagSlug);
+  /* Dates in listings, in the campaign's own register: "26 Aug 2026". */
+  eleventyConfig.addFilter("date", (value) => {
+    const when = value instanceof Date ? value : new Date(value);
+    if (Number.isNaN(when.getTime())) return "";
+    return when.toLocaleDateString("en-GB",
+      { day: "numeric", month: "short", year: "numeric" });
+  });
+  eleventyConfig.addCollection("wikiTagList", (api) => wikiTags(api.getAll()));
 
   return {
     dir: {

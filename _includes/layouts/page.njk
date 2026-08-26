@@ -127,6 +127,27 @@
   <a class="vos-wiki-edit-link" id="vos-wiki-edit-link" href="/dm/?wiki={{ page.url }}#vos-dm-wiki-title" data-wiki-url="{{ page.url }}" hidden>Edit Wiki</a>
   {%- endif -%}
 
+  {#- Related pages, from tags the page already carried. A wiki this size is
+      easier to wander than to search, and the tree only goes one direction. -#}
+  {%- if page.url and page.url.startsWith('/en/') and not page.filePathStem.endsWith('/index') -%}
+    {%- set related = collections.all | relatedPages(page.url, 6) -%}
+    {%- if related.length > 0 -%}
+    <section class="vos-related" aria-label="Related pages">
+      <h2 class="vos-related-title">Related</h2>
+      <div class="vos-row-chip-list">
+        {%- for r in related -%}
+        <a class="vos-row-chip" href="{{ r.url }}">
+          <span>
+            <span class="vos-row-chip-title">{{ r.title }}</span>
+            {%- if r.description %}<span class="vos-row-chip-meta">{{ r.description }}</span>{% endif -%}
+          </span>
+        </a>
+        {%- endfor -%}
+      </div>
+    </section>
+    {%- endif -%}
+  {%- endif -%}
+
   {%- if page.filePathStem and page.filePathStem.endsWith('/index') and autoIndex != false -%}
     {%- set tree = collections.all | descendantTree(page.url) -%}
     {%- if tree.subcategories.length > 0 or tree.direct.length > 0 -%}

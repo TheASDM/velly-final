@@ -29,7 +29,7 @@ dateCreated: 2026-05-22T00:00:00.000Z
 
 </div>
 
-Primo Navigante of the [Ferriers' Confraternity](/en/Venturia/Locations/ferriers-confraternity) and an Autumn Council member of uncertain age — sixty or eighty, the canal-light makes it hard to say. "Old Maren" is the only name she'll answer to. She earned mastery improbably young, completing the Blind Navigation faster than anyone in living memory, and has led the Confraternity for over twenty years.
+Primo Navigante of the [Ferriers' Confraternity](/en/Venturia/Factions/ferriers-confraternity) and an Autumn Council member of uncertain age — sixty or eighty, the canal-light makes it hard to say. "Old Maren" is the only name she'll answer to. She earned mastery improbably young, completing the Blind Navigation faster than anyone in living memory, and has led the Confraternity for over twenty years.
 
 
 ---
@@ -42,5 +42,5 @@ Deliberate in everything — her words, her silences, the unnerving beat she lea
 
 ## Connections
 - **[The Autumn Council](/en/Venturia/Government/autumn-council)** — Primo Navigante's seat.
-- **[The Ferriers' Confraternity](/en/Venturia/Locations/ferriers-confraternity)** — The canal order she leads.
+- **[The Ferriers' Confraternity](/en/Venturia/Factions/ferriers-confraternity)** — The canal order she leads.
 - **[Vincen Tidecaller](/en/Venturia/Characters/NPCs/vincen-tidecaller)** — The council member whose long-view caution most often aligns with hers.

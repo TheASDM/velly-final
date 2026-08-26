@@ -46,8 +46,8 @@ The district's politics are old, practical, and personal. A favor at the docks c
 
 ## Notable Places
 
-- **[The Ferriers' Confraternity](/en/Venturia/Locations/ferriers-confraternity)** - Gondoliers who know canals that do not appear on maps.
-- **[The Tidekeeper's Lodge](/en/Venturia/Locations/tidekeepers-lodge)** - The first to see what the fog brings in.
+- **[The Ferriers' Confraternity](/en/Venturia/Factions/ferriers-confraternity)** - Gondoliers who know canals that do not appear on maps.
+- **[The Tidekeeper's Lodge](/en/Venturia/Factions/tidekeepers-lodge)** - The first to see what the fog brings in.
 - **[The Undertow](/en/Venturia/Locations/the-undertow)** - Where fortunes change with the tide.
 - **[The Penny Shrine](/en/Venturia/Locations/penny-shrine)** - Prayers to whatever might be listening.
 

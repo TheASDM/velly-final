@@ -46,4 +46,4 @@ Warm, curious, lightly theatrical, with a dry humor he delivers without a flicke
 ---
 
 ## Connections
-- **[The Masquers' Sodality](/en/Venturia/Locations/masquers-sodality)** — Connected to the Sodality through his collecting and trade.
+- **[The Masquers' Sodality](/en/Venturia/Factions/masquers-sodality)** — Connected to the Sodality through his collecting and trade.

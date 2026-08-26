@@ -6,7 +6,6 @@ date: 2026-05-23T00:00:00.000Z
 tags: characters, pcs, index, navigation
 editor: markdown
 dateCreated: 2026-05-23T00:00:00.000Z
-autoIndex: false
 ---
 
 <section class="vos-section-header">
@@ -65,3 +64,7 @@ autoIndex: false
     <span class="vos-row-chip-badge" aria-hidden="true">Va</span>
   </a>
 </div>
+
+---
+
+*The panels above are the cast in play. Everything else in this section is listed below.*

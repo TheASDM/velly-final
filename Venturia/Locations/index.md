@@ -34,7 +34,7 @@ The upper city — home to old money, the Academy, and institutions that prefer 
 
 The middle city — commerce, craft, and the institutions that keep the city running day to day.
 
-- [The Masquers' Sodality](/en/Venturia/Locations/masquers-sodality)
+- [The Masquers' Sodality](/en/Venturia/Factions/masquers-sodality)
 - [The Mirrorwright's Court](/en/Venturia/Locations/mirrorwrights-court)
 - [The Burnt Quill](/en/Venturia/Locations/burnt-quill)
 - [The Vellum Hall](/en/Venturia/Locations/vellum-hall)
@@ -50,8 +50,8 @@ The middle city — commerce, craft, and the institutions that keep the city run
 
 The lower city — salt, trade, old loyalties, and waterways that don't always behave.
 
-- [The Ferriers' Confraternity](/en/Venturia/Locations/ferriers-confraternity)
-- [The Tidekeeper's Lodge](/en/Venturia/Locations/tidekeepers-lodge)
+- [The Ferriers' Confraternity](/en/Venturia/Factions/ferriers-confraternity)
+- [The Tidekeeper's Lodge](/en/Venturia/Factions/tidekeepers-lodge)
 - [The Undertow](/en/Venturia/Locations/the-undertow)
 - [The Penny Shrine](/en/Venturia/Locations/penny-shrine)
 

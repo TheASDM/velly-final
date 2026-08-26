@@ -46,7 +46,7 @@ The Market Tiers are also where Venturia's strangeness feels most domestic. A mi
 
 ## Notable Places
 
-- **[The Masquers' Sodality](/en/Venturia/Locations/masquers-sodality)** - Crafting the faces Venturia wears.
+- **[The Masquers' Sodality](/en/Venturia/Factions/masquers-sodality)** - Crafting the faces Venturia wears.
 - **[The Mirrorwright's Court](/en/Venturia/Locations/mirrorwrights-court)** - True reflections in a city of delayed images.
 - **[The Burnt Quill](/en/Venturia/Locations/burnt-quill)** - Recording what Venturia chooses to remember.
 - **[The Vellum Hall](/en/Venturia/Locations/vellum-hall)** - Practical knowledge for practical people.

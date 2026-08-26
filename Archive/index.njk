@@ -1,0 +1,26 @@
+---
+title: All Posts
+description: Every page in the wiki, newest first — what changed, and when.
+published: true
+permalink: /en/Archive/
+autoIndex: false
+tags: archive, index, navigation
+---
+<section class="vos-section-header">
+  <p class="vos-section-kicker">Browse</p>
+  <h1 class="vos-section-title">All Posts</h1>
+</section>
+
+<p>Everything published, newest first. This list builds itself — the hand-typed one it replaced had gone five months stale and named a fraction of the wiki.</p>
+
+<div class="vos-row-chip-list">
+  {%- for p in collections.all | wikiRecent(200) -%}
+  <a class="vos-row-chip" href="{{ p.url }}">
+    <span>
+      <span class="vos-row-chip-title">{{ p.title }}</span>
+      {%- if p.description %}<span class="vos-row-chip-meta">{{ p.description }}</span>{% endif -%}
+    </span>
+    <span class="vos-row-chip-badge">{{ p.date | date }}</span>
+  </a>
+  {%- endfor -%}
+</div>

@@ -167,3 +167,59 @@
     border: 0;
     border-top: 1px solid rgba(212, 165, 116, 0.28);
   }
+
+/* ── Tags and related pages ────────────────────────────────────────── */
+
+/* Tags were in the frontmatter of nearly every page and read by nothing.
+   These are the two surfaces that make them a route instead of a label. */
+
+.vos-tag-cloud {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin: 1.25rem 0;
+}
+.vos-tag-pill {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.4rem;
+  padding: 0.35rem 0.7rem;
+  border: 1px solid var(--vos-border);
+  border-radius: 999px;
+  background: rgba(8, 7, 11, 0.5);
+  color: var(--vos-text);
+  text-decoration: none;
+  font-size: 0.88rem;
+}
+.vos-tag-pill:hover {
+  border-color: var(--vos-border-strong);
+  color: var(--vos-cream);
+}
+.vos-tag-pill span {
+  font-size: 0.72rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--vos-gold-dim);
+}
+.vos-tag-count {
+  color: var(--vos-gold-dim);
+  font-size: 0.9rem;
+}
+
+/* Sits at the foot of an article, after the text and before nothing. */
+.vos-related {
+  margin-top: 2.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--vos-border);
+}
+.vos-related-title {
+  margin: 0 0 0.75rem;
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--vos-gold);
+}
+
+@media (pointer: coarse) {
+  .vos-tag-pill { min-height: 40px; align-items: center; }
+}

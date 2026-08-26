@@ -65,7 +65,7 @@ You will laugh at this table. You will also sit in stunned silence. The goal is 
 
 Built in tiers on the cliffs of Seravalle island, Venturia is a city in love with its own performance. Harbor districts hum with salt and commerce. [The High Quarter](/en/Venturia/Locations/high-quarter) gleams with gilded towers and exclusive salons. And everywhere — on feast days, in storefronts, hanging from iron posts in the lamplight — masks.
 
-Mask-wearing in Venturia isn't costume — it's culture. [The Masquers' Sodality](/en/Venturia/Locations/masquers-sodality) has been crafting them for centuries. The annual Autumn Masquerade is the most important social event of the year. And the city's famed Veil Court knows something others don't: in Venturia, when you genuinely commit to wearing a different face, reality becomes... slightly more willing to cooperate.
+Mask-wearing in Venturia isn't costume — it's culture. [The Masquers' Sodality](/en/Venturia/Factions/masquers-sodality) has been crafting them for centuries. The annual Autumn Masquerade is the most important social event of the year. And the city's famed Veil Court knows something others don't: in Venturia, when you genuinely commit to wearing a different face, reality becomes... slightly more willing to cooperate.
 
 The city has other quirks that everyone accepts as normal. Mirrors sometimes show your reflection a half-second late, as though it needed time to catch up. Promises feel heavier here — more binding than they should. Coincidences happen with uncanny frequency. Colors are more saturated in autumn than they have any right to be.
 

@@ -1,0 +1,17 @@
+[
+  {
+    "from": "/en/Venturia/Locations/masquers-sodality/",
+    "to": "/en/Venturia/Factions/masquers-sodality/",
+    "why": "A guild is a faction; its workshop is the location."
+  },
+  {
+    "from": "/en/Venturia/Locations/ferriers-confraternity/",
+    "to": "/en/Venturia/Factions/ferriers-confraternity/",
+    "why": "A guild is a faction; its boathouse is the location."
+  },
+  {
+    "from": "/en/Venturia/Locations/tidekeepers-lodge/",
+    "to": "/en/Venturia/Factions/tidekeepers-lodge/",
+    "why": "A guild is a faction; its lodge is the location."
+  }
+]

@@ -30,7 +30,7 @@ dateCreated: 2026-05-22T00:00:00.000Z
 
 </div>
 
-Caravel — Car to anyone who knows them — is nineteen, Venturia-born, and finished with secrets. The child of the family that keeps the [Covenant Archive](/en/Venturia/Locations/covenant-archive), raised beside a twin sister their parents preferred and a family business they left behind — the trade, not the family, whom they still see a few times a month — Car found their own road into the city's masks and music as an apprentice of the [Masquers' Sodality](/en/Venturia/Locations/masquers-sodality). The reason they hate secrets is simple and unhealed: **Alessia Rossetti** — Car's best friend, a daughter of the family that runs the Burnt Quill's press floor — died the night after a quiet bargain, and Car found the body.
+Caravel — Car to anyone who knows them — is nineteen, Venturia-born, and finished with secrets. The child of the family that keeps the [Covenant Archive](/en/Venturia/Locations/covenant-archive), raised beside a twin sister their parents preferred and a family business they left behind — the trade, not the family, whom they still see a few times a month — Car found their own road into the city's masks and music as an apprentice of the [Masquers' Sodality](/en/Venturia/Factions/masquers-sodality). The reason they hate secrets is simple and unhealed: **Alessia Rossetti** — Car's best friend, a daughter of the family that runs the Burnt Quill's press floor — died the night after a quiet bargain, and Car found the body.
 
 
 ---
@@ -58,7 +58,7 @@ Car watched the Rossettis strike a bargain with someone they didn't know. The fo
 - **[Celina Cross](/en/Venturia/Characters/NPCs/celina-cross)** — Alessia's elder sister; still performing at the Amaranth, and still the only other person who lost her. Car has never once called her Cross.
 - **Maris Asteri** — Car's twin, now an Archivist. Mutual respect, mutual distance, and a standing agreement never to ask each other for anything.
 - **[The Tragedy of Vallombrosa](/en/Venturia/Culture/tragedy-of-vallombrosa)** — Growing up around the theater with Alessia, Car has heard old company arguments that the earliest prompt-books stage the di Errante household differently than any modern telling does.
-- **[The Masquers' Sodality](/en/Venturia/Locations/masquers-sodality)** — Car's apprenticeship and entry into the city's mask-and-theater world.
+- **[The Masquers' Sodality](/en/Venturia/Factions/masquers-sodality)** — Car's apprenticeship and entry into the city's mask-and-theater world.
 - **[The Covenant Archive](/en/Venturia/Locations/covenant-archive)** — The family business Car was raised in and rejected.
 - **[Celina Cross](/en/Venturia/Characters/NPCs/celina-cross)** — Names this character in its connections.
 - **[The Autumn Masquerade](/en/Venturia/Culture/autumn-masquerade)** — Names this character in its connections.
