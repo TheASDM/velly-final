@@ -22,17 +22,23 @@
       window.navigator.standalone === true;
   }
 
-  function isAndroid() {
-    return /android/i.test(window.navigator.userAgent || '');
-  }
-
   function isIOS() {
     return /iphone|ipad|ipod/i.test(window.navigator.userAgent) ||
       (window.navigator.platform === 'MacIntel' && window.navigator.maxTouchPoints > 1);
   }
 
+  /* An installed app should not have to be told to update itself.
+   *
+   * This was Android-only, which left an installed iPhone stuck on whatever
+   * version it first cached: iOS resumes a standalone app rather than
+   * reloading it, so `load` — and with it the only update check — could go days
+   * without firing. Standalone is the condition that matters, not the platform.
+   *
+   * A browser tab is left alone deliberately: reloading a page someone is
+   * reading is rude, and a tab reloads on its own soon enough.
+   */
   function shouldAutoApplyUpdates() {
-    return isStandalone() && isAndroid();
+    return isStandalone();
   }
 
   function wasDismissed() {
@@ -110,17 +116,21 @@
     return true;
   }
 
-  function maybeApplyAndroidUpdate(worker) {
+  /* Apply on the way back in — returning to the app is the one moment a reload
+   * costs nothing. */
+  function maybeApplyUpdate(worker) {
     waitingWorker = worker || waitingWorker;
     if (!waitingWorker || !shouldAutoApplyUpdates()) return false;
     if (document.visibilityState === 'hidden') return false;
     return applyWaitingUpdate(waitingWorker);
   }
 
+  /* A new version arriving mid-use is offered rather than applied. Reloading
+   * the page underneath someone recording damage at the table would be worse
+   * than waiting until they next come back to it. */
   function handleUpdateReady(worker) {
     waitingWorker = worker || waitingWorker;
-    if (maybeApplyAndroidUpdate(waitingWorker)) return;
-    if (!shouldAutoApplyUpdates()) showUpdatePrompt(waitingWorker);
+    showUpdatePrompt(waitingWorker);
   }
 
   if (refreshButton) {
@@ -164,18 +174,22 @@
           window.location.reload();
         });
 
+        /* Checking has to happen on every platform, installed or not. It used
+         * to be inside the auto-apply branch, so an installed iPhone never
+         * checked at all after the first load. */
         const checkForUpdates = () => registration.update().catch(() => null);
-        if (shouldAutoApplyUpdates()) {
-          document.addEventListener('visibilitychange', () => {
-            if (document.visibilityState !== 'visible') return;
-            maybeApplyAndroidUpdate(registration.waiting);
-            checkForUpdates();
-          });
-          window.addEventListener('focus', () => {
-            maybeApplyAndroidUpdate(registration.waiting);
-            checkForUpdates();
-          });
-        }
+        const onReturn = () => {
+          if (document.visibilityState !== 'visible') return;
+          maybeApplyUpdate(registration.waiting);
+          checkForUpdates();
+        };
+        document.addEventListener('visibilitychange', onReturn);
+        window.addEventListener('focus', onReturn);
+
+        // A session at a table can keep the app foregrounded for hours, where
+        // neither of the above ever fires.
+        setInterval(checkForUpdates, 15 * 60 * 1000);
+
         checkForUpdates();
       } catch (error) {
         console.warn('Service worker registration failed', error);
