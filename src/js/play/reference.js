@@ -27,6 +27,11 @@ async function loadJson(url) {
   return promise;
 }
 
+/* Shared with masquerade.js, which caches the same way. */
+export function loadJsonCached(url) {
+  return loadJson(url);
+}
+
 export function loadConditions() {
   return loadJson('/data/play/conditions.json');
 }

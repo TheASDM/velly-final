@@ -556,3 +556,210 @@
   font-size: 0.76rem;
   color: var(--vos-gold-dim);
 }
+
+/* ── The Masquerade ────────────────────────────────────────────────── */
+
+.vos-mask-banner {
+  position: sticky;
+  top: calc(var(--vos-app-bar-h, 58px));
+  z-index: 30;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  max-width: 46rem;
+  margin: 0 auto 1rem;
+  padding: 0.55rem 0.8rem;
+  border: 1px solid rgba(212, 165, 116, 0.45);
+  border-radius: 10px;
+  background: linear-gradient(180deg, rgba(36, 28, 18, 0.96), rgba(14, 12, 19, 0.96));
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+.vos-mask-banner.is-paused { border-style: dashed; }
+/* Time up is a state the table needs to notice, not a silent zero. */
+.vos-mask-banner.is-out {
+  border-color: rgba(212, 77, 63, 0.6);
+  background: linear-gradient(180deg, rgba(60, 20, 18, 0.96), rgba(14, 12, 19, 0.96));
+}
+.vos-mask-name {
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.82rem;
+  letter-spacing: 0.08em;
+  text-transform: capitalize;
+  color: var(--vos-gold-bright);
+}
+.vos-mask-clock {
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.98rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--vos-cream);
+}
+.vos-mask-banner.is-out .vos-mask-clock { color: var(--vos-quest-bright); }
+.vos-mask-btn {
+  min-height: 34px;
+  padding: 0 0.6rem;
+  border: 1px solid var(--vos-border);
+  border-radius: 8px;
+  background: rgba(8, 7, 11, 0.5);
+  color: var(--vos-gold-dim);
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.6rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.vos-mask-btn:hover { border-color: var(--vos-border-strong); color: var(--vos-cream); }
+.vos-mask-btn.is-text { margin-left: auto; }
+.vos-mask-btn.is-text ~ .vos-mask-btn.is-text { margin-left: 0; }
+
+.vos-play-mask,
+.vos-play-form,
+.vos-play-rest { font-family: inherit; }
+
+.vos-play-mask {
+  display: block;
+  width: 100%;
+  margin-bottom: 0.45rem;
+  padding: 0.8rem 0.9rem;
+  border: 1px solid var(--vos-border);
+  border-radius: 10px;
+  background: rgba(8, 7, 11, 0.6);
+  color: var(--vos-text);
+  text-align: left;
+  cursor: pointer;
+}
+.vos-play-mask.is-on { border-color: var(--vos-border-strong); background: rgba(212, 165, 116, 0.12); }
+.vos-play-mask b {
+  display: block;
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.86rem;
+  color: var(--vos-gold-bright);
+}
+.vos-play-mask span { font-size: 0.84rem; color: var(--vos-gold-dim); text-transform: capitalize; }
+
+.vos-play-forms {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(9.5rem, 1fr));
+  gap: 0.4rem;
+}
+.vos-play-form {
+  padding: 0.6rem 0.7rem;
+  border: 1px solid var(--vos-border);
+  border-radius: 10px;
+  background: rgba(8, 7, 11, 0.6);
+  color: var(--vos-text);
+  text-align: left;
+  cursor: pointer;
+}
+.vos-play-form:hover { border-color: var(--vos-border-strong); background: rgba(212, 165, 116, 0.08); }
+.vos-play-form b {
+  display: block;
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.8rem;
+  color: var(--vos-cream);
+}
+.vos-play-form-cr {
+  display: inline-block;
+  margin: 0.2rem 0;
+  padding: 0 0.4rem;
+  border: 1px solid var(--vos-border);
+  border-radius: 999px;
+  font-size: 0.62rem;
+  color: var(--vos-gold);
+}
+.vos-play-form-meta { display: block; font-size: 0.72rem; color: var(--vos-gold-dim); }
+
+/* ── The assumed creature ──────────────────────────────────────────── */
+
+.vos-play-formblock {
+  max-width: 46rem;
+  margin: 0 auto 1.4rem;
+  padding: 1rem 1.1rem;
+  border: 1px solid rgba(212, 165, 116, 0.4);
+  border-radius: 12px;
+  background: rgba(20, 16, 12, 0.6);
+}
+.vos-play-formblock header h3 {
+  margin: 0;
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 1.3rem;
+  letter-spacing: 0.04em;
+  color: var(--vos-gold-bright);
+}
+.vos-play-formblock header p {
+  margin: 0.15rem 0 0.8rem;
+  font-size: 0.8rem;
+  letter-spacing: 0.06em;
+  text-transform: capitalize;
+  color: var(--vos-gold-dim);
+}
+.vos-play-form-vitals {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin-bottom: 0.8rem;
+}
+.vos-play-form-vitals span {
+  flex: 1 1 6rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0.5rem;
+  border: 1px solid var(--vos-border);
+  border-radius: 10px;
+  background: rgba(8, 7, 11, 0.5);
+  font-size: 0.58rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--vos-gold-dim);
+}
+.vos-play-form-vitals b {
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 1.2rem;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--vos-cream);
+}
+
+/* What the feature changes about this creature, shown rather than applied
+   silently — a player should see why a number differs from the book. */
+.vos-play-overrides {
+  margin-bottom: 0.9rem;
+  padding: 0.6rem 0.75rem;
+  border-left: 2px solid var(--vos-gold);
+  border-radius: 0 8px 8px 0;
+  background: rgba(212, 165, 116, 0.06);
+}
+.vos-play-override {
+  display: grid;
+  grid-template-columns: auto auto 1fr;
+  gap: 0.2rem 0.6rem;
+  align-items: baseline;
+  padding: 0.2rem 0;
+  font-size: 0.86rem;
+}
+.vos-play-override b {
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.62rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--vos-gold-dim);
+}
+.vos-play-override span { color: var(--vos-cream); }
+.vos-play-override i { font-size: 0.76rem; color: var(--vos-gold-dim); }
+@media (max-width: 34rem) {
+  .vos-play-override { grid-template-columns: auto 1fr; }
+  .vos-play-override i { grid-column: 1 / -1; }
+}
+
+.vos-play-form-h {
+  margin: 0.9rem 0 0.4rem;
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.66rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--vos-gold);
+}
+.vos-play-form-entry { margin: 0 0 0.5rem; font-size: 0.94rem; line-height: 1.5; }
+.vos-play-form-entry b { color: var(--vos-cream); }

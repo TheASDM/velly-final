@@ -30,6 +30,15 @@ OUT = ROOT / "public" / "data" / "play"
 
 CLASS_LISTS = ["bard", "cleric", "ranger", "warlock", "wizard"]
 
+# Creature types a Masquerade mask can become. Kept as a list rather than
+# hard-coded to Car, so a second masked bard needs no code.
+FORM_TYPES = ["fey", "fiend", "celestial", "humanoid"]
+
+BESTIARIES = ["bestiary-xmm.json", "bestiary-xphb.json", "bestiary-xdmg.json"]
+
+# Challenge Rating as a number, for sorting and for the level cap.
+CR_VALUE = {"0": 0.0, "1/8": 0.125, "1/4": 0.25, "1/2": 0.5}
+
 SCHOOLS = {
     "A": "Abjuration", "C": "Conjuration", "D": "Divination", "E": "Enchantment",
     "V": "Evocation", "I": "Illusion", "N": "Necromancy", "T": "Transmutation",
@@ -165,6 +174,137 @@ def prepared_table(class_name):
     return None
 
 
+def cr_number(cr):
+    raw = cr.get("cr") if isinstance(cr, dict) else cr
+    raw = str(raw or "").strip()
+    if raw in CR_VALUE:
+        return CR_VALUE[raw]
+    try:
+        return float(raw)
+    except ValueError:
+        return None
+
+
+def ac_number(ac):
+    """AC is a number, or a list of numbers and objects with an `ac` key."""
+    if isinstance(ac, list) and ac:
+        first = ac[0]
+        return first.get("ac") if isinstance(first, dict) else first
+    return ac if isinstance(ac, int) else None
+
+
+def speed_line(speed):
+    if not isinstance(speed, dict):
+        return ""
+    parts = []
+    for key in ("walk", "fly", "swim", "climb", "burrow"):
+        value = speed.get(key)
+        if isinstance(value, dict):
+            value = value.get("number")
+        if value:
+            parts.append(f"{value} ft." if key == "walk" else f"{key} {value} ft.")
+    return ", ".join(parts)
+
+
+def named_entries(items):
+    out = []
+    for item in items or []:
+        name = strip_5e_tags(str(item.get("name") or "")).strip()
+        text = strip_5e_tags(flatten_entries(item.get("entries")))
+        if name or text:
+            out.append({"name": name, "text": text})
+    return out
+
+
+def trim_creature(monster):
+    """A form, as the sheet shows it while transformed."""
+    kind = monster.get("type")
+    kind = kind.get("type") if isinstance(kind, dict) else kind
+    hp = monster.get("hp") or {}
+    return {
+        "name": monster["name"],
+        "source": monster.get("source"),
+        "type": str(kind or "").lower(),
+        "size": (monster.get("size") or ["M"])[0],
+        "cr": str((monster.get("cr") or {}).get("cr") if isinstance(monster.get("cr"), dict)
+                  else monster.get("cr") or ""),
+        "crValue": cr_number(monster.get("cr")),
+        "ac": ac_number(monster.get("ac")),
+        "hp": hp.get("average"),
+        "hpFormula": hp.get("formula", ""),
+        "speed": speed_line(monster.get("speed")),
+        "abilities": {k: monster.get(k) for k in ("str", "dex", "con", "int", "wis", "cha")
+                      if monster.get(k) is not None},
+        "skills": monster.get("skill") or {},
+        "senses": [strip_5e_tags(x) for x in (monster.get("senses") or [])],
+        "passive": monster.get("passive"),
+        "languages": monster.get("languages") or [],
+        "resist": monster.get("resist") or [],
+        "immune": monster.get("immune") or [],
+        "conditionImmune": monster.get("conditionImmune") or [],
+        "traits": named_entries(monster.get("trait")),
+        "actions": named_entries(monster.get("action")),
+    }
+
+
+def build_forms():
+    """Every creature a mask could become, grouped by type.
+
+    Sourced from the bestiaries, the campaign homebrew, and the statblocks
+    lifted out of the wiki — the same three places the forms reference draws on,
+    so a creature listed there resolves here.
+    """
+    seen, forms = set(), {kind: [] for kind in FORM_TYPES}
+    sources = [FILTERED / name for name in BESTIARIES]
+    sources += [CURATED / "homebrew.json", CURATED / "creatures-lifted.json"]
+
+    for path in sources:
+        if not path.exists():
+            continue
+        for monster in json.loads(path.read_text(encoding="utf-8")).get("monster", []):
+            trimmed = trim_creature(monster)
+            if trimmed["type"] not in forms:
+                continue
+            if trimmed["crValue"] is None:
+                continue
+            key = trimmed["name"].lower()
+            if key in seen:                      # first source wins
+                continue
+            seen.add(key)
+            forms[trimmed["type"]].append(trimmed)
+
+    for kind in forms:
+        forms[kind].sort(key=lambda c: (c["crValue"], c["name"]))
+    return forms
+
+
+def build_masquerade():
+    """The College of the Masquerade's masks, read from the homebrew."""
+    path = CURATED / "homebrew.json"
+    if not path.exists():
+        return None
+    data = json.loads(path.read_text(encoding="utf-8"))
+    masks, general = {}, []
+    for feature in data.get("subclassFeature", []):
+        if feature.get("subclassShortName") != "EoRMasquerade":
+            continue
+        name = feature["name"]
+        text = strip_5e_tags(flatten_entries(feature.get("entries")))
+        if name.startswith("Maschera "):
+            key = name.split(" ", 1)[1].lower()
+            masks[key] = {
+                "key": key,
+                "name": name,
+                "type": {"diabolica": "fiend", "fiabesco": "fey",
+                         "angelico": "celestial", "umano": "humanoid"}.get(key),
+                "level": feature.get("level"),
+                "text": text,
+            }
+        else:
+            general.append({"name": name, "level": feature.get("level"), "text": text})
+    return {"masks": masks, "features": general} if masks else None
+
+
 def build_conditions():
     path = FILTERED / "conditionsdiseases.json"
     out = {}
@@ -184,6 +324,20 @@ def build_conditions():
 def main():
     OUT.mkdir(parents=True, exist_ok=True)
     index = load_spell_index()
+
+    forms = build_forms()
+    (OUT / "forms.json").write_text(
+        json.dumps(forms, ensure_ascii=False, separators=(",", ":")) + "\n", encoding="utf-8")
+    print("  forms.json           " + ", ".join(
+        f"{len(v)} {k}" for k, v in forms.items() if v))
+
+    masquerade = build_masquerade()
+    if masquerade:
+        (OUT / "masquerade.json").write_text(
+            json.dumps(masquerade, ensure_ascii=False, separators=(",", ":")) + "\n",
+            encoding="utf-8")
+        print(f"  masquerade.json      {len(masquerade['masks'])} masks, "
+              f"{len(masquerade['features'])} features")
 
     conditions = build_conditions()
     (OUT / "conditions.json").write_text(

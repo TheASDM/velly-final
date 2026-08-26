@@ -48,6 +48,21 @@ def _read_state(conn, player_name, statblock):
     return seed_from_statblock(statblock), 0, True
 
 
+def _decorate(state):
+    """Add what only the server can know: how long a mask has left.
+
+    The countdown runs on server time so a locked phone or a closed tab does not
+    stop it, and a paused mask reports the remainder it was paused with.
+    """
+    mask = state.get("mask")
+    if mask:
+        mask = dict(mask)
+        mask["remainingMs"] = _mask_remaining(state["mask"])
+        mask["paused"] = state["mask"].get("pausedRemaining") is not None
+        state = {**state, "mask": mask}
+    return state
+
+
 def _persist(conn, player_name, state, version, now):
     conn.execute(
         """
@@ -108,7 +123,7 @@ def api_play_state():
     return jsonify({
         "ok": True,
         "playerName": player_name,
-        "state": state,
+        "state": _decorate(state),
         "version": version,
         "limits": limits,
     })
@@ -160,7 +175,7 @@ def api_play_op():
     return jsonify({
         "ok": True,
         "playerName": player_name,
-        "state": state,
+        "state": _decorate(state),
         "version": version,
         "limits": limits,
         "note": note,
@@ -207,5 +222,5 @@ def api_play_log():
     return jsonify({"ok": True, "playerName": player_name, "entries": entries})
 
 
-__all__ = ['OP_LOG_LIMIT', '_load_statblock', '_load_play_row', '_read_state',
+__all__ = ['OP_LOG_LIMIT', '_decorate', '_load_statblock', '_load_play_row', '_read_state',
            '_persist', '_target_player', 'api_play_state', 'api_play_op', 'api_play_log']

@@ -128,10 +128,26 @@ def _op_damage(state, op, limits):
     hp["temp"] -= absorbed
     remaining = amount - absorbed
 
+    form = state.get("form")
+    if form:
+        # Damage hits the creature first. Anything past zero carries over to the
+        # real body, which is what the feature says happens.
+        absorbed_by_form = min(form["hp"], remaining)
+        form["hp"] -= absorbed_by_form
+        remaining -= absorbed_by_form
+        if form["hp"] <= 0:
+            _revert_form(state)
+            notes_form = " (form dropped)"
+        else:
+            notes_form = ""
+        hp = state["hp"]
+    else:
+        notes_form = ""
+
     if hp["current"] is not None:
         hp["current"] = max(0, hp["current"] - remaining)
 
-    notes = [f"{amount} damage"]
+    notes = [f"{amount} damage{notes_form}"]
 
     # House rule: no death saves. Dropping to 0 costs a point of Exhaustion and
     # gives you Dying; taking damage while already Dying costs two, or three on
@@ -347,6 +363,134 @@ def _op_long_rest(state, op, limits):
 
 
 PREPARED_MAX = 60
+MASK_MINUTES = 10
+
+
+def _now_ms():
+    return int(time.time() * 1000)
+
+
+def _mask_remaining(mask):
+    """Milliseconds left on a mask, honouring a pause.
+
+    The clock runs on server time rather than the client's, so locking a phone
+    or closing the tab does not stop it — and a paused mask simply holds the
+    remainder it had when it was paused.
+    """
+    if not mask:
+        return 0
+    if mask.get("pausedRemaining") is not None:
+        return max(0, int(mask["pausedRemaining"]))
+    return max(0, int(mask.get("endsAt", 0)) - _now_ms())
+
+
+def _op_don_mask(state, op, limits):
+    """Don a mask. A Bonus Action, ten minutes, one of a limited number of uses.
+
+    Temporary hit points from Masked Resilience are the client's to send, since
+    they are Charisma modifier plus bard level and the build layer is where
+    those live.
+    """
+    key = str(op.get("mask") or "").strip().lower()[:32]
+    if not key:
+        raise OpError("mask is required")
+    minutes = _int_arg(op, "minutes", default=MASK_MINUTES, low=1, high=600)
+
+    state["mask"] = {
+        "key": key,
+        "startedAt": _utc_now_iso(),
+        "endsAt": _now_ms() + minutes * 60_000,
+        "pausedRemaining": None,
+        "usedInspiration": bool(op.get("usedInspiration")),
+    }
+    state["form"] = None
+
+    temp = op.get("tempHp")
+    if temp is not None:
+        state["hp"]["temp"] = max(state["hp"]["temp"], _int_arg(op, "tempHp", low=0))
+    return f"donned {key}"
+
+
+def _op_remove_mask(state, op, limits):
+    """Ends the mask, and with it any form. Masked Resilience vanishes."""
+    key = (state.get("mask") or {}).get("key")
+    _revert_form(state)
+    state["mask"] = None
+    state["hp"]["temp"] = 0
+    return f"removed {key}" if key else "mask removed"
+
+
+def _op_pause_mask(state, op, limits):
+    mask = state.get("mask")
+    if not mask:
+        raise OpError("No mask is worn")
+    if mask.get("pausedRemaining") is not None:
+        raise OpError("Already paused")
+    mask["pausedRemaining"] = _mask_remaining(mask)
+    return "timer paused"
+
+
+def _op_resume_mask(state, op, limits):
+    mask = state.get("mask")
+    if not mask:
+        raise OpError("No mask is worn")
+    if mask.get("pausedRemaining") is None:
+        raise OpError("Not paused")
+    mask["endsAt"] = _now_ms() + int(mask["pausedRemaining"])
+    mask["pausedRemaining"] = None
+    return "timer resumed"
+
+
+def _op_assume_form(state, op, limits):
+    """Take a creature's shape.
+
+    The creature's hit points are assumed and the character's are set aside, so
+    reverting restores what they had rather than what the form had left.
+    """
+    mask = state.get("mask")
+    if not mask:
+        raise OpError("You must be wearing a mask")
+    name = str(op.get("creature") or "").strip()[:80]
+    if not name:
+        raise OpError("creature is required")
+    form_hp = _int_arg(op, "hp", low=0)
+
+    state["form"] = {
+        "creature": name,
+        "source": str(op.get("source") or "")[:32],
+        "cr": str(op.get("cr") or "")[:8],
+        "hp": form_hp,
+        "maxHp": form_hp,
+        "restore": {"current": state["hp"]["current"], "temp": state["hp"]["temp"]},
+        "since": _utc_now_iso(),
+    }
+    return f"assumed the form of {name}"
+
+
+def _revert_form(state):
+    """Return to the character's own body, carrying overflow damage back.
+
+    If the form was dropped to 0 the excess has already been taken off the
+    stored hit points by _op_damage, so this only has to put them back.
+    """
+    form = state.get("form")
+    if not form:
+        return None
+    restore = form.get("restore") or {}
+    state["hp"]["current"] = restore.get("current")
+    state["hp"]["temp"] = int(restore.get("temp") or 0)
+    state["form"] = None
+    return form.get("creature")
+
+
+def _op_revert_form(state, op, limits):
+    """Reverting ends the mask too, and counts it as used for the day."""
+    name = _revert_form(state)
+    state["mask"] = None
+    state["hp"]["temp"] = 0
+    return f"reverted from {name}" if name else "reverted"
+
+
 
 
 def _op_toggle_prepared(state, op, limits):
@@ -419,6 +563,12 @@ OPS = {
     "longRest": _op_long_rest,
     "togglePrepared": _op_toggle_prepared,
     "setPrepared": _op_set_prepared,
+    "donMask": _op_don_mask,
+    "removeMask": _op_remove_mask,
+    "pauseMask": _op_pause_mask,
+    "resumeMask": _op_resume_mask,
+    "assumeForm": _op_assume_form,
+    "revertForm": _op_revert_form,
     "concentrate": _op_concentrate,
     "breakConcentration": _op_break_concentration,
 }
@@ -493,7 +643,8 @@ def reconcile(state, limits):
 
 
 __all__ = [
-    'STATE_VERSION', 'MAX_EXHAUSTION', 'PREPARED_MAX', 'CONDITIONS', 'OPS', 'OpError',
+    'STATE_VERSION', 'MAX_EXHAUSTION', 'PREPARED_MAX', 'MASK_MINUTES', 'CONDITIONS', 'OPS', 'OpError',
+    '_mask_remaining',
     'default_state', 'limits_from_statblock', 'apply_op', 'seed_from_statblock',
     'reconcile',
 ]

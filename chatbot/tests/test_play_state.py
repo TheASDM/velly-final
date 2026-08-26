@@ -284,3 +284,74 @@ def test_version_advances_once_per_applied_operation(app, auth_headers):
 def test_a_player_cannot_read_another_players_log(app, auth_headers):
     response = get(app, auth_headers["player"], '/api/play/log?playerName=Roxanya "Roxy"')
     assert response.status_code == 403
+
+
+# ── The Masquerade ────────────────────────────────────────────────────
+
+def test_donning_a_mask_starts_a_clock_and_grants_temporary_hit_points(app, auth_headers):
+    state = post(app, auth_headers["player"],
+                 {"op": "donMask", "mask": "diabolica", "tempHp": 7}).get_json()["state"]
+    assert state["mask"]["key"] == "diabolica"
+    assert state["mask"]["remainingMs"] > 9 * 60 * 1000
+    assert state["hp"]["temp"] == 7
+
+
+def test_the_mask_timer_pauses_and_resumes(app, auth_headers):
+    post(app, auth_headers["player"], {"op": "donMask", "mask": "fiabesco"})
+    paused = post(app, auth_headers["player"], {"op": "pauseMask"}).get_json()["state"]
+    assert paused["mask"]["paused"] is True
+    remaining = paused["mask"]["remainingMs"]
+
+    # Paused time does not count, so the remainder is unchanged on resume.
+    resumed = post(app, auth_headers["player"], {"op": "resumeMask"}).get_json()["state"]
+    assert resumed["mask"]["paused"] is False
+    assert abs(resumed["mask"]["remainingMs"] - remaining) < 2000
+
+    assert post(app, auth_headers["player"], {"op": "resumeMask"}).status_code == 409
+
+
+def test_a_form_needs_a_mask(app, auth_headers):
+    refused = post(app, auth_headers["player"],
+                   {"op": "assumeForm", "creature": "Il Rosso", "hp": 18})
+    assert refused.status_code == 409
+    assert "mask" in refused.get_json()["error"]
+
+
+def test_assuming_a_form_sets_your_own_hit_points_aside(app, auth_headers):
+    post(app, auth_headers["player"], {"op": "damage", "amount": 6})       # 15 of 21
+    post(app, auth_headers["player"], {"op": "donMask", "mask": "diabolica"})
+    state = post(app, auth_headers["player"],
+                 {"op": "assumeForm", "creature": "Il Rosso", "hp": 18, "cr": "1/2"}).get_json()["state"]
+
+    assert state["form"]["creature"] == "Il Rosso"
+    assert state["form"]["hp"] == 18
+    assert state["form"]["restore"]["current"] == 15
+
+
+def test_reverting_restores_the_hit_points_you_had(app, auth_headers):
+    post(app, auth_headers["player"], {"op": "damage", "amount": 6})
+    post(app, auth_headers["player"], {"op": "donMask", "mask": "diabolica"})
+    post(app, auth_headers["player"], {"op": "assumeForm", "creature": "Il Rosso", "hp": 18})
+    post(app, auth_headers["player"], {"op": "damage", "amount": 5})       # the form takes it
+    state = post(app, auth_headers["player"], {"op": "revertForm"}).get_json()["state"]
+
+    assert state["form"] is None
+    assert state["mask"] is None          # reverting ends the mask too
+    assert state["hp"]["current"] == 15   # not 10 — the form took that damage
+
+
+def test_damage_lands_on_the_form_and_overflows_to_the_body(app, auth_headers):
+    """A form dropped to 0 carries the excess back, per the feature."""
+    post(app, auth_headers["player"], {"op": "donMask", "mask": "diabolica"})
+    post(app, auth_headers["player"], {"op": "assumeForm", "creature": "Vivo", "hp": 10})
+    state = post(app, auth_headers["player"], {"op": "damage", "amount": 14}).get_json()["state"]
+
+    assert state["form"] is None          # dropped, so reverted
+    assert state["hp"]["current"] == 17   # 21 - the 4 that carried over
+
+
+def test_a_long_rest_clears_the_mask(app, auth_headers):
+    post(app, auth_headers["player"], {"op": "donMask", "mask": "diabolica", "tempHp": 7})
+    state = post(app, auth_headers["player"], {"op": "longRest"}).get_json()["state"]
+    assert state["mask"] is None
+    assert state["hp"]["temp"] == 0

@@ -11,6 +11,7 @@ import { normalizeStatblock } from '../statblock/normalize.js';
 import { renderStatblock } from '../statblock/render.js';
 import { loadPlayState } from '../play/api.js';
 import { createControls } from '../play/controls.js';
+import { clock } from '../play/masquerade.js';
 
 const root = document.getElementById('vos-sheet-root');
 const indexEl = document.getElementById('vos-sheet-index');
@@ -22,6 +23,7 @@ let view = 'story';
 let play = null;        // { state, limits } — null until the stats tab is opened
 let controls = null;
 let statModel = null;
+let maskTimer = null;
 
 function esc(value) {
   return String(value == null ? '' : value).replace(
@@ -79,6 +81,8 @@ function render() {
       interactive: Boolean(play),
     });
     renderPlayBar();
+    renderMaskBanner();
+    renderFormBlock();
     if (indexEl) indexEl.hidden = true;
     return;
   }
@@ -91,8 +95,70 @@ function render() {
   renderIndex(markdown);
 }
 
+/* The mask banner.
+ *
+ * The countdown ticks locally for smoothness but is anchored to the remaining
+ * time the server reported, so a locked phone or a reloaded tab picks up the
+ * real answer rather than a drifted one.
+ */
+function renderMaskBanner() {
+  let banner = document.getElementById('vos-mask-banner');
+  const mask = play && play.state.mask;
+  if (view !== 'stats' || !mask) {
+    if (banner) banner.remove();
+    clearInterval(maskTimer);
+    maskTimer = null;
+    return;
+  }
+  if (!banner) {
+    banner = document.createElement('div');
+    banner.id = 'vos-mask-banner';
+    banner.className = 'vos-mask-banner';
+    root.parentNode.insertBefore(banner, root);
+    banner.addEventListener('click', (event) => {
+      const button = event.target.closest('[data-mask-action]');
+      if (!button || !controls) return;
+      const action = button.dataset.maskAction;
+      if (action === 'form') controls.openForms();
+      if (action === 'revert') controls.apply({ op: 'revertForm' });
+      if (action === 'pause') controls.apply({ op: mask.paused ? 'resumeMask' : 'pauseMask' });
+      if (action === 'remove') controls.apply({ op: 'removeMask' });
+    });
+  }
+
+  const anchor = Date.now();
+  const paint = () => {
+    const left = mask.paused
+      ? mask.remainingMs
+      : Math.max(0, mask.remainingMs - (Date.now() - anchor));
+    const form = play.state.form;
+    banner.className = `vos-mask-banner${mask.paused ? ' is-paused' : ''}${left <= 0 ? ' is-out' : ''}`;
+    banner.innerHTML = `
+      <span class="vos-mask-name">${form ? form.creature : mask.key}</span>
+      <span class="vos-mask-clock">${clock(left)}${mask.paused ? ' paused' : ''}</span>
+      <button type="button" class="vos-mask-btn" data-mask-action="pause"
+              aria-label="${mask.paused ? 'Resume' : 'Pause'} the timer">${
+        mask.paused ? '▶' : '❚❚'}</button>
+      ${form
+        ? '<button type="button" class="vos-mask-btn is-text" data-mask-action="revert">Revert</button>'
+        : '<button type="button" class="vos-mask-btn is-text" data-mask-action="form">Assume form</button>'}
+      <button type="button" class="vos-mask-btn is-text" data-mask-action="remove">Remove</button>`;
+  };
+
+  paint();
+  clearInterval(maskTimer);
+  maskTimer = mask.paused ? null : setInterval(paint, 1000);
+}
+
 /* The bar lives at the bottom because that is where a thumb is. It holds the
  * three things touched every round and nothing else. */
+/* Only a College of the Masquerade bard has masks, and the sheet says so —
+ * the feature is on the character or it is not. */
+function hasMasks() {
+  return Boolean(statModel && (statModel.features || [])
+    .some((f) => (f.name || '').toLowerCase().startsWith('maschera ')));
+}
+
 function renderPlayBar() {
   const page = document.querySelector('.vos-sheet-page');
   let bar = document.getElementById('vos-play-bar');
@@ -112,6 +178,7 @@ function renderPlayBar() {
       if (!button || !controls) return;
       if (button.dataset.bar === 'hp') controls.openHpPad();
       if (button.dataset.bar === 'conditions') controls.openConditions();
+      if (button.dataset.bar === 'mask') controls.openMasks();
       if (button.dataset.bar === 'prepare') controls.openPrepare();
       if (button.dataset.bar === 'rest') controls.openRests();
     });
@@ -137,9 +204,25 @@ function renderPlayBar() {
     <button type="button" class="vos-play-bar-btn" data-bar="conditions">
       Conditions${conditions ? `<b>${conditions}</b>` : ''}
     </button>
+    ${hasMasks() ? '<button type="button" class="vos-play-bar-btn" data-bar="mask">Mask</button>' : ''}
     ${statModel && statModel.spellcasting
       ? '<button type="button" class="vos-play-bar-btn" data-bar="prepare">Spells</button>' : ''}
     <button type="button" class="vos-play-bar-btn" data-bar="rest">Rest</button>`;
+}
+
+/* While transformed the creature's statblock goes above the character's, so
+ * what you can do right now is what you read first. */
+async function renderFormBlock() {
+  const existing = document.getElementById('vos-form-block');
+  if (existing) existing.remove();
+  if (!controls || !play || !play.state.form) return;
+
+  const html = await controls.formStatblockHtml();
+  if (!html || !play.state.form) return;
+  const holder = document.createElement('div');
+  holder.id = 'vos-form-block';
+  holder.innerHTML = html;
+  root.parentNode.insertBefore(holder, root);
 }
 
 function wire() {

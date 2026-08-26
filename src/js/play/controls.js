@@ -10,6 +10,7 @@
  */
 import { inverseOf, predict, sendOp } from './api.js';
 import { loadConditions, loadSpellList, preparedLimit, spellKey, spellListNameFor } from './reference.js';
+import { clock, formCrCap, formOverrides, formsForMask, loadForms, loadMasquerade, masksFor } from './masquerade.js';
 
 const QUICK_DAMAGE = [1, 2, 3, 4, 5, 6, 7, 8, 10, 12, 15, 20];
 const HAPTIC_MS = 12;
@@ -23,6 +24,8 @@ export function createControls(options) {
   let limits = options.limits;
   let busy = false;
   let spellList = null;
+  let masquerade = null;
+  let forms = null;
 
   function tap() {
     // A small tick makes a tap feel acknowledged before the network answers.
@@ -373,6 +376,138 @@ export function createControls(options) {
     });
   }
 
+  /* ── The Masquerade ────────────────────────────────────────────── */
+
+  async function ensureMasquerade() {
+    if (!masquerade) masquerade = await loadMasquerade().catch(() => null);
+    if (!forms) forms = await loadForms().catch(() => null);
+    return Boolean(masquerade);
+  }
+
+  async function openMasks() {
+    if (!(await ensureMasquerade())) {
+      toast('Could not load the masks.', { tone: 'error' });
+      return;
+    }
+    const mine = masksFor(model, masquerade);
+    if (!mine.length) {
+      toast('This character has no masks.', { tone: 'error' });
+      return;
+    }
+
+    const worn = state.mask;
+    const cards = mine.map((mask) => `
+      <button type="button" class="vos-play-mask${worn && worn.key === mask.key ? ' is-on' : ''}"
+              data-mask="${esc(mask.key)}">
+        <b>${esc(mask.name)}</b>
+        <span>${esc(mask.type)} · ${
+          formsForMask(forms, mask, formCrCap(model)).length} forms available</span>
+      </button>`).join('');
+
+    openSheet('The Masquerade', `
+      ${worn ? `<p class="vos-play-note">Wearing <b>${esc(worn.key)}</b> — ${
+        clock(worn.remainingMs)}${worn.paused ? ' (paused)' : ''} left.</p>` : ''}
+      ${cards}
+      <p class="vos-play-note">A Bonus Action. Ten minutes, or until you are incapacitated
+      or take it off. Masked Resilience gives temporary hit points equal to your Charisma
+      modifier plus your bard level.</p>
+      ${worn ? '<button type="button" class="vos-play-secondary" data-remove>Remove mask</button>' : ''}
+    `, (sheet) => {
+      sheet.querySelectorAll('[data-mask]').forEach((button) => {
+        button.addEventListener('click', () => {
+          const key = button.dataset.mask;
+          closeSheet();
+          const cha = (model.abilities || []).find((a) => a.key === 'cha');
+          const bardLevel = (model.classes || [])
+            .filter((c) => String(c.identifier).toLowerCase() === 'bard')
+            .reduce((sum, c) => sum + (c.levels || 0), 0) || model.level || 0;
+          const tempHp = cha ? Math.max(0, cha.mod + bardLevel) : 0;
+          apply({ op: 'donMask', mask: key, tempHp });
+        });
+      });
+      const remove = sheet.querySelector('[data-remove]');
+      if (remove) remove.addEventListener('click', () => { closeSheet(); apply({ op: 'removeMask' }); });
+    });
+  }
+
+  async function openForms() {
+    if (!state.mask) { openMasks(); return; }
+    if (!(await ensureMasquerade())) return;
+
+    const mask = masquerade.masks[state.mask.key];
+    const cap = formCrCap(model);
+    const available = formsForMask(forms, mask, cap);
+    if (!available.length) {
+      toast('No forms available for this mask.', { tone: 'error' });
+      return;
+    }
+
+    const cards = available.map((creature, index) => `
+      <button type="button" class="vos-play-form" data-form="${index}">
+        <b>${esc(creature.name)}</b>
+        <span class="vos-play-form-cr">CR ${esc(creature.cr)}</span>
+        <span class="vos-play-form-meta">AC ${esc(creature.ac)} · ${esc(creature.hp)} HP · ${
+          esc(creature.speed)}</span>
+      </button>`).join('');
+
+    openSheet(`Assume a form — ${esc(mask.name)}`, `
+      <p class="vos-play-note">Challenge Rating ${cap} or lower${
+        model.level < 6 ? ', rising to 3 at sixth level' : ''}. You keep your Intelligence and
+        your spell save DC; you assume the creature's hit points.</p>
+      <div class="vos-play-forms">${cards}</div>
+    `, (sheet) => {
+      sheet.querySelectorAll('[data-form]').forEach((button) => {
+        button.addEventListener('click', () => {
+          const creature = available[Number(button.dataset.form)];
+          closeSheet();
+          apply({
+            op: 'assumeForm',
+            creature: creature.name,
+            source: creature.source,
+            cr: creature.cr,
+            hp: creature.hp,
+          });
+        });
+      });
+    });
+  }
+
+  /* While transformed, the sheet shows the creature rather than the character,
+   * with the substitutions the feature makes spelled out. */
+  async function formStatblockHtml() {
+    if (!state.form || !(await ensureMasquerade())) return '';
+    const mask = masquerade.masks[state.mask ? state.mask.key : ''];
+    const pool = (forms && mask && forms[mask.type]) || [];
+    const creature = pool.find((c) => c.name === state.form.creature);
+    if (!creature) return '';
+
+    const notes = formOverrides(creature, model).map((note) => `
+      <div class="vos-play-override">
+        <b>${esc(note.label)}</b><span>${esc(note.value)}</span><i>${esc(note.why)}</i>
+      </div>`).join('');
+
+    const block = (list, title) => (list.length ? `
+      <h4 class="vos-play-form-h">${title}</h4>
+      ${list.map((entry) => `<p class="vos-play-form-entry"><b>${esc(entry.name)}.</b> ${
+        esc(entry.text)}</p>`).join('')}` : '');
+
+    return `
+      <article class="vos-play-formblock">
+        <header>
+          <h3>${esc(creature.name)}</h3>
+          <p>${esc(creature.size)} ${esc(creature.type)} · CR ${esc(creature.cr)}</p>
+        </header>
+        <div class="vos-play-form-vitals">
+          <span><b>${esc(creature.ac)}</b>AC</span>
+          <span><b>${esc(state.form.hp)}</b>/${esc(state.form.maxHp)} HP</span>
+          <span><b>${esc(creature.speed)}</b>Speed</span>
+        </div>
+        <div class="vos-play-overrides">${notes}</div>
+        ${block(creature.traits, 'Traits')}
+        ${block(creature.actions, 'Actions')}
+      </article>`;
+  }
+
   /* ── Binding ───────────────────────────────────────────────────── */
 
   function onActivate(event) {
@@ -425,6 +560,9 @@ export function createControls(options) {
     openRests,
     openConditions,
     openPrepare,
+    openMasks,
+    openForms,
+    formStatblockHtml,
     setState(next, nextLimits) {
       state = next;
       if (nextLimits) limits = nextLimits;
