@@ -244,6 +244,16 @@
       linear-gradient(180deg, rgba(18, 16, 23, 0.995), rgba(8, 7, 11, 0.995)),
       #09070c;
     box-shadow: 0 18px 44px rgba(0, 0, 0, 0.7);
+    /* The menu hangs off a fixed app bar, so without a cap a long list (the
+       DM's runs to ~20 rows) simply extends past the bottom of the screen with
+       no way to reach the end. Bound it to the gap between the bar and the tab
+       bar and let it scroll. dvh so mobile browser chrome is accounted for. */
+    max-height: calc(100vh - var(--vos-app-bar-h) - var(--vos-app-nav-h) - env(safe-area-inset-bottom) - 2rem);
+    max-height: calc(100dvh - var(--vos-app-bar-h) - var(--vos-app-nav-h) - env(safe-area-inset-bottom) - 2rem);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
   }
   .vos-user-menu[hidden] {
     display: none;
