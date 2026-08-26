@@ -182,6 +182,52 @@ def api_play_op():
     })
 
 
+@bp.get("/api/play/party")
+def api_play_party():
+    """Everyone's play state in one call — the DM's view of the table.
+
+    Returns a row per active roster player, whether or not they have a statblock
+    yet, so a character who has not been pushed is visibly missing rather than
+    silently absent. Play state is seeded on read the same way the player's own
+    sheet seeds it, so opening the party view does not create a different answer
+    from opening a sheet.
+    """
+    admin_error = _admin_error_response()
+    if admin_error:
+        return admin_error
+
+    party = []
+    with _app_db() as conn:
+        for player_name in PLAYER_NAMES:
+            if player_name == "DM" or player_name in REVOKED_PLAYERS:
+                continue
+
+            statblock = _load_statblock(conn, player_name)
+            derived = (statblock or {}).get("derived") or {}
+            state, version, fresh = _read_state(conn, player_name, statblock)
+            limits = limits_from_statblock(statblock)
+            state = reconcile(state, limits)
+            if fresh and statblock:
+                _persist(conn, player_name, state, version, _utc_now_iso())
+
+            classes = derived.get("classes") or []
+            party.append({
+                "playerName": player_name,
+                "hasStatblock": bool(statblock),
+                "character": (statblock or {}).get("name") or player_name,
+                "level": derived.get("level"),
+                "classLine": " / ".join(
+                    " ".join(str(x) for x in [c.get("subclass"), c.get("name"), c.get("levels")] if x)
+                    for c in classes),
+                "ac": derived.get("ac"),
+                "state": _decorate(state),
+                "limits": limits,
+                "version": version,
+            })
+
+    return jsonify({"ok": True, "party": party, "at": _utc_now_iso()})
+
+
 @bp.get("/api/play/log")
 def api_play_log():
     """Recent operations — what an undo and a session recap read from."""
@@ -222,5 +268,5 @@ def api_play_log():
     return jsonify({"ok": True, "playerName": player_name, "entries": entries})
 
 
-__all__ = ['OP_LOG_LIMIT', '_decorate', '_load_statblock', '_load_play_row', '_read_state',
+__all__ = ['OP_LOG_LIMIT', '_decorate', 'api_play_party', '_load_statblock', '_load_play_row', '_read_state',
            '_persist', '_target_player', 'api_play_state', 'api_play_op', 'api_play_log']

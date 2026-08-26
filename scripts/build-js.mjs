@@ -21,6 +21,7 @@ const scriptEntries = {
   'vos-questionnaire': 'src/js/questionnaire/index.js',
   'vos-sheet': 'src/js/sheet/player.js',
   'vos-sheets': 'src/js/sheet/dm.js',
+  'vos-party': 'src/js/play/party.js',
   'vos-tabs': 'src/js/entries/vos-tabs.js',
   'vos-art-submissions': 'src/js/pages/vos-art-submissions.js',
   'vos-home': 'src/js/pages/vos-home.js',

@@ -763,3 +763,231 @@
 }
 .vos-play-form-entry { margin: 0 0 0.5rem; font-size: 0.94rem; line-height: 1.5; }
 .vos-play-form-entry b { color: var(--vos-cream); }
+
+/* ── The table (DM party view) ─────────────────────────────────────── */
+
+.vos-party-page { padding-bottom: 2rem; }
+
+.vos-party-bar {
+  position: sticky;
+  top: var(--vos-app-bar-h, 58px);
+  z-index: 20;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+  margin-bottom: 1rem;
+  padding: 0.6rem 0;
+  background: linear-gradient(180deg, var(--vos-bg) 76%, transparent);
+}
+.vos-party-status {
+  flex: 1;
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+  color: var(--vos-gold-dim);
+}
+.vos-party-status.is-error { color: var(--vos-quest-bright); }
+.vos-party-bar button {
+  min-height: 38px;
+  padding: 0 0.8rem;
+  border: 1px solid var(--vos-border);
+  border-radius: 8px;
+  background: rgba(8, 7, 11, 0.6);
+  color: var(--vos-text);
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.6rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.vos-party-bar button[aria-pressed="true"] {
+  border-color: var(--vos-border-strong);
+  color: var(--vos-gold-bright);
+}
+
+/* Cards, not rows: at a table you scan for the one in trouble rather than
+   reading a list in order. */
+.vos-party-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr));
+  gap: 0.7rem;
+}
+
+.vos-party-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0.85rem 0.9rem;
+  border: 1px solid var(--vos-border);
+  border-left: 3px solid var(--vos-border);
+  border-radius: 12px;
+  background: rgba(8, 7, 11, 0.55);
+}
+/* The stripe is the glance: green enough to ignore, red enough to act on. */
+.vos-party-card.is-hurt { border-left-color: var(--vos-gold); }
+.vos-party-card.is-bloodied { border-left-color: #c8752f; }
+.vos-party-card.is-down,
+.vos-party-card.is-dying {
+  border-left-color: var(--vos-quest-bright);
+  background: rgba(160, 50, 42, 0.12);
+}
+.vos-party-card.is-missing { opacity: 0.6; border-style: dashed; }
+
+.vos-party-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.4rem;
+}
+.vos-party-head h2 {
+  margin: 0;
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 1rem;
+  letter-spacing: 0.03em;
+  color: var(--vos-gold-bright);
+}
+.vos-party-class {
+  flex: 1 1 100%;
+  font-size: 0.74rem;
+  color: var(--vos-gold-dim);
+}
+.vos-party-ac {
+  margin-left: auto;
+  padding: 0.05rem 0.45rem;
+  border: 1px solid var(--vos-border);
+  border-radius: 999px;
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.66rem;
+  color: var(--vos-cream);
+}
+.vos-party-none { margin: 0; font-size: 0.86rem; color: var(--vos-gold-dim); }
+
+.vos-party-hp {
+  position: relative;
+  min-height: 44px;
+  padding: 0.35rem 0.7rem;
+  overflow: hidden;
+  border: 1px solid var(--vos-border);
+  border-radius: 9px;
+  background: rgba(8, 7, 11, 0.6);
+  color: var(--vos-cream);
+  text-align: left;
+  cursor: pointer;
+}
+.vos-party-hp-fill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  background: linear-gradient(90deg, rgba(212, 165, 116, 0.26), rgba(212, 165, 116, 0.12));
+  transition: width 0.25s ease;
+}
+.vos-party-card.is-bloodied .vos-party-hp-fill,
+.vos-party-card.is-down .vos-party-hp-fill {
+  background: linear-gradient(90deg, rgba(212, 77, 63, 0.38), rgba(160, 50, 42, 0.18));
+}
+.vos-party-hp-text {
+  position: relative;
+  display: flex;
+  align-items: baseline;
+  gap: 0.2rem;
+  font-family: 'Cinzel', Georgia, serif;
+}
+.vos-party-hp-text b { font-size: 1.25rem; font-weight: 400; }
+.vos-party-hp-text i { font-style: normal; color: var(--vos-gold-dim); }
+.vos-party-hp-text em { font-style: normal; margin-left: 0.3rem; color: var(--vos-gold); font-size: 0.8rem; }
+.vos-party-dying {
+  position: absolute;
+  right: 0.6rem;
+  top: 50%;
+  transform: translateY(-50%);
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.58rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--vos-quest-bright);
+}
+
+.vos-party-exh {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.68rem;
+  color: var(--vos-quest-bright);
+}
+.vos-party-exh span {
+  width: 0.6rem;
+  height: 0.6rem;
+  border: 1px solid var(--vos-gold-dim);
+  border-radius: 50%;
+}
+.vos-party-exh span.is-on { background: var(--vos-quest-bright); border-color: var(--vos-quest-bright); }
+.vos-party-exh b { margin-left: 0.3rem; font-weight: 400; letter-spacing: 0.06em; }
+
+.vos-party-mask,
+.vos-party-conc {
+  padding: 0.25rem 0.5rem;
+  border: 1px solid rgba(212, 165, 116, 0.35);
+  border-radius: 7px;
+  background: rgba(212, 165, 116, 0.07);
+  font-size: 0.76rem;
+  color: var(--vos-gold-bright);
+  text-transform: capitalize;
+}
+.vos-party-conc { text-transform: none; }
+
+.vos-party-row { display: flex; flex-wrap: wrap; gap: 0.3rem; }
+.vos-party-slot,
+.vos-party-hd {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.15rem;
+  padding: 0.1rem 0.45rem;
+  border: 1px solid var(--vos-border);
+  border-radius: 999px;
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.7rem;
+  color: var(--vos-cream);
+}
+.vos-party-slot i { font-style: normal; font-size: 0.58rem; color: var(--vos-gold-dim); }
+.vos-party-slot b { font-weight: 400; color: var(--vos-gold-dim); }
+.vos-party-slot.is-empty { opacity: 0.45; }
+.vos-party-hd { color: var(--vos-gold); }
+
+.vos-party-conds { display: flex; flex-wrap: wrap; gap: 0.25rem; }
+.vos-party-conds span {
+  padding: 0.08rem 0.45rem;
+  border: 1px solid var(--vos-border);
+  border-radius: 999px;
+  font-size: 0.74rem;
+  text-transform: capitalize;
+  color: var(--vos-text);
+}
+.vos-party-conds span.is-empty { border: 0; color: var(--vos-gold-dim); }
+
+.vos-party-acts { display: flex; gap: 0.3rem; margin-top: auto; }
+.vos-party-acts button {
+  flex: 1;
+  min-height: 38px;
+  border: 1px solid var(--vos-border);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--vos-text);
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.58rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.vos-party-acts button:hover { border-color: var(--vos-border-strong); color: var(--vos-cream); }
+.vos-party-acts button[data-act="damage"]:hover { border-color: rgba(212, 77, 63, 0.5); }
+
+.vos-party-page .empty-state {
+  grid-column: 1 / -1;
+  padding: 2rem;
+  border: 1px dashed var(--vos-border);
+  border-radius: 8px;
+  text-align: center;
+  color: var(--vos-gold-dim);
+}
+.vos-party-page .empty-state b { display: block; margin-bottom: 0.3rem; color: var(--vos-text-body); font-weight: 400; }
+
+@media (prefers-reduced-motion: reduce) { .vos-party-hp-fill { transition: none; } }

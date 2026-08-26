@@ -355,3 +355,50 @@ def test_a_long_rest_clears_the_mask(app, auth_headers):
     state = post(app, auth_headers["player"], {"op": "longRest"}).get_json()["state"]
     assert state["mask"] is None
     assert state["hp"]["temp"] == 0
+
+
+# ── The party view ────────────────────────────────────────────────────
+
+def test_the_party_view_is_dm_only(app, auth_headers):
+    expected = {"anonymous": 401, "player": 401, "dm": 200, "google_dm": 200}
+    for role, status in expected.items():
+        with app.test_client() as client:
+            response = client.get("/api/play/party", headers=auth_headers[role])
+        assert response.status_code == status, role
+
+
+def test_the_party_lists_active_players_without_the_dm(app, auth_headers):
+    party = get(app, auth_headers["dm"], "/api/play/party").get_json()["party"]
+    names = [entry["playerName"] for entry in party]
+    assert "DM" not in names
+    assert "Lotan" in names
+
+
+def test_a_player_without_a_statblock_is_visibly_missing(app, auth_headers):
+    """Absent is different from empty — the DM should see who has not pushed."""
+    party = get(app, auth_headers["dm"], "/api/play/party").get_json()["party"]
+    lotan = next(e for e in party if e["playerName"] == "Lotan")
+    others = [e for e in party if e["playerName"] != "Lotan"]
+
+    assert lotan["hasStatblock"] is True
+    assert lotan["limits"]["maxHp"] == 21
+    assert all(e["hasStatblock"] is False for e in others)
+
+
+def test_the_party_reflects_play_state(app, auth_headers):
+    post(app, auth_headers["player"], {"op": "damage", "amount": 8})
+    post(app, auth_headers["player"], {"op": "addCondition", "condition": "prone"})
+
+    party = get(app, auth_headers["dm"], "/api/play/party").get_json()["party"]
+    lotan = next(e for e in party if e["playerName"] == "Lotan")
+    assert lotan["state"]["hp"]["current"] == 13
+    assert "prone" in lotan["state"]["conditions"]
+
+
+def test_a_revoked_player_is_not_in_the_party(app, auth_headers, monkeypatch):
+    from vos.routes import play as play_route
+    monkeypatch.setattr(play_route, "REVOKED_PLAYERS", {"Orabella", "Kryton Novelli"})
+    party = get(app, auth_headers["dm"], "/api/play/party").get_json()["party"]
+    names = {entry["playerName"] for entry in party}
+    assert "Orabella" not in names
+    assert "Kryton Novelli" not in names
