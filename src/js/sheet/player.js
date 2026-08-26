@@ -6,11 +6,10 @@
  * player, and that is the point.
  */
 import { renderSheet, sheetSections } from './render.js';
-import { loadMySheet, loadRoster, whenPwaReady } from './data.js';
+import { loadAllSheets, loadMySheet, loadRoster, whenPwaReady } from './data.js';
 import { normalizeStatblock } from '../statblock/normalize.js';
 import { renderStatblock } from '../statblock/render.js';
 import { loadPlayState } from '../play/api.js';
-import { loadAllSheets } from './data.js';
 import { createControls } from '../play/controls.js';
 import { clock } from '../play/masquerade.js';
 
@@ -255,6 +254,50 @@ function wire() {
   });
 }
 
+/* Whose sheet? Shown to the DM in place of their own, which does not exist.
+ *
+ * Built from the same DM-gated collection the view itself reads, so a player
+ * who has no sheet is listed as unavailable rather than offered and then
+ * failing on the next screen.
+ */
+async function renderPicker() {
+  if (tabsEl) tabsEl.hidden = true;
+  if (indexEl) indexEl.hidden = true;
+  root.innerHTML = '<div class="empty-state"><b>Loading the roster…</b></div>';
+
+  let sheets = [];
+  try {
+    sheets = (await loadAllSheets()).sheets || [];
+  } catch (error) {
+    notice('Could not load the roster.', error.message || 'Try again in a moment.');
+    return;
+  }
+
+  const roster = await loadRoster();
+  if (!sheets.length) {
+    notice('No sheets yet.', 'Push characters from Foundry and they appear here.');
+    return;
+  }
+
+  const cards = sheets.map((entry) => {
+    const seat = roster[entry.playerName] || {};
+    const has = [entry.statblock ? 'stats' : null, entry.player ? 'story' : null]
+      .filter(Boolean).join(' · ');
+    const label = seat.display || entry.playerName;
+    return `<a class="vos-sheet-pick" href="/sheet/?as=${encodeURIComponent(entry.playerName)}"
+               style="--c:${esc(seat.color || '#d4a574')}">
+      <b>${esc(label)}</b>
+      <span>${esc(has || 'nothing pushed yet')}</span>
+    </a>`;
+  }).join('');
+
+  root.innerHTML = `<div class="vos-sheet-picker">
+    <p class="vos-sheet-pick-lede">Whose sheet would you like to open?
+    You will see it exactly as they do.</p>
+    <div class="vos-sheet-picks">${cards}</div>
+  </div>`;
+}
+
 /* One player's sheet, taken from the DM's collection.
  *
  * /api/sheet cannot be told whose sheet to return — that is deliberate, and
@@ -322,6 +365,11 @@ async function boot() {
       return;
     }
     viewingAs = asked;
+  } else if (isDm && !asked) {
+    // The DM has no character of their own, so this page has nothing to show
+    // them. Ask whose sheet they want instead of rendering an empty one.
+    await renderPicker();
+    return;
   }
 
   try {

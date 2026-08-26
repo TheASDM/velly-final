@@ -201,3 +201,114 @@
 
 /* The stats view is a table reference, not prose — it earns more width. */
 .vos-sheet-root .vos-sb { max-width: 46rem; }
+
+/* ── On a phone ────────────────────────────────────────────────────── */
+
+/* The roster strip and the variant toggle were built at desk width. Neither
+   broke on a phone, but both wasted it: the roster reserved 118px a card
+   whether the name needed it or not, and the toggle's three pills wrapped to
+   two lines with a stray on the second. */
+
+@media (max-width: 34rem) {
+  .vos-sheets-nav {
+    margin-inline: -0.25rem;
+    padding-inline: 0.25rem;
+    /* Fade the edges so it reads as scrollable rather than clipped. */
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 10px,
+                                        #000 calc(100% - 10px), transparent);
+    mask-image: linear-gradient(90deg, transparent, #000 10px,
+                                #000 calc(100% - 10px), transparent);
+  }
+  .vos-sheets-nav .nav-item {
+    min-width: 0;
+    padding: 0.5rem 0.6rem;
+  }
+  .vos-sheets-nav .nav-name { font-size: 0.84rem; }
+  .vos-sheets-nav .nav-role { font-size: 0.56rem; }
+
+  /* Three equal pills on one row beats two-and-a-stray. */
+  .vos-sheets-toolbar {
+    gap: 0.3rem;
+    margin-bottom: 1.1rem;
+  }
+  .vos-sheets-toolbar button {
+    flex: 1 1 0;
+    min-width: 0;
+    padding: 0.5rem 0.35rem;
+    font-size: 0.58rem;
+    letter-spacing: 0.06em;
+  }
+
+  .vos-sheet-index { gap: 0.25rem; }
+  .vos-sheet-index a {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.58rem;
+  }
+
+  .vos-sheet-tabs button {
+    padding: 0.5rem 0.4rem;
+    font-size: 0.64rem;
+    letter-spacing: 0.1em;
+  }
+
+  .vos-sheet-page .empty-state { padding: 1.4rem 1rem; }
+}
+
+/* Touch is about the finger, not the viewport — a DM on a landscape tablet has
+   width to spare and still needs a target they can hit. */
+@media (pointer: coarse) {
+  .vos-sheets-nav .nav-item,
+  .vos-sheets-toolbar button,
+  .vos-sheet-tabs button {
+    min-height: 46px;
+  }
+  .vos-sheet-index a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 34px;
+  }
+}
+
+/* Nothing on these pages is wide enough to justify a sideways scroll. */
+.vos-sheet-page { min-width: 0; }
+.vos-sheet-root { min-width: 0; overflow-wrap: anywhere; }
+
+/* ── Whose sheet? (the DM's landing on /sheet/) ────────────────────── */
+
+.vos-sheet-picker { max-width: 44rem; margin: 0 auto; }
+.vos-sheet-pick-lede {
+  margin: 0 0 1.1rem;
+  color: var(--vos-gold-dim);
+}
+.vos-sheet-picks {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr));
+  gap: 0.5rem;
+}
+.vos-sheet-pick {
+  display: block;
+  padding: 0.9rem 1rem;
+  border: 1px solid var(--vos-border);
+  border-left: 3px solid var(--c, var(--vos-gold));
+  border-radius: 10px;
+  background: rgba(8, 7, 11, 0.55);
+  text-decoration: none;
+}
+.vos-sheet-pick:hover {
+  border-color: var(--vos-border-strong);
+  border-left-color: var(--c, var(--vos-gold));
+  background: rgba(212, 165, 116, 0.08);
+}
+.vos-sheet-pick b {
+  display: block;
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 1rem;
+  font-weight: 400;
+  letter-spacing: 0.03em;
+  color: var(--c, var(--vos-gold-bright));
+}
+.vos-sheet-pick span {
+  font-size: 0.8rem;
+  color: var(--vos-gold-dim);
+}
+@media (pointer: coarse) { .vos-sheet-pick { min-height: 62px; } }

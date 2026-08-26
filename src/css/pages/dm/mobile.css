@@ -1,0 +1,148 @@
+/* The DM console on a phone.
+ *
+ * The console grew on a desktop and its layout rules said so: tools.css had no
+ * media queries at all, several controls sat below a comfortable touch target,
+ * and the stat tiles collapsed to one per row, which turns three numbers into a
+ * scroll.
+ *
+ * Touch sizing is keyed to `pointer: coarse` rather than to width, because the
+ * problem is a finger rather than a narrow screen — a DM on a tablet in
+ * landscape has plenty of width and still needs a target they can hit.
+ */
+
+/* ── Touch targets ─────────────────────────────────────────────────── */
+
+@media (pointer: coarse) {
+  .vos-dm-cal-event button,
+  .vos-dm-inplay-row button,
+  .vos-dm-submission-row button,
+  .vos-dm-button,
+  .vos-dm-form input,
+  .vos-dm-form select,
+  .vos-dm-form button {
+    min-height: 44px;
+  }
+  .vos-dm-inplay-row button {
+    width: auto;
+    min-width: 44px;
+  }
+  /* Checkboxes are the smallest thing here and the easiest to miss. */
+  .vos-dm-submission-check {
+    width: 24px;
+    height: 24px;
+  }
+  .vos-seg-btn { min-height: 46px; }
+}
+
+/* ── Layout ────────────────────────────────────────────────────────── */
+
+@media (max-width: 720px) {
+  .vos-dm {
+    padding-inline: 0;
+  }
+  .vos-dm-panel {
+    padding: 1rem 0.9rem;
+    border-radius: 10px;
+  }
+  .vos-dm-panel-head {
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+  /* Action rows become full-width stacks rather than squeezed columns. */
+  .vos-dm-actions {
+    flex-wrap: wrap;
+  }
+  .vos-dm-actions > * {
+    flex: 1 1 auto;
+  }
+}
+
+/* Three numbers should stay three numbers. The previous rule made them a
+   column, which reads as a list of unrelated facts and costs a screenful. */
+@media (max-width: 560px) {
+  .vos-dm-counts {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.4rem;
+  }
+  .vos-dm-count { padding: 0.55rem 0.3rem; }
+  .vos-dm-count strong { font-size: 1.1rem; }
+  .vos-dm-count span {
+    font-size: 0.5rem;
+    letter-spacing: 0.08em;
+  }
+}
+
+/* The in-play editor is five inputs on one row. Two columns survive a large
+   phone; below that each field takes the width, because a 60px text input is
+   not something anyone can type into. */
+@media (max-width: 440px) {
+  .vos-dm-inplay-row {
+    grid-template-columns: 1fr;
+    gap: 0.35rem;
+    padding: 0.6rem;
+    border: 1px solid var(--vos-border);
+    border-radius: 8px;
+  }
+  .vos-dm-inplay-row button { grid-column: auto; }
+}
+
+/* Long values — wiki paths, ids, urls — must wrap rather than push the page
+   sideways. Nothing in the console is wide enough to deserve a scrollbar. */
+.vos-dm-panel,
+.vos-dm-view {
+  min-width: 0;
+}
+.vos-dm-meta,
+.vos-dm-helper,
+.vos-dm-status,
+.vos-dm-empty {
+  overflow-wrap: anywhere;
+}
+
+/* Anything genuinely wide gets its own scroller instead. */
+.vos-dm-panel table,
+.vos-dm-panel pre {
+  display: block;
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+/* ── The segmented index ───────────────────────────────────────────── */
+
+/* It already scrolls horizontally; on a phone it should also stop eating the
+   top of the screen, and its edges should hint that there is more. */
+@media (max-width: 560px) {
+  .vos-seg--index {
+    margin-inline: -0.25rem;
+    padding-inline: 0.25rem;
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 12px,
+                                        #000 calc(100% - 12px), transparent);
+    mask-image: linear-gradient(90deg, transparent, #000 12px,
+                                #000 calc(100% - 12px), transparent);
+  }
+  .vos-seg--index .vos-seg-btn {
+    padding-inline: 0.7rem;
+    font-size: 0.66rem;
+  }
+}
+
+/* ── Forms ─────────────────────────────────────────────────────────── */
+
+@media (max-width: 560px) {
+  .vos-dm-form textarea { min-height: 8rem; }
+  .vos-dm-recipient-list {
+    grid-template-columns: repeat(auto-fit, minmax(8.5rem, 1fr));
+  }
+}
+
+/* iOS zooms a focused field whose text is under 16px. Nothing here is worth
+   that jump, so inputs meet the threshold on touch devices. */
+@media (pointer: coarse) {
+  .vos-dm-form input,
+  .vos-dm-form select,
+  .vos-dm-form textarea,
+  .vos-dm-inplay-row input,
+  .vos-dm-inplay-row select {
+    font-size: 16px;
+  }
+}
