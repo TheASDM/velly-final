@@ -254,4 +254,44 @@ def apply_current_migrations(conn, done):
             ("022_character_statblocks", _utc_now_iso()),
         )
 
+    if "023_character_play_state" not in done:
+        # The mutable half of a character: current HP, expended slots, spent
+        # hit dice, conditions, an active mask. Foundry owns everything
+        # permanent and never sees any of this.
+        #
+        # `state` is a JSON document rather than columns because its shape
+        # tracks the rules rather than the database, and the client normalises
+        # it anyway. `version` increments per applied operation so a client can
+        # tell whether the state it holds is current.
+        conn.execute("""
+            CREATE TABLE IF NOT EXISTS character_play_state (
+                player_name TEXT PRIMARY KEY,
+                state TEXT NOT NULL,
+                version INTEGER NOT NULL DEFAULT 0,
+                updated_at TEXT NOT NULL
+            )
+        """)
+        # Every applied operation, kept rather than discarded. This is what an
+        # undo needs, what a session recap could read, and what a later
+        # sync-back to Foundry would replay — none of which are possible if we
+        # only ever store the current values.
+        conn.execute("""
+            CREATE TABLE IF NOT EXISTS character_play_ops (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                player_name TEXT NOT NULL,
+                op TEXT NOT NULL,
+                applied_by TEXT NOT NULL,
+                version INTEGER NOT NULL,
+                created_at TEXT NOT NULL
+            )
+        """)
+        conn.execute("""
+            CREATE INDEX IF NOT EXISTS idx_play_ops_player_created
+            ON character_play_ops (player_name, created_at DESC)
+        """)
+        conn.execute(
+            "INSERT INTO schema_migrations (name, applied_at) VALUES (?, ?)",
+            ("023_character_play_state", _utc_now_iso()),
+        )
+
 __all__ = ['apply_current_migrations']

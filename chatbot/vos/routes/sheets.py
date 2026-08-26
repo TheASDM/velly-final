@@ -189,6 +189,26 @@ def api_statblock_ingest():
             (player_name, json.dumps(body, separators=(",", ":")), now),
         )
 
+    # A push replaces the build layer and must not touch the play layer — HP,
+    # slots and charges belong to Foglight once play has started. The one thing
+    # a push may do is pull play state back inside the new ceilings, so a level
+    # change cannot leave someone above their own maximum.
+    with _app_db() as conn:
+        row = conn.execute(
+            "SELECT state, version FROM character_play_state WHERE player_name = ?",
+            (player_name,),
+        ).fetchone()
+        if row:
+            try:
+                reconciled = reconcile(json.loads(row["state"]), limits_from_statblock(body))
+            except (TypeError, ValueError):
+                logging.warning("play state for %r is not valid JSON; left alone", player_name)
+            else:
+                conn.execute(
+                    "UPDATE character_play_state SET state = ?, updated_at = ? WHERE player_name = ?",
+                    (json.dumps(reconciled, separators=(",", ":")), now, player_name),
+                )
+
     logging.info(
         "statblock ingest: actor=%r -> player=%r (%d bytes)", actor_name, player_name, len(raw)
     )
