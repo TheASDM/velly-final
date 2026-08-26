@@ -1,0 +1,381 @@
+{
+	"fileType": "spells-sublist",
+	"siteVersion": "2.33.3",
+	"name": "bard",
+	"saveId": "a93b40c5-8764-4324-be07-5e17a01c7d48",
+	"items": [
+		{
+			"h": "aid_xphb"
+		},
+		{
+			"h": "animate%20dead_xphb"
+		},
+		{
+			"h": "antimagic%20field_xphb"
+		},
+		{
+			"h": "astral%20projection_xphb"
+		},
+		{
+			"h": "augury_xphb"
+		},
+		{
+			"h": "aura%20of%20life_xphb"
+		},
+		{
+			"h": "aura%20of%20purity_xphb"
+		},
+		{
+			"h": "aura%20of%20vitality_xphb"
+		},
+		{
+			"h": "bane_xphb"
+		},
+		{
+			"h": "banishment_xphb"
+		},
+		{
+			"h": "beacon%20of%20hope_xphb"
+		},
+		{
+			"h": "bestow%20curse_xphb"
+		},
+		{
+			"h": "blade%20barrier_xphb"
+		},
+		{
+			"h": "bless_xphb"
+		},
+		{
+			"h": "blindness%2fdeafness_xphb"
+		},
+		{
+			"h": "calm%20emotions_xphb"
+		},
+		{
+			"h": "circle%20of%20power_xphb"
+		},
+		{
+			"h": "clairvoyance_xphb"
+		},
+		{
+			"h": "command_xphb"
+		},
+		{
+			"h": "commune_xphb"
+		},
+		{
+			"h": "conjure%20celestial_xphb"
+		},
+		{
+			"h": "contagion_xphb"
+		},
+		{
+			"h": "continual%20flame_xphb"
+		},
+		{
+			"h": "control%20water_xphb"
+		},
+		{
+			"h": "control%20weather_xphb"
+		},
+		{
+			"h": "create%20food%20and%20water_xphb"
+		},
+		{
+			"h": "create%20or%20destroy%20water_xphb"
+		},
+		{
+			"h": "create%20undead_xphb"
+		},
+		{
+			"h": "cure%20wounds_xphb"
+		},
+		{
+			"h": "daylight_xphb"
+		},
+		{
+			"h": "death%20ward_xphb"
+		},
+		{
+			"h": "deryan's%20helpful%20homunculi_frhof"
+		},
+		{
+			"h": "detect%20evil%20and%20good_xphb"
+		},
+		{
+			"h": "detect%20magic_xphb"
+		},
+		{
+			"h": "detect%20poison%20and%20disease_xphb"
+		},
+		{
+			"h": "dirge_frhof"
+		},
+		{
+			"h": "dispel%20evil%20and%20good_xphb"
+		},
+		{
+			"h": "dispel%20magic_xphb"
+		},
+		{
+			"h": "divination_xphb"
+		},
+		{
+			"h": "divine%20word_xphb"
+		},
+		{
+			"h": "doomtide_frhof"
+		},
+		{
+			"h": "earthquake_xphb"
+		},
+		{
+			"h": "enhance%20ability_xphb"
+		},
+		{
+			"h": "etherealness_xphb"
+		},
+		{
+			"h": "feign%20death_xphb"
+		},
+		{
+			"h": "find%20the%20path_xphb"
+		},
+		{
+			"h": "find%20traps_xphb"
+		},
+		{
+			"h": "fire%20storm_xphb"
+		},
+		{
+			"h": "flame%20strike_xphb"
+		},
+		{
+			"h": "forbiddance_xphb"
+		},
+		{
+			"h": "freedom%20of%20movement_xphb"
+		},
+		{
+			"h": "gate_xphb"
+		},
+		{
+			"h": "geas_xphb"
+		},
+		{
+			"h": "gentle%20repose_xphb"
+		},
+		{
+			"h": "glyph%20of%20warding_xphb"
+		},
+		{
+			"h": "greater%20restoration_xphb"
+		},
+		{
+			"h": "guardian%20of%20faith_xphb"
+		},
+		{
+			"h": "guidance_xphb"
+		},
+		{
+			"h": "guiding%20bolt_xphb"
+		},
+		{
+			"h": "hallow_xphb"
+		},
+		{
+			"h": "harm_xphb"
+		},
+		{
+			"h": "heal_xphb"
+		},
+		{
+			"h": "healing%20word_xphb"
+		},
+		{
+			"h": "heroes'%20feast_xphb"
+		},
+		{
+			"h": "hold%20person_xphb"
+		},
+		{
+			"h": "holy%20aura_xphb"
+		},
+		{
+			"h": "holy%20star%20of%20mystra_frhof"
+		},
+		{
+			"h": "inflict%20wounds_xphb"
+		},
+		{
+			"h": "insect%20plague_xphb"
+		},
+		{
+			"h": "laeral's%20silver%20lance_frhof"
+		},
+		{
+			"h": "legend%20lore_xphb"
+		},
+		{
+			"h": "lesser%20restoration_xphb"
+		},
+		{
+			"h": "light_xphb"
+		},
+		{
+			"h": "locate%20creature_xphb"
+		},
+		{
+			"h": "locate%20object_xphb"
+		},
+		{
+			"h": "magic%20circle_xphb"
+		},
+		{
+			"h": "mass%20cure%20wounds_xphb"
+		},
+		{
+			"h": "mass%20heal_xphb"
+		},
+		{
+			"h": "mass%20healing%20word_xphb"
+		},
+		{
+			"h": "meld%20into%20stone_xphb"
+		},
+		{
+			"h": "mending_xphb"
+		},
+		{
+			"h": "planar%20ally_xphb"
+		},
+		{
+			"h": "planar%20binding_xphb"
+		},
+		{
+			"h": "plane%20shift_xphb"
+		},
+		{
+			"h": "power%20word%20fortify_xphb"
+		},
+		{
+			"h": "power%20word%20heal_xphb"
+		},
+		{
+			"h": "prayer%20of%20healing_xphb"
+		},
+		{
+			"h": "protection%20from%20energy_xphb"
+		},
+		{
+			"h": "protection%20from%20evil%20and%20good_xphb"
+		},
+		{
+			"h": "protection%20from%20poison_xphb"
+		},
+		{
+			"h": "purify%20food%20and%20drink_xphb"
+		},
+		{
+			"h": "raise%20dead_xphb"
+		},
+		{
+			"h": "regenerate_xphb"
+		},
+		{
+			"h": "remove%20curse_xphb"
+		},
+		{
+			"h": "resistance_xphb"
+		},
+		{
+			"h": "resurrection_xphb"
+		},
+		{
+			"h": "revivify_xphb"
+		},
+		{
+			"h": "sacred%20flame_xphb"
+		},
+		{
+			"h": "sanctuary_xphb"
+		},
+		{
+			"h": "scrying_xphb"
+		},
+		{
+			"h": "sending_xphb"
+		},
+		{
+			"h": "shield%20of%20faith_xphb"
+		},
+		{
+			"h": "silence_xphb"
+		},
+		{
+			"h": "spare%20the%20dying_xphb"
+		},
+		{
+			"h": "speak%20with%20dead_xphb"
+		},
+		{
+			"h": "spirit%20guardians_xphb"
+		},
+		{
+			"h": "spiritual%20weapon_xphb"
+		},
+		{
+			"h": "stone%20shape_xphb"
+		},
+		{
+			"h": "summon%20celestial_xphb"
+		},
+		{
+			"h": "sunbeam_xphb"
+		},
+		{
+			"h": "sunburst_xphb"
+		},
+		{
+			"h": "symbol_xphb"
+		},
+		{
+			"h": "thaumaturgy_xphb"
+		},
+		{
+			"h": "toll%20the%20dead_xphb"
+		},
+		{
+			"h": "tongues_xphb"
+		},
+		{
+			"h": "true%20resurrection_xphb"
+		},
+		{
+			"h": "true%20seeing_xphb"
+		},
+		{
+			"h": "wardaway_frhof"
+		},
+		{
+			"h": "warding%20bond_xphb"
+		},
+		{
+			"h": "water%20walk_xphb"
+		},
+		{
+			"h": "word%20of%20radiance_xphb"
+		},
+		{
+			"h": "word%20of%20recall_xphb"
+		},
+		{
+			"h": "zone%20of%20truth_xphb"
+		}
+	],
+	"sources": [
+		"XPHB",
+		"FRHoF"
+	]
+}

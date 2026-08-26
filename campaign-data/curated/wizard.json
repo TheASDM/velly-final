@@ -1,0 +1,789 @@
+{
+	"fileType": "spells-sublist",
+	"siteVersion": "2.33.3",
+	"name": "bard",
+	"saveId": "a93b40c5-8764-4324-be07-5e17a01c7d48",
+	"items": [
+		{
+			"h": "acid%20splash_xphb"
+		},
+		{
+			"h": "alarm_xphb"
+		},
+		{
+			"h": "alter%20self_xphb"
+		},
+		{
+			"h": "alustriel's%20mooncloak_frhof"
+		},
+		{
+			"h": "animate%20dead_xphb"
+		},
+		{
+			"h": "animate%20objects_xphb"
+		},
+		{
+			"h": "antimagic%20field_xphb"
+		},
+		{
+			"h": "antipathy%2fsympathy_xphb"
+		},
+		{
+			"h": "arcane%20eye_xphb"
+		},
+		{
+			"h": "arcane%20gate_xphb"
+		},
+		{
+			"h": "arcane%20lock_xphb"
+		},
+		{
+			"h": "arcane%20vigor_xphb"
+		},
+		{
+			"h": "astral%20projection_xphb"
+		},
+		{
+			"h": "augury_xphb"
+		},
+		{
+			"h": "backlash_frhof"
+		},
+		{
+			"h": "banishment_xphb"
+		},
+		{
+			"h": "befuddlement_xphb"
+		},
+		{
+			"h": "bestow%20curse_xphb"
+		},
+		{
+			"h": "bigby's%20hand_xphb"
+		},
+		{
+			"h": "blade%20of%20disaster_frhof"
+		},
+		{
+			"h": "blade%20ward_xphb"
+		},
+		{
+			"h": "blight_xphb"
+		},
+		{
+			"h": "blindness%2fdeafness_xphb"
+		},
+		{
+			"h": "blink_xphb"
+		},
+		{
+			"h": "blur_xphb"
+		},
+		{
+			"h": "burning%20hands_xphb"
+		},
+		{
+			"h": "cacophonic%20shield_frhof"
+		},
+		{
+			"h": "chain%20lightning_xphb"
+		},
+		{
+			"h": "charm%20monster_xphb"
+		},
+		{
+			"h": "charm%20person_xphb"
+		},
+		{
+			"h": "chill%20touch_xphb"
+		},
+		{
+			"h": "chromatic%20orb_xphb"
+		},
+		{
+			"h": "circle%20of%20death_xphb"
+		},
+		{
+			"h": "circle%20of%20power_xphb"
+		},
+		{
+			"h": "clairvoyance_xphb"
+		},
+		{
+			"h": "clone_xphb"
+		},
+		{
+			"h": "cloud%20of%20daggers_xphb"
+		},
+		{
+			"h": "cloudkill_xphb"
+		},
+		{
+			"h": "color%20spray_xphb"
+		},
+		{
+			"h": "comprehend%20languages_xphb"
+		},
+		{
+			"h": "cone%20of%20cold_xphb"
+		},
+		{
+			"h": "confusion_xphb"
+		},
+		{
+			"h": "conjure%20constructs_frhof"
+		},
+		{
+			"h": "conjure%20elemental_xphb"
+		},
+		{
+			"h": "conjure%20minor%20elementals_xphb"
+		},
+		{
+			"h": "contact%20other%20plane_xphb"
+		},
+		{
+			"h": "contingency_xphb"
+		},
+		{
+			"h": "continual%20flame_xphb"
+		},
+		{
+			"h": "control%20water_xphb"
+		},
+		{
+			"h": "control%20weather_xphb"
+		},
+		{
+			"h": "counterspell_xphb"
+		},
+		{
+			"h": "create%20undead_xphb"
+		},
+		{
+			"h": "creation_xphb"
+		},
+		{
+			"h": "crown%20of%20madness_xphb"
+		},
+		{
+			"h": "dancing%20lights_xphb"
+		},
+		{
+			"h": "darkness_xphb"
+		},
+		{
+			"h": "darkvision_xphb"
+		},
+		{
+			"h": "death%20armor_frhof"
+		},
+		{
+			"h": "delayed%20blast%20fireball_xphb"
+		},
+		{
+			"h": "demiplane_xphb"
+		},
+		{
+			"h": "deryan's%20helpful%20homunculi_frhof"
+		},
+		{
+			"h": "detect%20magic_xphb"
+		},
+		{
+			"h": "detect%20thoughts_xphb"
+		},
+		{
+			"h": "dimension%20door_xphb"
+		},
+		{
+			"h": "disguise%20self_xphb"
+		},
+		{
+			"h": "disintegrate_xphb"
+		},
+		{
+			"h": "dispel%20magic_xphb"
+		},
+		{
+			"h": "divination_xphb"
+		},
+		{
+			"h": "dominate%20monster_xphb"
+		},
+		{
+			"h": "dominate%20person_xphb"
+		},
+		{
+			"h": "dragon's%20breath_xphb"
+		},
+		{
+			"h": "drawmij's%20instant%20summons_xphb"
+		},
+		{
+			"h": "dream_xphb"
+		},
+		{
+			"h": "elementalism_xphb"
+		},
+		{
+			"h": "elminster's%20effulgent%20spheres_frhof"
+		},
+		{
+			"h": "elminster's%20elusion_frhof"
+		},
+		{
+			"h": "enhance%20ability_xphb"
+		},
+		{
+			"h": "enlarge%2freduce_xphb"
+		},
+		{
+			"h": "etherealness_xphb"
+		},
+		{
+			"h": "evard's%20black%20tentacles_xphb"
+		},
+		{
+			"h": "expeditious%20retreat_xphb"
+		},
+		{
+			"h": "eyebite_xphb"
+		},
+		{
+			"h": "fabricate_xphb"
+		},
+		{
+			"h": "false%20life_xphb"
+		},
+		{
+			"h": "fear_xphb"
+		},
+		{
+			"h": "feather%20fall_xphb"
+		},
+		{
+			"h": "feign%20death_xphb"
+		},
+		{
+			"h": "find%20familiar_xphb"
+		},
+		{
+			"h": "finger%20of%20death_xphb"
+		},
+		{
+			"h": "fire%20bolt_xphb"
+		},
+		{
+			"h": "fire%20shield_xphb"
+		},
+		{
+			"h": "fireball_xphb"
+		},
+		{
+			"h": "flaming%20sphere_xphb"
+		},
+		{
+			"h": "flesh%20to%20stone_xphb"
+		},
+		{
+			"h": "fly_xphb"
+		},
+		{
+			"h": "fog%20cloud_xphb"
+		},
+		{
+			"h": "forcecage_xphb"
+		},
+		{
+			"h": "foresight_xphb"
+		},
+		{
+			"h": "friends_xphb"
+		},
+		{
+			"h": "gaseous%20form_xphb"
+		},
+		{
+			"h": "gate_xphb"
+		},
+		{
+			"h": "geas_xphb"
+		},
+		{
+			"h": "gentle%20repose_xphb"
+		},
+		{
+			"h": "globe%20of%20invulnerability_xphb"
+		},
+		{
+			"h": "glyph%20of%20warding_xphb"
+		},
+		{
+			"h": "grease_xphb"
+		},
+		{
+			"h": "greater%20invisibility_xphb"
+		},
+		{
+			"h": "guards%20and%20wards_xphb"
+		},
+		{
+			"h": "gust%20of%20wind_xphb"
+		},
+		{
+			"h": "hallucinatory%20terrain_xphb"
+		},
+		{
+			"h": "haste_xphb"
+		},
+		{
+			"h": "hold%20monster_xphb"
+		},
+		{
+			"h": "hold%20person_xphb"
+		},
+		{
+			"h": "holy%20star%20of%20mystra_frhof"
+		},
+		{
+			"h": "hypnotic%20pattern_xphb"
+		},
+		{
+			"h": "ice%20knife_xphb"
+		},
+		{
+			"h": "ice%20storm_xphb"
+		},
+		{
+			"h": "identify_xphb"
+		},
+		{
+			"h": "illusory%20script_xphb"
+		},
+		{
+			"h": "imprisonment_xphb"
+		},
+		{
+			"h": "incendiary%20cloud_xphb"
+		},
+		{
+			"h": "invisibility_xphb"
+		},
+		{
+			"h": "jallarzi's%20storm%20of%20radiance_xphb"
+		},
+		{
+			"h": "jump_xphb"
+		},
+		{
+			"h": "knock_xphb"
+		},
+		{
+			"h": "laeral's%20silver%20lance_frhof"
+		},
+		{
+			"h": "legend%20lore_xphb"
+		},
+		{
+			"h": "leomund's%20secret%20chest_xphb"
+		},
+		{
+			"h": "leomund's%20tiny%20hut_xphb"
+		},
+		{
+			"h": "levitate_xphb"
+		},
+		{
+			"h": "light_xphb"
+		},
+		{
+			"h": "lightning%20bolt_xphb"
+		},
+		{
+			"h": "locate%20creature_xphb"
+		},
+		{
+			"h": "locate%20object_xphb"
+		},
+		{
+			"h": "longstrider_xphb"
+		},
+		{
+			"h": "mage%20armor_xphb"
+		},
+		{
+			"h": "mage%20hand_xphb"
+		},
+		{
+			"h": "magic%20circle_xphb"
+		},
+		{
+			"h": "magic%20jar_xphb"
+		},
+		{
+			"h": "magic%20missile_xphb"
+		},
+		{
+			"h": "magic%20mouth_xphb"
+		},
+		{
+			"h": "magic%20weapon_xphb"
+		},
+		{
+			"h": "major%20image_xphb"
+		},
+		{
+			"h": "mass%20suggestion_xphb"
+		},
+		{
+			"h": "maze_xphb"
+		},
+		{
+			"h": "melf's%20acid%20arrow_xphb"
+		},
+		{
+			"h": "mending_xphb"
+		},
+		{
+			"h": "message_xphb"
+		},
+		{
+			"h": "meteor%20swarm_xphb"
+		},
+		{
+			"h": "mind%20blank_xphb"
+		},
+		{
+			"h": "mind%20sliver_xphb"
+		},
+		{
+			"h": "mind%20spike_xphb"
+		},
+		{
+			"h": "minor%20illusion_xphb"
+		},
+		{
+			"h": "mirage%20arcane_xphb"
+		},
+		{
+			"h": "mirror%20image_xphb"
+		},
+		{
+			"h": "mislead_xphb"
+		},
+		{
+			"h": "misty%20step_xphb"
+		},
+		{
+			"h": "modify%20memory_xphb"
+		},
+		{
+			"h": "mordenkainen's%20faithful%20hound_xphb"
+		},
+		{
+			"h": "mordenkainen's%20magnificent%20mansion_xphb"
+		},
+		{
+			"h": "mordenkainen's%20private%20sanctum_xphb"
+		},
+		{
+			"h": "mordenkainen's%20sword_xphb"
+		},
+		{
+			"h": "move%20earth_xphb"
+		},
+		{
+			"h": "nondetection_xphb"
+		},
+		{
+			"h": "nystul's%20magic%20aura_xphb"
+		},
+		{
+			"h": "otiluke's%20freezing%20sphere_xphb"
+		},
+		{
+			"h": "otiluke's%20resilient%20sphere_xphb"
+		},
+		{
+			"h": "otto's%20irresistible%20dance_xphb"
+		},
+		{
+			"h": "passwall_xphb"
+		},
+		{
+			"h": "phantasmal%20force_xphb"
+		},
+		{
+			"h": "phantasmal%20killer_xphb"
+		},
+		{
+			"h": "phantom%20steed_xphb"
+		},
+		{
+			"h": "planar%20binding_xphb"
+		},
+		{
+			"h": "plane%20shift_xphb"
+		},
+		{
+			"h": "poison%20spray_xphb"
+		},
+		{
+			"h": "polymorph_xphb"
+		},
+		{
+			"h": "power%20word%20kill_xphb"
+		},
+		{
+			"h": "power%20word%20stun_xphb"
+		},
+		{
+			"h": "prestidigitation_xphb"
+		},
+		{
+			"h": "prismatic%20spray_xphb"
+		},
+		{
+			"h": "prismatic%20wall_xphb"
+		},
+		{
+			"h": "programmed%20illusion_xphb"
+		},
+		{
+			"h": "project%20image_xphb"
+		},
+		{
+			"h": "protection%20from%20energy_xphb"
+		},
+		{
+			"h": "protection%20from%20evil%20and%20good_xphb"
+		},
+		{
+			"h": "rary's%20telepathic%20bond_xphb"
+		},
+		{
+			"h": "ray%20of%20enfeeblement_xphb"
+		},
+		{
+			"h": "ray%20of%20frost_xphb"
+		},
+		{
+			"h": "ray%20of%20sickness_xphb"
+		},
+		{
+			"h": "remove%20curse_xphb"
+		},
+		{
+			"h": "reverse%20gravity_xphb"
+		},
+		{
+			"h": "rope%20trick_xphb"
+		},
+		{
+			"h": "scorching%20ray_xphb"
+		},
+		{
+			"h": "scrying_xphb"
+		},
+		{
+			"h": "see%20invisibility_xphb"
+		},
+		{
+			"h": "seeming_xphb"
+		},
+		{
+			"h": "sending_xphb"
+		},
+		{
+			"h": "sequester_xphb"
+		},
+		{
+			"h": "shapechange_xphb"
+		},
+		{
+			"h": "shatter_xphb"
+		},
+		{
+			"h": "shield_xphb"
+		},
+		{
+			"h": "shocking%20grasp_xphb"
+		},
+		{
+			"h": "silent%20image_xphb"
+		},
+		{
+			"h": "simbul's%20synostodweomer_frhof"
+		},
+		{
+			"h": "simulacrum_xphb"
+		},
+		{
+			"h": "sleep_xphb"
+		},
+		{
+			"h": "sleet%20storm_xphb"
+		},
+		{
+			"h": "slow_xphb"
+		},
+		{
+			"h": "songal's%20elemental%20suffusion_frhof"
+		},
+		{
+			"h": "speak%20with%20dead_xphb"
+		},
+		{
+			"h": "spellfire%20flare_frhof"
+		},
+		{
+			"h": "spellfire%20storm_frhof"
+		},
+		{
+			"h": "spider%20climb_xphb"
+		},
+		{
+			"h": "steel%20wind%20strike_xphb"
+		},
+		{
+			"h": "stinking%20cloud_xphb"
+		},
+		{
+			"h": "stone%20shape_xphb"
+		},
+		{
+			"h": "stoneskin_xphb"
+		},
+		{
+			"h": "suggestion_xphb"
+		},
+		{
+			"h": "summon%20aberration_xphb"
+		},
+		{
+			"h": "summon%20construct_xphb"
+		},
+		{
+			"h": "summon%20dragon_xphb"
+		},
+		{
+			"h": "summon%20elemental_xphb"
+		},
+		{
+			"h": "summon%20fey_xphb"
+		},
+		{
+			"h": "summon%20fiend_xphb"
+		},
+		{
+			"h": "summon%20undead_xphb"
+		},
+		{
+			"h": "sunbeam_xphb"
+		},
+		{
+			"h": "sunburst_xphb"
+		},
+		{
+			"h": "sylun%c3%a9's%20viper_frhof"
+		},
+		{
+			"h": "symbol_xphb"
+		},
+		{
+			"h": "synaptic%20static_xphb"
+		},
+		{
+			"h": "tasha's%20bubbling%20cauldron_xphb"
+		},
+		{
+			"h": "tasha's%20hideous%20laughter_xphb"
+		},
+		{
+			"h": "telekinesis_xphb"
+		},
+		{
+			"h": "telepathy_xphb"
+		},
+		{
+			"h": "teleport_xphb"
+		},
+		{
+			"h": "teleportation%20circle_xphb"
+		},
+		{
+			"h": "tenser's%20floating%20disk_xphb"
+		},
+		{
+			"h": "thunderclap_xphb"
+		},
+		{
+			"h": "thunderwave_xphb"
+		},
+		{
+			"h": "time%20stop_xphb"
+		},
+		{
+			"h": "toll%20the%20dead_xphb"
+		},
+		{
+			"h": "tongues_xphb"
+		},
+		{
+			"h": "true%20polymorph_xphb"
+		},
+		{
+			"h": "true%20seeing_xphb"
+		},
+		{
+			"h": "true%20strike_xphb"
+		},
+		{
+			"h": "unseen%20servant_xphb"
+		},
+		{
+			"h": "vampiric%20touch_xphb"
+		},
+		{
+			"h": "vitriolic%20sphere_xphb"
+		},
+		{
+			"h": "wall%20of%20fire_xphb"
+		},
+		{
+			"h": "wall%20of%20force_xphb"
+		},
+		{
+			"h": "wall%20of%20ice_xphb"
+		},
+		{
+			"h": "wall%20of%20stone_xphb"
+		},
+		{
+			"h": "wardaway_frhof"
+		},
+		{
+			"h": "water%20breathing_xphb"
+		},
+		{
+			"h": "web_xphb"
+		},
+		{
+			"h": "weird_xphb"
+		},
+		{
+			"h": "wish_xphb"
+		},
+		{
+			"h": "witch%20bolt_xphb"
+		},
+		{
+			"h": "yolande's%20regal%20presence_xphb"
+		}
+	],
+	"sources": [
+		"XPHB",
+		"FRHoF"
+	]
+}

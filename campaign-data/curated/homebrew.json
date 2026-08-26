@@ -1,0 +1,3909 @@
+{
+  "_meta": {
+    "sources": [
+      {
+        "json": "EchoesRenaissance",
+        "abbreviation": "EoR",
+        "full": "Echoes of Renaissance",
+        "authors": [
+          "Echoes of Renaissance Team"
+        ],
+        "convertedBy": [
+          "Dustin"
+        ],
+        "version": "1.0.0",
+        "url": "https://github.com/TheGiddyLimit/homebrew",
+        "dateAdded": 1737417600
+      }
+    ],
+    "dateAdded": 1737417600,
+    "dateLastModified": 1737417600
+  },
+  "monster": [
+    {
+      "name": "Vivo",
+      "source": "EchoesRenaissance",
+      "size": [
+        "S"
+      ],
+      "type": {
+        "type": "fey"
+      },
+      "alignment": [
+        "A"
+      ],
+      "ac": [
+        {
+          "ac": 14,
+          "from": [
+            "mage armor"
+          ]
+        }
+      ],
+      "hp": {
+        "average": 9,
+        "formula": "2d6+2"
+      },
+      "speed": {
+        "walk": 20,
+        "fly": 20
+      },
+      "str": 7,
+      "dex": 18,
+      "con": 13,
+      "int": 10,
+      "wis": 10,
+      "cha": 14,
+      "skill": {
+        "stealth": "+6"
+      },
+      "senses": [
+        "darkvision 60 ft."
+      ],
+      "passive": 10,
+      "languages": [
+        "any two languages"
+      ],
+      "cr": "1/4",
+      "fluff": {
+        "entries": [
+          {
+            "type": "entries",
+            "name": "Trickster",
+            "entries": [
+              "The vivo usually excels at creating illusions and temporarily creating actual materials on a whim. They live in glades, coastal areas, and mostly away from human eyes. However, their extremely curious nature occasionally makes them visit human settlements and maybe even dwell in cities."
+            ]
+          },
+          {
+            "type": "entries",
+            "name": "Different Sizes",
+            "entries": [
+              "The vivo are usually Small, but they can turn themselves into Medium or Tiny sized as well, to help them hide better. They sometimes join seafaring adventures disguised as humans or tiny creatures to avoid the eyes and help the crew or make their lives miserable."
+            ]
+          }
+        ]
+      },
+      "trait": [
+        {
+          "name": "Innate Spellcasting",
+          "entries": [
+            "The vivo's spellcasting ability is Charisma (spell save {@dc 12}). It can innately cast the following spells, requiring no material components:",
+            "At will: {@spell minor illusion}, alter scent, {@spell light}",
+            "1/day each: {@spell silent image}, {@spell heroism}, swim, {@spell water breathing}"
+          ]
+        },
+        {
+          "name": "Alter Shape",
+          "entries": [
+            "The vivo can cast {@spell enlarge/reduce} on itself at will but can't become a larger size than Medium."
+          ]
+        },
+        {
+          "name": "Conjure Object (1/Day)",
+          "entries": [
+            "The vivo can cast Al-Jazari's practical summons once a day, as an action."
+          ]
+        }
+      ],
+      "action": [
+        {
+          "name": "Fae Gaze",
+          "entries": [
+            "The vivo forces a creature it can see within 60 ft. of it to make a {@dc 12} Wisdom saving throw. On a failed save, the target takes 7 ({@damage 2d4 + 2}) psychic damage and its next attack roll is made with Disadvantage."
+          ]
+        }
+      ]
+    },
+    {
+      "name": "L'anima Vuota",
+      "source": "EchoesRenaissance",
+      "size": [
+        "M"
+      ],
+      "type": {
+        "type": "fiend",
+        "tags": [
+          "demon"
+        ]
+      },
+      "alignment": [
+        "NE"
+      ],
+      "ac": [
+        {
+          "ac": 11
+        }
+      ],
+      "hp": {
+        "average": 9,
+        "formula": "2d8"
+      },
+      "speed": {
+        "walk": 30
+      },
+      "str": 12,
+      "dex": 13,
+      "con": 10,
+      "int": 12,
+      "wis": 11,
+      "cha": 14,
+      "skill": {
+        "deception": "+6",
+        "stealth": "+3"
+      },
+      "senses": [
+        "darkvision 120 ft."
+      ],
+      "passive": 10,
+      "languages": [
+        "any three languages"
+      ],
+      "cr": "1/8",
+      "fluff": {
+        "entries": [
+          {
+            "type": "entries",
+            "name": "Unnoticed",
+            "entries": [
+              "These fiends are almost-human. Their flesh, body, eyes, mind, and everything is the same as a human. They are in their own body, no fiend possessed them, but they cease to be humans anymore. They lost their souls, gave up on their breath, or some other vile deed transformed what they are into mere fiends."
+            ]
+          },
+          {
+            "type": "entries",
+            "name": "Silently Dangerous",
+            "entries": [
+              "They are not worse than a human with evil intentions, but they hide what they truly are and await their time for malice. Even adept spellcasters cannot easily identify these fiends. Thus, they can be anywhere, hiding in plain sight—smiling at your face or shaking your hand."
+            ]
+          },
+          {
+            "type": "entries",
+            "name": "Mark for Greater Evil",
+            "entries": [
+              "Their most dangerous threat is to leave a mark for a bigger and more dangerous hunter. They silently and subtly mark a creature they desire, and the marked ones usually become the targets of more dangerous devils, evildoers, and deceivers."
+            ]
+          }
+        ]
+      },
+      "trait": [
+        {
+          "name": "Poisonous Strikes",
+          "entries": [
+            "The weapons held by the hollow skin are coated with poison. Its attacks deal extra poison damage included in the actions."
+          ]
+        },
+        {
+          "name": "Hide Presence",
+          "entries": [
+            "The hollow skin's creature type appears like whatever it wants to be when targeted by a feature, spell, or magical effect that would affect it, for example a paladin's {@spell divine sense} ability or the {@spell detect evil and good} spell."
+          ]
+        },
+        {
+          "name": "Mark for Destruction (1/Day)",
+          "entries": [
+            "The hollow skin chooses a damage type and touches a creature to force it to make a {@dc 12} Wisdom saving throw. On a failed save, the next time it is hit with the damage type of the hollow skin's choice, it is counted as vulnerable to the damage type. If the target has immunity to the chosen damage type, this feature does not work. On a successful save, the next time it is hit with the damage type of the hollow skin's choice, it takes an extra 7 ({@damage 2d6}) necrotic damage and the mark ends. While the mark continues, the hollow skin knows where the target is for 1 hour, unless it is on another plane of existence."
+          ]
+        }
+      ],
+      "action": [
+        {
+          "name": "Dagger",
+          "entries": [
+            "Melee or Ranged Weapon Attack: +3 to hit, reach 5 ft. or range 20/60 ft., one target. Hit: 3 ({@damage 1d4 + 1}) piercing damage plus 4 ({@damage 1d6}) poison damage."
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Red Hand of Mammon",
+      "source": "EchoesRenaissance",
+      "size": [
+        "M"
+      ],
+      "type": {
+        "type": "fiend",
+        "tags": [
+          "devil"
+        ]
+      },
+      "alignment": [
+        "E"
+      ],
+      "ac": [
+        {
+          "ac": 12
+        }
+      ],
+      "hp": {
+        "average": 13,
+        "formula": "3d8"
+      },
+      "speed": {
+        "walk": 30
+      },
+      "str": 13,
+      "dex": 14,
+      "con": 10,
+      "int": 14,
+      "wis": 13,
+      "cha": 15,
+      "conditionImmune": [
+        "charmed"
+      ],
+      "senses": [
+        "devil's sight 120 ft."
+      ],
+      "passive": 11,
+      "languages": [
+        "any two languages"
+      ],
+      "cr": "1/4",
+      "fluff": {
+        "entries": [
+          {
+            "type": "entries",
+            "name": "Driven by Greed",
+            "entries": [
+              "Mammon is a word for money in Aramaic and often used to describe wealth and the greed behind it. It is also a word used to describe one of the lords of the Hells. Some ancient curses, hexes, ill-words, and pacts cause the rise of these servants of Mammon, and any foolish enough to wish for wealth in this way quickly find that they have spelled their own doom."
+            ]
+          },
+          {
+            "type": "entries",
+            "name": "Insatiable Glutton",
+            "entries": [
+              "Red hands have a distinct, insatiable desire for an object, usually gold, and they never have enough. They always desire it with a burning passion and plot to have it no matter what. They lie, persuade, coerce, and conduct disturbing plans to get their hands on what they crave."
+            ]
+          },
+          {
+            "type": "entries",
+            "name": "Different Shapes",
+            "entries": [
+              "Red hands are usually with actual crimson-hued hands, as if their hands were soaked into a pool of blood. When a red hand takes a life or commits evil deeds, the blood color gets darker. Other than their terrifying hands, they usually resemble humans or other humanoids, such as tieflings."
+            ]
+          },
+          {
+            "type": "entries",
+            "name": "Golden Sense",
+            "entries": [
+              "Red hands usually sense any kind of precious material around them and are drawn to it by their nature. They haunt merchants, nobles, seafarers, and any wanderer that attracts their attention."
+            ]
+          }
+        ]
+      },
+      "trait": [
+        {
+          "name": "Obsession",
+          "entries": [
+            "The red hand senses if it is within 120 ft. of whatever it is obsessed with. In addition, the red hand has Advantage on attack rolls against the creature if that creature carries that object. If the red hand does not satisfy its need with the object in the last week, it has Disadvantage on attack rolls and saving throws."
+          ]
+        },
+        {
+          "name": "Golden Sense",
+          "entries": [
+            "The red hand senses any precious gem, coin, or similar item within 120 ft. of it."
+          ]
+        }
+      ],
+      "action": [
+        {
+          "name": "Crimson Touch",
+          "entries": [
+            "Melee Spell Attack: +4 to hit, reach 5 ft., one target. Hit: 9 ({@damage 2d8}) necrotic damage."
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Il Rosso",
+      "source": "EchoesRenaissance",
+      "size": [
+        "M"
+      ],
+      "type": {
+        "type": "fiend",
+        "tags": [
+          "devil"
+        ]
+      },
+      "alignment": [
+        "E"
+      ],
+      "ac": [
+        {
+          "ac": 13,
+          "from": [
+            "natural armor"
+          ]
+        }
+      ],
+      "hp": {
+        "average": 18,
+        "formula": "4d8"
+      },
+      "speed": {
+        "walk": 30
+      },
+      "str": 14,
+      "dex": 11,
+      "con": 11,
+      "int": 8,
+      "wis": 11,
+      "cha": 15,
+      "immune": [
+        "fire",
+        "poison"
+      ],
+      "conditionImmune": [
+        "poisoned"
+      ],
+      "senses": [
+        "devil's sight 120 ft."
+      ],
+      "passive": 10,
+      "languages": [
+        "any two languages"
+      ],
+      "cr": "1/2",
+      "fluff": {
+        "entries": [
+          {
+            "type": "entries",
+            "name": "Breathing Fire",
+            "entries": [
+              "They are what remain of sacrificed souls who were thrown into the fires of endless torment and who clawed their way out through sheer hatred. They look for revenge and retribution, and if they cannot find it they take out their malic on whatever may fall in their path. Appearing as a skeleton or zombie with cracks in their body filled with red hot flame or white fire traces, they are a sight not easily forgotten. They can control fire, and are immune to it as most fiends are."
+            ]
+          },
+          {
+            "type": "entries",
+            "name": "Servants of Evil",
+            "entries": [
+              "They are usually conjured by cultists as a means to terrorize their enemies, inflict fear upon them, or as a punishment for a fellow cultist, an adversary, or a rival to condemn their soul for eternity. It is also possible for humanoids filled with hatred and fury to rise as Il Rosso after they suffer a deadly injury during a fire."
+            ]
+          }
+        ]
+      },
+      "trait": [
+        {
+          "name": "Innate Spellcasting",
+          "entries": [
+            "The crimson fiend's spellcasting ability is Charisma (spell save {@dc 12}, +4 to hit with spell attacks). It can innately cast the following spells, requiring no material components:",
+            "At will: {@spell fire bolt}, elemental blade",
+            "1/day each: {@spell burning hands}, scorching ray"
+          ]
+        },
+        {
+          "name": "Fiery Form",
+          "entries": [
+            "As a bonus action, the crimson fiend can turn into a form of pure elemental fire until the start of its next turn. While in this form, it is immune to all damage except cold damage but can't attack any creature. It gains a flying speed of 20 ft. and gains immunity against prone, restrained, and paralyzed conditions. If it ends its turn in a creature's space, it takes 6 ({@damage 1d10}) force damage while the creature takes 2 ({@damage 1d4}) fire damage. While in this form, it can squeeze through openings as narrow as 1 inch, such as a keyhole or similar."
+          ]
+        }
+      ],
+      "action": [
+        {
+          "name": "Flame Fist",
+          "entries": [
+            "Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 6 ({@damage 1d6 + 2}) bludgeoning damage plus 4 ({@damage 1d6}) fire damage."
+          ]
+        },
+        {
+          "name": "Eruption",
+          "entries": [
+            "Il Rosso targets a point within 60 ft. of it. Flame erupts from the point and creatures within 10 ft. of that point must succeed on a {@dc 12} Dexterity saving throw or start burning for 1 minute. A burning creature takes 4 ({@damage 1d6}) fire damage at the start of each of its turns for the duration. Only water from a spell can put out the flames. On a successful save, a creature takes only 2 ({@damage 1d4}) fire damage."
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Il Caduto",
+      "source": "EchoesRenaissance",
+      "size": [
+        "L"
+      ],
+      "type": {
+        "type": "fiend",
+        "tags": [
+          "demon",
+          "shapechanger"
+        ]
+      },
+      "alignment": [
+        "CE"
+      ],
+      "ac": [
+        {
+          "ac": 14,
+          "from": [
+            "natural armor"
+          ]
+        }
+      ],
+      "hp": {
+        "average": 45,
+        "formula": "6d10+12"
+      },
+      "speed": {
+        "walk": 40,
+        "climb": 30
+      },
+      "str": 18,
+      "dex": 10,
+      "con": 14,
+      "int": 13,
+      "wis": 14,
+      "cha": 16,
+      "skill": {
+        "athletics": "+6"
+      },
+      "immune": [
+        "fire",
+        "poison"
+      ],
+      "conditionImmune": [
+        "frightened",
+        "poisoned"
+      ],
+      "senses": [
+        "devil's sight 120 ft."
+      ],
+      "passive": 12,
+      "languages": [
+        "any two languages"
+      ],
+      "cr": "2",
+      "fluff": {
+        "entries": [
+          {
+            "type": "entries",
+            "name": "Monstrous and Dreadful",
+            "entries": [
+              "They are driven mostly by their hatred and an urge to kill. They plot their movements beforehand and attempt to strike at the hearts of their enemies with their overwhelming power. They look normal most times but when they reveal their true shape, it is usually the last sight that any mortal witnesses."
+            ]
+          }
+        ]
+      },
+      "trait": [
+        {
+          "name": "Shapechanger",
+          "entries": [
+            "The fallen demon can use its action to polymorph into a Small or Medium humanoid, or back into its true form. Other than its size and speed, its statistics are the same in each form. Any equipment it is wearing or carrying isn't transformed. It reverts to its true form if it dies."
+          ]
+        },
+        {
+          "name": "Brutal Leap",
+          "entries": [
+            "The fallen demon has Advantage on the next attack roll against a target if it moves at least 15 ft. before attacking on that turn."
+          ]
+        }
+      ],
+      "action": [
+        {
+          "name": "Multiattack",
+          "entries": [
+            "The fallen demon can attack twice with its fiendish claws."
+          ]
+        },
+        {
+          "name": "Fiendish Claws",
+          "entries": [
+            "Melee Weapon Attack: +6 to hit, reach 5 ft., one target. Hit: 11 ({@damage 2d6 + 4}) piercing damage plus 4 ({@damage 1d6}) fire damage."
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Arcobaleno",
+      "source": "EchoesRenaissance",
+      "size": [
+        "S",
+        "M"
+      ],
+      "type": {
+        "type": "fey"
+      },
+      "alignment": [
+        "G"
+      ],
+      "ac": [
+        {
+          "ac": 13
+        }
+      ],
+      "hp": {
+        "average": 18,
+        "formula": "5d6"
+      },
+      "speed": {
+        "walk": 30
+      },
+      "str": 8,
+      "dex": 16,
+      "con": 10,
+      "int": 10,
+      "wis": 13,
+      "cha": 16,
+      "senses": [
+        "darkvision 60 ft."
+      ],
+      "passive": 10,
+      "languages": [
+        "any two languages"
+      ],
+      "cr": "1/2",
+      "fluff": {
+        "entries": [
+          {
+            "type": "entries",
+            "name": "Shining after Rainy Days",
+            "entries": [
+              "The rainbow fairies are creatures that are seen as glimpses of hope, especially on islands, along coastlines, and between tides. They are believed to appear after rainbows, as their name suggests, and they bring joy lost after a rain. They bring tiny but nutritious berries to travelers and often help those in distress find their way."
+            ]
+          },
+          {
+            "type": "entries",
+            "name": "Colorful Personalities",
+            "entries": [
+              "The rainbow fairies are loud, friendly, and come in very different personalities, depending on the color they choose to wear. They accompany adventurers, travel distant seas, explore dangerous areas, get married, and delight in song and wine, depending on the light that shines on them when they wake up."
+            ]
+          },
+          {
+            "type": "entries",
+            "name": "Magical Protection",
+            "entries": [
+              "They can grant magical protection to their allies for a brief period of time, as they are used to the perils of adventuring and other threats on the magical side of the world. It is said in legends that the rainbow fairies are born within the magic of rainbows, so they are able to protect others as well."
+            ]
+          }
+        ]
+      },
+      "trait": [
+        {
+          "name": "Innate Spellcasting",
+          "entries": [
+            "The rainbow fairy's spellcasting ability is Charisma (spell save {@dc 13}, +5 to hit with spell attacks). It can innately cast the following spells, requiring no material components:",
+            "At will: {@spell dancing lights}, {@spell thaumaturgy}, {@spell ray of frost}",
+            "1/day each: {@spell color spray}, {@spell sanctuary}, {@spell detect poison and disease}, {@spell goodberry}, {@spell blur}, {@spell enhance ability}"
+          ]
+        }
+      ],
+      "action": [
+        {
+          "name": "Fairy Dust",
+          "entries": [
+            "The rainbow fairy sprinkles fairy dust on a point of its choosing within 60 ft. Any creature within 20 ft. of it must succeed on a {@dc 13} Dexterity saving throw or take 7 ({@damage 2d6}) radiant damage, or half as much on a successful save."
+          ]
+        },
+        {
+          "name": "Magical Ward (3/Day)",
+          "entries": [
+            "The fairy can grant up to three creatures that it can see within 60 ft. of it Advantage on saving throws against spells and other magical effects for 1d4+1 rounds."
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Fated One",
+      "source": "EchoesRenaissance",
+      "size": [
+        "M"
+      ],
+      "type": {
+        "type": "celestial"
+      },
+      "alignment": [
+        "G"
+      ],
+      "ac": [
+        {
+          "ac": 10
+        }
+      ],
+      "hp": {
+        "average": 9,
+        "formula": "2d8"
+      },
+      "speed": {
+        "walk": 30,
+        "fly": 20
+      },
+      "str": 8,
+      "dex": 10,
+      "con": 11,
+      "int": 10,
+      "wis": 13,
+      "cha": 14,
+      "immune": [
+        "necrotic",
+        "poison"
+      ],
+      "conditionImmune": [
+        "poisoned"
+      ],
+      "senses": [
+        "darkvision 60 ft."
+      ],
+      "passive": 11,
+      "languages": [
+        "any two languages"
+      ],
+      "cr": "1/4",
+      "fluff": {
+        "entries": [
+          {
+            "type": "entries",
+            "name": "Pure Energy",
+            "entries": [
+              "The celestiali are a type of ethereal creature that usually comes from the realm of undead, the spirits stuck in the material realms for too long. However, instead of terrorizing innocents as horrifying undead, these souls found their way to the pure magic of the world and became the manifestations of innocence and deeds that are considered good."
+            ]
+          },
+          {
+            "type": "entries",
+            "name": "No Memories",
+            "entries": [
+              "Although they remember almost nothing about their past lives, the celestiali usually have a singular goal they want to follow: like protect a certain church, escorting pilgrims to a holy place, guiding seafarers to safety, punishing pirates who kidnap people from coasts. Some are rather furious and vengeful, while some can be charming, peaceful and even defenseless."
+            ]
+          },
+          {
+            "type": "entries",
+            "name": "Cycle of Nature",
+            "entries": [
+              "Some of the celestiali are transformed into more beastly shapes rather than humanoid forms, they can appear as a guiding deer in the forest, a loyal dog for a person in pain, and many other variable conditions, shapes and interesting aspects, sometimes even as a plant."
+            ]
+          },
+          {
+            "type": "entries",
+            "name": "Fated One",
+            "entries": [
+              "The fated ones usually look like humanoids and sense when the death of a creature is close."
+            ]
+          }
+        ]
+      },
+      "trait": [
+        {
+          "name": "Innate Spellcasting",
+          "entries": [
+            "The fated one's spellcasting ability is Charisma (spell save {@dc 12}, +4 to hit with spell attacks). It can innately cast the following spells, requiring no material components:",
+            "At will: {@spell light}, {@spell guidance}, grave whispers",
+            "1/day each: {@spell bane}, whispering death"
+          ]
+        }
+      ],
+      "action": [
+        {
+          "name": "Starry Strike",
+          "entries": [
+            "Ranged Spell Attack: +4 to hit, range 60 ft., one target. Hit: 5 ({@damage 1d8}) radiant damage."
+          ]
+        },
+        {
+          "name": "Impending Fate (Recharge 6)",
+          "entries": [
+            "The fated one can target a creature within 60 ft. of it. The creature must succeed on a {@dc 12} Wisdom saving throw. On a failed save, the target is vulnerable to a damage type from the list: radiant, necrotic, or psychic damage for 1 minute or until it takes damage from that source. On a successful save, it takes 4 ({@damage 1d6}) radiant damage."
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Hidden One",
+      "source": "EchoesRenaissance",
+      "size": [
+        "M",
+        "L"
+      ],
+      "type": {
+        "type": "celestial"
+      },
+      "alignment": [
+        "G"
+      ],
+      "ac": [
+        {
+          "ac": 14,
+          "from": [
+            "natural armor"
+          ]
+        }
+      ],
+      "hp": {
+        "average": 19,
+        "formula": "3d8+6"
+      },
+      "speed": {
+        "walk": 30
+      },
+      "str": 16,
+      "dex": 10,
+      "con": 15,
+      "int": 5,
+      "wis": 12,
+      "cha": 16,
+      "resist": [
+        "radiant"
+      ],
+      "conditionImmune": [
+        "charmed",
+        "frightened"
+      ],
+      "senses": [
+        "blindsight 10 ft."
+      ],
+      "passive": 10,
+      "languages": [
+        "understands two languages of the GM's choice but can't speak"
+      ],
+      "cr": "1",
+      "fluff": {
+        "entries": [
+          {
+            "type": "entries",
+            "name": "Pure Energy",
+            "entries": [
+              "The celestiali are a type of ethereal creature that usually comes from the realm of undead, the spirits stuck in the material realms for too long. However, instead of terrorizing innocents as horrifying undead, these souls found their way to the pure magic of the world and became the manifestations of innocence and deeds that are considered good."
+            ]
+          },
+          {
+            "type": "entries",
+            "name": "No Memories",
+            "entries": [
+              "Although they remember almost nothing about their past lives, the celestiali usually have a singular goal they want to follow: like protect a certain church, escorting pilgrims to a holy place, guiding seafarers to safety, punishing pirates who kidnap people from coasts. Some are rather furious and vengeful, while some can be charming, peaceful and even defenseless."
+            ]
+          },
+          {
+            "type": "entries",
+            "name": "Cycle of Nature",
+            "entries": [
+              "Some of the celestiali are transformed into more beastly shapes rather than humanoid forms, they can appear as a guiding deer in the forest, a loyal dog for a person in pain, and many other variable conditions, shapes and interesting aspects, sometimes even as a plant."
+            ]
+          },
+          {
+            "type": "entries",
+            "name": "Hidden One",
+            "entries": [
+              "Hidden ones resemble a beast of their choosing, usually elk, antelope, or a similar animal of good omens and rarely take the form of predators. They usually exist to protect or guide ones in need, lost creatures, distressed travelers, or similar people."
+            ]
+          }
+        ]
+      },
+      "trait": [
+        {
+          "name": "Innate Spellcasting",
+          "entries": [
+            "The hidden one's spellcasting ability is Charisma (spell save {@dc 13}, +4 to hit with spell attacks). It can innately cast the following spells, requiring no material components:",
+            "At will: {@spell spare the dying}, {@spell blade ward}, {@spell light}",
+            "1/day each: {@spell sanctuary}, {@spell shield of faith}, {@spell purify food and drink}"
+          ]
+        },
+        {
+          "name": "Radiant Ward",
+          "entries": [
+            "The hidden one can cast {@spell blade ward} as a touch, extending its protection to a creature it can reach."
+          ]
+        },
+        {
+          "name": "Radiant Bond (1/Day)",
+          "entries": [
+            "The hidden one can cast {@spell warding bond} on a creature it can touch as a bonus action, without requiring material components. When it casts the spell, it gains 11 ({@damage 3d6}) temporary hit points."
+          ]
+        }
+      ],
+      "action": [
+        {
+          "name": "Multiattack",
+          "entries": [
+            "The hidden one can attack twice with its Bestial Attack."
+          ]
+        },
+        {
+          "name": "Bestial Attack",
+          "entries": [
+            "Melee Weapon Attack: +5 to hit, reach 5 ft., one target. Hit: 6 ({@damage 1d6 + 3}) radiant damage."
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Radiant One",
+      "source": "EchoesRenaissance",
+      "size": [
+        "M"
+      ],
+      "type": {
+        "type": "celestial"
+      },
+      "alignment": [
+        "CG"
+      ],
+      "ac": [
+        {
+          "ac": 16,
+          "from": [
+            "natural armor"
+          ]
+        }
+      ],
+      "hp": {
+        "average": 26,
+        "formula": "4d8+8"
+      },
+      "speed": {
+        "walk": 30,
+        "fly": 40
+      },
+      "str": 16,
+      "dex": 10,
+      "con": 14,
+      "int": 10,
+      "wis": 10,
+      "cha": 10,
+      "skill": {
+        "athletics": "+5"
+      },
+      "passive": 10,
+      "languages": [
+        "any two languages"
+      ],
+      "cr": "1",
+      "fluff": {
+        "entries": [
+          {
+            "type": "entries",
+            "name": "Radiant One",
+            "entries": [
+              "Radiant ones usually seek retribution upon evil doers to the best of their abilities. They usually pose as law enforcement, soldiers, vigilantes, city guards, hunters, crusaders or similar humanoids to effectively fight against those which they consider evil."
+            ]
+          }
+        ]
+      },
+      "trait": [
+        {
+          "name": "Blinding Strike (2/Day)",
+          "entries": [
+            "The radiant one can cast the {@spell blinding smite} spell."
+          ]
+        },
+        {
+          "name": "Blinding Eruption (1/Day)",
+          "entries": [
+            "The radiant one can erupt into light and choose any enemies within 15 ft. of it. Each chosen creature must succeed on a {@dc 12} Constitution saving throw or become blinded for 1 minute. At the end of each of its turns, the target can make a Constitution saving throw. On a success, the spell ends."
+          ]
+        }
+      ],
+      "action": [
+        {
+          "name": "Greatsword",
+          "entries": [
+            "Melee Weapon Attack: +5 to hit, reach 5 ft., one target. Hit: 10 ({@damage 2d6 + 3}) slashing damage plus 4 ({@damage 1d6}) radiant damage."
+          ]
+        },
+        {
+          "name": "Radiant Retribution",
+          "entries": [
+            "Ranged Spell Attack: +5 to hit, range 30 ft., one target. Hit: 10 ({@damage 3d6}) radiant damage."
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Callus",
+      "source": "EchoesRenaissance",
+      "size": [
+        "M"
+      ],
+      "type": {
+        "type": "humanoid"
+      },
+      "alignment": [
+        "NE"
+      ],
+      "ac": [
+        {
+          "ac": 17,
+          "from": [
+            "studded leather armor"
+          ]
+        }
+      ],
+      "hp": {
+        "average": 105,
+        "formula": "14d8+42"
+      },
+      "speed": {
+        "walk": 35
+      },
+      "str": 12,
+      "dex": 20,
+      "con": 16,
+      "int": 14,
+      "wis": 13,
+      "cha": 16,
+      "save": {
+        "dex": "+8",
+        "wis": "+4"
+      },
+      "skill": {
+        "acrobatics": "+8",
+        "deception": "+6",
+        "intimidation": "+6",
+        "perception": "+4"
+      },
+      "senses": [],
+      "passive": 14,
+      "languages": [
+        "Common",
+        "any two languages"
+      ],
+      "cr": "7",
+      "trait": [
+        {
+          "name": "Fancy Footwork",
+          "entries": [
+            "After the Callus makes a melee attack against a creature during his turn, that creature can't make opportunity attacks against him for the rest of that turn."
+          ]
+        },
+        {
+          "name": "Evasion",
+          "entries": [
+            "If the Callus is subjected to an effect that allows it to make a Dexterity saving throw to take only half damage, it instead takes no damage if it succeeds on the saving throw, and only half damage if it fails."
+          ]
+        },
+        {
+          "name": "Not Dead Yet (1/Day)",
+          "entries": [
+            "When reduced to 0 hit points, the Callus drops to 1 hit point instead and immediately moves up to half his speed without provoking opportunity attacks."
+          ]
+        }
+      ],
+      "action": [
+        {
+          "name": "Multiattack",
+          "entries": [
+            "The Callus makes three Rapier attacks."
+          ]
+        },
+        {
+          "name": "Rapier",
+          "entries": [
+            "Melee Weapon Attack: +8 to hit, reach 5 ft., one target. Hit: 9 ({@damage 1d8 + 5}) piercing damage."
+          ]
+        },
+        {
+          "name": "Blinding Powder (2/Day)",
+          "entries": [
+            "The Callus hurls a fistful of crushed glass and ash in a 15-foot cone. Each creature in the area must succeed on a {@dc 16} Constitution saving throw or be blinded for 1 minute. A blinded creature can repeat the saving throw at the end of each of its turns, ending the effect on a success. A creature that fails by 5 or more also takes 7 ({@damage 2d6}) slashing damage as glass shards cut into its eyes."
+          ]
+        }
+      ],
+      "bonus": [
+        {
+          "name": "Feint",
+          "entries": [
+            "The Callus chooses one creature within 5 ft. of him. He has advantage on his next attack roll against that creature this turn."
+          ]
+        }
+      ],
+      "reaction": [
+        {
+          "name": "Parry",
+          "entries": [
+            "The Callus adds 3 to his AC against one melee attack that would hit him. He must see the attacker and be wielding a melee weapon."
+          ]
+        }
+      ],
+      "legendary": [
+        {
+          "name": "Reposition",
+          "entries": [
+            "The Callus moves up to half his speed."
+          ]
+        },
+        {
+          "name": "Rapier Lunge (Costs 1 Action)",
+          "entries": [
+            "The Callus makes one Rapier attack."
+          ]
+        },
+        {
+          "name": "En Garde (Costs 2 Actions)",
+          "entries": [
+            "The Callus makes one Rapier attack. If it hits, the target must succeed on a {@dc 16} Dexterity saving throw or have its speed reduced to 0 until the end of its next turn as the Callus pins it against the ship's railing."
+          ]
+        }
+      ],
+      "legendaryActions": 3,
+      "legendaryHeader": [
+        "Callus can take 3 legendary actions, choosing from the options below. Only one legendary action can be used at a time and only at the end of another creature's turn. Callus regains spent legendary actions at the start of his turn."
+      ],
+      "fluff": {
+        "entries": [
+          {
+            "type": "entries",
+            "name": "Callus",
+            "entries": [
+              "The lord of Breakwater rules from the deck of his flagship, rapier in hand and a grin that never reaches his eyes. He has carved his reputation from the bones of rivals and the hulls of merchant vessels. When cornered, he fights like a cornered animal — beautiful, precise, and utterly without mercy."
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Pirate Deckhand",
+      "source": "EchoesRenaissance",
+      "size": [
+        "M"
+      ],
+      "type": {
+        "type": "humanoid"
+      },
+      "alignment": [
+        "NE"
+      ],
+      "ac": [
+        {
+          "ac": 12,
+          "from": [
+            "leather armor"
+          ]
+        }
+      ],
+      "hp": {
+        "average": 16,
+        "formula": "3d8+3"
+      },
+      "speed": {
+        "walk": 30
+      },
+      "str": 13,
+      "dex": 12,
+      "con": 12,
+      "int": 8,
+      "wis": 10,
+      "cha": 9,
+      "skill": {
+        "athletics": "+3",
+        "intimidation": "+1"
+      },
+      "passive": 10,
+      "languages": [
+        "Common"
+      ],
+      "cr": "1/4",
+      "trait": [
+        {
+          "name": "Pack Tactics",
+          "entries": [
+            "The deckhand has Advantage on attack rolls against a creature if at least one of the deckhand's allies is within 5 ft. of the creature and the ally isn't incapacitated."
+          ]
+        }
+      ],
+      "action": [
+        {
+          "name": "Cutlass",
+          "entries": [
+            "Melee Weapon Attack: +3 to hit, reach 5 ft., one target. Hit: 5 ({@damage 1d6 + 1}) slashing damage."
+          ]
+        },
+        {
+          "name": "Handaxe",
+          "entries": [
+            "Melee or Ranged Weapon Attack: +3 to hit, reach 5 ft. or range 20/60 ft., one target. Hit: 4 ({@damage 1d6 + 1}) slashing damage."
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Pirate Sharpshooter",
+      "source": "EchoesRenaissance",
+      "size": [
+        "M"
+      ],
+      "type": {
+        "type": "humanoid"
+      },
+      "alignment": [
+        "NE"
+      ],
+      "ac": [
+        {
+          "ac": 14,
+          "from": [
+            "leather armor"
+          ]
+        }
+      ],
+      "hp": {
+        "average": 22,
+        "formula": "4d8+4"
+      },
+      "speed": {
+        "walk": 30,
+        "climb": 20
+      },
+      "str": 10,
+      "dex": 16,
+      "con": 12,
+      "int": 10,
+      "wis": 14,
+      "cha": 8,
+      "skill": {
+        "perception": "+4",
+        "stealth": "+5"
+      },
+      "passive": 14,
+      "languages": [
+        "Common"
+      ],
+      "cr": "1/2",
+      "trait": [
+        {
+          "name": "Steady Hands",
+          "entries": [
+            "The sharpshooter doesn't have Disadvantage on ranged attack rolls from being within 5 ft. of a hostile creature."
+          ]
+        }
+      ],
+      "action": [
+        {
+          "name": "Light Crossbow",
+          "entries": [
+            "Ranged Weapon Attack: +5 to hit, range 80/320 ft., one target. Hit: 7 ({@damage 1d8 + 3}) piercing damage."
+          ]
+        },
+        {
+          "name": "Dagger",
+          "entries": [
+            "Melee Weapon Attack: +5 to hit, reach 5 ft., one target. Hit: 5 ({@damage 1d4 + 3}) piercing damage."
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Torek",
+      "source": "EchoesRenaissance",
+      "size": [
+        "M"
+      ],
+      "type": {
+        "type": "humanoid"
+      },
+      "alignment": [
+        "NE"
+      ],
+      "ac": [
+        {
+          "ac": 15,
+          "from": [
+            "chain shirt"
+          ]
+        }
+      ],
+      "hp": {
+        "average": 52,
+        "formula": "8d8+16"
+      },
+      "speed": {
+        "walk": 30
+      },
+      "str": 16,
+      "dex": 14,
+      "con": 14,
+      "int": 11,
+      "wis": 12,
+      "cha": 13,
+      "save": {
+        "str": "+5",
+        "con": "+4"
+      },
+      "skill": {
+        "athletics": "+5",
+        "intimidation": "+3"
+      },
+      "passive": 11,
+      "languages": [
+        "Common"
+      ],
+      "cr": "2",
+      "fluff": {
+        "entries": [
+          {
+            "type": "entries",
+            "name": "Torek, the Bosun",
+            "entries": [
+              "Callus's right hand and enforcer. Torek keeps the crew in line through fear and the occasional cracked skull. He fights with a scimitar in one hand and a belaying pin in the other."
+            ]
+          }
+        ]
+      },
+      "trait": [
+        {
+          "name": "Boarding Master",
+          "entries": [
+            "Allies within 10 ft. of Torek have Advantage on ability checks to grapple, shove, or resist being knocked prone."
+          ]
+        }
+      ],
+      "action": [
+        {
+          "name": "Multiattack",
+          "entries": [
+            "Torek makes two Scimitar attacks."
+          ]
+        },
+        {
+          "name": "Scimitar",
+          "entries": [
+            "Melee Weapon Attack: +5 to hit, reach 5 ft., one target. Hit: 6 ({@damage 1d6 + 3}) slashing damage."
+          ]
+        },
+        {
+          "name": "Belaying Pin",
+          "entries": [
+            "Melee Weapon Attack: +5 to hit, reach 5 ft., one target. Hit: 5 ({@damage 1d4 + 3}) bludgeoning damage. On a hit, the target must succeed on a {@dc 13} Constitution saving throw or be stunned until the end of its next turn. This attack can only stun a given target once per combat."
+          ]
+        }
+      ],
+      "bonus": [
+        {
+          "name": "Rallying Shout (1/Day)",
+          "entries": [
+            "Each ally within 30 ft. of Torek gains 5 temporary hit points."
+          ]
+        }
+      ]
+    }
+  ],
+  "subclass": [
+    {
+      "name": "School of the Inkwielder",
+      "source": "EchoesRenaissance",
+      "className": "Wizard",
+      "classSource": "XPHB",
+      "shortName": "EoRInkwielder",
+      "subclassFeatures": [
+        "School of the Inkwielder|Wizard|XPHB|EoRInkwielder|EchoesRenaissance|2",
+        "Ritualistic Summon|Wizard|XPHB|EoRInkwielder|EchoesRenaissance|6",
+        "Benefits of the Bargain|Wizard|XPHB|EoRInkwielder|EchoesRenaissance|10",
+        "Borrowing Ability|Wizard|XPHB|EoRInkwielder|EchoesRenaissance|14"
+      ]
+    },
+    {
+      "name": "Art Domain",
+      "source": "EchoesRenaissance",
+      "className": "Cleric",
+      "classSource": "XPHB",
+      "shortName": "EoRArtDomain",
+      "casterProgression": "full",
+      "spellcastingAbility": "wis",
+      "additionalSpells": [
+        {
+          "prepared": {
+            "3": [
+              "marvelous performance|EchoesRenaissance",
+              "illusory taunt|EchoesRenaissance",
+              "amplify feelings|EchoesRenaissance",
+              "calm emotions"
+            ],
+            "5": [
+              "majestic performance|EchoesRenaissance",
+              "slow"
+            ],
+            "7": [
+              "fabricate",
+              "freedom of movement"
+            ],
+            "9": [
+              "disrupt one's weave|EchoesRenaissance",
+              "telekinesis"
+            ]
+          }
+        }
+      ],
+      "subclassFeatures": [
+        "Art Domain|Cleric|XPHB|EoRArtDomain|EchoesRenaissance|3",
+        "Channel Divinity: Masterwork|Cleric|XPHB|EoRArtDomain|EchoesRenaissance|3",
+        "Allure of the Art|Cleric|XPHB|EoRArtDomain|EchoesRenaissance|6",
+        "Blessed by the Art|Cleric|XPHB|EoRArtDomain|EchoesRenaissance|8",
+        "Arte Magnifica|Cleric|XPHB|EoRArtDomain|EchoesRenaissance|17"
+      ]
+    },
+    {
+      "name": "Tide Guardian",
+      "source": "EchoesRenaissance",
+      "className": "Ranger",
+      "classSource": "XPHB",
+      "shortName": "EoRTideGuardian",
+      "casterProgression": "half",
+      "spellcastingAbility": "wis",
+      "additionalSpells": [
+        {
+          "expanded": {
+            "3": [
+              "armor of agathys",
+              "barborossa's tidal heave|EchoesRenaissance"
+            ],
+            "5": [
+              "barbarossa's cold dispersion|EchoesRenaissance",
+              "mirror image"
+            ],
+            "9": [
+              "call lightning",
+              "glass explosion|EchoesRenaissance"
+            ],
+            "13": [
+              "control water",
+              "ice storm"
+            ],
+            "17": [
+              "cone of cold",
+              "conjure elemental"
+            ]
+          }
+        }
+      ],
+      "subclassFeatures": [
+        "Tide Guardian|Ranger|XPHB|EoRTideGuardian|EchoesRenaissance|3",
+        "Speaker of the Waves|Ranger|XPHB|EoRTideGuardian|EchoesRenaissance|7",
+        "Whelm and Woe|Ranger|XPHB|EoRTideGuardian|EchoesRenaissance|11",
+        "Vengeance of the Seas|Ranger|XPHB|EoRTideGuardian|EchoesRenaissance|15"
+      ]
+    },
+    {
+      "name": "College of the Masquerade",
+      "source": "EchoesRenaissance",
+      "className": "Bard",
+      "classSource": "XPHB",
+      "shortName": "EoRMasquerade",
+      "subclassFeatures": [
+        "College of the Masquerade|Bard|XPHB|EoRMasquerade|EchoesRenaissance|3",
+        "The Masquerade|Bard|XPHB|EoRMasquerade|EchoesRenaissance|3",
+        "Maschera Diabolica|Bard|XPHB|EoRMasquerade|EchoesRenaissance|3",
+        "Maschera Fiabesco|Bard|XPHB|EoRMasquerade|EchoesRenaissance|3",
+        "Maschera Angelico|Bard|XPHB|EoRMasquerade|EchoesRenaissance|3",
+        "Maschera Umano|Bard|XPHB|EoRMasquerade|EchoesRenaissance|3",
+        "The Hidden Power|Bard|XPHB|EoRMasquerade|EchoesRenaissance|6",
+        "Masked Potential Unleashed|Bard|XPHB|EoRMasquerade|EchoesRenaissance|14"
+      ]
+    },
+    {
+      "name": "The Bound Mimic",
+      "source": "EchoesRenaissance",
+      "className": "Warlock",
+      "classSource": "XPHB",
+      "shortName": "EoRBoundMimic",
+      "casterProgression": "full",
+      "spellcastingAbility": "cha",
+      "additionalSpells": [
+        {
+          "prepared": {
+            "3": [
+              "burning hands",
+              "disguise self"
+            ],
+            "5": [
+              "haste",
+              "mirror image"
+            ],
+            "7": [
+              "phantom steed",
+              "major image"
+            ],
+            "9": [
+              "fire shield",
+              "mislead"
+            ]
+          }
+        }
+      ],
+      "subclassFeatures": [
+        "The Bound Mimic|Warlock|XPHB|EoRBoundMimic|EchoesRenaissance|3",
+        "Mantle of Shifting Faces|Warlock|XPHB|EoRBoundMimic|EchoesRenaissance|6",
+        "Reflection of the Lost|Warlock|XPHB|EoRBoundMimic|EchoesRenaissance|10",
+        "Legion of One|Warlock|XPHB|EoRBoundMimic|EchoesRenaissance|14"
+      ]
+    },
+    {
+      "name": "The Living Oubliette",
+      "source": "EchoesRenaissance",
+      "className": "Warlock",
+      "classSource": "XPHB",
+      "shortName": "EoRLivingOubliette",
+      "casterProgression": "full",
+      "spellcastingAbility": "int",
+      "additionalSpells": [
+        {
+          "prepared": {
+            "1": [
+              "shield",
+              "magic missile"
+            ],
+            "3": [
+              "misty step",
+              "hold person"
+            ],
+            "5": [
+              "counterspell",
+              "fireball"
+            ],
+            "7": [
+              "greater invisibility",
+              "dimension door"
+            ],
+            "9": [
+              "wall of force",
+              "modify memory"
+            ]
+          }
+        }
+      ],
+      "subclassFeatures": [
+        "The Living Oubliette|Warlock|XPHB|EoRLivingOubliette|EchoesRenaissance|3",
+        "Siphon Certainty|Warlock|XPHB|EoRLivingOubliette|EchoesRenaissance|6",
+        "The Internal Prisoner|Warlock|XPHB|EoRLivingOubliette|EchoesRenaissance|10",
+        "The Final Riddle|Warlock|XPHB|EoRLivingOubliette|EchoesRenaissance|14"
+      ]
+    }
+  ],
+  "subclassFeature": [
+    {
+      "name": "School of the Inkwielder",
+      "source": "EchoesRenaissance",
+      "className": "Wizard",
+      "classSource": "XPHB",
+      "subclassShortName": "EoRInkwielder",
+      "subclassSource": "EchoesRenaissance",
+      "level": 2,
+      "header": 1,
+      "entries": [
+        "Ink is thicker than blood and sometimes deadlier than acid or poison when used in the right way. Some are able to fuse an ordinary ink with the power of the Weave and fill it with arcane energy, making bargains with creatures and borrowing their powers for greater deeds than most adventurers are capable of. The ones that wield such an ink have held power in many realms for a long time.",
+        "Pupils of the Inkwielder school get their power from the bargains they make with many different types of creatures. Rather than regular summoners, they use the echo of the creature to avoid unnecessary enmities with similar spells, and their summons are usually much more powerful than mere familiars.",
+        {
+          "type": "refSubclassFeature",
+          "subclassFeature": "Ink of Power|Wizard|XPHB|EoRInkwielder|EchoesRenaissance|2"
+        },
+        {
+          "type": "refSubclassFeature",
+          "subclassFeature": "The Familiar Ink|Wizard|XPHB|EoRInkwielder|EchoesRenaissance|2"
+        }
+      ]
+    },
+    {
+      "name": "Ink of Power",
+      "source": "EchoesRenaissance",
+      "className": "Wizard",
+      "classSource": "XPHB",
+      "subclassShortName": "EoRInkwielder",
+      "subclassSource": "EchoesRenaissance",
+      "level": 2,
+      "header": 2,
+      "entries": [
+        "Your spellbook, and your connection with it, is different from most wizards'. You can use your ink in a special way. You can strike a bargain with certain creature types in exchange for summoning them in times of need.",
+        "The creature type can be: djinni, dragon, elemental, fey, fiend, and monstrosity. Its size must be large or smaller, and it must be able to understand that it is entering into a complicated bargain: creatures with Intelligence scores of 3 or lower cannot be targeted. Check out the table below for a creature suited for a bargain and other needed information.",
+        {
+          "type": "table",
+          "caption": "Bargain Progression",
+          "colLabels": [
+            "Wizard Level",
+            "Maximum CR of the Creature",
+            "Minimum Spell Slot Level Needed to Summon"
+          ],
+          "colStyles": [
+            "col-2 text-center",
+            "col-5 text-center",
+            "col-5 text-center"
+          ],
+          "rows": [
+            [
+              "2",
+              "1/2",
+              "1"
+            ],
+            [
+              "4",
+              "1",
+              "2"
+            ],
+            [
+              "6",
+              "2",
+              "3"
+            ],
+            [
+              "8",
+              "3",
+              "4"
+            ],
+            [
+              "10",
+              "5",
+              "5"
+            ],
+            [
+              "12",
+              "6",
+              "5"
+            ],
+            [
+              "14",
+              "7",
+              "5"
+            ],
+            [
+              "16",
+              "8",
+              "6"
+            ]
+          ]
+        },
+        "When you strike a bargain with the creature, you can copy its essence to your spellbook. It requires 25 gp and 1 hour to inscribe it for each CR above 1. When you do so, you have the statblock of the creature. You can summon the creature with the spell slot depicted in the table above.",
+        "When you summon the creature as an action, it appears within 30 ft. of you in an unoccupied space. It follows your orders given to them by bonus actions. The creature can stay out of your spellbook for a number of minutes equal to the level of the spell used to summon it (minimum of 1).",
+        "You can make bargains with as many creatures as you want, but for a creature to be able to be summoned, you must prepare a creature just like a spell.",
+        "Creatures with Challenge Rating equal to 2 or below count as half of a spell's worth against your ability to prepare spells. For example, you can prepare a creature with a CR 1 and a CR 1/4, and they would count as if you prepared one spell.",
+        "When the creature dies or its time is up, it vanishes and can't be summoned again until you finish a short or long rest.",
+        "You can summon more than one creature as long as their combined CR does not exceed your maximum CR column of the table above. For example, at Level 4 you can have two creatures summoned at the same time with 1/2 Challenge Ratings.",
+        {
+          "type": "inset",
+          "name": "The Other Method of Bargaining",
+          "entries": [
+            "The original method of bargains is copying the essence of a creature with their consent. As an optional rule, you can also bind a creature directly to your spellbook if you are able to convince the creature. When you do so, the creature's soul itself is bound to your spellbook, and you summon that creature when you summon. If you do so, the creature's duration spent out of the spellbook is doubled.",
+            "You can release such a creature by conducting a 1-minute ritual."
+          ]
+        },
+        {
+          "type": "entries",
+          "name": "Bargaining Requirements",
+          "entries": [
+            "What the creatures require in order for their essence to be put into the bargain is up to the Game Master. Giving out the essence gives that creature these benefits:",
+            {
+              "type": "list",
+              "items": [
+                "You have Disadvantage on attack rolls against that creature (Not the type. For example, if you make a bargain with an imp, this benefit works only against that imp, not other imps in general).",
+                "The creature has Advantage on saving throws that were forced by you."
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "The Familiar Ink",
+      "source": "EchoesRenaissance",
+      "className": "Wizard",
+      "classSource": "XPHB",
+      "subclassShortName": "EoRInkwielder",
+      "subclassSource": "EchoesRenaissance",
+      "level": 2,
+      "header": 2,
+      "entries": [
+        "You learn the {@spell find familiar} spell and add it to your spellbook. Its casting time is 10 minutes for you. If you already have the spell in your spellbook, you can add another 1st-level conjuration spell to your spellbook."
+      ]
+    },
+    {
+      "name": "Ritualistic Summon",
+      "source": "EchoesRenaissance",
+      "className": "Wizard",
+      "classSource": "XPHB",
+      "subclassShortName": "EoRInkwielder",
+      "subclassSource": "EchoesRenaissance",
+      "level": 6,
+      "header": 2,
+      "entries": [
+        "When you strike a bargain with a creature, you can summon one as a ritual even if you don't have it prepared. The ritual takes 10 minutes."
+      ]
+    },
+    {
+      "name": "Benefits of the Bargain",
+      "source": "EchoesRenaissance",
+      "className": "Wizard",
+      "classSource": "XPHB",
+      "subclassShortName": "EoRInkwielder",
+      "subclassSource": "EchoesRenaissance",
+      "level": 10,
+      "header": 2,
+      "entries": [
+        "When you summon a creature you made a bargain with, you both gain temporary hit points equal to your wizard level. If you expend a spell slot as a bonus action, you can refresh the temporary hit points."
+      ]
+    },
+    {
+      "name": "Borrowing Ability",
+      "source": "EchoesRenaissance",
+      "className": "Wizard",
+      "classSource": "XPHB",
+      "subclassShortName": "EoRInkwielder",
+      "subclassSource": "EchoesRenaissance",
+      "level": 14,
+      "header": 2,
+      "entries": [
+        "At 14th level, when you summon a creature, you can choose one of their Ability Scores, and for the next minute, you can replace your Ability Score with the chosen one. Any changes affect you accordingly.",
+        "For example, if you change your Constitution score to a higher one, you'd have more hit points (based on average: for d8s take 5, for instance). If you have any current hit points missing, reduce the missing hit points from your newly calculated hit points maximum. When you transform back, apply the same conditions on your current hit points."
+      ]
+    },
+    {
+      "name": "Tide Guardian",
+      "source": "EchoesRenaissance",
+      "className": "Ranger",
+      "classSource": "XPHB",
+      "subclassShortName": "EoRTideGuardian",
+      "subclassSource": "EchoesRenaissance",
+      "level": 3,
+      "header": 1,
+      "entries": [
+        "You scan the horizon, noticing imperceptible shifts in the movements of the water as you watch the movements of enemy vessels. Suddenly, the faint scent of ambergris and sulfur hits your nostrils, and your eyes dart to the right. You slide down the rigging and alert your shipmates: deep below the surface of the waves, a monster stirs. You are ready for it.",
+        "Perhaps you were a member of the Ottoman navy or Barbary corsairs, or the Genovese or Venetian navies. Or maybe you hail from commercial origins, as a fisher-person or merchant, or underneath the waves. Or perhaps you came to the sea later and fell in love with the mesmerizing blue of the Adriatic. You have committed yourself to traversing the waves and protecting the peoples who make the sea their home. You are a guardian of the sea, defending it from evil and against evil incursions above or beneath the waves.",
+        {
+          "type": "refSubclassFeature",
+          "subclassFeature": "One with the Waves|Ranger|XPHB|EoRTideGuardian|EchoesRenaissance|3"
+        },
+        {
+          "type": "refSubclassFeature",
+          "subclassFeature": "Tide Guardian Magic|Ranger|XPHB|EoRTideGuardian|EchoesRenaissance|3"
+        }
+      ]
+    },
+    {
+      "name": "One with the Waves",
+      "source": "EchoesRenaissance",
+      "className": "Ranger",
+      "classSource": "XPHB",
+      "subclassShortName": "EoRTideGuardian",
+      "subclassSource": "EchoesRenaissance",
+      "level": 3,
+      "header": 2,
+      "entries": [
+        "{@bold Expert Swimmer:} When you choose this Archetype, you gain a swimming speed of 40 feet if it is not higher already.",
+        "{@bold Weapon Expert:} You have a pool of Guardian Points equal to 2 times your proficiency bonus. For the rest of the day, whenever you miss an attack roll, you can use any number of Guardian Points for the attack roll and potentially turn the miss into a hit. Your expended points return when you finish a long rest.",
+        "{@bold Long Sight:} You double your proficiency bonus in Wisdom (Perception) checks if you do not double it from another source such as Expertise. If you do, choose another skill from Wisdom to double your proficiency bonus.",
+        "{@bold Arcane Bloom:} You learn Barborossa's underwater vitality cantrip and one other druid cantrip of your choice. Wisdom is your spellcasting ability modifier for both cantrips."
+      ]
+    },
+    {
+      "name": "Tide Guardian Magic",
+      "source": "EchoesRenaissance",
+      "className": "Ranger",
+      "classSource": "XPHB",
+      "subclassShortName": "EoRTideGuardian",
+      "subclassSource": "EchoesRenaissance",
+      "level": 3,
+      "header": 2,
+      "entries": [
+        "Starting at 3rd level, you learn an additional spell when you reach certain levels in this class, as shown in the Tide Guardian Spells table. The spell counts as a ranger spell for you, but it doesn't count against the number of ranger spells you know.",
+        {
+          "type": "table",
+          "caption": "Tide Guardian Spells",
+          "colLabels": [
+            "Ranger Level",
+            "Spells"
+          ],
+          "colStyles": [
+            "col-2 text-center",
+            "col-10"
+          ],
+          "rows": [
+            [
+              "3",
+              "{@spell armor of agathys}, Barborossa's tidal heave*"
+            ],
+            [
+              "5",
+              "Barbarossa's cold dispersion*, {@spell mirror image}"
+            ],
+            [
+              "9",
+              "{@spell call lightning}, glass explosion*"
+            ],
+            [
+              "13",
+              "{@spell control water}, {@spell ice storm}"
+            ],
+            [
+              "17",
+              "{@spell cone of cold}, {@spell conjure elemental} (air or water)"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Speaker of the Waves",
+      "source": "EchoesRenaissance",
+      "className": "Ranger",
+      "classSource": "XPHB",
+      "subclassShortName": "EoRTideGuardian",
+      "subclassSource": "EchoesRenaissance",
+      "level": 7,
+      "header": 2,
+      "entries": [
+        "Your tie to the seas grows even stronger, and your ability to conjure its fury and passion naturally.",
+        "{@bold Improved Swim:} Your swimming speed increases by 10 ft. You can also use a bonus action to Dash or Disengage when underwater or on water surface.",
+        "{@bold Expert Dive:} You can cast {@spell water breathing} without expending a spell slot. Once you use this feature, you can't use it again until you finish a long rest.",
+        "{@bold Wave Shielding:} You can cast {@spell wall of water} targeting yourself once per day. The spell is added to your spell list and doesn't count against the number of ranger spells you know.",
+        "{@bold Marine Friends:} You can cast the {@spell speak with animals} spell without expending a spell slot, casting it as a ranger spell for you, and you do not need it on your spell list. You can cast the spell a number of times equal to your Wisdom modifier, and expended uses are restored when you finish a long rest.",
+        "{@bold Increased Aim:} Once per day, after seeing the roll but before the GM lets you know the result of the attack roll, you can add +10 to the result if the attack was made with a weapon you are proficient with."
+      ]
+    },
+    {
+      "name": "Whelm and Woe",
+      "source": "EchoesRenaissance",
+      "className": "Ranger",
+      "classSource": "XPHB",
+      "subclassShortName": "EoRTideGuardian",
+      "subclassSource": "EchoesRenaissance",
+      "level": 11,
+      "header": 2,
+      "entries": [
+        "You tap into the infinite power of the ocean depths.",
+        "{@bold Enhanced Expert Dive:} You can now cast Barborossa's floating material once per day without expending a spell slot, and you have advantage on any check related to pulling or pushing a creature into water, though the creature can be no more than one size larger than you.",
+        "{@bold Drowning Attack:} When you hit with your Increased Aim feature, you can now attempt to capture the target in a 15 ft. watery sphere if it is no more than one size larger than you. After you deal damage with the weapon, the creature must make a Constitution saving throw against your spell save DC or be trapped in a watery sphere. The sphere's space is difficult terrain. At the start of each of the creature's turns, it takes {@damage 1d8} bludgeoning damage and must succeed on a Constitution saving throw against your spell save DC or be unable to take actions that turn. The creature needs to make a Strength saving throw against your spell save DC at the end of its turn to escape the sphere. On your turns, you can push the sphere up to half your movement speed as a bonus action. When the sphere moves more than 15 feet away from you, the creature is released and takes {@damage 1d8} cold damage. After you deal damage with the weapon, the creature must make a Constitution saving throw or be trapped in the sphere. You can't use this feature to keep the creature trapped in the sphere."
+      ]
+    },
+    {
+      "name": "Vengeance of the Seas",
+      "source": "EchoesRenaissance",
+      "className": "Ranger",
+      "classSource": "XPHB",
+      "subclassShortName": "EoRTideGuardian",
+      "subclassSource": "EchoesRenaissance",
+      "level": 15,
+      "header": 2,
+      "entries": [
+        "You have become the paragon of the seas' cataclysmic power. You can cast {@spell earthquake} once without expending a spell slot and add it to your spell list, but you can only do so after 7 days.",
+        "Your drowning attack becomes more powerful. It now deals {@damage 1d10} bludgeoning damage and {@damage 1d10} cold damage.",
+        "Your swimming speed increases by 10 more feet."
+      ]
+    },
+    {
+      "name": "The Bound Mimic",
+      "source": "EchoesRenaissance",
+      "className": "Warlock",
+      "classSource": "XPHB",
+      "subclassShortName": "EoRBoundMimic",
+      "subclassSource": "EchoesRenaissance",
+      "level": 3,
+      "header": 1,
+      "entries": [
+        "Your patron is the Keeper of Faces, a powerful Archfey of identity and glamour who was betrayed and bound within a prison of mirrors, compasses, and hourglasses. His power was stolen by a mortal, leaving him weakened and desperate. While your original pact was intended for a creature of the deep sea, the Keeper hijacked the connection, filtering your magic through his own fractured essence.",
+        "He offers you the martial prowess of a legendary knight and the deceptive magic of the feywild—but he demands a price. To restore his strength, you must harvest the identities of the world, feeding his mirror the \"faces\" of those you encounter.",
+        {
+          "type": "refSubclassFeature",
+          "subclassFeature": "Martial Masquerade|Warlock|XPHB|EoRBoundMimic|EchoesRenaissance|3"
+        },
+        {
+          "type": "refSubclassFeature",
+          "subclassFeature": "Bound Mimic Spells|Warlock|XPHB|EoRBoundMimic|EchoesRenaissance|3"
+        },
+        {
+          "type": "refSubclassFeature",
+          "subclassFeature": "Residual Influence|Warlock|XPHB|EoRBoundMimic|EchoesRenaissance|3"
+        },
+        {
+          "type": "refSubclassFeature",
+          "subclassFeature": "The Mirror of Stolen Lives|Warlock|XPHB|EoRBoundMimic|EchoesRenaissance|3"
+        }
+      ],
+      "foundryImg": "assets/images/keeper.png"
+    },
+    {
+      "name": "Martial Masquerade",
+      "source": "EchoesRenaissance",
+      "className": "Warlock",
+      "classSource": "XPHB",
+      "subclassShortName": "EoRBoundMimic",
+      "subclassSource": "EchoesRenaissance",
+      "level": 3,
+      "header": 2,
+      "entries": [
+        "You have been gifted the training of a frontline warrior to better hide your true nature as a servant of the Keeper. You gain proficiency with Medium Armor, Shields, and Martial Weapons.",
+        "Additionally, you gain the Weapon Mastery property for two types of melee weapons of your choice. Whenever you finish a Long Rest, you can practice with a different weapon to replace one of these Mastery properties."
+      ],
+      "armorProficiencies": [
+        {
+          "medium": true,
+          "shield": true
+        }
+      ],
+      "weaponProficiencies": [
+        {
+          "martial": true
+        }
+      ],
+      "foundryImg": "assets/images/keeper.png"
+    },
+    {
+      "name": "Bound Mimic Spells",
+      "source": "EchoesRenaissance",
+      "className": "Warlock",
+      "classSource": "XPHB",
+      "subclassShortName": "EoRBoundMimic",
+      "subclassSource": "EchoesRenaissance",
+      "level": 3,
+      "header": 2,
+      "entries": [
+        "The Keeper of Faces grants you the following spells when you reach the specified levels in this class. These spells are always prepared for you and do not count against your number of prepared spells.",
+        {
+          "type": "table",
+          "caption": "Bound Mimic Spells",
+          "colLabels": [
+            "Warlock Level",
+            "Spells"
+          ],
+          "colStyles": [
+            "col-2 text-center",
+            "col-10"
+          ],
+          "rows": [
+            [
+              "3rd",
+              "{@spell burning hands}, {@spell disguise self}"
+            ],
+            [
+              "5th",
+              "{@spell haste}, {@spell mirror image}"
+            ],
+            [
+              "7th",
+              "{@spell phantom steed}, {@spell major image}"
+            ],
+            [
+              "9th",
+              "{@spell fire shield}, {@spell mislead}"
+            ]
+          ]
+        }
+      ],
+      "foundryImg": "assets/images/keeper.png"
+    },
+    {
+      "name": "Residual Influence",
+      "source": "EchoesRenaissance",
+      "className": "Warlock",
+      "classSource": "XPHB",
+      "subclassShortName": "EoRBoundMimic",
+      "subclassSource": "EchoesRenaissance",
+      "level": 3,
+      "header": 2,
+      "entries": [
+        "Because your pact was hijacked from a Kraken, traces of its deep-sea power still bleed through. When your Pact Weapon deals fire damage, you can choose to deal cold damage instead."
+      ],
+      "foundryImg": "assets/images/keeper.png"
+    },
+    {
+      "name": "The Mirror of Stolen Lives",
+      "source": "EchoesRenaissance",
+      "className": "Warlock",
+      "classSource": "XPHB",
+      "subclassShortName": "EoRBoundMimic",
+      "subclassSource": "EchoesRenaissance",
+      "level": 3,
+      "header": 2,
+      "entries": [
+        "The Keeper has given you a cracked hand-mirror. Your backstory of serving the Keeper has already trapped 3 souls within its surface, granting you your first Fragment of Power. When you defeat a significant foe or NPC, you may spend 1 minute trapping their likeness in the glass. For every 3 Major Faces you collect, you may choose one additional Fragment of Power.",
+        "Consult with your DM regarding the \"Major Faces\" you collect.",
+        {
+          "type": "inset",
+          "name": "The Price of Power",
+          "entries": [
+            "Upon collecting your third Fragment of Power, you notice that your own natural reflection has become more distorted and blurred."
+          ]
+        },
+        "Each Fragment of Power is a separate feature that can be added to your character sheet when earned. See the Fragment features for available options."
+      ],
+      "foundryImg": "assets/images/keeper.png"
+    },
+    {
+      "name": "Fragment: Flickering Hearth",
+      "source": "EchoesRenaissance",
+      "className": "Warlock",
+      "classSource": "XPHB",
+      "subclassShortName": "EoRBoundMimic",
+      "subclassSource": "EchoesRenaissance",
+      "level": 3,
+      "header": 2,
+      "isClassFeatureVariant": true,
+      "entries": [
+        "You can activate your Pact Weapon's Emberstep as part of making an attack with it (no separate Bonus Action required). Additionally, you regain your expended use of Emberstep when you roll initiative."
+      ],
+      "foundryImg": "assets/images/keeper.png"
+    },
+    {
+      "name": "Fragment: Reactive Reflection",
+      "source": "EchoesRenaissance",
+      "className": "Warlock",
+      "classSource": "XPHB",
+      "subclassShortName": "EoRBoundMimic",
+      "subclassSource": "EchoesRenaissance",
+      "level": 3,
+      "header": 2,
+      "isClassFeatureVariant": true,
+      "entries": [
+        "When a creature misses you with a melee attack, you can use your Reaction to make one weapon attack against them. You can use this a number of times equal to your Charisma modifier per Long Rest."
+      ],
+      "foundryImg": "assets/images/keeper.png",
+      "foundrySystem": {
+        "uses": {
+          "max": "@abilities.cha.mod",
+          "per": "lr"
+        }
+      }
+    },
+    {
+      "name": "Fragment: Stolen Prowess",
+      "source": "EchoesRenaissance",
+      "className": "Warlock",
+      "classSource": "XPHB",
+      "subclassShortName": "EoRBoundMimic",
+      "subclassSource": "EchoesRenaissance",
+      "level": 3,
+      "header": 2,
+      "isClassFeatureVariant": true,
+      "entries": [
+        "You gain proficiency in two skills from: Athletics, Acrobatics, Stealth, or Intimidation. If already proficient in a chosen skill, you gain Expertise in it instead."
+      ],
+      "foundryImg": "assets/images/keeper.png"
+    },
+    {
+      "name": "Fragment: Voice of the Thousands",
+      "source": "EchoesRenaissance",
+      "className": "Warlock",
+      "classSource": "XPHB",
+      "subclassShortName": "EoRBoundMimic",
+      "subclassSource": "EchoesRenaissance",
+      "level": 3,
+      "header": 2,
+      "isClassFeatureVariant": true,
+      "entries": [
+        "You can perfectly mimic the voice and mannerisms of any Face in your mirror and have Advantage on Charisma (Deception) checks to impersonate them."
+      ],
+      "foundryImg": "assets/images/keeper.png"
+    },
+    {
+      "name": "Fragment: The Kraken's Breath",
+      "source": "EchoesRenaissance",
+      "className": "Warlock",
+      "classSource": "XPHB",
+      "subclassShortName": "EoRBoundMimic",
+      "subclassSource": "EchoesRenaissance",
+      "level": 3,
+      "header": 2,
+      "isClassFeatureVariant": true,
+      "entries": [
+        "You can cast {@spell arms of hadar} at 3rd level once per Long Rest without expending a spell slot. When you do, you can choose to deal cold damage instead of necrotic."
+      ],
+      "foundryImg": "assets/images/keeper.png",
+      "foundrySystem": {
+        "uses": {
+          "max": 1,
+          "per": "lr"
+        }
+      }
+    },
+    {
+      "name": "Fragment: Mimic's Edge",
+      "source": "EchoesRenaissance",
+      "className": "Warlock",
+      "classSource": "XPHB",
+      "subclassShortName": "EoRBoundMimic",
+      "subclassSource": "EchoesRenaissance",
+      "level": 3,
+      "header": 2,
+      "isClassFeatureVariant": true,
+      "entries": [
+        "Once per turn when you hit with your Pact Weapon, you can deal an extra {@damage 1d8} psychic damage. This increases to {@damage 2d8} at 14th level."
+      ],
+      "foundryImg": "assets/images/keeper.png"
+    },
+    {
+      "name": "Fragment: Shifting Vitals",
+      "source": "EchoesRenaissance",
+      "className": "Warlock",
+      "classSource": "XPHB",
+      "subclassShortName": "EoRBoundMimic",
+      "subclassSource": "EchoesRenaissance",
+      "level": 3,
+      "header": 2,
+      "isClassFeatureVariant": true,
+      "entries": [
+        "While you have Temporary Hit Points, you have Resistance to one damage type of your choice, chosen when you gain the Temporary Hit Points."
+      ],
+      "foundryImg": "assets/images/keeper.png"
+    },
+    {
+      "name": "Fragment: The Keeper's Reach",
+      "source": "EchoesRenaissance",
+      "className": "Warlock",
+      "classSource": "XPHB",
+      "subclassShortName": "EoRBoundMimic",
+      "subclassSource": "EchoesRenaissance",
+      "level": 3,
+      "header": 2,
+      "isClassFeatureVariant": true,
+      "entries": [
+        "Your Pact Weapon gains the Reach property, and your opportunity attacks have Advantage."
+      ],
+      "foundryImg": "assets/images/keeper.png"
+    },
+    {
+      "name": "Fragment: Glitch in the Loom",
+      "source": "EchoesRenaissance",
+      "className": "Warlock",
+      "classSource": "XPHB",
+      "subclassShortName": "EoRBoundMimic",
+      "subclassSource": "EchoesRenaissance",
+      "level": 3,
+      "header": 2,
+      "isClassFeatureVariant": true,
+      "entries": [
+        "You can cast {@spell invisibility} on yourself once per Long Rest without expending a spell slot. When you do, you leave behind an illusory duplicate in your space that lasts until the invisibility ends. The duplicate mimics confused searching behavior."
+      ],
+      "foundryImg": "assets/images/keeper.png",
+      "foundrySystem": {
+        "uses": {
+          "max": 1,
+          "per": "lr"
+        }
+      }
+    },
+    {
+      "name": "Fragment: Essence of the Duelist",
+      "source": "EchoesRenaissance",
+      "className": "Warlock",
+      "classSource": "XPHB",
+      "subclassShortName": "EoRBoundMimic",
+      "subclassSource": "EchoesRenaissance",
+      "level": 3,
+      "header": 2,
+      "isClassFeatureVariant": true,
+      "entries": [
+        "You gain a third Weapon Mastery slot. Additionally, once per turn when you use a Mastery property, you can add your Charisma modifier to the DC (if it forces a save) or the attack roll (if it requires an attack)."
+      ],
+      "foundryImg": "assets/images/keeper.png"
+    },
+    {
+      "name": "Mantle of Shifting Faces",
+      "source": "EchoesRenaissance",
+      "className": "Warlock",
+      "classSource": "XPHB",
+      "subclassShortName": "EoRBoundMimic",
+      "subclassSource": "EchoesRenaissance",
+      "level": 6,
+      "header": 2,
+      "entries": [
+        "You can manipulate the \"glamour\" of your own identity to escape harm. When a creature you can see hits you with an attack roll, you can use your Reaction to shed a layer of your identity. You take only half damage from the attack and teleport up to 30 feet to an unoccupied space you can see.",
+        "You can use this feature a number of times equal to your Charisma modifier (minimum of once), and you regain all expended uses when you finish a Long Rest."
+      ],
+      "foundryImg": "assets/images/keeper.png",
+      "foundrySystem": {
+        "uses": {
+          "max": "@abilities.cha.mod",
+          "per": "lr"
+        }
+      }
+    },
+    {
+      "name": "Reflection of the Lost",
+      "source": "EchoesRenaissance",
+      "className": "Warlock",
+      "classSource": "XPHB",
+      "subclassShortName": "EoRBoundMimic",
+      "subclassSource": "EchoesRenaissance",
+      "level": 10,
+      "header": 2,
+      "entries": [
+        "The Keeper allows you to siphon the life and skills of those you defeat. When an enemy you damaged dies within 1 round of your last attack attempt, you gain Temporary Hit Points equal to your Warlock level + your Charisma modifier.",
+        "Additionally, you can \"borrow\" a fragment of the creature's identity. Until you finish a Long Rest, you gain proficiency in one skill or tool that the creature possessed."
+      ],
+      "foundryImg": "assets/images/keeper.png"
+    },
+    {
+      "name": "Legion of One",
+      "source": "EchoesRenaissance",
+      "className": "Warlock",
+      "classSource": "XPHB",
+      "subclassShortName": "EoRBoundMimic",
+      "subclassSource": "EchoesRenaissance",
+      "level": 14,
+      "header": 2,
+      "entries": [
+        "You have mastered the art of becoming the faces you've stolen. As an action, you can invoke the power of your mirror in one of two ways:",
+        {
+          "type": "entries",
+          "name": "Chosen Face",
+          "entries": [
+            "You transform into a perfect physical copy of one specific humanoid whose face is trapped in your mirror. This transformation lasts for 1 hour or until you dismiss it (no action required).",
+            "While transformed:",
+            {
+              "type": "list",
+              "items": [
+                "Your appearance, voice, and mannerisms perfectly match the original.",
+                "You automatically succeed on any checks made to convince others you are that person.",
+                "You can recall surface memories the Keeper absorbed when the face was stolen (DM's discretion).",
+                "Magic that detects shapechangers or illusions does not reveal your true form."
+              ]
+            },
+            "Additionally, while transformed you can use a Bonus Action to summon a spectral echo of the same face in an unoccupied space within 30 feet. The echo appears as a ghostly, translucent version of the person you're impersonating. It obeys your mental commands (no action required) and uses the Echo Statistics detailed below."
+          ]
+        },
+        {
+          "type": "entries",
+          "name": "Legion Unleashed",
+          "entries": [
+            "Instead of choosing a specific face, you can release control and let all the faces you've stolen surge through you simultaneously. Your own face flickers rapidly between every identity in your mirror—warriors, nobles, beggars, merchants, all cycling uncontrollably. This transformation lasts for 1 minute or until you dismiss it (no action required).",
+            "While in this state:",
+            {
+              "type": "list",
+              "items": [
+                "Your face shifts every few seconds between different stolen identities.",
+                "Creatures who can see you have disadvantage on attack rolls against you as your features blur and shift.",
+                "You can use a Bonus Action to summon a spectral echo in an unoccupied space within 30 feet. The echo appears as a rapidly-shifting amalgamation of faces matching your current state.",
+                "You cannot effectively communicate or pass yourself off as anyone specific."
+              ]
+            }
+          ]
+        },
+        {
+          "type": "entries",
+          "name": "Echo Statistics",
+          "entries": [
+            "Regardless of which mode you choose, any echo you summon has the following properties:",
+            {
+              "type": "list",
+              "items": [
+                "It has hit points equal to 5 times your warlock level.",
+                "It shares your AC, saving throw bonuses, and movement speed.",
+                "On your turn, you can mentally command the echo (no action required) to move and take the Attack, Dash, Disengage, Dodge, or Help action.",
+                "When it makes an attack, it uses your spell attack bonus and deals {@damage 2d8} + your Charisma modifier force damage on a hit.",
+                "When you summon the echo, you can choose for it to manifest one distinctive feature from the creature whose face you're channeling (such as a weapon style, magical ability, or combat technique). Your DM determines the mechanical implementation of this feature.",
+                "It vanishes if reduced to 0 hit points, if you dismiss it (no action required), or when the transformation ends."
+              ]
+            }
+          ]
+        },
+        "The transformation ends early if you are reduced to 0 hit points. Once you use this feature, you can't use it again until you finish a Long Rest."
+      ],
+      "foundryImg": "assets/images/keeper.png",
+      "foundrySystem": {
+        "uses": {
+          "max": 1,
+          "per": "lr"
+        }
+      }
+    },
+    {
+      "name": "The Living Oubliette",
+      "source": "EchoesRenaissance",
+      "className": "Warlock",
+      "classSource": "XPHB",
+      "subclassShortName": "EoRLivingOubliette",
+      "subclassSource": "EchoesRenaissance",
+      "level": 3,
+      "header": 1,
+      "entries": [
+        "You have entered a pact with Tartuzi, a sphinx who serves as the physical seal on a forgotten Archfey's prison. As she dies, she is offloading the prison's architecture into your mind. You aren't just her servant — you are her replacement.",
+        {
+          "type": "refSubclassFeature",
+          "subclassFeature": "The Broken Ledger|Warlock|XPHB|EoRLivingOubliette|EchoesRenaissance|3"
+        },
+        {
+          "type": "refSubclassFeature",
+          "subclassFeature": "Expanded Spells|Warlock|XPHB|EoRLivingOubliette|EchoesRenaissance|3"
+        },
+        {
+          "type": "refSubclassFeature",
+          "subclassFeature": "Glimpse of the Thousand-Year Rot|Warlock|XPHB|EoRLivingOubliette|EchoesRenaissance|3"
+        }
+      ],
+      "foundryImg": "assets/images/krytonsubclass.png"
+    },
+    {
+      "name": "The Broken Ledger",
+      "source": "EchoesRenaissance",
+      "className": "Warlock",
+      "classSource": "XPHB",
+      "subclassShortName": "EoRLivingOubliette",
+      "subclassSource": "EchoesRenaissance",
+      "level": 3,
+      "header": 2,
+      "entries": [
+        "Your former life as a wizard is a fractured ruin, but the habits remain.",
+        {
+          "type": "entries",
+          "name": "Scholastic Scars",
+          "entries": [
+            "You gain proficiency in Arcana and History."
+          ]
+        },
+        {
+          "type": "entries",
+          "name": "The Intelligence Core",
+          "entries": [
+            "You use Intelligence instead of Charisma as your spellcasting ability for all Warlock spells and features, including your Spell Save DC and Spell Attack Modifier."
+          ]
+        },
+        {
+          "type": "entries",
+          "name": "Mnemonic Hemorrhage",
+          "entries": [
+            "When you cast a Warlock spell of 1st level or higher, you can over-channel the stolen memories stored within you. You gain a +2 bonus to either the Spell Save DC or the Spell Attack Roll for that casting. If you do, you immediately take Psychic damage equal to double the spell's level. This damage cannot be reduced or ignored by any means."
+          ]
+        }
+      ],
+      "foundryImg": "assets/images/krytonsubclass.png",
+      "skillProficiencies": [
+        {
+          "arcana": true,
+          "history": true
+        }
+      ]
+    },
+    {
+      "name": "Expanded Spells",
+      "source": "EchoesRenaissance",
+      "className": "Warlock",
+      "classSource": "XPHB",
+      "subclassShortName": "EoRLivingOubliette",
+      "subclassSource": "EchoesRenaissance",
+      "level": 3,
+      "header": 2,
+      "entries": [
+        "The following spells are always prepared for you and do not count against your number of spells known.",
+        {
+          "type": "table",
+          "caption": "Living Oubliette Spells",
+          "colLabels": [
+            "Warlock Level",
+            "Spells"
+          ],
+          "colStyles": [
+            "col-2 text-center",
+            "col-10"
+          ],
+          "rows": [
+            [
+              "1st",
+              "{@spell shield}, {@spell magic missile}"
+            ],
+            [
+              "3rd",
+              "{@spell misty step}, {@spell hold person}"
+            ],
+            [
+              "5th",
+              "{@spell counterspell}, {@spell fireball}"
+            ],
+            [
+              "7th",
+              "{@spell greater invisibility}, {@spell dimension door}"
+            ],
+            [
+              "9th",
+              "{@spell wall of force}, {@spell modify memory}"
+            ]
+          ]
+        }
+      ],
+      "foundryImg": "assets/images/krytonsubclass.png"
+    },
+    {
+      "name": "Glimpse of the Thousand-Year Rot",
+      "source": "EchoesRenaissance",
+      "className": "Warlock",
+      "classSource": "XPHB",
+      "subclassShortName": "EoRLivingOubliette",
+      "subclassSource": "EchoesRenaissance",
+      "level": 3,
+      "header": 2,
+      "entries": [
+        "As a Bonus Action, you force a creature within 30 feet of you to meet your gaze. Your eyes reflect the decaying eternity of Tartuzi's cell — a sight no living mind was meant to witness.",
+        "The target must succeed on a Wisdom saving throw against your Spell Save DC or become Frightened of you until the end of your next turn. While Frightened this way, the creature's AC is reduced by an amount equal to your Intelligence modifier (minimum 1).",
+        "You can use this feature a number of times equal to your Proficiency Bonus, regaining all uses on a Long Rest."
+      ],
+      "foundryImg": "assets/images/krytonsubclass.png",
+      "foundrySystem": {
+        "uses": {
+          "max": "@prof",
+          "per": "lr"
+        }
+      }
+    },
+    {
+      "name": "Siphon Certainty",
+      "source": "EchoesRenaissance",
+      "className": "Warlock",
+      "classSource": "XPHB",
+      "subclassShortName": "EoRLivingOubliette",
+      "subclassSource": "EchoesRenaissance",
+      "level": 6,
+      "header": 2,
+      "entries": [
+        "Tartuzi feeds on the objective truths of others to mend her weakening chains. When a creature you can see within 60 feet of you succeeds on a Saving Throw, you can use your Reaction to force them to reroll. They must use the new roll.",
+        {
+          "type": "entries",
+          "name": "On Success",
+          "entries": [
+            "If the creature fails the second roll, you regain Hit Points equal to the total Psychic damage you have taken from Mnemonic Hemorrhage since the end of your last Long Rest."
+          ]
+        },
+        {
+          "type": "entries",
+          "name": "On Failure",
+          "entries": [
+            "If the creature still succeeds, you are Blinded until the end of your next turn as the feedback of their certainty burns your retinas."
+          ]
+        },
+        "You can use this feature a number of times equal to your Proficiency Bonus, regaining all uses on a Long Rest."
+      ],
+      "foundryImg": "assets/images/krytonsubclass.png",
+      "foundrySystem": {
+        "uses": {
+          "max": "@prof",
+          "per": "lr"
+        }
+      }
+    },
+    {
+      "name": "The Internal Prisoner",
+      "source": "EchoesRenaissance",
+      "className": "Warlock",
+      "classSource": "XPHB",
+      "subclassShortName": "EoRLivingOubliette",
+      "subclassSource": "EchoesRenaissance",
+      "level": 10,
+      "header": 2,
+      "entries": [
+        "Your anatomy is now a complex series of metaphysical tumblers and pins. The prison is no longer something Tartuzi carries — it is something you are.",
+        "You gain resistance to Psychic and Poison damage.",
+        {
+          "type": "entries",
+          "name": "The Last Stand",
+          "entries": [
+            "Once per Long Rest, when you drop to 0 Hit Points but are not killed outright, you can choose to activate this feature. The effect lasts for a number of rounds equal to 3, increasing by 1 when you reach 12th level and again at 14th level (maximum 5 rounds). For the duration:",
+            {
+              "type": "list",
+              "items": [
+                "You remain at 1 Hit Point and are immune to all damage.",
+                "You are immune to gaining the Exhaustion condition.",
+                "You have Advantage on all attack rolls.",
+                "You deal an extra {@damage 2d8} force damage on all hits."
+              ]
+            },
+            {
+              "type": "entries",
+              "name": "The Price",
+              "entries": [
+                "When the effect ends, Tartuzi's presence snaps back into her prison, leaving your body ruined. You immediately gain 5 levels of Exhaustion and remain at 1 Hit Point."
+              ]
+            }
+          ]
+        }
+      ],
+      "foundryImg": "assets/images/krytonsubclass.png",
+      "resist": [
+        "psychic",
+        "poison"
+      ],
+      "foundrySystem": {
+        "uses": {
+          "max": 1,
+          "per": "lr"
+        }
+      }
+    },
+    {
+      "name": "The Final Riddle",
+      "source": "EchoesRenaissance",
+      "className": "Warlock",
+      "classSource": "XPHB",
+      "subclassShortName": "EoRLivingOubliette",
+      "subclassSource": "EchoesRenaissance",
+      "level": 14,
+      "header": 2,
+      "entries": [
+        "You can force a creature to solve the paradox that keeps Tartuzi bound — an equation with no answer, a lock with no key, a prison that exists by virtue of being impossible.",
+        "As an Action, choose one creature you can see within 60 feet of you. That creature must make an Intelligence saving throw against your Spell Save DC.",
+        {
+          "type": "entries",
+          "name": "On a Failure",
+          "entries": [
+            "The creature's Intelligence score becomes 1. They are effectively catatonic — unable to cast spells, understand language, or take any Action other than to follow you in a daze. This effect lasts for 1 hour.",
+            {
+              "type": "entries",
+              "name": "The Collapse",
+              "entries": [
+                "When the hour ends, or if the target is reduced to 0 Hit Points while under this effect, they take {@damage 10d10} Psychic damage. If this damage kills the target, you immediately regain one expended Warlock Spell Slot."
+              ]
+            }
+          ]
+        },
+        "Once you use this feature, you cannot do so again until you finish a Long Rest.",
+        {
+          "type": "inset",
+          "name": "The Demented Flavor",
+          "entries": [
+            "{@bold The Spellbook.} Your spellbook is hundreds of loose scraps of paper — napkins from the gambling hall, receipts, torn correspondence, and skin-grafts from your own arms — all covered in non-Euclidean geometry that shifts slightly when viewed from the corner of the eye.",
+            "{@bold The Mirror.} Every time you look in a mirror, Tartuzi is closer. By level 14, you don't see yourself at all. You see a lion-faced god with rotting wings, screaming for release."
+          ]
+        }
+      ],
+      "foundryImg": "assets/images/krytonsubclass.png",
+      "foundrySystem": {
+        "uses": {
+          "max": 1,
+          "per": "lr"
+        }
+      }
+    },
+    {
+      "name": "Art Domain",
+      "source": "EchoesRenaissance",
+      "className": "Cleric",
+      "classSource": "XPHB",
+      "subclassShortName": "EoRArtDomain",
+      "subclassSource": "EchoesRenaissance",
+      "level": 3,
+      "header": 1,
+      "foundryImg": "assets/images/artdomain.png",
+      "entries": [
+        "Art is more than an inspirational calling to you: it is the search for the divine itself. By expressing your ideas, your thoughts, your imagination with all the colors in your mind, you find a divine calling in your heart. Your belief finds its way through your art. Your talents show your dedication, your art pieces prove your faith, and through you, whichever power, ideal or deity you believe in finds its voice and presence in the world.",
+        {
+          "type": "refSubclassFeature",
+          "subclassFeature": "Beauty of the Art|Cleric|XPHB|EoRArtDomain|EchoesRenaissance|3"
+        },
+        {
+          "type": "refSubclassFeature",
+          "subclassFeature": "Actions of the Wise|Cleric|XPHB|EoRArtDomain|EchoesRenaissance|3"
+        }
+      ]
+    },
+    {
+      "name": "Beauty of the Art",
+      "source": "EchoesRenaissance",
+      "className": "Cleric",
+      "classSource": "XPHB",
+      "subclassShortName": "EoRArtDomain",
+      "subclassSource": "EchoesRenaissance",
+      "level": 3,
+      "header": 2,
+      "foundryImg": "assets/images/artdomain.png",
+      "toolProficiencies": [
+        {
+          "painter's supplies": true
+        }
+      ],
+      "foundrySystem": {
+        "uses": {
+          "max": "@abilities.wis.mod",
+          "per": "lr"
+        }
+      },
+      "entries": [
+        "You gain proficiency with Painter's Supplies. You learn the {@spell minor illusion} cantrip. It counts as a cleric cantrip for you and doesn't count against the number of cantrips you know.",
+        {
+          "type": "entries",
+          "name": "Painted Veil",
+          "entries": [
+            "As a Bonus Action, you touch a willing creature within 5 feet of you and paint a divine pigment onto them, choosing one of the colors below. The veil lasts for 1 minute, until the creature drops to 0 hit points, or until you dismiss it (no action required). You can have a number of veils active simultaneously equal to your Wisdom modifier.",
+            "You can use this feature a number of times equal to your Wisdom modifier (minimum of once), and you regain all expended uses when you finish a Long Rest.",
+            {
+              "type": "list",
+              "style": "list-hang-notitle",
+              "items": [
+                "{@bold Crimson.} Once per turn when the veiled creature hits with an attack, it deals extra radiant damage equal to your Wisdom modifier.",
+                "{@bold Azure.} The veiled creature gains temporary hit points equal to your Wisdom modifier + your cleric level when the veil is applied, and has Advantage on Constitution saving throws for the duration.",
+                "{@bold Argent.} The veiled creature's speed increases by 10 feet and it ignores difficult terrain for the duration."
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Actions of the Wise",
+      "source": "EchoesRenaissance",
+      "className": "Cleric",
+      "classSource": "XPHB",
+      "subclassShortName": "EoRArtDomain",
+      "subclassSource": "EchoesRenaissance",
+      "level": 3,
+      "header": 2,
+      "foundryImg": "assets/images/artdomain.png",
+      "entries": [
+        "You gain proficiency in a Charisma skill of your choice. You can use Wisdom instead of Charisma for that skill, representing your mental fortitude and confidence in your divine cause."
+      ]
+    },
+    {
+      "name": "Channel Divinity: Masterwork",
+      "source": "EchoesRenaissance",
+      "className": "Cleric",
+      "classSource": "XPHB",
+      "subclassShortName": "EoRArtDomain",
+      "subclassSource": "EchoesRenaissance",
+      "level": 3,
+      "header": 2,
+      "foundryImg": "assets/images/artdomain.png",
+      "entries": [
+        "As an action, you paint a divine scene onto reality itself. A 15-foot radius zone appears centered on a point you can see within 60 feet, lasting for 1 minute. The zone is immobile. Choose one of the following effects when you create it:",
+        {
+          "type": "list",
+          "style": "list-hang-notitle",
+          "items": [
+            "{@bold Sanctuary.} Allies within the zone have half cover and Advantage on saving throws against spells and other magical effects.",
+            "{@bold Dread.} Each enemy that enters the zone for the first time on a turn or starts its turn there must succeed on a Wisdom saving throw against your spell save DC or be frightened of you until the end of its next turn."
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Allure of the Art",
+      "source": "EchoesRenaissance",
+      "className": "Cleric",
+      "classSource": "XPHB",
+      "subclassShortName": "EoRArtDomain",
+      "subclassSource": "EchoesRenaissance",
+      "level": 6,
+      "header": 2,
+      "foundryImg": "assets/images/artdomain.png",
+      "foundrySystem": {
+        "uses": {
+          "max": "@abilities.wis.mod",
+          "per": "lr"
+        }
+      },
+      "entries": [
+        "Your mastery of divine pigment has grown beyond arm's reach.",
+        {
+          "type": "list",
+          "items": [
+            "The range of your Painted Veil extends to 60 feet.",
+            "You can stack two different colors on the same creature. Applying a second color to a creature that already has a veil costs a separate use of Painted Veil."
+          ]
+        },
+        {
+          "type": "entries",
+          "name": "Paint the Path",
+          "entries": [
+            "When you cast a cleric spell of 1st level or higher, you can originate the spell from any creature currently under one of your Painted Veils instead of from yourself. You can use this feature a number of times equal to your Wisdom modifier (minimum of once), and you regain all expended uses when you finish a Long Rest."
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Blessed by the Art",
+      "source": "EchoesRenaissance",
+      "className": "Cleric",
+      "classSource": "XPHB",
+      "subclassShortName": "EoRArtDomain",
+      "subclassSource": "EchoesRenaissance",
+      "level": 8,
+      "header": 2,
+      "foundryImg": "assets/images/artdomain.png",
+      "entries": [
+        "Your artistic expression affects your battle prowess. When a creature takes damage from one of your cantrips or weapon attacks, you can also deal 1d8 radiant damage to that creature. Once you deal this damage, you can't use this feature again until the start of your next turn."
+      ]
+    },
+    {
+      "name": "Arte Magnifica",
+      "source": "EchoesRenaissance",
+      "className": "Cleric",
+      "classSource": "XPHB",
+      "subclassShortName": "EoRArtDomain",
+      "subclassSource": "EchoesRenaissance",
+      "level": 17,
+      "header": 2,
+      "foundryImg": "assets/images/artdomain.png",
+      "foundrySystem": {
+        "uses": {
+          "max": 1,
+          "per": "lr"
+        }
+      },
+      "entries": [
+        "You unleash your magnum opus. As an action, you can activate this feature for 1 minute. For the duration:",
+        {
+          "type": "list",
+          "items": [
+            "All willing allies within 30 feet of you are automatically affected by all three Painted Veil colors simultaneously. These veils do not count against your Painted Veil limit and move with you.",
+            "You can apply Painted Veils as part of casting a cleric spell, without using a separate Bonus Action.",
+            "Your cleric spells that restore hit points restore the maximum possible amount."
+          ]
+        },
+        "Once you use this feature, you can't use it again until you finish a Long Rest."
+      ]
+    },
+    {
+      "name": "College of the Masquerade",
+      "source": "EchoesRenaissance",
+      "className": "Bard",
+      "classSource": "XPHB",
+      "subclassShortName": "EoRMasquerade",
+      "subclassSource": "EchoesRenaissance",
+      "level": 3,
+      "header": 1,
+      "foundryImg": "assets/images/masquradeicon3.png",
+      "entries": [
+        "\"You have never been yourself,\" a voice in your head speaks. \"You always wore a mask, always hidden in the crowd, in plain sight.\" The voice speaks the truth: a mask has always been your identity, your strong side and your greatest weakness.",
+        "Perhaps you were raised on the stage, among the festivals, always moving in line with a great group of actors and singers, or you were raised in politics as a diplomat, and it took it out of you. You always had to hide your face. No matter how charming it was, you needed a mask to hide who you are or some of your features. Nevertheless, the mask is who you are and an actual part of you.",
+        {
+          "type": "refSubclassFeature",
+          "subclassFeature": "The Masquerade|Bard|XPHB|EoRMasquerade|EchoesRenaissance|3"
+        },
+        {
+          "type": "refSubclassFeature",
+          "subclassFeature": "Maschera Diabolica|Bard|XPHB|EoRMasquerade|EchoesRenaissance|3"
+        },
+        {
+          "type": "refSubclassFeature",
+          "subclassFeature": "Maschera Fiabesco|Bard|XPHB|EoRMasquerade|EchoesRenaissance|3"
+        },
+        {
+          "type": "refSubclassFeature",
+          "subclassFeature": "Maschera Angelico|Bard|XPHB|EoRMasquerade|EchoesRenaissance|3"
+        },
+        {
+          "type": "refSubclassFeature",
+          "subclassFeature": "Maschera Umano|Bard|XPHB|EoRMasquerade|EchoesRenaissance|3"
+        }
+      ]
+    },
+    {
+      "name": "The Masquerade",
+      "source": "EchoesRenaissance",
+      "className": "Bard",
+      "classSource": "XPHB",
+      "subclassShortName": "EoRMasquerade",
+      "subclassSource": "EchoesRenaissance",
+      "level": 3,
+      "header": 2,
+      "foundryImg": "assets/images/masquradeicon3.png",
+      "foundrySystem": {
+        "uses": {
+          "max": "@prof",
+          "per": "lr"
+        }
+      },
+      "entries": [
+        "When you reach 3rd level, the nature of your inspirational magic fuses with your masks. Choose two of the following: {@subclassFeature Maschera Diabolica|Bard|XPHB|EoRMasquerade|EchoesRenaissance|3}, {@subclassFeature Maschera Angelico|Bard|XPHB|EoRMasquerade|EchoesRenaissance|3}, {@subclassFeature Maschera Fiabesco|Bard|XPHB|EoRMasquerade|EchoesRenaissance|3}, or {@subclassFeature Maschera Umano|Bard|XPHB|EoRMasquerade|EchoesRenaissance|3}.",
+        {
+          "type": "entries",
+          "name": "Donning a Mask",
+          "entries": [
+            "As a Bonus Action, you can don one of your masks. While wearing a mask, you gain its passive benefit and access to its active abilities. The mask lasts for 10 minutes, until you are incapacitated, or until you remove it (no action required). You can only wear one mask at a time; donning a new mask ends the previous one.",
+            "You can don a mask a number of times equal to your proficiency bonus, and you regain all expended uses when you finish a Long Rest. If you have no uses remaining, you can expend a Bardic Inspiration die to don a mask instead.",
+            "Each mask also grants a permanent passive benefit that applies even when the mask is not worn, as listed in the mask's description."
+          ]
+        },
+        {
+          "type": "entries",
+          "name": "Masked Resilience",
+          "entries": [
+            "While wearing a mask, you gain temporary hit points equal to your Charisma modifier + your bard level. These temporary hit points vanish when the mask is removed."
+          ]
+        },
+        {
+          "type": "entries",
+          "name": "Assume Form",
+          "entries": [
+            "While wearing a mask, you can use an action to transform into a creature of the mask's type (fiend for Diabolica, fey for Fiabesco, celestial for Angelico, or humanoid for Umano) that you have seen before. The creature's Challenge Rating can be no higher than 1 (this increases to 3 at 6th level).",
+            "Your transformation uses the creature's stat block with the following rules:",
+            {
+              "type": "list",
+              "items": [
+                "Only your Intelligence score, memories, and alignment stay the same. All other statistics change to the creature's.",
+                "If an ability in the creature's stat block refers to a DC, it uses your spell save DC instead.",
+                "You retain your Bardic Inspiration feature but can't cast spells unless the creature's form can. You can't concentrate on spells you cast before transforming.",
+                "You assume the creature's hit points and Hit Dice. When you revert, you return to the hit points you had before transforming. If the form drops to 0 hit points, excess damage carries over to your normal form.",
+                "You choose whether your equipment falls to the ground, merges into the new form, or is worn by it. Equipment that merges has no effect until you revert."
+              ]
+            },
+            "The transformation lasts for the remaining duration of the mask. When the form ends — whether by dropping to 0 hit points, the duration expiring, or you choosing to revert (no action required) — the mask's effect also ends and counts as a used mask for the day.",
+            {
+              "type": "inset",
+              "name": "Suggested Stat Blocks",
+              "entries": [
+                "Fiend: {@creature Imp|MM}, {@creature L'anima Vuota|EchoesRenaissance}, {@creature Red Hand of Mammon|EchoesRenaissance}, {@creature Il Rosso|EchoesRenaissance}, {@creature Il Caduto|EchoesRenaissance}",
+                "Fey: {@creature Vivo|EchoesRenaissance}, {@creature Arcobaleno|EchoesRenaissance}, {@creature Sprite|MM}, {@creature Pixie|MM}",
+                "Celestial: {@creature Fated One|EchoesRenaissance}, {@creature Hidden One|EchoesRenaissance}, {@creature Radiant One|EchoesRenaissance}",
+                "Humanoid: {@creature Thug|MM}, {@creature Commoner|MM}, {@creature Noble|MM}, {@creature Merman|MM}"
+              ]
+            }
+          ]
+        },
+        {
+          "type": "entries",
+          "name": "Crafting a Mask",
+          "entries": [
+            "If any of your masks are destroyed, you can spend 1 hour (which can overlap with a short rest) and use specific dye and wood in the process to create a new one.",
+            "{@bold Lending the Mask:} You can lend your mask to another willing humanoid. The humanoid must not have a negative Charisma modifier, and you must also expend a Bardic Inspiration die for that humanoid to be able to use the mask."
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Maschera Diabolica",
+      "source": "EchoesRenaissance",
+      "className": "Bard",
+      "classSource": "XPHB",
+      "subclassShortName": "EoRMasquerade",
+      "subclassSource": "EchoesRenaissance",
+      "level": 3,
+      "header": 2,
+      "foundryImg": "assets/images/masquradeicon3.png",
+      "resist": [
+        "fire"
+      ],
+      "entries": [
+        "A mask resembling the depths of hell and their vicious guardians.",
+        {
+          "type": "entries",
+          "name": "Permanent Passive",
+          "entries": [
+            "You have resistance to fire damage."
+          ]
+        },
+        {
+          "type": "entries",
+          "name": "While Worn — Infernal Presence",
+          "entries": [
+            "As an action, you can force each creature of your choice within 15 feet to make a Wisdom saving throw against your spell save DC. On a failure, a creature is frightened of you until the end of your next turn."
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Maschera Fiabesco",
+      "source": "EchoesRenaissance",
+      "className": "Bard",
+      "classSource": "XPHB",
+      "subclassShortName": "EoRMasquerade",
+      "subclassSource": "EchoesRenaissance",
+      "level": 3,
+      "header": 2,
+      "foundryImg": "assets/images/masquradeicon3.png",
+      "conditionImmune": [
+        "charmed"
+      ],
+      "foundrySystem": {
+        "uses": {
+          "max": "@abilities.cha.mod",
+          "per": "lr"
+        }
+      },
+      "entries": [
+        "A mask that makes those beholding you feel as though they stand in an enchanted forest, speaking to the Fairy Queen herself.",
+        {
+          "type": "entries",
+          "name": "Permanent Passive",
+          "entries": [
+            "You are immune to the charmed condition."
+          ]
+        },
+        {
+          "type": "entries",
+          "name": "While Worn — Fey Step",
+          "entries": [
+            "You can cast {@spell misty step} as a Bonus Action without expending a spell slot. You can use this feature a number of times equal to your Charisma modifier (minimum of once), and you regain all expended uses when you finish a Long Rest."
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Maschera Angelico",
+      "source": "EchoesRenaissance",
+      "className": "Bard",
+      "classSource": "XPHB",
+      "subclassShortName": "EoRMasquerade",
+      "subclassSource": "EchoesRenaissance",
+      "level": 3,
+      "header": 2,
+      "foundryImg": "assets/images/masquradeicon3.png",
+      "isClassFeatureVariant": true,
+      "entries": [
+        "A mask resembling the fields of Elysium, green gardens above and silk-like wings of the angels depicted in the most beautiful canvases.",
+        {
+          "type": "entries",
+          "name": "Permanent Passive",
+          "entries": [
+            "You learn the {@spell sacred flame} cantrip. It counts as a bard cantrip for you and doesn't count against the number of cantrips you know."
+          ]
+        },
+        {
+          "type": "entries",
+          "name": "While Worn — Radiant Judgment",
+          "entries": [
+            "Once per turn when you deal damage with a spell or weapon attack, you deal an additional {@damage 1d6} radiant damage."
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Maschera Umano",
+      "source": "EchoesRenaissance",
+      "className": "Bard",
+      "classSource": "XPHB",
+      "subclassShortName": "EoRMasquerade",
+      "subclassSource": "EchoesRenaissance",
+      "level": 3,
+      "header": 2,
+      "foundryImg": "assets/images/masquradeicon3.png",
+      "isClassFeatureVariant": true,
+      "entries": [
+        "A mask that resembles the creature with the most potential: a humanoid.",
+        {
+          "type": "entries",
+          "name": "Permanent Passive",
+          "entries": [
+            "When you don this mask for the first time each day, you choose a skill or tool and gain proficiency in it until you finish a Long Rest."
+          ]
+        },
+        {
+          "type": "entries",
+          "name": "While Worn — Adaptive Talent",
+          "entries": [
+            "You have Expertise in any skill you are proficient in. If you already have Expertise in a skill from another source, this feature doesn't apply to that skill."
+          ]
+        }
+      ]
+    },
+    {
+      "name": "The Hidden Power",
+      "source": "EchoesRenaissance",
+      "className": "Bard",
+      "classSource": "XPHB",
+      "subclassShortName": "EoRMasquerade",
+      "subclassSource": "EchoesRenaissance",
+      "level": 6,
+      "header": 2,
+      "foundryImg": "assets/images/masquradeicon3.png",
+      "entries": [
+        "Your bond with your masks deepens, and their power grows.",
+        "Your Assume Form maximum CR increases to 3.",
+        {
+          "type": "entries",
+          "name": "Inspired Masks",
+          "entries": [
+            "While wearing a mask, when you grant a creature a Bardic Inspiration die, that creature also gains temporary hit points equal to the number rolled."
+          ]
+        },
+        {
+          "type": "entries",
+          "name": "Mask Upgrades",
+          "entries": [
+            "Each mask you chose at 3rd level gains additional power:",
+            {
+              "type": "list",
+              "style": "list-hang-notitle",
+              "items": [
+                "{@bold Diabolica:} You can see through magical darkness out to 120 feet as if it were bright light. Your Infernal Presence range increases to 30 feet.",
+                "{@bold Fiabesco:} When you use Fey Step, you can bring one willing creature within 5 feet of you along with you. Additionally, when a creature you can see targets you with an attack, you can use your Reaction to impose Disadvantage on the attack roll as fey glamour distorts your position.",
+                "{@bold Angelico:} Your Radiant Judgment damage increases to {@damage 1d8}. Additionally, once per Long Rest, when an ally within 30 feet of you drops to 0 hit points while you are wearing this mask, you can use your Reaction to restore them to hit points equal to your bard level instead.",
+                "{@bold Umano:} You gain Expertise in two skills you are proficient in (if you don't already have Expertise in them from another source). Additionally, while wearing the mask, you can add half your proficiency bonus to any ability check you make that doesn't already include your proficiency bonus."
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Masked Potential Unleashed",
+      "source": "EchoesRenaissance",
+      "className": "Bard",
+      "classSource": "XPHB",
+      "subclassShortName": "EoRMasquerade",
+      "subclassSource": "EchoesRenaissance",
+      "level": 14,
+      "header": 2,
+      "foundryImg": "assets/images/masquradeicon3.png",
+      "foundrySystem": {
+        "uses": {
+          "max": 1,
+          "per": "lr"
+        }
+      },
+      "entries": [
+        "Your masks have become extensions of your soul. Your mask duration extends to 1 hour.",
+        {
+          "type": "entries",
+          "name": "The Two-Faced",
+          "entries": [
+            "Once per Long Rest, as an action, you can don both of your masks simultaneously. For 1 minute, you gain the passive and active benefits of both masks at once. While in this state, your Masked Resilience temporary hit points are doubled."
+          ]
+        },
+        {
+          "type": "entries",
+          "name": "Mask Upgrades",
+          "entries": [
+            "Each mask you chose at 3rd level reaches its full power:",
+            {
+              "type": "list",
+              "style": "list-hang-notitle",
+              "items": [
+                "{@bold Diabolica:} You are immune to fire and cold damage. When a creature fails its save against your Infernal Presence, it takes {@damage 2d6} psychic damage.",
+                "{@bold Fiabesco:} Instead of casting {@spell misty step} with Fey Step, you can expend one use to choose a creature within 60 feet and swap places with it. An unwilling creature must succeed on a Charisma saving throw against your spell save DC to resist. A willing creature can choose to fail.",
+                "{@bold Angelico:} You can sense lies automatically when spoken within 30 feet of you. Your Radiant Judgment damage increases to {@damage 1d10}.",
+                "{@bold Umano:} While wearing the mask, you are proficient with a saving throw of your choice. You can choose a new one when you finish a Long Rest."
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "background": [
+    {
+      "name": "Valentro Trigeslan",
+      "source": "EchoesRenaissance",
+      "page": 1,
+      "edition": "one",
+      "ability": [
+        {
+          "choose": {
+            "weighted": {
+              "from": [
+                "wis",
+                "dex",
+                "con"
+              ],
+              "weights": [
+                2,
+                1
+              ]
+            }
+          }
+        },
+        {
+          "choose": {
+            "weighted": {
+              "from": [
+                "wis",
+                "dex",
+                "con"
+              ],
+              "weights": [
+                1,
+                1,
+                1
+              ]
+            }
+          }
+        }
+      ],
+      "feats": [
+        {
+          "skilled|xphb": true
+        }
+      ],
+      "skillProficiencies": [
+        {
+          "acrobatics": true,
+          "insight": true
+        }
+      ],
+      "toolProficiencies": [
+        {
+          "herbalism kit": true
+        }
+      ],
+      "startingEquipment": [
+        {
+          "A": [
+            {
+              "item": "studded leather armor|xphb"
+            },
+            {
+              "item": "dagger|xphb"
+            },
+            {
+              "item": "herbalism kit|xphb"
+            },
+            {
+              "value": 1500
+            }
+          ],
+          "B": [
+            {
+              "value": 5000
+            }
+          ]
+        }
+      ],
+      "entries": [
+        {
+          "type": "list",
+          "style": "list-hang-notitle",
+          "items": [
+            {
+              "type": "item",
+              "name": "Ability Scores:",
+              "entry": "Wisdom, Dexterity, Constitution"
+            },
+            {
+              "type": "item",
+              "name": "Feat:",
+              "entry": "{@feat Skilled|XPHB}"
+            },
+            {
+              "type": "item",
+              "name": "Skill Proficiencies:",
+              "entry": "{@skill Acrobatics|XPHB}, {@skill Insight|XPHB}"
+            },
+            {
+              "type": "item",
+              "name": "Tool Proficiency:",
+              "entry": "{@item Herbalism Kit|XPHB}"
+            },
+            {
+              "type": "item",
+              "name": "Equipment:",
+              "entry": "Choose A or B: (A) {@item Studded Leather Armor|XPHB}, {@item Dagger|XPHB}, {@item Herbalism Kit|XPHB}, 15 GP; or (B) 50 GP"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Caravel",
+      "source": "EchoesRenaissance",
+      "page": 1,
+      "edition": "one",
+      "ability": [
+        {
+          "choose": {
+            "weighted": {
+              "from": [
+                "cha",
+                "dex",
+                "int"
+              ],
+              "weights": [
+                2,
+                1
+              ]
+            }
+          }
+        },
+        {
+          "choose": {
+            "weighted": {
+              "from": [
+                "cha",
+                "dex",
+                "int"
+              ],
+              "weights": [
+                1,
+                1,
+                1
+              ]
+            }
+          }
+        }
+      ],
+      "feats": [
+        {
+          "skilled|xphb": true
+        }
+      ],
+      "skillProficiencies": [
+        {
+          "performance": true,
+          "investigation": true
+        }
+      ],
+      "toolProficiencies": [
+        {
+          "tinker's tools": true
+        }
+      ],
+      "startingEquipment": [
+        {
+          "A": [
+            {
+              "item": "padded armor|xphb"
+            },
+            {
+              "item": "light crossbow|xphb"
+            },
+            {
+              "item": "tinker's tools|xphb"
+            },
+            {
+              "value": 1500
+            }
+          ],
+          "B": [
+            {
+              "value": 5000
+            }
+          ]
+        }
+      ],
+      "entries": [
+        {
+          "type": "list",
+          "style": "list-hang-notitle",
+          "items": [
+            {
+              "type": "item",
+              "name": "Ability Scores:",
+              "entry": "Charisma, Dexterity, Intelligence"
+            },
+            {
+              "type": "item",
+              "name": "Feat:",
+              "entry": "{@feat Skilled|XPHB}"
+            },
+            {
+              "type": "item",
+              "name": "Skill Proficiencies:",
+              "entry": "{@skill Performance|XPHB}, {@skill Investigation|XPHB}"
+            },
+            {
+              "type": "item",
+              "name": "Tool Proficiency:",
+              "entry": "{@item Tinker's Tools|XPHB}"
+            },
+            {
+              "type": "item",
+              "name": "Equipment:",
+              "entry": "Choose A or B: (A) {@item Padded Armor|XPHB}, {@item Light Crossbow|XPHB}, {@item Tinker's Tools|XPHB}, 15 GP; or (B) 50 GP"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Roxanya",
+      "source": "EchoesRenaissance",
+      "page": 1,
+      "edition": "one",
+      "ability": [
+        {
+          "choose": {
+            "weighted": {
+              "from": [
+                "int",
+                "dex",
+                "wis"
+              ],
+              "weights": [
+                2,
+                1
+              ]
+            }
+          }
+        },
+        {
+          "choose": {
+            "weighted": {
+              "from": [
+                "int",
+                "dex",
+                "wis"
+              ],
+              "weights": [
+                1,
+                1,
+                1
+              ]
+            }
+          }
+        }
+      ],
+      "feats": [
+        {
+          "magic initiate; druid|xphb": true
+        }
+      ],
+      "skillProficiencies": [
+        {
+          "stealth": true,
+          "sleight of hand": true
+        }
+      ],
+      "toolProficiencies": [
+        {
+          "tinker's tools": true
+        }
+      ],
+      "startingEquipment": [
+        {
+          "A": [
+            {
+              "item": "studded leather armor|xphb"
+            },
+            {
+              "item": "light crossbow|xphb"
+            },
+            {
+              "item": "tinker's tools|xphb"
+            },
+            {
+              "value": 1500
+            }
+          ],
+          "B": [
+            {
+              "value": 5000
+            }
+          ]
+        }
+      ],
+      "entries": [
+        {
+          "type": "list",
+          "style": "list-hang-notitle",
+          "items": [
+            {
+              "type": "item",
+              "name": "Ability Scores:",
+              "entry": "Intelligence, Dexterity, Wisdom"
+            },
+            {
+              "type": "item",
+              "name": "Feat:",
+              "entry": "{@feat Magic Initiate|XPHB} (Druid)"
+            },
+            {
+              "type": "item",
+              "name": "Skill Proficiencies:",
+              "entry": "{@skill Stealth|XPHB}, {@skill Sleight of Hand|XPHB}"
+            },
+            {
+              "type": "item",
+              "name": "Tool Proficiency:",
+              "entry": "{@item Tinker's Tools|XPHB}"
+            },
+            {
+              "type": "item",
+              "name": "Equipment:",
+              "entry": "Choose A or B: (A) {@item Studded Leather Armor|XPHB}, {@item Light Crossbow|XPHB}, {@item Tinker's Tools|XPHB}, 15 GP; or (B) 50 GP"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Noname",
+      "source": "EchoesRenaissance",
+      "page": 1,
+      "edition": "one",
+      "ability": [
+        {
+          "choose": {
+            "weighted": {
+              "from": [
+                "str",
+                "con",
+                "dex"
+              ],
+              "weights": [
+                2,
+                1
+              ]
+            }
+          }
+        },
+        {
+          "choose": {
+            "weighted": {
+              "from": [
+                "str",
+                "con",
+                "dex"
+              ],
+              "weights": [
+                1,
+                1,
+                1
+              ]
+            }
+          }
+        }
+      ],
+      "feats": [
+        {
+          "savage attacker|xphb": true
+        }
+      ],
+      "skillProficiencies": [
+        {
+          "athletics": true,
+          "perception": true
+        }
+      ],
+      "toolProficiencies": [
+        {
+          "smith's tools": true
+        }
+      ],
+      "startingEquipment": [
+        {
+          "A": [
+            {
+              "item": "chain shirt|xphb"
+            },
+            {
+              "item": "battleaxe|xphb"
+            },
+            {
+              "item": "smith's tools|xphb"
+            },
+            {
+              "value": 1500
+            }
+          ],
+          "B": [
+            {
+              "value": 5000
+            }
+          ]
+        }
+      ],
+      "entries": [
+        {
+          "type": "list",
+          "style": "list-hang-notitle",
+          "items": [
+            {
+              "type": "item",
+              "name": "Ability Scores:",
+              "entry": "Strength, Constitution, Dexterity"
+            },
+            {
+              "type": "item",
+              "name": "Feat:",
+              "entry": "{@feat Savage Attacker|XPHB}"
+            },
+            {
+              "type": "item",
+              "name": "Skill Proficiencies:",
+              "entry": "{@skill Athletics|XPHB}, {@skill Perception|XPHB}"
+            },
+            {
+              "type": "item",
+              "name": "Tool Proficiency:",
+              "entry": "{@item Smith's Tools|XPHB}"
+            },
+            {
+              "type": "item",
+              "name": "Equipment:",
+              "entry": "Choose A or B: (A) {@item Chain Shirt|XPHB}, {@item Battleaxe|XPHB}, {@item Smith's Tools|XPHB}, 15 GP; or (B) 50 GP"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Orabella",
+      "source": "EchoesRenaissance",
+      "page": 1,
+      "edition": "one",
+      "ability": [
+        {
+          "choose": {
+            "weighted": {
+              "from": [
+                "wis",
+                "con",
+                "int"
+              ],
+              "weights": [
+                2,
+                1
+              ]
+            }
+          }
+        },
+        {
+          "choose": {
+            "weighted": {
+              "from": [
+                "wis",
+                "con",
+                "int"
+              ],
+              "weights": [
+                1,
+                1,
+                1
+              ]
+            }
+          }
+        }
+      ],
+      "feats": [
+        {
+          "tough|xphb": true
+        }
+      ],
+      "skillProficiencies": [
+        {
+          "medicine": true,
+          "perception": true
+        }
+      ],
+      "toolProficiencies": [
+        {
+          "painter's supplies": true
+        }
+      ],
+      "startingEquipment": [
+        {
+          "A": [
+            {
+              "item": "chain shirt|xphb"
+            },
+            {
+              "item": "quarterstaff|xphb"
+            },
+            {
+              "item": "painter's supplies|xphb"
+            },
+            {
+              "value": 1500
+            }
+          ],
+          "B": [
+            {
+              "value": 5000
+            }
+          ]
+        }
+      ],
+      "entries": [
+        {
+          "type": "list",
+          "style": "list-hang-notitle",
+          "items": [
+            {
+              "type": "item",
+              "name": "Ability Scores:",
+              "entry": "Wisdom, Constitution, Intelligence"
+            },
+            {
+              "type": "item",
+              "name": "Feat:",
+              "entry": "{@feat Tough|XPHB}"
+            },
+            {
+              "type": "item",
+              "name": "Skill Proficiencies:",
+              "entry": "{@skill Medicine|XPHB}, {@skill Perception|XPHB}"
+            },
+            {
+              "type": "item",
+              "name": "Tool Proficiency:",
+              "entry": "{@item Painter's Supplies|XPHB}"
+            },
+            {
+              "type": "item",
+              "name": "Equipment:",
+              "entry": "Choose A or B: (A) {@item Chain Shirt|XPHB}, {@item Quarterstaff|XPHB}, {@item Painter's Supplies|XPHB}, 15 GP; or (B) 50 GP"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Kryton Novelli",
+      "source": "EchoesRenaissance",
+      "page": 1,
+      "edition": "one",
+      "ability": [
+        {
+          "choose": {
+            "weighted": {
+              "from": [
+                "cha",
+                "con",
+                "int"
+              ],
+              "weights": [
+                2,
+                1
+              ]
+            }
+          }
+        },
+        {
+          "choose": {
+            "weighted": {
+              "from": [
+                "cha",
+                "con",
+                "int"
+              ],
+              "weights": [
+                1,
+                1,
+                1
+              ]
+            }
+          }
+        }
+      ],
+      "feats": [
+        {
+          "magic initiate; wizard|xphb": true
+        }
+      ],
+      "skillProficiencies": [
+        {
+          "deception": true,
+          "investigation": true
+        }
+      ],
+      "toolProficiencies": [
+        {
+          "dice set": true
+        }
+      ],
+      "startingEquipment": [
+        {
+          "A": [
+            {
+              "item": "dagger|xphb"
+            },
+            {
+              "item": "dice set|xphb"
+            },
+            {
+              "value": 1500
+            }
+          ],
+          "B": [
+            {
+              "value": 5000
+            }
+          ]
+        }
+      ],
+      "entries": [
+        {
+          "type": "list",
+          "style": "list-hang-notitle",
+          "items": [
+            {
+              "type": "item",
+              "name": "Ability Scores:",
+              "entry": "Charisma, Constitution, Intelligence"
+            },
+            {
+              "type": "item",
+              "name": "Feat:",
+              "entry": "{@feat Magic Initiate|XPHB} (Wizard)"
+            },
+            {
+              "type": "item",
+              "name": "Skill Proficiencies:",
+              "entry": "{@skill Deception|XPHB}, {@skill Investigation|XPHB}"
+            },
+            {
+              "type": "item",
+              "name": "Tool Proficiency:",
+              "entry": "{@item Dice Set|XPHB}"
+            },
+            {
+              "type": "item",
+              "name": "Equipment:",
+              "entry": "Choose A or B: (A) {@item Dagger|XPHB}, {@item Dice Set|XPHB}, 15 GP; or (B) 50 GP"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "spell": [
+    {
+      "name": "Illusory Taunt",
+      "source": "EchoesRenaissance",
+      "level": 1,
+      "school": "I",
+      "time": [
+        {
+          "number": 1,
+          "unit": "bonus"
+        }
+      ],
+      "range": {
+        "type": "point",
+        "distance": {
+          "type": "feet",
+          "amount": 60
+        }
+      },
+      "components": {
+        "v": true,
+        "s": true,
+        "m": "a red fabric"
+      },
+      "duration": [
+        {
+          "type": "concentration",
+          "duration": {
+            "type": "minute",
+            "amount": 1
+          }
+        }
+      ],
+      "entries": [
+        "You conjure a mocking illusion of yourself in an unoccupied space within range. Choose one creature that can see it — it must succeed on a Wisdom saving throw or be compelled to target the illusion with its attacks for the duration. Each time the creature takes damage, it can repeat the save. The illusion vanishes if it is hit by any attack. While the illusion persists, you have advantage on Dexterity (Stealth) checks against the affected creature."
+      ],
+      "entriesHigherLevel": [
+        {
+          "type": "entries",
+          "name": "At Higher Levels",
+          "entries": [
+            "You can target one additional creature for each slot level above 1st."
+          ]
+        }
+      ],
+      "classes": {
+        "fromClassList": [
+          {
+            "name": "Bard",
+            "source": "XPHB"
+          },
+          {
+            "name": "Sorcerer",
+            "source": "XPHB"
+          }
+        ]
+      },
+      "savingThrow": [
+        "wisdom"
+      ],
+      "conditionInflict": [
+        "compelled"
+      ],
+      "miscTags": [
+        "SGT"
+      ]
+    },
+    {
+      "name": "Marvelous Performance",
+      "source": "EchoesRenaissance",
+      "level": 1,
+      "school": "E",
+      "time": [
+        {
+          "number": 1,
+          "unit": "reaction",
+          "condition": "which you take when you see a creature within 30 feet of you take an action"
+        }
+      ],
+      "range": {
+        "type": "point",
+        "distance": {
+          "type": "feet",
+          "amount": 30
+        }
+      },
+      "components": {
+        "v": true,
+        "s": true,
+        "m": "a handkerchief"
+      },
+      "duration": [
+        {
+          "type": "instant"
+        }
+      ],
+      "entries": [
+        "Your sudden performance hijacks a creature's attention at a critical moment. The creature must succeed on a Wisdom saving throw or make all rolls involved in the triggering action with disadvantage."
+      ],
+      "classes": {
+        "fromClassList": [
+          {
+            "name": "Bard",
+            "source": "XPHB"
+          }
+        ]
+      },
+      "savingThrow": [
+        "wisdom"
+      ],
+      "miscTags": [
+        "SGT"
+      ]
+    },
+    {
+      "name": "Amplify Feelings",
+      "source": "EchoesRenaissance",
+      "level": 2,
+      "school": "E",
+      "time": [
+        {
+          "number": 1,
+          "unit": "action"
+        }
+      ],
+      "range": {
+        "type": "point",
+        "distance": {
+          "type": "feet",
+          "amount": 60
+        }
+      },
+      "components": {
+        "v": true,
+        "s": true
+      },
+      "duration": [
+        {
+          "type": "concentration",
+          "duration": {
+            "type": "minute",
+            "amount": 1
+          }
+        }
+      ],
+      "entries": [
+        "You flood a creature's mind with an intensified version of an emotion of your choice. The target must succeed on a Charisma saving throw or be overwhelmed by that emotion for the duration. The GM determines how the creature's behavior is affected based on the chosen emotion and the creature's nature — a creature flooded with fear might flee, one flooded with rage might attack the nearest creature regardless of allegiance, one flooded with grief might be unable to act. The strength of the effect is proportional to how strongly the creature was already feeling that emotion when the spell was cast. If the creature is not experiencing the chosen emotion at all, the spell fails and the slot is wasted. At the end of each of its turns, the creature can repeat the saving throw, ending the effect on a success. Creatures immune to the charmed condition are immune to this spell."
+      ],
+      "entriesHigherLevel": [
+        {
+          "type": "entries",
+          "name": "At Higher Levels",
+          "entries": [
+            "You can target one additional creature for each slot level above 2nd."
+          ]
+        }
+      ],
+      "classes": {
+        "fromClassList": [
+          {
+            "name": "Bard",
+            "source": "XPHB"
+          },
+          {
+            "name": "Cleric",
+            "source": "XPHB"
+          },
+          {
+            "name": "Sorcerer",
+            "source": "XPHB"
+          },
+          {
+            "name": "Wizard",
+            "source": "XPHB"
+          }
+        ]
+      },
+      "savingThrow": [
+        "charisma"
+      ],
+      "conditionInflict": [
+        "charmed"
+      ],
+      "miscTags": [
+        "SGT"
+      ]
+    },
+    {
+      "name": "Majestic Performance",
+      "source": "EchoesRenaissance",
+      "level": 3,
+      "school": "E",
+      "time": [
+        {
+          "number": 1,
+          "unit": "action"
+        }
+      ],
+      "range": {
+        "type": "point",
+        "distance": {
+          "type": "feet",
+          "amount": 60
+        }
+      },
+      "components": {
+        "v": true,
+        "s": true,
+        "m": "a handkerchief"
+      },
+      "duration": [
+        {
+          "type": "concentration",
+          "duration": {
+            "type": "minute",
+            "amount": 1
+          }
+        }
+      ],
+      "entries": [
+        "You unleash a spellbound performance that holds your audience captive. Up to three creatures of your choice that can see or hear you within range must succeed on a Wisdom saving throw or be charmed by you for the duration. A charmed creature is incapacitated and has a speed of 0 as it watches, transfixed. The effect ends immediately for any creature that takes damage. Creatures immune to the charmed condition are immune to this spell."
+      ],
+      "classes": {
+        "fromClassList": [
+          {
+            "name": "Bard",
+            "source": "XPHB"
+          }
+        ]
+      },
+      "savingThrow": [
+        "wisdom"
+      ],
+      "conditionInflict": [
+        "charmed",
+        "incapacitated"
+      ],
+      "miscTags": [
+        "SGT"
+      ]
+    },
+    {
+      "name": "Disrupt One's Weave",
+      "source": "EchoesRenaissance",
+      "level": 5,
+      "school": "N",
+      "time": [
+        {
+          "number": 1,
+          "unit": "action"
+        }
+      ],
+      "range": {
+        "type": "touch"
+      },
+      "components": {
+        "v": true,
+        "s": true,
+        "m": "a shear"
+      },
+      "duration": [
+        {
+          "type": "concentration",
+          "duration": {
+            "type": "minute",
+            "amount": 1
+          }
+        }
+      ],
+      "entries": [
+        "You sever a creature's connection to the Weave. The creature is immediately affected for the duration — whenever it attempts to cast a spell, it must succeed on a Constitution saving throw against your spell save DC. On a failure, the spell fails, the slot is wasted, and the creature takes {@damage 2d8} necrotic damage. On a success, the spell is cast normally but this spell ends. Constructs affected by this spell are rendered inert for the duration."
+      ],
+      "classes": {
+        "fromClassList": [
+          {
+            "name": "Cleric",
+            "source": "XPHB"
+          },
+          {
+            "name": "Sorcerer",
+            "source": "XPHB"
+          },
+          {
+            "name": "Wizard",
+            "source": "XPHB"
+          }
+        ]
+      },
+      "savingThrow": [
+        "constitution"
+      ],
+      "damageInflict": [
+        "necrotic"
+      ],
+      "miscTags": [
+        "SGT"
+      ]
+    }
+  ]
+}

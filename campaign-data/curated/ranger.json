@@ -1,0 +1,198 @@
+{
+	"fileType": "spells-sublist",
+	"siteVersion": "2.33.3",
+	"name": "bard",
+	"saveId": "a93b40c5-8764-4324-be07-5e17a01c7d48",
+	"items": [
+		{
+			"h": "aid_xphb"
+		},
+		{
+			"h": "alarm_xphb"
+		},
+		{
+			"h": "alustriel's%20mooncloak_frhof"
+		},
+		{
+			"h": "animal%20friendship_xphb"
+		},
+		{
+			"h": "animal%20messenger_xphb"
+		},
+		{
+			"h": "barkskin_xphb"
+		},
+		{
+			"h": "beast%20sense_xphb"
+		},
+		{
+			"h": "commune%20with%20nature_xphb"
+		},
+		{
+			"h": "conjure%20animals_xphb"
+		},
+		{
+			"h": "conjure%20barrage_xphb"
+		},
+		{
+			"h": "conjure%20volley_xphb"
+		},
+		{
+			"h": "conjure%20woodland%20beings_xphb"
+		},
+		{
+			"h": "cordon%20of%20arrows_xphb"
+		},
+		{
+			"h": "cure%20wounds_xphb"
+		},
+		{
+			"h": "darkvision_xphb"
+		},
+		{
+			"h": "daylight_xphb"
+		},
+		{
+			"h": "detect%20magic_xphb"
+		},
+		{
+			"h": "detect%20poison%20and%20disease_xphb"
+		},
+		{
+			"h": "dispel%20magic_xphb"
+		},
+		{
+			"h": "dominate%20beast_xphb"
+		},
+		{
+			"h": "elemental%20weapon_xphb"
+		},
+		{
+			"h": "enhance%20ability_xphb"
+		},
+		{
+			"h": "ensnaring%20strike_xphb"
+		},
+		{
+			"h": "entangle_xphb"
+		},
+		{
+			"h": "find%20traps_xphb"
+		},
+		{
+			"h": "fog%20cloud_xphb"
+		},
+		{
+			"h": "freedom%20of%20movement_xphb"
+		},
+		{
+			"h": "goodberry_xphb"
+		},
+		{
+			"h": "grasping%20vine_xphb"
+		},
+		{
+			"h": "greater%20restoration_xphb"
+		},
+		{
+			"h": "gust%20of%20wind_xphb"
+		},
+		{
+			"h": "hail%20of%20thorns_xphb"
+		},
+		{
+			"h": "hunter's%20mark_xphb"
+		},
+		{
+			"h": "jump_xphb"
+		},
+		{
+			"h": "lesser%20restoration_xphb"
+		},
+		{
+			"h": "lightning%20arrow_xphb"
+		},
+		{
+			"h": "locate%20animals%20or%20plants_xphb"
+		},
+		{
+			"h": "locate%20creature_xphb"
+		},
+		{
+			"h": "locate%20object_xphb"
+		},
+		{
+			"h": "longstrider_xphb"
+		},
+		{
+			"h": "magic%20weapon_xphb"
+		},
+		{
+			"h": "meld%20into%20stone_xphb"
+		},
+		{
+			"h": "nondetection_xphb"
+		},
+		{
+			"h": "pass%20without%20trace_xphb"
+		},
+		{
+			"h": "plant%20growth_xphb"
+		},
+		{
+			"h": "protection%20from%20energy_xphb"
+		},
+		{
+			"h": "protection%20from%20poison_xphb"
+		},
+		{
+			"h": "revivify_xphb"
+		},
+		{
+			"h": "silence_xphb"
+		},
+		{
+			"h": "speak%20with%20animals_xphb"
+		},
+		{
+			"h": "speak%20with%20plants_xphb"
+		},
+		{
+			"h": "spike%20growth_xphb"
+		},
+		{
+			"h": "steel%20wind%20strike_xphb"
+		},
+		{
+			"h": "stoneskin_xphb"
+		},
+		{
+			"h": "summon%20beast_xphb"
+		},
+		{
+			"h": "summon%20elemental_xphb"
+		},
+		{
+			"h": "summon%20fey_xphb"
+		},
+		{
+			"h": "swift%20quiver_xphb"
+		},
+		{
+			"h": "tree%20stride_xphb"
+		},
+		{
+			"h": "water%20breathing_xphb"
+		},
+		{
+			"h": "water%20walk_xphb"
+		},
+		{
+			"h": "wind%20wall_xphb"
+		}
+	],
+	"sources": [
+		"XPHB",
+		"FRHoF"
+	]
+}

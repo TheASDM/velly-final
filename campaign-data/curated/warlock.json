@@ -1,0 +1,294 @@
+{
+	"fileType": "spells-sublist",
+	"siteVersion": "2.33.3",
+	"name": "bard",
+	"saveId": "a93b40c5-8764-4324-be07-5e17a01c7d48",
+	"items": [
+		{
+			"h": "arcane%20gate_xphb"
+		},
+		{
+			"h": "armor%20of%20agathys_xphb"
+		},
+		{
+			"h": "arms%20of%20hadar_xphb"
+		},
+		{
+			"h": "astral%20projection_xphb"
+		},
+		{
+			"h": "backlash_frhof"
+		},
+		{
+			"h": "bane_xphb"
+		},
+		{
+			"h": "banishment_xphb"
+		},
+		{
+			"h": "befuddlement_xphb"
+		},
+		{
+			"h": "blade%20of%20disaster_frhof"
+		},
+		{
+			"h": "blade%20ward_xphb"
+		},
+		{
+			"h": "blight_xphb"
+		},
+		{
+			"h": "charm%20monster_xphb"
+		},
+		{
+			"h": "charm%20person_xphb"
+		},
+		{
+			"h": "chill%20touch_xphb"
+		},
+		{
+			"h": "circle%20of%20death_xphb"
+		},
+		{
+			"h": "cloud%20of%20daggers_xphb"
+		},
+		{
+			"h": "comprehend%20languages_xphb"
+		},
+		{
+			"h": "contact%20other%20plane_xphb"
+		},
+		{
+			"h": "counterspell_xphb"
+		},
+		{
+			"h": "create%20undead_xphb"
+		},
+		{
+			"h": "crown%20of%20madness_xphb"
+		},
+		{
+			"h": "darkness_xphb"
+		},
+		{
+			"h": "demiplane_xphb"
+		},
+		{
+			"h": "detect%20magic_xphb"
+		},
+		{
+			"h": "dimension%20door_xphb"
+		},
+		{
+			"h": "dispel%20magic_xphb"
+		},
+		{
+			"h": "dominate%20monster_xphb"
+		},
+		{
+			"h": "doomtide_frhof"
+		},
+		{
+			"h": "dream_xphb"
+		},
+		{
+			"h": "eldritch%20blast_xphb"
+		},
+		{
+			"h": "enthrall_xphb"
+		},
+		{
+			"h": "etherealness_xphb"
+		},
+		{
+			"h": "expeditious%20retreat_xphb"
+		},
+		{
+			"h": "eyebite_xphb"
+		},
+		{
+			"h": "fear_xphb"
+		},
+		{
+			"h": "finger%20of%20death_xphb"
+		},
+		{
+			"h": "fly_xphb"
+		},
+		{
+			"h": "forcecage_xphb"
+		},
+		{
+			"h": "foresight_xphb"
+		},
+		{
+			"h": "friends_xphb"
+		},
+		{
+			"h": "gaseous%20form_xphb"
+		},
+		{
+			"h": "gate_xphb"
+		},
+		{
+			"h": "glibness_xphb"
+		},
+		{
+			"h": "hallucinatory%20terrain_xphb"
+		},
+		{
+			"h": "hellish%20rebuke_xphb"
+		},
+		{
+			"h": "hex_xphb"
+		},
+		{
+			"h": "hold%20monster_xphb"
+		},
+		{
+			"h": "hold%20person_xphb"
+		},
+		{
+			"h": "hunger%20of%20hadar_xphb"
+		},
+		{
+			"h": "hypnotic%20pattern_xphb"
+		},
+		{
+			"h": "illusory%20script_xphb"
+		},
+		{
+			"h": "imprisonment_xphb"
+		},
+		{
+			"h": "invisibility_xphb"
+		},
+		{
+			"h": "jallarzi's%20storm%20of%20radiance_xphb"
+		},
+		{
+			"h": "mage%20hand_xphb"
+		},
+		{
+			"h": "magic%20circle_xphb"
+		},
+		{
+			"h": "major%20image_xphb"
+		},
+		{
+			"h": "mind%20sliver_xphb"
+		},
+		{
+			"h": "mind%20spike_xphb"
+		},
+		{
+			"h": "minor%20illusion_xphb"
+		},
+		{
+			"h": "mirror%20image_xphb"
+		},
+		{
+			"h": "mislead_xphb"
+		},
+		{
+			"h": "misty%20step_xphb"
+		},
+		{
+			"h": "planar%20binding_xphb"
+		},
+		{
+			"h": "plane%20shift_xphb"
+		},
+		{
+			"h": "poison%20spray_xphb"
+		},
+		{
+			"h": "power%20word%20kill_xphb"
+		},
+		{
+			"h": "power%20word%20stun_xphb"
+		},
+		{
+			"h": "prestidigitation_xphb"
+		},
+		{
+			"h": "protection%20from%20evil%20and%20good_xphb"
+		},
+		{
+			"h": "ray%20of%20enfeeblement_xphb"
+		},
+		{
+			"h": "remove%20curse_xphb"
+		},
+		{
+			"h": "scrying_xphb"
+		},
+		{
+			"h": "speak%20with%20animals_xphb"
+		},
+		{
+			"h": "spider%20climb_xphb"
+		},
+		{
+			"h": "suggestion_xphb"
+		},
+		{
+			"h": "summon%20aberration_xphb"
+		},
+		{
+			"h": "summon%20fey_xphb"
+		},
+		{
+			"h": "summon%20fiend_xphb"
+		},
+		{
+			"h": "summon%20undead_xphb"
+		},
+		{
+			"h": "synaptic%20static_xphb"
+		},
+		{
+			"h": "tasha's%20bubbling%20cauldron_xphb"
+		},
+		{
+			"h": "tasha's%20hideous%20laughter_xphb"
+		},
+		{
+			"h": "teleportation%20circle_xphb"
+		},
+		{
+			"h": "thunderclap_xphb"
+		},
+		{
+			"h": "toll%20the%20dead_xphb"
+		},
+		{
+			"h": "tongues_xphb"
+		},
+		{
+			"h": "true%20polymorph_xphb"
+		},
+		{
+			"h": "true%20seeing_xphb"
+		},
+		{
+			"h": "true%20strike_xphb"
+		},
+		{
+			"h": "unseen%20servant_xphb"
+		},
+		{
+			"h": "vampiric%20touch_xphb"
+		},
+		{
+			"h": "weird_xphb"
+		},
+		{
+			"h": "witch%20bolt_xphb"
+		}
+	],
+	"sources": [
+		"XPHB",
+		"FRHoF"
+	]
+}

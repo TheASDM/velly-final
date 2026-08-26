@@ -1,0 +1,303 @@
+{
+ "_meta": {
+  "sources": [
+   {
+    "json": "VoSWiki",
+    "abbreviation": "VoSWiki",
+    "full": "Valley of Shadows wiki statblocks"
+   }
+  ]
+ },
+ "monster": [
+  {
+   "name": "Fairy",
+   "source": "VoSWiki",
+   "size": [
+    "S"
+   ],
+   "type": "fey",
+   "alignment": [
+    "Any"
+   ],
+   "ac": [
+    13
+   ],
+   "hp": {
+    "average": 14
+   },
+   "speed": {
+    "fly": 30
+   },
+   "str": 3,
+   "dex": 16,
+   "con": 10,
+   "int": 11,
+   "wis": 14,
+   "cha": 15,
+   "cr": "1/4",
+   "_lifted": {
+    "from": "Venturia/Creatures/Fey/fairy.md",
+    "note": "parsed from the wiki statblock"
+   },
+   "skill_raw": "Perception +4, Stealth +5",
+   "senses_raw": "Passive Perception 12",
+   "languages_raw": "Common, Sylvan",
+   "action": [
+    {
+     "name": "Fey Spark",
+     "entries": [
+      "Spell Attack Roll: +4, range 60 ft. Hit: 5 psychic damage."
+     ]
+    },
+    {
+     "name": "Spellcasting",
+     "entries": [
+      "Innate Spells: Enlarge/Reduce, Faerie Fire."
+     ]
+    }
+   ]
+  },
+  {
+   "name": "Quickling",
+   "source": "VoSWiki",
+   "size": [
+    "T"
+   ],
+   "type": "fey",
+   "alignment": [
+    "Chaotic Evil"
+   ],
+   "ac": [
+    16
+   ],
+   "hp": {
+    "average": 10
+   },
+   "speed": {
+    "walk": 120
+   },
+   "str": 4,
+   "dex": 23,
+   "con": 13,
+   "int": 10,
+   "wis": 12,
+   "cha": 7,
+   "cr": "1",
+   "_lifted": {
+    "from": "Venturia/Creatures/Fey/quickling.md",
+    "note": "parsed from the wiki statblock"
+   },
+   "skill_raw": "Acrobatics +8, Sleight +8, Stealth +8",
+   "senses_raw": "Passive Perception 13",
+   "languages_raw": "Sylvan",
+   "trait": [
+    {
+     "name": "Blurred Movement",
+     "entries": [
+      "Attack rolls against the Quickling have Disadvantage."
+     ]
+    }
+   ],
+   "action": [
+    {
+     "name": "Multiattack",
+     "entries": [
+      "Makes three Dagger attacks."
+     ]
+    },
+    {
+     "name": "Dagger",
+     "entries": [
+      "Melee Attack Roll: +8, reach 5 ft. Hit: 8 slashing damage."
+     ]
+    }
+   ]
+  },
+  {
+   "name": "Abyssal Wretch",
+   "source": "VoSWiki",
+   "size": [
+    "M"
+   ],
+   "type": "fiend",
+   "alignment": [
+    "Chaotic Evil"
+   ],
+   "ac": [
+    11
+   ],
+   "hp": {
+    "average": 18
+   },
+   "speed": {
+    "walk": 20
+   },
+   "str": 13,
+   "dex": 12,
+   "con": 15,
+   "int": 5,
+   "wis": 8,
+   "cha": 5,
+   "cr": "1/4",
+   "_lifted": {
+    "from": "Venturia/Creatures/Fiends/abyssal-wretch.md",
+    "note": "parsed from the wiki statblock"
+   },
+   "senses_raw": "Darkvision 120 ft., Passive Perception 9",
+   "languages_raw": "Understands Abyssal",
+   "action": [
+    {
+     "name": "Bite",
+     "entries": [
+      "Melee Attack Roll: +3, reach 5 ft. Hit: 5 (1d8+1) slashing damage."
+     ]
+    }
+   ]
+  },
+  {
+   "name": "Nupperibo",
+   "source": "VoSWiki",
+   "size": [
+    "M"
+   ],
+   "type": "fiend",
+   "alignment": [
+    "Lawful Evil"
+   ],
+   "ac": [
+    13
+   ],
+   "hp": {
+    "average": 11
+   },
+   "speed": {
+    "walk": 20
+   },
+   "str": 16,
+   "dex": 11,
+   "con": 13,
+   "int": 3,
+   "wis": 8,
+   "cha": 1,
+   "cr": "1/2",
+   "_lifted": {
+    "from": "Venturia/Creatures/Fiends/nupperibo.md",
+    "note": "parsed from the wiki statblock"
+   },
+   "senses_raw": "Blindsight 10 ft. (Blind beyond), Passive Perception 11",
+   "languages_raw": "Understands Infernal",
+   "trait": [
+    {
+     "name": "Cloud of Vermin",
+     "entries": [
+      "20-ft Emanation. Non-devils must succeed on a DC 11 Con Save or take 2 (1d4) piercing damage."
+     ]
+    }
+   ],
+   "action": [
+    {
+     "name": "Bite",
+     "entries": [
+      "Melee Attack Roll: +5, reach 5 ft. Hit: 6 (1d6+3) piercing damage."
+     ]
+    }
+   ]
+  },
+  {
+   "name": "Maw Demon",
+   "source": "VoSWiki",
+   "size": [
+    "M"
+   ],
+   "type": "fiend",
+   "alignment": [
+    "Chaotic Evil"
+   ],
+   "ac": [
+    13
+   ],
+   "hp": {
+    "average": 33
+   },
+   "speed": {
+    "walk": 30
+   },
+   "str": 14,
+   "dex": 8,
+   "con": 13,
+   "int": 5,
+   "wis": 8,
+   "cha": 5,
+   "cr": "1",
+   "_lifted": {
+    "from": "Venturia/Creatures/Fiends/maw-demon.md",
+    "note": "parsed from the wiki statblock"
+   },
+   "senses_raw": "Darkvision 60 ft., Passive Perception 9",
+   "languages_raw": "Understands Abyssal",
+   "trait": [
+    {
+     "name": "Ravenous Presence",
+     "entries": [
+      "30-ft Emanation. Enemies within range have Disadvantage on attack rolls against any target other than the Maw Demon."
+     ]
+    }
+   ],
+   "action": [
+    {
+     "name": "Bite",
+     "entries": [
+      "Melee Attack Roll: +4, reach 5 ft. Hit: 11 (2d8+2) piercing damage."
+     ]
+    }
+   ]
+  },
+  {
+   "name": "Vargouille",
+   "source": "VoSWiki",
+   "size": [
+    "T"
+   ],
+   "type": "fiend",
+   "alignment": [
+    "Chaotic Evil"
+   ],
+   "ac": [
+    12
+   ],
+   "hp": {
+    "average": 13
+   },
+   "speed": {
+    "fly": 30
+   },
+   "str": 6,
+   "dex": 14,
+   "con": 14,
+   "int": 4,
+   "wis": 10,
+   "cha": 2,
+   "cr": "1",
+   "_lifted": {
+    "from": "Venturia/Creatures/Fiends/vargouille.md",
+    "note": "parsed from the wiki statblock"
+   },
+   "senses_raw": "Darkvision 60 ft., Passive Perception 10",
+   "languages_raw": "Understands Abyssal, Infernal",
+   "action": [
+    {
+     "name": "Stunning Shriek",
+     "entries": [
+      "30-ft Emanation. DC 12 Wis Save or Stunned and Frightened."
+     ]
+    },
+    {
+     "name": "Bite",
+     "entries": [
+      "Melee Attack Roll: +4, reach 5 ft. Hit: 5 piercing damage plus 10 poison damage."
+     ]
+    }
+   ]
+  }
+ ]
+}
