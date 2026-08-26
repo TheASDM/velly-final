@@ -111,6 +111,7 @@ function render() {
     return;
   }
 
+  renderViewAs(sheet);
   root.classList.toggle('is-dm-variant', state.variant === 'dm');
 
   if (state.variant === 'statblock') {
@@ -128,6 +129,24 @@ function render() {
   const seat = seatFor(sheet);
   if (seat.color) root.style.setProperty('--sheet-accent', seat.color);
   renderIndex(entry.markdown);
+}
+
+/* A way through to the player's own sheet, live and interactive, rather than
+ * this read-only copy of it. */
+function renderViewAs(sheet) {
+  let link = document.getElementById('vos-view-as');
+  if (!sheet.statblock) {
+    if (link) link.remove();
+    return;
+  }
+  if (!link) {
+    link = document.createElement('a');
+    link.id = 'vos-view-as';
+    link.className = 'vos-view-as';
+    toolbarEl.parentNode.insertBefore(link, toolbarEl.nextSibling);
+  }
+  link.href = `/sheet/?as=${encodeURIComponent(sheet.playerName)}`;
+  link.textContent = `Open ${shortName(sheet)}'s sheet as they see it`;
 }
 
 function wire() {

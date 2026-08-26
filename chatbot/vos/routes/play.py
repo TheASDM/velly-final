@@ -82,12 +82,16 @@ def _target_player(body):
     there is no implicit target, so a mis-sent request fails rather than
     silently editing the wrong character.
     """
-    caller, auth_error = _authenticated_player_name()
-    if auth_error:
-        return None, None, auth_error
+    # The caller comes from the token alone. _authenticated_player_name() also
+    # compares against a name in the request, which is right for endpoints that
+    # never accept one — but here a name is the whole point, and letting it
+    # decide would refuse the DM before this function ever ran.
+    caller = _verify_player_token(_extract_player_token())
+    if not caller:
+        return None, None, (jsonify({"error": "Login required"}), 401)
 
     requested = body.get("playerName")
-    if requested is None:
+    if requested is None or str(requested) == caller:
         return caller, caller, None
 
     if not _is_dm_player(caller):
@@ -107,8 +111,13 @@ def _target_player(body):
 
 @bp.get("/api/play")
 def api_play_state():
-    """The signed-in player's play state, reconciled against their build."""
-    player_name, auth_error = _authenticated_player_name()
+    """Play state, reconciled against the build it belongs to.
+
+    Yours by default. The DM may ask for someone else's by naming them, which is
+    what "view as" reads — the same rule as the operation endpoint, so there is
+    one place where a caller may act on another character and it is explicit.
+    """
+    player_name, _viewer, auth_error = _target_player(request.args)
     if auth_error:
         return auth_error
 

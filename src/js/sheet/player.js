@@ -10,6 +10,7 @@ import { loadMySheet, loadRoster, whenPwaReady } from './data.js';
 import { normalizeStatblock } from '../statblock/normalize.js';
 import { renderStatblock } from '../statblock/render.js';
 import { loadPlayState } from '../play/api.js';
+import { loadAllSheets } from './data.js';
 import { createControls } from '../play/controls.js';
 import { clock } from '../play/masquerade.js';
 
@@ -22,6 +23,10 @@ let seat = {};
 let view = 'story';
 let play = null;        // { state, limits } — null until the stats tab is opened
 let controls = null;
+/* Set when the DM is viewing someone else's sheet. Everything downstream reads
+ * it, so "view as" is the same page rather than a second implementation that
+ * could drift from what the player actually sees. */
+let viewingAs = null;
 let statModel = null;
 let maskTimer = null;
 
@@ -101,6 +106,20 @@ function render() {
  * time the server reported, so a locked phone or a reloaded tab picks up the
  * real answer rather than a drifted one.
  */
+/* Whose sheet this is. Unmistakable, because acting here changes their
+ * character rather than yours. */
+function renderViewingAs() {
+  if (!viewingAs) return;
+  if (document.getElementById('vos-viewing-as')) return;
+  const bar = document.createElement('div');
+  bar.id = 'vos-viewing-as';
+  bar.className = 'vos-viewing-as';
+  bar.innerHTML = `<span>Viewing as <b>${esc(seat.display || viewingAs)}</b> — changes apply to them</span>
+    <a href="/party/">Back to the table</a>`;
+  const page = document.querySelector('.vos-sheet-page');
+  if (page) page.insertBefore(bar, page.firstChild);
+}
+
 function renderMaskBanner() {
   let banner = document.getElementById('vos-mask-banner');
   const mask = play && play.state.mask;
@@ -236,13 +255,34 @@ function wire() {
   });
 }
 
+/* One player's sheet, taken from the DM's collection.
+ *
+ * /api/sheet cannot be told whose sheet to return — that is deliberate, and
+ * tested — so the DM's view reads /api/sheets, which is DM-gated already,
+ * rather than opening a second door into the player endpoint.
+ */
+async function loadSheetAs(playerName) {
+  const body = await loadAllSheets();
+  const entry = (body.sheets || []).find((s) => s.playerName === playerName);
+  if (!entry) {
+    const error = new Error(`No sheet for ${playerName}.`);
+    error.status = 404;
+    throw error;
+  }
+  return {
+    playerName,
+    sheet: entry.player || entry.dm || null,
+    statblock: entry.statblock || null,
+  };
+}
+
 /* Play state is fetched once, lazily. A player who only wants to reread their
  * backstory should not pay for it. */
 async function ensurePlay() {
   if (play || !payload.statblock) return;
   if (!statModel) statModel = normalizeStatblock(payload.statblock.data);
   try {
-    const body = await loadPlayState();
+    const body = await loadPlayState(viewingAs);
     play = { state: body.state, limits: body.limits };
   } catch (error) {
     // The sheet is still worth reading without it, so this degrades to the
@@ -253,6 +293,7 @@ async function ensurePlay() {
   render();
   controls = createControls({
     root,
+    playerName: viewingAs,
     model: statModel,
     state: play.state,
     limits: play.limits,
@@ -273,8 +314,18 @@ async function boot() {
     return;
   }
 
+  const asked = new URLSearchParams(window.location.search).get('as');
+  const isDm = name === 'DM' || (pwa && pwa.isDm && pwa.isDm());
+  if (asked && asked !== name) {
+    if (!isDm) {
+      notice('That is not your sheet.', 'Yours is at /sheet/.');
+      return;
+    }
+    viewingAs = asked;
+  }
+
   try {
-    payload = await loadMySheet();
+    payload = viewingAs ? await loadSheetAs(viewingAs) : await loadMySheet();
   } catch (error) {
     if (error.status === 401 || error.status === 403) {
       notice('That session isn\u2019t authorised.', 'Sign in again and try once more.');
@@ -295,7 +346,8 @@ async function boot() {
   seat = roster[payload.playerName] || {};
   if (seat.color) root.style.setProperty('--sheet-accent', seat.color);
 
-  view = hasStory ? 'story' : 'stats';
+  view = viewingAs ? 'stats' : (hasStory ? 'story' : 'stats');
+  renderViewingAs();
   wire();
   render();
   if (hasStats) ensurePlay();

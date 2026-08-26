@@ -145,6 +145,8 @@ function card(entry) {
       <button type="button" data-act="damage">Damage</button>
       <button type="button" data-act="heal">Heal</button>
       <button type="button" data-act="conditions">Conditions</button>
+      <a class="vos-party-view" href="/sheet/?as=${encodeURIComponent(entry.playerName)}"
+         title="Open their sheet as they see it">View</a>
     </div>
   </article>`;
 }

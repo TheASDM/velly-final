@@ -402,3 +402,31 @@ def test_a_revoked_player_is_not_in_the_party(app, auth_headers, monkeypatch):
     names = {entry["playerName"] for entry in party}
     assert "Orabella" not in names
     assert "Kryton Novelli" not in names
+
+
+# ── Viewing as a player ───────────────────────────────────────────────
+
+def test_the_dm_can_read_another_players_state(app, auth_headers):
+    post(app, auth_headers["player"], {"op": "damage", "amount": 8})
+    body = get(app, auth_headers["dm"], "/api/play?playerName=Lotan").get_json()
+    assert body["playerName"] == "Lotan"
+    assert body["state"]["hp"]["current"] == 13
+
+
+def test_a_player_cannot_read_another_players_state(app, auth_headers):
+    response = get(app, auth_headers["player"], '/api/play?playerName=Roxanya "Roxy"')
+    assert response.status_code == 403
+    assert response.get_json()["error_code"] == "forbidden_target"
+
+
+def test_naming_yourself_is_still_your_own_state(app, auth_headers):
+    body = get(app, auth_headers["player"], "/api/play?playerName=Lotan").get_json()
+    assert body["playerName"] == "Lotan"
+
+
+def test_the_sheet_endpoint_still_refuses_to_be_told_whose_it_is(app, auth_headers):
+    """View-as reads /api/play and /api/sheets. /api/sheet stays sealed — it
+    refuses a name outright, even the DM's, rather than growing a second way to
+    reach another player's sheet."""
+    response = get(app, auth_headers["dm"], '/api/sheet?playerName=Lotan')
+    assert response.status_code == 403
