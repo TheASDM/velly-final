@@ -39,6 +39,10 @@ SHEET_KEYS = {
     "roxanya": 'Roxanya "Roxy"',
     "valentro": "Valentro",
     "valen": "Valentro",
+    # The DM's own test character, which exists to be a real player's-eye view
+    # of the app rather than a special case inside it.
+    "dmtest": "DM",
+    "dm": "DM",
 }
 
 FILENAME = re.compile(r"^(player|dm)-sheet-(.+)\.md$", re.IGNORECASE)
