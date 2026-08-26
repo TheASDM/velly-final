@@ -553,6 +553,12 @@ export function createControls(options) {
         apply({ op: spent ? 'restoreSlot' : 'spendSlot', level });
         break;
       }
+      case 'pact': {
+        // Pact slots are their own pool; restoring one is a short rest away.
+        if (target.dataset.spent === '1') return;
+        apply({ op: 'spendPactSlot' });
+        break;
+      }
       case 'charge': {
         const feature = target.dataset.feature;
         if (!feature) return;

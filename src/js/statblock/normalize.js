@@ -362,14 +362,32 @@ export function normalizeStatblock(raw) {
   const spellDc = derived.spellDc ?? null;
   const spellAbility = derived.spellAbility ?? sys.attributes?.spellcasting ?? '';
 
-  const slots = Object.entries(derived.spells ?? sys.spells ?? {})
+  /* Levelled slots, and Pact Magic.
+   *
+   * A warlock's slots are a separate pool: every one is the same level, and
+   * they come back on a Short Rest rather than a Long one. Filtering to
+   * spell1..9 dropped them entirely, so a warlock showed either nothing or —
+   * if their class was misconfigured — someone else's slots. */
+  const spellSource = derived.spells ?? sys.spells ?? {};
+  const slots = Object.entries(spellSource)
     .filter(([key, slot]) => /^spell[1-9]$/.test(key) && Number(slot?.max ?? 0) > 0)
     .map(([key, slot]) => ({
       level: Number(key.replace('spell', '')),
       value: Number(slot.value ?? 0),
       max: Number(slot.max ?? 0),
+      pact: false,
     }))
     .sort((a, b) => a.level - b.level);
+
+  const pactSlot = spellSource.pact;
+  if (Number(pactSlot?.max ?? 0) > 0) {
+    slots.push({
+      level: Number(pactSlot.level ?? 0) || null,
+      value: Number(pactSlot.value ?? 0),
+      max: Number(pactSlot.max ?? 0),
+      pact: true,
+    });
+  }
 
   return {
     name: doc.name ?? 'Unnamed',

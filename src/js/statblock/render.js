@@ -211,7 +211,7 @@ function slotPips(slot) {
   for (let i = 0; i < slot.max; i += 1) {
     const spent = i >= remaining;
     pips.push(`<span class="vos-sb-pip${spent ? ' is-spent' : ''}"${bind({
-      'data-play': 'slot',
+      'data-play': slot.pact ? 'pact' : 'slot',
       'data-level': slot.level,
       'data-spent': spent ? '1' : '0',
       role: 'button',
@@ -222,8 +222,12 @@ function slotPips(slot) {
   return `<span class="vos-sb-pips" aria-label="${remaining} of ${slot.max} remaining">${pips.join('')}</span>`;
 }
 
+/* Pact slots are counted in their own field, not in the per-level map, so they
+ * have to be read from there or the pips never move. */
 function slotsLeft(slot) {
-  return ctx && ctx.play ? Math.max(0, slot.max - spentSlots(slot.level)) : slot.value;
+  if (!(ctx && ctx.play)) return slot.value;
+  const spent = slot.pact ? Number(ctx.play.pact || 0) : spentSlots(slot.level);
+  return Math.max(0, slot.max - spent);
 }
 
 function renderSpellcasting(model) {
@@ -238,7 +242,11 @@ function renderSpellcasting(model) {
 
   const slots = sc.slots.length
     ? `<ul class="vos-sb-slots">${sc.slots.map((slot) => `<li>
-        <span class="vos-sb-slot-level">Level ${slot.level}</span>
+        <span class="vos-sb-slot-level">${
+          slot.pact
+            ? `Pact${slot.level ? ` · level ${slot.level}` : ''}`
+            : `Level ${slot.level}`
+        }</span>
         ${slotPips(slot)}
         <span class="vos-sb-slot-count">${slotsLeft(slot)}/${slot.max}</span>
       </li>`).join('')}</ul>`

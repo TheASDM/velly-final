@@ -110,7 +110,9 @@ function deriveActor(actor) {
   const spells = {};
   for (const [key, slot] of Object.entries(sys.spells ?? {})) {
     if (!slot || typeof slot !== 'object') continue;
-    spells[key] = { value: slot.value ?? 0, max: slot.max ?? 0 };
+    // `level` matters for pact magic, where every slot is the same level and
+    // that level is the whole point.
+    spells[key] = { value: slot.value ?? 0, max: slot.max ?? 0, level: slot.level ?? null };
   }
 
   const classes = Object.entries(actor.classes ?? {}).map(([identifier, item]) => ({
