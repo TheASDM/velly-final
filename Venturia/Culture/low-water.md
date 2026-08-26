@@ -28,9 +28,9 @@ There is no ceremony, no priest, and no god named. The shrine's plaque has been 
 
 Four stories, all of them insisted upon:
 
-- A drowned [Ferrier](/en/Venturia/Factions/ferriers-confraternity) who owed the city an answer and pays it back one at a time.
+- A drowned [Ferrier](/en/Venturia/Locations/ferriers-confraternity) who owed the city an answer and pays it back one at a time.
 - A shipwright's widow who threw her wedding penny in and asked where he had gone, and was told.
-- A [Tidekeeper](/en/Venturia/Factions/tidekeepers) thing, older than the Lodge, which the Lodge has never confirmed and has also never denied.
+- A [Tidekeeper](/en/Venturia/Locations/tidekeepers-lodge) thing, older than the Lodge, which the Lodge has never confirmed and has also never denied.
 - Nothing at all. It is a nice night. People like a lantern and a story.
 
 The Tidekeepers attend every year, in numbers, in silence, and go home without saying why.
@@ -63,4 +63,4 @@ Lantern boats, fried things, bad wine sold at good prices, children daring each 
 
 - **[The Penny Shrine](/en/Venturia/Locations/penny-shrine)** — Where it happens.
 - **[The Harbor District](/en/Venturia/Locations/harbor-district)** — The district that hosts it.
-- **[The Tidekeepers](/en/Venturia/Factions/tidekeepers)** — Attend annually and will not say why.
+- **[The Tidekeepers](/en/Venturia/Locations/tidekeepers-lodge)** — Attend annually and will not say why.

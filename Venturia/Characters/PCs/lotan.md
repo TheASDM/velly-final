@@ -63,6 +63,10 @@ Whatever else he is, Lotan can read a manifest. He knows which captains take whi
 
 ## Ties
 - **[Roxanya "Roxy"](/en/Venturia/Characters/PCs/roxanya)** — Rescued alongside her when his ship wrecked at the shore; he appointed himself her guide to a city neither of them knew, and the friendship stuck. They now run the harbour interceptions together.
+- **[House Kaligor](/en/Venturia/Lore/house-kaligor)** — The Barovian line he comes from, and the tavern story he tells about it.
+- **[Velonar Kaligor](/en/Venturia/Characters/NPCs/velonar-kaligor)** — The ancestor who is said to have burned Strahd to ash and bought a winery with what came after.
+- **[Andrea Kaliskiny](/en/Venturia/Characters/NPCs/andrea-kaliskiny)** — The druid who sealed the Amber Temple, and married into the line the same season.
+- **[Lady Noctyrix](/en/Venturia/Characters/NPCs/lady-noctyrix)** — The bruxa whose dying curse he says his family still carries.
 
 
 ---

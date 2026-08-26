@@ -90,6 +90,10 @@ files/**/campaign-dm-secrets-*.md
 files/**/dm-sheet-*.md
 files/**/player-sheet-*.md
 files/**/*-questionnaire*.md
+# Player-written backstory dropped at the repo root of files/. Same reason as
+# everything above: the players wrote it and this repo is public.
+files/*-backstory.*
+files/**/*-backstory.*
 
 # Foundry actors rebuilt by scripts/build_foundry_actor.py. These are player
 # character data and this repo is public.

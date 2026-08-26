@@ -53,4 +53,4 @@ Construction began in November 2025. The first session held in the completed spa
 
 ## Connections
 
-- **[The Valley of Shadows](/en/Vallombrosa/Articles/valley-of-shadows-framework)** — The campaign for which this space was prepared.
+- **[The Valley of Shadows](/en/Articles/valley-of-shadows-framework)** — The campaign for which this space was prepared.
