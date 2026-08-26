@@ -2,7 +2,7 @@
   "id": "vos-bridge",
   "title": "Vallombrosa Bridge",
   "description": "Pushes character statblocks to the Vallombrosa campaign app so players can read their sheet on their phone. Outbound only — nothing listens, and nothing writes back into Foundry.",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "compatibility": { "minimum": "12", "verified": "13" },
   "relationships": {
     "systems": [{ "id": "dnd5e", "type": "system", "compatibility": { "minimum": "4.0.0" } }]

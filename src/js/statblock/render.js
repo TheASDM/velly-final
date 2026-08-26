@@ -354,6 +354,109 @@ function renderInventory(model) {
   })).join('')}</ul>`;
 }
 
+/* ── Attacks ───────────────────────────────────────────────────────── */
+
+/* Which features are switched on right now, as the model knows them. */
+function activeFeatures(model) {
+  const on = (ctx && ctx.play && ctx.play.active) || {};
+  return (model.activatable ?? []).filter((feature) => on[feature.id]);
+}
+
+/* A live bonus that applies to this kind of attack, attributed to whatever is
+ * granting it. Attribution matters: "+2" alone looks like part of the weapon,
+ * and a player who forgets they are raging will keep adding it after it ends. */
+function liveBonuses(model, attackKind) {
+  return activeFeatures(model)
+    .map((feature) => {
+      const mod = feature.modifiers?.[attackKind];
+      if (!mod) return null;
+      const parts = [];
+      if (mod.attack) parts.push(`${mod.attack > 0 ? '+' : ''}${mod.attack} hit`);
+      if (mod.damage) parts.push(`${mod.damage > 0 ? '+' : ''}${mod.damage} dmg`);
+      return parts.length ? { name: feature.name, text: parts.join(' ') } : null;
+    })
+    .filter(Boolean);
+}
+
+/* Defenses a switched-on feature is granting right now, so the Defenses
+ * section changes when Rage starts rather than staying at its resting value
+ * while a panel elsewhere contradicts it. Each one names its source. */
+function liveDefenses(model, bucket) {
+  return activeFeatures(model).flatMap((feature) =>
+    (feature.modifiers?.[bucket] ?? []).map((what) => ({ what, from: feature.name })));
+}
+
+function defenseRow(label, values, live) {
+  if (!values.length && !live.length) return '';
+  return `<p class="vos-sb-defense"><span>${esc(label)}</span>
+    <ul class="vos-sb-chips">
+      ${values.map((value) => `<li>${esc(value)}</li>`).join('')}
+      ${live.map((entry) => `<li class="is-live" title="From ${esc(entry.from)}">${
+        esc(entry.what)} <i>${esc(entry.from)}</i></li>`).join('')}
+    </ul></p>`;
+}
+
+function renderAttackRow(model, attack) {
+  const bonuses = liveBonuses(model, attack.attackKind);
+  const notes = [attack.range, attack.mastery ? `${attack.mastery} mastery` : '']
+    .filter(Boolean)
+    .concat(attack.properties ?? []);
+
+  return `<li class="vos-sb-attack${attack.equipped ? ' is-equipped' : ''}">
+    <div class="vos-sb-attack-name">
+      ${esc(attack.name)}
+      ${attack.variant ? `<span class="vos-sb-attack-variant">${esc(attack.variant)}</span>` : ''}
+    </div>
+    <div class="vos-sb-attack-hit" aria-label="${attack.toHit ? `${esc(attack.toHit)} to hit` : 'attack bonus unknown'}">
+      ${attack.toHit ? esc(attack.toHit) : '<span class="is-unknown" title="Re-push from Foundry to fill this in">—</span>'}
+    </div>
+    <div class="vos-sb-attack-dmg">
+      ${esc(attack.damage || '—')}
+      ${bonuses.map((bonus) => `<span class="vos-sb-attack-bonus">${
+        esc(bonus.text)} <i>${esc(bonus.name)}</i></span>`).join('')}
+    </div>
+    ${notes.length ? `<div class="vos-sb-attack-notes">${notes.map(esc).join(' · ')}</div>` : ''}
+  </li>`;
+}
+
+function renderAttacks(model) {
+  const attacks = model.attacks ?? [];
+  if (!attacks.length) return '';
+  return `<ul class="vos-sb-attacks">
+    <li class="vos-sb-attack is-head" aria-hidden="true">
+      <div class="vos-sb-attack-name">Attack</div>
+      <div class="vos-sb-attack-hit">Hit</div>
+      <div class="vos-sb-attack-dmg">Damage</div>
+    </li>
+    ${attacks.map((attack) => renderAttackRow(model, attack)).join('')}
+  </ul>`;
+}
+
+/* ── Active features ───────────────────────────────────────────────── */
+
+/* What is switched on, and what it is doing. Shown as a panel rather than by
+ * quietly editing the numbers elsewhere on the sheet: a player needs to know
+ * that their Strength save is at advantage *because they are raging*, and that
+ * it stops when the rage does. */
+function renderActive(model) {
+  const features = activeFeatures(model);
+  if (!features.length) return '';
+
+  return `<ul class="vos-sb-active">${features.map((feature) => `
+    <li class="vos-sb-active-item">
+      <div class="vos-sb-active-head">
+        <span class="vos-sb-active-name">${esc(feature.name)}</span>
+        <button type="button" class="vos-sb-active-end"${bind({
+          'data-play': 'end-feature',
+          'data-feature': feature.id,
+        })}>End</button>
+      </div>
+      <ul class="vos-sb-active-grants">${
+        feature.grants.map((grant) => `<li>${esc(grant)}</li>`).join('')
+      }</ul>
+    </li>`).join('')}</ul>`;
+}
+
 /* ── Entry point ───────────────────────────────────────────────────── */
 
 /* Conditions currently on the character. Dying is shown in the exhaustion row
@@ -384,6 +487,8 @@ export function renderStatblock(model, meta = {}) {
     ${warning}
     ${renderVitals(model)}
     ${renderConditions(model)}
+    ${section('Active', renderActive(model), { id: 'sb-active' })}
+    ${section('Attacks', renderAttacks(model), { id: 'sb-attacks' })}
     ${section('Abilities', renderAbilities(model), { id: 'sb-abilities' })}
     ${section('Skills', renderSkills(model), { id: 'sb-skills' })}
     ${section('Tools', renderTools(model), { id: 'sb-tools' })}
@@ -394,9 +499,9 @@ export function renderStatblock(model, meta = {}) {
       chips(model.proficiencies.masteries),
     ].filter(Boolean).join(''), { id: 'sb-proficiencies' })}
     ${section('Defenses', [
-      model.defenses.resistances.length ? `<p class="vos-sb-defense"><span>Resistant</span>${chips(model.defenses.resistances)}</p>` : '',
-      model.defenses.immunities.length ? `<p class="vos-sb-defense"><span>Immune</span>${chips(model.defenses.immunities)}</p>` : '',
-      model.defenses.vulnerabilities.length ? `<p class="vos-sb-defense"><span>Vulnerable</span>${chips(model.defenses.vulnerabilities)}</p>` : '',
+      defenseRow('Resistant', model.defenses.resistances, liveDefenses(model, 'resistances')),
+      defenseRow('Immune', model.defenses.immunities, liveDefenses(model, 'immunities')),
+      defenseRow('Vulnerable', model.defenses.vulnerabilities, liveDefenses(model, 'vulnerabilities')),
       model.defenses.conditionImmunities.length ? `<p class="vos-sb-defense"><span>Condition immune</span>${chips(model.defenses.conditionImmunities)}</p>` : '',
       model.senses.length ? `<p class="vos-sb-defense"><span>Senses</span>${chips(model.senses)}</p>` : '',
     ].filter(Boolean).join(''), { id: 'sb-defenses' })}

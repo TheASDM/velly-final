@@ -1061,3 +1061,71 @@
   text-transform: uppercase;
   color: var(--vos-gold-dim);
 }
+
+/* ── Activatable features on the bar ───────────────────────────────── */
+
+/* Rage sits beside Conditions and Rest because it is tapped as often as they
+   are. The count is the point: a barbarian deciding whether to rage is really
+   deciding whether to spend the last one. */
+
+.vos-play-bar-btn.is-feature b { background: #c8752f; color: #14121a; }
+
+.vos-play-bar-btn.is-feature.is-on {
+  border-color: rgba(200, 117, 47, 0.75);
+  background: rgba(200, 117, 47, 0.22);
+  color: #f0c493;
+}
+.vos-play-bar-btn.is-feature.is-on b {
+  background: #e2a05e;
+  letter-spacing: 0.08em;
+}
+/* Out of uses: still tappable, since the panel explains when they come back. */
+.vos-play-bar-btn.is-feature.is-spent { opacity: 0.5; }
+.vos-play-bar-btn.is-feature.is-spent b { background: var(--vos-border-strong); color: var(--vos-text); }
+
+.vos-play-feature-state {
+  margin: 0 0 0.6rem;
+  color: var(--vos-gold-dim);
+}
+.vos-play-feature-grants {
+  margin: 0 0 0.9rem;
+  padding-left: 1.05rem;
+  color: var(--vos-text-body);
+}
+.vos-play-feature-grants li { margin: 0.2rem 0; }
+
+.vos-play-btn {
+  display: block;
+  width: 100%;
+  min-height: 48px;
+  padding: 0.7rem 0.9rem;
+  border: 1px solid var(--vos-border);
+  border-radius: 10px;
+  background: rgba(8, 7, 11, 0.6);
+  color: var(--vos-cream);
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.78rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.vos-play-btn:hover:not([disabled]) { border-color: var(--vos-border-strong); }
+.vos-play-btn[disabled] { opacity: 0.45; cursor: default; }
+.vos-play-btn.is-primary {
+  border-color: rgba(200, 117, 47, 0.55);
+  background: rgba(200, 117, 47, 0.16);
+  color: #f0c493;
+}
+.vos-play-btn.is-danger { border-color: rgba(212, 77, 63, 0.45); }
+
+/* Who is raging, from across the table. */
+.vos-party-active {
+  margin-top: 0.35rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: 6px;
+  background: rgba(200, 117, 47, 0.18);
+  color: #e2a05e;
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}

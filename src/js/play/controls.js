@@ -534,6 +534,73 @@ export function createControls(options) {
 
   /* ── Binding ───────────────────────────────────────────────────── */
 
+/* ── Activatable features ──────────────────────────────────────── */
+
+  function featureById(id) {
+    return ((model && model.activatable) || []).find((entry) => entry.id === id) || null;
+  }
+
+  function featureIsActive(id) {
+    return Boolean((state.active || {})[id]);
+  }
+
+  function usesLeft(feature) {
+    const spent = Number((state.uses || {})[feature.id] || 0);
+    return Math.max(0, feature.uses.max - spent);
+  }
+
+  /* One tap enters, because it is a Bonus Action taken mid-turn and nobody
+   * wants a confirmation dialog between them and their Rage. Leaving goes
+   * through the panel instead — ending early wastes the use, so it should take
+   * a moment's deliberation rather than a mis-tap. */
+  function activateFeature(id) {
+    const feature = featureById(id);
+    if (!feature) return;
+    if (featureIsActive(id)) { openFeature(id); return; }
+    if (!usesLeft(feature)) {
+      toast(`No uses of ${feature.name} left — a rest brings them back.`, { tone: 'warn' });
+      return;
+    }
+    apply({
+      op: 'activateFeature',
+      feature: feature.id,
+      name: feature.name,
+      max: feature.uses.max,
+    });
+  }
+
+  function openFeature(id) {
+    const feature = featureById(id);
+    if (!feature) return;
+    const active = featureIsActive(id);
+    const left = usesLeft(feature);
+
+    openSheet(feature.name, `
+      <p class="vos-play-feature-state">${active
+        ? 'Active now.'
+        : `${left} of ${feature.uses.max} uses left${
+            feature.uses.recovery ? `, back on a ${esc(feature.uses.recovery)}` : ''}${
+            feature.activation ? ` · ${esc(feature.activation)}` : ''}.`}</p>
+      <ul class="vos-play-feature-grants">${
+        feature.grants.map((grant) => `<li>${esc(grant)}</li>`).join('')
+      }</ul>
+      ${active
+        ? '<button type="button" class="vos-play-btn is-danger" data-feature-act="end">End it</button>'
+        : `<button type="button" class="vos-play-btn is-primary" data-feature-act="start"${
+            left ? '' : ' disabled'}>${
+            left ? `Use ${esc(feature.name)}` : 'No uses left'}</button>`}
+    `, (sheet) => {
+      const button = sheet.querySelector('[data-feature-act]');
+      if (!button) return;
+      button.addEventListener('click', () => {
+        closeSheet();
+        apply(button.dataset.featureAct === 'end'
+          ? { op: 'endFeature', feature: feature.id }
+          : { op: 'activateFeature', feature: feature.id, name: feature.name, max: feature.uses.max });
+      });
+    });
+  }
+
   function onActivate(event) {
     const target = event.target.closest('[data-play]');
     if (!target || !root.contains(target)) return;
@@ -565,6 +632,12 @@ export function createControls(options) {
         apply({ op: 'useCharge', feature, max: Number(target.dataset.max) || undefined });
         break;
       }
+      case 'feature':
+        openFeature(target.dataset.feature);
+        break;
+      case 'end-feature':
+        apply({ op: 'endFeature', feature: target.dataset.feature });
+        break;
       case 'exhaustion': {
         const value = Number(target.dataset.value);
         // Tapping the level you are already at steps back down, so the track
@@ -592,6 +665,8 @@ export function createControls(options) {
     openPrepare,
     openMasks,
     openForms,
+    openFeature,
+    activateFeature,
     formStatblockHtml,
     setState(next, nextLimits) {
       state = next;

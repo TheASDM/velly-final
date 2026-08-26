@@ -452,3 +452,182 @@ details[open] > .vos-sb-entry-head::before { transform: rotate(90deg); }
   .vos-sb-name, .vos-sb-section-title, .vos-sb-vital-value { color: #000; }
   .vos-sb-section { break-inside: avoid; }
 }
+
+/* ── Attacks ───────────────────────────────────────────────────────── */
+
+/* Three columns, because the question is always the same three things: what am
+   I swinging, what do I add to the roll, what do I roll for damage. The name
+   takes the space it needs, the two numbers are fixed so they form a column
+   your eye can run down instead of hunting along each row. */
+
+.vos-sb-attacks {
+  display: grid;
+  gap: 0.3rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.vos-sb-attack {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 3.2rem minmax(7.5rem, auto);
+  align-items: baseline;
+  gap: 0.2rem 0.7rem;
+  padding: 0.55rem 0.7rem;
+  border: 1px solid var(--vos-border);
+  border-radius: 9px;
+  background: rgba(8, 7, 11, 0.45);
+}
+.vos-sb-attack.is-head {
+  padding: 0 0.7rem;
+  border: 0;
+  background: none;
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.56rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--vos-gold-dim);
+}
+/* What is in hand is what you are most likely to use. */
+.vos-sb-attack.is-equipped { border-color: rgba(212, 165, 116, 0.34); }
+
+.vos-sb-attack-name {
+  min-width: 0;
+  color: var(--vos-cream);
+  overflow-wrap: anywhere;
+}
+.vos-sb-attack-variant {
+  margin-left: 0.4rem;
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--vos-gold-dim);
+}
+.vos-sb-attack-hit {
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 1.05rem;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  color: var(--vos-gold-bright);
+}
+.vos-sb-attack.is-head .vos-sb-attack-hit { font-size: 0.56rem; color: var(--vos-gold-dim); }
+/* No bonus captured yet rather than a bonus of zero. */
+.vos-sb-attack-hit .is-unknown { color: var(--vos-border-strong); }
+
+.vos-sb-attack-dmg {
+  font-variant-numeric: tabular-nums;
+  color: var(--vos-text);
+}
+/* A live bonus is always attributed. "+2" on its own reads as part of the
+   weapon; "+2 dmg Rage" tells you why it is there and when it stops. */
+.vos-sb-attack-bonus {
+  display: inline-block;
+  margin-left: 0.4rem;
+  padding: 0.05rem 0.4rem;
+  border-radius: 999px;
+  background: rgba(200, 117, 47, 0.18);
+  color: #e2a05e;
+  font-size: 0.74rem;
+  white-space: nowrap;
+}
+.vos-sb-attack-bonus i {
+  font-style: normal;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-size: 0.62rem;
+  opacity: 0.85;
+}
+
+.vos-sb-attack-notes {
+  grid-column: 1 / -1;
+  font-size: 0.78rem;
+  color: var(--vos-gold-dim);
+}
+
+/* Below roughly a small phone the two numbers keep their column and the name
+   takes the row above, rather than the damage wrapping into a ragged block. */
+@media (max-width: 400px) {
+  .vos-sb-attack {
+    grid-template-columns: 3.2rem minmax(0, 1fr);
+  }
+  .vos-sb-attack-name { grid-column: 1 / -1; }
+  .vos-sb-attack.is-head { display: none; }
+}
+
+/* ── What is switched on ───────────────────────────────────────────── */
+
+/* Deliberately not folded into the numbers elsewhere on the sheet. A player
+   needs to know their Strength save is at advantage *because they are raging*,
+   and that it goes away when the rage does. */
+
+.vos-sb-active {
+  display: grid;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.vos-sb-active-item {
+  padding: 0.7rem 0.85rem;
+  border: 1px solid rgba(200, 117, 47, 0.45);
+  border-radius: 10px;
+  background: rgba(200, 117, 47, 0.09);
+}
+.vos-sb-active-head {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 0.4rem;
+}
+.vos-sb-active-name {
+  flex: 1;
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.86rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #e2a05e;
+}
+.vos-sb-active-end {
+  min-height: 32px;
+  padding: 0.2rem 0.7rem;
+  border: 1px solid rgba(200, 117, 47, 0.5);
+  border-radius: 999px;
+  background: transparent;
+  color: #e2a05e;
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.vos-sb-active-end:hover { background: rgba(200, 117, 47, 0.18); }
+
+.vos-sb-active-grants {
+  margin: 0;
+  padding-left: 1.05rem;
+  color: var(--vos-text-body);
+}
+.vos-sb-active-grants li { margin: 0.15rem 0; }
+
+@media (pointer: coarse) {
+  .vos-sb-active-end { min-height: 40px; padding-inline: 0.9rem; }
+}
+
+@media print {
+  .vos-sb-attacks { break-inside: avoid; }
+  .vos-sb-attack-hit, .vos-sb-attack-name { color: #000; }
+}
+
+/* A defense that is only there because something is switched on. It sits with
+   the permanent ones because that is where a player looks for it mid-fight,
+   and names its source because it will be gone in a minute. */
+.vos-sb-chips li.is-live {
+  border-color: rgba(200, 117, 47, 0.5);
+  background: rgba(200, 117, 47, 0.14);
+  color: #e2a05e;
+}
+.vos-sb-chips li.is-live i {
+  font-style: normal;
+  font-size: 0.62rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  opacity: 0.8;
+}

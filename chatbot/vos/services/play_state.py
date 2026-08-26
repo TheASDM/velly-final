@@ -56,6 +56,7 @@ def default_state():
         "concentration": None,
         "mask": None,
         "form": None,
+        "active": {},
         "items": [],
         "seededAt": None,
     }
@@ -271,6 +272,54 @@ def _op_restore_charge(state, op, limits):
     return "restored a charge"
 
 
+# ── Activatable features ──────────────────────────────────────────────
+#
+# Rage is the shape this was built around: a feature with limited uses that,
+# once switched on, changes numbers until something turns it off. The state
+# holds only which features are on and since when — what each one *does* is
+# read from the feature's own Active Effects, on the client, so a homebrew
+# feature works without anything here knowing its name.
+#
+# The use is spent through the same counter as any other charge. A feature has
+# one pool, not one for activating and another for everything else.
+
+ACTIVE_MAX = 12
+
+
+def _op_activate_feature(state, op, limits):
+    feature = str(op.get("feature") or "").strip()[:64]
+    if not feature:
+        raise OpError("feature is required")
+    label = str(op.get("name") or feature).strip()[:64]
+
+    active = state.setdefault("active", {})
+    if feature in active:
+        raise OpError(f"{label} is already active")
+    if len(active) >= ACTIVE_MAX:
+        raise OpError("Too many features active at once")
+
+    maximum = op.get("max")
+    spent = int(state["uses"].get(feature, 0)) + 1
+    if maximum is not None and spent > int(maximum):
+        raise OpError(f"No uses of {label} remaining")
+
+    state["uses"][feature] = spent
+    active[feature] = {"name": label, "startedAt": _now_ms()}
+    return f"activated {label}"
+
+
+def _op_end_feature(state, op, limits):
+    feature = str(op.get("feature") or "").strip()[:64]
+    if not feature:
+        raise OpError("feature is required")
+    entry = state.setdefault("active", {}).pop(feature, None)
+    if entry is None:
+        return "feature was not active"
+
+    # Ending early does not refund the use — you spent it to start.
+    return f"ended {entry.get('name') or feature}"
+
+
 def _op_add_condition(state, op, limits):
     key = str(op.get("condition") or "").strip().lower()[:32]
     if key not in CONDITIONS:
@@ -312,6 +361,8 @@ def _op_new_round(state, op, limits):
 
 def _op_end_combat(state, op, limits):
     state["reaction"] = {"used": False, "assessUsed": False}
+    # Nothing you switch on mid-fight is still on once the fight is over.
+    state["active"] = {}
     return "combat ended"
 
 
@@ -327,6 +378,7 @@ def _op_short_rest(state, op, limits):
             state["uses"][feature] = 0
     state["concentration"] = None
     state["reaction"] = {"used": False, "assessUsed": False}
+    state["active"] = {}
     return "short rest"
 
 
@@ -336,6 +388,7 @@ def _op_field_rest(state, op, limits):
     as a heal, so there is nothing to restore here."""
     state["concentration"] = None
     state["reaction"] = {"used": False, "assessUsed": False}
+    state["active"] = {}
     return "field rest"
 
 
@@ -359,6 +412,7 @@ def _op_long_rest(state, op, limits):
     state["reaction"] = {"used": False, "assessUsed": False}
     state["mask"] = None
     state["form"] = None
+    state["active"] = {}
     return "long rest"
 
 
@@ -552,6 +606,8 @@ OPS = {
     "spendHitDie": _op_spend_hit_die,
     "useCharge": _op_use_charge,
     "restoreCharge": _op_restore_charge,
+    "activateFeature": _op_activate_feature,
+    "endFeature": _op_end_feature,
     "addCondition": _op_add_condition,
     "removeCondition": _op_remove_condition,
     "useReaction": _op_use_reaction,
@@ -663,11 +719,14 @@ def reconcile(state, limits):
         state["hitDiceSpent"] = _clamp(state["hitDiceSpent"], 0, total)
 
     state["exhaustion"] = _clamp(state["exhaustion"], 0, MAX_EXHAUSTION)
+    # Older stored states predate this field; fill it so every response has the
+    # same shape and the client never has to guess.
+    state.setdefault("active", {})
     return state
 
 
 __all__ = [
-    'STATE_VERSION', 'MAX_EXHAUSTION', 'PREPARED_MAX', 'MASK_MINUTES', 'CONDITIONS', 'OPS', 'OpError',
+    'STATE_VERSION', 'MAX_EXHAUSTION', 'PREPARED_MAX', 'MASK_MINUTES', 'ACTIVE_MAX', 'CONDITIONS', 'OPS', 'OpError',
     '_mask_remaining',
     'default_state', 'limits_from_statblock', 'apply_op', 'seed_from_statblock',
     '_spell_is_prepared',

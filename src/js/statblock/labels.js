@@ -86,6 +86,15 @@ const WORD_BREAK = /([a-z0-9])([A-Z])/g;
 
 /* Fallback for an unmapped code: "animalHandling" -> "Animal Handling",
  * "half-plate" -> "Half Plate". */
+/* Weapon properties. Foundry stores three-letter codes, and humanize() turns
+   "ver" into "Ver" rather than "Versatile". */
+export const WEAPON_PROPERTIES = {
+  amm: 'Ammunition', fin: 'Finesse', foc: 'Focus', hvy: 'Heavy', lgt: 'Light',
+  lod: 'Loading', rch: 'Reach', rel: 'Reload', ret: 'Returning', spc: 'Special',
+  thr: 'Thrown', two: 'Two-handed', ver: 'Versatile', mgc: 'Magical',
+  sil: 'Silvered', ada: 'Adamantine',
+};
+
 export function humanize(code) {
   const text = String(code ?? '').trim();
   if (!text) return '';

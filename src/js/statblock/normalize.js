@@ -9,9 +9,11 @@
  */
 import {
   ABILITIES, ABILITY_ORDER, SKILLS, SIZES, ARMOR_PROF, WEAPON_PROF,
-  SPELL_SCHOOLS, ACTIVATION, SPELL_PREP, RECOVERY, ITEM_KIND, TOOLS, humanize, lookup,
+  SPELL_SCHOOLS, ACTIVATION, SPELL_PREP, RECOVERY, ITEM_KIND, TOOLS, WEAPON_PROPERTIES,
+  humanize, lookup,
 } from './labels.js';
 import { plainText, richText } from './html.js';
+import { describeEffects, effectModifiers } from './effects.js';
 
 const modifierOf = (score) => (score == null ? null : Math.floor((Number(score) - 10) / 2));
 
@@ -414,6 +416,141 @@ function inventory(doc) {
     .sort((a, b) => Number(b.equipped) - Number(a.equipped) || a.name.localeCompare(b.name));
 }
 
+/* ── Attacks ───────────────────────────────────────────────────────── */
+
+/* What it takes to swing the thing.
+ *
+ * The two numbers a player wants mid-turn — what they add to the roll and what
+ * dice they throw — are derived, not stored: the bonus folds in proficiency,
+ * an ability modifier, the weapon's own magic and anything currently buffing
+ * them. Only the prepared activity knows the answer, so the bridge captures it
+ * and this reads it back.
+ *
+ * Without that capture the damage dice are still recoverable from source, and
+ * that is what an older export shows: the dice, and no claimed bonus. A blank
+ * where a number should be is honest. A number this file invented would not be.
+ */
+function damageFromSource(activity, item) {
+  /* A weapon's own die lives on the item and the activity says whether it
+     counts — `includeBase`. Adding it unconditionally would double the damage
+     of any activity that already lists its own parts. */
+  const base = activity?.damage?.includeBase !== false && item?.system?.damage?.base
+    ? [item.system.damage.base] : [];
+  return [...(activity?.damage?.parts ?? []), ...base]
+    .map((part) => {
+      if (!part?.number || !part?.denomination) return '';
+      const types = (part.types ?? []).map(humanize).join('/');
+      const bonus = part.bonus ? ` + ${part.bonus}` : '';
+      return `${part.number}d${part.denomination}${bonus}${types ? ` ${types}` : ''}`;
+    })
+    .filter(Boolean)
+    .join(' plus ');
+}
+
+function rangeFromSource(activity, item) {
+  const range = activity?.range?.value ? activity.range : item?.system?.range;
+  if (!range?.value) return '';
+  const units = range.units || 'ft';
+  return range.long ? `${range.value}/${range.long} ${units}.` : `${range.value} ${units}.`;
+}
+
+/* Foundry's own key for an attack: melee/ranged crossed with weapon/spell.
+ * Its effects target these exact keys, so using them here means a damage bonus
+ * lands on precisely the attacks Foundry would land it on. */
+function attackKind(activity) {
+  const type = activity?.attack?.type ?? {};
+  const reach = type.value === 'ranged' ? 'r' : 'm';
+  const kind = type.classification === 'spell' ? 'sak' : 'wak';
+  return `${reach}${kind}`;
+}
+
+function attacks(doc) {
+  const derived = doc.derived?.attacks ?? {};
+  const rows = [];
+
+  for (const item of doc.items ?? []) {
+    /* Spells are excluded even when they attack. Fire Bolt has a to-hit and a
+       damage die, but it already has a home in the spell list, and a player
+       looking for it looks there. Weapons and the features that grant attacks
+       have nowhere else to be. */
+    if (item.type !== 'weapon' && item.type !== 'feat') continue;
+
+    const activities = item.system?.activities;
+    if (!activities || typeof activities !== 'object') continue;
+
+    const captured = derived[item._id] ?? [];
+    /* An Unarmed Strike carries Damage, Grapple and Shove; only one is an
+       attack, so the count that decides whether to name the variant is of
+       attacks, not of activities. */
+    const attackActivities = Object.values(activities).filter((a) => a?.type === 'attack');
+
+    attackActivities.forEach((activity, index) => {
+      const found = captured.find((row) => row.id === activity._id) ?? captured[index] ?? {};
+      const properties = (item.system?.properties ?? [])
+        .map((code) => lookup(WEAPON_PROPERTIES, code));
+
+      rows.push({
+        id: `${item._id}:${activity._id ?? index}`,
+        itemId: item._id,
+        name: item.name,
+        /* An item with one attack is just itself; the activity name only earns
+           its place when a weapon offers a choice (thrown, versatile). */
+        variant: attackActivities.length > 1 ? (activity.name || '') : '',
+        toHit: found.toHit ?? null,
+        damage: found.damage || damageFromSource(activity, item) || '',
+        range: found.range || rangeFromSource(activity, item),
+        attackKind: attackKind(activity),
+        kind: item.type === 'weapon' ? 'weapon' : 'feature',
+        equipped: item.system?.equipped === true,
+        mastery: item.system?.mastery ? humanize(item.system.mastery) : '',
+        properties,
+      });
+    });
+  }
+
+  /* A row with neither a bonus nor a die has nothing to tell anyone. Before
+     the bridge captures attacks these are the items whose numbers are entirely
+     derived; after it, they fill in and reappear. */
+  return rows
+    .filter((row) => row.toHit || row.damage)
+    .sort((a, b) =>
+      Number(b.equipped) - Number(a.equipped)
+      || Number(/unarmed/i.test(a.name)) - Number(/unarmed/i.test(b.name))
+      || a.name.localeCompare(b.name));
+}
+
+/* ── Activatable features ──────────────────────────────────────────── */
+
+/* Features a player turns on, spends a use for, and then wants to see the
+ * consequences of — Rage being the one this was built for.
+ *
+ * The test is deliberately structural rather than a list of names: a feature
+ * with limited uses that carries an Active Effect is, by construction, a thing
+ * you switch on that changes your numbers. Spells are excluded because they
+ * already have a home, and duplicating Longstrider onto the play bar would be
+ * two places to tap for one thing.
+ */
+function activatable(doc, derivedUses) {
+  const context = { scale: doc.derived?.scale ?? {}, prof: doc.derived?.prof ?? null };
+
+  return (doc.items ?? [])
+    .filter((item) => item.type === 'feat')
+    .map((item) => {
+      const uses = usesOf(item, derivedUses);
+      const grants = describeEffects(item, context);
+      if (!uses || !grants.length) return null;
+      return {
+        id: item._id,
+        name: item.name,
+        uses,
+        grants,
+        modifiers: effectModifiers(item, context),
+        activation: activationOf(item),
+      };
+    })
+    .filter(Boolean);
+}
+
 /* ── Entry point ───────────────────────────────────────────────────── */
 
 export function normalizeStatblock(raw) {
@@ -542,6 +679,8 @@ export function normalizeStatblock(raw) {
     features: features(doc),
     spells: spells(doc),
     inventory: inventory(doc),
+    attacks: attacks(doc),
+    activatable: activatable(doc, doc.derived?.itemUses),
     currency: sys.currency ?? {},
 
     meta: {

@@ -177,6 +177,31 @@ function hasMasks() {
     .some((f) => (f.name || '').toLowerCase().startsWith('maschera ')));
 }
 
+/* Features that go on the bar: the ones with uses that change your numbers
+ * when you spend one. Noname has Rage and nobody else has anything, which is
+ * the point — the bar is built from the character, not from a list of names
+ * kept in step by hand. */
+function activatableFeatures() {
+  return (statModel && statModel.activatable) || [];
+}
+
+function renderFeatureButtons() {
+  const active = (play && play.state.active) || {};
+  const spent = (play && play.state.uses) || {};
+
+  return activatableFeatures().map((feature) => {
+    const left = Math.max(0, feature.uses.max - Number(spent[feature.id] || 0));
+    const on = Boolean(active[feature.id]);
+    return `<button type="button" class="vos-play-bar-btn is-feature${
+      on ? ' is-on' : ''}${!on && !left ? ' is-spent' : ''}"
+      data-bar="feature" data-feature="${esc(feature.id)}"
+      aria-pressed="${on}"
+      aria-label="${esc(feature.name)}: ${on ? 'active' : `${left} of ${feature.uses.max} uses left`}">
+      ${esc(feature.name)}<b>${on ? 'ON' : left}</b>
+    </button>`;
+  }).join('');
+}
+
 function renderPlayBar() {
   const page = document.querySelector('.vos-sheet-page');
   let bar = document.getElementById('vos-play-bar');
@@ -199,6 +224,7 @@ function renderPlayBar() {
       if (button.dataset.bar === 'mask') controls.openMasks();
       if (button.dataset.bar === 'prepare') controls.openPrepare();
       if (button.dataset.bar === 'rest') controls.openRests();
+      if (button.dataset.bar === 'feature') controls.activateFeature(button.dataset.feature);
     });
   }
 
@@ -223,6 +249,7 @@ function renderPlayBar() {
       Conditions${conditions ? `<b>${conditions}</b>` : ''}
     </button>
     ${hasMasks() ? '<button type="button" class="vos-play-bar-btn" data-bar="mask">Mask</button>' : ''}
+    ${renderFeatureButtons()}
     ${statModel && statModel.spellcasting
       ? '<button type="button" class="vos-play-bar-btn" data-bar="prepare">Spells</button>' : ''}
     <button type="button" class="vos-play-bar-btn" data-bar="rest">Rest</button>`;

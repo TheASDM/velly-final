@@ -130,6 +130,9 @@ function card(entry) {
     ${s.concentration ? `<div class="vos-party-conc">Concentrating: ${
       esc(s.concentration.spell)}</div>` : ''}
 
+    ${Object.keys(s.active || {}).length ? `<div class="vos-party-active">${
+      Object.values(s.active).map((f) => esc(f.name)).join(' · ')}</div>` : ''}
+
     <div class="vos-party-row">
       ${slotSummary(entry)}
       ${hitDiceLeft ? `<span class="vos-party-hd">${hitDiceLeft} HD</span>` : ''}

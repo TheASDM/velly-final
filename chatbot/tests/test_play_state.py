@@ -496,3 +496,72 @@ def test_the_numeric_and_legacy_shapes_both_read(server_module):
     assert _spell_is_prepared({"system": {"preparation": {"mode": "always"}}}) is True
     assert _spell_is_prepared({"system": {"preparation": {"mode": "prepared"}}}) is False
     assert _spell_is_prepared({"system": {}}) is False
+
+
+# ── Activatable features ──────────────────────────────────────────────
+
+def test_activating_a_feature_spends_a_use_and_marks_it_on(app, auth_headers):
+    body = post(app, auth_headers["player"],
+                {"op": "activateFeature", "feature": "rage1", "name": "Rage", "max": 3}).get_json()
+
+    assert body["state"]["uses"]["rage1"] == 1
+    assert body["state"]["active"]["rage1"]["name"] == "Rage"
+    assert body["state"]["active"]["rage1"]["startedAt"] > 0
+
+
+def test_a_feature_cannot_be_activated_twice(app, auth_headers):
+    post(app, auth_headers["player"], {"op": "activateFeature", "feature": "rage1", "name": "Rage", "max": 3})
+    again = post(app, auth_headers["player"],
+                 {"op": "activateFeature", "feature": "rage1", "name": "Rage", "max": 3})
+
+    assert again.status_code == 409          # a refused op, not a malformed one
+    assert "already active" in again.get_json()["error"]
+
+
+def test_activating_stops_at_the_last_use(app, auth_headers):
+    for _ in range(2):
+        post(app, auth_headers["player"], {"op": "activateFeature", "feature": "r", "name": "Rage", "max": 2})
+        post(app, auth_headers["player"], {"op": "endFeature", "feature": "r"})
+
+    refused = post(app, auth_headers["player"],
+                   {"op": "activateFeature", "feature": "r", "name": "Rage", "max": 2})
+    assert refused.status_code == 409
+    assert "No uses of Rage remaining" in refused.get_json()["error"]
+
+
+def test_ending_a_feature_does_not_refund_the_use(app, auth_headers):
+    """You spent it to start. Stopping early is not a mistake to be undone."""
+    post(app, auth_headers["player"], {"op": "activateFeature", "feature": "r", "name": "Rage", "max": 3})
+    body = post(app, auth_headers["player"], {"op": "endFeature", "feature": "r"}).get_json()
+
+    assert body["state"]["active"] == {}
+    assert body["state"]["uses"]["r"] == 1
+
+
+def test_ending_a_feature_that_was_never_on_is_not_an_error(app, auth_headers):
+    """Two phones at one table: the second tap should be a no-op, not a 400."""
+    response = post(app, auth_headers["player"], {"op": "endFeature", "feature": "r"})
+    assert response.status_code == 200
+    assert response.get_json()["state"]["active"] == {}
+
+
+@pytest.mark.parametrize("op", ["shortRest", "longRest", "fieldRest", "endCombat"])
+def test_rests_and_the_end_of_a_fight_put_everything_down(app, auth_headers, op):
+    post(app, auth_headers["player"], {"op": "activateFeature", "feature": "r", "name": "Rage", "max": 3})
+    body = post(app, auth_headers["player"], {"op": op}).get_json()
+
+    assert body["state"]["active"] == {}
+
+
+def test_states_stored_before_this_field_existed_still_read(server_module):
+    """Nobody's play state gets reset to add a key."""
+    from vos.services.play_state import reconcile, apply_op
+
+    old = {"hp": {"current": 10, "temp": 0}, "exhaustion": 0, "slots": {}, "pact": 0,
+           "hitDiceSpent": 0, "uses": {}, "prepared": [], "conditions": [],
+           "reaction": {"used": False, "assessUsed": False}, "concentration": None,
+           "mask": None, "form": None, "items": [], "seededAt": None}
+
+    assert reconcile(old, {"maxHp": 21})["active"] == {}
+    state, _ = apply_op(old, {"op": "activateFeature", "feature": "r", "name": "Rage", "max": 3}, {})
+    assert state["active"]["r"]["name"] == "Rage"

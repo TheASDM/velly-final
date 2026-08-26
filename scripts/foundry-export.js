@@ -57,6 +57,67 @@ function deriveItemUses(actor) {
   return out;
 }
 
+/* Attack rolls and damage, as Foundry has worked them out.
+ *
+ * Source data has the pieces — an ability, a base damage die, properties — but
+ * not the answer. The bonus a player needs mid-turn folds in proficiency, the
+ * relevant modifier, weapon magic and any active effect, and only the prepared
+ * activity knows it. Reaching for `labels` in a few places because their exact
+ * home moves between system versions; anything not found is simply absent, and
+ * the sheet falls back to showing the damage dice without a bonus.
+ */
+function deriveAttacks(actor) {
+  const out = {};
+  for (const item of actor.items ?? []) {
+    const activities = item.system?.activities;
+    if (!activities) continue;
+
+    // An ActivityCollection in 5.x, a plain object in older builds.
+    const list = typeof activities.values === 'function'
+      ? Array.from(activities.values())
+      : Object.values(activities);
+
+    const rows = [];
+    for (const activity of list) {
+      if (activity?.type !== 'attack') continue;
+      // Before activities existed these labels lived on the item itself.
+      const labels = { ...(item.labels ?? {}), ...(activity.labels ?? {}) };
+      const damages = Array.isArray(labels.damages)
+        ? labels.damages.map((d) => d?.formula ?? d?.label ?? d).filter(Boolean)
+        : [];
+      rows.push({
+        id: activity.id ?? activity._id ?? null,
+        name: activity.name || item.name,
+        toHit: labels.toHit ?? labels.modifier ?? null,
+        damage: damages.join(' plus ') || labels.damage || null,
+        range: labels.range ?? null,
+        save: labels.save ?? null,
+      });
+    }
+    if (rows.length) out[item.id] = rows;
+  }
+  return out;
+}
+
+/* Class scale values — a barbarian's rage damage, a bard's inspiration die.
+ * These are formulas everywhere else and numbers only here. */
+function deriveScale(actor) {
+  const scale = actor.system?.scale;
+  if (!scale) return {};
+  const out = {};
+  for (const [cls, values] of Object.entries(scale)) {
+    for (const [key, value] of Object.entries(values ?? {})) {
+      const resolved = value?.value ?? value?.number ?? value;
+      if (typeof resolved === 'number' || typeof resolved === 'string') {
+        out[`${cls}.${key}`] = resolved;
+      } else if (value?.die || value?.faces) {
+        out[`${cls}.${key}`] = `${value.number ?? 1}d${value.die ?? value.faces}`;
+      }
+    }
+  }
+  return out;
+}
+
 function deriveActor(actor) {
   const sys = actor.system ?? {};
   const abilities = {};
@@ -124,6 +185,8 @@ function deriveActor(actor) {
     spells,
     classes,
     itemUses: deriveItemUses(actor),
+    attacks: deriveAttacks(actor),
+    scale: deriveScale(actor),
     // Resolved labels for the id-pointers in details.
     raceName: actor.system?.details?.race?.name ?? actor.items?.find?.((i) => i.type === 'race')?.name ?? null,
     backgroundName: actor.system?.details?.background?.name
