@@ -1,12 +1,13 @@
 ---
 title: Professor Emiliana Sarto
-description: VAVA professor and Venturia's foremost — and long-overlooked — scholar of Vallombrosa and the city's fey-touched nature.
+description: 'VAVA professor and Venturia''s foremost — and long-overlooked — scholar of Vallombrosa and the city''s fey-touched nature.'
 published: true
 date: 2026-05-25T00:00:00.000Z
 tags: characters, npcs, emiliana-sarto, vava, faculty, vallombrosa
 editor: markdown
 dateCreated: 2026-05-25T00:00:00.000Z
 ---
+
 
 <div style="display: flex; gap: 2rem; align-items: flex-start; margin: 0 0 2.5rem; padding: 1.5rem 1.75rem; background: linear-gradient(135deg, rgba(20, 18, 24, 0.55) 0%, rgba(36, 28, 18, 0.4) 100%); border: 1px solid rgba(139, 115, 85, 0.35); border-radius: 6px; box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6); flex-wrap: wrap;">
 
@@ -26,6 +27,7 @@ dateCreated: 2026-05-25T00:00:00.000Z
 
 Professor Emiliana Sarto has spent fifteen years studying the one subject the Academy would rather no one study: Vallombrosa itself — the boundary, the fog, and the fey-touched quirks that make Venturia what it is. For most of those years, her work sat at the margins of [VAVA](/en/Venturia/Locations/vava), tolerated more than respected.
 
+
 ---
 
 ## Her Work
@@ -34,11 +36,13 @@ Sarto's research centers on the valley and its fog: how the boundary behaves, wh
 
 She is a vocal advocate for lifting VAVA's quiet restrictions on Vallombrosa research, and has pressed Academy leadership to open its sealed records on the subject.
 
+
 ---
 
 ## Reputation
 
 Among students and colleagues, Sarto is known as dogged, passionate, and a little obsessive — the professor who kept asking the questions everyone else had agreed to leave alone. For years that earned her polite dismissal. Lately, with the city's recent strangeness, far more people have started taking her seriously, and for the first time her field looks less like a dead end and more like the thing everyone should have been studying all along.
+
 
 ---
 

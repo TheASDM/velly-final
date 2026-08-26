@@ -1,12 +1,13 @@
 ---
 title: Valeria Tessere
-description: The masked leader of the Veil Court, a former celebrated actress and guardian of Venturia's Masquerade traditions.
+description: 'The masked leader of the Veil Court, a former celebrated actress and guardian of Venturia''s Masquerade traditions.'
 published: true
 date: 2026-05-25T00:00:00.000Z
 tags: characters, npcs, veil-court, masks, theater, autumn-masquerade, valeria-tessere
 editor: markdown
 dateCreated: 2026-05-25T00:00:00.000Z
 ---
+
 
 <div style="display: flex; gap: 2rem; align-items: flex-start; margin: 0 0 2.5rem; padding: 1.5rem 1.75rem; background: linear-gradient(135deg, rgba(20, 18, 24, 0.55) 0%, rgba(36, 28, 18, 0.4) 100%); border: 1px solid rgba(139, 115, 85, 0.35); border-radius: 6px; box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6); flex-wrap: wrap;">
 
@@ -32,11 +33,13 @@ Valeria Tessere is the public face, when she permits such a thing, of the [Veil 
 
 She wears a different mask to every public appearance, and has seemed to do so for rather longer than her apparent years would allow.
 
+
 ---
 
 ## Reputation
 
 Valeria is charismatic, politically shrewd, and genuinely devoted to the city's mask-culture. She does not hold government recognition, and the Veil Court seems to prefer it that way. Influence is cleaner when no one can summon you to a vote.
+
 
 ---
 

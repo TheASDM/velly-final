@@ -1,8 +1,10 @@
 ---
 title: Bard — 2024 Class Changes
-description: A comprehensive breakdown of what changed for the Bard class in the 2024 Player's Handbook, covering Bardic Inspiration, Magical Secrets, subclass updates, and the best spells at every level.
-tags: "rules, bard, 2024, class-changes, player-guide, bardic-inspiration, magical-secrets"
+description: 'A comprehensive breakdown of what changed for the Bard class in the 2024 Player''s Handbook, covering Bardic Inspiration, Magical Secrets, subclass updates, and the best spells at every level.'
+published: true
 date: 2026-02-23T00:00:00.000Z
+tags: rules, bard, 2024, class-changes, player-guide, bardic-inspiration, magical-secrets
+editor: markdown
 ---
 
 ## Core Class Features
@@ -85,6 +87,7 @@ Choose an Epic Boon feat.
 - Always have Power Word Kill and Power Word Heal prepared
 - Can target a second creature with these spells
 
+
 ---
 
 ## Subclass Changes
@@ -111,6 +114,7 @@ Monk-bard hybrid focused on movement and unarmed strikes:
 ### College of Valor (Minor Updates)
 - Martial Training makes weapons spellcasting foci
 - Otherwise largely the same
+
 
 ---
 
@@ -161,10 +165,10 @@ Monk-bard hybrid focused on movement and unarmed strikes:
 - **Glibness (8)** — Auto-succeed on Charisma checks.
 - **Wish (9)** — The most powerful spell in the game.
 
+
 ---
 
 ## Magical Secrets Recommendations (Level 10+)
-
 **From Cleric:**
 - Spirit Guardians (3rd) — Area control + damage
 - Pass Without Trace via Druid (2nd) — +10 stealth for whole party
@@ -179,6 +183,7 @@ Monk-bard hybrid focused on movement and unarmed strikes:
 - Fireball (3rd) — Because every bard wants to once
 - Haste (3rd) — Supercharge a martial ally
 - Wall of Force (5th) — Impenetrable barrier
+
 
 ---
 

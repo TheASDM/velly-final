@@ -1,11 +1,14 @@
 ---
-title: 2024 Player's Handbook — Full Overview
-description: The 2024 PHB isn't D&D 6th Edition — it's a refined update to 5e incorporating 10 years of feedback. Here's everything that changed, from book structure to spell mechanics to class overhauls.
-tags: "rules, 2024, phb, overview, player-guide, system-changes, weapon-mastery, backgrounds, species"
+title: '2024 Player''s Handbook — Full Overview'
+description: 'The 2024 PHB isn''t D&D 6th Edition — it''s a refined update to 5e incorporating 10 years of feedback. Here''s everything that changed, from book structure to spell mechanics to class overhauls.'
+published: true
 date: 2026-02-23T00:00:00.000Z
+tags: rules, 2024, phb, overview, player-guide, system-changes, weapon-mastery, backgrounds, species
+editor: markdown
 ---
 
 The 2024 Player's Handbook isn't D&D 6th Edition—it's a refined, updated version of 5th Edition incorporating 10 years of feedback and playtesting. Here's everything that's changed.
+
 
 ---
 
@@ -25,6 +28,7 @@ For the first time, the PHB teaches you how to play *before* character creation.
 The back of the book now contains a comprehensive Rules Glossary that consolidates most rules you'll need during play. It's monochrome and makes looking up rules dramatically faster. This may be the single best quality-of-life improvement in the book.
 
 **Page Count:** 384 pages (up from 320 in 2014)
+
 
 ---
 
@@ -71,6 +75,7 @@ Species now focus entirely on **unique traits** rather than stats.
 - **Wood Elves:** Get Longstrider at level 3, Pass Without Trace at level 5
 - **Half-races removed:** Half-elves and half-orcs aren't in the core book (use Elf or Orc traits + appropriate background)
 
+
 ---
 
 ## Feats System Overhaul
@@ -95,6 +100,7 @@ Feats now organized into 4 categories:
 - Powerful endgame abilities (e.g., Boon of Fate raises an ability to 30)
 
 **Total Feats:** 75 feats (37 new, 35 revised)
+
 
 ---
 
@@ -126,6 +132,7 @@ Barbarian, Fighter, Paladin, Ranger, Rogue
 ### Tactical Weapon Swapping
 The 2024 rules let you draw or stow a weapon as part of the Attack action. With Extra Attack, you can use two different Mastery properties in one turn.
 
+
 ---
 
 ## Rules Changes & Streamlining
@@ -151,10 +158,10 @@ No longer a whole condition. If surprised:
 ### Unarmed Strikes
 - Confirmed: Add Strength modifier to damage (1 + STR modifier)
 
+
 ---
 
 ## Spell Changes
-
 **Total Spells:** 391 (30 brand new)
 
 ### Healing Spells Massively Buffed
@@ -175,6 +182,7 @@ No longer a whole condition. If surprised:
 - Sunburst (added to Cleric list)
 - Fount of Moonlight, Yolande's Regal Presence, and 27 more
 
+
 ---
 
 ## Combat Changes
@@ -183,6 +191,7 @@ No longer a whole condition. If surprised:
 - **Influence Action:** Use Deception, Intimidation, or Persuasion in combat
 - **Study Action:** Learn about a creature's capabilities
 - **Weapon Draw/Stow:** Can draw/stow one weapon per attack in Attack action
+
 
 ---
 
@@ -200,6 +209,7 @@ No longer a whole condition. If surprised:
 
 **General Power Increases:** Most classes are noticeably stronger. Martial classes benefit hugely from Weapon Mastery.
 
+
 ---
 
 ## Backwards Compatibility
@@ -213,6 +223,7 @@ No longer a whole condition. If surprised:
 - Any spell, feat, or subclass appearing in both books uses the 2024 version
 - Xanathar's and Tasha's content: Use 2024 version where overlap exists
 
+
 ---
 
 ## Key Terminology Updates
@@ -223,6 +234,7 @@ No longer a whole condition. If surprised:
 | Spell Attack | Spell Attack Roll |
 | Ability Check/Saving Throw/Attack Roll | D20 Test (umbrella term) |
 
+
 ---
 
 ## What Didn't Change
@@ -231,6 +243,7 @@ No longer a whole condition. If surprised:
 - Spell slot progression: Unchanged for full casters
 - Multiclassing: Still available
 - Six ability scores
+
 
 ---
 

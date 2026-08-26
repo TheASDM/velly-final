@@ -1,12 +1,13 @@
 ---
 title: Lord-Admiral Teodor Vast
-description: Harbor-Lord on the Autumn Council and master of Venturia's largest private merchant fleet — blunt, ruthless, and willing to fund anything that will reopen the harbor.
+description: 'Harbor-Lord on the Autumn Council and master of Venturia''s largest private merchant fleet — blunt, ruthless, and willing to fund anything that will reopen the harbor.'
 published: true
 date: 2026-05-22T00:00:00.000Z
 tags: characters, npcs, autumn-council, harbor-lord, harbor-wardens, human
 editor: markdown
 dateCreated: 2026-05-22T00:00:00.000Z
 ---
+
 
 <div style="display: flex; gap: 2rem; align-items: flex-start; margin: 0 0 2.5rem; padding: 1.5rem 1.75rem; background: linear-gradient(135deg, rgba(20, 18, 24, 0.55) 0%, rgba(36, 28, 18, 0.4) 100%); border: 1px solid rgba(139, 115, 85, 0.35); border-radius: 6px; box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6); flex-wrap: wrap;">
 
@@ -29,14 +30,14 @@ dateCreated: 2026-05-22T00:00:00.000Z
 
 </div>
 
-> *"We're debating theology while ships sit idle in harbor."*
-
 Harbor-Lord on the [Autumn Council](/en/Venturia/Government/autumn-council) and master of the largest private merchant fleet in Venturia. A commanding man in his late fifties, weathered and silver-streaked, who rose from ship's captain to fleet owner through skill, ruthlessness, and well-judged marriages — and who can put on a "simple sailor" act whenever it suits him. He forgets nothing said in front of him.
+
 
 ---
 
 ## On the Council
 Blunt and relentlessly practical. To Teodor the crisis is first a commercial problem: frightened people, idle ships, suffering trade. He'll fund almost anything — the Watch, the Academy, hired problem-solvers — if he's convinced it will work and get the harbor moving again.
+
 
 ---
 

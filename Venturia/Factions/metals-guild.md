@@ -8,6 +8,7 @@ editor: markdown
 dateCreated: 2026-05-25T00:00:00.000Z
 ---
 
+
 <div style="display: flex; gap: 2rem; align-items: flex-start; margin: 0 0 2.5rem; padding: 1.5rem 1.75rem; background: linear-gradient(135deg, rgba(20, 18, 24, 0.55) 0%, rgba(36, 28, 18, 0.4) 100%); border: 1px solid rgba(139, 115, 85, 0.35); border-radius: 6px; box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6); flex-wrap: wrap;">
 
 <div style="flex: 1; min-width: 240px;">
@@ -30,11 +31,13 @@ dateCreated: 2026-05-25T00:00:00.000Z
 
 The Metals Guild gathers the trades that shape ore, coin, wire, jewel settings, blades, fixtures, and the silvered work of the Mirrorwrights. It is old, conservative, wealthy in the slow way, and deeply invested in standards that survive more than one generation.
 
+
 ---
 
 ## Character
 
 The guild values continuity. Its elders tend to think in decades, not moods. That patience can be wisdom when the city panics, and obstruction when the moment actually demands speed.
+
 
 ---
 

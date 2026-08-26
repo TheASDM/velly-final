@@ -1,12 +1,13 @@
 ---
 title: The Veiled Tower
-description: VAVA's divination tower, where students learn to read futures in mirrors that sometimes show the past instead.
+description: 'VAVA''s divination tower, where students learn to read futures in mirrors that sometimes show the past instead.'
 published: true
 date: 2026-05-25T00:00:00.000Z
 tags: locations, vava, high-quarter, divination, academy, veiled-tower
 editor: markdown
 dateCreated: 2026-05-25T00:00:00.000Z
 ---
+
 
 <div style="display: flex; gap: 2rem; align-items: flex-start; margin: 0 0 2.5rem; padding: 1.5rem 1.75rem; background: linear-gradient(135deg, rgba(20, 18, 24, 0.55) 0%, rgba(36, 28, 18, 0.4) 100%); border: 1px solid rgba(139, 115, 85, 0.35); border-radius: 6px; box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6); flex-wrap: wrap;">
 
@@ -29,11 +30,13 @@ dateCreated: 2026-05-25T00:00:00.000Z
 
 The Veiled Tower is the divination wing of the Venturian Academy of Veiled Arts. Students come here to read patterns, futures, reflections, and the occasional past that insists on appearing where it should not.
 
+
 ---
 
 ## Character
 
 In another city, divination might be treated as a clean discipline of signs and probability. In Venturia, mirrors lag, names slip, and the line between omen and habit is never as stable as the faculty would like.
+
 
 ---
 

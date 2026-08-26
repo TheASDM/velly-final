@@ -1,13 +1,16 @@
 ---
 title: Building a Character for Long-Form Play
 description: When building a character for a campaign spanning years, you need a different approach — creating someone who will live in this world, form relationships across hundreds of sessions, and grow in unexpected ways.
-tags: "player-guide, character-creation, worldbuilding, long-form, roleplay, backstory"
+published: true
 date: 2026-02-23T00:00:00.000Z
+tags: player-guide, character-creation, worldbuilding, long-form, roleplay, backstory
+editor: markdown
 ---
 
 When building a character for a campaign spanning years, you need a different approach than shorter adventures. You're creating someone who will live in this world, form relationships across hundreds of sessions, face moral complexity without easy answers, and grow in unexpected ways. **The character you create at session zero is just a starting point** with room to evolve while maintaining a recognizable core.
 
 [![CharacterCreation.png](https://theshort.rest/uploads/images/gallery/2026-01/scaled-1680-/charactercreation.png)](https://theshort.rest/uploads/images/gallery/2026-01/scaled-1680-/charactercreation.png)
+
 
 ---
 
@@ -29,7 +32,6 @@ Consider the difference: a wandering mercenary who arrived two weeks ago versus 
 
 Both can work, but one has immediate investment in dozens of storylines.
 
-> **Important:** If your concept involves being an outsider, build in reasons they're investing deeply in staying rather than remaining ready to leave.
 
 ---
 
@@ -56,11 +58,10 @@ Who has power over you? Who do you have power over? These create opportunities f
 
 When creating relationships, resist defining them completely. Instead of "Marcus is my best friend," try:
 
-> "Marcus and I came up through the guard together, but lately he's been secretive about something."
-
 **Give your DM openings rather than foreclosing possibilities.**
 
 Consider diversity in your social web. Relationships crossing social boundaries create richer story opportunities.
+
 
 ---
 
@@ -89,6 +90,7 @@ Keep motivations personal and specific. "I want to fight evil" is too broad. **"
 
 Consider what you're willing to sacrifice and what you're not. Finding those boundaries creates opportunities for meaningful choice under pressure.
 
+
 ---
 
 ## Building in Contradictions and Complications
@@ -111,6 +113,7 @@ Include at least one significant flaw creating problems for people around you. N
 
 Make flaws specific enough to bite in actual play.
 
+
 ---
 
 ## Leaving Room for Discovery
@@ -125,12 +128,12 @@ Have strong positions on some issues but also issues where you can be convinced 
 
 ### Partially Undefined Capabilities
 When specific knowledge would create interesting story, collaborate about whether your background might include it.
-
 ### Incomplete Self-Understanding
 
 Most importantly, leave room for your character's self-understanding to be incomplete. Maybe they believe they're over past trauma but they're avoiding it.
 
 **Give yourself permission to discover things about your character through play.**
+
 
 ---
 
@@ -161,6 +164,7 @@ Different approaches create productive friction.
 ### Campaign Theme Integration
 
 Think about how your character relates to campaign themes. If the campaign explores identity, what does identity mean to your character? Create touchpoints where you naturally engage with what the campaign explores.
+
 
 ---
 
@@ -195,6 +199,7 @@ Non-fantasy inspiration is less recognizable and doesn't come with protagonist-l
 ### ⚠️ The "Unchangeable Core" Trap
 Defining your character so completely there's no room for development. Your character should have a recognizable core, but their understanding, capabilities, and even values should evolve.
 
+
 ---
 
 ## Practical Starting Points
@@ -213,6 +218,7 @@ Most won't come up, but the list helps you and your DM understand what threads c
 ### ⭐ Three Perfect Moments and Three Worst Moments
 Times when your character felt most themselves versus times when they failed or betrayed principles. These reveal what they value.
 
+
 ---
 
 ## Bringing It Together
@@ -223,7 +229,3 @@ Creating a character for long-form campaigns is **collaborative storytelling**. 
 - Become part of a larger story
 
 Your character should feel like they **belong in this world and with this party**. They should have personal, compelling reasons to be here. They should care about the people and places around them. They should have capacity to form new connections and grow in surprising ways.
-
----
-
-> When you sit down for session one, you're not arriving with a complete person. You're arriving with the **beginning of a person**, someone existing in potential and possibility, ready to become real through the shared story you're about to tell together.

@@ -1,12 +1,13 @@
 ---
-title: "Brownie"
-description: "Small sprite-like fey creatures standing 4–6 inches tall, dwelling in rummages throughout wooded and mountainous regions. Adult brownies have grown, mature features and proportions rather than any childlike quality."
+title: Brownie
+description: Small sprite-like fey creatures standing 4–6 inches tall, dwelling in rummages throughout wooded and mountainous regions. Adult brownies have grown, mature features and proportions rather than any childlike quality.
 published: true
 date: 2026-05-29T00:00:00.000Z
 tags: venturia, characters, npcs
 editor: markdown
 dateCreated: 2026-05-29T00:00:00.000Z
 ---
+
 
 # Brownie
 
@@ -33,17 +34,24 @@ dateCreated: 2026-05-29T00:00:00.000Z
 
 Brownies are small fey creatures, typically standing between four and six inches tall, found in wooded and mountainous regions across the realm. They dwell in groups called rummages and are known for a striking contrast: they possess considerable physical attractiveness despite—or perhaps because of—their characteristically disheveled appearance. Both male and female brownies exist within these communities, and they are occasionally observed riding small animals through their territories.
 
+
+---
+
 ## Appearance and Adornment
 
 Brownies present a distinctive aesthetic marked by wild, unkempt hair, clothing fashioned from animal hides, decorative body paint, and adorned feathers. Their small stature and fey nature give them an otherworldly quality, though their lack of wings distinguishes them from many other sprite-like creatures. As children they appear unmistakably childlike, but as they mature their features develop into those of fully grown adults—just at a diminutive scale, standing only about 5 inches tall. An adult brownie has the proportions, facial maturity, and weathered character of a grown person rather than a child, despite the tiny size. Individual brownies display considerable variation in their grooming choices and personal decoration—some favor elaborate body paint in multiple colors, while others keep their adornments minimal.
 
+
+---
+
 ## Dwellings
 
 Brownie rummages establish homes in small caves carved into rock faces or hollowed within trees, typically featuring modest porches. These dwellings reflect their size and communal nature, serving as gathering places for the group.
+
 
 ---
 
 ## Connections
 
 - **Roxanya "Roxy"** — Abandoned as an infant and raised by a brownie rummage as one of their own; did not learn she was a forest gnome until age twelve.
-- **Wooly** — A brownie approximately 5 inches tall; Roxy's best friend. Wears deer-hide loin cloth and boots with a rabbit-fur cape, shirtless, bearing dull red and blue body paint on his arms and sporting disheveled spiked dark brown hair.
+- **Wully** — A brownie approximately 5 inches tall; Roxy's best friend. Wears deer-hide loin cloth and boots with a rabbit-fur cape, shirtless, bearing dull red and blue body paint on his arms and sporting disheveled spiked dark brown hair.

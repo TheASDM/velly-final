@@ -50,6 +50,18 @@ WIKI_DIRS = [
     "Venturia/Factions",
     "Venturia/Government",
     "Venturia/Lore",
+    # Retrieved on demand rather than always in context, so this list can cover
+    # everything published. Culture, the bestiary and the maps were all missing:
+    # Enzo could not answer "what is a Vivo" about a creature with its own page.
+    "Venturia/Culture",
+    "Venturia/Creatures",
+    "Venturia/Creatures/Humanoids",
+    "Venturia/Creatures/Fey",
+    "Venturia/Creatures/Fiends",
+    "Venturia/Creatures/Celestials",
+    "Venturia/Maps",
+    "Venturia/College-of-the-Masquerade-Bard",
+    "Session-Chronicles",
     "Articles",
     "Class-Changes",
     "House-Rules",

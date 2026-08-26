@@ -1,12 +1,13 @@
 ---
 title: The Unexplained Prosperity
-description: "Venturia's uncanny good fortune: fertile land, full waters, kind weather, and the persistent sense that luck gathers around the island."
+description: 'Venturia''s uncanny good fortune: fertile land, full waters, kind weather, and the persistent sense that luck gathers around the island.'
 published: true
 date: 2026-05-25T00:00:00.000Z
 tags: lore, prosperity, venturia, maeve, agriculture, trade, mystery
 editor: markdown
 dateCreated: 2026-05-25T00:00:00.000Z
 ---
+
 
 <div style="display: flex; gap: 2rem; align-items: flex-start; margin: 0 0 2.5rem; padding: 1.5rem 1.75rem; background: linear-gradient(135deg, rgba(20, 18, 24, 0.55) 0%, rgba(36, 28, 18, 0.4) 100%); border: 1px solid rgba(139, 115, 85, 0.35); border-radius: 6px; box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6); flex-wrap: wrap;">
 
@@ -31,6 +32,7 @@ Venturia is luckier than it has any right to be. Crops grow better than soil and
 
 Most residents treat this as simply how things are.
 
+
 ---
 
 ## What People Notice
@@ -40,6 +42,7 @@ Most residents treat this as simply how things are.
 - Storms have a habit of bending around the island.
 - Merchants and sailors tell stories of lucky voyages after taking harbor here.
 
+
 ---
 
 ## Local Explanations
@@ -47,6 +50,7 @@ Most residents treat this as simply how things are.
 No explanation has ever held the field. Some say the land was blessed to compensate for the curse. Some say the fog trapped the bad luck inside [Vallombrosa](/en/Venturia/Locations/vallombrosa) and left the rest of Maeve clean. Some call it good soil, good harbor, and better branding.
 
 The practical consensus is simpler: good fortune is useful, and useful things are often left alone.
+
 
 ---
 

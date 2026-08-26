@@ -1,12 +1,13 @@
 ---
 title: The Burnt Quill
-description: Four centuries of continuous publication, a legendary archive of everything Venturia has chosen to remember — and a restricted morgue of everything it hasn't.
+description: 'Four centuries of continuous publication, a legendary archive of everything Venturia has chosen to remember — and a restricted morgue of everything it hasn''t.'
 published: true
 date: 2026-02-23T23:57:24.879Z
 tags: factions, locations, character-hooks, market-tiers, press, newspaper, information, secrets
 editor: markdown
 dateCreated: 2026-02-23T23:57:24.186Z
 ---
+
 
 <div style="display: flex; gap: 2rem; align-items: flex-start; margin: 0 0 2.5rem; padding: 1.5rem 1.75rem; background: linear-gradient(135deg, rgba(20, 18, 24, 0.55) 0%, rgba(36, 28, 18, 0.4) 100%); border: 1px solid rgba(139, 115, 85, 0.35); border-radius: 6px; box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6); flex-wrap: wrap;">
 
@@ -28,6 +29,7 @@ dateCreated: 2026-02-23T23:57:24.186Z
 
 The Venturian Ledger has published continuously for four centuries, and the Burnt Quill has printed every issue. The building is unmistakable — a converted textile mill with ink-stained windows and the constant clatter of presses running from dawn until well past midnight. The smell of paper and chemicals permeates the entire block.
 
+
 ---
 
 ## The Morgue
@@ -37,6 +39,7 @@ More valuable than the presses is the **morgue** — the Quill's archive of back
 Researchers pay handsomely for access. Certain files require special permission. Others simply don't exist anymore.
 
 The librarians who maintain the morgue have learned to recognize when someone is looking for information that Venturia has decided to forget — and they're skilled at providing helpful alternatives.
+
 
 ---
 
@@ -49,6 +52,7 @@ The librarians who maintain the morgue have learned to recognize when someone is
 
 Both types find steady employment. Neither discusses their work with the other.
 
+
 ---
 
 ## Character Hooks
@@ -58,6 +62,15 @@ Both types find steady employment. Neither discusses their work with the other.
 - Former editor who left over a killed story
 - Source who fed information to the right journalist
 - Someone whose family appears in the very old files
+
+
+---
+
+## The Prompt Loft
+Above the north scene dock, reached by an outside iron ladder nobody has maintained in decades, is a disused loft where the Amaranth stores prompt-books it has finished with. Nothing in it is catalogued. Company members use it as a place to be alone.
+
+The crates go back further than the building's own records. At the bottom of the oldest one is a prompt-book of *[The Tragedy of Vallombrosa](/en/Venturia/Culture/tragedy-of-vallombrosa)* whose cast page lists **three di Errante children where every staged version has two** — the third's role half struck through, and absent from every revision after it. The paper is not the paper the Amaranth has ever used.
+
 
 ---
 

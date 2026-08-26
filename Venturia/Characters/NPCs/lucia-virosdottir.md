@@ -8,6 +8,7 @@ editor: markdown
 dateCreated: 2026-05-22T00:00:00.000Z
 ---
 
+
 <div style="display: flex; gap: 2rem; align-items: flex-start; margin: 0 0 2.5rem; padding: 1.5rem 1.75rem; background: linear-gradient(135deg, rgba(20, 18, 24, 0.55) 0%, rgba(36, 28, 18, 0.4) 100%); border: 1px solid rgba(139, 115, 85, 0.35); border-radius: 6px; box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6); flex-wrap: wrap;">
 
 <div style="flex: 1; min-width: 240px;">
@@ -29,14 +30,14 @@ dateCreated: 2026-05-22T00:00:00.000Z
 
 </div>
 
-> *"This is beyond our usual ministrations."*
-
 Temple Authority on the [Autumn Council](/en/Venturia/Government/autumn-council), its current Chair, and Mother-Abbot of the Abbey of Saint Viro. In her early seventies, slight but commanding, with forty years of service behind her and family roots reaching back to the city's founders. Wise and compassionate, and visibly wearied by a crisis that strains her faith.
+
 
 ---
 
 ## On the Council
 She offers the city sanctuary, care for the afflicted, and the Abbey's scholarship — while being honest that prayer alone won't answer what's happening. As Chair she holds the chamber together, even as she comes to suspect that some of what's coming will demand steel and spell as much as devotion.
+
 
 ---
 

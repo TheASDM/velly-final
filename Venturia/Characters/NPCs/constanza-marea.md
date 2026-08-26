@@ -8,6 +8,7 @@ editor: markdown
 dateCreated: 2026-05-22T00:00:00.000Z
 ---
 
+
 <div style="display: flex; gap: 2rem; align-items: flex-start; margin: 0 0 2.5rem; padding: 1.5rem 1.75rem; background: linear-gradient(135deg, rgba(20, 18, 24, 0.55) 0%, rgba(36, 28, 18, 0.4) 100%); border: 1px solid rgba(139, 115, 85, 0.35); border-radius: 6px; box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6); flex-wrap: wrap;">
 
 <div style="flex: 1; min-width: 240px;">
@@ -29,14 +30,14 @@ dateCreated: 2026-05-22T00:00:00.000Z
 
 </div>
 
-> *"What does everyone need to feel safe enough to let commerce resume?"*
-
 Harbor-Lord on the [Autumn Council](/en/Venturia/Government/autumn-council), speaking for the [Warehouse Consortium](/en/Venturia/Factions/warehouse-consortium) her family has run for four generations. In her early forties and newer to the chamber, she makes up for it with sharp political instincts and a taste for elegant maneuvering over Teodor's bluntness. Self-interested, but not cruel.
+
 
 ---
 
 ## On the Council
 A dealmaker. Where others stake out positions, Constanza looks for the trade that gives everyone enough of what they want to let the harbor reopen — brokering between the Watch, the temples, and the guilds rather than fighting any of them head-on.
+
 
 ---
 

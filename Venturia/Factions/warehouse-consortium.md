@@ -1,12 +1,13 @@
 ---
 title: The Warehouse Consortium
-description: The Harbor District enterprise and political base of Constanza Marea's family, controlling storage, cargo flow, and dockside leverage.
+description: 'The Harbor District enterprise and political base of Constanza Marea''s family, controlling storage, cargo flow, and dockside leverage.'
 published: true
 date: 2026-05-25T00:00:00.000Z
 tags: factions, harbor-district, warehouses, trade, constanza-marea, harbor-lords
 editor: markdown
 dateCreated: 2026-05-25T00:00:00.000Z
 ---
+
 
 <div style="display: flex; gap: 2rem; align-items: flex-start; margin: 0 0 2.5rem; padding: 1.5rem 1.75rem; background: linear-gradient(135deg, rgba(20, 18, 24, 0.55) 0%, rgba(36, 28, 18, 0.4) 100%); border: 1px solid rgba(139, 115, 85, 0.35); border-radius: 6px; box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6); flex-wrap: wrap;">
 
@@ -32,11 +33,13 @@ The Warehouse Consortium is the Marea family's power base: storage houses, cargo
 
 It is not as old as the Tidekeepers or as symbolically weighty as the Ferriers, but practical control of where goods wait is a kind of power no merchant ignores.
 
+
 ---
 
 ## What They Control
 
 The Consortium's influence sits in the unglamorous middle of trade: warehouses, manifests, access schedules, loading crews, insurance arguments, and whose cargo moves first when the harbor is under pressure.
+
 
 ---
 

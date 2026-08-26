@@ -8,6 +8,7 @@ editor: markdown
 dateCreated: 2026-02-23T23:57:25.309Z
 ---
 
+
 <div style="display: flex; gap: 2rem; align-items: flex-start; margin: 0 0 2.5rem; padding: 1.5rem 1.75rem; background: linear-gradient(135deg, rgba(20, 18, 24, 0.55) 0%, rgba(36, 28, 18, 0.4) 100%); border: 1px solid rgba(139, 115, 85, 0.35); border-radius: 6px; box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6); flex-wrap: wrap;">
 
 <div style="flex: 1; min-width: 240px;">
@@ -28,6 +29,7 @@ dateCreated: 2026-02-23T23:57:25.309Z
 
 The Archive occupies a windowless building of black stone in the [High Quarter](/en/Venturia/Locations/high-quarter), its entrance marked only by a simple brass plaque. Inside, gray-robed Archivists maintain Venturia's most important collection: witnessed contracts, binding agreements, and sworn oaths recorded on specially prepared vellum that cannot be altered once the ink dries.
 
+
 ---
 
 ## How It Works
@@ -38,6 +40,7 @@ For a higher fee, they'll include certain clauses said to make oath-breaking... 
 
 Nobody speaks openly about what happens to those who break Archived agreements. The Archive has never needed to pursue a breach through ordinary courts.
 
+
 ---
 
 ## The Deep Archive
@@ -45,6 +48,7 @@ Nobody speaks openly about what happens to those who break Archived agreements. 
 The oldest sections, accessible only to senior staff, contain contracts written in languages no living person can read. Some of these documents predate the city itself.
 
 The Archivists maintain them with the same care as recent agreements — suggesting the obligations they record might still be active, whoever or whatever the original parties were.
+
 
 ---
 
@@ -55,6 +59,7 @@ The Archivists maintain them with the same care as recent agreements — suggest
 - Legal scholar who spent years studying the old contracts
 - Person who witnessed something they shouldn't have in the deep Archive
 - Client whose agreement had unexpected consequences
+
 
 ---
 

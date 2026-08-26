@@ -1,8 +1,10 @@
 ---
 title: Warlock — 2024 Class Changes
-description: A comprehensive breakdown of what changed for the Warlock class in the 2024 Player's Handbook, covering invocations, pact boons, patron spells, and subclass updates.
-tags: "rules, warlock, 2024, class-changes, player-guide, invocations, pact-boons"
+description: 'A comprehensive breakdown of what changed for the Warlock class in the 2024 Player''s Handbook, covering invocations, pact boons, patron spells, and subclass updates.'
+published: true
 date: 2026-02-23T00:00:00.000Z
+tags: rules, warlock, 2024, class-changes, player-guide, invocations, pact-boons
+editor: markdown
 ---
 
 ## Core Class Features
@@ -66,6 +68,7 @@ Choose one Epic Boon feat
 
 Result: +10 effective spells known (67% increase)
 
+
 ---
 
 ## Pact Boon Changes (Now Invocations)
@@ -109,6 +112,7 @@ Result: +10 effective spells known (67% increase)
 ### Pact of the Talisman - REMOVED
 Not in core book
 
+
 ---
 
 ## Subclass Changes
@@ -138,8 +142,6 @@ Uses: Prof bonus per long rest OR expend Pact Magic slot
 - Cast Enchantment/Illusion spells invisibly
 - Advantage on CON saves for Enchantment/Illusion concentration
 
----
-
 ### Fiend Patron
 
 **Dark One's Blessing (Level 3):**
@@ -149,8 +151,6 @@ Uses: Prof bonus per long rest OR expend Pact Magic slot
 **Hurl Through Hell (Level 14):**
 - **2014:** Once per long rest; hit with attack → target disappears until end of next turn; returns for 10d10 psychic (if not fiend)
 - **2024:** Expend Pact Magic slot; hit → target makes CHA save; fail = disappears until end of next turn; returns for 5d10 Fire; success = half damage, doesn't disappear; renewable with spell slots
-
----
 
 ### Great Old One Patron - COMPLETE REDESIGN
 
@@ -164,7 +164,6 @@ Includes Summon Aberration at 4th level
 **Psychic Spells (Level 3) - NEW:**
 - Change any Warlock spell damage to Psychic
 - Cast Enchantment/Illusion spells without verbal or somatic components
-
 **Clairvoyant Combatant (Level 6) - NEW:**
 When forming telepathic bond: Target makes WIS save; fail = disadvantage on attacks vs you, you have advantage vs them (once per short/long rest OR expend 2nd+ level slot)
 
@@ -174,8 +173,6 @@ When forming telepathic bond: Target makes WIS save; fail = disadvantage on atta
 
 **Thought Shield (Level 10):**
 Unchanged: Resist Psychic damage
-
----
 
 ### Celestial Patron (From Xanathar's)
 
@@ -192,6 +189,7 @@ Unchanged: Resist Psychic damage
 **Searing Vengeance (Level 14):**
 - **2014:** When YOU make death save; once per long rest
 - **2024:** When you OR ALLY makes death save (reaction); adds Blinded to enemies; renewable with 4th+ level slot
+
 
 ---
 

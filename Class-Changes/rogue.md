@@ -1,8 +1,10 @@
 ---
 title: Rogue — 2024 Class Changes
-description: A comprehensive breakdown of what changed for the Rogue class in the 2024 Player's Handbook, covering Weapon Mastery, Cunning Strike, and subclass updates.
-tags: "rules, rogue, 2024, class-changes, player-guide, cunning-strike, weapon-mastery"
+description: 'A comprehensive breakdown of what changed for the Rogue class in the 2024 Player''s Handbook, covering Weapon Mastery, Cunning Strike, and subclass updates.'
+published: true
 date: 2026-02-23T00:00:00.000Z
+tags: rules, rogue, 2024, class-changes, player-guide, cunning-strike, weapon-mastery
+editor: markdown
 ---
 
 ## Core Class Features
@@ -59,6 +61,7 @@ Choose one Epic Boon feat.
 
 **Recommended:** Boon of the Night Spirit (+1 any stat; resistance to all damage except Psychic/Radiant in dim light/darkness; bonus action to become Invisible)
 
+
 ---
 
 ## Subclass Changes
@@ -103,6 +106,7 @@ Choose one Epic Boon feat.
 - Now in core PHB (was Tasha's)
 - Psychic Blades gain Vex mastery property
 
+
 ---
 
 ## Tactical Combinations
@@ -116,6 +120,7 @@ Shortsword (Vex) + Scimitar (Nick) → Two attacks in Attack action while keepin
 ### Cunning Strike Priorities
 - **1d6 costs:** Poison (general debuff), Trip (set up allies), Withdraw (escape)
 - **Level 11+ combos:** Poison + Trip (2d6 total), Daze + Obscure (5d6 total)
+
 
 ---
 

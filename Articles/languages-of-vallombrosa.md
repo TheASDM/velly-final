@@ -1,11 +1,16 @@
 ---
 title: Languages of Vallombrosa
-description: Languages in Vallombrosa aren't puzzle-solving tools — they're windows into your character's education, social position, and connection to Venturia's layered history.
-tags: "player-guide, languages, worldbuilding, venturia, vallombrosa, character-creation"
+description: 'Languages in Vallombrosa aren''t puzzle-solving tools — they''re windows into your character''s education, social position, and connection to Venturia''s layered history.'
+published: true
 date: 2026-02-23T00:00:00.000Z
+tags: player-guide, languages, worldbuilding, venturia, vallombrosa, character-creation
+editor: markdown
 ---
 
 Languages in D&D often feel like an afterthought—a small mechanical benefit you note on your character sheet and forget about until the DM asks "does anyone speak Elvish?" three sessions in. For [Vallombrosa](/en/Venturia/Locations/vallombrosa), think about languages differently: not as tools for puzzle-solving, but as windows into your character's education, social position, and connection to Venturia's layered history.
+
+
+---
 
 ## The Linguistic Landscape of Venturia
 
@@ -18,6 +23,7 @@ Languages in D&D often feel like an afterthought—a small mechanical benefit yo
 **Historical Languages:** The Abbey, the [Covenant Archive](/en/Venturia/Locations/covenant-archive), and VAVA's deepest libraries contain documents in languages that predate Venturia itself. Archaic Common appears in texts from the di Errante era and earlier. Sylvan, the language of fey courts, shows up in fragments and marginalia—scholars suspect it has significance to understanding Vallombrosa's transformation, but few can read it fluently.
 
 **Thieves' Cant:** Not a separate language but a coded way of speaking Common—slang, double meanings, and subtle signals that let certain people communicate in plain sight. It's about being part of underground networks, whether that's the [Undertow](/en/Venturia/Locations/the-undertow)'s gambling circles, the gray market, or simply growing up in parts of the city where you learned not to say everything plainly.
+
 
 ---
 
@@ -36,6 +42,7 @@ When choosing languages, ask yourself:
 
 **What are you curious about?** Interest in Vallombrosa's history suggests archaic Common or Sylvan. Interest in magical theory suggests Draconic. Interest in theology suggests Celestial or Infernal.
 
+
 ---
 
 ## Practical Guidance
@@ -46,6 +53,7 @@ When choosing languages, ask yourself:
 
 **Incomplete knowledge is fine.** "I can read Draconic arcane formulae but couldn't hold a conversation" or "I know enough Sylvan to recognize when it's being spoken but not enough to translate" are both interesting limitations. If there's a language you want your character to learn during the campaign, we can absolutely work that into your character arc.
 
+
 ---
 
 ## A Note on Sylvan
@@ -53,6 +61,7 @@ When choosing languages, ask yourself:
 As the campaign progresses and you begin to understand that Venturia's quirks aren't just local color but evidence of deeper fey influence, Sylvan will become increasingly relevant. You don't need to know it at character creation, but if you choose it, we'll find ways to make that knowledge significant early on. And if you don't know it yet, there will be opportunities to learn.
 
 Promises spoken in Common in Venturia sometimes echo as if spoken in Sylvan to those who know that language. Written contracts sometimes reveal additional text in Sylvan when viewed at twilight. This isn't something you necessarily understand mechanically at the start—it's something we'll discover together.
+
 
 ---
 

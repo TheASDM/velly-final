@@ -1,12 +1,13 @@
 ---
 title: The Veil Court
-description: A semi-secret society keeping Venturia's traditions of masks, identity, and performance — and staging the annual Autumn Masquerade. Holds no government recognition by choice.
+description: 'A semi-secret society keeping Venturia''s traditions of masks, identity, and performance — and staging the annual Autumn Masquerade. Holds no government recognition by choice.'
 published: true
 date: 2026-05-22T00:00:00.000Z
 tags: factions, society, masks, performance, autumn-masquerade, veiled-arts
 editor: markdown
 dateCreated: 2026-05-22T00:00:00.000Z
 ---
+
 
 <div style="display: flex; gap: 2rem; align-items: flex-start; margin: 0 0 2.5rem; padding: 1.5rem 1.75rem; background: linear-gradient(135deg, rgba(20, 18, 24, 0.55) 0%, rgba(36, 28, 18, 0.4) 100%); border: 1px solid rgba(139, 115, 85, 0.35); border-radius: 6px; box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6); flex-wrap: wrap;">
 
@@ -28,24 +29,26 @@ dateCreated: 2026-05-22T00:00:00.000Z
 
 </div>
 
-<!-- TODO: banner — supply a filename to add -->
-
 A semi-secret society that keeps Venturia's traditions of masks, identity, and performance — and stages the annual [Autumn Masquerade](/en/Venturia/Culture/autumn-masquerade). It holds no government recognition, which is exactly how it likes things.
+
 
 ---
 
 ## What They Do
 The Court organizes the [Autumn Masquerade](/en/Venturia/Culture/autumn-masquerade), maintains the guild of master maskmakers, sponsors theatrical productions, and acts as patron to artists working in the "veiled arts": performance, disguise, transformation, and revelation.
 
+
 ---
 
 ## Leadership
 Led by [Valeria Tessere](/en/Venturia/Characters/NPCs/valeria-tessere), a former celebrated actress who wears a different mask to every public appearance — and has seemed to do so for rather longer than her apparent years would allow. Charismatic, politically shrewd, and genuinely devoted to the city's mask-culture.
 
+
 ---
 
 ## Membership
 Members gain entry to exclusive theatrical spaces and private masked events, connections to artists across the region, training in the "Art of Faces" — disguise, social reading, identity theory — and access to the [Hall of Reflected Faces](/en/Venturia/Locations/hall-of-reflected-faces), a gallery holding a mask from every [Autumn Masquerade](/en/Venturia/Culture/autumn-masquerade) for nearly three hundred years.
+
 
 ---
 

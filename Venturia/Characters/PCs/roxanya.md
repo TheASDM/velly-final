@@ -8,6 +8,7 @@ editor: markdown
 dateCreated: 2026-05-22T00:00:00.000Z
 ---
 
+
 <div style="display: flex; gap: 2rem; align-items: flex-start; margin: 0 0 2.5rem; padding: 1.5rem 1.75rem; background: linear-gradient(135deg, rgba(20, 18, 24, 0.55) 0%, rgba(36, 28, 18, 0.4) 100%); border: 1px solid rgba(139, 115, 85, 0.35); border-radius: 6px; box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6); flex-wrap: wrap;">
 
 <div style="flex: 1; min-width: 240px;">
@@ -31,30 +32,44 @@ dateCreated: 2026-05-22T00:00:00.000Z
 
 Roxanya — Roxy — is a nineteen-year-old forest gnome who didn't know she was a gnome until she was twelve, and didn't know she wasn't a Brownie until she was eight. Abandoned as an infant and raised by a rummage of Brownies as one of their own, she arrived in Venturia with a swashbuckler's coat, a taxidermy owl on her shoulder, and a secret: she's enrolled at the Academy on a lie, her magic isn't what she says it is, and she's here to save her people.
 
+
 ---
 
 ## Concept
 An Arcane Trickster Rogue. Roxy is an adult forest gnome woman, nineteen years old but with the mature adult features of a gnome: defined cheekbones, a slightly prominent nose, a strong jawline, and faint laugh lines at the eyes, not a round childlike face. She has sun-tanned skin weathered from outdoor life, scattered freckles across her nose and cheeks, wild curly copper-red hair pulled into twin buns with loose strands escaping, sharp green eyes, pointed ears, and a knowing, wry expression often shaped into a sly half-smile or mischievous smirk rather than wide-eyed innocence. She stands about three feet tall with adult gnome proportions: compact but mature build, confident grounded stance, unmistakably an adult gnome and not a human child. Her layered brown leather swashbuckler's garb is feathered, well-worn, and lived-in. There's always a taxidermy owl perched on her arm.
+
 
 ---
 
 ## Raised a Brownie
 Abandoned as an infant in the forests of the mainland, Roxy was found and raised by Brownies who taught her their language, their values, and their sacred arts of stealth, misdirection, and "strategic acquisition." Until she was eight or nine, she believed she simply *was* an unusually large Brownie. Learning otherwise broke something; learning at twelve or thirteen that she was a gnome broke it again. She doesn't know whether her birth parents are living, and doesn't much care.
 
+
 ---
 
 ## The Mission
 Roxy's people are vanishing. A binding magic exists that can enslave a Brownie utterly, and their numbers are falling because of it — that threat is the engine of everything she does. As a child she heard a traveler speak of Venturia, of the Academy, of a city built on secrets; she made a plan at fourteen, spent four years raising the money, and left with her rummage's blessing at eighteen to learn the magic that might save them.
 
+
+---
+
+## The Work She Actually Does
+A year in Venturia and she has found the counter-magic nowhere. What she has found instead is thinner and worse: houses. Not many — a handful, in the High Quarter and the [Tiered Gardens](/en/Venturia/Locations/tiered-gardens), each one with a servant nobody has ever seen and the household will not discuss. She and [Lotan](/en/Venturia/Characters/PCs/lotan) have gone into three of them. Twice they came out with nobody, because a bound brownie does not want to leave, and the reason it does not want to leave is that wanting is the part that was taken.
+
+It is burglary. It is theft of property under Venturian law. If the Watch ever decides to care it will be her name on it and Lotan's ship, and the magic she came here to learn — the magic that would undo a binding already made — she has still not found.
+
+
 ---
 
 ## The Lie She Lives
-Roxy doesn't actually have the training she claims. When she first arrived, she tried to rob the [Penny Shrine](/en/Venturia/Locations/penny-shrine) — and [Garl Glittergold](/en/Venturia/Characters/NPCs/garl-glittergold) himself appeared, amused enough to offer her a divine pact: power in exchange for the occasional favor, and an abiding obsession with [Vallombrosa](/en/Venturia/Locations/vallombrosa), secrets, and hidden things. Her magic is a god's gift, not a scholar's study, and she keeps up the appearance of an ordinary Academy student by whatever means necessary. She can't even sleep in her dorm — eighteen years outdoors won't allow it — so she slips out each night to the [Tiered Gardens](/en/Venturia/Locations/tiered-gardens).
+Roxy doesn't actually have the training she claims — she is enrolled under the name **Roxanya Goldleaf**, a surname invented for the paperwork. When she first arrived, she tried to rob the [Penny Shrine](/en/Venturia/Locations/penny-shrine) — and [Garl Glittergold](/en/Venturia/Characters/NPCs/garl-glittergold) himself appeared, amused enough to offer her a divine pact: power in exchange for the occasional favor, and an abiding obsession with [Vallombrosa](/en/Venturia/Locations/vallombrosa), secrets, and hidden things. Her magic is a god's gift, not a scholar's study, and she keeps up the appearance of an ordinary Academy student by whatever means necessary. She can't even sleep in her dorm — eighteen years outdoors won't allow it — so she slips out each night to the [Tiered Gardens](/en/Venturia/Locations/tiered-gardens).
+
 
 ---
 
 ## Ties
-- **[Lotan](/en/Venturia/Characters/PCs/lotan)** — Met on the voyage to Venturia; her first guide to the city, and possibly her most genuine friendship.
+- **[Lotan](/en/Venturia/Characters/PCs/lotan)** — Pulled from a shipwreck by her ship's crew; he became her self-appointed guide to a city neither of them knew, and possibly her most genuine friendship.
 - **[Garl Glittergold](/en/Venturia/Characters/NPCs/garl-glittergold)** — Her divine patron, met over a failed robbery at the [Penny Shrine](/en/Venturia/Locations/penny-shrine).
-- **[Caravel "Car" Asteri](/en/Venturia/Characters/PCs/caravel-asteri)**, **[Valentro](/en/Venturia/Characters/PCs/valentro)**, **[Kryton Novelli](/en/Venturia/Characters/PCs/kryton-novelli)** — Threads in the web of acquaintances she's built across the Academy and the city.
+- **[Caravel "Car" Asteri](/en/Venturia/Characters/PCs/caravel-asteri)**, **[Valentro](/en/Venturia/Characters/PCs/valentro)** — Threads in the web of acquaintances she's built across the Academy and the city.
+- **[Wully](/en/Venturia/Characters/NPCs/wully)** — Her oldest friend, and the only member of her rummage in Venturia.
 - **[Venturian Academy of Veiled Arts](/en/Venturia/Locations/vava)** — Where she's enrolled, and where she's keeping up appearances.

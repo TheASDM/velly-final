@@ -8,6 +8,7 @@ editor: markdown
 dateCreated: 2026-05-25T00:00:00.000Z
 ---
 
+
 <div style="display: flex; gap: 2rem; align-items: flex-start; margin: 0 0 2.5rem; padding: 1.5rem 1.75rem; background: linear-gradient(135deg, rgba(20, 18, 24, 0.55) 0%, rgba(36, 28, 18, 0.4) 100%); border: 1px solid rgba(139, 115, 85, 0.35); border-radius: 6px; box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6); flex-wrap: wrap;">
 
 <div style="flex: 1; min-width: 240px;">
@@ -31,11 +32,13 @@ The Hall of Reflected Faces is one of the [Veil Court](/en/Venturia/Factions/vei
 
 It is an archive, a shrine, and a social weapon depending on who is invited to stand inside it.
 
+
 ---
 
 ## Character
 
 Each mask preserves a version of the city that chose to show itself for one autumn. Some are famous. Some are politically embarrassing. Some are remembered only because the Court refused to let them vanish.
+
 
 ---
 

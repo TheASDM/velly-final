@@ -1,12 +1,13 @@
 ---
 title: The Liminal House
-description: Venturia's foundling home — four centuries old, no questions asked about before, and alumni who quietly recognize each other across the city by small signs they've never had to explain.
+description: 'Venturia''s foundling home — four centuries old, no questions asked about before, and alumni who quietly recognize each other across the city by small signs they''ve never had to explain.'
 published: true
 date: 2026-02-23T23:57:31.067Z
 tags: locations, character-hooks, market-tiers, mystery, liminal-house, foundlings, community
 editor: markdown
 dateCreated: 2026-02-23T23:57:30.363Z
 ---
+
 
 <div style="display: flex; gap: 2rem; align-items: flex-start; margin: 0 0 2.5rem; padding: 1.5rem 1.75rem; background: linear-gradient(135deg, rgba(20, 18, 24, 0.55) 0%, rgba(36, 28, 18, 0.4) 100%); border: 1px solid rgba(139, 115, 85, 0.35); border-radius: 6px; box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6); flex-wrap: wrap;">
 
@@ -28,6 +29,7 @@ dateCreated: 2026-02-23T23:57:30.363Z
 
 The House has operated continuously for over four hundred years, taking in children regardless of origin. It occupies a rambling compound in the lower [Market Tiers](/en/Venturia/Locations/market-tiers) — buildings added to, modified, and connected over centuries until the architecture itself seems uncertain about where one structure ends and another begins.
 
+
 ---
 
 ## How Children Arrive
@@ -36,6 +38,7 @@ Some are left at the door. Others are brought by the Watch, found wandering with
 
 The House's policy has always been the same: **no questions about before.** The past is past. What matters is building something going forward.
 
+
 ---
 
 ## The Alumni Network
@@ -43,6 +46,7 @@ The House's policy has always been the same: **no questions about before.** The 
 Former residents of the Liminal House form quiet networks throughout Venturia. They recognize each other by small signs — a particular way of folding napkins, certain phrases from old House songs, the habit of checking exits when entering a room.
 
 They help each other when they can. They keep each other's secrets. And they understand without ever discussing it that some of them remember lives before the House that may or may not have been real.
+
 
 ---
 
@@ -54,6 +58,7 @@ They help each other when they can. They keep each other's secrets. And they und
 - Alumnus who discovered unsettling facts about their own arrival
 - Benefactor who supports the House for deeply personal reasons
 
+
 ---
 
 ## Grounds
@@ -64,6 +69,7 @@ A parchment-style plan of Liminal House alongside its neighbor, [St. Viro's Resp
 {% include "partials/map-viewer.njk" %}
 
 The standalone [map page](/en/Venturia/Maps/liminal-respite/) opens this same viewer with more room to work.
+
 
 ---
 

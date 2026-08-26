@@ -34,6 +34,11 @@ WIKI_SECTIONS = [
     ("Venturia/Factions",   ("Factions",   None)),
     ("Venturia/Government", ("Government", None)),
     ("Venturia/Lore",       ("Lore",       None)),
+    # Culture was missing entirely, which hid the Autumn Masquerade and the
+    # Tragedy of Vallombrosa — two things the campaign turns on — from the
+    # codex Enzo always has open.
+    ("Venturia/Culture",    ("Culture",    None)),
+    ("Session-Chronicles",  ("Session Chronicles", None)),
     ("Articles",            ("Articles",   None)),
     ("Class-Changes",       ("Class Changes", None)),
     ("House-Rules",         ("House Rules",   None)),
@@ -311,6 +316,7 @@ def build_tier1() -> str:
 
     # Emit in stable order
     for top in ["Characters", "Locations", "Items", "Factions", "Government", "Lore",
+                "Culture", "Session Chronicles",
                 "Articles", "Class Changes", "House Rules", "Updates"]:
         if top not in grouped:
             continue

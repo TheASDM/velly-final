@@ -8,6 +8,7 @@ editor: markdown
 dateCreated: 2026-02-23T23:57:35.420Z
 ---
 
+
 <div style="display: flex; gap: 2rem; align-items: flex-start; margin: 0 0 2.5rem; padding: 1.5rem 1.75rem; background: linear-gradient(135deg, rgba(20, 18, 24, 0.55) 0%, rgba(36, 28, 18, 0.4) 100%); border: 1px solid rgba(139, 115, 85, 0.35); border-radius: 6px; box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6); flex-wrap: wrap;">
 
 <div style="flex: 1; min-width: 240px;">
@@ -28,6 +29,7 @@ dateCreated: 2026-02-23T23:57:35.420Z
 
 The Undertow exists in the space between legitimate and forbidden. Built into the harbor cliffs, it's accessible by sea cave at low tide or by a precarious rope-and-pulley system from a warehouse above. Inside, lantern light flickers across gaming tables where Venturia's most interesting wagers change hands.
 
+
 ---
 
 ## The Stakes
@@ -42,6 +44,7 @@ Coin is welcome here, but the Undertow is famous for accepting other things enti
 
 The house takes a percentage of everything — building a treasury of intangibles that makes the Undertow's true wealth impossible to calculate.
 
+
 ---
 
 ## The Rules
@@ -49,6 +52,7 @@ The house takes a percentage of everything — building a treasury of intangible
 The establishment operates under rules as old as the city: the house always pays its debts, winners are guaranteed safe passage out, and certain questions are never asked.
 
 The identity of the Undertow's actual owner is one of Venturia's persistent mysteries. Some say it's been the same person for two hundred years — which would make them either very long-lived or very good at succession planning.
+
 
 ---
 
@@ -59,6 +63,7 @@ The identity of the Undertow's actual owner is one of Venturia's persistent myst
 - Regular player with a complicated relationship to risk
 - Person who owes the house a favor not yet called in
 - Winner of something that wasn't supposed to be possible to win
+
 
 ---
 

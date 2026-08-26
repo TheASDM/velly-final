@@ -1,12 +1,13 @@
 ---
 title: Master Artisan Celeste Orion
-description: Guild-Master on the Autumn Council and head of the Binding Crafts Guild — the chamber's loudest voice for the city's laborers, pushing for protection in the working districts.
+description: 'Guild-Master on the Autumn Council and head of the Binding Crafts Guild — the chamber''s loudest voice for the city''s laborers, pushing for protection in the working districts.'
 published: true
 date: 2026-05-22T00:00:00.000Z
 tags: characters, npcs, autumn-council, guild-master, binding-crafts, human
 editor: markdown
 dateCreated: 2026-05-22T00:00:00.000Z
 ---
+
 
 <div style="display: flex; gap: 2rem; align-items: flex-start; margin: 0 0 2.5rem; padding: 1.5rem 1.75rem; background: linear-gradient(135deg, rgba(20, 18, 24, 0.55) 0%, rgba(36, 28, 18, 0.4) 100%); border: 1px solid rgba(139, 115, 85, 0.35); border-radius: 6px; box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6); flex-wrap: wrap;">
 
@@ -29,14 +30,14 @@ dateCreated: 2026-05-22T00:00:00.000Z
 
 </div>
 
-> *"We need protection now."*
-
 Guild-Master on the [Autumn Council](/en/Venturia/Government/autumn-council) and head of the [Binding Crafts Guild](/en/Venturia/Factions/binding-crafts-guild) — the carpenters, masons, shipwrights, and construction trades. Mid-fifties, with calloused hands and ink-stained fingers, the daughter of a Liminal House foundling who built her career from nothing and remains fiercely protective of working people.
+
 
 ---
 
 ## On the Council
 The chamber's loudest voice for the city's laborers. With the disappearances falling hardest on the working districts, she pushes for concrete protection: more Watch patrols where people actually work, hazard pay near the fog line, and compensation for the families of the missing.
+
 
 ---
 

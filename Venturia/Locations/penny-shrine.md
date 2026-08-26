@@ -8,6 +8,7 @@ editor: markdown
 dateCreated: 2026-02-23T23:57:33.417Z
 ---
 
+
 <div style="display: flex; gap: 2rem; align-items: flex-start; margin: 0 0 2.5rem; padding: 1.5rem 1.75rem; background: linear-gradient(135deg, rgba(20, 18, 24, 0.55) 0%, rgba(36, 28, 18, 0.4) 100%); border: 1px solid rgba(139, 115, 85, 0.35); border-radius: 6px; box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6); flex-wrap: wrap;">
 
 <div style="flex: 1; min-width: 240px;">
@@ -28,6 +29,7 @@ dateCreated: 2026-02-23T23:57:33.417Z
 
 The shrine has no official deity, no formal priesthood, no doctrine beyond hope. Wedged between warehouses in the [Harbor District](/en/Venturia/Locations/harbor-district), it's a single room layered with centuries of accumulated offerings: coins from every nation that trades here, found objects left for luck, written prayers in dozens of languages, candles that are never allowed to all go out at once.
 
+
 ---
 
 ## Who Comes Here
@@ -35,6 +37,7 @@ The shrine has no official deity, no formal priesthood, no doctrine beyond hope.
 **Sailors** visit before voyages, leaving offerings and whispering requests for safe passage. **Travelers** stop to ask for fortune on the road. **Desperate people** come when they've tried everything else, leaving whatever they can spare and hoping something — anything — will answer.
 
 The shrine's keeper maintains the space, lights the candles, and carefully avoids making any claims about whether the prayers are heard.
+
 
 ---
 
@@ -46,6 +49,14 @@ Regulars know the shrine has its own strangeness.
 - Certain prayers seem to be answered more reliably than others — nothing dramatic, but enough to sustain hope
 - The candles that have burned continuously for as long as anyone remembers sometimes flicker in unison, as if responding to something the shrine's visitors cannot perceive
 
+
+---
+
+## Low Water
+
+Once a year the tide draws further out than it has any business going, and the shrine's lower three courses — underwater every other night of the year — come up streaming and cold, packed solid with nine centuries of folded paper. Venturians go down to ask. See **[Low Water](/en/Venturia/Culture/low-water)**.
+
+
 ---
 
 ## Character Hooks
@@ -56,8 +67,20 @@ Regulars know the shrine has its own strangeness.
 - Skeptic who became a believer after a specific incident
 - Person trying to retrieve an offering they now regret leaving
 
+
+---
+
+## The Same Question
+The lower courses give back nine centuries of folded paper, most of it pulped past reading. But the Shrine's keepers have a standing curiosity they will share for a donation: in every layer they have ever opened, going back as far as the paper survives, somebody has asked the same question.
+
+Different hands. Different centuries. Never the same phrasing twice, and always the same question — **whether the third di Errante child lived.**
+
+Nobody knows who has been asking. Nobody has considered that it might be one person.
+
+
 ---
 
 ## Connections
 
 - **[The Harbor District](/en/Venturia/Locations/harbor-district)** — Lists this location among its notable places.
+- **[Low Water](/en/Venturia/Culture/low-water)** — The night of the year the shrine's old courses stand dry.

@@ -1,11 +1,16 @@
 ---
 title: Encumbrance & Inventory Slots
 description: Instead of tracking pounds, characters have inventory slots based on their physical capabilities — a simplified system that makes encumbrance intuitive while maintaining meaningful resource management.
-tags: "house-rules, encumbrance, inventory, rules, reference"
+published: true
 date: 2026-02-23T00:00:00.000Z
+tags: house-rules, encumbrance, inventory, rules, reference
+editor: markdown
 ---
 
 [![encumbrance2.png](https://valleyofshadows.wiki/uploads/images/gallery/2026-01/scaled-1680-/encumbrance2.png)](https://valleyofshadows.wiki/uploads/images/gallery/2026-01/scaled-1680-/encumbrance2.png)
+
+
+---
 
 ## Inventory Capacity
 
@@ -28,6 +33,7 @@ Instead of tracking pounds, characters have inventory slots based on their physi
 
 Larger creatures multiply their STR modifier instead of just adding it. Your character's strength directly affects how much they can carry — a character with +2 STR has 20 slots, while one with -1 STR has only 17.
 
+
 ---
 
 ## Item Bulk
@@ -41,6 +47,7 @@ Items occupy slots based on their size and weight:
 | Medium | 2 | Longswords, books, rope, armor pieces |
 | Large | 3 | Greatswords, bows, shields, helmets |
 | X-Large | 6 | Polearms, chests, heavy armor sets |
+
 
 ---
 
@@ -69,6 +76,7 @@ This magical haversack provides access to common adventuring supplies without oc
 ### Personal Items
 - Comb, String/twine, Small mirror, Fishing hook and line
 
+
 ---
 
 ## Overencumbrance
@@ -76,6 +84,7 @@ This magical haversack provides access to common adventuring supplies without oc
 **Exceeding your capacity results in:**
 - Speed reduced by half
 - Disadvantage on all physical ability checks (Strength, Dexterity, Constitution)
+
 
 ---
 

@@ -8,6 +8,7 @@ editor: markdown
 dateCreated: 2026-05-22T00:00:00.000Z
 ---
 
+
 <!-- DM NOTE (not rendered): Secret material at /en/Venturia/DM/verdigris-family. Public page is surface-only. -->
 
 <div style="display: flex; gap: 2rem; align-items: flex-start; margin: 0 0 2.5rem; padding: 1.5rem 1.75rem; background: linear-gradient(135deg, rgba(20, 18, 24, 0.55) 0%, rgba(36, 28, 18, 0.4) 100%); border: 1px solid rgba(139, 115, 85, 0.35); border-radius: 6px; box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6); flex-wrap: wrap;">
@@ -32,10 +33,12 @@ dateCreated: 2026-05-22T00:00:00.000Z
 
 The youngest Verdigris — a charming socialite who wears mirrors as jewelry and is, beneath the polish, genuinely gifted with reflection magic. The family's brightest social asset, and the one her father watches most closely.
 
+
 ---
 
 ## In the Family
 A fixture of the city's social scene, and talented enough with reflection that her gift is no parlor trick. Her experiments push at the edges of what the family's craft is meant to do — which is exactly what worries the patriarch.
+
 
 ---
 

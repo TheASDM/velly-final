@@ -1,12 +1,13 @@
 ---
 title: Cosimo Verdigris
-description: Patriarch of the Verdigris and an elder of the Mirrorwrights' guild — a respected old craftsman who has spent a lifetime fascinated by why Venturia's mirrors behave the way they do.
+description: 'Patriarch of the Verdigris and an elder of the Mirrorwrights'' guild — a respected old craftsman who has spent a lifetime fascinated by why Venturia''s mirrors behave the way they do.'
 published: true
 date: 2026-05-22T00:00:00.000Z
 tags: characters, npcs, verdigris, mirrorwrights, patriarch, market-tiers, human
 editor: markdown
 dateCreated: 2026-05-22T00:00:00.000Z
 ---
+
 
 <!-- DM NOTE (not rendered): Secret material at /en/Venturia/DM/verdigris-family. Public page is surface-only. -->
 
@@ -32,10 +33,12 @@ dateCreated: 2026-05-22T00:00:00.000Z
 
 The patriarch of the Verdigris and an elder of the Mirrorwrights' guild — a respected old craftsman who has spent a lifetime fascinated by a single question: why Venturia's mirrors behave the way they do. He has theories. He keeps them to himself.
 
+
 ---
 
 ## In the Guild
 A respected guild elder and a mentor to [Guildmaster Vincenzo Copper](/en/Venturia/Characters/NPCs/vincenzo-copper), under whose [Metals Guild](/en/Venturia/Factions/metals-guild) the Mirrorwrights fall. Cautious by temperament, he guards both the family's craft secrets and his own private study of the city's reflection-strangeness.
+
 
 ---
 

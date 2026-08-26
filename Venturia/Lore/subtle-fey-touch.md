@@ -1,12 +1,13 @@
 ---
 title: The Subtle Fey-Touch
-description: "A scholar's shorthand for Venturia's ordinary strangeness: lagging mirrors, vivid dreams, heavy promises, uncanny coincidences, and masks that matter."
+description: 'A scholar''s shorthand for Venturia''s ordinary strangeness: lagging mirrors, vivid dreams, heavy promises, uncanny coincidences, and masks that matter.'
 published: true
 date: 2026-05-25T00:00:00.000Z
 tags: lore, venturia, strangeness, mirrors, masks, promises, dreams, fey-touch
 editor: markdown
 dateCreated: 2026-05-25T00:00:00.000Z
 ---
+
 
 <div style="display: flex; gap: 2rem; align-items: flex-start; margin: 0 0 2.5rem; padding: 1.5rem 1.75rem; background: linear-gradient(135deg, rgba(20, 18, 24, 0.55) 0%, rgba(36, 28, 18, 0.4) 100%); border: 1px solid rgba(139, 115, 85, 0.35); border-radius: 6px; box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6); flex-wrap: wrap;">
 
@@ -31,6 +32,7 @@ dateCreated: 2026-05-25T00:00:00.000Z
 
 Mirrors lag. Names slip. Autumn colors sharpen. Dreams linger. Promises carry weight. Coincidences pile up until pretending they are coincidences becomes its own civic skill.
 
+
 ---
 
 ## Everyday Oddities
@@ -42,11 +44,13 @@ Mirrors lag. Names slip. Autumn colors sharpen. Dreams linger. Promises carry we
 - Bargains and promises feel heavier here than elsewhere.
 - A committed mask can become easier for the city to believe.
 
+
 ---
 
 ## How Residents Treat It
 
 Most residents do not think they live in a supernatural city. They think they live in Venturia. Visitors may find the habits unsettling, but locals learn the rules early: speak carefully, honor promises, do not mock masks, and never assume a reflection is only glass.
+
 
 ---
 

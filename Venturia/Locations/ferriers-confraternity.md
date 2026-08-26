@@ -1,12 +1,13 @@
 ---
-title: The Ferriers' Confraternity
-description: An ancient guild of gondoliers operating from a boathouse that doesn't appear on any map — they know every canal in Venturia, including the ones that aren't supposed to exist.
+title: 'The Ferriers'' Confraternity'
+description: 'An ancient guild of gondoliers operating from a boathouse that doesn''t appear on any map — they know every canal in Venturia, including the ones that aren''t supposed to exist.'
 published: true
 date: 2026-02-23T23:57:27.934Z
 tags: factions, locations, character-hooks, harbor-district, canals, ferriers, mystery
 editor: markdown
 dateCreated: 2026-02-23T23:57:27.264Z
 ---
+
 
 <div style="display: flex; gap: 2rem; align-items: flex-start; margin: 0 0 2.5rem; padding: 1.5rem 1.75rem; background: linear-gradient(135deg, rgba(20, 18, 24, 0.55) 0%, rgba(36, 28, 18, 0.4) 100%); border: 1px solid rgba(139, 115, 85, 0.35); border-radius: 6px; box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6); flex-wrap: wrap;">
 
@@ -30,6 +31,7 @@ The Confraternity makes its home in a building that can only be reached by water
 
 **The Confraternity predates the curse.** Their oldest records claim the guild was ferrying passengers through these waterways when the di Errante estates still stood.
 
+
 ---
 
 ## The Gondolas
@@ -41,6 +43,7 @@ Every Confraternity vessel is unmistakable: black hulls, bronze fittings, a smal
 | **Apprentice** | Learns to pole through the simplest routes |
 | **Journeyman** | Earns the right to ferry passengers |
 | **Master** | Knows every waterway in the city — including the ones that aren't supposed to exist |
+
 
 ---
 
@@ -54,6 +57,7 @@ The Confraternity maintains customs that outsiders find peculiar but accept as p
 
 **The dark week.** The Confraternity refuses to ferry passengers after midnight during the week before the [Autumn Masquerade](/en/Venturia/Culture/autumn-masquerade). They offer no explanation. The few people who have tried to navigate the canals alone during those nights report becoming hopelessly lost in waterways that seemed to shift and fold until dawn.
 
+
 ---
 
 ## Character Hooks
@@ -64,6 +68,7 @@ The Confraternity maintains customs that outsiders find peculiar but accept as p
 - Passenger who took a wrong turn into somewhere impossible
 - Merchant who relies on the Confraternity for sensitive cargo
 - Watch officer assigned to canal jurisdiction who learned not to ask questions
+
 
 ---
 

@@ -1,8 +1,10 @@
 ---
 title: Barbarian — 2024 Class Changes
-description: A comprehensive breakdown of what changed for the Barbarian class in the 2024 Player's Handbook, covering Rage, Weapon Mastery, Brutal Strike, and subclass updates.
-tags: "rules, barbarian, 2024, class-changes, player-guide, rage, weapon-mastery, brutal-strike"
+description: 'A comprehensive breakdown of what changed for the Barbarian class in the 2024 Player''s Handbook, covering Rage, Weapon Mastery, Brutal Strike, and subclass updates.'
+published: true
 date: 2026-02-23T00:00:00.000Z
+tags: rules, barbarian, 2024, class-changes, player-guide, rage, weapon-mastery, brutal-strike
+editor: markdown
 ---
 
 ## Core Class Features
@@ -90,6 +92,7 @@ Choose one Epic Boon feat.
 - **2014:** STR and CON +4 (max 24)
 - **2024:** STR and CON +4 (max **25**)
 
+
 ---
 
 ## Subclass Changes
@@ -148,7 +151,6 @@ Choose one each rage:
 
 **Branches of the Tree (Level 10):**
 - Creature starts turn within 10 ft → speed reduced to 0 until start of next turn (STR save to negate)
-
 **Travel Along the Tree (Level 14):**
 - Once per rage as bonus action: Teleport up to 60 ft
 - Can bring up to 6 willing creatures within 10 ft
@@ -173,6 +175,7 @@ Choose one each rage:
 - **2014 (Rage Beyond Death):** Stay conscious at 0 HP while raging
 - **2024:** While raging at 0 HP: Fly speed = walking speed; resistance to all damage except Force; when creature within 30 ft drops to 0 HP → reaction to have them drop to 1 HP instead and regain 1d12 + CON HP
 
+
 ---
 
 ## Key Tactical Combinations
@@ -188,6 +191,7 @@ Battering Roots (+10 ft reach) + Trident/Pike = 20 ft reach attacks with Topple 
 - Need mobility → Eagle (Dash + Disengage as bonus action)
 - Party support → Wolf (advantage for allies)
 - Level 14 → Falcon (flight)
+
 
 ---
 

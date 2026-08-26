@@ -1,12 +1,13 @@
 ---
 title: Volante & Associates
-description: Aurelio Volante's spice-and-dye house in the Market Tiers, legitimate, profitable, quiet, and attached to a much larger collection of masks.
+description: 'Aurelio Volante''s spice-and-dye house in the Market Tiers, legitimate, profitable, quiet, and attached to a much larger collection of masks.'
 published: true
 date: 2026-05-25T00:00:00.000Z
 tags: factions, businesses, market-tiers, volante-associates, aurelio-volante, trade, masks
 editor: markdown
 dateCreated: 2026-05-25T00:00:00.000Z
 ---
+
 
 <div style="display: flex; gap: 2rem; align-items: flex-start; margin: 0 0 2.5rem; padding: 1.5rem 1.75rem; background: linear-gradient(135deg, rgba(20, 18, 24, 0.55) 0%, rgba(36, 28, 18, 0.4) 100%); border: 1px solid rgba(139, 115, 85, 0.35); border-radius: 6px; box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6); flex-wrap: wrap;">
 
@@ -32,11 +33,13 @@ Volante & Associates is a modest spice-and-dye house in the [Market Tiers](/en/V
 
 Aurelio's real passion, however, is the mask collection kept close to the business.
 
+
 ---
 
 ## Character
 
 The house trades in goods that move through conversations as much as markets: rare dyes, spices, stories, favors, and introductions. It is the kind of place where a purchase can become an invitation if handled well.
+
 
 ---
 

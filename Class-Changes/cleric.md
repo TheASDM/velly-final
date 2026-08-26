@@ -1,8 +1,10 @@
 ---
 title: Cleric — 2024 Class Changes
-description: A comprehensive breakdown of what changed for the Cleric class in the 2024 Player's Handbook, covering Divine Order, Channel Divinity, healing buffs, and domain updates.
-tags: "rules, cleric, 2024, class-changes, player-guide, healing, divine-order"
+description: 'A comprehensive breakdown of what changed for the Cleric class in the 2024 Player''s Handbook, covering Divine Order, Channel Divinity, healing buffs, and domain updates.'
+published: true
 date: 2026-02-23T00:00:00.000Z
+tags: rules, cleric, 2024, class-changes, player-guide, healing, divine-order
+editor: markdown
 ---
 
 ## Core Class Features
@@ -59,6 +61,7 @@ Replaces ability score improvement. Recommended: Boon of Fate.
 ### Greater Divine Intervention (Level 20)
 Can now cast **Wish** using Divine Intervention (must wait 2d4 long rests before using again)
 
+
 ---
 
 ## Major Spell Changes
@@ -85,6 +88,7 @@ Important for Warforged, Reborn, or undead summons.
 
 **Conjure Spells Simplified:**
 Conjure Animals and similar spells now summon spirits with fixed stats rather than requiring creature stat block lookups.
+
 
 ---
 
@@ -115,6 +119,7 @@ Conjure Animals and similar spells now summon spirits with fixed stats rather th
 - **Blessing of the Trickster:** Lasts until end of next long rest; can affect self or others
 - **Invoke Duplicity:** Cast as bonus action, no concentration required
 - **Trickster's Transposition (NEW):** Replaces Cloak of Shadows
+
 
 ---
 

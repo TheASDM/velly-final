@@ -1,5 +1,5 @@
 ---
-title: "The Listener's Coin"
+title: 'The Listener''s Coin'
 description: A worn bronze coin carried by Roxy that can listen through solid surfaces for ten minutes before recharging at dawn.
 published: true
 date: 2026-05-27T00:00:00.000Z
@@ -7,6 +7,7 @@ tags: items, magic-items, coin, roxy, aurelio-volante, venturia
 editor: markdown
 dateCreated: 2026-05-27T00:00:00.000Z
 ---
+
 
 # The Listener's Coin
 
@@ -36,6 +37,7 @@ The Listener's Coin is a bronze coin worn smooth by long handling, its faces too
 
 It is a tool for listening, not seeing: subtle, patient, and easy to hide in a closed hand.
 
+
 ---
 
 ## In Play
@@ -43,6 +45,7 @@ It is a tool for listening, not seeing: subtle, patient, and easy to hide in a c
 The coin is currently carried by [Roxanya "Roxy"](/en/Venturia/Characters/PCs/roxanya). It previously belonged to [Aurelio Volante](/en/Venturia/Characters/NPCs/aurelio-volante), which makes its path into Roxy's hands worth watching.
 
 Like many useful things in Venturia, the coin is dangerous mostly because it is quiet. It turns walls, doors, floors, and windows into thin boundaries for anyone willing to press close and listen.
+
 
 ---
 
@@ -54,11 +57,13 @@ The effect lasts exactly **10 minutes**, provided the coin remains in contact wi
 
 The coin has **1 charge** and recharges at dawn each day.
 
+
 ---
 
 ## Known History
 
 The coin was previously owned by Aurelio Volante before passing to Roxy. Its country of origin is unknown, and its faces are too worn to identify a mint, crest, or ruler.
+
 
 ---
 

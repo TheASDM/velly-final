@@ -1,12 +1,13 @@
 ---
 title: Venturia Academy of Veiled Arts
-description: Venturia's premier institution of magical study, where contract magic has teeth, the library's deepest levels require special permission, and the city's peculiarities make certain research considerably easier.
+description: 'Venturia''s premier institution of magical study, where contract magic has teeth, the library''s deepest levels require special permission, and the city''s peculiarities make certain research considerably easier.'
 published: true
 date: 2026-02-23T23:57:39.007Z
 tags: high-quarter, vava, factions, magic, locations, academy, character-hooks
 editor: markdown
 dateCreated: 2026-02-23T23:57:38.360Z
 ---
+
 
 <div style="display: flex; gap: 2rem; align-items: flex-start; margin: 0 0 2.5rem; padding: 1.5rem 1.75rem; background: linear-gradient(135deg, rgba(20, 18, 24, 0.55) 0%, rgba(36, 28, 18, 0.4) 100%); border: 1px solid rgba(139, 115, 85, 0.35); border-radius: 6px; box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6); flex-wrap: wrap;">
 
@@ -30,6 +31,7 @@ The Academy rises from the [High Quarter](/en/Venturia/Locations/high-quarter) l
 
 Students and faculty alike are recognized throughout the city by their distinctive **amber-and-charcoal robes**. VAVA alumni form networks that reach into every corner of Venturian society — the Academy's influence extends well beyond the High Quarter, and a former student is rarely far away in any room that matters.
 
+
 ---
 
 ## Campus & Facilities
@@ -41,6 +43,7 @@ Students and faculty alike are recognized throughout the city by their distincti
 | **[The Glamour Courts](/en/Venturia/Locations/glamour-courts)** | Illusion | Training spaces where the boundaries between appearance and reality have always been negotiable. |
 | **The Library** | All faculties | Five floors of collected knowledge. The deepest levels require special permission and, some say, a willingness to forget certain things you might read there. |
 
+
 ---
 
 ## Campus Map
@@ -49,6 +52,7 @@ Pinch or scroll to zoom — every faculty hall, the five-floor library, and the 
 
 {% set map = { slug: "vava-loc", src: "/images/maps/vava_upscayl_5x_upscayl-standard-4x.jpg", caption: "VAVA — Veiled Tower, Binding Hall, Glamour Courts, and the Library's five floors." } %}
 {% include "partials/map-viewer.njk" %}
+
 
 ---
 
@@ -59,6 +63,7 @@ Pinch or scroll to zoom — every faculty hall, the five-floor library, and the 
 - Library assistant who has seen the Restricted Stacks
 - Scholarship recipient from the [Harbor District](/en/Venturia/Locations/harbor-district)
 - Dropout who learned the real lessons happened outside class
+
 
 ---
 

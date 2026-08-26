@@ -1,5 +1,5 @@
 ---
-title: Viro's Respite
+title: 'Viro''s Respite'
 description: A healing institution run by the Abbey of Saint Viro, treating ailments that only exist in Venturia — from looping moments of déjà vu to the unsettling conviction of being watched by your own shadow.
 published: true
 date: 2026-02-23T23:57:40.981Z
@@ -7,6 +7,7 @@ tags: locations, character-hooks, market-tiers, religion, abbey, healing, fog-si
 editor: markdown
 dateCreated: 2026-02-23T23:57:40.320Z
 ---
+
 
 <div style="display: flex; gap: 2rem; align-items: flex-start; margin: 0 0 2.5rem; padding: 1.5rem 1.75rem; background: linear-gradient(135deg, rgba(20, 18, 24, 0.55) 0%, rgba(36, 28, 18, 0.4) 100%); border: 1px solid rgba(139, 115, 85, 0.35); border-radius: 6px; box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6); flex-wrap: wrap;">
 
@@ -28,6 +29,7 @@ dateCreated: 2026-02-23T23:57:40.320Z
 
 The Respite sprawls across several connected buildings in the middle [Market Tiers](/en/Venturia/Locations/market-tiers), marked by the Abbey's silver hand symbol and the constant coming and going of people seeking care. Run by the Abbey of Saint Viro, it provides treatment regardless of ability to pay — the Abbey's doctrine holds that suffering doesn't check anyone's purse before arriving.
 
+
 ---
 
 ## What They Treat
@@ -43,11 +45,13 @@ The healers here have developed expertise in conditions that occur nowhere else.
 
 Each condition has its own proper name in the Respite's carefully maintained case files.
 
+
 ---
 
 ## How the Healers Work
 
 The senior healers speak carefully about their practice. They've learned that some treatments work better if patients don't know exactly what's being done. Certain conditions can spread through discussion. And asking too many questions about *why* these ailments exist here is itself a risk factor for developing them.
+
 
 ---
 
@@ -59,6 +63,7 @@ The senior healers speak carefully about their practice. They've learned that so
 - Abbey initiate who served their mandatory rotation here
 - Someone whose family member never fully recovered
 
+
 ---
 
 ## Grounds
@@ -69,6 +74,7 @@ The Respite shares its grounds with [Liminal House](/en/Venturia/Locations/limin
 {% include "partials/map-viewer.njk" %}
 
 The standalone [map page](/en/Venturia/Maps/liminal-respite/) opens this same viewer with more room to work.
+
 
 ---
 

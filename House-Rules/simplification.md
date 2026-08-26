@@ -1,17 +1,11 @@
 ---
-title: "House Rules: Simplification the Autistic Way"
+title: 'House Rules: Simplification the Autistic Way'
 description: The full design philosophy and house rules for the Valley of Shadows campaign — covering resting, reactions, dying, and everything in between.
 published: true
 date: 2026-02-28T00:00:00.000Z
 tags: house-rules, design, resting, combat, dying, exhaustion
 editor: markdown
 dateCreated: 2026-02-28T00:00:00.000Z
----
-
-# House Rules: Simplification the Autistic Way
-
-> *These rules serve the story we're telling together. When in doubt, choose what feels authentic to your character.*
-
 ---
 
 ## Design Philosophy
@@ -23,6 +17,7 @@ My goal isn't to complicate games — it's to streamline them and improve their 
 - Is written so that a player who opts out of a particular rule can do so without affecting anyone else's enjoyment
 
 **Example:** A player could choose standard death saving throws over the Wounds system without impacting anyone else at the table.
+
 
 ---
 
@@ -38,7 +33,6 @@ My goal isn't to complicate games — it's to streamline them and improve their 
 
 **Make the choices your character would make.** Don't second-guess yourself or play it safe out of fear. Tell the story that feels authentic. If I ever ask you to say goodbye to a character, it will be because you decided that ending was right for their story.
 
-> **The Promise:** Focus on authentic roleplay and meaningful character decisions. I'll handle making sure the consequences serve the story we're telling together.
 
 ---
 
@@ -61,6 +55,7 @@ Sleep 8 consecutive hours in your permanent home or established residence in Ven
 Sleep 8 consecutive hours per night in the same location for 3 consecutive nights without actively adventuring (no combat encounters, dangerous exploration, or strenuous activity during the establishment period). After the third night, you gain Long Rest benefits. You continue to gain them each consecutive night you sleep there, as long as you don't abandon the location for more than 48 hours.
 
 **Long Rest benefits:** Recover all HP, Mana, Hit Dice, etc.
+
 
 ---
 
@@ -93,18 +88,19 @@ This system fixes that in three ways:
 - **Natural pacing** — Story creates resource pressure organically. Being in hostile territory naturally explains why Long Rests aren't available.
 - **Geography drives challenge** — I design encounters based on what should be at a location, not what will challenge the party. You decide how to navigate them.
 
+
 ---
 
 ## Heroic Reactions
 
 One (1) reaction per round. Choose any spell or ability with a reaction component, or one of the following:
-
 | Reaction | Description |
 |---|---|
 | **⚔ Interpose** | When a creature within 10 ft. would be struck, push them out of the way and become the target yourself. You move into their space; they move to an adjacent space of your choice. |
 | **⚔ Opportunity Attack** | When an adjacent enemy willingly moves away, make a melee attack with disadvantage. *Only heroes can make opportunity attacks — monsters cannot.* |
 | **⚔ Help** | Grant an ally advantage on a roll if you can explain how you help. *Automatic advantage* if the help is straightforward and within your skillset. *Requires a check* if the help is creative, risky, or outside your expertise. *Not allowed* if there's no plausible way to help in the fiction. Limit: one Help reaction per roll. |
 | **⚔ Assess** | Make a DC 15 skill check to learn something about an enemy — weaknesses, abilities, plans, the environment, lore, etc. I answer honestly, limited to reasonably discernible information (though combat can spark unexpected insights). Ties go to the player. Limit: once per player per combat encounter. |
+
 
 ---
 
@@ -132,6 +128,7 @@ This system is **in addition to**, not in place of, the 2024 edition exhaustion 
 - Movement is reduced by **5 feet per point of Exhaustion**
 - **A PC dies at 6 Points of Exhaustion**
 - **Recovery:** 1 Exhaustion point recovered per Long Rest
+
 
 ---
 
@@ -178,7 +175,5 @@ If there's no time limit and the PC is capable, the check determines how long it
 | NAT 20 on a skill check | Best possible outcome — not auto-succeed |
 | NAT 1 on a skill check | Auto-fail, even with high bonuses. Reliable Talent usually prevents this, but the DM may impose narrative consequences |
 | Spell Scrolls | Anyone may attempt with a DC 12 Arcana check. The scroll is consumed regardless of success |
-
----
 
 *You can certainly try.*

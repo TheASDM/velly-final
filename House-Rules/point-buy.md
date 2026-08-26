@@ -1,19 +1,23 @@
 ---
 title: Point Buy — Official Rules
 description: All characters are created using a 42-point buy system with ability scores ranging from 6 to 17. This is the official ruling for all character creation in this campaign.
-tags: "house-rules, point-buy, character-creation, rules, official, ability-scores, mandatory"
+published: true
 date: 2026-02-23T00:00:00.000Z
+tags: house-rules, point-buy, character-creation, rules, official, ability-scores, mandatory
+editor: markdown
 ---
 
 [![pointbuy2.png](https://theshort.rest/uploads/images/gallery/2026-01/scaled-1680-/pointbuy2.png)](https://theshort.rest/uploads/images/gallery/2026-01/scaled-1680-/pointbuy2.png)
 
 **Status:** Official ruling for all character creation
 
+
 ---
 
 ## Core Rule
 
 All characters are created using a point buy system with **42 points** to distribute across ability scores ranging from **6 to 17** (before racial modifiers).
+
 
 ---
 
@@ -34,6 +38,7 @@ All characters are created using a point buy system with **42 points** to distri
 | 16            | 14         |
 | 17            | 17         |
 
+
 ---
 
 ## Mandatory Restrictions
@@ -47,6 +52,7 @@ This campaign is designed for long-form narrative play, not character death from
 **You may have at most one ability score of 6.**
 
 One major flaw creates interesting roleplay. Multiple crippling weaknesses creates frustration.
+
 
 ---
 
@@ -89,6 +95,7 @@ Taking a score of 6 is a **mechanical and narrative commitment**. You are accept
 ### Constitution 6
 **NOT ALLOWED** under any circumstances.
 
+
 ---
 
 ## Enforcement
@@ -96,6 +103,7 @@ Taking a score of 6 is a **mechanical and narrative commitment**. You are accept
 If you take a 6, you must roleplay that limitation. The DM will remind you when you're not honoring your character's weakness, and other players are encouraged to call out inconsistencies. Repeated failure to roleplay a 6 appropriately may result in the DM requiring a rebuild.
 
 This isn't punishment — it's maintaining the integrity of the choice you made during character creation.
+
 
 ---
 
@@ -118,6 +126,7 @@ This isn't punishment — it's maintaining the integrity of the choice you made 
 **15, 14, 13, 12, 10, 8** (Cost: 12+10+8+6+4+2 = 42 ✅)
 - Always available — this is the standard array
 
+
 ---
 
 ## Racial Modifiers
@@ -125,6 +134,7 @@ This isn't punishment — it's maintaining the integrity of the choice you made 
 Applied **after** point buy allocation. A character with 17 Strength who receives +2 from their species begins play with 19 Strength.
 
 Racial bonuses **cannot** circumvent the Constitution minimum or the "maximum one 6" rule — those restrictions apply to base scores before racial modifiers.
+
 
 ---
 

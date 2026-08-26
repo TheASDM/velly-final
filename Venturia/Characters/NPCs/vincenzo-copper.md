@@ -8,6 +8,7 @@ editor: markdown
 dateCreated: 2026-05-22T00:00:00.000Z
 ---
 
+
 <div style="display: flex; gap: 2rem; align-items: flex-start; margin: 0 0 2.5rem; padding: 1.5rem 1.75rem; background: linear-gradient(135deg, rgba(20, 18, 24, 0.55) 0%, rgba(36, 28, 18, 0.4) 100%); border: 1px solid rgba(139, 115, 85, 0.35); border-radius: 6px; box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6); flex-wrap: wrap;">
 
 <div style="flex: 1; min-width: 240px;">
@@ -28,14 +29,14 @@ dateCreated: 2026-05-22T00:00:00.000Z
 
 </div>
 
-> *"We'll survive this by doing what we've always done."*
-
 Guild-Master on the [Autumn Council](/en/Venturia/Government/autumn-council), representing the [Metals Guild](/en/Venturia/Factions/metals-guild) — smiths, metalworkers, jewelers, and the Mirrorwrights. A conservative dwarf traditionalist whose family has led the guild for three generations, he takes the seven-generation view of every problem: wise and steadying, and maddeningly slow to act.
+
 
 ---
 
 ## On the Council
 The voice of caution and continuity. Vincenzo trusts the guilds' long survival over panic and resists rushing into emergency measures or sweeping new laws. He sees wealth as a responsibility and standards as the thing that outlasts every crisis.
+
 
 ---
 

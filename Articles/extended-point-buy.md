@@ -1,17 +1,23 @@
 ---
 title: Why We Use Extended Point Buy
 description: Our campaign uses an extended point buy system starting at ability score 6 — creating real consequences and forcing meaningful character choices instead of inconsequential dump stats.
-tags: "player-guide, character-creation, rules, point-buy, ability-scores, hgarmany"
+published: true
 date: 2026-02-23T00:00:00.000Z
+tags: player-guide, character-creation, rules, point-buy, ability-scores, hgarmany
+editor: markdown
 ---
 
 [![pointbuysmaller.png](https://theshort.rest/uploads/images/gallery/2026-01/scaled-1680-/pointbuysmaller.png)](https://theshort.rest/uploads/images/gallery/2026-01/scaled-1680-/pointbuysmaller.png)
+
+
+---
 
 ## Why We Use Extended Point Buy
 
 In most D&D campaigns, dump stats are minor inconveniences—an 8 in Strength means your wizard is slightly less strong, but it rarely matters in actual play. I wanted something different: **dump stats that create real consequences and force meaningful character choices.**
 
 Our campaign uses an extended point buy system starting at ability score 6 instead of the standard 8. This seemingly small change fundamentally alters character creation, enabling true optimization while creating genuinely punishing weaknesses.
+
 
 ---
 
@@ -22,6 +28,7 @@ Standard D&D 5e floors ability scores at 8, giving you a -1 modifier. When we dr
 Consider the trade-off: you could have an 18 in your primary stat right out of the gate (17 base + racial bonus), making you exceptional at your core competency. The price? A genuinely crippling weakness somewhere else.
 
 This is the bargain we're offering: **power in exchange for vulnerability.**
+
 
 ---
 
@@ -45,8 +52,6 @@ We use the HGarmany 42-point system, which has been rigorously tested by the com
 | 15            | 12         |
 | 16            | 14         |
 | 17            | 17         |
-
----
 
 ### Why 42 Points?
 
@@ -79,6 +84,7 @@ A perfectly balanced spread (13, 13, 13, 12, 12, 12) also totals exactly 42 poin
 - Exceptional at one thing, decent secondary stat, with only one major flaw
 - Cost: 17+10+6+5+4+0 = 42 points
 
+
 ---
 
 ## The Critical Jump at 13
@@ -86,6 +92,7 @@ A perfectly balanced spread (13, 13, 13, 12, 12, 12) also totals exactly 42 poin
 Notice the cost structure: getting from 12 to 13 costs +2 points (from 6 to 8), just like the standard point buy jump from 13 to 14. This prevents excessive mid-range stacking while maintaining the expected power curve.
 
 You can't just have all 13s and 14s—the math forces you to make choices.
+
 
 ---
 
@@ -111,15 +118,16 @@ You lack common sense and struggle to learn from experience. Pattern recognition
 ### Charisma 6
 People find you off-putting. You can't convince anyone of anything through force of personality—you need evidence, leverage, or help from others. Intimidation doesn't work (who's scared of you?). Deception is transparent. Performance is cringe-worthy. You're the person who makes situations worse by speaking up. Social encounters are challenging.
 
+
 ---
 
 ## The Roleplay Contract
 
 If you take a 6, **you must roleplay it.** Not as comedy relief (unless that fits your character), but as a genuine limitation shaping how your character moves through the world.
-
 The DM and other players will hold you to this. If you have Intelligence 6 and you're explaining complex battle tactics, someone will call it out. If you have Charisma 6 and you're smooth-talking the guard, that's not how your character works—you need a different approach.
 
 This isn't about punishing you. It's about creating **authentic characters with real flaws** that generate interesting story moments.
+
 
 ---
 
@@ -132,6 +140,7 @@ When you sit down to build your character, ask yourself:
 If yes, this system gives you that option. If you'd rather be competent across the board, you can build that too—but you won't reach the same heights in your primary stat early in the game.
 
 Both approaches are valid. The system simply expands your options while maintaining balance.
+
 
 ---
 

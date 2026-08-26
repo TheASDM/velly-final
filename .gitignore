@@ -81,7 +81,15 @@ claude-project-export/
 # ("never share with players") and per-character sheets synthesised from player
 # questionnaire answers ("DM EYES ONLY"). This repo is public — keep them out.
 files/[0-9][0-9]-[0-9][0-9]-[0-9][0-9][0-9][0-9]/
-files/*/campaign-dm-secrets-*.md
+files/valley-of-shadows-*/
+# By kind rather than by folder, at any depth. The dated-folder rules above
+# only matched one naming convention and one nesting level, so a drop that
+# used a different folder name left DM secrets and every character sheet
+# trackable. Match what the file *is*.
+files/**/campaign-dm-secrets-*.md
+files/**/dm-sheet-*.md
+files/**/player-sheet-*.md
+files/**/*-questionnaire*.md
 
 # Foundry actors rebuilt by scripts/build_foundry_actor.py. These are player
 # character data and this repo is public.

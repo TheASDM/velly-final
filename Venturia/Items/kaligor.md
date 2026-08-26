@@ -1,12 +1,13 @@
 ---
 title: Kaligor
-description: Lotan's rare magic scimitar, an heirloom of the Kaligor line whose flame gives light before it gives harm.
+description: 'Lotan''s heirloom cutlass of the Kaligor line — a blade that burned in Barovia, and has been quiet since the crossing.'
 published: true
 date: 2026-05-26T00:00:00.000Z
-tags: items, magic-items, weapons, scimitar, lotan, kaligor, vallombrosa
+tags: items, magic-items, weapons, cutlass, lotan, kaligor, vallombrosa
 editor: markdown
 dateCreated: 2026-05-26T00:00:00.000Z
 ---
+
 
 # Kaligor
 
@@ -37,19 +38,22 @@ Kaligor is a slightly curved blade of darkened steel, its edge catching light li
 
 The grip is old, the leather rewrapped more than once. This blade has been carried a long time.
 
+
 ---
 
 ## In Play
 
-Kaligor is currently carried by [Lotan](/en/Venturia/Characters/PCs/lotan). It reads as an heirloom first and a weapon second: old, carefully maintained, and tied to a name that predates the current trouble in Venturia.
+Kaligor is currently carried by [Lotan](/en/Venturia/Characters/PCs/lotan). It reads as an heirloom first and a weapon second: old, carefully maintained, and tied to a name that predates the current trouble in Venturia. Kaligor is the family name; the blade simply carries it.
 
-Its magic is controlled rather than hungry. The blade can burn paper, oil, cloth, and wood, but its flame passes through living flesh like warm air unless Lotan calls on Emberstep.
+**The blade has not burned since the night the *Fang of Barovia* broke apart at the seawall.** Lotan will tell you, honestly, that it is an ornate but otherwise ordinary cutlass — and for as long as he has carried it in Eldryn, every test has agreed with him. Whatever crossed the water with him went quiet, the same way the relic at his neck did. Whether it stays that way is not up to him.
+
 
 ---
 
-## Properties
+## Properties — as it was in Barovia, and as it would be if it wakes
 
 You gain a **+1 bonus to attack and damage rolls** made with Kaligor.
+
 
 ---
 
@@ -61,6 +65,7 @@ While ignited, it sheds **bright light in a 20-foot radius** and **dim light for
 
 The flame itself has no effect on living creatures. It will not burn flesh, hair, or hide. It passes through a living hand like warm air.
 
+
 ---
 
 ## Emberstep
@@ -70,6 +75,7 @@ The flame itself has no effect on living creatures. It will not burn flesh, hair
 While the circle is active, each time you hit an enemy with Kaligor, that creature takes an additional **1d4 fire damage**.
 
 The circle ends early if you fall unconscious or choose to dismiss it.
+
 
 ---
 

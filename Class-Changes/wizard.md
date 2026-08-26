@@ -1,8 +1,10 @@
 ---
 title: Wizard — 2024 Class Changes
-description: A comprehensive breakdown of what changed for the Wizard class in the 2024 Player's Handbook, covering core features, subclass updates, and new spells.
-tags: "rules, wizard, 2024, class-changes, player-guide, spellcasting"
+description: 'A comprehensive breakdown of what changed for the Wizard class in the 2024 Player''s Handbook, covering core features, subclass updates, and new spells.'
+published: true
 date: 2026-02-23T00:00:00.000Z
+tags: rules, wizard, 2024, class-changes, player-guide, spellcasting
+editor: markdown
 ---
 
 ## Core Class Features
@@ -63,6 +65,7 @@ Choose one Epic Boon feat
 - **Boon of Spell Recall:** +1 INT/WIS/CHA (max 30); when casting level 1-4 spell, roll 1d4 - if result matches spell level, slot not expended
 - **Boon of Dimensional Travel:** +1 any stat (max 30); bonus action teleport 60 ft (Prof bonus uses per long rest)
 
+
 ---
 
 ## Subclass Changes
@@ -83,8 +86,6 @@ All four 2024 subclasses gain Savant at level 3:
 - Learn 1 additional spell from your school each time you unlock new spell slot level
 - All free additions to spellbook
 
----
-
 ### Abjurer (formerly School of Abjuration)
 
 **Arcane Ward (Level 3):**
@@ -103,8 +104,6 @@ Replaces Improved Abjuration
 **Spell Resistance (Level 14):**
 - Unchanged: Advantage on saves vs spells, resistance to spell damage
 
----
-
 ### Diviner (formerly School of Divination)
 
 **The Third Eye (Level 10):**
@@ -114,8 +113,6 @@ Replaces Improved Abjuration
 Benefits changed:
 - **2014:** Darkvision 60 ft; see invisible within 10 ft; read languages; see Ethereal 60 ft
 - **2024:** Darkvision 120 ft; cast See Invisibility without slot; read languages; see Ethereal 60 ft
-
----
 
 ### Evoker (formerly School of Evocation)
 
@@ -128,8 +125,6 @@ Benefits changed:
 - **2014:** Level 2 feature
 - **2024:** Level 6 feature
 - Choose creatures = 1 + spell level; they auto-succeed on save and take no damage
-
----
 
 ### Illusionist (formerly School of Illusion)
 
@@ -156,6 +151,7 @@ Replaces Malleable Illusions
 - **2014:** Reaction to make attack auto-miss (once per short/long rest)
 - **2024:** Reaction to make attack auto-miss (Prof bonus uses per long rest); can expend 2nd+ level slot as free action to regain one use
 
+
 ---
 
 ## New Wizard Spells (2024)
@@ -171,6 +167,7 @@ Replaces Malleable Illusions
 - 5th: Circle of Power (was Paladin only), Steel Wind Strike, Summon Dragon
 - 6th: Summon Fiend
 - 7th-8th: Various new signature spells
+
 
 ---
 
@@ -194,7 +191,6 @@ Replaces Malleable Illusions
 - Subclass at level 3 instead of 2
 - Spell Mastery limited to action-time spells
 - Fixed prepared spells (INT-independent)
-
 **Subclass-Specific:**
 - Abjurer: Spell Breaker (bonus action Counterspell/Dispel, no slot loss on failure)
 - Diviner: The Third Eye now bonus action with better benefits

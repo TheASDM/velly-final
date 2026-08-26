@@ -1,12 +1,13 @@
 ---
-title: The Wine Merchants' Guild
-description: The guild behind the Winecradle, bottling Venturia's impossible vintages and guarding cellars that reach deep into the hillside.
+title: 'The Wine Merchants'' Guild'
+description: 'The guild behind the Winecradle, bottling Venturia''s impossible vintages and guarding cellars that reach deep into the hillside.'
 published: true
 date: 2026-05-25T00:00:00.000Z
 tags: factions, guilds, wine-merchants, winecradle, market-tiers, trade
 editor: markdown
 dateCreated: 2026-05-25T00:00:00.000Z
 ---
+
 
 <div style="display: flex; gap: 2rem; align-items: flex-start; margin: 0 0 2.5rem; padding: 1.5rem 1.75rem; background: linear-gradient(135deg, rgba(20, 18, 24, 0.55) 0%, rgba(36, 28, 18, 0.4) 100%); border: 1px solid rgba(139, 115, 85, 0.35); border-radius: 6px; box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6); flex-wrap: wrap;">
 
@@ -30,11 +31,13 @@ dateCreated: 2026-05-25T00:00:00.000Z
 
 The Wine Merchants' Guild turns Venturia's uncanny growing conditions into bottles that fetch premium prices across the known world. Its public face is ceremony and taste. Its deeper work is patience, cellars, old vintages, and the knowledge of which bottles should not be opened lightly.
 
+
 ---
 
 ## The Business
 
 Venturian wine sells because it should not be as good as it is. The guild knows how to make that mystery profitable without explaining it too loudly.
+
 
 ---
 

@@ -1,12 +1,13 @@
 ---
 title: Marcello di Errante
-description: A figure from the legend of Vallombrosa, surviving in the Amaranth Theater's annual restaging of The Tragedy — and in a thousand years of contradictory tales.
+description: 'A figure from the legend of Vallombrosa, surviving in the Amaranth Theater''s annual restaging of The Tragedy — and in a thousand years of contradictory tales.'
 published: true
 date: 2026-05-22T00:00:00.000Z
 tags: characters, npcs, di-errante, historical, legendary, tragedy-of-vallombrosa
 editor: markdown
 dateCreated: 2026-05-22T00:00:00.000Z
 ---
+
 
 <div style="display: flex; gap: 2rem; align-items: flex-start; margin: 0 0 2.5rem; padding: 1.5rem 1.75rem; background: linear-gradient(135deg, rgba(20, 18, 24, 0.55) 0%, rgba(36, 28, 18, 0.4) 100%); border: 1px solid rgba(139, 115, 85, 0.35); border-radius: 6px; box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6); flex-wrap: wrap;">
 
@@ -29,12 +30,12 @@ dateCreated: 2026-05-22T00:00:00.000Z
 
 A figure from the legend of [Vallombrosa](/en/Venturia/Locations/vallombrosa), named in the tellings of the di Errante story — the one that ended the great house and left the fog behind. Like everything about that night, the truth of him is buried under a thousand years of contradictory tales.
 
+
 ---
 
 ## In the Legend
 A thousand years ago, the di Errante were the most powerful noble house on Seravalle, and their estate at Vallombrosa was the envy of the island — until something so complete and terrible happened there that the estate became a dead zone, the family name became a cautionary tale, and the fog that swallowed it never lifted. Marcello appears in the versions of that story the city still tells, most visibly in the Amaranth Theater's annual staging of *[The Tragedy of Vallombrosa](/en/Venturia/Culture/tragedy-of-vallombrosa)*.
 
-<!-- TODO: the specific public legend of Marcello — as the city tells it — is not recorded in the knowledge base. Canon notes only that the surviving legends contradict one another and that none are correct. Supply the in-world telling you want players to be able to find. -->
 
 ---
 
@@ -42,5 +43,6 @@ A thousand years ago, the di Errante were the most powerful noble house on Serav
 - **[Vallombrosa](/en/Venturia/Locations/vallombrosa)** — The lost di Errante estate, now the forbidden fog-zone at the city's edge.
 - **[The Amaranth Theater](/en/Venturia/Locations/amaranth-theater)** — Where *The Tragedy of Vallombrosa* is staged each Autumn Masquerade.
 - **[Lorenzo di Errante](/en/Venturia/Characters/NPCs/lorenzo-di-errante)** — Named as his brother in the surviving tellings.
+- **A disputed third sibling** — A handful of the oldest tellings give the di Errante a third child, never named. Every version staged in living memory has two.
 - **[The Signore of Venturia](/en/Venturia/Government/signore-of-venturia)** — Names this character in its connections.
 - **[The Tragedy of Vallombrosa](/en/Venturia/Culture/tragedy-of-vallombrosa)** — Names this character in its connections.

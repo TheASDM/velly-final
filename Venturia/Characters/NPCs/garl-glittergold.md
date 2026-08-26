@@ -8,6 +8,7 @@ editor: markdown
 dateCreated: 2026-05-22T00:00:00.000Z
 ---
 
+
 <div style="display: flex; gap: 2rem; align-items: flex-start; margin: 0 0 2.5rem; padding: 1.5rem 1.75rem; background: linear-gradient(135deg, rgba(20, 18, 24, 0.55) 0%, rgba(36, 28, 18, 0.4) 100%); border: 1px solid rgba(139, 115, 85, 0.35); border-radius: 6px; box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6); flex-wrap: wrap;">
 
 <div style="flex: 1; min-width: 240px;">
@@ -29,9 +30,8 @@ dateCreated: 2026-05-22T00:00:00.000Z
 
 The chief deity of gnomes — a god of trickery, illusion, gem-cutting, and the protection of his people, who is said to outwit his enemies rather than overpower them. Where gnomes travel, his name travels with them.
 
+
 ---
 
 ## Worship
 Garl is honored less through grand temples than through cleverness, fine craft, and good-humored mischief carried out in his name. His followers tend to favor wit over force and protection over conquest.
-
-<!-- TODO: Venturia-specific worship is undefined in the knowledge base. Canon notes the city's Penny Shrine has "no official deity," so Garl's formal presence in Venturia (if any) is for you to decide before this goes public. -->

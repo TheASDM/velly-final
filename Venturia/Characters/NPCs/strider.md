@@ -8,6 +8,7 @@ editor: markdown
 dateCreated: 2026-05-25T00:00:00.000Z
 ---
 
+
 <div style="display: flex; gap: 2rem; align-items: flex-start; margin: 0 0 2.5rem; padding: 1.5rem 1.75rem; background: linear-gradient(135deg, rgba(20, 18, 24, 0.55) 0%, rgba(36, 28, 18, 0.4) 100%); border: 1px solid rgba(139, 115, 85, 0.35); border-radius: 6px; box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6); flex-wrap: wrap;">
 
 <div style="flex: 1; min-width: 240px;">
@@ -30,6 +31,7 @@ dateCreated: 2026-05-25T00:00:00.000Z
 
 Strider is the name the gardeners use for the mentor who trained [Valentro](/en/Venturia/Characters/PCs/valentro) in the way of the leaf. Among the terraces of the [Tiered Gardens](/en/Venturia/Locations/tiered-gardens) and the [Gardener's Guild](/en/Venturia/Factions/gardeners-guild), that means more than pruning and patience: it is a discipline of attention, quiet movement, and knowing when not to disturb what is growing.
 
+
 ---
 
 ## What Is Known
@@ -37,6 +39,7 @@ Strider is the name the gardeners use for the mentor who trained [Valentro](/en/
 Strider works within the culture of the Gardens rather than above it. The gardeners speak of them as someone who knows old paths, old trees, and the small signs by which a living place shows stress before anyone else notices.
 
 [Valentro](/en/Venturia/Characters/PCs/valentro) learned beside Strider before his recent memories of swordwork began surfacing. Whether Strider recognizes those reflexes as something ordinary, dangerous, or familiar has not yet been established.
+
 
 ---
 
@@ -47,9 +50,9 @@ Strider works within the culture of the Gardens rather than above it. The garden
 - **[The Gardener's Guild](/en/Venturia/Factions/gardeners-guild)** - The craft tradition around the Gardens.
 - **[Liminal House](/en/Venturia/Locations/liminal-house)** - Part of the web of people and places that raised Valentro.
 
+
 ---
 
 ## Gallery
 
-<!-- pinned by DM, gallery_id 20260527-043119-c7ee3253, 2026-05-27T21:04:33.314877Z -->
 ![a 12 year old Valen is chased through the Tiered Gardens by a spirit of a Goose as Strider looks on](/api/gallery/image/20260527-043119-c7ee3253.png)

@@ -1,12 +1,13 @@
 ---
 title: High Oracle Ysmena Starweaver
-description: An ageless elf oracle who speaks for the city's smaller mystery cults — cryptic, divisive, and accurate often enough that dismissing her is dangerous.
+description: 'An ageless elf oracle who speaks for the city''s smaller mystery cults — cryptic, divisive, and accurate often enough that dismissing her is dangerous.'
 published: true
 date: 2026-05-22T00:00:00.000Z
 tags: characters, npcs, oracle, elf, mystery-cults, temple-authority
 editor: markdown
 dateCreated: 2026-05-22T00:00:00.000Z
 ---
+
 
 <div style="display: flex; gap: 2rem; align-items: flex-start; margin: 0 0 2.5rem; padding: 1.5rem 1.75rem; background: linear-gradient(135deg, rgba(20, 18, 24, 0.55) 0%, rgba(36, 28, 18, 0.4) 100%); border: 1px solid rgba(139, 115, 85, 0.35); border-radius: 6px; box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6); flex-wrap: wrap;">
 
@@ -29,15 +30,18 @@ dateCreated: 2026-05-22T00:00:00.000Z
 
 An ageless elf oracle who speaks for the city's smaller mystery cults and oracle traditions. She came to Venturia decades ago and built a following on the strength of divinations that proved, unsettlingly, correct.
 
+
 ---
 
 ## Reputation
 Her exact tradition is hard to pin down; she speaks in prophecy and metaphor that could belong to any of several divine sources. The established Temple Authority tolerates her — she has legitimate followers, and excluding her would cause more trouble than it's worth — but few are comfortable with her methods.
 
+
 ---
 
 ## Manner
 Cryptic to the point of vertigo, and occasionally terrifying when a prophecy takes her. She speaks in riddles and in the future tense, as though the present barely registers, and you are never quite sure whether she is answering your question or one you'll think to ask next week. Her record is accurate often enough that dismissing her is dangerous.
+
 
 ---
 

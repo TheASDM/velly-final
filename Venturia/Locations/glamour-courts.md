@@ -1,12 +1,13 @@
 ---
 title: The Glamour Courts
-description: VAVA's illusion training spaces, where appearance and reality have always been more negotiable than outsiders expect.
+description: 'VAVA''s illusion training spaces, where appearance and reality have always been more negotiable than outsiders expect.'
 published: true
 date: 2026-05-25T00:00:00.000Z
 tags: locations, vava, high-quarter, illusion, glamour, academy, glamour-courts
 editor: markdown
 dateCreated: 2026-05-25T00:00:00.000Z
 ---
+
 
 <div style="display: flex; gap: 2rem; align-items: flex-start; margin: 0 0 2.5rem; padding: 1.5rem 1.75rem; background: linear-gradient(135deg, rgba(20, 18, 24, 0.55) 0%, rgba(36, 28, 18, 0.4) 100%); border: 1px solid rgba(139, 115, 85, 0.35); border-radius: 6px; box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6); flex-wrap: wrap;">
 
@@ -29,11 +30,13 @@ dateCreated: 2026-05-25T00:00:00.000Z
 
 The Glamour Courts are VAVA's training spaces for illusion, disguise, performance-magic, and the practical question of what happens when enough people agree to believe a face.
 
+
 ---
 
 ## Character
 
 The Courts are beautiful, frustrating, and hard to describe consistently. A lesson may depend as much on posture, costume, and audience as on incantation. In Venturia, appearance is rarely only appearance.
+
 
 ---
 

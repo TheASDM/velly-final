@@ -1,12 +1,13 @@
 ---
 title: Using Enzo, the Loremaster
-description: How to talk to the Valley of Shadows chatbot — what he knows, what he doesn't, and the commands that change how he answers.
+description: 'How to talk to the Valley of Shadows chatbot — what he knows, what he doesn''t, and the commands that change how he answers.'
 published: true
 date: 2026-05-22T00:00:00.000Z
 tags: articles, enzo, loremaster, chatbot, guide, player-resources
 editor: markdown
 dateCreated: 2026-05-22T00:00:00.000Z
 ---
+
 
 <div style="display: flex; gap: 2rem; align-items: flex-start; margin: 0 0 2.5rem; padding: 1.5rem 1.75rem; background: linear-gradient(135deg, rgba(20, 18, 24, 0.55) 0%, rgba(36, 28, 18, 0.4) 100%); border: 1px solid rgba(139, 115, 85, 0.35); border-radius: 6px; box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6); flex-wrap: wrap;">
 
@@ -32,6 +33,7 @@ Enzo is the codex's resident scholar — a chatbot who has read every published 
 
 This guide covers what he can and can't do, and how to get the most out of him.
 
+
 ---
 
 ## What Enzo knows
@@ -47,6 +49,7 @@ What he **doesn't** know:
 
 If you ask about something the codex doesn't cover, he'll tell you so. He won't invent answers.
 
+
 ---
 
 ## How to ask
@@ -61,6 +64,7 @@ Plain English. Ask the question you'd ask another player who happened to have re
 - "How does the Verdigris family fit into the city?"
 
 The more specific the question, the better the answer. If you're looking for a person, a faction, or a place, name it. He searches by text similarity to your question, so vague questions get vague answers.
+
 
 ---
 
@@ -94,6 +98,7 @@ Enzo as Rocky, the Eridian engineer from Andy Weir's *Project Hail Mary*. Broken
 
 The vibes are mutually exclusive — turning one on turns the others off. `/brainstorm` owns the same slot, so toggling brainstorm clears any active vibe and vice versa.
 
+
 ---
 
 ## Tips
@@ -103,6 +108,7 @@ The vibes are mutually exclusive — turning one on turns the others off. `/brai
 - **He'll cite what he found.** Internally he pulls "[DETAILED REFERENCE]" entries from the codex when answering — when an answer surprises you, the named source is the page to verify against.
 - **Trust the silence.** When he says "I don't have information about that," that's the truth — not modesty.
 - **Install him as an app.** On mobile or desktop, the loremaster page can be installed as a PWA. Look for "Add to Home Screen" or "Install" in your browser menu, and he'll be one tap away during sessions.
+
 
 ---
 
@@ -114,6 +120,7 @@ The vibes are mutually exclusive — turning one on turns the others off. `/brai
 - *"Is my character concept OK?"* — always run the final pitch by the DM, regardless of what Enzo said in brainstorm.
 
 Enzo is a tool for navigating what's already public. The DM owns the story.
+
 
 ---
 

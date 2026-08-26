@@ -1,12 +1,13 @@
 ---
 title: Primo Navigante Old Maren
-description: Primo Navigante of the Ferriers' Confraternity and an Autumn Council member — deliberate and prone to uncanny pauses, warning that the trouble begins in the water, not the streets.
+description: 'Primo Navigante of the Ferriers'' Confraternity and an Autumn Council member — deliberate and prone to uncanny pauses, warning that the trouble begins in the water, not the streets.'
 published: true
 date: 2026-05-22T00:00:00.000Z
 tags: characters, npcs, autumn-council, primo-navigante, ferriers-confraternity, human
 editor: markdown
 dateCreated: 2026-05-22T00:00:00.000Z
 ---
+
 
 <div style="display: flex; gap: 2rem; align-items: flex-start; margin: 0 0 2.5rem; padding: 1.5rem 1.75rem; background: linear-gradient(135deg, rgba(20, 18, 24, 0.55) 0%, rgba(36, 28, 18, 0.4) 100%); border: 1px solid rgba(139, 115, 85, 0.35); border-radius: 6px; box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6); flex-wrap: wrap;">
 
@@ -28,14 +29,14 @@ dateCreated: 2026-05-22T00:00:00.000Z
 
 </div>
 
-> *"The water knows. It's been restless for months."*
-
 Primo Navigante of the [Ferriers' Confraternity](/en/Venturia/Locations/ferriers-confraternity) and an Autumn Council member of uncertain age — sixty or eighty, the canal-light makes it hard to say. "Old Maren" is the only name she'll answer to. She earned mastery improbably young, completing the Blind Navigation faster than anyone in living memory, and has led the Confraternity for over twenty years.
+
 
 ---
 
 ## On the Council
 Deliberate in everything — her words, her silences, the unnerving beat she leaves before answering, as though waiting for something else to finish speaking first. She tells the chamber that the trouble begins in the water, not the streets; the Confraternity has already pulled its boats from the routes that run too close to the old waterways.
+
 
 ---
 

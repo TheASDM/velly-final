@@ -1,12 +1,13 @@
 ---
 title: The Binding Hall
-description: VAVA's hall for contract magic and oath-craft, disciplines with particular weight in a city where promises have teeth.
+description: 'VAVA''s hall for contract magic and oath-craft, disciplines with particular weight in a city where promises have teeth.'
 published: true
 date: 2026-05-25T00:00:00.000Z
 tags: locations, vava, high-quarter, contract-magic, oath-craft, binding-hall
 editor: markdown
 dateCreated: 2026-05-25T00:00:00.000Z
 ---
+
 
 <div style="display: flex; gap: 2rem; align-items: flex-start; margin: 0 0 2.5rem; padding: 1.5rem 1.75rem; background: linear-gradient(135deg, rgba(20, 18, 24, 0.55) 0%, rgba(36, 28, 18, 0.4) 100%); border: 1px solid rgba(139, 115, 85, 0.35); border-radius: 6px; box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6); flex-wrap: wrap;">
 
@@ -29,11 +30,13 @@ dateCreated: 2026-05-25T00:00:00.000Z
 
 The Binding Hall is where VAVA teaches the disciplines of formal promises: contract magic, oath-craft, witnessed obligation, and the theory of words that become harder to break than they were to speak.
 
+
 ---
 
 ## Character
 
 The Hall's work matters in any city, but it matters more in Venturia. Promises here already feel heavier than elsewhere. The Binding Hall studies how to measure, use, and survive that weight.
+
 
 ---
 

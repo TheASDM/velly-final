@@ -8,6 +8,7 @@ editor: markdown
 dateCreated: 2026-05-22T00:00:00.000Z
 ---
 
+
 <div style="display: flex; gap: 2rem; align-items: flex-start; margin: 0 0 2.5rem; padding: 1.5rem 1.75rem; background: linear-gradient(135deg, rgba(20, 18, 24, 0.55) 0%, rgba(36, 28, 18, 0.4) 100%); border: 1px solid rgba(139, 115, 85, 0.35); border-radius: 6px; box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6); flex-wrap: wrap;">
 
 <div style="flex: 1; min-width: 240px;">
@@ -29,19 +30,27 @@ dateCreated: 2026-05-22T00:00:00.000Z
 
 One of the most celebrated performers on Seravalle, and the reigning star of the [Amaranth Theater](/en/Venturia/Locations/amaranth-theater) in the High Quarter. To watch her work is to watch someone vanish into another person entirely.
 
+
 ---
 
 ## On the Stage
-Celina is a fixture of the Amaranth — the cultural heart of the city — and a favorite of its most devoted patrons, Orabella among them, who rarely misses a performance. Her name is bound up with the theater's crown jewel: the annual staging of *[The Tragedy of Vallombrosa](/en/Venturia/Culture/tragedy-of-vallombrosa)* during the Autumn Masquerade.
+Celina is a fixture of the Amaranth — the cultural heart of the city — and a favorite of its most devoted patrons. Her name is bound up with the theater's crown jewel: the annual staging of *[The Tragedy of Vallombrosa](/en/Venturia/Culture/tragedy-of-vallombrosa)* during the Autumn Masquerade.
+
 
 ---
 
 ## Family
-She is the elder sister of the young person who died at an [Autumn Masquerade](/en/Venturia/Culture/autumn-masquerade) — the friend whose death Car has never stopped asking about. How much Celina knows of the circumstances is unclear.
+Born **Celina Rossetti**, of the family that runs the press floor at [The Burnt Quill](/en/Venturia/Locations/burnt-quill); she took **Cross** as a stage name at sixteen, and it is the only name the city knows her by. She is the elder sister of **Alessia Rossetti**, who died at an [Autumn Masquerade](/en/Venturia/Culture/autumn-masquerade) — the friend whose death Car has never stopped asking about. How much Celina knows of the circumstances is unclear.
+
+
+---
+
+## The Oldest Prompt-Book
+Among the properties Celina has handled in her years with the company is the Amaranth's oldest surviving prompt-book of *[The Tragedy of Vallombrosa](/en/Venturia/Culture/tragedy-of-vallombrosa)* — brittle, water-stained, and older than any version now staged. Its cast page lists the di Errante household differently than every modern telling: **three children where the story has two**, the third's role half struck-through and absent from all later revisions. Whether it records a truth, a scribal error, or an early director's invention, nobody at the theater can say — and most have never looked.
+
 
 ---
 
 ## Connections
-- **[Orabella](/en/Venturia/Characters/PCs/orabella)** — A devoted admirer who attends her performances whenever she can.
-- **[Caravel "Car" Asteri](/en/Venturia/Characters/PCs/caravel-asteri)** — Celina's younger sibling was the friend Car lost at the Autumn Masquerade.
+- **[Caravel "Car" Asteri](/en/Venturia/Characters/PCs/caravel-asteri)** — Celina's younger sister, Alessia, was the friend Car lost at the Autumn Masquerade.
 - **[The Amaranth Theater](/en/Venturia/Locations/amaranth-theater)** — Her stage and home in the High Quarter.

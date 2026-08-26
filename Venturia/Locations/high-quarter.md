@@ -1,12 +1,13 @@
 ---
 title: The High Quarter
-description: Venturia's upper city of old money, gilded institutions, exclusive salons, and towers that prefer to look down on the rest of the island.
+description: 'Venturia''s upper city of old money, gilded institutions, exclusive salons, and towers that prefer to look down on the rest of the island.'
 published: true
 date: 2026-05-25T00:00:00.000Z
 tags: locations, districts, high-quarter, venturia, academy, politics, old-money
 editor: markdown
 dateCreated: 2026-05-25T00:00:00.000Z
 ---
+
 
 <div style="display: flex; gap: 2rem; align-items: flex-start; margin: 0 0 2.5rem; padding: 1.5rem 1.75rem; background: linear-gradient(135deg, rgba(20, 18, 24, 0.55) 0%, rgba(36, 28, 18, 0.4) 100%); border: 1px solid rgba(139, 115, 85, 0.35); border-radius: 6px; box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6); flex-wrap: wrap;">
 
@@ -31,6 +32,7 @@ The High Quarter gleams above the rest of Venturia: autumn-colored towers, priva
 
 It is not only a place of wealth. It is a place where distance is part of the architecture.
 
+
 ---
 
 ## Character
@@ -38,6 +40,7 @@ It is not only a place of wealth. It is a place where distance is part of the ar
 People come to the High Quarter for education, patronage, contracts, performances, and decisions made behind expensive doors. Its streets are cleaner than the Market Tiers and quieter than the [Harbor District](/en/Venturia/Locations/harbor-district), but the calm is political rather than peaceful.
 
 The district's social codes are dense. A mask, invitation, surname, or school tie can matter as much as coin.
+
 
 ---
 
@@ -50,6 +53,7 @@ The district's social codes are dense. A mask, invitation, surname, or school ti
 - **[The Covenant Archive](/en/Venturia/Locations/covenant-archive)** - Repository of witnessed contracts and binding agreements.
 - **[The Amaranth Theater](/en/Venturia/Locations/amaranth-theater)** - Cultural heart of Venturia and home of the annual Tragedy.
 - **[The Hall of Reflected Faces](/en/Venturia/Locations/hall-of-reflected-faces)** - [The Veil Court](/en/Venturia/Factions/veil-court)'s private gallery of Masquerade masks.
+
 
 ---
 

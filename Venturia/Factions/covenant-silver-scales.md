@@ -1,12 +1,13 @@
 ---
 title: The Covenant of Silver Scales
-description: Venturia's premier merchant association for high-value agreements — contract law, complex partnerships, and arbitration of commercial disputes. Where airtight is the standard.
+description: 'Venturia''s premier merchant association for high-value agreements — contract law, complex partnerships, and arbitration of commercial disputes. Where airtight is the standard.'
 published: true
 date: 2026-05-22T00:00:00.000Z
 tags: factions, merchant, contracts, commercial-law, covenant-archive, high-quarter
 editor: markdown
 dateCreated: 2026-05-22T00:00:00.000Z
 ---
+
 
 <div style="display: flex; gap: 2rem; align-items: flex-start; margin: 0 0 2.5rem; padding: 1.5rem 1.75rem; background: linear-gradient(135deg, rgba(20, 18, 24, 0.55) 0%, rgba(36, 28, 18, 0.4) 100%); border: 1px solid rgba(139, 115, 85, 0.35); border-radius: 6px; box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6); flex-wrap: wrap;">
 
@@ -28,24 +29,26 @@ dateCreated: 2026-05-22T00:00:00.000Z
 
 </div>
 
-<!-- TODO: banner — supply a filename to add -->
-
 Venturia's premier merchant association for high-value agreements — contract law, complex partnerships, and the mediation of commercial disputes. Named for the silver scales of justice and the silver coin of trade, it is who you go to when an agreement absolutely must hold.
+
 
 ---
 
 ## What They Do
 Where the Harbor Wardens move goods, the Covenant builds the legal and contractual scaffolding beneath commerce: airtight contracts, intricate partnerships, and the arbitration of disputes between merchants who would rather not go to open war.
 
+
 ---
 
 ## Leadership
 Led by Loren Asteri — old name, self-made fortune, impeccably dressed, unfailingly polite, and utterly unyielding about the letter of an agreement. He keeps a scholarly interest in contract law and the old traditions of binding oaths alongside his commercial work.
 
+
 ---
 
 ## Membership
 Members gain access to the Covenant's negotiators and arbitrators, the weight of its reputation behind their agreements, and standing in the [High Quarter](/en/Venturia/Locations/high-quarter)'s commercial circles.
+
 
 ---
 

@@ -1,12 +1,13 @@
 ---
-title: The Gardener's Guild
-description: The guild that tends the Tiered Gardens, preserving Venturia's impossible horticulture and the old techniques that keep it blooming.
+title: 'The Gardener''s Guild'
+description: 'The guild that tends the Tiered Gardens, preserving Venturia''s impossible horticulture and the old techniques that keep it blooming.'
 published: true
 date: 2026-05-25T00:00:00.000Z
 tags: factions, guilds, gardeners-guild, tiered-gardens, horticulture, strider, valentro
 editor: markdown
 dateCreated: 2026-05-25T00:00:00.000Z
 ---
+
 
 <div style="display: flex; gap: 2rem; align-items: flex-start; margin: 0 0 2.5rem; padding: 1.5rem 1.75rem; background: linear-gradient(135deg, rgba(20, 18, 24, 0.55) 0%, rgba(36, 28, 18, 0.4) 100%); border: 1px solid rgba(139, 115, 85, 0.35); border-radius: 6px; box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6); flex-wrap: wrap;">
 
@@ -30,11 +31,13 @@ dateCreated: 2026-05-25T00:00:00.000Z
 
 The Gardener's Guild maintains the [Tiered Gardens](/en/Venturia/Locations/tiered-gardens) and the horticultural techniques that make Venturia's green spaces feel slightly impossible. Its members know which terraces can be safely opened, which trees should not be disturbed, and which flowers bloom in colors outsiders do not have names for.
 
+
 ---
 
 ## Work
 
 The guild's labor is both practical and ceremonial: pruning, planting, soil work, terrace maintenance, public closures, and the quiet stewardship of plants old enough to remember the hillside before the city did.
+
 
 ---
 

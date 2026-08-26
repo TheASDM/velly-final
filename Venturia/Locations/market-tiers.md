@@ -8,6 +8,7 @@ editor: markdown
 dateCreated: 2026-05-25T00:00:00.000Z
 ---
 
+
 <div style="display: flex; gap: 2rem; align-items: flex-start; margin: 0 0 2.5rem; padding: 1.5rem 1.75rem; background: linear-gradient(135deg, rgba(20, 18, 24, 0.55) 0%, rgba(36, 28, 18, 0.4) 100%); border: 1px solid rgba(139, 115, 85, 0.35); border-radius: 6px; box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6); flex-wrap: wrap;">
 
 <div style="flex: 1; min-width: 240px;">
@@ -31,6 +32,7 @@ The Market Tiers are Venturia's working middle: shops, guild halls, taverns, car
 
 If the [High Quarter](/en/Venturia/Locations/high-quarter) decides what Venturia claims to value, the Market Tiers show what it actually needs.
 
+
 ---
 
 ## Character
@@ -38,6 +40,7 @@ If the [High Quarter](/en/Venturia/Locations/high-quarter) decides what Venturia
 The district is layered in terraces and lanes. Guild apprentices cross paths with healers, printers, maskmakers, house children, scholars looking for cheaper rooms, and merchants with just enough status to resent the climb uphill.
 
 The Market Tiers are also where Venturia's strangeness feels most domestic. A mirror lags, a promise bites harder than expected, a flower blooms out of season, and everyone keeps moving.
+
 
 ---
 
@@ -53,6 +56,7 @@ The Market Tiers are also where Venturia's strangeness feels most domestic. A mi
 - **[The Echoing Court](/en/Venturia/Locations/echoing-court)** - Where words carry further than intended.
 - **[Liminal House](/en/Venturia/Locations/liminal-house)** - Home for those who came from nowhere.
 
+
 ---
 
 ## See Also
@@ -60,6 +64,7 @@ The Market Tiers are also where Venturia's strangeness feels most domestic. A mi
 - **[The High Quarter](/en/Venturia/Locations/high-quarter)** - The upper city.
 - **[The Harbor District](/en/Venturia/Locations/harbor-district)** - The waterline below.
 - **[The Tiered Gardens](/en/Venturia/Locations/tiered-gardens)** - The green slope between tiers.
+
 
 ---
 

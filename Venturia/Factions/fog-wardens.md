@@ -1,12 +1,13 @@
 ---
 title: The Fog Wardens and the Shadowed Wardens
-description: Venturia's law and order at the city's edge — the visible Watch patrolling streets and the boundary at the Overlook, with a quieter specialist division handling the stranger incidents.
+description: 'Venturia''s law and order at the city''s edge — the visible Watch patrolling streets and the boundary at the Overlook, with a quieter specialist division handling the stranger incidents.'
 published: true
 date: 2026-05-22T00:00:00.000Z
 tags: factions, law-enforcement, fog-wardens, shadowed-wardens, overlook, watch
 editor: markdown
 dateCreated: 2026-05-22T00:00:00.000Z
 ---
+
 
 <!-- DM NOTE (not rendered): Canon states most citizens do NOT know the Shadowed Wardens exist, and their real work (supernatural containment, memory-alteration protocols, the secret incident records and supernatural registry) is all withheld here. If the public-facing wiki should not name the Shadowed Wardens at all, cut the page subtitle's mention and the second paragraph of "What They Do." -->
 <div style="display: flex; gap: 2rem; align-items: flex-start; margin: 0 0 2.5rem; padding: 1.5rem 1.75rem; background: linear-gradient(135deg, rgba(20, 18, 24, 0.55) 0%, rgba(36, 28, 18, 0.4) 100%); border: 1px solid rgba(139, 115, 85, 0.35); border-radius: 6px; box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6); flex-wrap: wrap;">
@@ -29,19 +30,20 @@ dateCreated: 2026-05-22T00:00:00.000Z
 
 </div>
 
-<!-- TODO: banner — supply a filename to add -->
-
 Venturia's law and order — and its first line where the city meets the fog. The visible Watch patrols the streets and answers the day's troubles; the Fog Wardens hold the boundary at the Overlook, where Venturia ends and [Vallombrosa](/en/Venturia/Locations/vallombrosa)'s fog begins.
+
 
 ---
 
 ## What They Do
 The Fog Wardens are the public force: street patrols, response to crime and disorder, and the long watch at the fog line. A smaller specialist division — the Shadowed Wardens — handles the stranger and more dangerous incidents the ordinary Watch isn't equipped for: a quiet arm of the service few citizens ever have cause to meet.
 
+
 ---
 
 ## Leadership
 [Captain-Commander Thora Ironmark](/en/Venturia/Characters/NPCs/thora-ironmark), a half-orc veteran who rose through the ranks over twenty years. Tough, fair, and fiercely protective of the city's people, she holds the Watch Commander's seat on the Autumn Council.
+
 
 ---
 

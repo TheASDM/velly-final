@@ -8,6 +8,7 @@ editor: markdown
 dateCreated: 2026-05-22T00:00:00.000Z
 ---
 
+
 <!-- DM NOTE (not rendered): Everything substantive about Tolomeo (the Tartuzi pact, the prison, the betrayal) is campaign-secret. This is a footnote-only placeholder. -->
 <div style="display: flex; gap: 2rem; align-items: flex-start; margin: 0 0 2.5rem; padding: 1.5rem 1.75rem; background: linear-gradient(135deg, rgba(20, 18, 24, 0.55) 0%, rgba(36, 28, 18, 0.4) 100%); border: 1px solid rgba(139, 115, 85, 0.35); border-radius: 6px; box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6); flex-wrap: wrap;">
 
@@ -30,9 +31,8 @@ dateCreated: 2026-05-22T00:00:00.000Z
 
 A name that surfaces only in the margins of old records — a scholar and explorer, long vanished, remembered (where he is remembered at all) for a hunger to understand things others left well alone.
 
+
 ---
 
 ## In the Records
 Little survives of Tolomeo Lucente in any reliable form. He is recalled as a scholar and explorer who pursued deep knowledge and then disappeared from the accounts entirely.
-
-<!-- TODO: public-facing detail is essentially absent in the knowledge base — everything substantive about Tolomeo is campaign-secret. This page is a placeholder pending the in-world record (an archive entry, a margin note) you want players to be able to find. -->

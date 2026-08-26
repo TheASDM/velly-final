@@ -1,12 +1,13 @@
 ---
 title: The Autumn Council
-description: Venturia's governing body — eleven seats balancing the harbors, the guilds, the temples, the canal-folk, the Academy, and the Watch. Chronically deadlocked, catastrophically so this year.
+description: 'Venturia''s governing body — eleven seats balancing the harbors, the guilds, the temples, the canal-folk, the Academy, and the Watch. Chronically deadlocked, catastrophically so this year.'
 published: true
 date: 2026-05-22T00:00:00.000Z
 tags: government, autumn-council, governing-body, high-quarter
 editor: markdown
 dateCreated: 2026-05-22T00:00:00.000Z
 ---
+
 
 <div style="display: flex; gap: 2rem; align-items: flex-start; margin: 0 0 2.5rem; padding: 1.5rem 1.75rem; background: linear-gradient(135deg, rgba(20, 18, 24, 0.55) 0%, rgba(36, 28, 18, 0.4) 100%); border: 1px solid rgba(139, 115, 85, 0.35); border-radius: 6px; box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6); flex-wrap: wrap;">
 
@@ -30,20 +31,24 @@ dateCreated: 2026-05-22T00:00:00.000Z
 
 Venturia's governing body: eleven seats meant to balance the powers that actually run the island — the harbors, the guilds, the temples, the canal-folk, the Academy, and the Watch — with one seat left empty. In practice it is a chronically deadlocked chamber where nothing moves without long negotiation, tolerable in calm years and catastrophic in this one.
 
+
 ---
 
 ## Composition
 Eleven voting seats: two Harbor-Lords, two Guild-Masters, two Temple Authority representatives, the Master of the [Tidekeeper's Lodge](/en/Venturia/Locations/tidekeepers-lodge), the Archmagister of VAVA, the Primo Navigante of the [Ferriers' Confraternity](/en/Venturia/Locations/ferriers-confraternity), the Watch Commander of the Fog Wardens, and an honorary seat for [the Signore of Venturia](/en/Venturia/Government/signore-of-venturia) that has stood empty for as long as anyone living remembers. The Council Chair rotates each year among the Harbor-Lords, Guild-Masters, and Temple Authority.
+
 
 ---
 
 ## How It Votes
 A simple majority of six carries routine business. Weightier matters — emergency powers, significant taxation, or any sanctioned entry into the fog zone — require a four-fifths majority of eight. Overturning the standing laws of the city's founding charter takes a unanimous vote.
 
+
 ---
 
 ## The Gridlock
 Because the faction blocs must move together to pass anything, and the unaligned members can't carry a vote without them, almost nothing happens without extensive horse-trading. In ordinary times this is merely frustrating. With the fog behaving strangely and people disappearing, the chamber's inability to act quickly has become the city's most dangerous liability.
+
 
 ---
 
@@ -59,6 +64,7 @@ Because the faction blocs must move together to pass anything, and the unaligned
 - **[Primo Navigante Old Maren](/en/Venturia/Characters/NPCs/old-maren)** — [Ferriers' Confraternity](/en/Venturia/Locations/ferriers-confraternity)
 - **[Captain-Commander Thora Ironmark](/en/Venturia/Characters/NPCs/thora-ironmark)** — Watch Commander of the Fog Wardens
 - *[The Signore of Venturia](/en/Venturia/Government/signore-of-venturia)* — honorary seat, vacant
+
 
 ---
 

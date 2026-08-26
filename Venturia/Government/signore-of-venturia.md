@@ -8,6 +8,7 @@ editor: markdown
 dateCreated: 2026-05-25T00:00:00.000Z
 ---
 
+
 <div style="display: flex; gap: 2rem; align-items: flex-start; margin: 0 0 2.5rem; padding: 1.5rem 1.75rem; background: linear-gradient(135deg, rgba(20, 18, 24, 0.55) 0%, rgba(36, 28, 18, 0.4) 100%); border: 1px solid rgba(139, 115, 85, 0.35); border-radius: 6px; box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6); flex-wrap: wrap;">
 
 <div style="flex: 1; min-width: 240px;">
@@ -32,6 +33,7 @@ The Signore of Venturia is not a current ruler. It is an old title preserved as 
 
 The seat has stood empty for as long as anyone living remembers.
 
+
 ---
 
 ## The Empty Seat
@@ -40,11 +42,13 @@ Council tradition still accounts for the Signore even though no one sits there. 
 
 In practice, this keeps an old question alive without forcing the Council to answer it. Is the Signore's seat ceremonial only, or would a legitimate claimant carry real power? Most councillors prefer the question hypothetical.
 
+
 ---
 
 ## Why It Matters
 
 The title remains tied to the old di Errante order and to the history that ended at [Vallombrosa](/en/Venturia/Locations/vallombrosa). Any credible claim to the office would not just add a nameplate to the chamber. It would reopen arguments about inheritance, legitimacy, and whether Venturia ever truly stopped being a city with a lord.
+
 
 ---
 

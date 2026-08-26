@@ -1,5 +1,5 @@
 ---
-title: "The Valley of Shadows Framework"
+title: The Valley of Shadows Framework
 description: What this campaign is, structurally and thematically — the pitch, the world, the mystery, the themes, and what to expect at the table.
 published: true
 date: 2026-02-28T00:00:00.000Z
@@ -7,6 +7,7 @@ tags: articles, campaign, framework, lore, venturia, vallombrosa
 editor: markdown
 dateCreated: 2026-02-28T00:00:00.000Z
 ---
+
 
 <div style="display: flex; gap: 2rem; align-items: flex-start; margin: 0 0 2.5rem; padding: 1.5rem 1.75rem; background: linear-gradient(135deg, rgba(20, 18, 24, 0.55) 0%, rgba(36, 28, 18, 0.4) 100%); border: 1px solid rgba(139, 115, 85, 0.35); border-radius: 6px; box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6); flex-wrap: wrap;">
 
@@ -28,15 +29,12 @@ dateCreated: 2026-02-28T00:00:00.000Z
 
 </div>
 
-> ## This page reads better as a PDF. [Read it here.](/files/ValleyofShadowsFramework.pdf)
-
 *A Tabletop RPG Campaign · D&D 5e (2024 Edition) · Long-Term Campaign*
+
 
 ---
 
 ## The Pitch
-
-> *Imagine if Venice were haunted. Not by ghosts — ghosts would be simpler. Haunted by something that steals faces. That rewrites memories. That makes you question whether the person standing next to you is still the person you love.*
 
 "Valley of Shadows" is a long-term D&D campaign set in the sister cities of Venturia & [Vallombrosa](/en/Venturia/Locations/vallombrosa). Venturia is a breathtaking coastal city of canals, masquerade balls, and ancient secrets. Think *The Name of the Wind* meets *Interview with the Vampire*, wrapped in the aesthetic of a Venetian gothic fever dream.
 
@@ -57,6 +55,7 @@ You will laugh at this table. You will also sit in stunned silence. The goal is 
 *It's a mystery campaign where the city itself is the investigation. Strange disappearances. A comatose stranger covered in brands that shouldn't exist. A fog that's been behaving differently lately. The answers exist — they're just buried under a thousand years of people who didn't want them found.*
 
 *It's a slow-burn conspiracy thriller wrapped in masquerade costumes, with a cosmic horror problem lurking underneath.*
+
 
 ---
 
@@ -84,11 +83,10 @@ You grew up with Vallombrosa on the horizon. It's just there. Like a mountain. L
 
 *This campaign is about what happens when the scar starts bleeding.*
 
+
 ---
 
 ## The Mystery
-
-> *Something is wrong in Venturia. People are disappearing. The fog is moving in ways it shouldn't. And someone appeared at the fog line covered in scars that shouldn't exist — brands burned into flesh by something that lives between the world you know and whatever lies beneath it.*
 
 The campaign begins close to home: your fiancé didn't come back from his shift last night, your friend is missing, the stranger your colleague is caring for won't wake up. Neighborhood-level problems. The kinds of things you could explain away. If all of the explanations didn't point in the same direction.
 
@@ -104,12 +102,12 @@ The threads your characters pull on will lead deeper — through the city's poli
 
 **Confronting impossible choices.** The truth at the center of this campaign is not a locked door with a key. It is a situation where no one is clean, no resolution leaves everyone standing, and the best outcome still costs something. You will decide what you can bear to pay.
 
+
 ---
 
 ## Themes
 
 ### Identity & The Faces We Wear
-
 Venturia is obsessed with masks. This campaign asks what that actually means. Who are you when you take the mask off? What if someone could steal your face — your memories, your relationships, your very sense of self? What do you owe to the person you used to be?
 
 ### Memory & Truth
@@ -127,6 +125,7 @@ Some truths in this campaign are devastating. Some of them will change how your 
 ### Impossible Justice
 
 The campaign's final question is not "defeat the villain." It is "what does resolution actually look like when victims can be dangerous, when justice requires harming someone who has already suffered, and when the best outcome still costs something?" There is no easy answer. That's the point.
+
 
 ---
 
@@ -155,6 +154,7 @@ Masks are a social institution here, not a costume. The Autumn Masquerade is the
 Mirrors in Venturia occasionally lie. Colors are too vivid in autumn. Time feels strange sometimes. Everyone considers this perfectly normal.
 
 It is not perfectly normal.
+
 
 ---
 
@@ -186,12 +186,10 @@ Harbor lords, guild masters, & the temple authority. Three factions that nominal
 
 A family-run institution that handles binding contracts and formal agreements. In a city where promises carry unusual weight, this is not a minor business. Their records contain agreements dating back centuries that some very powerful people would prefer stay buried.
 
+
 ---
 
 ## The Promise
-
-> *This campaign will give your character a home worth fighting for, relationships worth risking everything for, and a mystery deep enough that when the truth finally comes it will be exactly as terrible and exactly as earned as you hoped it would be.*
-
 Valley of Shadows is designed for players who want their choices to matter, their characters to feel like real people with history and relationships, and their story to be genuinely surprising — not random, not arbitrary, but the kind of surprising that makes you go back through what you remember and realize the clues were there all along.
 
 The themes are dark. The story earns its darkness by caring about the people inside it. Your characters will not be swept along by plot. They will be the reason the plot goes the way it goes.

@@ -8,6 +8,7 @@ editor: markdown
 dateCreated: 2026-05-25T00:00:00.000Z
 ---
 
+
 <div style="display: flex; gap: 2rem; align-items: flex-start; margin: 0 0 2.5rem; padding: 1.5rem 1.75rem; background: linear-gradient(135deg, rgba(20, 18, 24, 0.55) 0%, rgba(36, 28, 18, 0.4) 100%); border: 1px solid rgba(139, 115, 85, 0.35); border-radius: 6px; box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6); flex-wrap: wrap;">
 
 <div style="flex: 1; min-width: 240px;">
@@ -32,11 +33,13 @@ The Binding Crafts Guild speaks for the trades that physically hold Venturia tog
 
 Its members work across every tier of the city, but its politics are closest to the [Market Tiers](/en/Venturia/Locations/market-tiers) and the working districts.
 
+
 ---
 
 ## What They Do
 
 They build, repair, inspect, and argue over the city's material reality. In a place of canals, terraces, old foundations, and buildings added to buildings for centuries, that work is never simple.
+
 
 ---
 

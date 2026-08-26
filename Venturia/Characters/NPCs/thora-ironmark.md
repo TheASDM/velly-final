@@ -8,6 +8,7 @@ editor: markdown
 dateCreated: 2026-05-22T00:00:00.000Z
 ---
 
+
 <div style="display: flex; gap: 2rem; align-items: flex-start; margin: 0 0 2.5rem; padding: 1.5rem 1.75rem; background: linear-gradient(135deg, rgba(20, 18, 24, 0.55) 0%, rgba(36, 28, 18, 0.4) 100%); border: 1px solid rgba(139, 115, 85, 0.35); border-radius: 6px; box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6); flex-wrap: wrap;">
 
 <div style="flex: 1; min-width: 240px;">
@@ -28,14 +29,14 @@ dateCreated: 2026-05-22T00:00:00.000Z
 
 </div>
 
-> *"I'm not asking to suspend anyone's rights. I'm asking you to let me do my job."*
-
 Watch Commander of the Fog Wardens and an [Autumn Council](/en/Venturia/Government/autumn-council) member who votes with no faction. A scarred, imposing half-orc in her forties, decorated across twenty years of Watch service, she took the Captain-Commander's post as a compromise everyone could accept — competent, with no appetite for political power. She wants to protect people and be left to do it properly.
+
 
 ---
 
 ## On the Council
 Direct to a fault, she cuts through maneuvering with plain questions and refuses to let political pressure roll downhill onto her officers — famously telling Teodor Vast his ships would be inspected like anyone else's, and watching him back down. She commands the Fog Wardens and their specialist division, and when she pushes for broader authority it reads as aggression but is closer to desperation: she sees more of what's happening at the fog boundary than the chamber does.
+
 
 ---
 

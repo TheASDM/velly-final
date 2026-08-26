@@ -1,12 +1,13 @@
 ---
 title: The Echoing Court
-description: A circular plaza with peculiar acoustics that has become Venturia's venue for public dispute resolution — where professional advocates make careers, and a poorly chosen phrase gets repeated in taverns for weeks.
+description: 'A circular plaza with peculiar acoustics that has become Venturia''s venue for public dispute resolution — where professional advocates make careers, and a poorly chosen phrase gets repeated in taverns for weeks.'
 published: true
 date: 2026-02-23T23:57:26.956Z
 tags: locations, character-hooks, market-tiers, echoing-court, law, public-life, performance
 editor: markdown
 dateCreated: 2026-02-23T23:57:26.264Z
 ---
+
 
 <div style="display: flex; gap: 2rem; align-items: flex-start; margin: 0 0 2.5rem; padding: 1.5rem 1.75rem; background: linear-gradient(135deg, rgba(20, 18, 24, 0.55) 0%, rgba(36, 28, 18, 0.4) 100%); border: 1px solid rgba(139, 115, 85, 0.35); border-radius: 6px; box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6); flex-wrap: wrap;">
 
@@ -28,6 +29,7 @@ dateCreated: 2026-02-23T23:57:26.264Z
 
 The circular plaza has peculiar acoustics — a whisper at the center can be heard clearly at the edges, while shouts from the perimeter arrive muffled and indistinct. Whether this was intentional or simply Venturia being Venturia, the Echoing Court has become the city's venue for public dispute resolution.
 
+
 ---
 
 ## How It Works
@@ -35,6 +37,7 @@ The circular plaza has peculiar acoustics — a whisper at the center can be hea
 Anyone can bring a grievance to the Court. Both parties speak from the center, witnessed by whoever happens to be present. There are **no judges** — only the audience, whose reactions and subsequent gossip determine who won.
 
 Speakers who argue well gain reputation throughout the city. Those who argue poorly find their worst phrases repeated mockingly in taverns and markets for weeks afterward.
+
 
 ---
 
@@ -50,6 +53,7 @@ Professional advocates make careers in the Court, mastering its acoustics and th
 
 The Court attracts spectators the way theaters attract audiences — regulars who know the famous advocates, discuss memorable cases, and appreciate the performance aspects of public argument.
 
+
 ---
 
 ## Character Hooks
@@ -59,6 +63,7 @@ The Court attracts spectators the way theaters attract audiences — regulars wh
 - Former spectator who learned rhetoric purely by watching
 - Person whose case became legendary for the wrong reasons
 - Winner of a dispute who suspects the victory was arranged
+
 
 ---
 

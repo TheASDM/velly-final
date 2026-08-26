@@ -1,5 +1,5 @@
 ---
-title: The Tidekeeper's Lodge
+title: 'The Tidekeeper''s Lodge'
 description: Six centuries of harbor guardians who know every current, every channel, and every secret the sea brings in — and have learned that some knowledge is best kept within the family.
 published: true
 date: 2026-02-23T23:57:37.070Z
@@ -7,6 +7,7 @@ tags: factions, locations, character-hooks, navigation, harbor-district, harbor,
 editor: markdown
 dateCreated: 2026-02-23T23:57:36.391Z
 ---
+
 
 <div style="display: flex; gap: 2rem; align-items: flex-start; margin: 0 0 2.5rem; padding: 1.5rem 1.75rem; background: linear-gradient(135deg, rgba(20, 18, 24, 0.55) 0%, rgba(36, 28, 18, 0.4) 100%); border: 1px solid rgba(139, 115, 85, 0.35); border-radius: 6px; box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6); flex-wrap: wrap;">
 
@@ -28,6 +29,7 @@ dateCreated: 2026-02-23T23:57:36.391Z
 
 Every ship that enters Venturia's harbor does so under a Tidekeeper's guidance. The Lodge sits at the end of the longest pier — a weathered building of salt-stained timber and green copper that has watched over the port for six hundred years. Inside, generations of navigational charts paper the walls. Some show currents that no longer exist. Others mark hazards that were never there.
 
+
 ---
 
 ## Apprenticeship
@@ -38,11 +40,13 @@ Initiates learn the official knowledge first: the channels, the shoals, the way 
 
 Senior Tidekeepers claim they can feel trouble coming before it arrives — a pressure behind the eyes, a taste of copper on the tongue.
 
+
 ---
 
 ## The Lodge's Policy
 
 The Lodge keeps its own counsel. When the Harbor-Lords ask about unusual vessels or strange cargo, Tidekeepers answer with technicalities about tides and drafts. They see everything that enters this port, and they've learned that some knowledge is best kept within the family.
+
 
 ---
 
@@ -53,6 +57,7 @@ The Lodge keeps its own counsel. When the Harbor-Lords ask about unusual vessels
 - Someone the Tidekeepers helped smuggle into the city
 - Sailor who owes a debt to the Lodge
 - Navigator trained in the old superstitions
+
 
 ---
 

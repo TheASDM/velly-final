@@ -8,15 +8,12 @@ editor: markdown
 dateCreated: 2026-05-22T01:26:17.270Z
 ---
 
-# Campaign Update #4 — 5/21/2026
-
----
-
 ## Scheduling
 
 We're keeping this simple — no shared calendar. We'll use **Timeful** instead. Whenever I post a set of possible days, all you do is mark each one as free, could be free, or not free. That's the whole system.
 
-First poll is already up to lock the date for Jen's session — please fill it out: <a href="https://timeful.app/e/3AFc6e" target="_blank">Timeful Poll — Jen's Session</a>
+First poll is already up to lock the date for Jen's session — please fill it out: Timeful Poll — Jen's Session
+
 
 ---
 
@@ -25,6 +22,7 @@ First poll is already up to lock the date for Jen's session — please fill it o
 **1. By Thursday the 28th** — send me 4–8 sentences on your character's typical day. Where they wake up, what they do, who they cross paths with, what's just routine for them. Nothing fancy. I need it so I know how to pull each of you into what's coming.
 
 **2. By July 1** — send me ~500 words of character backstory. I'll take what you give me, weave it into the world, and send back under 750 words. I don't expect you to be able to quote it. But by session 3, when a name or a place from it comes up at the table, I want you to recognize it.
+
 
 ---
 
@@ -37,6 +35,7 @@ I have finished the map of the greater world of **Eldryn** post-Great Reunion. T
 I have also finished the top-down view of the entirety of **Venturia**. This one gives a better sense of where things are in relation to one another than the other. I'll be making about 8 more that feature different portions of the districts with detailed street views. Feel free to start placing your character's home and favorite places into the map in your head canon, and fill me in as you do — I'll make it so. There's more residential areas to the east that are a bit more spread out, if anyone wouldn't be a city dweller.
 
 ![Top-down view of Venturia](/public/images/topdownfinalcompressed.jpg)
+
 
 ---
 
@@ -54,6 +53,7 @@ I have also finished the top-down view of the entirety of **Venturia**. This one
 
 See you on the 30th.
 
+
 ---
 
 ## What I'm Thinking About — Honesty & Player Agency
@@ -61,7 +61,6 @@ See you on the 30th.
 *This update's self-indulgent essay.*
 
 In both of our one-shots I did two things I'm genuinely opposed to: I lied to you as Dustin the DM, and I built endings that could leave you feeling like your agency didn't count for much. I'm at peace with it for a handful of reasons — one-shots are their own animal, and both of those games existed to set the table for the long campaign ahead. But I also know that for more than half of you, those two sessions are the entirety of your experience with me behind the screen, and that's not the impression I want to leave. So here are the rules I'll hold myself to from here on.
-
 **1) The table voice always tells the truth.** Dustin the DM will not lie to you again. If I tell you a session has nothing to do with the campaign, then it has nothing to do with the campaign — at all. The cost of that promise is that I'll sometimes be vague or non-committal, and you should expect those moments. But when I say something plainly at the table — "this chair is just a chair, you can move on" — you can take it to the bank, every single time.
 
 **2) The world is under no such obligation.** NPCs can lie to you, on purpose or by accident, about anything large or small. I'll never have someone lie just for the sake of it, and unless there's a clear reason for them to mislead you, you can generally trust what you're told. But Venturia is a big, busy place full of competing interests, so always consider the source. And here's the part that matters: even when someone steers you wrong, following that thread will never be a waste of your time. Bad information is still part of the story, and it always leads somewhere. I am not trying to frustrate you.

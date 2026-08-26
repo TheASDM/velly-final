@@ -1,12 +1,13 @@
 ---
-title: The Harbor Wardens' Compact
-description: The merchant guild controlling everything moving through Venturia's ports — fees, warehouses, and merchants — quietly obsessed with protecting the city's prosperity.
+title: 'The Harbor Wardens'' Compact'
+description: 'The merchant guild controlling everything moving through Venturia''s ports — fees, warehouses, and merchants — quietly obsessed with protecting the city''s prosperity.'
 published: true
 date: 2026-05-22T00:00:00.000Z
 tags: factions, merchant-guild, harbor-district, commerce, ports
 editor: markdown
 dateCreated: 2026-05-22T00:00:00.000Z
 ---
+
 
 <div style="display: flex; gap: 2rem; align-items: flex-start; margin: 0 0 2.5rem; padding: 1.5rem 1.75rem; background: linear-gradient(135deg, rgba(20, 18, 24, 0.55) 0%, rgba(36, 28, 18, 0.4) 100%); border: 1px solid rgba(139, 115, 85, 0.35); border-radius: 6px; box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6); flex-wrap: wrap;">
 
@@ -28,24 +29,26 @@ dateCreated: 2026-05-22T00:00:00.000Z
 
 </div>
 
-<!-- TODO: banner — supply a filename to add -->
-
 The guild that controls everything moving through Venturia's ports — the fees, the warehouses, the merchants. Organized, formal, and quietly obsessed with protecting the city's prosperity, which its leadership treats less as good business than as something close to a gift worth guarding at any cost.
+
 
 ---
 
 ## What They Do
 Every ship that docks pays the Compact a fee; every warehouse operates under its watch; every merchant trading through Venturia deals with it sooner or later. Their public work is the ordinary machinery of a great port: maintaining trade relationships, ensuring the quality of goods, and protecting maritime commerce.
 
+
 ---
 
 ## Leadership
 Led by [Lord-Admiral Teodor Vast](/en/Venturia/Characters/NPCs/teodor-vast), master of the city's largest private fleet and a Harbor-Lord on the Autumn Council. He holds, with real conviction, that Venturia's remarkable prosperity is a gift to be protected at any cost.
 
+
 ---
 
 ## Membership
 Members gain access to regional trade networks, preferential shipping and warehousing rates, legal protection in commercial disputes, and early word on what's coming into the city. In return they tithe a share of profits and, now and then, perform favors for the Compact's wider interests.
+
 
 ---
 
