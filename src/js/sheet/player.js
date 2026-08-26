@@ -292,8 +292,8 @@ async function renderPicker() {
   }).join('');
 
   root.innerHTML = `<div class="vos-sheet-picker">
-    <p class="vos-sheet-pick-lede">Whose sheet would you like to open?
-    You will see it exactly as they do.</p>
+    <p class="vos-sheet-pick-lede">Nothing pushed for your own character yet.
+    Open someone else's — you will see it exactly as they do.</p>
     <div class="vos-sheet-picks">${cards}</div>
   </div>`;
 }
@@ -365,11 +365,6 @@ async function boot() {
       return;
     }
     viewingAs = asked;
-  } else if (isDm && !asked) {
-    // The DM has no character of their own, so this page has nothing to show
-    // them. Ask whose sheet they want instead of rendering an empty one.
-    await renderPicker();
-    return;
   }
 
   try {
@@ -386,6 +381,9 @@ async function boot() {
   const hasStory = Boolean(payload.sheet && payload.sheet.markdown);
   const hasStats = Boolean(payload.statblock && payload.statblock.data);
   if (!hasStory && !hasStats) {
+    // The DM has their own character like anyone else; if it has not been
+    // pushed yet, offering the roster is more useful than an empty page.
+    if (isDm) { await renderPicker(); return; }
     notice('No sheet yet.', 'Your DM writes these \u2014 it will appear here once yours is ready.');
     return;
   }

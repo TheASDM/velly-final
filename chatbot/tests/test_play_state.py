@@ -367,11 +367,23 @@ def test_the_party_view_is_dm_only(app, auth_headers):
         assert response.status_code == status, role
 
 
-def test_the_party_lists_active_players_without_the_dm(app, auth_headers):
+def test_the_dm_joins_the_table_only_with_a_character(app, auth_headers, server_module):
+    """An empty seat helps nobody, so the DM appears once they have pushed one."""
     party = get(app, auth_headers["dm"], "/api/play/party").get_json()["party"]
-    names = [entry["playerName"] for entry in party]
-    assert "DM" not in names
-    assert "Lotan" in names
+    assert "DM" not in [e["playerName"] for e in party]
+    assert "Lotan" in [e["playerName"] for e in party]
+
+    with server_module._app_db() as conn:
+        conn.execute(
+            "INSERT OR REPLACE INTO character_statblocks (player_name, data, updated_at)"
+            " VALUES ('DM', ?, '2026-08-26T00:00:00Z')",
+            (json.dumps({"name": "DM Test Wizard", "derived": {"level": 5, "ac": 12,
+                                                               "hp": {"max": 22}}}),),
+        )
+    party = get(app, auth_headers["dm"], "/api/play/party").get_json()["party"]
+    dm = next(e for e in party if e["playerName"] == "DM")
+    assert dm["character"] == "DM Test Wizard"
+    assert dm["limits"]["maxHp"] == 22
 
 
 def test_a_player_without_a_statblock_is_visibly_missing(app, auth_headers):

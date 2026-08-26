@@ -33,6 +33,7 @@ ACTOR_NAMES = {
     "roxanya": 'Roxanya "Roxy"',
     "valentro": "Valentro",
     "valen": "Valentro",
+    "dm test wizard": "DM",
 }
 
 SUPPORTED_EXPORT = 1

@@ -225,9 +225,14 @@ function scheduleFromItem(item) {
 }
 
 async function pushAll() {
-  const actors = game.actors.filter((actor) => actor.type === 'character' && actor.hasPlayerOwner);
+  /* Every character, not only player-owned ones. A character the GM owns — a
+   * test character, or one whose player has not been assigned yet — has no
+   * player owner to filter on and was being skipped silently. The app knows the
+   * roster and answers 422 for anything that is not on it, which the push
+   * treats as normal, so letting it decide is both simpler and correct. */
+  const actors = game.actors.filter((actor) => actor.type === 'character');
   if (!actors.length) {
-    ui.notifications.warn('Vallombrosa Bridge: no player-owned characters to push.');
+    ui.notifications.warn('Vallombrosa Bridge: no characters to push.');
     return;
   }
   ui.notifications.info(`Vallombrosa Bridge: pushing ${actors.length} character(s)…`);

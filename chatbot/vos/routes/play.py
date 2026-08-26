@@ -208,10 +208,14 @@ def api_play_party():
     party = []
     with _app_db() as conn:
         for player_name in PLAYER_NAMES:
-            if player_name == "DM" or player_name in REVOKED_PLAYERS:
+            if player_name in REVOKED_PLAYERS:
                 continue
 
             statblock = _load_statblock(conn, player_name)
+            # The DM only appears once they have a character of their own —
+            # otherwise the table would always carry an empty seat.
+            if player_name == "DM" and not statblock:
+                continue
             derived = (statblock or {}).get("derived") or {}
             state, version, fresh = _read_state(conn, player_name, statblock)
             limits = limits_from_statblock(statblock)

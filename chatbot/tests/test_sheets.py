@@ -218,6 +218,18 @@ def test_ingest_maps_the_foundry_actor_name_onto_the_roster(app, ingest_enabled,
     assert row["player_name"] == 'Caravel "Car" Asteri'
 
 
+def test_the_dms_own_character_is_accepted_like_any_other(app, ingest_enabled, server_module):
+    """"DM Test Wizard" resolves to the DM, who is a roster name for this
+    purpose even though they are not a player."""
+    response = _post(app, _export("DM Test Wizard"))
+    assert response.status_code == 200
+    assert response.get_json()["playerName"] == "DM"
+
+    with server_module._app_db() as conn:
+        row = conn.execute("SELECT player_name FROM character_statblocks").fetchone()
+    assert row["player_name"] == "DM"
+
+
 def test_ingest_refuses_an_actor_that_is_not_on_the_roster(app, ingest_enabled):
     response = _post(app, _export("Some Random NPC"))
     assert response.status_code == 422

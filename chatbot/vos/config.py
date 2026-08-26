@@ -146,6 +146,8 @@ LOGIN_NAME_ALIASES = {
     "val": "Valentro",
     "valentro": "Valentro",
     "dustin": "DM",
+    # The DM's own character, so it imports and reads like any other.
+    "dm test wizard": "DM",
     "me": "DM",
     "me (dustin, dm)": "DM",
     "dm": "DM",
