@@ -82,3 +82,7 @@ claude-project-export/
 # questionnaire answers ("DM EYES ONLY"). This repo is public — keep them out.
 files/[0-9][0-9]-[0-9][0-9]-[0-9][0-9][0-9][0-9]/
 files/*/campaign-dm-secrets-*.md
+
+# Foundry actors rebuilt by scripts/build_foundry_actor.py. These are player
+# character data and this repo is public.
+files/foundry-import/

@@ -286,7 +286,10 @@ def build_masquerade():
     data = json.loads(path.read_text(encoding="utf-8"))
     masks, general = {}, []
     for feature in data.get("subclassFeature", []):
-        if feature.get("subclassShortName") != "EoRMasquerade":
+        # Matched by prefix so a version bump to the short name — which is how
+        # a corrected brew is forced past Foundry's compendium — does not
+        # silently empty the mask data here.
+        if not str(feature.get("subclassShortName") or "").startswith("EoRMasquerade"):
             continue
         name = feature["name"]
         text = strip_5e_tags(flatten_entries(feature.get("entries")))

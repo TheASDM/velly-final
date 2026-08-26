@@ -447,6 +447,22 @@ function damageFromSource(activity, item) {
     .join(' plus ');
 }
 
+/* Foundry's damage label is the arithmetic — "1d12 + 5" — and stops there.
+ * The type is on the item, and it matters: resistance to slashing is the
+ * difference between that greataxe landing and half-landing. */
+function withDamageTypes(label, activity, item) {
+  if (!label) return label;
+  const types = [
+    ...(activity?.damage?.parts ?? []).flatMap((part) => part?.types ?? []),
+    ...(item?.system?.damage?.base?.types ?? []),
+  ].map(humanize);
+
+  const unique = [...new Set(types)].filter(
+    (type) => !new RegExp(type, 'i').test(label),
+  );
+  return unique.length ? `${label} ${unique.join('/')}` : label;
+}
+
 function rangeFromSource(activity, item) {
   const range = activity?.range?.value ? activity.range : item?.system?.range;
   if (!range?.value) return '';
@@ -497,8 +513,12 @@ function attacks(doc) {
            its place when a weapon offers a choice (thrown, versatile). */
         variant: attackActivities.length > 1 ? (activity.name || '') : '',
         toHit: found.toHit ?? null,
-        damage: found.damage || damageFromSource(activity, item) || '',
-        range: found.range || rangeFromSource(activity, item),
+        damage: withDamageTypes(found.damage, activity, item)
+          || damageFromSource(activity, item) || '',
+        /* Foundry's range label gives the short increment only — "20 ft" for a
+           dagger you can throw sixty. Source knows both, so it wins whenever
+           there is a long range to lose. */
+        range: rangeFromSource(activity, item) || found.range || '',
         attackKind: attackKind(activity),
         kind: item.type === 'weapon' ? 'weapon' : 'feature',
         equipped: item.system?.equipped === true,

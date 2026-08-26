@@ -11,13 +11,13 @@
         "convertedBy": [
           "Dustin"
         ],
-        "version": "1.0.0",
+        "version": "1.1.0",
         "url": "https://github.com/TheGiddyLimit/homebrew",
         "dateAdded": 1737417600
       }
     ],
     "dateAdded": 1737417600,
-    "dateLastModified": 1787767911
+    "dateLastModified": 1787769764
   },
   "monster": [
     {
@@ -1365,16 +1365,16 @@
       "source": "EchoesRenaissance",
       "className": "Bard",
       "classSource": "XPHB",
-      "shortName": "EoRMasquerade",
+      "shortName": "EoRMasqueradeV2",
       "subclassFeatures": [
-        "College of the Masquerade|Bard|XPHB|EoRMasquerade|EchoesRenaissance|3",
-        "The Masquerade|Bard|XPHB|EoRMasquerade|EchoesRenaissance|3",
-        "Maschera Diabolica|Bard|XPHB|EoRMasquerade|EchoesRenaissance|3",
-        "Maschera Fiabesco|Bard|XPHB|EoRMasquerade|EchoesRenaissance|3",
-        "Maschera Angelico|Bard|XPHB|EoRMasquerade|EchoesRenaissance|3",
-        "Maschera Umano|Bard|XPHB|EoRMasquerade|EchoesRenaissance|3",
-        "The Hidden Power|Bard|XPHB|EoRMasquerade|EchoesRenaissance|6",
-        "Masked Potential Unleashed|Bard|XPHB|EoRMasquerade|EchoesRenaissance|14"
+        "College of the Masquerade|Bard|XPHB|EoRMasqueradeV2|EchoesRenaissance|3",
+        "The Masquerade|Bard|XPHB|EoRMasqueradeV2|EchoesRenaissance|3",
+        "Maschera Diabolica|Bard|XPHB|EoRMasqueradeV2|EchoesRenaissance|3",
+        "Maschera Fiabesco|Bard|XPHB|EoRMasqueradeV2|EchoesRenaissance|3",
+        "Maschera Angelico|Bard|XPHB|EoRMasqueradeV2|EchoesRenaissance|3",
+        "Maschera Umano|Bard|XPHB|EoRMasqueradeV2|EchoesRenaissance|3",
+        "The Hidden Power|Bard|XPHB|EoRMasqueradeV2|EchoesRenaissance|6",
+        "Masked Potential Unleashed|Bard|XPHB|EoRMasqueradeV2|EchoesRenaissance|14"
       ]
     },
     {
@@ -2621,7 +2621,7 @@
       "source": "EchoesRenaissance",
       "className": "Bard",
       "classSource": "XPHB",
-      "subclassShortName": "EoRMasquerade",
+      "subclassShortName": "EoRMasqueradeV2",
       "subclassSource": "EchoesRenaissance",
       "level": 3,
       "header": 1,
@@ -2631,23 +2631,23 @@
         "Perhaps you were raised on the stage, among the festivals, always moving in line with a great group of actors and singers, or you were raised in politics as a diplomat, and it took it out of you. You always had to hide your face. No matter how charming it was, you needed a mask to hide who you are or some of your features. Nevertheless, the mask is who you are and an actual part of you.",
         {
           "type": "refSubclassFeature",
-          "subclassFeature": "The Masquerade|Bard|XPHB|EoRMasquerade|EchoesRenaissance|3"
+          "subclassFeature": "The Masquerade|Bard|XPHB|EoRMasqueradeV2|EchoesRenaissance|3"
         },
         {
           "type": "refSubclassFeature",
-          "subclassFeature": "Maschera Diabolica|Bard|XPHB|EoRMasquerade|EchoesRenaissance|3"
+          "subclassFeature": "Maschera Diabolica|Bard|XPHB|EoRMasqueradeV2|EchoesRenaissance|3"
         },
         {
           "type": "refSubclassFeature",
-          "subclassFeature": "Maschera Fiabesco|Bard|XPHB|EoRMasquerade|EchoesRenaissance|3"
+          "subclassFeature": "Maschera Fiabesco|Bard|XPHB|EoRMasqueradeV2|EchoesRenaissance|3"
         },
         {
           "type": "refSubclassFeature",
-          "subclassFeature": "Maschera Angelico|Bard|XPHB|EoRMasquerade|EchoesRenaissance|3"
+          "subclassFeature": "Maschera Angelico|Bard|XPHB|EoRMasqueradeV2|EchoesRenaissance|3"
         },
         {
           "type": "refSubclassFeature",
-          "subclassFeature": "Maschera Umano|Bard|XPHB|EoRMasquerade|EchoesRenaissance|3"
+          "subclassFeature": "Maschera Umano|Bard|XPHB|EoRMasqueradeV2|EchoesRenaissance|3"
         }
       ]
     },
@@ -2656,7 +2656,7 @@
       "source": "EchoesRenaissance",
       "className": "Bard",
       "classSource": "XPHB",
-      "subclassShortName": "EoRMasquerade",
+      "subclassShortName": "EoRMasqueradeV2",
       "subclassSource": "EchoesRenaissance",
       "level": 3,
       "header": 2,
@@ -2668,7 +2668,7 @@
         }
       },
       "entries": [
-        "When you reach 3rd level, the nature of your inspirational magic fuses with your masks. Choose two of the following: {@subclassFeature Maschera Diabolica|Bard|XPHB|EoRMasquerade|EchoesRenaissance|3}, {@subclassFeature Maschera Angelico|Bard|XPHB|EoRMasquerade|EchoesRenaissance|3}, {@subclassFeature Maschera Fiabesco|Bard|XPHB|EoRMasquerade|EchoesRenaissance|3}, or {@subclassFeature Maschera Umano|Bard|XPHB|EoRMasquerade|EchoesRenaissance|3}.",
+        "When you reach 3rd level, the nature of your inspirational magic fuses with your masks. Choose two of the following: {@subclassFeature Maschera Diabolica|Bard|XPHB|EoRMasqueradeV2|EchoesRenaissance|3}, {@subclassFeature Maschera Angelico|Bard|XPHB|EoRMasqueradeV2|EchoesRenaissance|3}, {@subclassFeature Maschera Fiabesco|Bard|XPHB|EoRMasqueradeV2|EchoesRenaissance|3}, or {@subclassFeature Maschera Umano|Bard|XPHB|EoRMasqueradeV2|EchoesRenaissance|3}.",
         {
           "type": "entries",
           "name": "Donning a Mask",
@@ -2728,14 +2728,11 @@
       "source": "EchoesRenaissance",
       "className": "Bard",
       "classSource": "XPHB",
-      "subclassShortName": "EoRMasquerade",
+      "subclassShortName": "EoRMasqueradeV2",
       "subclassSource": "EchoesRenaissance",
       "level": 3,
       "header": 2,
       "foundryImg": "assets/images/masquradeicon3.png",
-      "resist": [
-        "fire"
-      ],
       "entries": [
         "A mask resembling the depths of hell and their vicious guardians."
       ]
@@ -2745,20 +2742,11 @@
       "source": "EchoesRenaissance",
       "className": "Bard",
       "classSource": "XPHB",
-      "subclassShortName": "EoRMasquerade",
+      "subclassShortName": "EoRMasqueradeV2",
       "subclassSource": "EchoesRenaissance",
       "level": 3,
       "header": 2,
       "foundryImg": "assets/images/masquradeicon3.png",
-      "conditionImmune": [
-        "charmed"
-      ],
-      "foundrySystem": {
-        "uses": {
-          "max": "@abilities.cha.mod",
-          "per": "lr"
-        }
-      },
       "entries": [
         "A mask that makes those beholding you feel as though they stand in an enchanted forest, speaking to the Fairy Queen herself."
       ]
@@ -2768,7 +2756,7 @@
       "source": "EchoesRenaissance",
       "className": "Bard",
       "classSource": "XPHB",
-      "subclassShortName": "EoRMasquerade",
+      "subclassShortName": "EoRMasqueradeV2",
       "subclassSource": "EchoesRenaissance",
       "level": 3,
       "header": 2,
@@ -2783,7 +2771,7 @@
       "source": "EchoesRenaissance",
       "className": "Bard",
       "classSource": "XPHB",
-      "subclassShortName": "EoRMasquerade",
+      "subclassShortName": "EoRMasqueradeV2",
       "subclassSource": "EchoesRenaissance",
       "level": 3,
       "header": 2,
@@ -2798,7 +2786,7 @@
       "source": "EchoesRenaissance",
       "className": "Bard",
       "classSource": "XPHB",
-      "subclassShortName": "EoRMasquerade",
+      "subclassShortName": "EoRMasqueradeV2",
       "subclassSource": "EchoesRenaissance",
       "level": 6,
       "header": 2,
@@ -2820,7 +2808,7 @@
       "source": "EchoesRenaissance",
       "className": "Bard",
       "classSource": "XPHB",
-      "subclassShortName": "EoRMasquerade",
+      "subclassShortName": "EoRMasqueradeV2",
       "subclassSource": "EchoesRenaissance",
       "level": 14,
       "header": 2,

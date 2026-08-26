@@ -24,6 +24,7 @@ Idempotent — running it twice changes nothing the second time.
 """
 import argparse
 import json
+import re
 import time
 from pathlib import Path
 
@@ -31,6 +32,26 @@ ROOT = Path(__file__).resolve().parent.parent
 HOMEBREW = ROOT / "campaign-data" / "curated" / "homebrew.json"
 
 SHORT_NAME = "EoRMasquerade"
+
+# The four masks. After this they are flavour and a creature type: no
+# resistances, no immunities, no charges of their own. The Masquerade keeps its
+# @prof donning pool and Masked Potential Unleashed keeps its once-a-day, which
+# are the two resources the subclass is supposed to have.
+MASKS = {
+    "Maschera Diabolica",
+    "Maschera Fiabesco",
+    "Maschera Angelico",
+    "Maschera Umano",
+}
+
+# Fields that grant something in Foundry rather than merely describing it.
+# Removing the prose and leaving these behind is what kept handing Car four
+# charges and immunity to charmed from a mask whose text said neither.
+MECHANICAL = (
+    "foundrySystem", "resist", "immune", "vulnerable", "conditionImmune",
+    "senses", "skillProficiencies", "toolProficiencies", "armorProficiencies",
+    "weaponProficiencies", "expertise", "additionalSpells", "savingThrowProficiencies",
+)
 
 # Blocks removed wherever they appear on a mask. "While Worn" is matched by
 # prefix because each mask names its own ability after the dash.
@@ -68,6 +89,18 @@ def should_drop(entry):
     if not name:
         return False
     return name in DROP_EXACT or name.startswith(DROP_PREFIX)
+
+
+def strip_mechanics(feature):
+    """Drop what a mask *grants*, not just what it says."""
+    if feature.get("name") not in MASKS:
+        return []
+    removed = []
+    for key in MECHANICAL:
+        if key in feature:
+            removed.append(f"removed {key}={json.dumps(feature[key], ensure_ascii=False)}")
+            feature.pop(key)
+    return removed
 
 
 def strip_blocks(feature):
@@ -113,20 +146,55 @@ def fix_prose(feature):
     return notes
 
 
+def rename_short_name(raw, new_name):
+    """Give the subclass a new short name, everywhere it is referenced.
+
+    Foundry and plutonium key a subclass on its short name, so re-importing an
+    edited brew under the old one lands on top of whatever is already in the
+    compendium — which is how you end up staring at charges the current file
+    does not grant. A new short name is unambiguously a new subclass, so the
+    import cannot be confused with the old one.
+
+    Done on the serialised text because the name appears in five shapes: the
+    subclass field, the feature field, the pipe-delimited feature references,
+    refSubclassFeature blocks, and {@subclassFeature} tags in prose. A word
+    boundary keeps a second run from renaming the rename.
+    """
+    pattern = re.compile(rf"\b{re.escape(SHORT_NAME)}\b")
+    return pattern.subn(new_name, raw)
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--check", action="store_true", help="report without writing")
+    parser.add_argument(
+        "--short-name",
+        help="rename the subclass, so a Foundry re-import cannot land on the old one",
+    )
     args = parser.parse_args()
 
-    data = json.loads(HOMEBREW.read_text(encoding="utf-8"))
-    found = features(data)
+    raw = HOMEBREW.read_text(encoding="utf-8")
+
+    renamed = 0
+    if args.short_name:
+        raw, renamed = rename_short_name(raw, args.short_name)
+
+    data = json.loads(raw)
+    found = features(data) if not renamed else [
+        f for f in data.get("subclassFeature", [])
+        if f.get("subclassShortName") == args.short_name
+    ]
     if not found:
         raise SystemExit(f"No {SHORT_NAME} features in {HOMEBREW.name} — nothing to do.")
 
     report = []
     for feature in found:
-        for note in strip_blocks(feature) + fix_prose(feature):
+        for note in strip_blocks(feature) + strip_mechanics(feature) + fix_prose(feature):
             report.append((feature["name"], note))
+
+    if renamed:
+        report.append((f"{SHORT_NAME} → {args.short_name}",
+                       f"renamed in {renamed} place(s)"))
 
     if not report:
         print("Nothing to change — already stripped.")
@@ -138,6 +206,13 @@ def main():
     if args.check:
         print(f"\n{len(report)} change(s) would be made, nothing written (--check).")
         return
+
+    # The source version is what plutonium shows on import, so bumping it is
+    # the one signal visible from inside Foundry that this is a new file.
+    for source in data.get("_meta", {}).get("sources", []):
+        parts = str(source.get("version", "1.0.0")).split(".")
+        if len(parts) == 3 and parts[1].isdigit():
+            source["version"] = f"{parts[0]}.{int(parts[1]) + 1}.0"
 
     data.setdefault("_meta", {})["dateLastModified"] = int(time.time())
     # Matches the file's existing formatting, so this edit is the only
