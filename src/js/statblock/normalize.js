@@ -142,9 +142,11 @@ function senseList(doc) {
 function hitDice(doc) {
   const hd = doc.derived?.hitDice;
   const classes = doc.derived?.classes ?? [];
+  // 5.2.x keeps the die on the class item as hd.denomination; older builds
+  // used system.hitDice. Read both so either export shows a die.
   const denominations = (doc.items ?? [])
     .filter((item) => item.type === 'class')
-    .map((item) => item.system?.hitDice)
+    .map((item) => item.system?.hd?.denomination ?? item.system?.hitDice)
     .filter(Boolean);
   const denomination = denominations[0] ?? null;
   const levels = classes.reduce((sum, entry) => sum + (entry.levels ?? 0), 0)
@@ -304,6 +306,8 @@ export function normalizeStatblock(raw) {
   const sys = doc.system ?? {};
   const derived = doc.derived ?? {};
 
+  const spellItems = (doc.items ?? []).filter((item) => item.type === 'spell').length;
+
   const abilityRows = abilities(doc);
   const abilityIndex = Object.fromEntries(abilityRows.map((row) => [row.key, row]));
   const skillRows = skills(doc, abilityIndex);
@@ -365,7 +369,10 @@ export function normalizeStatblock(raw) {
     },
     senses: senseList(doc),
 
-    spellcasting: spellDc == null && !slots.length ? null : {
+    // A spell DC alone proves nothing — dnd5e derives one for every actor,
+    // so a Barbarian arrives with DC 11 and no magic. Require actual slots or
+    // actual spells before claiming this character casts.
+    spellcasting: (!slots.length && !spellItems) ? null : {
       ability: spellAbility,
       abilityLabel: lookup(ABILITIES, spellAbility, ''),
       dc: spellDc,

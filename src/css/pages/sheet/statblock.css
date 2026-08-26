@@ -227,18 +227,25 @@
 }
 .vos-sb-skills.is-tools .vos-sb-skill { grid-template-columns: auto 1fr auto; }
 
+/* Four states, and they must be distinguishable without reading the tooltip:
+   empty ring, half-filled ring (Jack of All Trades), filled dot, diamond. */
 .vos-sb-dot {
-  width: 0.5rem;
-  height: 0.5rem;
+  flex: 0 0 auto;
+  width: 0.52rem;
+  height: 0.52rem;
   border: 1px solid var(--vos-gold-dim);
   border-radius: 50%;
 }
-.vos-sb-dot.is-rank-1 {
+.vos-sb-dot.is-half {
+  background: linear-gradient(90deg, var(--sb-accent) 0 50%, transparent 50% 100%);
+  border-color: var(--sb-accent);
+}
+.vos-sb-dot.is-prof {
   background: var(--sb-accent);
   border-color: var(--sb-accent);
 }
 /* Expertise reads as a filled diamond — distinct at a glance from proficient. */
-.vos-sb-dot.is-rank-2 {
+.vos-sb-dot.is-expert {
   background: var(--sb-accent);
   border-color: var(--sb-accent);
   border-radius: 1px;

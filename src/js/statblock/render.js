@@ -94,15 +94,25 @@ function renderAbilities(model) {
   </div>`;
 }
 
-/* rank: 0 none, 1 proficient, 2 expertise. */
+/* Proficiency is not a boolean. dnd5e reports 0, 0.5 (half — Jack of All
+ * Trades and friends), 1, or 2 (expertise), and half-proficiency must not read
+ * as full or the sheet overstates what the character is good at. */
+function proficiencyTier(rank) {
+  const value = Number(rank) || 0;
+  if (value >= 2) return { key: 'expert', title: 'Expertise' };
+  if (value >= 1) return { key: 'prof', title: 'Proficient' };
+  if (value > 0) return { key: 'half', title: 'Half proficiency' };
+  return { key: 'none', title: 'Not proficient' };
+}
+
 function proficiencyDot(rank) {
-  const title = rank >= 2 ? 'Expertise' : rank === 1 ? 'Proficient' : 'Not proficient';
-  return `<span class="vos-sb-dot is-rank-${rank >= 2 ? 2 : rank}" title="${title}" aria-label="${title}"></span>`;
+  const tier = proficiencyTier(rank);
+  return `<span class="vos-sb-dot is-${tier.key}" title="${tier.title}" aria-label="${tier.title}"></span>`;
 }
 
 function renderSkills(model) {
   if (!model.skills.length) return '';
-  const rows = model.skills.map((skill) => `<li class="vos-sb-skill${skill.rank ? ' is-proficient' : ''}">
+  const rows = model.skills.map((skill) => `<li class="vos-sb-skill${skill.rank >= 1 ? ' is-proficient' : ''}">
     ${proficiencyDot(skill.rank)}
     <span class="vos-sb-skill-name">${esc(skill.label)}</span>
     <span class="vos-sb-skill-ability">${esc(skill.abilityShort)}</span>
@@ -120,7 +130,7 @@ function renderSkills(model) {
 
 function renderTools(model) {
   if (!model.tools.length) return '';
-  return `<ul class="vos-sb-skills is-tools">${model.tools.map((tool) => `<li class="vos-sb-skill${tool.rank ? ' is-proficient' : ''}">
+  return `<ul class="vos-sb-skills is-tools">${model.tools.map((tool) => `<li class="vos-sb-skill${tool.rank >= 1 ? ' is-proficient' : ''}">
     ${proficiencyDot(tool.rank)}
     <span class="vos-sb-skill-name">${esc(tool.label)}</span>
     <span class="vos-sb-skill-total">${esc(signed(tool.total))}</span>
