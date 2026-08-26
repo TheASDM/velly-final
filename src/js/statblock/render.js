@@ -12,6 +12,29 @@
  */
 import { signed } from './labels.js';
 
+/* Play state for the sheet currently being rendered.
+ *
+ * Set once per renderStatblock() call rather than threaded through every
+ * function. This module renders one sheet at a time and synchronously, so a
+ * module-level context is honest about that rather than pretending otherwise.
+ * Null means "build only" — the sheet renders exactly as it did before play
+ * state existed, which is what the DM's read-only views want.
+ */
+let ctx = null;
+
+const spentSlots = (level) => (ctx && ctx.play ? Number(ctx.play.slots[String(level)] || 0) : 0);
+const spentUses = (feature) => (ctx && ctx.play ? Number(ctx.play.uses[feature] || 0) : 0);
+const live = () => Boolean(ctx && ctx.play && ctx.interactive);
+
+/* data-play marks an element the controls can bind to. Rendering it only when
+ * interactive keeps the read-only sheet free of dead affordances. */
+function bind(attrs) {
+  if (!live()) return '';
+  return ' ' + Object.entries(attrs)
+    .map(([key, value]) => `${key}="${esc(value)}"`)
+    .join(' ');
+}
+
 function esc(value) {
   return String(value == null ? '' : value).replace(
     /[&<>"]/g,
@@ -53,31 +76,72 @@ function renderHeader(model) {
 
 function renderVitals(model) {
   const v = model.vitals;
-  const hp = v.hp.max != null ? `${num(v.hp.value)}<span class="vos-sb-of">/${num(v.hp.max)}</span>` : num(v.hp.value);
-  const temp = v.hp.temp ? `<span class="vos-sb-temp">+${esc(v.hp.temp)} temp</span>` : '';
+  const play = ctx && ctx.play;
+  // Foundry's hit points are a starting point; once play begins they are the
+  // play layer's to report.
+  const current = play && play.hp.current != null ? play.hp.current : v.hp.value;
+  const tempHp = play ? play.hp.temp : v.hp.temp;
+  const spentDice = play ? Number(play.hitDiceSpent || 0) : 0;
+
+  const hp = v.hp.max != null ? `${num(current)}<span class="vos-sb-of">/${num(v.hp.max)}</span>` : num(current);
+  const temp = tempHp ? `<span class="vos-sb-temp">+${esc(tempHp)} temp</span>` : '';
 
   const cells = [
     { label: 'AC', value: num(v.ac) },
-    { label: 'Hit Points', value: hp + temp, wide: true },
+    { label: 'Hit Points', value: hp + temp, wide: true, play: { 'data-play': 'hp' } },
     { label: 'Initiative', value: v.initiative == null ? '—' : esc(signed(v.initiative)) },
     { label: 'Speed', value: esc(v.speed || '—') },
     { label: 'Proficiency', value: v.prof == null ? '—' : esc(signed(v.prof)) },
-    { label: 'Hit Dice', value: esc(v.hitDice || '—') },
+    {
+      label: 'Hit Dice',
+      value: hitDiceValue(v, spentDice),
+      play: { 'data-play': 'hitdice' },
+    },
   ];
 
-  const flags = [
-    v.inspiration ? 'Inspiration' : '',
-    v.exhaustion ? `Exhaustion ${v.exhaustion}` : '',
-    v.deathSaves.success || v.deathSaves.failure
-      ? `Death saves ${v.deathSaves.success}✓ / ${v.deathSaves.failure}✗` : '',
-  ].filter(Boolean);
+  const flags = [v.inspiration ? 'Inspiration' : ''].filter(Boolean);
 
   return `<div class="vos-sb-vitals">
-    ${cells.map((cell) => `<div class="vos-sb-vital${cell.wide ? ' is-wide' : ''}">
+    ${cells.map((cell) => `<div class="vos-sb-vital${cell.wide ? ' is-wide' : ''}"${
+      cell.play ? bind(cell.play) : ''
+    }>
       <span class="vos-sb-vital-label">${esc(cell.label)}</span>
       <span class="vos-sb-vital-value">${cell.value}</span>
     </div>`).join('')}
-  </div>${flags.length ? chips(flags, 'is-flags') : ''}`;
+  </div>${renderExhaustion(model)}${flags.length ? chips(flags, 'is-flags') : ''}`;
+}
+
+function hitDiceValue(vitals, spent) {
+  // "3/3 d8" from the build; play state only knows how many are gone.
+  const match = /^(\d+)\/(\d+)\s*(.*)$/.exec(vitals.hitDice || '');
+  if (!match) return esc(vitals.hitDice || '—');
+  const total = Number(match[2]);
+  const left = Math.max(0, total - spent);
+  return `${left}<span class="vos-sb-of">/${total}</span> <span class="vos-sb-die">${esc(match[3])}</span>`;
+}
+
+/* The death clock. Six is fatal at this table, so it is shown as a track with
+ * its cost spelled out rather than as a number someone has to interpret. */
+function renderExhaustion(model) {
+  const play = ctx && ctx.play;
+  if (!play) return '';
+  const level = Number(play.exhaustion || 0);
+  const dying = (play.conditions || []).includes('dying');
+  const pips = Array.from({ length: 6 }, (_, i) =>
+    `<span class="vos-sb-exh-pip${i < level ? ' is-on' : ''}"${
+      bind({ 'data-play': 'exhaustion', 'data-value': i + 1 })
+    }></span>`).join('');
+
+  const cost = level
+    ? `<span class="vos-sb-exh-cost">−${level * 2} to d20 tests · −${level * 5} ft</span>`
+    : '<span class="vos-sb-exh-cost">no penalty</span>';
+
+  return `<div class="vos-sb-exh${dying ? ' is-dying' : ''}"${bind({ 'data-play': 'exhaustion-row' })}>
+    <span class="vos-sb-exh-label">Exhaustion</span>
+    <span class="vos-sb-exh-track">${pips}</span>
+    ${cost}
+    ${dying ? '<span class="vos-sb-dying">Dying</span>' : ''}
+  </div>`;
 }
 
 /* ── Abilities and skills ──────────────────────────────────────────── */
@@ -139,12 +203,27 @@ function renderTools(model) {
 
 /* ── Spellcasting ──────────────────────────────────────────────────── */
 
+/* A pip per slot, filled while unspent. Tapping a filled pip spends it and a
+ * spent one gives it back, which is one gesture rather than a stepper. */
 function slotPips(slot) {
+  const remaining = slotsLeft(slot);
   const pips = [];
   for (let i = 0; i < slot.max; i += 1) {
-    pips.push(`<span class="vos-sb-pip${i < slot.value ? '' : ' is-spent'}"></span>`);
+    const spent = i >= remaining;
+    pips.push(`<span class="vos-sb-pip${spent ? ' is-spent' : ''}"${bind({
+      'data-play': 'slot',
+      'data-level': slot.level,
+      'data-spent': spent ? '1' : '0',
+      role: 'button',
+      tabindex: '0',
+      'aria-label': `Level ${slot.level} slot, ${spent ? 'spent' : 'available'}`,
+    })}></span>`);
   }
-  return `<span class="vos-sb-pips" aria-label="${slot.value} of ${slot.max} remaining">${pips.join('')}</span>`;
+  return `<span class="vos-sb-pips" aria-label="${remaining} of ${slot.max} remaining">${pips.join('')}</span>`;
+}
+
+function slotsLeft(slot) {
+  return ctx && ctx.play ? Math.max(0, slot.max - spentSlots(slot.level)) : slot.value;
 }
 
 function renderSpellcasting(model) {
@@ -161,13 +240,13 @@ function renderSpellcasting(model) {
     ? `<ul class="vos-sb-slots">${sc.slots.map((slot) => `<li>
         <span class="vos-sb-slot-level">Level ${slot.level}</span>
         ${slotPips(slot)}
-        <span class="vos-sb-slot-count">${slot.value}/${slot.max}</span>
+        <span class="vos-sb-slot-count">${slotsLeft(slot)}/${slot.max}</span>
       </li>`).join('')}</ul>`
     : '';
 
   const groups = model.spells.map((group) => `<div class="vos-sb-spell-group">
     <h4 class="vos-sb-spell-level">${esc(group.label)}${
-      group.slots ? ` <span class="vos-sb-slot-count">${group.slots.value}/${group.slots.max}</span>` : ''
+      group.slots ? ` <span class="vos-sb-slot-count">${slotsLeft({ ...group.slots, level: group.level })}/${group.slots.max}</span>` : ''
     }</h4>
     <ul class="vos-sb-entries">${group.spells.map((spell) => renderEntry({
       name: spell.name,
@@ -182,14 +261,30 @@ function renderSpellcasting(model) {
 
 /* ── Collapsible entry (feature, spell, item) ──────────────────────── */
 
+/* Charges on a feature. The build says how many there are; the play layer says
+ * how many are gone, so the two are combined here rather than either being
+ * trusted alone. */
+function renderUses(entry) {
+  const spent = entry.id ? spentUses(entry.id) : 0;
+  const left = Math.max(0, entry.uses.max - spent);
+  const recovery = entry.uses.recovery
+    ? ` <span class="vos-sb-uses-recovery">${esc(entry.uses.recovery)}</span>` : '';
+  return `<span class="vos-sb-uses"${bind({
+    'data-play': 'charge',
+    'data-feature': entry.id || '',
+    'data-max': entry.uses.max,
+    role: 'button',
+    tabindex: '0',
+    'aria-label': `${left} of ${entry.uses.max} uses remaining`,
+  })}>${esc(left)}/${esc(entry.uses.max)}${recovery}</span>`;
+}
+
 function renderEntry(entry) {
   const meta = (entry.meta ?? []).filter(Boolean);
   const summary = `<summary class="vos-sb-entry-head">
     <span class="vos-sb-entry-name">${esc(entry.name)}</span>
     ${entry.marker ? `<span class="vos-sb-marker" title="${esc(entry.marker)}">${esc(entry.marker)}</span>` : ''}
-    ${entry.uses ? `<span class="vos-sb-uses">${esc(entry.uses.value)}/${esc(entry.uses.max)}${
-      entry.uses.recovery ? ` <span class="vos-sb-uses-recovery">${esc(entry.uses.recovery)}</span>` : ''
-    }</span>` : ''}
+    ${entry.uses ? renderUses(entry) : ''}
     ${meta.length ? `<span class="vos-sb-entry-meta">${meta.map(esc).join(' · ')}</span>` : ''}
   </summary>`;
 
@@ -212,6 +307,7 @@ function renderFeatures(model) {
   return [...groups.entries()].map(([kind, entries]) => `<div class="vos-sb-feature-group">
     <h4 class="vos-sb-group-title">${esc(kind)}</h4>
     <ul class="vos-sb-entries">${entries.map((feature) => renderEntry({
+      id: feature.id,
       name: feature.name,
       uses: feature.uses,
       meta: [feature.activation, feature.source].filter(Boolean),
@@ -237,8 +333,23 @@ function renderInventory(model) {
 
 /* ── Entry point ───────────────────────────────────────────────────── */
 
-export function renderStatblock(model) {
+/* Conditions currently on the character. Dying is shown in the exhaustion row
+ * instead, next to the consequences it carries, so it is not repeated here. */
+function renderConditions(model) {
+  const play = ctx && ctx.play;
+  if (!play) return '';
+  const active = (play.conditions || []).filter((c) => c !== 'dying');
+  const body = active.length
+    ? active.map((c) => `<li${bind({ 'data-play': 'condition', 'data-condition': c })}>${
+        esc(c.charAt(0).toUpperCase() + c.slice(1))
+      }</li>`).join('')
+    : `<li class="is-empty"${bind({ 'data-play': 'conditions' })}>Add a condition</li>`;
+  return `<ul class="vos-sb-chips is-conditions"${bind({ 'data-play': 'conditions' })}>${body}</ul>`;
+}
+
+export function renderStatblock(model, meta = {}) {
   if (!model) return '';
+  ctx = { play: meta.play || null, limits: meta.limits || null, interactive: meta.interactive !== false };
 
   const warning = model.meta?.hasDerived === false
     ? `<p class="vos-sb-warning">This export has no derived block, so AC, hit points and
@@ -249,6 +360,7 @@ export function renderStatblock(model) {
     ${renderHeader(model)}
     ${warning}
     ${renderVitals(model)}
+    ${renderConditions(model)}
     ${section('Abilities', renderAbilities(model), { id: 'sb-abilities' })}
     ${section('Skills', renderSkills(model), { id: 'sb-skills' })}
     ${section('Tools', renderTools(model), { id: 'sb-tools' })}
