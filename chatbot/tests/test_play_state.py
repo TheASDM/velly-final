@@ -360,7 +360,7 @@ def test_a_long_rest_clears_the_mask(app, auth_headers):
 # ── The party view ────────────────────────────────────────────────────
 
 def test_the_party_view_is_dm_only(app, auth_headers):
-    expected = {"anonymous": 401, "player": 401, "dm": 200, "google_dm": 200}
+    expected = {"anonymous": 401, "player": 403, "dm": 200, "google_dm": 200}
     for role, status in expected.items():
         with app.test_client() as client:
             response = client.get("/api/play/party", headers=auth_headers[role])

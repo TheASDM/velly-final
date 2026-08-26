@@ -4,7 +4,7 @@ import pytest
 def test_admin_auth_accepts_both_dm_credentials(app, auth_headers):
     expected = {
         "anonymous": 401,
-        "player": 401,
+        "player": 403,
         "dm": 200,
         "google_dm": 200,
     }

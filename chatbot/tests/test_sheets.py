@@ -74,7 +74,7 @@ def test_asking_for_another_player_is_refused_not_silently_reinterpreted(app, au
 
 
 def test_all_sheets_is_dm_only(app, auth_headers):
-    expected = {"anonymous": 401, "player": 401, "dm": 200, "google_dm": 200}
+    expected = {"anonymous": 401, "player": 403, "dm": 200, "google_dm": 200}
     for role, status in expected.items():
         with app.test_client() as client:
             response = client.get("/api/sheets", headers=auth_headers[role])

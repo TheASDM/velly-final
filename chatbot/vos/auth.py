@@ -217,6 +217,13 @@ def _admin_error_response():
         request.dm_email = player_payload.get("principal") or player_payload.get("name") or "DM"
         return None
 
+    # A verified player who is not the DM is refused here rather than falling
+    # through. Past this point the checks are about the server's OAuth setup,
+    # and answering "auth is not configured" to someone who is simply not the DM
+    # reports on the wrong thing — they are authenticated, just not allowed.
+    if player_payload:
+        return jsonify({"error": "DM access required", "error_code": "forbidden"}), 403
+
     if not _admin_auth_configured():
         return jsonify({
             "error": (
