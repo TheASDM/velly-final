@@ -27,6 +27,19 @@ def _sheet_row_json(row, include_variant=False):
     return payload
 
 
+def _statblock_row_json(row):
+    """The Foundry export, parsed. A row that will not parse is treated as
+    absent rather than 500ing the whole sheet."""
+    if not row:
+        return None
+    try:
+        data = json.loads(row["data"])
+    except (TypeError, ValueError):
+        logging.warning("character_statblocks row for %r is not valid JSON", row["player_name"])
+        return None
+    return {"data": data, "updated_at": row["updated_at"]}
+
+
 @bp.get("/api/sheet")
 def api_my_sheet():
     """The signed-in player's own sheet. Never accepts a name or variant."""
@@ -40,13 +53,18 @@ def api_my_sheet():
             (player_name,),
         ).fetchone()
 
-    if not row:
-        return jsonify({
-            "ok": True,
-            "playerName": player_name,
-            "sheet": None,
-        })
-    return jsonify({"ok": True, "playerName": player_name, "sheet": _sheet_row_json(row)})
+    with _app_db() as conn:
+        block = conn.execute(
+            "SELECT * FROM character_statblocks WHERE player_name = ?",
+            (player_name,),
+        ).fetchone()
+
+    return jsonify({
+        "ok": True,
+        "playerName": player_name,
+        "sheet": _sheet_row_json(row) if row else None,
+        "statblock": _statblock_row_json(block),
+    })
 
 
 @bp.get("/api/sheets")
@@ -69,7 +87,114 @@ def api_all_sheets():
             "updated_at": row["updated_at"],
         }
 
+    with _app_db() as conn:
+        blocks = conn.execute("SELECT * FROM character_statblocks").fetchall()
+    for block in blocks:
+        entry = sheets.setdefault(block["player_name"], {"playerName": block["player_name"]})
+        entry["statblock"] = _statblock_row_json(block)
+
     return jsonify({"ok": True, "sheets": list(sheets.values())})
 
 
-__all__ = ['_sheet_row_json', 'api_my_sheet', 'api_all_sheets']
+SUPPORTED_STATBLOCK_EXPORT = 1
+
+
+def _ingest_authorised():
+    """Constant-time check of the bridge's bearer token.
+
+    An unset token disables the endpoint rather than allowing everything — the
+    failure mode of a half-configured deploy should be 'shut', not 'open'.
+    """
+    if not STATBLOCK_INGEST_TOKEN:
+        return False, (jsonify({
+            "error": "Statblock ingest is not configured on this server.",
+            "error_code": "ingest_not_configured",
+        }), 503)
+
+    header = request.headers.get("Authorization", "")
+    presented = header[7:].strip() if header.lower().startswith("bearer ") else ""
+    if not presented or not hmac.compare_digest(presented, STATBLOCK_INGEST_TOKEN):
+        return False, (jsonify({"error": "Forbidden", "error_code": "auth"}), 401)
+    return True, None
+
+
+def _statblock_player_for(actor_name):
+    """Map a Foundry actor name onto a roster player.
+
+    Reuses the login aliases, so "Car" resolves the same way it does at sign-in.
+    A name that is not on the roster — or one whose access has been revoked — is
+    refused rather than creating a row nobody can read.
+    """
+    canonical = _canonical_login_name(actor_name)
+    if not canonical or canonical == "DM":
+        return None
+    if canonical in REVOKED_PLAYERS:
+        return None
+    return canonical if canonical in PLAYER_NAMES else None
+
+
+@bp.post("/api/statblocks/ingest")
+def api_statblock_ingest():
+    """Accept one character statblock pushed from the Foundry bridge."""
+    ok, auth_error = _ingest_authorised()
+    if not ok:
+        return auth_error
+
+    raw = request.get_data(cache=False) or b""
+    if len(raw) > STATBLOCK_MAX_BYTES:
+        return jsonify({
+            "error": f"Statblock is larger than {STATBLOCK_MAX_BYTES} bytes.",
+            "error_code": "too_large",
+        }), 413
+
+    try:
+        body = json.loads(raw.decode("utf-8"))
+    except (UnicodeDecodeError, ValueError):
+        return jsonify({"error": "Body must be JSON", "error_code": "bad_json"}), 400
+    if not isinstance(body, dict):
+        return jsonify({"error": "Body must be a JSON object", "error_code": "bad_json"}), 400
+
+    version = (body.get("vosExport") or {}).get("version")
+    if version != SUPPORTED_STATBLOCK_EXPORT:
+        return jsonify({
+            "error": f"Unsupported export version {version!r}; expected {SUPPORTED_STATBLOCK_EXPORT}.",
+            "error_code": "bad_version",
+        }), 400
+
+    # Without the derived block the sheet has no AC, no max HP and no
+    # modifiers, so store nothing rather than a statblock full of blanks.
+    if not isinstance(body.get("derived"), dict) or not body["derived"]:
+        return jsonify({
+            "error": "Export has no derived block.",
+            "error_code": "no_derived",
+        }), 400
+
+    actor_name = body.get("name")
+    player_name = _statblock_player_for(actor_name if isinstance(actor_name, str) else "")
+    if not player_name:
+        return jsonify({
+            "error": f"Actor {actor_name!r} does not map to an active roster player.",
+            "error_code": "unknown_player",
+        }), 422
+
+    now = _utc_now_iso()
+    with _app_db() as conn:
+        conn.execute(
+            """
+            INSERT INTO character_statblocks (player_name, data, updated_at)
+            VALUES (?, ?, ?)
+            ON CONFLICT(player_name)
+            DO UPDATE SET data = excluded.data, updated_at = excluded.updated_at
+            """,
+            (player_name, json.dumps(body, separators=(",", ":")), now),
+        )
+
+    logging.info(
+        "statblock ingest: actor=%r -> player=%r (%d bytes)", actor_name, player_name, len(raw)
+    )
+    return jsonify({"ok": True, "playerName": player_name, "updated_at": now})
+
+
+__all__ = ['_sheet_row_json', '_statblock_row_json', '_ingest_authorised',
+           '_statblock_player_for', 'api_my_sheet', 'api_all_sheets',
+           'api_statblock_ingest']

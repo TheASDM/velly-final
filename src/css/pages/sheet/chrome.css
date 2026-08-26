@@ -164,3 +164,40 @@
   .vos-sheet-section { break-inside: avoid; }
   .vos-sheet-quote { border-left-color: #000; color: #000; }
 }
+
+/* ── Story / Stats tabs (player view) ──────────────────────────────── */
+
+.vos-sheet-tabs {
+  display: flex;
+  gap: 0.3rem;
+  max-width: 44rem;
+  margin: 0 auto 1.4rem;
+  padding-bottom: 0.35rem;
+  border-bottom: 1px solid var(--vos-border);
+}
+.vos-sheet-tabs[hidden] { display: none; }
+
+.vos-sheet-tabs button {
+  flex: 1 1 0;
+  padding: 0.5rem 0.9rem;
+  border: 1px solid transparent;
+  border-radius: 8px 8px 0 0;
+  background: transparent;
+  color: var(--vos-gold-dim);
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.7rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.vos-sheet-tabs button:hover:not(:disabled) { color: var(--vos-cream); }
+.vos-sheet-tabs button.is-on {
+  border-color: var(--vos-border);
+  border-bottom-color: transparent;
+  background: rgba(212, 165, 116, 0.1);
+  color: var(--vos-gold-bright);
+}
+.vos-sheet-tabs button:disabled { opacity: 0.35; cursor: not-allowed; }
+
+/* The stats view is a table reference, not prose — it earns more width. */
+.vos-sheet-root .vos-sb { max-width: 46rem; }

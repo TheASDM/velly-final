@@ -237,4 +237,21 @@ def apply_current_migrations(conn, done):
             ("021_character_sheets", _utc_now_iso()),
         )
 
+    if "022_character_statblocks" not in done:
+        # The Foundry export for a character, stored whole. We keep the raw
+        # document rather than shredding it into columns: the dnd5e schema
+        # moves between system versions, and the client normalises it anyway,
+        # so a re-import should be able to change shape without a migration.
+        conn.execute("""
+            CREATE TABLE IF NOT EXISTS character_statblocks (
+                player_name TEXT PRIMARY KEY,
+                data TEXT NOT NULL,
+                updated_at TEXT NOT NULL
+            )
+        """)
+        conn.execute(
+            "INSERT INTO schema_migrations (name, applied_at) VALUES (?, ?)",
+            ("022_character_statblocks", _utc_now_iso()),
+        )
+
 __all__ = ['apply_current_migrations']

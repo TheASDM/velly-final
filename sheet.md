@@ -11,6 +11,11 @@ pageScripts:
 ---
 
 <div class="vos-sheet-page">
+  <div class="vos-sheet-tabs" id="vos-sheet-tabs" role="tablist" aria-label="Sheet view" hidden>
+    <button type="button" role="tab" data-view="story" aria-selected="true">Story</button>
+    <button type="button" role="tab" data-view="stats" aria-selected="false">Stats</button>
+  </div>
+
   <nav class="vos-sheet-index" id="vos-sheet-index" aria-label="Jump to a section" hidden></nav>
 
   <div class="vos-sheet-root" id="vos-sheet-root">

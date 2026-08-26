@@ -57,8 +57,9 @@ ROUTE_CONTRACT = """
 /api/rumors|/api/rumors|GET|rumors|401:json.error,error_code|401:json.error,error_code|200:json.rumors|200:json.rumors
 /api/rumors/<int:rumor_id>|/api/rumors/1|DELETE|rumors_delete|401:json.error,error_code|401:json.error,error_code|200:json.deleted,ok|404:json.error
 /api/rumors/roll|/api/rumors/roll|GET|rumors_roll|200:json.rumor|200:json.rumor|200:json.rumor|200:json.rumor
-/api/sheet|/api/sheet|GET|api_my_sheet|401:json.error|200:json.ok,playerName,sheet|200:json.ok,playerName,sheet|401:json.error
+/api/sheet|/api/sheet|GET|api_my_sheet|401:json.error|200:json.ok,playerName,sheet,statblock|200:json.ok,playerName,sheet,statblock|401:json.error
 /api/sheets|/api/sheets|GET|api_all_sheets|401:json.error,error_code|401:json.error,error_code|200:json.ok,sheets|200:json.ok,sheets
+/api/statblocks/ingest|/api/statblocks/ingest|POST|api_statblock_ingest|503:json.error,error_code|503:json.error,error_code|503:json.error,error_code|503:json.error,error_code
 /api/studio/generate|/api/studio/generate|POST|studio_generate|400:json.error,error_code|400:json.error,error_code|400:json.error,error_code|400:json.error,error_code
 /api/studio/jobs|/api/studio/jobs|GET|studio_jobs|400:json.error|400:json.error|400:json.error|400:json.error
 /api/studio/jobs/<job_id>|/api/studio/jobs/missing|GET|studio_job|404:json.error|404:json.error|404:json.error|404:json.error
@@ -97,7 +98,7 @@ def test_route_inventory_and_response_contract(app, auth_headers):
     }
     expected_routes = {rule for rule, _, _, _endpoint, _ in cases}
     assert actual_routes == expected_routes
-    assert len(cases) == 65
+    assert len(cases) == 66
 
     for rule, path, method, _endpoint, expected in cases:
         for role in ROLES:

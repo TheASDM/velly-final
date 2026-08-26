@@ -20,12 +20,14 @@ EXPECTED_MIGRATIONS = {
     "019_rumors",
     "020_push_opens",
     "021_character_sheets",
+    "022_character_statblocks",
 }
 
 EXPECTED_TABLES = {
     "availability",
     "calendar_events",
     "character_sheets",
+    "character_statblocks",
     "gallery_favorites",
     "in_play",
     "lore_submissions",

@@ -21,6 +21,7 @@ pageScripts:
   <div class="vos-sheets-toolbar" id="vos-sheets-toolbar" role="group" aria-label="Which sheet" hidden>
     <button type="button" data-variant="dm" aria-pressed="true">DM sheet</button>
     <button type="button" data-variant="player" aria-pressed="false">Player sheet</button>
+    <button type="button" data-variant="statblock" aria-pressed="false">Stats</button>
   </div>
 
   <nav class="vos-sheet-index" id="vos-sheets-index" aria-label="Jump to a section" hidden></nav>

@@ -1,3 +1,4 @@
+import json
 import pytest
 
 
@@ -101,3 +102,169 @@ def test_missing_sheet_is_not_an_error(app, auth_headers, server_module):
 
     assert response.status_code == 200
     assert response.get_json()["sheet"] is None
+
+
+def test_statblock_rides_along_with_the_players_own_sheet(app, auth_headers, server_module):
+    with server_module._app_db() as conn:
+        conn.execute(
+            "INSERT OR REPLACE INTO character_statblocks (player_name, data, updated_at)"
+            " VALUES (?, ?, '2026-08-25T00:00:00Z')",
+            ("Lotan", '{"name": "Lotan", "derived": {"level": 3}}'),
+        )
+    try:
+        with app.test_client() as client:
+            response = client.get("/api/sheet", headers=auth_headers["player"])
+        payload = response.get_json()
+        assert payload["statblock"]["data"]["derived"]["level"] == 3
+    finally:
+        with server_module._app_db() as conn:
+            conn.execute("DELETE FROM character_statblocks")
+
+
+def test_a_players_statblock_is_not_reachable_by_anyone_else(app, auth_headers, server_module):
+    with server_module._app_db() as conn:
+        conn.execute(
+            "INSERT OR REPLACE INTO character_statblocks (player_name, data, updated_at)"
+            " VALUES (?, ?, '2026-08-25T00:00:00Z')",
+            ('Roxanya "Roxy"', '{"name": "Roxy", "secretMarker": "roxy-only"}'),
+        )
+    try:
+        with app.test_client() as client:
+            response = client.get("/api/sheet", headers=auth_headers["player"])
+        body = response.get_data(as_text=True)
+        assert "roxy-only" not in body
+        assert response.get_json()["statblock"] is None
+    finally:
+        with server_module._app_db() as conn:
+            conn.execute("DELETE FROM character_statblocks")
+
+
+def test_a_corrupt_statblock_does_not_take_the_sheet_down(app, auth_headers, server_module):
+    """A row that will not parse should read as absent, not 500 the request."""
+    with server_module._app_db() as conn:
+        conn.execute(
+            "INSERT OR REPLACE INTO character_statblocks (player_name, data, updated_at)"
+            " VALUES (?, ?, '2026-08-25T00:00:00Z')",
+            ("Lotan", "{not json at all"),
+        )
+    try:
+        with app.test_client() as client:
+            response = client.get("/api/sheet", headers=auth_headers["player"])
+        assert response.status_code == 200
+        payload = response.get_json()
+        assert payload["statblock"] is None
+        assert payload["sheet"]["markdown"] == "# LOTAN\nWhat Lotan reads."
+    finally:
+        with server_module._app_db() as conn:
+            conn.execute("DELETE FROM character_statblocks")
+
+
+# ── Foundry bridge ingest ──────────────────────────────────────────────
+
+INGEST = "/api/statblocks/ingest"
+TOKEN = "test-ingest-token"
+
+
+def _export(name="Car", **overrides):
+    doc = {
+        "vosExport": {"version": 1, "exportedAt": "2026-08-26T00:00:00Z", "system": "5.2.4"},
+        "name": name,
+        "system": {"abilities": {}},
+        "items": [],
+        "derived": {"level": 3, "ac": 13, "prof": 2},
+    }
+    doc.update(overrides)
+    return doc
+
+
+@pytest.fixture
+def ingest_enabled(server_module, monkeypatch):
+    from vos.routes import sheets as sheets_route
+    monkeypatch.setattr(sheets_route, "STATBLOCK_INGEST_TOKEN", TOKEN)
+    yield
+    with server_module._app_db() as conn:
+        conn.execute("DELETE FROM character_statblocks")
+
+
+def _post(app, body, token=TOKEN):
+    headers = {"Content-Type": "application/json"}
+    if token:
+        headers["Authorization"] = f"Bearer {token}"
+    with app.test_client() as client:
+        return client.post(INGEST, data=json.dumps(body), headers=headers)
+
+
+def test_ingest_is_closed_when_no_token_is_configured(app):
+    """An unconfigured deploy must fail shut, not accept anonymous pushes."""
+    response = _post(app, _export(), token=None)
+    assert response.status_code == 503
+    assert response.get_json()["error_code"] == "ingest_not_configured"
+
+
+def test_ingest_rejects_a_wrong_token(app, ingest_enabled):
+    assert _post(app, _export(), token="not-the-token").status_code == 401
+    assert _post(app, _export(), token=None).status_code == 401
+
+
+def test_ingest_maps_the_foundry_actor_name_onto_the_roster(app, ingest_enabled, server_module):
+    response = _post(app, _export("Car"))
+    assert response.status_code == 200
+    assert response.get_json()["playerName"] == 'Caravel "Car" Asteri'
+
+    with server_module._app_db() as conn:
+        row = conn.execute(
+            "SELECT player_name FROM character_statblocks"
+        ).fetchone()
+    assert row["player_name"] == 'Caravel "Car" Asteri'
+
+
+def test_ingest_refuses_an_actor_that_is_not_on_the_roster(app, ingest_enabled):
+    response = _post(app, _export("Some Random NPC"))
+    assert response.status_code == 422
+    assert response.get_json()["error_code"] == "unknown_player"
+
+
+def test_ingest_refuses_a_revoked_player(app, ingest_enabled, monkeypatch):
+    """Revocation should not be undone by a push from Foundry."""
+    from vos.routes import sheets as sheets_route
+    monkeypatch.setattr(sheets_route, "REVOKED_PLAYERS", {"Orabella"})
+    response = _post(app, _export("Orabella"))
+    assert response.status_code == 422
+
+
+def test_ingest_requires_the_derived_block(app, ingest_enabled):
+    response = _post(app, _export(derived={}))
+    assert response.status_code == 400
+    assert response.get_json()["error_code"] == "no_derived"
+
+
+def test_ingest_refuses_an_unknown_export_version(app, ingest_enabled):
+    response = _post(app, _export(vosExport={"version": 99}))
+    assert response.status_code == 400
+    assert response.get_json()["error_code"] == "bad_version"
+
+
+def test_ingest_rejects_an_oversized_payload(app, ingest_enabled, monkeypatch):
+    from vos.routes import sheets as sheets_route
+    monkeypatch.setattr(sheets_route, "STATBLOCK_MAX_BYTES", 200)
+    response = _post(app, _export(system={"padding": "x" * 5000}))
+    assert response.status_code == 413
+
+
+def test_ingest_replaces_the_previous_push_for_that_player(app, ingest_enabled):
+    _post(app, _export("Car", derived={"level": 3, "ac": 13}))
+    _post(app, _export("Car", derived={"level": 4, "ac": 15}))
+
+    with app.test_client() as client:
+        response = client.post(
+            INGEST,
+            data=json.dumps(_export("Car", derived={"level": 5, "ac": 16})),
+            headers={"Authorization": f"Bearer {TOKEN}", "Content-Type": "application/json"},
+        )
+    assert response.status_code == 200
+
+    from vos.routes import sheets as sheets_route
+    with sheets_route._app_db() as conn:
+        rows = conn.execute("SELECT data FROM character_statblocks").fetchall()
+    assert len(rows) == 1
+    assert json.loads(rows[0]["data"])["derived"]["level"] == 5

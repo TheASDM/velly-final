@@ -9,6 +9,8 @@
  */
 import { renderSheet, sheetSections } from './render.js';
 import { loadAllSheets, loadRoster, whenPwaReady } from './data.js';
+import { normalizeStatblock } from '../statblock/normalize.js';
+import { renderStatblock } from '../statblock/render.js';
 
 const root = document.getElementById('vos-sheets-root');
 const rosterEl = document.getElementById('vos-sheets-roster');
@@ -51,7 +53,11 @@ function renderRoster() {
   rosterEl.innerHTML = sheets.map((sheet) => {
     const active = sheet.playerName === state.player;
     const seat = seatFor(sheet);
-    const has = [sheet.player ? 'player' : null, sheet.dm ? 'DM' : null].filter(Boolean).join(' + ');
+    const has = [
+      sheet.dm ? 'DM' : null,
+      sheet.player ? 'player' : null,
+      sheet.statblock ? 'stats' : null,
+    ].filter(Boolean).join(' + ');
     return `<button class="nav-item${active ? ' is-on' : ''}" type="button"
       data-player="${esc(sheet.playerName)}" style="--c:${esc(seat.color || '#d4a574')}">
       <span class="nav-row"><span class="nav-name">${esc(shortName(sheet))}</span></span>
@@ -91,7 +97,9 @@ function render() {
 
   state.player = sheet.playerName;
   // Fall back to whichever variant this player actually has.
-  if (!sheet[state.variant]) state.variant = sheet.dm ? 'dm' : 'player';
+  if (!sheet[state.variant]) {
+    state.variant = sheet.dm ? 'dm' : sheet.player ? 'player' : 'statblock';
+  }
 
   renderRoster();
   renderToolbar();
@@ -104,6 +112,15 @@ function render() {
   }
 
   root.classList.toggle('is-dm-variant', state.variant === 'dm');
+
+  if (state.variant === 'statblock') {
+    root.innerHTML = renderStatblock(normalizeStatblock(entry.data));
+    if (indexEl) indexEl.hidden = true;
+    const statSeat = seatFor(sheet);
+    if (statSeat.color) root.style.setProperty('--sheet-accent', statSeat.color);
+    return;
+  }
+
   root.innerHTML = renderSheet(entry.markdown, {
     eyebrow: state.variant === 'dm' ? 'DM sheet — spoilers' : 'Player sheet — what they read',
     fallbackTitle: shortName(sheet),

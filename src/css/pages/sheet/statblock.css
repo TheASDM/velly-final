@@ -1,0 +1,447 @@
+/* The Foundry statblock.
+ *
+ * Shares the narrative sheet's palette and type so the two tabs read as one
+ * document, but the layout is the opposite problem: dense numbers you scan
+ * rather than prose you read. Everything above the fold is sized to be legible
+ * at arm's length on a phone at the table.
+ */
+
+.vos-sb {
+  --sb-accent: var(--sheet-accent, var(--vos-gold-bright));
+  max-width: 46rem;
+  margin: 0 auto;
+  color: var(--vos-text-body);
+  font-family: 'EB Garamond', 'Crimson Text', Georgia, serif;
+  font-size: 1rem;
+  line-height: 1.55;
+}
+
+/* ── Head ──────────────────────────────────────────────────────────── */
+
+.vos-sb-head {
+  padding-bottom: 1rem;
+  margin-bottom: 1.2rem;
+  border-bottom: 1px solid var(--vos-border);
+}
+.vos-sb-name {
+  margin: 0;
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: clamp(1.5rem, 5vw, 2.1rem);
+  line-height: 1.1;
+  letter-spacing: 0.04em;
+  color: var(--sb-accent);
+}
+.vos-sb-line {
+  margin: 0.4rem 0 0;
+  color: var(--vos-cream);
+}
+.vos-sb-sub {
+  margin: 0.15rem 0 0;
+  font-size: 0.86rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--vos-gold-dim);
+}
+
+.vos-sb-warning {
+  margin: 0 0 1rem;
+  padding: 0.7rem 0.9rem;
+  border: 1px solid rgba(212, 77, 63, 0.5);
+  border-radius: 8px;
+  background: rgba(160, 50, 42, 0.16);
+  color: var(--vos-cream);
+  font-size: 0.92rem;
+}
+
+/* ── Vitals ────────────────────────────────────────────────────────── */
+
+.vos-sb-vitals {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(6.2rem, 1fr));
+  gap: 0.45rem;
+  margin-bottom: 0.6rem;
+}
+.vos-sb-vital {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.15rem;
+  padding: 0.6rem 0.5rem;
+  border: 1px solid var(--vos-border);
+  border-radius: 10px;
+  background: rgba(8, 7, 11, 0.5);
+  text-align: center;
+}
+.vos-sb-vital.is-wide { grid-column: span 2; }
+
+.vos-sb-vital-label {
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.56rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--vos-gold-dim);
+}
+.vos-sb-vital-value {
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 1.5rem;
+  line-height: 1.1;
+  color: var(--vos-cream);
+}
+.vos-sb-vital-value.is-small {
+  font-size: 0.95rem;
+  letter-spacing: 0.04em;
+}
+.vos-sb-of { color: var(--vos-gold-dim); font-size: 0.95rem; }
+.vos-sb-temp {
+  display: block;
+  font-family: 'EB Garamond', Georgia, serif;
+  font-size: 0.72rem;
+  color: var(--vos-gold);
+}
+
+/* ── Sections ──────────────────────────────────────────────────────── */
+
+.vos-sb-section {
+  margin: 1.6rem 0 0;
+  scroll-margin-top: calc(var(--vos-app-bar-h, 58px) + 1rem);
+}
+.vos-sb-section-title {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  margin: 0 0 0.7rem;
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.74rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--vos-gold);
+}
+.vos-sb-section-title::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, var(--vos-border) 0%, transparent 100%);
+}
+
+.vos-sb-group-title,
+.vos-sb-spell-level {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  margin: 1rem 0 0.4rem;
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.68rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--vos-gold-dim);
+}
+
+/* ── Abilities ─────────────────────────────────────────────────────── */
+
+.vos-sb-abilities {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.45rem;
+}
+@media (min-width: 40rem) {
+  .vos-sb-abilities { grid-template-columns: repeat(6, 1fr); }
+}
+
+.vos-sb-ability {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.1rem;
+  padding: 0.65rem 0.35rem 0.5rem;
+  border: 1px solid var(--vos-border);
+  border-radius: 10px;
+  background: rgba(8, 7, 11, 0.5);
+}
+.vos-sb-ability.is-proficient {
+  border-color: rgba(212, 165, 116, 0.42);
+  background: rgba(212, 165, 116, 0.07);
+}
+.vos-sb-ability-name {
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.6rem;
+  letter-spacing: 0.14em;
+  color: var(--vos-gold-dim);
+}
+.vos-sb-ability-mod {
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 1.6rem;
+  line-height: 1.05;
+  color: var(--vos-cream);
+}
+.vos-sb-ability-score {
+  padding: 0.02rem 0.45rem;
+  border: 1px solid var(--vos-border);
+  border-radius: 999px;
+  font-size: 0.76rem;
+  color: var(--vos-gold-dim);
+}
+.vos-sb-ability-save {
+  margin-top: 0.2rem;
+  font-size: 0.66rem;
+  letter-spacing: 0.04em;
+  color: var(--vos-gold-dim);
+}
+.vos-sb-ability.is-proficient .vos-sb-ability-save { color: var(--sb-accent); }
+
+/* ── Skills ────────────────────────────────────────────────────────── */
+
+.vos-sb-skills {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+@media (min-width: 34rem) {
+  .vos-sb-skills { grid-template-columns: 1fr 1fr; column-gap: 1.4rem; }
+}
+
+.vos-sb-skill {
+  display: grid;
+  grid-template-columns: auto 1fr auto auto;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.34rem 0.1rem;
+  border-bottom: 1px solid rgba(139, 115, 85, 0.14);
+}
+.vos-sb-skill-name { min-width: 0; }
+.vos-sb-skill.is-proficient .vos-sb-skill-name { color: var(--vos-cream); }
+.vos-sb-skill-ability {
+  font-size: 0.58rem;
+  letter-spacing: 0.1em;
+  color: var(--vos-gold-dim);
+}
+.vos-sb-skill-total {
+  min-width: 2.1rem;
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.94rem;
+  text-align: right;
+  color: var(--vos-cream);
+}
+.vos-sb-skills.is-tools .vos-sb-skill { grid-template-columns: auto 1fr auto; }
+
+.vos-sb-dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  border: 1px solid var(--vos-gold-dim);
+  border-radius: 50%;
+}
+.vos-sb-dot.is-rank-1 {
+  background: var(--sb-accent);
+  border-color: var(--sb-accent);
+}
+/* Expertise reads as a filled diamond — distinct at a glance from proficient. */
+.vos-sb-dot.is-rank-2 {
+  background: var(--sb-accent);
+  border-color: var(--sb-accent);
+  border-radius: 1px;
+  transform: rotate(45deg);
+}
+
+/* ── Chips ─────────────────────────────────────────────────────────── */
+
+.vos-sb-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  margin: 0.5rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+.vos-sb-chips li {
+  padding: 0.18rem 0.55rem;
+  border: 1px solid var(--vos-border);
+  border-radius: 999px;
+  background: rgba(212, 165, 116, 0.05);
+  font-size: 0.8rem;
+  color: var(--vos-text);
+}
+.vos-sb-chips.is-passive li,
+.vos-sb-chips.is-coins li {
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.64rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--vos-gold);
+}
+.vos-sb-chips.is-flags li {
+  border-color: rgba(212, 165, 116, 0.45);
+  color: var(--vos-gold-bright);
+}
+
+.vos-sb-defense {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.5rem;
+  margin: 0 0 0.4rem;
+}
+.vos-sb-defense > span:first-child {
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.62rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--vos-gold-dim);
+}
+.vos-sb-defense .vos-sb-chips { margin: 0; }
+
+/* ── Spell slots ───────────────────────────────────────────────────── */
+
+.vos-sb-spell-head {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+.vos-sb-spell-head > div {
+  flex: 1 1 6rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0.5rem;
+  border: 1px solid var(--vos-border);
+  border-radius: 10px;
+  background: rgba(8, 7, 11, 0.5);
+}
+
+.vos-sb-slots {
+  margin: 0.7rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+.vos-sb-slots li {
+  display: grid;
+  grid-template-columns: 4.6rem 1fr auto;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.3rem 0;
+}
+.vos-sb-slot-level {
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.64rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--vos-gold-dim);
+}
+.vos-sb-slot-count {
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.8rem;
+  color: var(--vos-cream);
+}
+.vos-sb-pips { display: flex; flex-wrap: wrap; gap: 0.25rem; }
+.vos-sb-pip {
+  width: 0.62rem;
+  height: 0.62rem;
+  border: 1px solid var(--sb-accent);
+  border-radius: 50%;
+  background: var(--sb-accent);
+}
+.vos-sb-pip.is-spent { background: transparent; opacity: 0.45; }
+
+/* ── Entries (features, spells, items) ─────────────────────────────── */
+
+.vos-sb-entries {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.vos-sb-entry { border-bottom: 1px solid rgba(139, 115, 85, 0.16); }
+
+.vos-sb-entry-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.45rem;
+  padding: 0.52rem 0.1rem;
+  cursor: pointer;
+  list-style: none;
+}
+.vos-sb-entry-head::-webkit-details-marker { display: none; }
+.vos-sb-entry-head::before {
+  content: '▸';
+  flex: 0 0 auto;
+  font-size: 0.7rem;
+  color: var(--vos-gold-dim);
+  transition: transform 0.12s ease;
+}
+.vos-sb-entry details[open] > .vos-sb-entry-head::before,
+details[open] > .vos-sb-entry-head::before { transform: rotate(90deg); }
+
+.vos-sb-entry-name { color: var(--vos-cream); }
+.vos-sb-entry-meta {
+  margin-left: auto;
+  font-size: 0.7rem;
+  letter-spacing: 0.04em;
+  color: var(--vos-gold-dim);
+  text-align: right;
+}
+.vos-sb-marker {
+  padding: 0.05rem 0.4rem;
+  border: 1px solid rgba(212, 165, 116, 0.4);
+  border-radius: 999px;
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.54rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--vos-gold);
+}
+.vos-sb-uses {
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.7rem;
+  color: var(--sb-accent);
+}
+.vos-sb-uses-recovery {
+  font-size: 0.58rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--vos-gold-dim);
+}
+
+.vos-sb-entry-body {
+  padding: 0.2rem 0 0.8rem 1.15rem;
+  font-size: 0.96rem;
+  color: var(--vos-text-body);
+}
+.vos-sb-entry-body.is-empty { color: var(--vos-gold-dim); font-style: italic; }
+.vos-sb-entry-body p { margin: 0 0 0.6rem; }
+.vos-sb-entry-body p:last-child { margin-bottom: 0; }
+.vos-sb-entry-body ul,
+.vos-sb-entry-body ol { margin: 0 0 0.6rem; padding-left: 1.1rem; }
+.vos-sb-entry-body strong { color: var(--vos-cream); }
+/* Imported tables (class level charts) are wide — never let one push the page. */
+.vos-sb-entry-body table {
+  display: block;
+  width: max-content;
+  max-width: 100%;
+  overflow-x: auto;
+  border-collapse: collapse;
+  font-size: 0.84rem;
+}
+.vos-sb-entry-body th,
+.vos-sb-entry-body td {
+  padding: 0.3rem 0.5rem;
+  border: 1px solid rgba(139, 115, 85, 0.22);
+  white-space: nowrap;
+}
+.vos-sb-entry-body th {
+  background: rgba(212, 165, 116, 0.08);
+  color: var(--vos-cream);
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.62rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+@media print {
+  .vos-sb-entry details { display: block; }
+  .vos-sb-entry-body { display: block !important; }
+  .vos-sb { color: #000; }
+  .vos-sb-name, .vos-sb-section-title, .vos-sb-vital-value { color: #000; }
+  .vos-sb-section { break-inside: avoid; }
+}
