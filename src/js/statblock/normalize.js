@@ -319,7 +319,7 @@ function spells(doc) {
     seen.set(key, entry);
   });
 
-  return [...byLevel.keys()]
+  const groups = [...byLevel.keys()]
     .sort((a, b) => a - b)
     .map((level) => {
       const slot = slotSource[`spell${level}`] ?? {};
@@ -330,6 +330,52 @@ function spells(doc) {
         spells: byLevel.get(level).sort((a, b) => a.name.localeCompare(b.name)),
       };
     });
+
+  return regroupForPactMagic(groups, slotSource);
+}
+
+/* Pact Magic casts everything at one level.
+ *
+ * A level 3 warlock casting Burning Hands casts it as a 2nd-level spell —
+ * always, with no choice in the matter. Listing it under "Level 1" describes
+ * where the spell came from rather than what happens when they cast it, which
+ * is the thing a player needs mid-turn. So every spell they can cast with a
+ * pact slot collapses into one group named for the level it goes off at.
+ *
+ * Only for casters whose slots are *entirely* pact. A warlock multiclassed into
+ * a full caster has real levelled slots too, and there the base level matters
+ * again.
+ */
+function regroupForPactMagic(groups, slotSource) {
+  const pact = slotSource.pact;
+  const pactLevel = Number(pact?.level ?? 0);
+  const pactMax = Number(pact?.max ?? 0);
+  const hasLevelledSlots = Object.entries(slotSource)
+    .some(([key, slot]) => /^spell[1-9]$/.test(key) && Number(slot?.max ?? 0) > 0);
+
+  if (!pactMax || !pactLevel || hasLevelledSlots) return groups;
+
+  const cantrips = groups.filter((group) => group.level === 0);
+  const castable = groups.filter((group) => group.level > 0 && group.level <= pactLevel);
+  // Mystic Arcanum sits above the pact level and is cast at its own, once per
+  // rest, so it keeps its own heading.
+  const arcanum = groups.filter((group) => group.level > pactLevel);
+
+  if (!castable.length) return groups;
+
+  return [
+    ...cantrips,
+    {
+      level: pactLevel,
+      label: `Cast at level ${pactLevel}`,
+      pact: true,
+      slots: { value: Number(pact.value ?? 0), max: pactMax },
+      spells: castable
+        .flatMap((group) => group.spells)
+        .sort((a, b) => a.level - b.level || a.name.localeCompare(b.name)),
+    },
+    ...arcanum,
+  ];
 }
 
 function inventory(doc) {

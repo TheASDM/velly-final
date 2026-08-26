@@ -205,6 +205,12 @@ function renderTools(model) {
 
 /* A pip per slot, filled while unspent. Tapping a filled pip spends it and a
  * spent one gives it back, which is one gesture rather than a stepper. */
+function ordinal(n) {
+  const tens = n % 100;
+  if (tens >= 11 && tens <= 13) return `${n}th`;
+  return `${n}${{ 1: 'st', 2: 'nd', 3: 'rd' }[n % 10] || 'th'}`;
+}
+
 function slotPips(slot) {
   const remaining = slotsLeft(slot);
   const pips = [];
@@ -256,13 +262,19 @@ function renderSpellcasting(model) {
     <h4 class="vos-sb-spell-level">${esc(group.label)}${
       group.slots && group.slots.max > 0
         ? ` <span class="vos-sb-slot-count">${
-            slotsLeft({ ...group.slots, level: group.level })}/${group.slots.max}</span>`
+            slotsLeft({ ...group.slots, level: group.level, pact: group.pact })}/${
+            group.slots.max}</span>`
         : ''
     }</h4>
     <ul class="vos-sb-entries">${group.spells.map((spell) => renderEntry({
       name: spell.name,
       marker: spell.always ? 'always' : (spell.prepared ? 'prepared' : ''),
-      meta: [spell.school, ...spell.meta, ...(spell.methods || []).filter((m) => m !== 'Prepared')],
+      meta: [
+        group.pact && spell.level > 0 ? `${ordinal(spell.level)}-level spell` : '',
+        spell.school,
+        ...spell.meta,
+        ...(spell.methods || []).filter((m) => m !== 'Prepared'),
+      ].filter(Boolean),
       description: spell.description,
     })).join('')}</ul>
   </div>`).join('');
