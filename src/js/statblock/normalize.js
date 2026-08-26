@@ -274,11 +274,35 @@ function spells(doc) {
   if (!items.length) return [];
 
   const byLevel = new Map();
+  const seen = new Map();
   items.forEach((item) => {
     const level = Number(item.system?.level ?? 0);
     const prep = preparationOf(item);
+
+    // Foundry's default name for an item someone created and never filled in.
+    // They are not spells and there is nothing to show for them.
+    if (!item.name || (item.name.trim() === 'New Spell' && !item.system?.description?.value)) {
+      return;
+    }
+
+    /* The same spell can arrive more than once — a subclass grants Disguise
+     * Self as always-prepared while a species already granted it innately, and
+     * both are real, separate items. Two identical rows read as a bug, so they
+     * merge into one that keeps the strongest preparation and remembers where
+     * each copy came from. */
+    const key = `${item.name.toLowerCase()}::${level}`;
+    const existing = seen.get(key);
+    if (existing) {
+      existing.prepared = existing.prepared || prep.prepared;
+      existing.always = existing.always || prep.always;
+      if (prep.method && !existing.methods.includes(prep.method)) {
+        existing.methods.push(prep.method);
+      }
+      return;
+    }
+
     if (!byLevel.has(level)) byLevel.set(level, []);
-    byLevel.get(level).push({
+    const entry = {
       id: item._id,
       name: item.name,
       level,
@@ -287,9 +311,12 @@ function spells(doc) {
       always: prep.always,
       mode: prep.method,
       sourceClass: item.system?.sourceClass ?? '',
+      methods: prep.method ? [prep.method] : [],
       meta: spellMeta(item),
       description: richText(item.system?.description?.value),
-    });
+    };
+    byLevel.get(level).push(entry);
+    seen.set(key, entry);
   });
 
   return [...byLevel.keys()]

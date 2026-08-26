@@ -254,12 +254,15 @@ function renderSpellcasting(model) {
 
   const groups = model.spells.map((group) => `<div class="vos-sb-spell-group">
     <h4 class="vos-sb-spell-level">${esc(group.label)}${
-      group.slots ? ` <span class="vos-sb-slot-count">${slotsLeft({ ...group.slots, level: group.level })}/${group.slots.max}</span>` : ''
+      group.slots && group.slots.max > 0
+        ? ` <span class="vos-sb-slot-count">${
+            slotsLeft({ ...group.slots, level: group.level })}/${group.slots.max}</span>`
+        : ''
     }</h4>
     <ul class="vos-sb-entries">${group.spells.map((spell) => renderEntry({
       name: spell.name,
       marker: spell.always ? 'always' : (spell.prepared ? 'prepared' : ''),
-      meta: [spell.school, ...spell.meta],
+      meta: [spell.school, ...spell.meta, ...(spell.methods || []).filter((m) => m !== 'Prepared')],
       description: spell.description,
     })).join('')}</ul>
   </div>`).join('');
