@@ -240,18 +240,12 @@ def api_play_party():
 @bp.get("/api/play/log")
 def api_play_log():
     """Recent operations — what an undo and a session recap read from."""
-    player_name, auth_error = _authenticated_player_name()
+    # Same resolution as everywhere else: yours unless you are the DM and say
+    # otherwise. Going through _authenticated_player_name() here would refuse
+    # the DM, because it treats a name in the request as a claim about identity.
+    player_name, _viewer, auth_error = _target_player(request.args)
     if auth_error:
         return auth_error
-
-    requested = request.args.get("playerName")
-    if requested and requested != player_name:
-        if not _is_dm_player(player_name):
-            return jsonify({
-                "error": "You can only read your own log.",
-                "error_code": "forbidden_target",
-            }), 403
-        player_name = requested
 
     with _app_db() as conn:
         rows = conn.execute(

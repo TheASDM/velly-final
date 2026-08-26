@@ -430,3 +430,15 @@ def test_the_sheet_endpoint_still_refuses_to_be_told_whose_it_is(app, auth_heade
     reach another player's sheet."""
     response = get(app, auth_headers["dm"], '/api/sheet?playerName=Lotan')
     assert response.status_code == 403
+
+
+def test_the_dm_can_read_another_players_log(app, auth_headers):
+    """The player-refused case passed even while this was broken, so assert the
+    DM path too rather than only the denial."""
+    post(app, auth_headers["player"], {"op": "damage", "amount": 2})
+    post(app, auth_headers["dm"], {"op": "heal", "amount": 1, "playerName": "Lotan"})
+
+    body = get(app, auth_headers["dm"], "/api/play/log?playerName=Lotan").get_json()
+    assert body["playerName"] == "Lotan"
+    assert [(e["op"]["op"], e["appliedBy"]) for e in body["entries"]] == [
+        ("heal", "DM"), ("damage", "Lotan")]
