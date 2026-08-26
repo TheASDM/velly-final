@@ -9,6 +9,7 @@
  * fast, honest surface over them.
  */
 import { inverseOf, predict, sendOp } from './api.js';
+import { loadConditions, loadSpellList, preparedLimit, spellKey, spellListNameFor } from './reference.js';
 
 const QUICK_DAMAGE = [1, 2, 3, 4, 5, 6, 7, 8, 10, 12, 15, 20];
 const HAPTIC_MS = 12;
@@ -17,9 +18,11 @@ export function createControls(options) {
   const root = options.root;
   const onState = options.onState;
   const playerName = options.playerName || null;
+  const model = options.model || null;
   let state = options.state;
   let limits = options.limits;
   let busy = false;
+  let spellList = null;
 
   function tap() {
     // A small tick makes a tap feel acknowledged before the network answers.
@@ -241,18 +244,130 @@ export function createControls(options) {
     'incapacitated', 'invisible', 'paralyzed', 'petrified', 'poisoned', 'prone',
     'restrained', 'stunned', 'unconscious'];
 
-  function openConditions() {
+  /* Conditions carry their rules text, because the moment you need to know what
+   * Restrained does is the moment you have just been restrained. Exhaustion and
+   * Dying show this table's wording, not the book's, and say so. */
+  async function openConditions() {
     const active = new Set(state.conditions || []);
-    const list = CONDITIONS.map((c) =>
-      `<button type="button" class="vos-play-cond${active.has(c) ? ' is-on' : ''}" data-condition="${c}">${
-        c.charAt(0).toUpperCase() + c.slice(1)
-      }</button>`).join('');
-    openSheet('Conditions', `<div class="vos-play-conds">${list}</div>`, (sheet) => {
-      sheet.querySelectorAll('[data-condition]').forEach((button) => {
-        button.addEventListener('click', () => {
-          const condition = button.dataset.condition;
-          const on = button.classList.toggle('is-on');
-          apply({ op: on ? 'addCondition' : 'removeCondition', condition });
+    let rules = {};
+    try { rules = await loadConditions(); } catch (error) { /* names still work */ }
+
+    const list = CONDITIONS.map((c) => {
+      const entry = rules[c] || {};
+      return `<div class="vos-play-cond-row${active.has(c) ? ' is-on' : ''}">
+        <button type="button" class="vos-play-cond" data-condition="${c}">${
+          esc(entry.name || c.charAt(0).toUpperCase() + c.slice(1))
+        }</button>
+        ${entry.text ? `<details class="vos-play-cond-rules">
+          <summary>What it does${entry.houseRuled ? ' <em>house rule</em>' : ''}</summary>
+          <p>${esc(entry.text)}</p>
+        </details>` : ''}
+      </div>`;
+    }).join('');
+
+    const conc = state.concentration;
+    const concentration = `<div class="vos-play-conc">
+      ${conc
+        ? `<span>Concentrating on <b>${esc(conc.spell)}</b></span>
+           <button type="button" class="vos-play-secondary" data-break>Break</button>`
+        : `<span>Not concentrating</span>
+           <button type="button" class="vos-play-secondary" data-concentrate>Set</button>`}
+    </div>`;
+
+    openSheet('Conditions', concentration + `<div class="vos-play-conds is-rows">${list}</div>`,
+      (sheet) => {
+        sheet.querySelectorAll('[data-condition]').forEach((button) => {
+          button.addEventListener('click', () => {
+            const condition = button.dataset.condition;
+            const row = button.closest('.vos-play-cond-row');
+            const on = !row.classList.contains('is-on');
+            row.classList.toggle('is-on', on);
+            apply({ op: on ? 'addCondition' : 'removeCondition', condition });
+          });
+        });
+        const breakButton = sheet.querySelector('[data-break]');
+        if (breakButton) {
+          breakButton.addEventListener('click', () => { closeSheet(); apply({ op: 'breakConcentration' }); });
+        }
+        const setButton = sheet.querySelector('[data-concentrate]');
+        if (setButton) {
+          setButton.addEventListener('click', () => {
+            const spell = window.prompt('Concentrating on which spell?');
+            closeSheet();
+            if (spell && spell.trim()) apply({ op: 'concentrate', spell: spell.trim() });
+          });
+        }
+      });
+  }
+
+  function esc(value) {
+    return String(value == null ? '' : value).replace(
+      /[&<>"]/g,
+      (m) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[m]),
+    );
+  }
+
+  /* Preparing spells.
+   *
+   * A 2024 caster prepares from the whole class list, not from a smaller pool,
+   * so this is a real picker over a few hundred spells: grouped by level,
+   * searchable, with the count against the class table shown but never enforced
+   * — a feature this app has not modelled can legitimately raise it. */
+  async function openPrepare() {
+    if (!spellList) spellList = await loadSpellList(spellListNameFor(model));
+    if (!spellList) {
+      toast('No spell list for this character.', { tone: 'error' });
+      return;
+    }
+
+    const level = (model && model.level) || 0;
+    const cap = preparedLimit(spellList, level);
+    const prepared = new Set(state.prepared || []);
+    const maxLevel = Math.max(0, ...Object.keys((limits || {}).slots || {}).map(Number));
+
+    const rows = spellList.spells
+      .filter((spell) => spell.level <= maxLevel)
+      .map((spell) => {
+        const key = spellKey(spell);
+        const meta = [spell.school, spell.time, spell.range, spell.duration]
+          .filter(Boolean).join(' · ');
+        return `<label class="vos-play-spell${prepared.has(key) ? ' is-on' : ''}"
+                       data-level="${spell.level}" data-name="${esc(spell.name.toLowerCase())}">
+          <input type="checkbox" data-spell="${esc(key)}"${prepared.has(key) ? ' checked' : ''}
+                 ${spell.level === 0 ? 'disabled' : ''}>
+          <span class="vos-play-spell-name">${esc(spell.name)}${
+            spell.concentration ? '<i title="Concentration">C</i>' : ''
+          }${spell.ritual ? '<i title="Ritual">R</i>' : ''}</span>
+          <span class="vos-play-spell-meta">${esc(meta)}</span>
+        </label>`;
+      }).join('');
+
+    openSheet('Prepare spells', `
+      <div class="vos-play-prep-head">
+        <span class="vos-play-prep-count" data-count>${prepared.size}${cap ? ` / ${cap}` : ''}</span>
+        <input type="search" class="vos-play-search" placeholder="Search ${spellList.spells.length} spells"
+               aria-label="Search spells">
+      </div>
+      <p class="vos-play-note">Cantrips are always known. ${
+        cap ? `Your class prepares ${cap} at level ${level}; going over is allowed if something says so.`
+            : ''}</p>
+      <div class="vos-play-spells">${rows}</div>
+    `, (sheet) => {
+      const count = sheet.querySelector('[data-count]');
+      sheet.querySelectorAll('[data-spell]').forEach((box) => {
+        box.addEventListener('change', () => {
+          box.closest('.vos-play-spell').classList.toggle('is-on', box.checked);
+          const now = sheet.querySelectorAll('[data-spell]:checked').length;
+          count.textContent = cap ? `${now} / ${cap}` : String(now);
+          count.classList.toggle('is-over', Boolean(cap && now > cap));
+          apply({ op: 'togglePrepared', spell: box.dataset.spell }, { undoable: false });
+        });
+      });
+      const search = sheet.querySelector('.vos-play-search');
+      search.addEventListener('input', () => {
+        const term = search.value.trim().toLowerCase();
+        sheet.querySelectorAll('.vos-play-spell').forEach((row) => {
+          row.hidden = Boolean(term) && !row.dataset.name.includes(term);
         });
       });
     });
@@ -309,6 +424,7 @@ export function createControls(options) {
     openHpPad,
     openRests,
     openConditions,
+    openPrepare,
     setState(next, nextLimits) {
       state = next;
       if (nextLimits) limits = nextLimits;

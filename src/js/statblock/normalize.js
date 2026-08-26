@@ -333,6 +333,15 @@ export function normalizeStatblock(raw) {
     name: doc.name ?? 'Unnamed',
     level: derived.level ?? null,
     classLine: classLine(doc),
+    // The identifiers, kept separate from the display line: a subclass caster
+    // prepares from another class's list, and matching on a formatted string
+    // would be guesswork.
+    classes: (derived.classes ?? []).map((entry) => ({
+      identifier: entry.identifier ?? '',
+      name: entry.name ?? '',
+      levels: entry.levels ?? null,
+      subclass: entry.subclass ?? null,
+    })),
     race: derived.raceName ?? raceItem?.name ?? '',
     background: derived.backgroundName ?? backgroundItem?.name ?? '',
     size: lookup(SIZES, sys.traits?.size, ''),

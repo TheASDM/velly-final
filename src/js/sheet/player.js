@@ -112,6 +112,7 @@ function renderPlayBar() {
       if (!button || !controls) return;
       if (button.dataset.bar === 'hp') controls.openHpPad();
       if (button.dataset.bar === 'conditions') controls.openConditions();
+      if (button.dataset.bar === 'prepare') controls.openPrepare();
       if (button.dataset.bar === 'rest') controls.openRests();
     });
   }
@@ -136,6 +137,8 @@ function renderPlayBar() {
     <button type="button" class="vos-play-bar-btn" data-bar="conditions">
       Conditions${conditions ? `<b>${conditions}</b>` : ''}
     </button>
+    ${statModel && statModel.spellcasting
+      ? '<button type="button" class="vos-play-bar-btn" data-bar="prepare">Spells</button>' : ''}
     <button type="button" class="vos-play-bar-btn" data-bar="rest">Rest</button>`;
 }
 
@@ -154,6 +157,7 @@ function wire() {
  * backstory should not pay for it. */
 async function ensurePlay() {
   if (play || !payload.statblock) return;
+  if (!statModel) statModel = normalizeStatblock(payload.statblock.data);
   try {
     const body = await loadPlayState();
     play = { state: body.state, limits: body.limits };
@@ -166,6 +170,7 @@ async function ensurePlay() {
   render();
   controls = createControls({
     root,
+    model: statModel,
     state: play.state,
     limits: play.limits,
     onState(next) {

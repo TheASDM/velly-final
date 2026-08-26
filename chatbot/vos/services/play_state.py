@@ -53,6 +53,7 @@ def default_state():
         "prepared": [],
         "conditions": [],
         "reaction": {"used": False, "assessUsed": False},
+        "concentration": None,
         "mask": None,
         "form": None,
         "items": [],
@@ -143,6 +144,8 @@ def _op_damage(state, op, limits):
         state["exhaustion"] = _clamp(state["exhaustion"] + 1, 0, MAX_EXHAUSTION)
         if "dying" not in state["conditions"]:
             state["conditions"].append("dying")
+        # Dying breaks concentration, per the house rules.
+        state["concentration"] = None
         notes.append("dropped to 0 — Dying, +1 exhaustion")
 
     return ", ".join(notes)
@@ -306,6 +309,7 @@ def _op_short_rest(state, op, limits):
     for feature in list(state["uses"]):
         if feature in set(op.get("shortRestFeatures") or []):
             state["uses"][feature] = 0
+    state["concentration"] = None
     state["reaction"] = {"used": False, "assessUsed": False}
     return "short rest"
 
@@ -314,6 +318,7 @@ def _op_field_rest(state, op, limits):
     """8 hours somewhere unsafe. Not a long rest — its only benefit is that
     hit dice spent during it heal for their maximum, which the client applies
     as a heal, so there is nothing to restore here."""
+    state["concentration"] = None
     state["reaction"] = {"used": False, "assessUsed": False}
     return "field rest"
 
@@ -334,10 +339,60 @@ def _op_long_rest(state, op, limits):
     state["exhaustion"] = max(0, state["exhaustion"] - 1)
     if "dying" in state["conditions"]:
         state["conditions"].remove("dying")
+    state["concentration"] = None
     state["reaction"] = {"used": False, "assessUsed": False}
     state["mask"] = None
     state["form"] = None
     return "long rest"
+
+
+PREPARED_MAX = 60
+
+
+def _op_toggle_prepared(state, op, limits):
+    """Prepare or unprepare one spell.
+
+    The count is not enforced. A class table is a starting point, and features
+    this app has never heard of change it — a hard cap that is wrong at the
+    table is worse than a soft one, so the client shows the count and lets a
+    player go over deliberately.
+    """
+    key = str(op.get("spell") or "").strip()[:120]
+    if not key:
+        raise OpError("spell is required")
+    prepared = state["prepared"]
+    if key in prepared:
+        prepared.remove(key)
+        return "unprepared"
+    if len(prepared) >= PREPARED_MAX:
+        raise OpError("Too many prepared spells")
+    prepared.append(key)
+    return "prepared"
+
+
+def _op_set_prepared(state, op, limits):
+    """Replace the whole prepared list, for a daily re-prepare."""
+    spells = op.get("spells")
+    if not isinstance(spells, list) or len(spells) > PREPARED_MAX:
+        raise OpError("spells must be a list of at most %d" % PREPARED_MAX)
+    state["prepared"] = [str(x)[:120] for x in spells if str(x).strip()]
+    return f"{len(state['prepared'])} spells prepared"
+
+
+def _op_concentrate(state, op, limits):
+    name = str(op.get("spell") or "").strip()[:120]
+    if not name:
+        raise OpError("spell is required")
+    if "dying" in state["conditions"]:
+        raise OpError("You cannot concentrate while Dying")
+    state["concentration"] = {"spell": name, "since": _utc_now_iso()}
+    return f"concentrating on {name}"
+
+
+def _op_break_concentration(state, op, limits):
+    was = (state.get("concentration") or {}).get("spell")
+    state["concentration"] = None
+    return f"concentration on {was} broken" if was else "concentration ended"
 
 
 OPS = {
@@ -362,6 +417,10 @@ OPS = {
     "shortRest": _op_short_rest,
     "fieldRest": _op_field_rest,
     "longRest": _op_long_rest,
+    "togglePrepared": _op_toggle_prepared,
+    "setPrepared": _op_set_prepared,
+    "concentrate": _op_concentrate,
+    "breakConcentration": _op_break_concentration,
 }
 
 
@@ -434,7 +493,7 @@ def reconcile(state, limits):
 
 
 __all__ = [
-    'STATE_VERSION', 'MAX_EXHAUSTION', 'CONDITIONS', 'OPS', 'OpError',
+    'STATE_VERSION', 'MAX_EXHAUSTION', 'PREPARED_MAX', 'CONDITIONS', 'OPS', 'OpError',
     'default_state', 'limits_from_statblock', 'apply_op', 'seed_from_statblock',
     'reconcile',
 ]

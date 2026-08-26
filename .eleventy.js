@@ -49,6 +49,9 @@ module.exports = function (eleventyConfig) {
   // without depending on a separate Enzo host.
   eleventyConfig.addPassthroughCopy({ "public/css": "css" });
   eleventyConfig.addPassthroughCopy({ "public/js": "js" });
+  // Reference data the playable sheet fetches at runtime (conditions, spell
+  // lists). Built by scripts/build_play_data.py.
+  eleventyConfig.addPassthroughCopy({ "public/data": "data" });
   // Question definitions for /questionnaire/ — also available to templates
   // as `questionnaire` via _data.
   eleventyConfig.addPassthroughCopy({ "_data/questionnaire.json": "data/questionnaire.json" });

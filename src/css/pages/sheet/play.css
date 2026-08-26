@@ -436,3 +436,123 @@
 @media print {
   .vos-play-bar, .vos-play-toast, .vos-play-sheet { display: none !important; }
 }
+
+/* ── Conditions with their rules ───────────────────────────────────── */
+
+.vos-play-conds.is-rows { display: block; }
+.vos-play-cond-row {
+  padding: 0.45rem 0;
+  border-bottom: 1px solid rgba(139, 115, 85, 0.16);
+}
+.vos-play-cond-row.is-on .vos-play-cond {
+  border-color: var(--vos-border-strong);
+  background: rgba(212, 165, 116, 0.16);
+  color: var(--vos-gold-bright);
+}
+.vos-play-cond-rules { margin-top: 0.3rem; }
+.vos-play-cond-rules summary {
+  font-size: 0.74rem;
+  letter-spacing: 0.06em;
+  color: var(--vos-gold-dim);
+  cursor: pointer;
+}
+/* A rule we changed should never be mistaken for the book's. */
+.vos-play-cond-rules summary em {
+  font-style: normal;
+  margin-left: 0.3rem;
+  padding: 0.02rem 0.4rem;
+  border: 1px solid rgba(212, 77, 63, 0.5);
+  border-radius: 999px;
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--vos-quest-bright);
+}
+.vos-play-cond-rules p {
+  margin: 0.35rem 0 0;
+  font-size: 0.88rem;
+  line-height: 1.5;
+  color: var(--vos-text-body);
+}
+
+.vos-play-conc {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 0.9rem;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid var(--vos-border);
+  border-radius: 10px;
+  background: rgba(8, 7, 11, 0.5);
+  font-size: 0.92rem;
+}
+.vos-play-conc span { flex: 1; color: var(--vos-gold-dim); }
+.vos-play-conc b { color: var(--vos-cream); font-weight: 400; }
+
+/* ── Preparing spells ──────────────────────────────────────────────── */
+
+.vos-play-prep-head {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding-bottom: 0.6rem;
+  background: linear-gradient(180deg, #14121a 70%, transparent);
+}
+.vos-play-prep-count {
+  flex: 0 0 auto;
+  padding: 0.3rem 0.7rem;
+  border: 1px solid var(--vos-border-strong);
+  border-radius: 999px;
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.8rem;
+  color: var(--vos-gold-bright);
+}
+/* Over the class limit is allowed, but it should be obvious. */
+.vos-play-prep-count.is-over {
+  border-color: rgba(212, 77, 63, 0.6);
+  color: var(--vos-quest-bright);
+}
+.vos-play-search {
+  flex: 1;
+  min-height: 42px;
+  padding: 0 0.8rem;
+  border: 1px solid var(--vos-border);
+  border-radius: 10px;
+  background: rgba(8, 7, 11, 0.6);
+  color: var(--vos-cream);
+  font-family: 'EB Garamond', Georgia, serif;
+  font-size: 0.95rem;
+}
+
+.vos-play-spells { display: block; }
+.vos-play-spell {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.1rem 0.7rem;
+  align-items: baseline;
+  padding: 0.5rem 0.2rem;
+  border-bottom: 1px solid rgba(139, 115, 85, 0.14);
+  cursor: pointer;
+}
+.vos-play-spell[hidden] { display: none; }
+.vos-play-spell input { grid-row: span 2; width: 1.1rem; height: 1.1rem; }
+.vos-play-spell input:disabled { opacity: 0.4; }
+.vos-play-spell-name { color: var(--vos-text-body); }
+.vos-play-spell.is-on .vos-play-spell-name { color: var(--vos-gold-bright); }
+.vos-play-spell-name i {
+  font-style: normal;
+  margin-left: 0.3rem;
+  padding: 0 0.25rem;
+  border: 1px solid var(--vos-border);
+  border-radius: 3px;
+  font-size: 0.6rem;
+  color: var(--vos-gold-dim);
+}
+.vos-play-spell-meta {
+  grid-column: 2;
+  font-size: 0.76rem;
+  color: var(--vos-gold-dim);
+}
