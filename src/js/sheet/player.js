@@ -28,6 +28,29 @@ let controls = null;
 let viewingAs = null;
 let statModel = null;
 let maskTimer = null;
+/* Entry ids (features, spells, items) this player has tucked away. A reading
+ * preference, not play state, so it lives on the device rather than the
+ * server — keyed by player name so the DM viewing as someone does not
+ * overwrite their own. */
+let hidden = new Set();
+
+function hiddenKey() {
+  return `vos-sheet-hidden:${payload && payload.playerName ? payload.playerName : ''}`;
+}
+
+function loadHidden() {
+  try {
+    hidden = new Set(JSON.parse(window.localStorage.getItem(hiddenKey()) || '[]'));
+  } catch (error) {
+    hidden = new Set();
+  }
+}
+
+function saveHidden() {
+  try {
+    window.localStorage.setItem(hiddenKey(), JSON.stringify([...hidden]));
+  } catch (error) { /* private mode — hiding still works until reload */ }
+}
 
 function esc(value) {
   return String(value == null ? '' : value).replace(
@@ -83,6 +106,10 @@ function render() {
       play: play && play.state,
       limits: play && play.limits,
       interactive: Boolean(play),
+      // The app bar carries the name; the sheet keeps one quiet identity line.
+      identity: 'compact',
+      hidden,
+      hideable: true,
     });
     renderPlayBar();
     renderMaskBanner();
@@ -270,14 +297,42 @@ async function renderFormBlock() {
   root.parentNode.insertBefore(holder, root);
 }
 
+/* The character's name belongs in the sticky bar, where "Character Sheet"
+ * was telling the player something they already knew. Everything the old
+ * in-page header said moves up here, and the sheet starts at the numbers. */
+function renderAppBar() {
+  const titleEl = document.querySelector('.vos-app-bar .vos-app-title');
+  const eyebrowEl = document.querySelector('.vos-app-bar .vos-app-eyebrow');
+  if (!titleEl || !eyebrowEl) return;
+  const name = (statModel && statModel.name) || seat.display || payload.playerName;
+  if (!name) return;
+  titleEl.textContent = name;
+  const line = statModel
+    ? [statModel.classLine, statModel.race].filter(Boolean).join(' · ')
+    : '';
+  eyebrowEl.textContent = line || 'Your character';
+}
+
 function wire() {
-  if (!tabsEl) return;
-  tabsEl.addEventListener('click', (event) => {
-    const button = event.target.closest('[data-view]');
-    if (!button || button.disabled) return;
-    view = button.dataset.view;
+  if (tabsEl) {
+    tabsEl.addEventListener('click', (event) => {
+      const button = event.target.closest('[data-view]');
+      if (!button || button.disabled) return;
+      view = button.dataset.view;
+      render();
+      if (view === 'stats') ensurePlay();
+    });
+  }
+
+  // Hide / show entries. Delegated, because render() replaces the contents.
+  root.addEventListener('click', (event) => {
+    const toggle = event.target.closest('[data-hide-entry], [data-show-entry]');
+    if (!toggle || !root.contains(toggle)) return;
+    event.preventDefault();
+    if (toggle.dataset.hideEntry) hidden.add(toggle.dataset.hideEntry);
+    if (toggle.dataset.showEntry) hidden.delete(toggle.dataset.showEntry);
+    saveHidden();
     render();
-    if (view === 'stats') ensurePlay();
   });
 }
 
@@ -433,10 +488,14 @@ async function boot() {
   seat = roster[payload.playerName] || {};
   if (seat.color) root.style.setProperty('--sheet-accent', seat.color);
 
-  view = viewingAs ? 'stats' : (hasStory ? 'story' : 'stats');
+  /* Stats first: at the table the sheet is opened to act, not to reread the
+   * backstory. The story tab is one tap away when it is wanted. */
+  view = hasStats ? 'stats' : 'story';
+  loadHidden();
   renderViewingAs();
   wire();
   render();
+  renderAppBar();
   if (hasStats) ensurePlay();
 }
 

@@ -43,6 +43,17 @@
   color: var(--vos-gold-dim);
 }
 
+/* The compact identity line: everything the big header said, in one quiet row
+   under the app bar (which now carries the name), so the vitals start at once. */
+.vos-sb-ident {
+  margin: 0 0 0.7rem;
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.64rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--vos-gold-dim);
+}
+
 .vos-sb-warning {
   margin: 0 0 1rem;
   padding: 0.7rem 0.9rem;
@@ -453,12 +464,89 @@ details[open] > .vos-sb-entry-head::before { transform: rotate(90deg); }
   text-transform: uppercase;
 }
 
+/* ── Hiding entries ────────────────────────────────────────────────── */
+
+/* Tucking things away, not deleting them: the button sits inside the opened
+   entry, and the stash at the foot of each section brings anything back. */
+
+.vos-sb-hide {
+  display: inline-block;
+  margin-top: 0.55rem;
+  padding: 0.25rem 0.7rem;
+  border: 1px solid var(--vos-border);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--vos-gold-dim);
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.56rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.vos-sb-hide:hover { border-color: var(--vos-border-strong); color: var(--vos-cream); }
+
+.vos-sb-hidden { margin-top: 0.7rem; }
+.vos-sb-hidden > summary {
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+  list-style: none;
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.6rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--vos-gold-dim);
+}
+.vos-sb-hidden > summary::-webkit-details-marker { display: none; }
+.vos-sb-hidden > summary::before {
+  content: '▸';
+  margin-right: 0.4rem;
+  font-size: 0.7rem;
+  transition: transform 0.12s ease;
+}
+.vos-sb-hidden[open] > summary::before { transform: rotate(90deg); }
+.vos-sb-hidden ul {
+  margin: 0.35rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+.vos-sb-hidden li {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.3rem 0.1rem;
+  border-bottom: 1px solid rgba(139, 115, 85, 0.14);
+  color: var(--vos-gold-dim);
+}
+.vos-sb-hidden li span { flex: 1; min-width: 0; overflow-wrap: anywhere; }
+.vos-sb-hidden li button {
+  flex: none;
+  min-height: 28px;
+  padding: 0.1rem 0.65rem;
+  border: 1px solid var(--vos-border);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--vos-cream);
+  font-size: 0.6rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.vos-sb-hidden li button:hover { border-color: var(--vos-border-strong); }
+
+@media (pointer: coarse) {
+  .vos-sb-hide { min-height: 38px; padding-inline: 0.85rem; }
+  .vos-sb-hidden > summary { min-height: 38px; }
+  .vos-sb-hidden li button { min-height: 38px; padding-inline: 0.85rem; }
+}
+
 @media print {
   .vos-sb-entry details { display: block; }
   .vos-sb-entry-body { display: block !important; }
   .vos-sb { color: #000; }
   .vos-sb-name, .vos-sb-section-title, .vos-sb-vital-value { color: #000; }
   .vos-sb-section { break-inside: avoid; }
+  .vos-sb-hide, .vos-sb-hidden { display: none !important; }
 }
 
 /* ── Attacks ───────────────────────────────────────────────────────── */

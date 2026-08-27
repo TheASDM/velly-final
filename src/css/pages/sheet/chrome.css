@@ -110,6 +110,9 @@
   margin: 0 auto 1.6rem;
   padding-bottom: 0.2rem;
 }
+/* display:flex above beats the UA's [hidden] rule, so the jump list leaked
+   onto the stats tab. Hidden must mean hidden. */
+.vos-sheet-index[hidden] { display: none; }
 
 .vos-sheet-index a {
   padding: 0.22rem 0.6rem;
@@ -171,8 +174,8 @@
   display: flex;
   gap: 0.3rem;
   max-width: 44rem;
-  margin: 0 auto 1.4rem;
-  padding-bottom: 0.35rem;
+  margin: 0 auto 0.8rem;
+  padding-bottom: 0.25rem;
   border-bottom: 1px solid var(--vos-border);
 }
 .vos-sheet-tabs[hidden] { display: none; }
@@ -267,6 +270,14 @@
     align-items: center;
     min-height: 34px;
   }
+}
+
+/* The sheet writes the class line into the app bar's eyebrow; a multiclass
+   line must truncate there rather than wrap the fixed bar taller. */
+.vos-app-bar .vos-app-eyebrow {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 /* Nothing on these pages is wide enough to justify a sideways scroll. */

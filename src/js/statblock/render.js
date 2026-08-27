@@ -26,6 +26,11 @@ const spentSlots = (level) => (ctx && ctx.play ? Number(ctx.play.slots[String(le
 const spentUses = (feature) => (ctx && ctx.play ? Number(ctx.play.uses[feature] || 0) : 0);
 const live = () => Boolean(ctx && ctx.play && ctx.interactive);
 
+/* Entries a player has tucked away. Hiding is a reading preference, not play
+ * state, so it works even when the play layer failed to load. */
+const isHidden = (id) => Boolean(id && ctx && ctx.hidden && ctx.hidden.has(id));
+const canHide = () => Boolean(ctx && ctx.hideable);
+
 /* data-play marks an element the controls can bind to. Rendering it only when
  * interactive keeps the read-only sheet free of dead affordances. */
 function bind(attrs) {
@@ -67,6 +72,13 @@ function renderHeader(model) {
   const line = [model.classLine, model.race, model.background]
     .filter(Boolean).join(' · ');
   const sub = [model.size, model.alignment].filter(Boolean).join(' · ');
+  /* The player page already puts the name, class and species in the app bar,
+   * so repeating them here only pushes the numbers down. One quiet line keeps
+   * the rest of the identity legible. */
+  if (ctx && ctx.identity === 'compact') {
+    const bits = [model.background, sub].filter(Boolean).join(' · ');
+    return bits ? `<p class="vos-sb-ident">${esc(bits)}</p>` : '';
+  }
   return `<header class="vos-sb-head">
     <h2 class="vos-sb-name">${esc(model.name)}</h2>
     ${line ? `<p class="vos-sb-line">${esc(line)}</p>` : ''}
@@ -94,7 +106,8 @@ function renderVitals(model) {
     { label: 'AC', value: num(v.ac) },
     { label: 'Initiative', value: v.initiative == null ? '—' : esc(signed(v.initiative)) },
     { label: 'Speed', value: esc(v.speed || '—') },
-    { label: 'Proficiency', value: v.prof == null ? '—' : esc(signed(v.prof)) },
+    // "Proficiency" overflows its cell on a phone and wraps mid-word.
+    { label: 'Prof', value: v.prof == null ? '—' : esc(signed(v.prof)) },
     {
       label: 'Hit Dice',
       value: hitDiceValue(v, spentDice),
@@ -243,8 +256,12 @@ function renderSpellcasting(model) {
   const sc = model.spellcasting;
   if (!sc) return '';
 
+  // "Intelligence" cannot fit a third of a phone; the three-letter code can.
+  const abilityShort = sc.ability
+    ? sc.ability.slice(0, 3).toUpperCase()
+    : (sc.abilityLabel || '').slice(0, 3).toUpperCase();
   const header = `<div class="vos-sb-spell-head">
-    ${sc.abilityLabel ? `<div><span class="vos-sb-vital-label">Ability</span><span class="vos-sb-vital-value is-small">${esc(sc.abilityLabel)}</span></div>` : ''}
+    ${sc.abilityLabel ? `<div><span class="vos-sb-vital-label">Ability</span><span class="vos-sb-vital-value" title="${esc(sc.abilityLabel)}">${esc(abilityShort)}</span></div>` : ''}
     ${sc.dc != null ? `<div><span class="vos-sb-vital-label">Save DC</span><span class="vos-sb-vital-value">${esc(sc.dc)}</span></div>` : ''}
     ${sc.attack != null ? `<div><span class="vos-sb-vital-label">Attack</span><span class="vos-sb-vital-value">${esc(signed(sc.attack))}</span></div>` : ''}
   </div>`;
@@ -261,7 +278,14 @@ function renderSpellcasting(model) {
       </li>`).join('')}</ul>`
     : '';
 
-  const groups = model.spells.map((group) => `<div class="vos-sb-spell-group">
+  const hidden = [];
+  const groups = model.spells.map((group) => {
+    const shown = group.spells.filter((spell) => {
+      if (isHidden(spell.id)) { hidden.push(spell); return false; }
+      return true;
+    });
+    if (!shown.length) return '';
+    return `<div class="vos-sb-spell-group">
     <h4 class="vos-sb-spell-level">${esc(group.label)}${
       group.slots && group.slots.max > 0
         ? ` <span class="vos-sb-slot-count">${
@@ -269,7 +293,8 @@ function renderSpellcasting(model) {
             group.slots.max}</span>`
         : ''
     }</h4>
-    <ul class="vos-sb-entries">${group.spells.map((spell) => renderEntry({
+    <ul class="vos-sb-entries">${shown.map((spell) => renderEntry({
+      hideId: spell.id,
       name: spell.name,
       marker: spell.always ? 'always' : (spell.prepared ? 'prepared' : ''),
       meta: [
@@ -280,9 +305,10 @@ function renderSpellcasting(model) {
       ].filter(Boolean),
       description: spell.description,
     })).join('')}</ul>
-  </div>`).join('');
+  </div>`;
+  }).join('');
 
-  return header + slots + groups;
+  return header + slots + groups + hiddenStash(hidden, 'spell');
 }
 
 /* ── Collapsible entry (feature, spell, item) ──────────────────────── */
@@ -314,18 +340,40 @@ function renderEntry(entry) {
     ${meta.length ? `<span class="vos-sb-entry-meta">${meta.map(esc).join(' · ')}</span>` : ''}
   </summary>`;
 
+  /* The hide control lives inside the opened entry, so hiding takes a
+   * deliberate look at what is being hidden rather than a stray thumb. */
+  const hide = entry.hideId && canHide()
+    ? `<button type="button" class="vos-sb-hide" data-hide-entry="${esc(entry.hideId)}">Hide from my sheet</button>`
+    : '';
+
   // description is pre-sanitised HTML from normalize.js
   const body = entry.description
-    ? `<div class="vos-sb-entry-body">${entry.description}</div>`
-    : '<div class="vos-sb-entry-body is-empty">No description.</div>';
+    ? `<div class="vos-sb-entry-body">${entry.description}${hide}</div>`
+    : `<div class="vos-sb-entry-body${hide ? '' : ' is-empty'}">${hide || 'No description.'}</div>`;
 
   return `<li class="vos-sb-entry"><details>${summary}${body}</details></li>`;
 }
 
+/* Where hidden entries wait. Always reachable from the section they left, so
+ * nothing a character has can be lost — only tucked away. */
+function hiddenStash(entries, noun) {
+  if (!canHide() || !entries.length) return '';
+  const label = `${entries.length} hidden ${noun}${entries.length === 1 ? '' : 's'}`;
+  return `<details class="vos-sb-hidden">
+    <summary>${esc(label)}</summary>
+    <ul>${entries.map((entry) => `<li>
+      <span>${esc(entry.name)}</span>
+      <button type="button" data-show-entry="${esc(entry.id)}">Show</button>
+    </li>`).join('')}</ul>
+  </details>`;
+}
+
 function renderFeatures(model) {
   if (!model.features.length) return '';
+  const hidden = [];
   const groups = new Map();
   model.features.forEach((feature) => {
+    if (isHidden(feature.id)) { hidden.push(feature); return; }
     if (!groups.has(feature.kind)) groups.set(feature.kind, []);
     groups.get(feature.kind).push(feature);
   });
@@ -334,12 +382,13 @@ function renderFeatures(model) {
     <h4 class="vos-sb-group-title">${esc(kind)}</h4>
     <ul class="vos-sb-entries">${entries.map((feature) => renderEntry({
       id: feature.id,
+      hideId: feature.id,
       name: feature.name,
       uses: feature.uses,
       meta: [feature.activation, feature.source].filter(Boolean),
       description: feature.description,
     })).join('')}</ul>
-  </div>`).join('');
+  </div>`).join('') + hiddenStash(hidden, 'feature');
 }
 
 function renderInventory(model) {
@@ -348,13 +397,17 @@ function renderInventory(model) {
     .filter((key) => Number(model.currency?.[key]) > 0)
     .map((key) => `${model.currency[key]} ${key}`);
 
+  const hidden = model.inventory.filter((item) => isHidden(item.id));
+  const shown = model.inventory.filter((item) => !isHidden(item.id));
+
   return `${coins.length ? chips(coins, 'is-coins') : ''}
-  <ul class="vos-sb-entries">${model.inventory.map((item) => renderEntry({
+  <ul class="vos-sb-entries">${shown.map((item) => renderEntry({
+    hideId: item.id,
     name: item.quantity > 1 ? `${item.name} ×${item.quantity}` : item.name,
     marker: item.equipped ? 'equipped' : '',
     meta: [item.kind, ...item.meta, item.rarity].filter(Boolean),
     description: item.description,
-  })).join('')}</ul>`;
+  })).join('')}</ul>${hiddenStash(hidden, 'item')}`;
 }
 
 /* ── Resources ─────────────────────────────────────────────────────── */
@@ -536,7 +589,17 @@ function renderConditions(model) {
 
 export function renderStatblock(model, meta = {}) {
   if (!model) return '';
-  ctx = { play: meta.play || null, limits: meta.limits || null, interactive: meta.interactive !== false };
+  ctx = {
+    play: meta.play || null,
+    limits: meta.limits || null,
+    interactive: meta.interactive !== false,
+    /* 'compact' drops the big name header — for pages that already carry the
+     * character's name in their own chrome. */
+    identity: meta.identity || 'full',
+    // A Set of entry ids the player has hidden, and whether hiding is offered.
+    hidden: meta.hidden || null,
+    hideable: Boolean(meta.hideable),
+  };
 
   const warning = model.meta?.hasDerived === false
     ? `<p class="vos-sb-warning">This export has no derived block, so AC, hit points and
