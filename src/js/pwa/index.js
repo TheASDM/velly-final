@@ -6,6 +6,7 @@ import { closeUserMenu, getProfileDisplayName, syncAvatarBadge, toggleUserMenu, 
 import { disablePush, enablePush, getPushStatus, maybeShowPushPrompt, maybeSyncExistingSubscription } from './push.js';
 import { initRsvpControls } from './rsvp.js';
 import { enhanceWikiLinkedLists } from './wiki.js';
+import { initSheetBadge } from './sheet-badge.js';
 
 window.VOS_PWA = {
   getPlayerName: () => getStorage(PLAYER_KEY),
@@ -81,6 +82,7 @@ window.addEventListener('DOMContentLoaded', () => {
       syncAvatarBadge(config);
     });
     ensureIdentity();
+    initSheetBadge();
     maybeSyncExistingSubscription();
     maybeShowPushPrompt();
   });

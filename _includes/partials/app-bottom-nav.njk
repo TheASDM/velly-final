@@ -4,10 +4,29 @@
   <div class="vos-app-nav-inner">
     {%- for tab in navigation.tabs -%}
     {%- set isActive = activeTabId == tab.id -%}
+    {%- if tab.hero -%}
+    {#- The centre slot sits above the rail rather than in it. The ring around
+        it is the character's hit points, filled in by the play state once it
+        loads — health readable from every screen in the app. -#}
+    <a class="vos-app-tab vos-app-tab--hero{% if isActive %} is-active{% endif %}"
+       href="{{ tab.href }}"{% if isActive %} aria-current="page"{% endif %}
+       id="vos-nav-sheet" data-vos-sheet-tab>
+      <span class="vos-hero-medallion">
+        <svg class="vos-hero-ring" viewBox="0 0 44 44" aria-hidden="true">
+          <circle class="vos-hero-ring-track" cx="22" cy="22" r="20"/>
+          <circle class="vos-hero-ring-fill" cx="22" cy="22" r="20"/>
+        </svg>
+        <svg class="vos-hero-glyph" aria-hidden="true" viewBox="0 0 24 24">{{ tab.svg | safe }}</svg>
+      </span>
+      <span class="vos-app-tab-label">{{ tab.label }}</span>
+      <span class="vos-hero-hp" data-vos-sheet-hp hidden></span>
+    </a>
+    {%- else -%}
     <a class="vos-app-tab{% if isActive %} is-active{% endif %}" href="{{ tab.href }}"{% if isActive %} aria-current="page"{% endif %}>
       <svg aria-hidden="true" viewBox="0 0 24 24">{{ tab.svg | safe }}</svg>
       <span>{{ tab.label }}</span>
     </a>
+    {%- endif -%}
     {%- endfor -%}
   </div>
 </nav>

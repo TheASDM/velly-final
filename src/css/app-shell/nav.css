@@ -155,3 +155,140 @@
     max-width: 740px;
     margin: 0 auto;
   }
+
+/* ── The centre medallion ──────────────────────────────────────────── */
+
+/* The character sheet is the thing a player touches every few minutes at a
+   table — hit points, slots, Rage — and it used to live three taps deep. It now
+   holds the middle of the rail and sits above it, the way the one control that
+   matters should.
+
+   The glyph is a mask. In Venturia that is not decoration: the sheet is the
+   face you wear, and the ring around it is how much of you is left. */
+
+.vos-app-tab--hero {
+  position: relative;
+  justify-content: flex-end;
+  padding-top: 0;
+  border: 0;
+  background: none;
+  overflow: visible;
+}
+.vos-app-tab--hero:hover { background: none; }
+
+.vos-hero-medallion {
+  position: absolute;
+  top: -22px;
+  left: 50%;
+  width: 58px;
+  height: 58px;
+  display: grid;
+  place-items: center;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  /* Seated in a well rather than pasted on: a dark disc, a lit rim, and a
+     shadow the rail casts back onto it. */
+  background:
+    radial-gradient(circle at 50% 32%, rgba(212, 165, 116, 0.22), transparent 62%),
+    linear-gradient(180deg, #1a1620 0%, #0b0910 100%);
+  border: 1px solid rgba(212, 165, 116, 0.55);
+  box-shadow:
+    0 0 0 4px rgba(7, 6, 10, 0.95),
+    0 10px 26px rgba(0, 0, 0, 0.7),
+    inset 0 1px 0 rgba(212, 165, 116, 0.28);
+  transition: transform 140ms ease, box-shadow 200ms ease, border-color 200ms ease;
+}
+
+.vos-hero-glyph {
+  position: relative;
+  z-index: 1;
+  width: 27px;
+  height: 27px;
+  fill: none;
+  stroke: var(--vos-gold-bright);
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  filter: drop-shadow(0 0 5px rgba(212, 165, 116, 0.4));
+}
+
+/* Hit points, as a ring. Empty until the play state answers, so a signed-out
+   reader sees a plain medallion rather than a broken gauge. */
+.vos-hero-ring {
+  position: absolute;
+  inset: -3px;
+  width: calc(100% + 6px);
+  height: calc(100% + 6px);
+  transform: rotate(-90deg);
+  overflow: visible;
+}
+.vos-hero-ring circle {
+  fill: none;
+  stroke-width: 2.5;
+  stroke-linecap: round;
+}
+.vos-hero-ring-track { stroke: rgba(212, 165, 116, 0.14); }
+.vos-hero-ring-fill {
+  stroke: var(--vos-gold-bright);
+  stroke-dasharray: 126;
+  stroke-dashoffset: 126;                  /* nothing shown until told */
+  transition: stroke-dashoffset 520ms cubic-bezier(.22,.61,.36,1), stroke 320ms ease;
+  filter: drop-shadow(0 0 4px rgba(212, 165, 116, 0.5));
+}
+/* The wound states. Amber is a warning, red is a countdown. */
+.vos-app-tab--hero[data-hp="hurt"]     .vos-hero-ring-fill { stroke: #d99a4e; }
+.vos-app-tab--hero[data-hp="bloodied"] .vos-hero-ring-fill { stroke: #c8752f; }
+.vos-app-tab--hero[data-hp="down"]     .vos-hero-ring-fill { stroke: var(--vos-quest-bright); }
+.vos-app-tab--hero[data-hp="down"] .vos-hero-medallion {
+  border-color: rgba(212, 77, 63, 0.75);
+  animation: vos-hero-pulse 1.6s ease-in-out infinite;
+}
+@keyframes vos-hero-pulse {
+  0%, 100% { box-shadow: 0 0 0 4px rgba(7,6,10,.95), 0 10px 26px rgba(0,0,0,.7), 0 0 14px rgba(212,77,63,.5); }
+  50%      { box-shadow: 0 0 0 4px rgba(7,6,10,.95), 0 10px 26px rgba(0,0,0,.7), 0 0 26px rgba(212,77,63,.85); }
+}
+
+/* The number, small, under the label. Only shown once we have one. */
+.vos-hero-hp {
+  position: absolute;
+  top: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.58rem;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.06em;
+  color: var(--vos-gold-dim);
+  pointer-events: none;
+}
+.vos-app-tab--hero[data-hp="down"] .vos-hero-hp { color: var(--vos-quest-bright); }
+
+.vos-app-tab--hero .vos-app-tab-label {
+  position: relative;
+  margin-top: 1.6rem;
+  color: rgba(212, 199, 173, 0.85);
+}
+
+.vos-app-tab--hero.is-active .vos-hero-medallion {
+  border-color: var(--vos-gold-bright);
+  box-shadow:
+    0 0 0 4px rgba(7, 6, 10, 0.95),
+    0 10px 30px rgba(0, 0, 0, 0.75),
+    0 0 22px rgba(212, 165, 116, 0.45),
+    inset 0 1px 0 rgba(212, 165, 116, 0.4);
+}
+.vos-app-tab--hero.is-active .vos-app-tab-label { color: var(--vos-gold-bright); }
+
+.vos-app-tab--hero:active .vos-hero-medallion { transform: translateX(-50%) scale(0.94); }
+
+/* The rail needs headroom for the medallion to sit in. */
+.vos-app-nav { overflow: visible; }
+
+@media (prefers-reduced-motion: reduce) {
+  .vos-hero-ring-fill { transition: none; }
+  .vos-app-tab--hero[data-hp="down"] .vos-hero-medallion { animation: none; }
+}
+
+@media (max-width: 380px) {
+  .vos-hero-medallion { width: 52px; height: 52px; top: -19px; }
+  .vos-hero-glyph { width: 24px; height: 24px; }
+}

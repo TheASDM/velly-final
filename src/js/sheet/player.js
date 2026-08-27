@@ -348,6 +348,18 @@ async function loadSheetAs(playerName) {
 
 /* Play state is fetched once, lazily. A player who only wants to reread their
  * backstory should not pay for it. */
+/* Tell the rest of the app what the hit points are now.
+ *
+ * The navigation medallion draws a ring from this. Without the event it would
+ * have to poll, and a gauge in the chrome of every page cannot cost a request
+ * per page. */
+function announceHp() {
+  if (!play || !play.limits || play.limits.maxHp == null) return;
+  const max = play.limits.maxHp;
+  const current = play.state.hp.current == null ? max : play.state.hp.current;
+  window.dispatchEvent(new CustomEvent('vos:play-state', { detail: { hp: { current, max } } }));
+}
+
 async function ensurePlay() {
   if (play || !payload.statblock) return;
   if (!statModel) statModel = normalizeStatblock(payload.statblock.data);
@@ -361,6 +373,7 @@ async function ensurePlay() {
   }
 
   render();
+  announceHp();
   controls = createControls({
     root,
     playerName: viewingAs,
@@ -371,6 +384,7 @@ async function ensurePlay() {
       play.state = next;
       controls.setState(next, play.limits);
       render();
+      announceHp();
     },
   });
 }
