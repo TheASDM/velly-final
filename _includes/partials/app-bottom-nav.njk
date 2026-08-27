@@ -17,9 +17,11 @@
           <circle class="vos-hero-ring-fill" cx="22" cy="22" r="20"/>
         </svg>
         <svg class="vos-hero-glyph" aria-hidden="true" viewBox="0 0 24 24">{{ tab.svg | safe }}</svg>
+        {#- Inside the ring, under the mask — a watch face, not a caption
+            fighting the tab label for the same pixels. -#}
+        <span class="vos-hero-hp" data-vos-sheet-hp hidden></span>
       </span>
       <span class="vos-app-tab-label">{{ tab.label }}</span>
-      <span class="vos-hero-hp" data-vos-sheet-hp hidden></span>
     </a>
     {%- else -%}
     <a class="vos-app-tab{% if isActive %} is-active{% endif %}" href="{{ tab.href }}"{% if isActive %} aria-current="page"{% endif %}>
