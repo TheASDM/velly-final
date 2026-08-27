@@ -278,10 +278,25 @@ function renderSpellcasting(model) {
       </li>`).join('')}</ul>`
     : '';
 
+  const spellEntry = (group, spell) => ({
+    name: spell.name,
+    marker: spell.always ? 'always' : (spell.prepared ? 'prepared' : ''),
+    meta: [
+      group.pact && spell.level > 0 ? `${ordinal(spell.level)}-level spell` : '',
+      spell.school,
+      ...spell.meta,
+      ...(spell.methods || []).filter((m) => m !== 'Prepared'),
+    ].filter(Boolean),
+    description: spell.description,
+  });
+
   const hidden = [];
   const groups = model.spells.map((group) => {
     const shown = group.spells.filter((spell) => {
-      if (isHidden(spell.id)) { hidden.push(spell); return false; }
+      if (isHidden(spell.id)) {
+        hidden.push({ ...spellEntry(group, spell), showId: spell.id });
+        return false;
+      }
       return true;
     });
     if (!shown.length) return '';
@@ -294,16 +309,8 @@ function renderSpellcasting(model) {
         : ''
     }</h4>
     <ul class="vos-sb-entries">${shown.map((spell) => renderEntry({
+      ...spellEntry(group, spell),
       hideId: spell.id,
-      name: spell.name,
-      marker: spell.always ? 'always' : (spell.prepared ? 'prepared' : ''),
-      meta: [
-        group.pact && spell.level > 0 ? `${ordinal(spell.level)}-level spell` : '',
-        spell.school,
-        ...spell.meta,
-        ...(spell.methods || []).filter((m) => m !== 'Prepared'),
-      ].filter(Boolean),
-      description: spell.description,
     })).join('')}</ul>
   </div>`;
   }).join('');
@@ -331,6 +338,28 @@ function renderUses(entry) {
   })}>${esc(left)}/${esc(entry.uses.max)}${recovery}</span>`;
 }
 
+/* Feather's eye / eye-off, inline so they inherit currentColor. */
+const ICON_HIDE = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><path d="M14.12 14.12a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>';
+const ICON_SHOW = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>';
+
+/* The hide/restore control sits on the collapsed row, so tucking something
+ * away never requires opening it first. It cancels the details toggle in the
+ * page handler, and the whole list re-renders anyway. */
+function entryToggle(entry) {
+  if (!canHide()) return '';
+  if (entry.hideId) {
+    return `<button type="button" class="vos-sb-entry-toggle"
+      data-hide-entry="${esc(entry.hideId)}" title="Hide from my sheet"
+      aria-label="Hide ${esc(entry.name)} from my sheet">${ICON_HIDE}</button>`;
+  }
+  if (entry.showId) {
+    return `<button type="button" class="vos-sb-entry-toggle is-show"
+      data-show-entry="${esc(entry.showId)}" title="Put back on my sheet"
+      aria-label="Put ${esc(entry.name)} back on my sheet">${ICON_SHOW}</button>`;
+  }
+  return '';
+}
+
 function renderEntry(entry) {
   const meta = (entry.meta ?? []).filter(Boolean);
   const summary = `<summary class="vos-sb-entry-head">
@@ -338,42 +367,47 @@ function renderEntry(entry) {
     ${entry.marker ? `<span class="vos-sb-marker" title="${esc(entry.marker)}">${esc(entry.marker)}</span>` : ''}
     ${entry.uses ? renderUses(entry) : ''}
     ${meta.length ? `<span class="vos-sb-entry-meta">${meta.map(esc).join(' · ')}</span>` : ''}
+    ${entryToggle(entry)}
   </summary>`;
-
-  /* The hide control lives inside the opened entry, so hiding takes a
-   * deliberate look at what is being hidden rather than a stray thumb. */
-  const hide = entry.hideId && canHide()
-    ? `<button type="button" class="vos-sb-hide" data-hide-entry="${esc(entry.hideId)}">Hide from my sheet</button>`
-    : '';
 
   // description is pre-sanitised HTML from normalize.js
   const body = entry.description
-    ? `<div class="vos-sb-entry-body">${entry.description}${hide}</div>`
-    : `<div class="vos-sb-entry-body${hide ? '' : ' is-empty'}">${hide || 'No description.'}</div>`;
+    ? `<div class="vos-sb-entry-body">${entry.description}</div>`
+    : '<div class="vos-sb-entry-body is-empty">No description.</div>';
 
   return `<li class="vos-sb-entry"><details>${summary}${body}</details></li>`;
 }
 
-/* Where hidden entries wait. Always reachable from the section they left, so
- * nothing a character has can be lost — only tucked away. */
+/* Where hidden entries wait. They stay whole — still openable and readable in
+ * place — so nothing a character has can be lost, only tucked away. Callers
+ * pass fully built renderEntry descriptors with showId set. */
 function hiddenStash(entries, noun) {
   if (!canHide() || !entries.length) return '';
   const label = `${entries.length} hidden ${noun}${entries.length === 1 ? '' : 's'}`;
   return `<details class="vos-sb-hidden">
     <summary>${esc(label)}</summary>
-    <ul>${entries.map((entry) => `<li>
-      <span>${esc(entry.name)}</span>
-      <button type="button" data-show-entry="${esc(entry.id)}">Show</button>
-    </li>`).join('')}</ul>
+    <p class="vos-sb-hidden-hint">Still yours — tap a name to read it, or the eye to put it back.</p>
+    <ul class="vos-sb-entries">${entries.map(renderEntry).join('')}</ul>
   </details>`;
 }
 
 function renderFeatures(model) {
   if (!model.features.length) return '';
+  const featureEntry = (feature) => ({
+    id: feature.id,
+    name: feature.name,
+    uses: feature.uses,
+    meta: [feature.activation, feature.source].filter(Boolean),
+    description: feature.description,
+  });
+
   const hidden = [];
   const groups = new Map();
   model.features.forEach((feature) => {
-    if (isHidden(feature.id)) { hidden.push(feature); return; }
+    if (isHidden(feature.id)) {
+      hidden.push({ ...featureEntry(feature), showId: feature.id });
+      return;
+    }
     if (!groups.has(feature.kind)) groups.set(feature.kind, []);
     groups.get(feature.kind).push(feature);
   });
@@ -381,12 +415,8 @@ function renderFeatures(model) {
   return [...groups.entries()].map(([kind, entries]) => `<div class="vos-sb-feature-group">
     <h4 class="vos-sb-group-title">${esc(kind)}</h4>
     <ul class="vos-sb-entries">${entries.map((feature) => renderEntry({
-      id: feature.id,
+      ...featureEntry(feature),
       hideId: feature.id,
-      name: feature.name,
-      uses: feature.uses,
-      meta: [feature.activation, feature.source].filter(Boolean),
-      description: feature.description,
     })).join('')}</ul>
   </div>`).join('') + hiddenStash(hidden, 'feature');
 }
@@ -397,16 +427,20 @@ function renderInventory(model) {
     .filter((key) => Number(model.currency?.[key]) > 0)
     .map((key) => `${model.currency[key]} ${key}`);
 
-  const hidden = model.inventory.filter((item) => isHidden(item.id));
-  const shown = model.inventory.filter((item) => !isHidden(item.id));
-
-  return `${coins.length ? chips(coins, 'is-coins') : ''}
-  <ul class="vos-sb-entries">${shown.map((item) => renderEntry({
-    hideId: item.id,
+  const itemEntry = (item) => ({
     name: item.quantity > 1 ? `${item.name} ×${item.quantity}` : item.name,
     marker: item.equipped ? 'equipped' : '',
     meta: [item.kind, ...item.meta, item.rarity].filter(Boolean),
     description: item.description,
+  });
+  const hidden = model.inventory.filter((item) => isHidden(item.id))
+    .map((item) => ({ ...itemEntry(item), showId: item.id }));
+  const shown = model.inventory.filter((item) => !isHidden(item.id));
+
+  return `${coins.length ? chips(coins, 'is-coins') : ''}
+  <ul class="vos-sb-entries">${shown.map((item) => renderEntry({
+    ...itemEntry(item),
+    hideId: item.id,
   })).join('')}</ul>${hiddenStash(hidden, 'item')}`;
 }
 

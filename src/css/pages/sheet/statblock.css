@@ -466,24 +466,34 @@ details[open] > .vos-sb-entry-head::before { transform: rotate(90deg); }
 
 /* ── Hiding entries ────────────────────────────────────────────────── */
 
-/* Tucking things away, not deleting them: the button sits inside the opened
-   entry, and the stash at the foot of each section brings anything back. */
+/* Tucking things away, not deleting them: an eye on every collapsed row hides
+   it in one tap, and the stash at the foot of each section holds the hidden
+   ones whole — still openable and readable — with an eye to put them back. */
 
-.vos-sb-hide {
-  display: inline-block;
-  margin-top: 0.55rem;
-  padding: 0.25rem 0.7rem;
-  border: 1px solid var(--vos-border);
-  border-radius: 999px;
+/* Pinned to the row's right edge rather than flowed, so a row that wraps its
+   meta never strands the eye at the start of a second line. */
+.vos-sb-entry-head { position: relative; }
+.vos-sb-entry-head:has(> .vos-sb-entry-toggle) { padding-right: 2.1rem; }
+.vos-sb-entry-toggle {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border: 0;
   background: transparent;
   color: var(--vos-gold-dim);
-  font-family: 'Cinzel', Georgia, serif;
-  font-size: 0.56rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
+  opacity: 0.65;
   cursor: pointer;
 }
-.vos-sb-hide:hover { border-color: var(--vos-border-strong); color: var(--vos-cream); }
+.vos-sb-entry-toggle svg { width: 16px; height: 16px; }
+.vos-sb-entry-toggle:hover { color: var(--vos-cream); opacity: 1; }
+.vos-sb-entry-toggle.is-show { color: var(--sb-accent); opacity: 0.85; }
 
 .vos-sb-hidden { margin-top: 0.7rem; }
 .vos-sb-hidden > summary {
@@ -505,39 +515,23 @@ details[open] > .vos-sb-entry-head::before { transform: rotate(90deg); }
   transition: transform 0.12s ease;
 }
 .vos-sb-hidden[open] > summary::before { transform: rotate(90deg); }
-.vos-sb-hidden ul {
-  margin: 0.35rem 0 0;
-  padding: 0;
-  list-style: none;
-}
-.vos-sb-hidden li {
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  padding: 0.3rem 0.1rem;
-  border-bottom: 1px solid rgba(139, 115, 85, 0.14);
+
+.vos-sb-hidden-hint {
+  margin: 0.3rem 0 0.1rem;
+  font-size: 0.8rem;
+  font-style: italic;
   color: var(--vos-gold-dim);
 }
-.vos-sb-hidden li span { flex: 1; min-width: 0; overflow-wrap: anywhere; }
-.vos-sb-hidden li button {
-  flex: none;
-  min-height: 28px;
-  padding: 0.1rem 0.65rem;
-  border: 1px solid var(--vos-border);
-  border-radius: 999px;
-  background: transparent;
-  color: var(--vos-cream);
-  font-size: 0.6rem;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  cursor: pointer;
-}
-.vos-sb-hidden li button:hover { border-color: var(--vos-border-strong); }
+/* Present but tucked away: readable, just quieter than the live list. */
+.vos-sb-hidden .vos-sb-entry-name { color: var(--vos-text); }
 
 @media (pointer: coarse) {
-  .vos-sb-hide { min-height: 38px; padding-inline: 0.85rem; }
+  .vos-sb-entry-toggle {
+    width: 42px;
+    height: 42px;
+    right: -0.35rem;
+  }
   .vos-sb-hidden > summary { min-height: 38px; }
-  .vos-sb-hidden li button { min-height: 38px; padding-inline: 0.85rem; }
 }
 
 @media print {
@@ -546,7 +540,7 @@ details[open] > .vos-sb-entry-head::before { transform: rotate(90deg); }
   .vos-sb { color: #000; }
   .vos-sb-name, .vos-sb-section-title, .vos-sb-vital-value { color: #000; }
   .vos-sb-section { break-inside: avoid; }
-  .vos-sb-hide, .vos-sb-hidden { display: none !important; }
+  .vos-sb-entry-toggle, .vos-sb-hidden { display: none !important; }
 }
 
 /* ── Attacks ───────────────────────────────────────────────────────── */

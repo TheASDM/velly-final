@@ -328,11 +328,22 @@ function wire() {
   root.addEventListener('click', (event) => {
     const toggle = event.target.closest('[data-hide-entry], [data-show-entry]');
     if (!toggle || !root.contains(toggle)) return;
+    // The toggle sits inside a <summary>; without this the row would also
+    // expand or collapse under the tap.
     event.preventDefault();
     if (toggle.dataset.hideEntry) hidden.add(toggle.dataset.hideEntry);
     if (toggle.dataset.showEntry) hidden.delete(toggle.dataset.showEntry);
     saveHidden();
+    /* Re-rendering closes every <details>. Bringing three things back should
+     * not mean reopening the stash three times, so open stashes survive. */
+    const openStashes = [...root.querySelectorAll('.vos-sb-section')]
+      .filter((section) => section.querySelector('.vos-sb-hidden[open]'))
+      .map((section) => section.id);
     render();
+    openStashes.forEach((id) => {
+      const stash = root.querySelector(`#${CSS.escape(id)} .vos-sb-hidden`);
+      if (stash) stash.open = true;
+    });
   });
 }
 
