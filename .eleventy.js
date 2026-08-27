@@ -141,6 +141,25 @@ module.exports = function (eleventyConfig) {
   eleventyConfig.addFilter("wikiBreadcrumbs", wikiBreadcrumbs);
   eleventyConfig.addFilter("wikiParentCrumb", wikiParentCrumb);
   eleventyConfig.addFilter("descendantTree", descendantTree);
+
+  /* Strip HTML comments from every page before it ships.
+   *
+   * Several wiki pages carry authorial notes that say "not rendered" — true of
+   * the screen, false of the source. Lorenzo's page shipped a comment naming
+   * the bargain, the crime, the Keeper and Tartuzi; Isabella's named her tie to
+   * Celina Cross. View Source is not a privileged tool, and a note that
+   * describes the secret it is protecting is worse in the markup than the
+   * secret would have been in the prose.
+   *
+   * Done at the transform rather than by editing the notes away: the notes are
+   * useful to whoever edits the page, and the next one written should be safe
+   * without anyone having to remember this. Conditional comments are left
+   * alone — they are markup, not prose.
+   */
+  eleventyConfig.addTransform("stripHtmlComments", function (content) {
+    if (!String(this.page?.outputPath || "").endsWith(".html")) return content;
+    return content.replace(/<!--(?!\[if|<!)([\s\S]*?)-->/g, "");
+  });
   eleventyConfig.addFilter("wikiSections", wikiSections);
   eleventyConfig.addFilter("wikiRecent", wikiRecent);
   eleventyConfig.addFilter("wikiTags", wikiTags);

@@ -71,5 +71,4 @@ Roxy doesn't actually have the training she claims — she is enrolled under the
 - **[Lotan](/en/Venturia/Characters/PCs/lotan)** — Pulled from a shipwreck by her ship's crew; he became her self-appointed guide to a city neither of them knew, and possibly her most genuine friendship.
 - **[Garl Glittergold](/en/Venturia/Characters/NPCs/garl-glittergold)** — Her divine patron, met over a failed robbery at the [Penny Shrine](/en/Venturia/Locations/penny-shrine).
 - **[Caravel "Car" Asteri](/en/Venturia/Characters/PCs/caravel-asteri)**, **[Valentro](/en/Venturia/Characters/PCs/valentro)** — Threads in the web of acquaintances she's built across the Academy and the city.
-- **[Wully](/en/Venturia/Characters/NPCs/wully)** — Her oldest friend, and the only member of her rummage in Venturia.
 - **[Venturian Academy of Veiled Arts](/en/Venturia/Locations/vava)** — Where she's enrolled, and where she's keeping up appearances.

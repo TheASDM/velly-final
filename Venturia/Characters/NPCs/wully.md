@@ -1,12 +1,12 @@
 ---
 title: Wully
-description: 'A brownie of about five inches — Roxy''s oldest friend, and the only member of his rummage living in Venturia.'
+description: 'A brownie of about five inches, the only member of his rummage living in Venturia.'
 published: true
-tags: characters, npcs, brownie, fey, roxy, harbor-district
+tags: characters, npcs, brownie, fey, harbor-district
 editor: markdown
 ---
 
-Wully stands about five inches tall and carries himself like a grown man who happens to be small, because that is exactly what he is. Deer-hide loincloth and boots, a rabbit-fur cape, shirtless, dull red and blue paint on his arms, dark brown hair spiked in every direction. He came to Venturia with [Roxanya "Roxy"](/en/Venturia/Characters/PCs/roxanya) and has stayed at her shoulder since.
+Wully stands about five inches tall and carries himself like a grown man who happens to be small, because that is exactly what he is. Deer-hide loincloth and boots, a rabbit-fur cape, shirtless, dull red and blue paint on his arms, dark brown hair spiked in every direction. He is seen around the Harbour District, and rarely alone for long.
 
 
 ---
@@ -24,6 +24,5 @@ Speaks Sylvan. Sees in the dark. Goes unseen when he wants to. And he can tell w
 ---
 
 ## Connections
-- **[Roxanya "Roxy"](/en/Venturia/Characters/PCs/roxanya)** — His oldest friend; he left the rummage to come with her.
 - **Pip** — Same rummage. Spent ninety days under contract in Venturia and went home paid.
 - **[Brownie](/en/Venturia/Characters/NPCs/brownie)** — His people.

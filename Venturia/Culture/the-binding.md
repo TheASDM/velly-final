@@ -15,7 +15,7 @@ It is old, it is rare, and it is the reason rummages count heads.
 
 ## In Venturia
 
-There is no market. There is no trade anyone could point to. There are a small number of households in the [High Quarter](/en/Venturia/Locations/high-quarter) and the [Tiered Gardens](/en/Venturia/Locations/tiered-gardens) with a servant nobody has ever seen — fond of them, protective of them, and unwilling to discuss them with a stranger. None of those families think of themselves as owning a person. None of them talk about it. It is not against any law Venturia has ever written.
+Nobody in the city can tell you where a bound brownie comes from, and nobody has ever been asked to. There are a small number of households in the [High Quarter](/en/Venturia/Locations/high-quarter) and the [Tiered Gardens](/en/Venturia/Locations/tiered-gardens) with a servant nobody has ever seen — fond of them, protective of them, and unwilling to discuss them with a stranger. None of those families think of themselves as owning a person. None of them talk about it. It is not against any law Venturia has ever written.
 
 
 ---

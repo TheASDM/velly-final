@@ -54,7 +54,7 @@ dateCreated: 2026-02-21T02:43:01.487Z
 | Expression | Meaning |
 |---|---|
 | **Fog take it** | Stronger frustration. Implies consigning something to Vallombrosa, which is not a kind wish. |
-| **Keeper's teeth** | Most Venturians assume this references some old monster tale. It's actually a degraded reference to the Keeper of Faces — though no one living knows this. Equivalent to "goddammit." |
+| **Keeper's teeth** | Venturians take this for a scrap of some old monster tale, worn smooth by repetition; nobody can tell you which one, and nobody has thought to ask in a very long time. Equivalent to "goddammit." |
 | **Burnt quills** | Frustration when plans go wrong or information proves unreliable. References both the newspaper and the Harbor Fire. *"Well, burnt quills, there goes that idea."* |
 | **Half a coat to you** | A curse wishing someone the fate of Lucio from the fable — to be marked as an oath-breaker. Can be said jokingly between friends or seriously as an insult. |
 | **Drown it / Drown me** | [Harbor District](/en/Venturia/Locations/harbor-district) oath. *"Drown it"* = frustration. *"Drown me"* = disbelief. *"Drown me, did you see the price of salt today?"* |
