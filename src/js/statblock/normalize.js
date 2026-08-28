@@ -409,6 +409,9 @@ function inventory(doc) {
         weight: sys.weight?.value ?? null,
         equipped: sys.equipped === true,
         rarity: sys.rarity ? humanize(sys.rarity) : '',
+        // The _id of the container item holding this one, so the sheet can
+        // show a bag's contents inside the bag rather than loose in the list.
+        container: sys.container ?? null,
         meta,
         description: richText(sys.description?.value),
       };

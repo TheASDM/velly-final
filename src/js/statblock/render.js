@@ -427,15 +427,48 @@ function renderInventory(model) {
     .filter((key) => Number(model.currency?.[key]) > 0)
     .map((key) => `${model.currency[key]} ${key}`);
 
-  const itemEntry = (item) => ({
-    name: item.quantity > 1 ? `${item.name} ×${item.quantity}` : item.name,
-    marker: item.equipped ? 'equipped' : '',
-    meta: [item.kind, ...item.meta, item.rarity].filter(Boolean),
-    description: item.description,
+  /* What is inside what. An item whose container is present in the inventory
+   * lives inside that entry — open the bag to see it — rather than loose in
+   * the list pretending to be carried on a belt. */
+  const byId = new Map(model.inventory.map((item) => [item.id, item]));
+  const contents = new Map();
+  model.inventory.forEach((item) => {
+    if (item.container && byId.has(item.container)) {
+      if (!contents.has(item.container)) contents.set(item.container, []);
+      contents.get(item.container).push(item);
+    }
   });
-  const hidden = model.inventory.filter((item) => isHidden(item.id))
+  const topLevel = model.inventory.filter(
+    (item) => !(item.container && byId.has(item.container)),
+  );
+
+  const contentsHtml = (item) => {
+    const inside = contents.get(item.id) ?? [];
+    if (!inside.length) return '';
+    return `<ul class="vos-sb-contents">${inside.map((held) => `<li>
+      <span class="vos-sb-contents-name">${esc(held.name)}</span>
+      ${held.quantity > 1 ? `<span class="vos-sb-contents-qty">×${esc(held.quantity)}</span>` : ''}
+      ${held.equipped ? '<span class="vos-sb-contents-note">equipped</span>' : ''}
+    </li>`).join('')}</ul>`;
+  };
+
+  const itemEntry = (item) => {
+    const inside = contents.get(item.id) ?? [];
+    return {
+      name: item.quantity > 1 ? `${item.name} ×${item.quantity}` : item.name,
+      marker: item.equipped ? 'equipped' : '',
+      meta: [
+        item.kind,
+        inside.length ? `${inside.length} item${inside.length === 1 ? '' : 's'}` : '',
+        ...item.meta,
+        item.rarity,
+      ].filter(Boolean),
+      description: [item.description, contentsHtml(item)].filter(Boolean).join('') || '',
+    };
+  };
+  const hidden = topLevel.filter((item) => isHidden(item.id))
     .map((item) => ({ ...itemEntry(item), showId: item.id }));
-  const shown = model.inventory.filter((item) => !isHidden(item.id));
+  const shown = topLevel.filter((item) => !isHidden(item.id));
 
   return `${coins.length ? chips(coins, 'is-coins') : ''}
   <ul class="vos-sb-entries">${shown.map((item) => renderEntry({

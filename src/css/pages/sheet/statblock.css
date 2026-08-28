@@ -464,6 +464,37 @@ details[open] > .vos-sb-entry-head::before { transform: rotate(90deg); }
   text-transform: uppercase;
 }
 
+/* ── Container contents ────────────────────────────────────────────── */
+
+/* What is inside a bag, shown when the bag's entry is opened. Plain rows —
+   the container is the entry; its contents are a packing list. */
+.vos-sb-contents {
+  margin: 0.4rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+.vos-sb-contents li {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  padding: 0.22rem 0;
+  border-bottom: 1px dotted rgba(139, 115, 85, 0.22);
+  font-size: 0.92rem;
+}
+.vos-sb-contents li:last-child { border-bottom: 0; }
+.vos-sb-contents-name { flex: 1; min-width: 0; overflow-wrap: anywhere; }
+.vos-sb-contents-qty {
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.76rem;
+  color: var(--vos-gold);
+}
+.vos-sb-contents-note {
+  font-size: 0.62rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--vos-gold-dim);
+}
+
 /* ── Hiding entries ────────────────────────────────────────────────── */
 
 /* Tucking things away, not deleting them: an eye on every collapsed row hides
