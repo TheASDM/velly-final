@@ -87,6 +87,7 @@ files/valley-of-shadows-*/
 # used a different folder name left DM secrets and every character sheet
 # trackable. Match what the file *is*.
 files/**/campaign-dm-secrets-*.md
+files/**/campaign-ground-truth-*
 files/**/dm-sheet-*.md
 files/**/player-sheet-*.md
 files/**/*-questionnaire*.md
@@ -98,3 +99,7 @@ files/**/*-backstory.*
 # Foundry actors rebuilt by scripts/build_foundry_actor.py. These are player
 # character data and this repo is public.
 files/foundry-import/
+
+# Raw and cleaned Foundry character exports. Player character data — same
+# reason: this repo is public.
+foundry/
