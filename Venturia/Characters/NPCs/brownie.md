@@ -54,4 +54,3 @@ Brownie rummages establish homes in small caves carved into rock faces or hollow
 ## Connections
 
 - **Roxanya "Roxy"** — Abandoned as an infant and raised by a brownie rummage as one of their own; did not learn she was a forest gnome until age twelve.
-- **Wully** — A brownie approximately 5 inches tall. Wears deer-hide loin cloth and boots with a rabbit-fur cape, shirtless, bearing dull red and blue body paint on his arms and sporting disheveled spiked dark brown hair.
