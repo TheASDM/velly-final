@@ -272,14 +272,6 @@
   }
 }
 
-/* The sheet writes the class line into the app bar's eyebrow; a multiclass
-   line must truncate there rather than wrap the fixed bar taller. */
-.vos-app-bar .vos-app-eyebrow {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
 /* Nothing on these pages is wide enough to justify a sideways scroll. */
 .vos-sheet-page { min-width: 0; }
 .vos-sheet-root { min-width: 0; overflow-wrap: anywhere; }

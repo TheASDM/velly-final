@@ -67,6 +67,68 @@ def api_my_sheet():
     })
 
 
+def _identity_from_statblock(data):
+    """Name, class line, and species from a stored Foundry export.
+
+    Mirrors what src/js/statblock/normalize.js derives for the sheet header, so
+    the app bar and the sheet never disagree about who the character is.
+    """
+    derived = data.get("derived") or {}
+    classes = derived.get("classes") or []
+    class_line = " / ".join(
+        " ".join(str(part) for part in (c.get("subclass"), c.get("name"), c.get("levels")) if part)
+        for c in classes
+    )
+    if not class_line:
+        class_items = [i for i in data.get("items") or [] if i.get("type") == "class"]
+        class_line = " / ".join(
+            " ".join(str(part) for part in (i.get("name"), (i.get("system") or {}).get("levels")) if part)
+            for i in class_items
+        )
+
+    race = derived.get("raceName") or ""
+    if not race:
+        race_id = ((data.get("system") or {}).get("details") or {}).get("race")
+        for item in data.get("items") or []:
+            if item.get("_id") == race_id or (not race_id and item.get("type") == "race"):
+                race = item.get("name") or ""
+                break
+
+    return {
+        "name": data.get("name") or "",
+        "classLine": class_line,
+        "race": race,
+    }
+
+
+@bp.get("/api/identity")
+def api_identity():
+    """Who the signed-in player is at the table — light enough for app chrome.
+
+    The app bar on every page shows the character's name and class line, and a
+    gauge like that cannot afford the full /api/sheet payload per page. This
+    returns just the identity, derived from the same pushed statblock.
+    """
+    player_name, auth_error = _authenticated_player_name()
+    if auth_error:
+        return auth_error
+
+    with _app_db() as conn:
+        block = conn.execute(
+            "SELECT data FROM character_statblocks WHERE player_name = ?",
+            (player_name,),
+        ).fetchone()
+
+    character = None
+    if block:
+        try:
+            character = _identity_from_statblock(json.loads(block["data"]))
+        except (TypeError, ValueError):
+            logging.warning("character_statblocks row for %r is not valid JSON", player_name)
+
+    return jsonify({"ok": True, "playerName": player_name, "character": character})
+
+
 @bp.get("/api/sheets")
 def api_all_sheets():
     """Every sheet, both variants — DM only."""
