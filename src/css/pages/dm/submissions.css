@@ -219,6 +219,9 @@
   display: grid;
   gap: 1rem;
 }
+/* An author display rule silently defeats the [hidden] attribute the tab
+   system relies on — every view rendered at once until this line existed. */
+.vos-dm-view[hidden] { display: none; }
 .vos-dm-npc {
   display: grid;
   gap: 0.55rem;

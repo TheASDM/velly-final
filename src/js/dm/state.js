@@ -1,4 +1,14 @@
-import { loadAdminDataOnce } from './tabs.js';
+/* This module is the console's ground floor: every panel imports it for its
+ * element handles and the session. It must therefore import none of them —
+ * state.js pulling in tabs.js closed a cycle that ran half the console's
+ * modules before the element constants below existed, and the whole bundle
+ * died on the first addEventListener. tabs.js registers its loader here
+ * instead. */
+let sessionLiveHook = null;
+
+export function onSessionLive(hook) {
+  sessionLiveHook = hook;
+}
 
 export const SESSION_KEY = 'vos.dmSession';
 
@@ -18,7 +28,7 @@ export function persistSession(session) {
     else localStorage.removeItem(SESSION_KEY);
   } catch (e) {}
   renderAuthState();
-  if (isSessionLive()) loadAdminDataOnce();
+  if (isSessionLive() && sessionLiveHook) sessionLiveHook();
 }
 
 export function isSessionLive() {

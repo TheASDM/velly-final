@@ -7,7 +7,7 @@ import { refreshPushSubscribers } from './push.js';
 import { refreshQuestionnaires } from './questionnaires.js';
 import { refreshRsvps } from './rsvp.js';
 import { refreshRumors } from './rumors.js';
-import { isSessionLive, wikiQueryEl } from './state.js';
+import { isSessionLive, onSessionLive, wikiQueryEl } from './state.js';
 import { loadWikiEntry, loadWikiPages } from './wiki.js';
 
 export let adminDataLoaded = false;
@@ -53,6 +53,11 @@ export function activeTab() {
 window.addEventListener('vos:view-shown', (event) => {
   loadTabData(event.detail.view);
 });
+
+// When a session goes live (sign-in, or the cookie check on boot), load the
+// tab the DM is already looking at. Registered rather than imported by
+// state.js — see the note at the top of that module.
+onSessionLive(loadAdminDataOnce);
 
 export function loadAdminDataOnce() {
   if (adminDataLoaded || !isSessionLive()) return;
