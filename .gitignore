@@ -103,3 +103,4 @@ files/foundry-import/
 # Raw and cleaned Foundry character exports. Player character data — same
 # reason: this repo is public.
 foundry/
+public-files/
