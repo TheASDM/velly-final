@@ -481,8 +481,12 @@ export function createControls(options) {
       <p class="vos-play-note">A Bonus Action. Ten minutes, or until you are incapacitated
       or take it off. Masked Resilience gives temporary hit points equal to your Charisma
       modifier plus your bard level.</p>
-      ${worn ? '<button type="button" class="vos-play-secondary" data-remove>Remove mask</button>' : ''}
+      <div class="vos-play-row">
+        <button type="button" class="vos-play-secondary" data-browse-all>Browse the forms</button>
+        ${worn ? '<button type="button" class="vos-play-secondary" data-remove>Remove mask</button>' : ''}
+      </div>
     `, (sheet) => {
+      sheet.querySelector('[data-browse-all]').addEventListener('click', () => openFormCatalog());
       sheet.querySelectorAll('[data-mask]').forEach((button) => {
         button.addEventListener('click', async () => {
           const key = button.dataset.mask;
@@ -559,15 +563,9 @@ export function createControls(options) {
     });
   }
 
-  /* While transformed, the sheet shows the creature rather than the character,
-   * with the substitutions the feature makes spelled out. */
-  async function formStatblockHtml() {
-    if (!state.form || !(await ensureMasquerade())) return '';
-    const mask = masquerade.masks[state.mask ? state.mask.key : ''];
-    const pool = (forms && mask && forms[mask.type]) || [];
-    const creature = pool.find((c) => c.name === state.form.creature);
-    if (!creature) return '';
-
+  /* One creature, rendered whole, with the feature's substitutions spelled
+   * out — the same block whether she is wearing it or only reading it. */
+  function creatureBlockHtml(creature, hpHtml) {
     const notes = formOverrides(creature, model).map((note) => `
       <div class="vos-play-override">
         <b>${esc(note.label)}</b><span>${esc(note.value)}</span><i>${esc(note.why)}</i>
@@ -588,13 +586,83 @@ export function createControls(options) {
         </header>
         <div class="vos-play-form-vitals">
           <span><b>${esc(creature.ac)}</b>AC</span>
-          <span><b>${esc(state.form.hp)}</b>/${esc(state.form.maxHp)} HP</span>
+          <span>${hpHtml}</span>
           <span><b>${esc(creature.speed)}</b>Speed</span>
         </div>
         <div class="vos-play-overrides">${notes}</div>
         ${block(creature.traits, 'Traits')}
         ${block(creature.actions, 'Actions')}
       </article>`;
+  }
+
+  /* While transformed, the sheet shows the creature rather than the character. */
+  async function formStatblockHtml() {
+    if (!state.form || !(await ensureMasquerade())) return '';
+    const mask = masquerade.masks[state.mask ? state.mask.key : ''];
+    const pool = (forms && mask && forms[mask.type]) || [];
+    const creature = pool.find((c) => c.name === state.form.creature);
+    if (!creature) return '';
+    return creatureBlockHtml(creature,
+      `<b>${esc(state.form.hp)}</b>/${esc(state.form.maxHp)} HP`);
+  }
+
+  /* ── Browsing the forms ────────────────────────────────────────── */
+
+  /* Reading, not becoming. Every form under every mask she owns, including
+   * the ones her level has not unlocked yet — knowing what the mask could
+   * offer at sixth level is exactly the kind of thing a player plans around.
+   * Nothing here spends a use or starts a clock. */
+  async function openFormCatalog() {
+    if (!(await ensureMasquerade())) {
+      toast('Could not load the masks.', { tone: 'error' });
+      return;
+    }
+    const mine = masksFor(model, masquerade);
+    if (!mine.length) {
+      toast('This character has no masks.', { tone: 'error' });
+      return;
+    }
+    const cap = formCrCap(model);
+
+    const groups = mine.map((mask) => {
+      const pool = (forms && forms[mask.type]) || [];
+      const cards = pool.map((creature, index) => `
+        <button type="button" class="vos-play-form${
+          creature.crValue > cap ? ' is-locked' : ''}"
+                data-browse-form="${esc(mask.type)}:${index}">
+          <b>${esc(creature.name)}</b>
+          <span class="vos-play-form-cr">CR ${esc(creature.cr)}${
+            creature.crValue > cap ? ' · from level 6' : ''}</span>
+          <span class="vos-play-form-meta">AC ${esc(creature.ac)} · ${esc(creature.hp)} HP · ${
+            esc(creature.speed)}</span>
+        </button>`).join('');
+      return `<h4 class="vos-play-form-h">${esc(mask.name)}</h4>
+        <div class="vos-play-forms">${cards}</div>`;
+    }).join('');
+
+    openSheet('The forms', `
+      <p class="vos-play-note">Reading, not becoming — nothing here spends a use.
+      Tap a creature for its full block.</p>
+      ${groups}
+    `, (sheet) => {
+      sheet.querySelectorAll('[data-browse-form]').forEach((button) => {
+        button.addEventListener('click', () => {
+          const [type, index] = button.dataset.browseForm.split(':');
+          openFormReader(type, Number(index));
+        });
+      });
+    });
+  }
+
+  function openFormReader(type, index) {
+    const creature = ((forms && forms[type]) || [])[index];
+    if (!creature) return;
+    openSheet(creature.name, `
+      ${creatureBlockHtml(creature, `<b>${esc(creature.hp)}</b>HP`)}
+      <button type="button" class="vos-play-secondary" data-back>All the forms</button>
+    `, (sheet) => {
+      sheet.querySelector('[data-back]').addEventListener('click', () => openFormCatalog());
+    });
   }
 
   /* ── Binding ───────────────────────────────────────────────────── */
@@ -878,6 +946,7 @@ export function createControls(options) {
     openPrepare,
     openMasks,
     openForms,
+    openFormCatalog,
     openFeature,
     activateFeature,
     spendCharge,

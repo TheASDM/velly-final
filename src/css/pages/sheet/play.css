@@ -666,6 +666,10 @@
 }
 .vos-play-form-meta { display: block; font-size: 0.72rem; color: var(--vos-gold-dim); }
 
+/* A form her level has not reached yet: readable — planning is playing —
+   but visibly not on today's menu. */
+.vos-play-form.is-locked { opacity: 0.55; border-style: dashed; }
+
 /* ── The assumed creature ──────────────────────────────────────────── */
 
 .vos-play-formblock {
