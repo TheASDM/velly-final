@@ -1127,6 +1127,73 @@
 }
 .vos-play-btn.is-danger { border-color: rgba(212, 77, 63, 0.45); }
 
+/* ── Signature controls on the bar ─────────────────────────────────── */
+
+/* Dying with Relentless Endurance unspent: the way back up sits beside the
+   hit points, styled like the emergency it is. */
+.vos-play-bar-btn.is-rescue {
+  border-color: rgba(212, 77, 63, 0.65);
+  background: rgba(160, 50, 42, 0.22);
+  color: var(--vos-cream);
+}
+.vos-play-bar-btn.is-rescue:hover { border-color: var(--vos-quest-bright); }
+
+/* Once-per-turn riders are reference, not resources — quieter than the
+   buttons that spend something, so the eye ranks them last. */
+.vos-play-bar-btn.is-rule {
+  border-style: dashed;
+  color: var(--vos-gold-dim);
+}
+.vos-play-bar-btn.is-rule i {
+  font-style: normal;
+  margin-left: 0.3rem;
+  font-size: 0.52rem;
+  letter-spacing: 0.06em;
+  color: var(--vos-gold-dim);
+}
+
+/* A pact caster's whole spellcasting is two pips; they live on the bar. */
+.vos-play-bar-pact {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  min-height: 46px;
+  padding: 0.4rem 0.7rem;
+  border: 1px solid var(--vos-border);
+  border-radius: 10px;
+  background: rgba(8, 7, 11, 0.7);
+}
+.vos-play-bar-pact-label {
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.62rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--vos-text);
+}
+.vos-play-bar-pact-pips { display: flex; gap: 0.3rem; }
+.vos-play-bar-pip {
+  width: 0.95rem;
+  height: 0.95rem;
+  border: 1px solid var(--vos-gold);
+  border-radius: 50%;
+  background: var(--vos-gold);
+  cursor: pointer;
+}
+.vos-play-bar-pip.is-spent { background: transparent; opacity: 0.5; }
+
+/* Feature and spell text quoted inside a panel — the sheet's own rules,
+   readable at panel size. */
+.vos-play-rules {
+  margin-top: 0.9rem;
+  padding-top: 0.7rem;
+  border-top: 1px solid var(--vos-border);
+  font-size: 0.9rem;
+  line-height: 1.55;
+  color: var(--vos-text-body);
+}
+.vos-play-rules p { margin: 0 0 0.55rem; }
+
 /* Who is raging, from across the table. */
 .vos-party-active {
   margin-top: 0.35rem;

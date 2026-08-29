@@ -31,6 +31,10 @@ const live = () => Boolean(ctx && ctx.play && ctx.interactive);
 const isHidden = (id) => Boolean(id && ctx && ctx.hidden && ctx.hidden.has(id));
 const canHide = () => Boolean(ctx && ctx.hideable);
 
+/* Resources the player pinned to the play bar. Same kind of preference. */
+const isPinned = (id) => Boolean(id && ctx && ctx.pinned && ctx.pinned.has(id));
+const canPin = () => Boolean(ctx && ctx.hideable && ctx.pinned);
+
 /* data-play marks an element the controls can bind to. Rendering it only when
  * interactive keeps the read-only sheet free of dead affordances. */
 function bind(attrs) {
@@ -529,14 +533,34 @@ function resourcePips(resource, left) {
   }</span>`;
 }
 
+/* A push-pin, filled while the resource sits on the bar. */
+const ICON_PIN = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 17v5"/><path d="M9 10.76V7a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v3.76a2 2 0 0 0 1.11 1.79l1.78.9A2 2 0 0 1 19 15.24V16a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1v-.76a2 2 0 0 1 1.11-1.79l1.78-.9A2 2 0 0 0 9 10.76z"/></svg>';
+
+/* Pinning puts this counter on the play bar as a quick-spend button — for
+ * the resources no structural rule places there but a player reaches for
+ * anyway (Lucky is the archetype). */
+function resourcePin(resource) {
+  if (!canPin()) return '';
+  const pinnedOn = isPinned(resource.id);
+  return `<button type="button" class="vos-sb-res-pin${pinnedOn ? ' is-on' : ''}"
+    data-${pinnedOn ? 'unpin' : 'pin'}-entry="${esc(resource.id)}"
+    title="${pinnedOn ? 'Take off the play bar' : 'Pin to the play bar'}"
+    aria-label="${pinnedOn
+      ? `Take ${esc(resource.name)} off the play bar`
+      : `Pin ${esc(resource.name)} to the play bar`}"
+    aria-pressed="${pinnedOn}">${ICON_PIN}</button>`;
+}
+
 function renderResource(model, resource) {
   const left = Math.max(0, resource.max - spentUses(resource.id));
   const on = Boolean(ctx && ctx.play && (ctx.play.active || {})[resource.id]);
   const grants = on && resource.switchable ? resource.switchable.grants : [];
+  const related = on && resource.switchable ? (resource.switchable.related || []) : [];
 
   return `<li class="vos-sb-res${on ? ' is-on' : ''}${left ? '' : ' is-empty'}">
     <div class="vos-sb-res-head">
       <span class="vos-sb-res-name">${esc(resource.name)}</span>
+      ${resourcePin(resource)}
       ${on ? `<button type="button" class="vos-sb-res-end"${bind({
         'data-play': 'end-feature', 'data-feature': resource.id,
       })}>End</button>` : ''}
@@ -549,6 +573,8 @@ function renderResource(model, resource) {
     ${grants.length ? `<ul class="vos-sb-res-grants">${
       grants.map((grant) => `<li>${esc(grant)}</li>`).join('')
     }</ul>` : ''}
+    ${related.length ? `<p class="vos-sb-res-related">Riding on it: ${
+      related.map((entry) => `<b>${esc(entry.name)}</b>`).join(', ')} — under Features.</p>` : ''}
   </li>`;
 }
 
@@ -666,6 +692,8 @@ export function renderStatblock(model, meta = {}) {
     // A Set of entry ids the player has hidden, and whether hiding is offered.
     hidden: meta.hidden || null,
     hideable: Boolean(meta.hideable),
+    // A Set of resource ids the player pinned to the play bar.
+    pinned: meta.pinned || null,
   };
 
   const warning = model.meta?.hasDerived === false

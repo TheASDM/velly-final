@@ -111,6 +111,19 @@ export function lookup(map, code, fallback) {
   return fallback === undefined ? humanize(key) : fallback;
 }
 
+/* The play bar is thumb-width and "Bardic Inspiration" is not. The last word
+ * of a feature's name is almost always the one said aloud at the table —
+ * unless it is a generic noun ("Sneak Attack"), where the first word carries
+ * the identity. Full names stay in the button's title and aria-label. */
+const GENERIC_TAIL = new Set(['attack', 'attacks', 'strike', 'strikes', 'action']);
+
+export function barLabel(name) {
+  const words = String(name ?? '').trim().split(/\s+/).filter(Boolean);
+  if (words.length < 2) return words[0] ?? '';
+  const last = words[words.length - 1];
+  return GENERIC_TAIL.has(last.toLowerCase()) ? words[0] : last;
+}
+
 /* Foundry writes a bare number as e.g. 2; sheets want "+2" / "-1". */
 export function signed(value) {
   if (value == null || Number.isNaN(Number(value))) return '—';

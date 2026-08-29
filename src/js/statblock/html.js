@@ -36,11 +36,15 @@ const SPAN_ATTRS = new Set(['colspan', 'rowspan']);
 
 /* @UUID[Actor.x.Item.y]{Creature Type} -> Creature Type
  * @item[Tinker's Tools|XPHB]           -> Tinker's Tools
+ * @variantrule[Bonus Action|XPHB]      -> Bonus Action
  * Anything with an explicit {Label} uses the label; otherwise we take the
- * first |-segment of the target, which is the name in every Foundry form. */
+ * first |-segment of the target, which is the name in every Foundry form.
+ * The tag name is not worth allowlisting: Foundry keeps minting new ones
+ * (@variantrule, @action, @condition...) and every one we miss leaves its
+ * raw syntax in a player-facing description. */
 function replaceDocLinks(text) {
   return text.replace(
-    /@(?:UUID|Compendium|item|feat|spell|class|subclass|race|background|Actor|JournalEntry|Scene|RollTable)\[([^\]]*)\](?:\{([^}]*)\})?/gi,
+    /@[A-Za-z]+\[([^\]]*)\](?:\{([^}]*)\})?/g,
     (_match, target, label) => {
       if (label) return label;
       const first = String(target).split('|')[0];

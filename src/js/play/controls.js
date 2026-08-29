@@ -32,8 +32,10 @@ export function createControls(options) {
     if (navigator.vibrate) { try { navigator.vibrate(HAPTIC_MS); } catch (error) { /* ignore */ } }
   }
 
+  /* Resolves true when the server accepted the operation, so a control that
+   * chains two taps' worth of ops can stop at the first refusal. */
   async function apply(op, { undoable = true } = {}) {
-    if (busy) return;
+    if (busy) return false;
     busy = true;
     const before = state;
     tap();
@@ -47,10 +49,12 @@ export function createControls(options) {
       limits = body.limits || limits;
       onState(state, { note: body.note });
       if (undoable) offerUndo(op, before, body.note);
+      return true;
     } catch (error) {
       state = before;                      // the guess was wrong or refused
       onState(state, { error: error.message });
       toast(error.message, { tone: 'error' });
+      return false;
     } finally {
       busy = false;
     }
@@ -218,6 +222,37 @@ export function createControls(options) {
     });
   }
 
+  /* Magical Cunning's shape lives here rather than on the bar: it takes a
+   * minute and gives pact slots back, which makes it rest-adjacent — the
+   * moment someone opens Rest hunting for slots is the moment to offer it. */
+  function pactRiteHtml() {
+    const rite = model && model.pactRecovery;
+    if (!rite || !(limits && limits.pact)) return '';
+    const left = Math.max(0, rite.uses.max - Number((state.uses || {})[rite.id] || 0));
+    return `<button type="button" class="vos-play-rest" data-pact-rite${left ? '' : ' disabled'}>
+      <b>${esc(rite.name)}</b><span>${left
+        ? 'A 1-minute rite. Regain up to half your pact slots, rounded up.'
+        : 'Spent — a long rest brings it back.'}</span>
+    </button>`;
+  }
+
+  async function performPactRite() {
+    const rite = model.pactRecovery;
+    const spent = Number(state.pact || 0);
+    if (!spent) {
+      toast('No pact slots are spent.', { tone: 'warn' });
+      return;
+    }
+    const regained = Math.min(spent, Math.ceil((limits.pact || 0) / 2));
+    if (!(await apply({ op: 'useCharge', feature: rite.id, max: rite.uses.max },
+      { undoable: false }))) return;
+    for (let i = 0; i < regained; i += 1) {
+      // eslint-disable-next-line no-await-in-loop
+      await apply({ op: 'restorePactSlot' }, { undoable: false });
+    }
+    toast(`${rite.name} — ${regained} pact slot${regained === 1 ? '' : 's'} regained.`);
+  }
+
   function openRests() {
     openSheet('Rest', `
       <button type="button" class="vos-play-rest" data-rest="shortRest">
@@ -229,6 +264,7 @@ export function createControls(options) {
       <button type="button" class="vos-play-rest is-long" data-rest="longRest">
         <b>Long rest</b><span>Everything back, and one point of exhaustion clears.</span>
       </button>
+      ${pactRiteHtml()}
       <p class="vos-play-note">A long rest needs your own bed or a Secure place — or three
       quiet nights to establish a haven. Never inside the fog.</p>
     `, (sheet) => {
@@ -240,6 +276,13 @@ export function createControls(options) {
           apply({ op });
         });
       });
+      const rite = sheet.querySelector('[data-pact-rite]');
+      if (rite) {
+        rite.addEventListener('click', () => {
+          closeSheet();
+          performPactRite();
+        });
+      }
     });
   }
 
@@ -420,6 +463,7 @@ export function createControls(options) {
     }
 
     const worn = state.mask;
+    const donningsLeft = maskUsesLeft();
     const cards = mine.map((mask) => `
       <button type="button" class="vos-play-mask${worn && worn.key === mask.key ? ' is-on' : ''}"
               data-mask="${esc(mask.key)}">
@@ -431,6 +475,8 @@ export function createControls(options) {
     openSheet('The Masquerade', `
       ${worn ? `<p class="vos-play-note">Wearing <b>${esc(worn.key)}</b> — ${
         clock(worn.remainingMs)}${worn.paused ? ' (paused)' : ''} left.</p>` : ''}
+      ${donningsLeft != null ? `<p class="vos-play-note">${donningsLeft} of ${
+        model.maskUses.uses.max} donnings left today.</p>` : ''}
       ${cards}
       <p class="vos-play-note">A Bonus Action. Ten minutes, or until you are incapacitated
       or take it off. Masked Resilience gives temporary hit points equal to your Charisma
@@ -438,20 +484,37 @@ export function createControls(options) {
       ${worn ? '<button type="button" class="vos-play-secondary" data-remove>Remove mask</button>' : ''}
     `, (sheet) => {
       sheet.querySelectorAll('[data-mask]').forEach((button) => {
-        button.addEventListener('click', () => {
+        button.addEventListener('click', async () => {
           const key = button.dataset.mask;
           closeSheet();
+          if (maskUsesLeft() === 0) {
+            toast('No mask donnings left — a long rest brings them back.', { tone: 'warn' });
+            return;
+          }
           const cha = (model.abilities || []).find((a) => a.key === 'cha');
           const bardLevel = (model.classes || [])
             .filter((c) => String(c.identifier).toLowerCase() === 'bard')
             .reduce((sum, c) => sum + (c.levels || 0), 0) || model.level || 0;
           const tempHp = cha ? Math.max(0, cha.mod + bardLevel) : 0;
-          apply({ op: 'donMask', mask: key, tempHp });
+          const ok = await apply({ op: 'donMask', mask: key, tempHp });
+          // The donning spends one of the feature's uses; the same pool the
+          // sheet's Resources card counts, so the two can never disagree.
+          if (ok && model.maskUses) {
+            apply({ op: 'useCharge', feature: model.maskUses.id, max: model.maskUses.uses.max },
+              { undoable: false });
+          }
         });
       });
       const remove = sheet.querySelector('[data-remove]');
       if (remove) remove.addEventListener('click', () => { closeSheet(); apply({ op: 'removeMask' }); });
     });
+  }
+
+  /* Donnings left today, or null when the build never said there was a cap. */
+  function maskUsesLeft() {
+    const feature = model && model.maskUses;
+    if (!feature) return null;
+    return Math.max(0, feature.uses.max - Number((state.uses || {})[feature.id] || 0));
   }
 
   async function openForms() {
@@ -584,6 +647,9 @@ export function createControls(options) {
       <ul class="vos-play-feature-grants">${
         feature.grants.map((grant) => `<li>${esc(grant)}</li>`).join('')
       }</ul>
+      ${(feature.related || []).length ? `<p class="vos-play-note">Riding on it: ${
+        feature.related.map((r) => `<b>${esc(r.name)}</b>`).join(', ')
+      } — their text is under Features.</p>` : ''}
       ${active
         ? '<button type="button" class="vos-play-btn is-danger" data-feature-act="end">End it</button>'
         : `<button type="button" class="vos-play-btn is-primary" data-feature-act="start"${
@@ -599,6 +665,139 @@ export function createControls(options) {
           : { op: 'activateFeature', feature: feature.id, name: feature.name, max: feature.uses.max });
       });
     });
+  }
+
+  /* ── Signature controls ────────────────────────────────────────── */
+
+  function chargesLeft(id, max) {
+    return Math.max(0, max - Number((state.uses || {})[id] || 0));
+  }
+
+  /* A quick-spend: one tap, one charge gone, mid-turn. Bardic Inspiration and
+   * Adrenaline Rush are this shape — some carry temporary hit points, which
+   * the operation grants in the same breath. */
+  function spendCharge({ id, name, max, tempHp }) {
+    if (!chargesLeft(id, max)) {
+      toast(`No uses of ${name} left — a rest brings them back.`, { tone: 'warn' });
+      return;
+    }
+    const op = { op: 'useCharge', feature: id, max };
+    if (tempHp) op.tempHp = tempHp;
+    apply(op);
+  }
+
+  /* ── Free-cast spells (Favored Enemy's Hunter's Mark) ──────────── */
+
+  function freeCastById(id) {
+    return ((model && model.freeCasts) || []).find((entry) => entry.id === id) || null;
+  }
+
+  function freeCastActive(entry) {
+    const conc = state.concentration;
+    return Boolean(entry.concentration && conc && conc.spell === entry.spellName);
+  }
+
+  /* One tap casts, because it is taken mid-turn; ending goes through the
+   * panel, the same deliberation Rage gets. Out of free uses, the panel
+   * offers the spell the ordinary way — a slot. */
+  async function castFreeSpell(id) {
+    const entry = freeCastById(id);
+    if (!entry) return;
+    if (freeCastActive(entry) || !chargesLeft(entry.id, entry.uses.max)) {
+      openFreeCast(id);
+      return;
+    }
+    if (entry.concentration) {
+      if (!(await apply({ op: 'concentrate', spell: entry.spellName }, { undoable: false }))) return;
+    }
+    await apply({ op: 'useCharge', feature: entry.id, max: entry.uses.max }, { undoable: false });
+    toast(`${entry.spellName} is up${entry.concentration ? ' — concentrating' : ''}.`);
+  }
+
+  /* The lowest levelled slot that can carry this spell and still has a use. */
+  function slotForSpell(entry) {
+    if (!entry.spellLevel || !(model && model.spellcasting)) return null;
+    return (model.spellcasting.slots || [])
+      .filter((slot) => !slot.pact && slot.level >= entry.spellLevel)
+      .find((slot) => Math.max(0, slot.max - Number((state.slots || {})[String(slot.level)] || 0)) > 0)
+      || null;
+  }
+
+  function spellDescriptionHtml(spellId) {
+    for (const group of (model && model.spells) || []) {
+      const spell = group.spells.find((s) => s.id === spellId);
+      if (spell) return spell.description || '';
+    }
+    return '';
+  }
+
+  function openFreeCast(id) {
+    const entry = freeCastById(id);
+    if (!entry) return;
+    const active = freeCastActive(entry);
+    const left = chargesLeft(entry.id, entry.uses.max);
+    const slot = !active && !left ? slotForSpell(entry) : null;
+
+    openSheet(entry.spellName, `
+      <p class="vos-play-feature-state">${active
+        ? `Active now — concentrating on ${esc(entry.spellName)}.`
+        : `${left} of ${entry.uses.max} free casts left${
+            entry.uses.recovery ? `, back on a ${esc(entry.uses.recovery)}` : ''} — ${
+            esc(entry.featureName)}.`}</p>
+      ${active
+        ? `<button type="button" class="vos-play-btn is-danger" data-cast-act="end">End ${
+            esc(entry.spellName)}</button>`
+        : `<button type="button" class="vos-play-btn is-primary" data-cast-act="free"${
+            left ? '' : ' disabled'}>${left ? 'Cast — no slot spent' : 'No free casts left'}</button>`}
+      ${slot ? `<button type="button" class="vos-play-btn" data-cast-act="slot"
+          data-level="${slot.level}">Cast with a level ${slot.level} slot</button>` : ''}
+      <div class="vos-play-rules">${spellDescriptionHtml(entry.spellId)}</div>
+    `, (sheet) => {
+      sheet.querySelectorAll('[data-cast-act]').forEach((button) => {
+        button.addEventListener('click', async () => {
+          const act = button.dataset.castAct;
+          closeSheet();
+          if (act === 'end') { apply({ op: 'breakConcentration' }); return; }
+          if (act === 'free') { castFreeSpell(id); return; }
+          if (act === 'slot') {
+            if (!(await apply({ op: 'spendSlot', level: Number(button.dataset.level) },
+              { undoable: false }))) return;
+            if (entry.concentration) {
+              await apply({ op: 'concentrate', spell: entry.spellName }, { undoable: false });
+            }
+            toast(`${entry.spellName} is up${entry.concentration ? ' — concentrating' : ''}.`);
+          }
+        });
+      });
+    });
+  }
+
+  /* ── Once-per-turn riders (Sneak Attack, Dreadful Strikes) ─────── */
+
+  /* Nothing to spend and nothing to switch on — the chip exists so the rule
+   * is one tap away when the table asks "does that apply right now?". */
+  function openPerTurnRule(id) {
+    const feature = ((model && model.features) || []).find((entry) => entry.id === id);
+    if (!feature) return;
+    openSheet(feature.name, `
+      <p class="vos-play-feature-state">Once per turn — no uses to spend.</p>
+      <div class="vos-play-rules">${feature.description || ''}</div>
+    `);
+  }
+
+  /* ── Standing back up (Relentless Endurance) ───────────────────── */
+
+  /* Dropping to 0 cost a point of Exhaustion and the Dying condition; the
+   * feature means the drop never happened, so all three are unwound — one
+   * tap, because the moment it matters is the worst moment for a menu. */
+  async function rescueFromZero() {
+    const feature = model && model.zeroHpRescue;
+    if (!feature || !chargesLeft(feature.id, feature.uses.max)) return;
+    if (!(await apply({ op: 'useCharge', feature: feature.id, max: feature.uses.max },
+      { undoable: false }))) return;
+    await apply({ op: 'heal', amount: 1 }, { undoable: false });
+    await apply({ op: 'adjustExhaustion', delta: -1 }, { undoable: false });
+    toast(`${feature.name} — up at 1 hit point.`);
   }
 
   function onActivate(event) {
@@ -621,9 +820,9 @@ export function createControls(options) {
         break;
       }
       case 'pact': {
-        // Pact slots are their own pool; restoring one is a short rest away.
-        if (target.dataset.spent === '1') return;
-        apply({ op: 'spendPactSlot' });
+        // Pact slots are their own pool, but the pips work both ways like any
+        // other slot's: tap a full one to spend it, a spent one to take it back.
+        apply({ op: target.dataset.spent === '1' ? 'restorePactSlot' : 'spendPactSlot' });
         break;
       }
       case 'charge': {
@@ -679,6 +878,11 @@ export function createControls(options) {
     openForms,
     openFeature,
     activateFeature,
+    spendCharge,
+    castFreeSpell,
+    openFreeCast,
+    openPerTurnRule,
+    rescueFromZero,
     formStatblockHtml,
     setState(next, nextLimits) {
       state = next;

@@ -569,9 +569,135 @@ function activatable(doc, derivedUses) {
         grants,
         modifiers: effectModifiers(item, context),
         activation: activationOf(item),
+        related: relatedFeatures(doc, item),
       };
     })
     .filter(Boolean);
+}
+
+/* Passive features that ride on an active one — Ancestral Protectors only
+ * matters while Rage is on, and the moment someone needs reminding of it is
+ * that moment. A passive whose text names the feature is, by construction,
+ * a rider on it; listing names rather than re-rendering text keeps this a
+ * pointer into the Features section, not a second copy of it. */
+function relatedFeatures(doc, activeItem) {
+  const word = new RegExp(`\\b${String(activeItem.name || '')
+    .replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'i');
+  return (doc.items ?? [])
+    .filter((item) => item.type === 'feat'
+      && item._id !== activeItem._id
+      && !usesOf(item, doc.derived?.itemUses)
+      && word.test(plainText(item.system?.description?.value)))
+    .map((item) => ({ id: item._id, name: item.name }));
+}
+
+/* ── Signature controls ────────────────────────────────────────────── */
+
+/* What earns a place on the play bar, read from the character rather than
+ * from a list of names kept in step by hand. Each test here is structural —
+ * a homebrew feature with the same shape gets the same control.
+ */
+
+/* The raw activation type, where activationOf() gives the display label. */
+function activationType(item) {
+  const activities = item.system?.activities;
+  const first = activities && typeof activities === 'object' ? Object.values(activities)[0] : null;
+  return (first?.activation ?? item.system?.activation)?.type ?? '';
+}
+
+function plainDescription(item) {
+  return plainText(item.system?.description?.value);
+}
+
+function usableFeats(doc, derivedUses) {
+  return (doc.items ?? [])
+    .filter((item) => item.type === 'feat')
+    .map((item) => ({ item, uses: usesOf(item, derivedUses) }))
+    .filter((entry) => entry.uses);
+}
+
+/* The feature that powers the Masquerade — spending its uses is the Mask
+ * button's job, so it must not also become a quick-spend button. */
+function maskFeature(doc, derivedUses) {
+  const found = usableFeats(doc, derivedUses)
+    .find(({ item }) => /don one of your masks/i.test(plainDescription(item)));
+  return found ? { id: found.item._id, name: found.item.name, uses: found.uses } : null;
+}
+
+/* A Bonus Action with limited uses is a thing you spend mid-turn, and the tap
+ * belongs where the thumb is — Bardic Inspiration and Adrenaline Rush both
+ * fall out of this without being named. Features with Active Effects are the
+ * activatable kind instead, and the mask feature already has its button. */
+function quickSpendFeatures(doc, derivedUses, activatableEntries, mask) {
+  const taken = new Set(activatableEntries.map((entry) => entry.id));
+  if (mask) taken.add(mask.id);
+  const prof = doc.derived?.prof ?? null;
+
+  return usableFeats(doc, derivedUses)
+    .filter(({ item }) => !taken.has(item._id) && activationType(item) === 'bonus')
+    .map(({ item, uses }) => ({
+      id: item._id,
+      name: item.name,
+      uses,
+      /* "Temporary hit points equal to your proficiency bonus" is a shape,
+         not a name — any feature worded that way grants them on the tap.
+         The enricher for the bonus resolves to just "Proficiency", so the
+         trailing word is optional. */
+      tempHp: prof != null
+        && /temporary hit points equal to your proficiency( bonus)?/i.test(plainDescription(item))
+        ? prof : 0,
+    }));
+}
+
+/* "You always have X prepared and can cast it N times without a slot" —
+ * Favored Enemy's shape. The feature's charges and the spell's concentration
+ * combine into one cast-and-track control. */
+function freeCastFeatures(doc, derivedUses) {
+  const spells = (doc.items ?? []).filter((item) => item.type === 'spell');
+  return usableFeats(doc, derivedUses)
+    .map(({ item, uses }) => {
+      const match = plainDescription(item).match(/always have the (.+?) spell prepared/i);
+      if (!match) return null;
+      const spell = spells.find((s) => (s.name || '').toLowerCase() === match[1].toLowerCase());
+      if (!spell) return null;
+      return {
+        id: item._id,
+        featureName: item.name,
+        spellName: spell.name,
+        spellId: spell._id,
+        spellLevel: Number(spell.system?.level ?? 0),
+        uses,
+        concentration: (spell.system?.properties ?? []).includes('concentration'),
+      };
+    })
+    .filter(Boolean);
+}
+
+/* Once-per-turn damage riders — Sneak Attack, Dreadful Strikes. No uses to
+ * count and nothing to switch on; what a player needs is the rule within
+ * thumb's reach when the table asks "does that apply?". */
+function perTurnFeatures(doc, derivedUses) {
+  return (doc.items ?? [])
+    .filter((item) => item.type === 'feat'
+      && !usesOf(item, derivedUses)
+      && Object.values(item.system?.activities ?? {}).some((a) => a?.type === 'damage')
+      && /once per turn/i.test(plainDescription(item)))
+    .map((item) => ({ id: item._id, name: item.name }));
+}
+
+/* Magical Cunning's shape: a rite that gives pact slots back between rests. */
+function pactRecoveryFeature(doc, derivedUses) {
+  const found = usableFeats(doc, derivedUses)
+    .find(({ item }) => /regain expended pact magic spell slots/i.test(plainDescription(item)));
+  return found ? { id: found.item._id, name: found.item.name, uses: found.uses } : null;
+}
+
+/* Relentless Endurance's shape: dropped to 0 but not killed, stand at 1. */
+function zeroHpRescueFeature(doc, derivedUses) {
+  const found = usableFeats(doc, derivedUses)
+    .find(({ item }) =>
+      /reduced to 0 hit points but not killed outright/i.test(plainDescription(item)));
+  return found ? { id: found.item._id, name: found.item.name, uses: found.uses } : null;
 }
 
 /* ── Entry point ───────────────────────────────────────────────────── */
@@ -621,6 +747,9 @@ export function normalizeStatblock(raw) {
       pact: true,
     });
   }
+
+  const activatableEntries = activatable(doc, doc.derived?.itemUses);
+  const maskUses = maskFeature(doc, doc.derived?.itemUses);
 
   return {
     name: doc.name ?? 'Unnamed',
@@ -703,7 +832,13 @@ export function normalizeStatblock(raw) {
     spells: spells(doc),
     inventory: inventory(doc),
     attacks: attacks(doc),
-    activatable: activatable(doc, doc.derived?.itemUses),
+    activatable: activatableEntries,
+    quickSpend: quickSpendFeatures(doc, doc.derived?.itemUses, activatableEntries, maskUses),
+    freeCasts: freeCastFeatures(doc, doc.derived?.itemUses),
+    perTurn: perTurnFeatures(doc, doc.derived?.itemUses),
+    maskUses,
+    pactRecovery: pactRecoveryFeature(doc, doc.derived?.itemUses),
+    zeroHpRescue: zeroHpRescueFeature(doc, doc.derived?.itemUses),
     currency: sys.currency ?? {},
 
     meta: {

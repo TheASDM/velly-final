@@ -239,6 +239,11 @@ def _op_spend_pact(state, op, limits):
     return "spent a pact slot"
 
 
+def _op_restore_pact(state, op, limits):
+    state["pact"] = max(0, int(state["pact"]) - 1)
+    return "restored a pact slot"
+
+
 def _op_spend_hit_die(state, op, limits):
     maximum = limits.get("hitDice")
     spent = state["hitDiceSpent"] + 1
@@ -261,6 +266,14 @@ def _op_use_charge(state, op, limits):
     if maximum is not None and spent > int(maximum):
         raise OpError("No uses remaining")
     state["uses"][feature] = spent
+
+    # Some charges carry temporary hit points with them (Adrenaline Rush).
+    # Spending and gaining are one tap at the table, so they are one operation
+    # here — two round trips could interleave with another device's ops.
+    if op.get("tempHp") is not None:
+        temp = _int_arg(op, "tempHp", low=0, high=500)
+        state["hp"]["temp"] = max(state["hp"]["temp"], temp)
+        return f"used a charge, +{temp} temp HP"
     return "used a charge"
 
 
@@ -603,6 +616,7 @@ OPS = {
     "spendSlot": _op_spend_slot,
     "restoreSlot": _op_restore_slot,
     "spendPactSlot": _op_spend_pact,
+    "restorePactSlot": _op_restore_pact,
     "spendHitDie": _op_spend_hit_die,
     "useCharge": _op_use_charge,
     "restoreCharge": _op_restore_charge,

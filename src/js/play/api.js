@@ -91,10 +91,22 @@ export function predict(state, op, limits) {
       const spent = (next.uses[op.feature] || 0) + 1;
       if (op.max != null && spent > op.max) return null;
       next.uses[op.feature] = spent;
+      // Charges that carry temporary hit points grant them on the same tap.
+      if (op.tempHp != null) next.hp.temp = Math.max(next.hp.temp || 0, op.tempHp);
       return next;
     }
     case 'restoreCharge':
       next.uses[op.feature] = Math.max(0, (next.uses[op.feature] || 0) - 1);
+      return next;
+    case 'spendPactSlot': {
+      const ceiling = (limits || {}).pact;
+      const spent = (next.pact || 0) + 1;
+      if (ceiling != null && spent > ceiling) return null;
+      next.pact = spent;
+      return next;
+    }
+    case 'restorePactSlot':
+      next.pact = Math.max(0, (next.pact || 0) - 1);
       return next;
     default:
       return null;
@@ -118,6 +130,10 @@ export function inverseOf(op, before) {
       return { op: 'restoreSlot', level: op.level };
     case 'restoreSlot':
       return { op: 'spendSlot', level: op.level };
+    case 'spendPactSlot':
+      return { op: 'restorePactSlot' };
+    case 'restorePactSlot':
+      return { op: 'spendPactSlot' };
     case 'useCharge':
       return { op: 'restoreCharge', feature: op.feature };
     case 'restoreCharge':

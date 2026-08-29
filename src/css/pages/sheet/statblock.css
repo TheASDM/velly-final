@@ -571,7 +571,7 @@ details[open] > .vos-sb-entry-head::before { transform: rotate(90deg); }
   .vos-sb { color: #000; }
   .vos-sb-name, .vos-sb-section-title, .vos-sb-vital-value { color: #000; }
   .vos-sb-section { break-inside: avoid; }
-  .vos-sb-entry-toggle, .vos-sb-hidden { display: none !important; }
+  .vos-sb-entry-toggle, .vos-sb-hidden, .vos-sb-res-pin { display: none !important; }
 }
 
 /* ── Attacks ───────────────────────────────────────────────────────── */
@@ -860,6 +860,34 @@ details[open] > .vos-sb-entry-head::before { transform: rotate(90deg); }
 }
 .vos-sb-res-grants li { margin: 0.1rem 0; }
 
+/* Passives that only matter while the feature is on, named where the player
+   is already looking. */
+.vos-sb-res-related {
+  margin: 0.25rem 0 0;
+  font-size: 0.8rem;
+  color: var(--vos-gold-dim);
+}
+.vos-sb-res-related b { color: #e2a05e; font-weight: 400; }
+
+/* Pin a counter to the play bar. Quiet until it is on. */
+.vos-sb-res-pin {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  color: var(--vos-gold-dim);
+  opacity: 0.55;
+  cursor: pointer;
+}
+.vos-sb-res-pin svg { width: 15px; height: 15px; }
+.vos-sb-res-pin:hover { color: var(--vos-cream); opacity: 1; }
+.vos-sb-res-pin.is-on { color: var(--vos-gold-bright); opacity: 1; }
+
 /* A finger needs more than a 15px circle. */
 @media (pointer: coarse) {
   .vos-sb-res-pip {
@@ -868,6 +896,8 @@ details[open] > .vos-sb-entry-head::before { transform: rotate(90deg); }
   }
   .vos-sb-res-use,
   .vos-sb-res-end { min-height: 38px; padding-inline: 0.85rem; }
+  .vos-sb-res-pin { width: 38px; height: 38px; }
+  .vos-sb-res-pin svg { width: 18px; height: 18px; }
 }
 
 @media print { .vos-sb-res { break-inside: avoid; } }

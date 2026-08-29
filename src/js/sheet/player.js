@@ -9,6 +9,7 @@ import { renderSheet, sheetSections } from './render.js';
 import { loadAllSheets, loadMySheet, loadRoster, whenPwaReady } from './data.js';
 import { normalizeStatblock } from '../statblock/normalize.js';
 import { renderStatblock } from '../statblock/render.js';
+import { barLabel } from '../statblock/labels.js';
 import { loadPlayState } from '../play/api.js';
 import { createControls } from '../play/controls.js';
 import { clock } from '../play/masquerade.js';
@@ -33,23 +34,30 @@ let maskTimer = null;
  * server — keyed by player name so the DM viewing as someone does not
  * overwrite their own. */
 let hidden = new Set();
+/* Resource ids the player put on the play bar themselves. The same kind of
+ * preference as hiding, stored the same way. */
+let pinned = new Set();
 
-function hiddenKey() {
-  return `vos-sheet-hidden:${payload && payload.playerName ? payload.playerName : ''}`;
+function prefKey(kind) {
+  return `vos-sheet-${kind}:${payload && payload.playerName ? payload.playerName : ''}`;
 }
 
-function loadHidden() {
-  try {
-    hidden = new Set(JSON.parse(window.localStorage.getItem(hiddenKey()) || '[]'));
-  } catch (error) {
-    hidden = new Set();
-  }
+function loadPrefs() {
+  const read = (kind) => {
+    try {
+      return new Set(JSON.parse(window.localStorage.getItem(prefKey(kind)) || '[]'));
+    } catch (error) {
+      return new Set();
+    }
+  };
+  hidden = read('hidden');
+  pinned = read('pinned');
 }
 
-function saveHidden() {
+function savePref(kind, values) {
   try {
-    window.localStorage.setItem(hiddenKey(), JSON.stringify([...hidden]));
-  } catch (error) { /* private mode — hiding still works until reload */ }
+    window.localStorage.setItem(prefKey(kind), JSON.stringify([...values]));
+  } catch (error) { /* private mode — the preference still works until reload */ }
 }
 
 function esc(value) {
@@ -110,6 +118,7 @@ function render() {
       identity: 'compact',
       hidden,
       hideable: true,
+      pinned,
     });
     renderPlayBar();
     renderMaskBanner();
@@ -195,8 +204,8 @@ function renderMaskBanner() {
   maskTimer = mask.paused ? null : setInterval(paint, 1000);
 }
 
-/* The bar lives at the bottom because that is where a thumb is. It holds the
- * three things touched every round and nothing else. */
+/* The bar lives at the bottom because that is where a thumb is. It holds
+ * what this character touches every round and nothing else. */
 /* Only a College of the Masquerade bard has masks, and the sheet says so —
  * the feature is on the character or it is not. */
 function hasMasks() {
@@ -204,29 +213,121 @@ function hasMasks() {
     .some((f) => (f.name || '').toLowerCase().startsWith('maschera ')));
 }
 
-/* Features that go on the bar: the ones with uses that change your numbers
- * when you spend one. Noname has Rage and nobody else has anything, which is
- * the point — the bar is built from the character, not from a list of names
- * kept in step by hand. */
-function activatableFeatures() {
-  return (statModel && statModel.activatable) || [];
+/* What goes on the bar is read from the character, not from a list of names
+ * kept in step by hand: features you switch on (Rage), Bonus-Action charges
+ * you spend (Bardic Inspiration, Adrenaline Rush), spells a feature casts for
+ * free (Hunter's Mark), a pact caster's slots, and once-per-turn riders
+ * (Sneak Attack). Each is a shape in the statblock, so the five characters
+ * get five different bars from the same code. */
+function spentOf(id) {
+  return Number(((play && play.state.uses) || {})[id] || 0);
+}
+
+function chargesLeft(feature) {
+  return Math.max(0, feature.uses.max - spentOf(feature.id));
 }
 
 function renderFeatureButtons() {
   const active = (play && play.state.active) || {};
-  const spent = (play && play.state.uses) || {};
 
-  return activatableFeatures().map((feature) => {
-    const left = Math.max(0, feature.uses.max - Number(spent[feature.id] || 0));
+  return ((statModel && statModel.activatable) || []).map((feature) => {
+    const left = chargesLeft(feature);
     const on = Boolean(active[feature.id]);
     return `<button type="button" class="vos-play-bar-btn is-feature${
       on ? ' is-on' : ''}${!on && !left ? ' is-spent' : ''}"
       data-bar="feature" data-feature="${esc(feature.id)}"
-      aria-pressed="${on}"
+      aria-pressed="${on}" title="${esc(feature.name)}"
       aria-label="${esc(feature.name)}: ${on ? 'active' : `${left} of ${feature.uses.max} uses left`}">
-      ${esc(feature.name)}<b>${on ? 'ON' : left}</b>
+      ${esc(barLabel(feature.name))}<b>${on ? 'ON' : left}</b>
     </button>`;
   }).join('');
+}
+
+/* Resources the player pinned to the bar themselves — Lucky, a lineage trait,
+ * whatever they reach for often enough to want under a thumb. Anything a
+ * structural rule already placed is skipped rather than doubled. */
+function pinnedExtras() {
+  if (!statModel) return [];
+  const taken = new Set([
+    ...(statModel.activatable || []).map((f) => f.id),
+    ...(statModel.quickSpend || []).map((f) => f.id),
+    ...(statModel.freeCasts || []).map((f) => f.id),
+    statModel.maskUses && statModel.maskUses.id,
+  ].filter(Boolean));
+  return [...pinned]
+    .filter((id) => !taken.has(id))
+    .map((id) => (statModel.features || []).find((f) => f.id === id))
+    .filter((f) => f && f.uses && f.uses.max > 0)
+    .map((f) => ({ id: f.id, name: f.name, uses: f.uses, tempHp: 0 }));
+}
+
+function quickSpendEntries() {
+  return [...((statModel && statModel.quickSpend) || []), ...pinnedExtras()];
+}
+
+function renderQuickSpendButtons() {
+  return quickSpendEntries().map((feature) => {
+    const left = chargesLeft(feature);
+    return `<button type="button" class="vos-play-bar-btn is-feature${left ? '' : ' is-spent'}"
+      data-bar="spend" data-feature="${esc(feature.id)}" title="${esc(feature.name)}"
+      aria-label="${esc(feature.name)}: ${left} of ${feature.uses.max} uses left">
+      ${esc(barLabel(feature.name))}<b>${left}</b>
+    </button>`;
+  }).join('');
+}
+
+function renderFreeCastButtons() {
+  const conc = play && play.state.concentration;
+  return ((statModel && statModel.freeCasts) || []).map((entry) => {
+    const on = Boolean(entry.concentration && conc && conc.spell === entry.spellName);
+    const left = chargesLeft(entry);
+    return `<button type="button" class="vos-play-bar-btn is-feature${
+      on ? ' is-on' : ''}${!on && !left ? ' is-spent' : ''}"
+      data-bar="cast" data-feature="${esc(entry.id)}"
+      aria-pressed="${on}" title="${esc(entry.spellName)} — ${esc(entry.featureName)}"
+      aria-label="${esc(entry.spellName)}: ${on ? 'active' : `${left} free casts left`}">
+      ${esc(barLabel(entry.spellName))}<b>${on ? 'ON' : left}</b>
+    </button>`;
+  }).join('');
+}
+
+/* A warlock's two slots ARE their casting — they earn a place on the bar
+ * itself, where a wizard's nine levels of pips would not fit and stay in the
+ * sheet body. Only when every slot is pact. */
+function renderPactPips() {
+  const sc = statModel && statModel.spellcasting;
+  if (!sc || !sc.slots.length || !sc.slots.every((slot) => slot.pact)) return '';
+  const slot = sc.slots[0];
+  const spent = Number((play && play.state.pact) || 0);
+  const left = Math.max(0, slot.max - spent);
+  const pips = Array.from({ length: slot.max }, (_, i) => {
+    const used = i >= left;
+    return `<span class="vos-play-bar-pip${used ? ' is-spent' : ''}" role="button" tabindex="0"
+      data-bar="pact-pip" data-spent="${used ? '1' : '0'}"
+      aria-label="Pact slot, ${used ? 'spent — tap to restore' : 'available — tap to spend'}"></span>`;
+  }).join('');
+  return `<div class="vos-play-bar-pact" aria-label="${left} of ${slot.max} pact slots left">
+    <span class="vos-play-bar-pact-label">Pact${slot.level ? ` ${slot.level}` : ''}</span>
+    <span class="vos-play-bar-pact-pips">${pips}</span>
+  </div>`;
+}
+
+function renderPerTurnChips() {
+  return ((statModel && statModel.perTurn) || []).map((feature) =>
+    `<button type="button" class="vos-play-bar-btn is-rule"
+      data-bar="rule" data-feature="${esc(feature.id)}"
+      title="${esc(feature.name)} — once per turn" aria-label="${esc(feature.name)} rules">
+      ${esc(barLabel(feature.name))}<i>1/turn</i>
+    </button>`).join('');
+}
+
+/* Offered only in the moment it applies: Dying, with the feature unspent.
+ * It sits beside the hit points because that is where the eyes already are. */
+function renderRescueButton(dying) {
+  const feature = statModel && statModel.zeroHpRescue;
+  if (!dying || !feature || !chargesLeft(feature)) return '';
+  return `<button type="button" class="vos-play-bar-btn is-rescue" data-bar="rescue"
+    title="${esc(feature.name)}">Stand at 1 HP</button>`;
 }
 
 function renderPlayBar() {
@@ -252,6 +353,22 @@ function renderPlayBar() {
       if (button.dataset.bar === 'prepare') controls.openPrepare();
       if (button.dataset.bar === 'rest') controls.openRests();
       if (button.dataset.bar === 'feature') controls.activateFeature(button.dataset.feature);
+      if (button.dataset.bar === 'spend') {
+        const entry = quickSpendEntries().find((f) => f.id === button.dataset.feature);
+        if (entry) {
+          controls.spendCharge({
+            id: entry.id, name: entry.name, max: entry.uses.max, tempHp: entry.tempHp,
+          });
+        }
+      }
+      if (button.dataset.bar === 'cast') controls.castFreeSpell(button.dataset.feature);
+      if (button.dataset.bar === 'rule') controls.openPerTurnRule(button.dataset.feature);
+      if (button.dataset.bar === 'rescue') controls.rescueFromZero();
+      if (button.dataset.bar === 'pact-pip') {
+        controls.apply({
+          op: button.dataset.spent === '1' ? 'restorePactSlot' : 'spendPactSlot',
+        });
+      }
     });
   }
 
@@ -261,6 +378,9 @@ function renderPlayBar() {
   const pct = max ? Math.max(0, Math.min(100, Math.round((current / max) * 100))) : 0;
   const conditions = (s.conditions || []).filter((c) => c !== 'dying').length;
   const dying = (s.conditions || []).includes('dying');
+
+  const maskUses = statModel && statModel.maskUses;
+  const maskLeft = maskUses ? Math.max(0, maskUses.uses.max - spentOf(maskUses.id)) : null;
 
   bar.innerHTML = `
     <button type="button" class="vos-play-bar-hp${dying ? ' is-dying' : ''}" data-bar="hp"
@@ -272,13 +392,19 @@ function renderPlayBar() {
       </span>
       ${dying ? '<span class="vos-play-bar-dying">Dying</span>' : ''}
     </button>
+    ${renderRescueButton(dying)}
     <button type="button" class="vos-play-bar-btn" data-bar="conditions">
       Conditions${conditions ? `<b>${conditions}</b>` : ''}
     </button>
-    ${hasMasks() ? '<button type="button" class="vos-play-bar-btn" data-bar="mask">Mask</button>' : ''}
+    ${hasMasks() ? `<button type="button" class="vos-play-bar-btn" data-bar="mask">Mask${
+      maskLeft != null ? `<b>${maskLeft}</b>` : ''}</button>` : ''}
     ${renderFeatureButtons()}
+    ${renderQuickSpendButtons()}
+    ${renderFreeCastButtons()}
+    ${renderPactPips()}
     ${statModel && statModel.spellcasting
       ? '<button type="button" class="vos-play-bar-btn" data-bar="prepare">Spells</button>' : ''}
+    ${renderPerTurnChips()}
     <button type="button" class="vos-play-bar-btn" data-bar="rest">Rest</button>`;
 }
 
@@ -324,16 +450,21 @@ function wire() {
     });
   }
 
-  // Hide / show entries. Delegated, because render() replaces the contents.
+  // Hide / show / pin entries. Delegated, because render() replaces the contents.
   root.addEventListener('click', (event) => {
-    const toggle = event.target.closest('[data-hide-entry], [data-show-entry]');
+    const toggle = event.target.closest(
+      '[data-hide-entry], [data-show-entry], [data-pin-entry], [data-unpin-entry]',
+    );
     if (!toggle || !root.contains(toggle)) return;
     // The toggle sits inside a <summary>; without this the row would also
     // expand or collapse under the tap.
     event.preventDefault();
     if (toggle.dataset.hideEntry) hidden.add(toggle.dataset.hideEntry);
     if (toggle.dataset.showEntry) hidden.delete(toggle.dataset.showEntry);
-    saveHidden();
+    if (toggle.dataset.pinEntry) pinned.add(toggle.dataset.pinEntry);
+    if (toggle.dataset.unpinEntry) pinned.delete(toggle.dataset.unpinEntry);
+    savePref('hidden', hidden);
+    savePref('pinned', pinned);
     /* Re-rendering closes every <details>. Bringing three things back should
      * not mean reopening the stash three times, so open stashes survive. */
     const openStashes = [...root.querySelectorAll('.vos-sb-section')]
@@ -502,7 +633,7 @@ async function boot() {
   /* Stats first: at the table the sheet is opened to act, not to reread the
    * backstory. The story tab is one tap away when it is wanted. */
   view = hasStats ? 'stats' : 'story';
-  loadHidden();
+  loadPrefs();
   renderViewingAs();
   wire();
   render();
