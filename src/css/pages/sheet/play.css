@@ -585,12 +585,6 @@
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
 }
-.vos-mask-banner.is-paused { border-style: dashed; }
-/* Time up is a state the table needs to notice, not a silent zero. */
-.vos-mask-banner.is-out {
-  border-color: rgba(212, 77, 63, 0.6);
-  background: linear-gradient(180deg, rgba(60, 20, 18, 0.96), rgba(14, 12, 19, 0.96));
-}
 .vos-mask-name {
   font-family: 'Cinzel', Georgia, serif;
   font-size: 0.82rem;
@@ -598,13 +592,6 @@
   text-transform: capitalize;
   color: var(--vos-gold-bright);
 }
-.vos-mask-clock {
-  font-family: 'Cinzel', Georgia, serif;
-  font-size: 0.98rem;
-  font-variant-numeric: tabular-nums;
-  color: var(--vos-cream);
-}
-.vos-mask-banner.is-out .vos-mask-clock { color: var(--vos-quest-bright); }
 .vos-mask-btn {
   min-height: 34px;
   padding: 0 0.6rem;

@@ -10,7 +10,8 @@
  */
 import { inverseOf, predict, sendOp } from './api.js';
 import { loadConditions, loadSpellList, preparedLimit, spellKey, spellListNameFor } from './reference.js';
-import { clock, formCrCap, formOverrides, formsForMask, loadForms, loadMasquerade, masksFor } from './masquerade.js';
+import { formCrCap, formOverrides, formsForMask, loadForms, loadMasquerade, masksFor } from './masquerade.js';
+import { cleanEnrichers } from '../statblock/html.js';
 
 const QUICK_DAMAGE = [1, 2, 3, 4, 5, 6, 7, 8, 10, 12, 15, 20];
 const HAPTIC_MS = 12;
@@ -473,8 +474,7 @@ export function createControls(options) {
       </button>`).join('');
 
     openSheet('The Masquerade', `
-      ${worn ? `<p class="vos-play-note">Wearing <b>${esc(worn.key)}</b> — ${
-        clock(worn.remainingMs)}${worn.paused ? ' (paused)' : ''} left.</p>` : ''}
+      ${worn ? `<p class="vos-play-note">Wearing <b>${esc(worn.key)}</b>.</p>` : ''}
       ${donningsLeft != null ? `<p class="vos-play-note">${donningsLeft} of ${
         model.maskUses.uses.max} donnings left today.</p>` : ''}
       ${cards}
@@ -573,10 +573,12 @@ export function createControls(options) {
         <b>${esc(note.label)}</b><span>${esc(note.value)}</span><i>${esc(note.why)}</i>
       </div>`).join('');
 
+    // The bestiary data still carries 5etools shorthand ({@h}, {@actSaveFail});
+    // resolved here so the form reads like the book, not like its source file.
     const block = (list, title) => (list.length ? `
       <h4 class="vos-play-form-h">${title}</h4>
       ${list.map((entry) => `<p class="vos-play-form-entry"><b>${esc(entry.name)}.</b> ${
-        esc(entry.text)}</p>`).join('')}` : '');
+        esc(cleanEnrichers(entry.text))}</p>`).join('')}` : '');
 
     return `
       <article class="vos-play-formblock">

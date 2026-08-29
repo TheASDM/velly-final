@@ -2,13 +2,13 @@
  *
  * Donning a mask, and becoming something else while wearing it.
  *
- * Two things make this more than a toggle. The mask runs a real ten-minute
- * clock that has to survive a locked phone — so it counts down from a server
- * timestamp rather than a local one, and pausing holds the remainder instead of
- * stopping a client-side interval. And assuming a form replaces the statblock
- * with a creature's, with the feature's overrides applied and visible: her
- * Intelligence stays, every DC in the creature's block becomes her spell save
- * DC, and her own hit points are held aside for the revert.
+ * The ten minutes are game time, so the app does not count them — a wall
+ * clock ticking through table talk was always wrong, and the table keeps its
+ * own time. What makes this more than a toggle is the form: assuming one
+ * replaces the statblock with a creature's, with the feature's overrides
+ * applied and visible — her Intelligence stays, every DC in the creature's
+ * block becomes her spell save DC, and her own hit points are held aside for
+ * the revert.
  */
 import { loadJsonCached } from './reference.js';
 
@@ -47,12 +47,6 @@ export function formCrCap(model) {
 export function formsForMask(forms, mask, cap) {
   if (!forms || !mask || !mask.type) return [];
   return (forms[mask.type] || []).filter((creature) => creature.crValue <= cap);
-}
-
-/* mm:ss from milliseconds, floored, never negative. */
-export function clock(ms) {
-  const total = Math.max(0, Math.floor(ms / 1000));
-  return `${Math.floor(total / 60)}:${String(total % 60).padStart(2, '0')}`;
 }
 
 /* A creature's statblock, rewritten as the feature says it applies.

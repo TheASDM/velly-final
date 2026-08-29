@@ -11,7 +11,6 @@
  */
 import { createControls } from './controls.js';
 import { loadPlayState, sendOp } from './api.js';
-import { clock } from './masquerade.js';
 
 const REFRESH_MS = 12000;
 
@@ -123,8 +122,7 @@ function card(entry) {
     </div>` : ''}
 
     ${s.mask ? `<div class="vos-party-mask">
-      ${esc(s.form ? s.form.creature : s.mask.key)} · ${clock(s.mask.remainingMs)}${
-        s.mask.paused ? ' paused' : ''}
+      ${esc(s.form ? s.form.creature : s.mask.key)}
     </div>` : ''}
 
     ${s.concentration ? `<div class="vos-party-conc">Concentrating: ${

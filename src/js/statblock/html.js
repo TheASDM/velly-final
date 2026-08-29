@@ -103,8 +103,31 @@ function replaceRolls(text) {
   });
 }
 
+/* 5etools' own inline tags, which imported bestiary data still carries.
+ * {@h}1 (1d4-1) is how the book writes "Hit: 1 (1d4-1)". The named ones are
+ * combat shorthand with fixed wording; any other {@tag text|source|display}
+ * keeps its display text, same rule as the doc links above. */
+const FIVETOOLS_TAGS = {
+  h: 'Hit: ',
+  hom: 'Hit or Miss: ',
+  actsavefail: 'Failure: ',
+  actsavesuccess: 'Success: ',
+  actsavesuccessorfail: 'Success or Failure: ',
+};
+
+function replaceCurlyTags(text) {
+  return text.replace(/\{@([a-zA-Z]+)(?: ([^{}]*))?\}/g, (_match, tag, body = '') => {
+    const fixed = FIVETOOLS_TAGS[tag.toLowerCase()];
+    if (fixed !== undefined) return fixed;
+    if (tag.toLowerCase() === 'recharge') return `(Recharge ${body ? `${body}–6` : '6'})`;
+    const parts = body.split('|');
+    return parts.length === 3 && parts[2].trim() ? parts[2] : parts[0];
+  });
+}
+
 export function cleanEnrichers(html) {
   let text = String(html ?? '');
+  text = replaceCurlyTags(text);
   text = replaceDocLinks(text);
   text = replaceReferences(text);
   text = replaceRolls(text);

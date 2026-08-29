@@ -12,7 +12,6 @@ import { renderStatblock } from '../statblock/render.js';
 import { barLabel } from '../statblock/labels.js';
 import { loadPlayState } from '../play/api.js';
 import { createControls } from '../play/controls.js';
-import { clock } from '../play/masquerade.js';
 
 const root = document.getElementById('vos-sheet-root');
 const indexEl = document.getElementById('vos-sheet-index');
@@ -28,7 +27,6 @@ let controls = null;
  * could drift from what the player actually sees. */
 let viewingAs = null;
 let statModel = null;
-let maskTimer = null;
 /* Entry ids (features, spells, items) this player has tucked away. A reading
  * preference, not play state, so it lives on the device rather than the
  * server — keyed by player name so the DM viewing as someone does not
@@ -135,12 +133,6 @@ function render() {
   renderIndex(markdown);
 }
 
-/* The mask banner.
- *
- * The countdown ticks locally for smoothness but is anchored to the remaining
- * time the server reported, so a locked phone or a reloaded tab picks up the
- * real answer rather than a drifted one.
- */
 /* Whose sheet this is. Unmistakable, because acting here changes their
  * character rather than yours. */
 function renderViewingAs() {
@@ -155,13 +147,14 @@ function renderViewingAs() {
   if (page) page.insertBefore(bar, page.firstChild);
 }
 
+/* The mask banner: what is worn, and the ways out of it. No countdown — the
+ * ten minutes are game time, and a wall clock ticking through table talk was
+ * always wrong. The table keeps the time; the banner keeps the buttons. */
 function renderMaskBanner() {
   let banner = document.getElementById('vos-mask-banner');
   const mask = play && play.state.mask;
   if (view !== 'stats' || !mask) {
     if (banner) banner.remove();
-    clearInterval(maskTimer);
-    maskTimer = null;
     return;
   }
   if (!banner) {
@@ -175,33 +168,17 @@ function renderMaskBanner() {
       const action = button.dataset.maskAction;
       if (action === 'form') controls.openForms();
       if (action === 'revert') controls.apply({ op: 'revertForm' });
-      if (action === 'pause') controls.apply({ op: mask.paused ? 'resumeMask' : 'pauseMask' });
       if (action === 'remove') controls.apply({ op: 'removeMask' });
     });
   }
 
-  const anchor = Date.now();
-  const paint = () => {
-    const left = mask.paused
-      ? mask.remainingMs
-      : Math.max(0, mask.remainingMs - (Date.now() - anchor));
-    const form = play.state.form;
-    banner.className = `vos-mask-banner${mask.paused ? ' is-paused' : ''}${left <= 0 ? ' is-out' : ''}`;
-    banner.innerHTML = `
-      <span class="vos-mask-name">${form ? form.creature : mask.key}</span>
-      <span class="vos-mask-clock">${clock(left)}${mask.paused ? ' paused' : ''}</span>
-      <button type="button" class="vos-mask-btn" data-mask-action="pause"
-              aria-label="${mask.paused ? 'Resume' : 'Pause'} the timer">${
-        mask.paused ? '▶' : '❚❚'}</button>
-      ${form
-        ? '<button type="button" class="vos-mask-btn is-text" data-mask-action="revert">Revert</button>'
-        : '<button type="button" class="vos-mask-btn is-text" data-mask-action="form">Assume form</button>'}
-      <button type="button" class="vos-mask-btn is-text" data-mask-action="remove">Remove</button>`;
-  };
-
-  paint();
-  clearInterval(maskTimer);
-  maskTimer = mask.paused ? null : setInterval(paint, 1000);
+  const form = play.state.form;
+  banner.innerHTML = `
+    <span class="vos-mask-name">${form ? form.creature : mask.key}</span>
+    ${form
+      ? '<button type="button" class="vos-mask-btn is-text" data-mask-action="revert">Revert</button>'
+      : '<button type="button" class="vos-mask-btn is-text" data-mask-action="form">Assume form</button>'}
+    <button type="button" class="vos-mask-btn is-text" data-mask-action="remove">Remove</button>`;
 }
 
 /* The bar lives at the bottom because that is where a thumb is. It holds
