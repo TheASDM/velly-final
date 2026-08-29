@@ -115,11 +115,28 @@ const FIVETOOLS_TAGS = {
   actsavesuccessorfail: 'Success or Failure: ',
 };
 
+/* {@atk mw} carries the attack kind in code; the book spells it out. */
+const FIVETOOLS_ATTACKS = {
+  mw: 'Melee Weapon Attack:',
+  rw: 'Ranged Weapon Attack:',
+  'mw,rw': 'Melee or Ranged Weapon Attack:',
+  ms: 'Melee Spell Attack:',
+  rs: 'Ranged Spell Attack:',
+  'ms,rs': 'Melee or Ranged Spell Attack:',
+  m: 'Melee Attack Roll:',
+  r: 'Ranged Attack Roll:',
+  'm,r': 'Melee or Ranged Attack Roll:',
+};
+
 function replaceCurlyTags(text) {
   return text.replace(/\{@([a-zA-Z]+)(?: ([^{}]*))?\}/g, (_match, tag, body = '') => {
-    const fixed = FIVETOOLS_TAGS[tag.toLowerCase()];
+    const kind = tag.toLowerCase();
+    const fixed = FIVETOOLS_TAGS[kind];
     if (fixed !== undefined) return fixed;
-    if (tag.toLowerCase() === 'recharge') return `(Recharge ${body ? `${body}–6` : '6'})`;
+    if (kind === 'recharge') return `(Recharge ${body ? `${body}–6` : '6'})`;
+    if (kind === 'atk') return FIVETOOLS_ATTACKS[body.replace(/\s/g, '')] ?? body;
+    if (kind === 'hit') return /^[+-]/.test(body.trim()) ? body.trim() : `+${body.trim()}`;
+    if (kind === 'dc') return `DC ${body.trim()}`;
     const parts = body.split('|');
     return parts.length === 3 && parts[2].trim() ? parts[2] : parts[0];
   });

@@ -1,0 +1,426 @@
+{
+ "_meta": {
+  "source": "VGM bestiary, curated for the Vallombrosa DM reference"
+ },
+ "monster": [
+  {
+   "name": "Darkling Elder",
+   "source": "VGM",
+   "size": [
+    "M"
+   ],
+   "type": "fey",
+   "alignment": [
+    "C",
+    "N"
+   ],
+   "ac": [
+    {
+     "ac": 15,
+     "from": [
+      "{@item studded leather armor|phb|studded leather}"
+     ]
+    }
+   ],
+   "hp": {
+    "average": 27,
+    "formula": "5d8 + 5"
+   },
+   "speed": {
+    "walk": 30
+   },
+   "str": 13,
+   "dex": 17,
+   "con": 12,
+   "int": 10,
+   "wis": 14,
+   "cha": 13,
+   "skill": {
+    "acrobatics": "+5",
+    "deception": "+3",
+    "perception": "+6",
+    "stealth": "+7"
+   },
+   "senses": [
+    "blindsight 30 ft.",
+    "darkvision 120 ft."
+   ],
+   "passive": 16,
+   "languages": [
+    "Elvish",
+    "Sylvan"
+   ],
+   "cr": "2",
+   "trait": [
+    {
+     "name": "Death Burn",
+     "entries": [
+      "When the darkling elder dies, magical light flashes out from it in a 10-foot radius as its body and possessions, other than metal or magic objects, burn to ash. Any creature in that area must make a {@dc 11} Constitution saving throw. On a failure, the creature takes 7 ({@damage 2d6}) radiant damage and, if the creature can see the light, is {@condition blinded} until the end of its next turn. If the saving throw is successful, the creature takes half the damage and isn't {@condition blinded}."
+     ]
+    }
+   ],
+   "action": [
+    {
+     "name": "Multiattack",
+     "entries": [
+      "The darkling elder makes two melee attacks."
+     ]
+    },
+    {
+     "name": "Shortsword",
+     "entries": [
+      "{@atk mw} {@hit 5} to hit, reach 5 ft., one target. {@h}6 ({@damage 1d6 + 3}) piercing damage. If the darkling elder had advantage on the attack roll, the attack deals as: extra 10 ({@damage 3d6}) piercing damage."
+     ]
+    },
+    {
+     "name": "Darkness (Recharges after a Short or Long Rest)",
+     "entries": [
+      "The darkling elder casts {@spell darkness} without any components. Wisdom is its spellcasting ability."
+     ]
+    }
+   ]
+  },
+  {
+   "name": "Redcap",
+   "source": "VGM",
+   "size": [
+    "S"
+   ],
+   "type": "fey",
+   "alignment": [
+    "C",
+    "E"
+   ],
+   "ac": [
+    {
+     "ac": 13,
+     "from": [
+      "natural armor"
+     ]
+    }
+   ],
+   "hp": {
+    "average": 45,
+    "formula": "6d6 + 24"
+   },
+   "speed": {
+    "walk": 25
+   },
+   "str": 18,
+   "dex": 13,
+   "con": 18,
+   "int": 10,
+   "wis": 12,
+   "cha": 9,
+   "skill": {
+    "athletics": "+6",
+    "perception": "+3"
+   },
+   "senses": [
+    "darkvision 60 ft."
+   ],
+   "passive": 13,
+   "languages": [
+    "Common",
+    "Sylvan"
+   ],
+   "cr": "3",
+   "trait": [
+    {
+     "name": "Iron Boots",
+     "entries": [
+      "While moving, the redcap has disadvantage on Dexterity ({@skill Stealth}) checks."
+     ]
+    },
+    {
+     "name": "Outsize Strength",
+     "entries": [
+      "While grappling, the redcap is considered to be Medium. Also, wielding a heavy weapon doesn't impose disadvantage on its attack rolls."
+     ]
+    }
+   ],
+   "action": [
+    {
+     "name": "Multiattack",
+     "entries": [
+      "The redcap makes three attacks with its wicked sickle."
+     ]
+    },
+    {
+     "name": "Wicked Sickle",
+     "entries": [
+      "{@atk mw} {@hit 6} to hit, reach 5 ft., one target. {@h}9 ({@damage 2d4 + 4}) slashing damage."
+     ]
+    },
+    {
+     "name": "Ironbound Pursuit",
+     "entries": [
+      "The redcap moves up to its speed to a creature it can see and kicks with its iron boots. The target must succeed on a {@dc 14} Dexterity saving throw or take 20 ({@damage 3d10 + 4}) bludgeoning damage and be knocked {@condition prone}."
+     ]
+    }
+   ],
+   "variant": [
+    {
+     "type": "variant",
+     "name": "Madcap",
+     "entries": [
+      "A madcap is a redcap that soaks its hat in demon ichor instead of blood. Contact with demon ichor makes the creature even more psychotic, causing it to brood over irrational hatreds. A group of madcaps will sometimes band together over a shared hatred of something, such as music, creatures with curly hair, the word \"cool,\" or the color blue.",
+      "When a madcap drops to 0 hit points, its hateful existence comes to an end in spectacular fashion as it bursts into flames, reducing itself, its ichor-soaked hat, and its pants to ashes instantly while leaving behind its weapon and smoldering iron boots."
+     ],
+     "_version": {
+      "name": "Madcap",
+      "addAs": "trait"
+     },
+     "source": "BGDIA",
+     "page": 240
+    }
+   ]
+  },
+  {
+   "name": "Meenlock",
+   "source": "VGM",
+   "size": [
+    "S"
+   ],
+   "type": "fey",
+   "alignment": [
+    "N",
+    "E"
+   ],
+   "ac": [
+    {
+     "ac": 15,
+     "from": [
+      "natural armor"
+     ]
+    }
+   ],
+   "hp": {
+    "average": 31,
+    "formula": "7d6 + 7"
+   },
+   "speed": {
+    "walk": 30
+   },
+   "str": 7,
+   "dex": 15,
+   "con": 12,
+   "int": 11,
+   "wis": 10,
+   "cha": 8,
+   "skill": {
+    "perception": "+4",
+    "stealth": "+6",
+    "survival": "+2"
+   },
+   "senses": [
+    "darkvision 120 ft."
+   ],
+   "passive": 14,
+   "conditionImmune": [
+    "frightened"
+   ],
+   "languages": [
+    "telepathy 120 ft."
+   ],
+   "cr": "2",
+   "trait": [
+    {
+     "name": "Fear Aura",
+     "entries": [
+      "Any beast or humanoid that starts its turn within 10 feet of the meenlock must succeed on a {@dc 11} Wisdom saving throw or be {@condition frightened} until the start of the creature's next turn."
+     ]
+    },
+    {
+     "name": "Light Sensitivity",
+     "entries": [
+      "While in bright light, the meenlock has disadvantage on attack rolls, as well as on Wisdom ({@skill Perception}) checks that rely on sight."
+     ]
+    },
+    {
+     "name": "Shadow Teleport {@recharge 5}",
+     "entries": [
+      "As a bonus action, the meenlock can teleport to an unoccupied space within 30 feet of it, provided that both the space it's teleporting from and its destination are in dim light or darkness. The destination need not be within line of sight."
+     ]
+    }
+   ],
+   "action": [
+    {
+     "name": "Claws",
+     "entries": [
+      "{@atk mw} {@hit 4} to hit, reach 5 ft., one target. {@h}7 ({@damage 2d4 + 2}) slashing damage, and the target must succeed on a {@dc 11} Constitution saving throw or be {@condition paralyzed} for 1 minute. The target can repeat the saving throw at the end of each of its turns, ending the effect on itself on a success."
+     ]
+    }
+   ]
+  },
+  {
+   "name": "Yeth Hound",
+   "source": "VGM",
+   "size": [
+    "L"
+   ],
+   "type": "fey",
+   "alignment": [
+    "N",
+    "E"
+   ],
+   "ac": [
+    {
+     "ac": 14,
+     "from": [
+      "natural armor"
+     ]
+    }
+   ],
+   "hp": {
+    "average": 51,
+    "formula": "6d10 + 18"
+   },
+   "speed": {
+    "walk": 40,
+    "fly": {
+     "number": 40,
+     "condition": "(hover)"
+    },
+    "canHover": true
+   },
+   "str": 18,
+   "dex": 17,
+   "con": 16,
+   "int": 5,
+   "wis": 12,
+   "cha": 7,
+   "senses": [
+    "darkvision 60 ft."
+   ],
+   "passive": 11,
+   "immune": [
+    {
+     "immune": [
+      "bludgeoning",
+      "piercing",
+      "slashing"
+     ],
+     "note": "from nonmagical attacks not made with silvered weapons",
+     "cond": true
+    }
+   ],
+   "conditionImmune": [
+    "charmed",
+    "exhaustion",
+    "frightened"
+   ],
+   "languages": [
+    "understands Common",
+    "Elvish",
+    "and Sylvan but can't speak"
+   ],
+   "cr": "4",
+   "trait": [
+    {
+     "name": "Keen Hearing and Smell",
+     "entries": [
+      "The yeth hound has advantage on Wisdom ({@skill Perception}) checks that rely on hearing or smell."
+     ]
+    },
+    {
+     "name": "Sunlight Banishment",
+     "entries": [
+      "If the yeth hound starts its turn in sunlight, it is transported to the Ethereal Plane. While sunlight shines on the spot from which it vanished, the hound must remain in the Deep Ethereal. After sunset, it returns to the Border Ethereal at the same spot, whereupon it typically sets out to find its pack or its master. The hound is visible on the Material Plane while it is in the Border Ethereal, and vice versa, but it can't affect or be affected by anything on the other plane. Once it is adjacent to its master or a pack mate that is on the Material Plane, a yeth hound in the Border Ethereal can return to the Material Plane as an action."
+     ]
+    },
+    {
+     "name": "Telepathic Bond",
+     "entries": [
+      "While the yeth hound is on the same plane of existence as its master, it can magically convey what it senses to its master, and the two can communicate telepathically with each other."
+     ]
+    }
+   ],
+   "action": [
+    {
+     "name": "Bite",
+     "entries": [
+      "{@atk mw} {@hit 6} to hit, reach 5 ft., one target. {@h}11 ({@damage 2d6 + 4}) piercing damage, plus 14 ({@damage 4d6}) psychic damage if the target is {@condition frightened}."
+     ]
+    },
+    {
+     "name": "Baleful Baying",
+     "entries": [
+      "The yeth hound bays magically. Every enemy within 300 feet of the hound that can hear it must succeed on a {@dc 13} Wisdom saving throw or be {@condition frightened} until the end of the hound's next turn or until the hound is {@condition incapacitated}. A {@condition frightened} target that starts its turn within 30 feet of the hound must use all its movement on that turn to get as far from the hound as possible, must finish the move before taking an action, and must take the most direct route, even if hazards lie that way. A target that successfully saves is immune to the baying of all yeth hounds for the next 24 hours."
+     ]
+    }
+   ]
+  },
+  {
+   "name": "Quickling",
+   "source": "VGM",
+   "size": [
+    "T"
+   ],
+   "type": "fey",
+   "alignment": [
+    "C",
+    "E"
+   ],
+   "ac": [
+    16
+   ],
+   "hp": {
+    "average": 10,
+    "formula": "3d4 + 3"
+   },
+   "speed": {
+    "walk": 120
+   },
+   "str": 4,
+   "dex": 23,
+   "con": 13,
+   "int": 10,
+   "wis": 12,
+   "cha": 7,
+   "skill": {
+    "acrobatics": "+8",
+    "perception": "+5",
+    "sleight of hand": "+8",
+    "stealth": "+8"
+   },
+   "senses": [
+    "darkvision 60 ft."
+   ],
+   "passive": 15,
+   "languages": [
+    "Common",
+    "Sylvan"
+   ],
+   "cr": "1",
+   "trait": [
+    {
+     "name": "Blurred Movement",
+     "entries": [
+      "Attack rolls against the quickling have disadvantage unless the quickling is {@condition incapacitated} or {@condition restrained}."
+     ]
+    },
+    {
+     "name": "Evasion",
+     "entries": [
+      "If the quickling is subjected to an effect that allows it to make a Dexterity saving throw to take only half damage, it instead takes no damage if it succeeds on the saving throw, and only half damage if it fails."
+     ]
+    }
+   ],
+   "action": [
+    {
+     "name": "Multiattack",
+     "entries": [
+      "The quickling makes three dagger attacks."
+     ]
+    },
+    {
+     "name": "Dagger",
+     "entries": [
+      "{@atk mw,rw} {@hit 8} to hit, reach 5 ft. or range 20/60 ft., one target. {@h}8 ({@damage 1d4 + 6}) piercing damage."
+     ]
+    }
+   ]
+  }
+ ]
+}
