@@ -163,6 +163,8 @@ export const handoutTextEl = document.getElementById('vos-dm-handout-text');
 
 export const handoutPlayersEl = document.getElementById('vos-dm-handout-players');
 
+export const handoutImageEl = document.getElementById('vos-dm-handout-image');
+
 export const handoutSaveEl = document.getElementById('vos-dm-handout-save');
 
 export const handoutCancelEl = document.getElementById('vos-dm-handout-cancel');

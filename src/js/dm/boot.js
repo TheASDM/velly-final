@@ -6,8 +6,8 @@ import { refreshPushSubscribers } from './push.js';
 import { refreshQuestionnaires } from './questionnaires.js';
 import { refreshRsvps } from './rsvp.js';
 import { addRumor, refreshRumors } from './rumors.js';
-import { cancelHandoutEdit, refreshHandouts, saveHandout } from './handouts.js';
-import { handoutCancelEl, handoutFormEl, handoutsRefreshEl } from './state.js';
+import { attachHandoutImage, cancelHandoutEdit, refreshHandouts, saveHandout } from './handouts.js';
+import { handoutCancelEl, handoutFormEl, handoutImageEl, handoutsRefreshEl } from './state.js';
 import { availRefreshEl, calCancelEl, calFormEl, calRefreshEl, historyRefreshEl, loreBulkPublishEl, loreBulkRejectEl, loreForm, loreRedraftEl, loreRefreshEl, loreRejectEl, loreSaveEl, loreSelectAllEl, npcRollEl, pushSubsRefreshEl, recordsRefreshEl, rsvpRefreshEl, rumorFormEl, rumorsRefreshEl, setStatus, showDeletedEl, triggerRebuild, wikiForm, wikiLoadEl, wikiQueryEl, wikiRebuildEl, wikiStatusEl } from './state.js';
 import { loadAdminDataOnce } from './tabs.js';
 import { loadWikiEntry, saveWikiEntry } from './wiki.js';
@@ -28,6 +28,7 @@ if (rumorFormEl) rumorFormEl.addEventListener('submit', addRumor);
 if (handoutFormEl) handoutFormEl.addEventListener('submit', saveHandout);
 if (handoutCancelEl) handoutCancelEl.addEventListener('click', cancelHandoutEdit);
 if (handoutsRefreshEl) handoutsRefreshEl.addEventListener('click', refreshHandouts);
+if (handoutImageEl) handoutImageEl.addEventListener('change', attachHandoutImage);
 
 if (rumorsRefreshEl) rumorsRefreshEl.addEventListener('click', refreshRumors);
 

@@ -7,8 +7,8 @@
  */
 import {
   authHeaders, getToken, handoutCancelEl, handoutFormEl, handoutIdEl,
-  handoutPlayersEl, handoutSaveEl, handoutTextEl, handoutTitleEl,
-  handoutsListEl, handoutsStatusEl, setStatus,
+  handoutImageEl, handoutPlayersEl, handoutSaveEl, handoutTextEl,
+  handoutTitleEl, handoutsListEl, handoutsStatusEl, setStatus,
 } from './state.js';
 
 let rosterLoaded = false;
@@ -133,6 +133,39 @@ export async function saveHandout(eventArg) {
     refreshHandouts();
   } catch (error) {
     setStatus(handoutsStatusEl, error.message, true);
+  }
+}
+
+/* Upload the chosen image and drop its markdown line into the text at the
+ * cursor. The image is the DM's draft until a saved handout references it —
+ * players can only fetch what their own handouts mention. */
+export async function attachHandoutImage() {
+  const file = handoutImageEl.files && handoutImageEl.files[0];
+  if (!file) return;
+  const token = getToken(handoutsStatusEl);
+  if (!token) return;
+
+  const form = new FormData();
+  form.append('image', file);
+  setStatus(handoutsStatusEl, 'Uploading image...');
+  try {
+    const response = await fetch('/api/handouts/image', {
+      method: 'POST',
+      headers: authHeaders(token),
+      body: form,
+    });
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok) throw new Error(data.error || `HTTP ${response.status}`);
+
+    const text = handoutTextEl.value;
+    const at = handoutTextEl.selectionStart != null ? handoutTextEl.selectionStart : text.length;
+    const line = `${at && text[at - 1] !== '\n' ? '\n' : ''}${data.markdown}\n`;
+    handoutTextEl.value = text.slice(0, at) + line + text.slice(at);
+    setStatus(handoutsStatusEl, 'Image attached — it shows where the line sits.');
+  } catch (error) {
+    setStatus(handoutsStatusEl, error.message, true);
+  } finally {
+    handoutImageEl.value = '';
   }
 }
 

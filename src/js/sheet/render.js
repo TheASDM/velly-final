@@ -20,6 +20,10 @@
 import { escapeHtml, renderSafeMarkdownInline as inline } from '../pwa/core.js';
 
 const HEADING = /^(#{1,4})\s+(.+)$/;
+/* An image on its own line. The source must be same-origin (a leading /) —
+ * handout images live under /api/handouts/image/ and nothing in these
+ * documents should ever reach out to another host. */
+const IMAGE_LINE = /^!\[([^\]]*)\]\((\/[^)\s]+)\)$/;
 const TABLE_ROW = /^\s*\|(.+)\|\s*$/;
 const TABLE_DIVIDER = /^\s*\|[\s:|-]+\|\s*$/;
 const LABEL_LINE = /^\*\*([^*]{1,80}?):?\*\*[:：]?\s*(.*)$/;
@@ -114,6 +118,17 @@ function renderBlocks(lines) {
       continue;
     }
 
+    // An image block, with its alt text doubling as the caption.
+    if (IMAGE_LINE.test(line.trim())) {
+      const [, alt, src] = line.trim().match(IMAGE_LINE);
+      out.push(`<figure class="vos-sheet-image">
+        <img src="${escapeHtml(src)}" alt="${escapeHtml(alt)}" loading="lazy">
+        ${alt ? `<figcaption>${inline(alt)}</figcaption>` : ''}
+      </figure>`);
+      index += 1;
+      continue;
+    }
+
     // Table: a row, optionally followed by a |---|---| divider.
     if (splitRow(line)) {
       const rows = [];
@@ -165,6 +180,7 @@ function renderBlocks(lines) {
       !splitRow(lines[index]) &&
       !RULE.test(lines[index]) &&
       !LABEL_LINE.test(lines[index]) &&
+      !IMAGE_LINE.test(lines[index].trim()) &&
       !/^\s*>\s?/.test(lines[index]) &&
       !/^\s*[-*+]\s+/.test(lines[index]) &&
       !HEADING.test(lines[index])

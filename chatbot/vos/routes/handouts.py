@@ -15,6 +15,22 @@ bp = Blueprint("handouts", __name__)
 TITLE_MAX = 200
 MARKDOWN_MAX = 60_000
 
+# Uploaded handout images. Runtime data like the database, and kept beside it
+# so a backup of app-data captures both.
+HANDOUT_IMAGE_DIR = APP_DB_PATH.parent / "handout-images"
+IMAGE_MAX_BYTES = 8 * 1024 * 1024
+IMAGE_TYPES = {"image/png": ".png", "image/jpeg": ".jpg",
+               "image/webp": ".webp", "image/gif": ".gif"}
+# What the first bytes of each accepted format actually look like — the
+# client's declared type is a claim, not a fact.
+IMAGE_MAGIC = {
+    ".png": (b"\x89PNG",),
+    ".jpg": (b"\xff\xd8\xff",),
+    ".webp": (b"RIFF",),
+    ".gif": (b"GIF87a", b"GIF89a"),
+}
+IMAGE_NAME = re.compile(r"^[0-9a-f]{24}\.(png|jpg|webp|gif)$")
+
 
 def _row_for_player(row):
     return {
@@ -147,6 +163,68 @@ def api_update_handout(handout_id):
     return jsonify({"ok": True, "id": handout_id})
 
 
+@bp.post("/api/handouts/image")
+def api_upload_handout_image():
+    """Accept one image and answer with the markdown line that shows it."""
+    admin_error = _admin_error_response()
+    if admin_error:
+        return admin_error
+
+    upload = request.files.get("image")
+    if upload is None:
+        return jsonify({"error": "Send the file as multipart field 'image'."}), 400
+    ext = IMAGE_TYPES.get((upload.mimetype or "").lower())
+    if not ext:
+        return jsonify({"error": "PNG, JPEG, WebP or GIF only."}), 415
+
+    data = upload.read(IMAGE_MAX_BYTES + 1)
+    if len(data) > IMAGE_MAX_BYTES:
+        return jsonify({"error": f"Image is larger than {IMAGE_MAX_BYTES // (1024 * 1024)} MB."}), 413
+    if not any(data.startswith(magic) for magic in IMAGE_MAGIC[ext]):
+        return jsonify({"error": "That file does not look like the image type it claims."}), 415
+
+    HANDOUT_IMAGE_DIR.mkdir(parents=True, exist_ok=True)
+    filename = secrets.token_hex(12) + ext
+    (HANDOUT_IMAGE_DIR / filename).write_bytes(data)
+
+    url = f"/api/handouts/image/{filename}"
+    return jsonify({"ok": True, "url": url, "markdown": f"![]({url})"}), 201
+
+
+@bp.get("/api/handouts/image/<filename>")
+def api_handout_image(filename):
+    """Serve one handout image — to the DM, or to a player whose handout
+    references it. The browser sends the auth cookie with the <img> request,
+    so this is a real check, not an unguessable-name hope. An image nobody's
+    handout mentions yet is the DM's draft and only the DM sees it."""
+    if not IMAGE_NAME.fullmatch(filename):
+        abort(404)
+    caller = _verify_player_token(_extract_player_token())
+    if not caller:
+        abort(404)
+
+    if not _is_dm_player(caller):
+        with _app_db() as conn:
+            rows = conn.execute(
+                "SELECT players FROM handouts WHERE markdown LIKE ?",
+                (f"%{filename}%",),
+            ).fetchall()
+        allowed = False
+        for row in rows:
+            try:
+                if caller in json.loads(row["players"]):
+                    allowed = True
+                    break
+            except (TypeError, ValueError):
+                continue
+        if not allowed:
+            abort(404)
+
+    if not (HANDOUT_IMAGE_DIR / filename).exists():
+        abort(404)
+    return send_from_directory(HANDOUT_IMAGE_DIR, filename, max_age=3600)
+
+
 @bp.delete("/api/handouts/<int:handout_id>")
 def api_delete_handout(handout_id):
     admin_error = _admin_error_response()
@@ -160,4 +238,5 @@ def api_delete_handout(handout_id):
 
 
 __all__ = ['api_my_handouts', 'api_all_handouts', 'api_create_handout',
-           'api_update_handout', 'api_delete_handout']
+           'api_update_handout', 'api_delete_handout',
+           'api_upload_handout_image', 'api_handout_image']

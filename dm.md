@@ -390,6 +390,11 @@ pageStyles:
         <textarea id="vos-dm-handout-text" rows="10"
                   placeholder="## What it says&#10;&#10;The paper smells of lamp oil…"></textarea>
       </label>
+      <label>
+        Attach an image (drops a line into the text where your cursor is)
+        <input type="file" id="vos-dm-handout-image"
+               accept="image/png,image/jpeg,image/webp,image/gif">
+      </label>
       <fieldset class="vos-dm-handout-players">
         <legend>Who sees it</legend>
         <div id="vos-dm-handout-players"></div>

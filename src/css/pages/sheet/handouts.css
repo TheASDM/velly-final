@@ -57,6 +57,23 @@
 /* The document renderer brings its own top padding via the sheet header. */
 .vos-handout-body .vos-sheet { padding-top: 0.4rem; }
 
+/* Images inside any sheet-dialect document — handouts most of all. */
+.vos-sheet-image {
+  margin: 0.9rem 0;
+}
+.vos-sheet-image img {
+  display: block;
+  max-width: 100%;
+  border: 1px solid var(--vos-border);
+  border-radius: 10px;
+}
+.vos-sheet-image figcaption {
+  margin-top: 0.35rem;
+  font-size: 0.78rem;
+  font-style: italic;
+  color: var(--vos-gold-dim);
+}
+
 @media print {
   .vos-handout { break-inside: avoid; }
   .vos-handout > summary::before { display: none; }
