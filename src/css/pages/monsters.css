@@ -56,6 +56,23 @@
   color: var(--vos-text);
   text-decoration: none;
 }
+/* On a phone the nineteen tabs would wrap to six rows and the sticky header
+   would own half the screen. One scrolling row costs 44px and a thumb-flick;
+   wrapping is a luxury of wide screens. */
+@media (max-width: 40rem) {
+  .vos-mon-index {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  .vos-mon-index::-webkit-scrollbar { display: none; }
+  .vos-mon-index a { flex: 0 0 auto; white-space: nowrap; }
+}
+@media (pointer: coarse) {
+  .vos-mon-index a { min-height: 42px; }
+}
+
 .vos-mon-index a:hover { border-color: var(--vos-border-strong); color: var(--vos-gold-bright); }
 .vos-mon-index a i {
   font-style: normal;

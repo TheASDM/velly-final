@@ -39,6 +39,13 @@ function render() {
         aria-selected="${mon === current}">${mon.name}<i>${crOf(mon)}</i></a>`).join('')
 }</nav>
     ${renderMonster(current)}`;
+
+  // On a phone the tab row scrolls; the active tab should never be the one
+  // hiding off the edge.
+  const active = root.querySelector('.vos-mon-index .is-on');
+  if (active && active.scrollIntoView) {
+    active.scrollIntoView({ block: 'nearest', inline: 'center' });
+  }
 }
 
 async function boot() {
