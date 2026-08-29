@@ -156,6 +156,41 @@ function featureSection(title, features) {
   return `<h4 class="vos-mon-h">${esc(title)}</h4>${features.map(featureHtml).join('')}`;
 }
 
+/* Innate spellcasting, 2024-style: a header sentence, then spells grouped by
+ * frequency. `hidden` names the groups the header already covers in prose. */
+const SPELL_FREQ = { will: 'At Will', daily: '/Day', rest: '/Rest', restLong: '/Long Rest' };
+
+function spellGroups(sc) {
+  const hidden = new Set(sc.hidden ?? []);
+  return Object.keys(SPELL_FREQ)
+    .filter((freq) => sc[freq] && !hidden.has(freq))
+    .map((freq) => {
+      const value = sc[freq];
+      if (Array.isArray(value)) {
+        return `<p class="vos-mon-spells"><b>${SPELL_FREQ[freq]}:</b> ${
+          value.map((spell) => text(spell)).join(', ')}</p>`;
+      }
+      // {"1": [...], "1e": [...]} — the "e" suffix is the book's "each".
+      return Object.entries(value).map(([count, spells]) => `<p class="vos-mon-spells"><b>${
+        count.replace(/e$/, '')}${SPELL_FREQ[freq]}${/e$/.test(count) ? ' Each' : ''}:</b> ${
+        spells.map((spell) => text(spell)).join(', ')}</p>`).join('');
+    })
+    .join('');
+}
+
+function spellcastingHtml(sc) {
+  return `<p class="vos-mon-feature"><b>${text(sc.name)}.</b> ${
+    (sc.headerEntries ?? []).map((entry) => text(entry)).join(' ')}</p>${spellGroups(sc)}`;
+}
+
+/* Where each casting block prints: 2024 blocks say so via displayAs. */
+function spellcastingFor(mon, placement) {
+  return (mon.spellcasting ?? [])
+    .filter((sc) => (sc.displayAs ?? 'trait') === placement)
+    .map(spellcastingHtml)
+    .join('');
+}
+
 export function renderMonster(mon) {
   return `<article class="vos-mon">
     <header class="vos-mon-head">
@@ -170,8 +205,11 @@ export function renderMonster(mon) {
     ${abilityGrid(mon)}
     <div class="vos-mon-stats">${statRows(mon)}</div>
     ${featureSection('Traits', mon.trait)}
+    ${spellcastingFor(mon, 'trait')}
     ${featureSection('Actions', mon.action)}
+    ${spellcastingFor(mon, 'action')}
     ${featureSection('Bonus Actions', mon.bonus)}
+    ${spellcastingFor(mon, 'bonus')}
     ${featureSection('Reactions', mon.reaction)}
     ${featureSection('Legendary Actions', mon.legendary)}
     ${(mon.variant ?? []).map((variant) => `<div class="vos-mon-variant">

@@ -128,15 +128,23 @@ const FIVETOOLS_ATTACKS = {
   'm,r': 'Melee or Ranged Attack Roll:',
 };
 
+const ABILITY_WORDS = {
+  str: 'Strength', dex: 'Dexterity', con: 'Constitution',
+  int: 'Intelligence', wis: 'Wisdom', cha: 'Charisma',
+};
+
 function replaceCurlyTags(text) {
   return text.replace(/\{@([a-zA-Z]+)(?: ([^{}]*))?\}/g, (_match, tag, body = '') => {
     const kind = tag.toLowerCase();
     const fixed = FIVETOOLS_TAGS[kind];
     if (fixed !== undefined) return fixed;
     if (kind === 'recharge') return `(Recharge ${body ? `${body}–6` : '6'})`;
-    if (kind === 'atk') return FIVETOOLS_ATTACKS[body.replace(/\s/g, '')] ?? body;
+    if (kind === 'atk' || kind === 'atkr') return FIVETOOLS_ATTACKS[body.replace(/\s/g, '')] ?? body;
     if (kind === 'hit') return /^[+-]/.test(body.trim()) ? body.trim() : `+${body.trim()}`;
     if (kind === 'dc') return `DC ${body.trim()}`;
+    if (kind === 'actsave') {
+      return `${ABILITY_WORDS[body.trim().toLowerCase()] ?? body} Saving Throw:`;
+    }
     const parts = body.split('|');
     return parts.length === 3 && parts[2].trim() ? parts[2] : parts[0];
   });

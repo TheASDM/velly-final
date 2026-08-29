@@ -28,8 +28,9 @@
 }
 .vos-mon-topbar a:hover { border-color: var(--vos-border-strong); color: var(--vos-gold-bright); }
 
-/* The jump row sticks under the app bar, because mid-fight you switch
-   between two or three of these constantly. */
+/* The tab row sticks under the app bar, because mid-fight you switch
+   between two or three of these constantly. One block shows at a time;
+   the row is ordered by Challenge Rating, weakest first. */
 .vos-mon-index {
   position: sticky;
   top: var(--vos-app-bar-h, 58px);
@@ -56,8 +57,18 @@
   text-decoration: none;
 }
 .vos-mon-index a:hover { border-color: var(--vos-border-strong); color: var(--vos-gold-bright); }
-
-.vos-mon-slot { scroll-margin-top: calc(var(--vos-app-bar-h, 58px) + 3.4rem); }
+.vos-mon-index a i {
+  font-style: normal;
+  margin-left: 0.35rem;
+  font-size: 0.56rem;
+  color: var(--vos-gold-dim);
+}
+.vos-mon-index a.is-on {
+  border-color: var(--vos-border-strong);
+  background: rgba(212, 165, 116, 0.14);
+  color: var(--vos-gold-bright);
+}
+.vos-mon-index a.is-on i { color: var(--vos-gold); }
 
 /* ── The block itself ─────────────────────────────────────────────── */
 
@@ -145,6 +156,7 @@
 }
 
 .vos-mon-feature,
+.vos-mon-spells,
 .vos-mon p {
   margin: 0 0 0.55rem;
   font-size: 0.94rem;
@@ -152,6 +164,8 @@
   color: var(--vos-text-body);
 }
 .vos-mon-feature b { color: var(--vos-cream); font-weight: 600; }
+.vos-mon-spells { padding-left: 0.9rem; }
+.vos-mon-spells b { color: var(--vos-gold); font-weight: 600; }
 .vos-mon-subhead {
   font-family: 'Cinzel', Georgia, serif;
   font-size: 0.7rem;
