@@ -282,9 +282,11 @@ function renderSpellcasting(model) {
       </li>`).join('')}</ul>`
     : '';
 
+  /* Everything on the sheet is castable, so "prepared" would be a badge on
+   * every row; only "always" still says something (it cannot be swapped out). */
   const spellEntry = (group, spell) => ({
     name: spell.name,
-    marker: spell.always ? 'always' : (spell.prepared ? 'prepared' : ''),
+    marker: spell.always ? 'always' : '',
     meta: [
       group.pact && spell.level > 0 ? `${ordinal(spell.level)}-level spell` : '',
       spell.school,
@@ -294,9 +296,25 @@ function renderSpellcasting(model) {
     description: spell.description,
   });
 
+  /* The sheet shows what can be cast right now — cantrips, always-prepared,
+   * and whatever is currently prepared. Preparation is play state once play
+   * has begun, so the live list wins over the Foundry export's snapshot; the
+   * rest of the book waits in the Prepare panel rather than padding the sheet
+   * with forty spells that cannot be cast today. */
+  const preparedNow = ctx && ctx.play
+    ? new Set(ctx.play.prepared || [])
+    : null;
+  const castable = (spell) => spell.level === 0 || spell.always
+    || (preparedNow ? preparedNow.has(spell.id) : spell.prepared);
+
+  let benched = 0;
   const hidden = [];
   const groups = model.spells.map((group) => {
     const shown = group.spells.filter((spell) => {
+      if (!castable(spell)) {
+        benched += 1;
+        return false;
+      }
       if (isHidden(spell.id)) {
         hidden.push({ ...spellEntry(group, spell), showId: spell.id });
         return false;
@@ -319,7 +337,12 @@ function renderSpellcasting(model) {
   </div>`;
   }).join('');
 
-  return header + slots + groups + hiddenStash(hidden, 'spell');
+  const benchNote = benched
+    ? `<p class="vos-sb-spell-note">${benched} more in the book, unprepared — the
+       Spells button on the bar is where they are swapped in.</p>`
+    : '';
+
+  return header + slots + groups + benchNote + hiddenStash(hidden, 'spell');
 }
 
 /* ── Collapsible entry (feature, spell, item) ──────────────────────── */

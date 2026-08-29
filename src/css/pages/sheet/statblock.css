@@ -156,6 +156,14 @@
   color: var(--vos-gold-dim);
 }
 
+/* Where the rest of the book went. */
+.vos-sb-spell-note {
+  margin: 0.6rem 0 0;
+  font-size: 0.8rem;
+  font-style: italic;
+  color: var(--vos-gold-dim);
+}
+
 /* ── Abilities ─────────────────────────────────────────────────────── */
 
 .vos-sb-abilities {
