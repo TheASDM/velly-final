@@ -34,22 +34,27 @@ const SPAN_ATTRS = new Set(['colspan', 'rowspan']);
 
 /* ── Enrichers ─────────────────────────────────────────────────────── */
 
-/* @UUID[Actor.x.Item.y]{Creature Type} -> Creature Type
- * @item[Tinker's Tools|XPHB]           -> Tinker's Tools
- * @variantrule[Bonus Action|XPHB]      -> Bonus Action
- * Anything with an explicit {Label} uses the label; otherwise we take the
- * first |-segment of the target, which is the name in every Foundry form.
+/* @UUID[Actor.x.Item.y]{Creature Type}                 -> Creature Type
+ * @item[Tinker's Tools|XPHB]                           -> Tinker's Tools
+ * @variantrule[Cone [Area of Effect]|XPHB|Cone]        -> Cone
+ * @subclassFeature[Name|Bard|XPHB|Sub|Source|3]        -> Name
+ * Anything with an explicit {Label} uses the label. Otherwise the target is
+ * 5etools shorthand by way of Plutonium: name|source|display, where the name
+ * may carry one bracketed qualifier of its own and the display text — third
+ * segment, when there are exactly three — is what the book renders. Longer
+ * forms (@subclassFeature) have no display segment, so the name leads.
  * The tag name is not worth allowlisting: Foundry keeps minting new ones
  * (@variantrule, @action, @condition...) and every one we miss leaves its
  * raw syntax in a player-facing description. */
 function replaceDocLinks(text) {
   return text.replace(
-    /@[A-Za-z]+\[([^\]]*)\](?:\{([^}]*)\})?/g,
+    /@[A-Za-z]+\[((?:[^\[\]]|\[[^\]]*\])*)\](?:\{([^}]*)\})?/g,
     (_match, target, label) => {
       if (label) return label;
-      const first = String(target).split('|')[0];
-      const tail = first.split('.').pop();
-      return tail || first;
+      const parts = String(target).split('|');
+      const shown = parts.length === 3 && parts[2].trim() ? parts[2] : parts[0];
+      const tail = shown.split('.').pop();
+      return tail || shown;
     },
   );
 }
