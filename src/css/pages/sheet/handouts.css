@@ -1,0 +1,63 @@
+/* The handouts folder on the player sheet.
+ *
+ * Each handout is a closed envelope in a stack — a title and a date — that
+ * opens into a full document. The newest arrives open, because it is the one
+ * the tab was almost certainly opened for.
+ */
+
+.vos-handouts {
+  max-width: 46rem;
+  margin: 0 auto;
+}
+
+.vos-handout {
+  margin-bottom: 0.6rem;
+  border: 1px solid var(--vos-border);
+  border-radius: 12px;
+  background: rgba(8, 7, 11, 0.55);
+  overflow: hidden;
+}
+.vos-handout[open] { border-color: rgba(212, 165, 116, 0.4); }
+
+.vos-handout > summary {
+  display: flex;
+  align-items: baseline;
+  gap: 0.7rem;
+  min-height: 52px;
+  padding: 0.8rem 1rem;
+  cursor: pointer;
+  list-style: none;
+}
+.vos-handout > summary::-webkit-details-marker { display: none; }
+.vos-handout > summary::before {
+  content: '▸';
+  flex: none;
+  color: var(--vos-gold-dim);
+  font-size: 0.7rem;
+}
+.vos-handout[open] > summary::before { content: '▾'; }
+
+.vos-handout-title {
+  flex: 1;
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.92rem;
+  letter-spacing: 0.04em;
+  color: var(--vos-gold-bright);
+}
+.vos-handout-date {
+  font-size: 0.74rem;
+  letter-spacing: 0.06em;
+  color: var(--vos-gold-dim);
+}
+
+.vos-handout-body {
+  padding: 0 1rem 0.6rem;
+  border-top: 1px solid rgba(139, 115, 85, 0.2);
+}
+/* The document renderer brings its own top padding via the sheet header. */
+.vos-handout-body .vos-sheet { padding-top: 0.4rem; }
+
+@media print {
+  .vos-handout { break-inside: avoid; }
+  .vos-handout > summary::before { display: none; }
+}

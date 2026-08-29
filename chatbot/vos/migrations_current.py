@@ -294,4 +294,25 @@ def apply_current_migrations(conn, done):
             ("023_character_play_state", _utc_now_iso()),
         )
 
+    if "024_handouts" not in done:
+        # Documents the DM hands to specific characters — a letter, a map key,
+        # a torn page. `players` is a JSON array of roster names because the
+        # audience is part of the handout, not a join against it: three rows
+        # per handout would invite the exact bug this design forbids, a player
+        # seeing a handout that was never theirs.
+        conn.execute("""
+            CREATE TABLE IF NOT EXISTS handouts (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                title TEXT NOT NULL,
+                markdown TEXT NOT NULL,
+                players TEXT NOT NULL,
+                created_at TEXT NOT NULL,
+                updated_at TEXT NOT NULL
+            )
+        """)
+        conn.execute(
+            "INSERT INTO schema_migrations (name, applied_at) VALUES (?, ?)",
+            ("024_handouts", _utc_now_iso()),
+        )
+
 __all__ = ['apply_current_migrations']

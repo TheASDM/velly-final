@@ -73,6 +73,7 @@ ROUTE_MODULES = [
         ".routes.questionnaire",
         ".routes.sheets",
         ".routes.play",
+        ".routes.handouts",
         ".routes.rumors",
         ".routes.chat",
         ".routes.lore",

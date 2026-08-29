@@ -1,5 +1,6 @@
 import { refreshAvailabilitySummary } from './availability.js';
 import { refreshCalendarEvents } from './calendar.js';
+import { refreshHandouts } from './handouts.js';
 import { refreshLoreSubmissions } from './lore.js';
 import { refreshMessages } from './messages.js';
 import { refreshPushSubscribers } from './push.js';
@@ -33,6 +34,7 @@ export const TAB_LOADERS = {
   },
   records: () => refreshQuestionnaires(),
   rumors: () => refreshRumors(),
+  handouts: () => refreshHandouts(),
   npc: () => {},
   inplay: () => {},
 };

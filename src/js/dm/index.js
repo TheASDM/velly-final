@@ -8,6 +8,7 @@ import './calendar.js';
 import './questionnaires.js';
 import './push.js';
 import './rumors.js';
+import './handouts.js';
 import './availability.js';
 import './in-play.js';
 import './boot.js';

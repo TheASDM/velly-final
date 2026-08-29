@@ -37,6 +37,13 @@ export function loadMySheet() {
   return getJson('/api/sheet');
 }
 
+/* Handouts the DM has given this character. The DM may name another player,
+ * which is what "view as" reads — the server enforces who may ask. */
+export function loadHandouts(playerName) {
+  const query = playerName ? `?playerName=${encodeURIComponent(playerName)}` : '';
+  return getJson(`/api/handouts${query}`);
+}
+
 export function loadAllSheets() {
   return getJson('/api/sheets');
 }

@@ -6,7 +6,7 @@
  * player, and that is the point.
  */
 import { renderSheet, sheetSections } from './render.js';
-import { loadAllSheets, loadMySheet, loadRoster, whenPwaReady } from './data.js';
+import { loadAllSheets, loadHandouts, loadMySheet, loadRoster, whenPwaReady } from './data.js';
 import { normalizeStatblock } from '../statblock/normalize.js';
 import { renderStatblock } from '../statblock/render.js';
 import { barLabel } from '../statblock/labels.js';
@@ -21,6 +21,9 @@ let payload = null;
 let seat = {};
 let view = 'story';
 let play = null;        // { state, limits } — null until the stats tab is opened
+/* null until the tab is opened; then the list, or 'error'. Lazy for the same
+ * reason play state is — most sheet opens never look here. */
+let handouts = null;
 let controls = null;
 /* Set when the DM is viewing someone else's sheet. Everything downstream reads
  * it, so "view as" is the same page rather than a second implementation that
@@ -86,9 +89,12 @@ function renderTabs() {
   const available = {
     story: Boolean(payload.sheet && payload.sheet.markdown),
     stats: Boolean(payload.statblock && payload.statblock.data),
+    // Handouts are always offered: an empty tab that explains itself beats a
+    // tab that appears the first time the DM slips you something.
+    handouts: true,
   };
   // With only one view there is nothing to switch between.
-  if (!(available.story && available.stats)) { tabsEl.hidden = true; return; }
+  if (Object.values(available).filter(Boolean).length < 2) { tabsEl.hidden = true; return; }
   tabsEl.hidden = false;
   tabsEl.querySelectorAll('[data-view]').forEach((button) => {
     const name = button.dataset.view;
@@ -105,6 +111,14 @@ function render() {
   if (view === 'stats' && !hasStats) view = 'story';
 
   renderTabs();
+
+  if (view === 'handouts') {
+    renderHandoutsView();
+    renderPlayBar();          // removes it — the bar belongs to the stats view
+    renderMaskBanner();
+    if (indexEl) indexEl.hidden = true;
+    return;
+  }
 
   if (view === 'stats') {
     if (!statModel) statModel = normalizeStatblock(payload.statblock.data);
@@ -131,6 +145,56 @@ function render() {
     fallbackTitle: seat.display || payload.playerName,
   });
   renderIndex(markdown);
+}
+
+/* ── Handouts ──────────────────────────────────────────────────────── */
+
+/* What the DM has handed this character — and only this character. The list
+ * never says who else received a copy; to each reader, a letter is a letter. */
+function renderHandoutsView() {
+  if (handouts === null) {
+    root.innerHTML = '<div class="empty-state"><b>Opening the folder…</b>One moment.</div>';
+    ensureHandouts();
+    return;
+  }
+  if (handouts === 'error') {
+    root.innerHTML = '<div class="empty-state"><b>Could not load your handouts.</b>Try again in a moment.</div>';
+    return;
+  }
+  if (!handouts.length) {
+    root.innerHTML = `<div class="empty-state"><b>Nothing in the folder yet.</b>
+      When the DM hands ${viewingAs ? 'them' : 'you'} something — a letter, a map, a torn page — it appears here.</div>`;
+    return;
+  }
+
+  root.innerHTML = `<div class="vos-handouts">${handouts.map((handout, index) => `
+    <details class="vos-handout"${index === 0 ? ' open' : ''}>
+      <summary>
+        <span class="vos-handout-title">${esc(handout.title)}</span>
+        <span class="vos-handout-date">${esc(handoutDate(handout))}</span>
+      </summary>
+      <div class="vos-handout-body">${renderSheet(handout.markdown, {
+    fallbackTitle: handout.title,
+  })}</div>
+    </details>`).join('')}</div>`;
+}
+
+function handoutDate(handout) {
+  const stamp = handout.updated_at || handout.created_at;
+  const date = stamp ? new Date(stamp) : null;
+  return date && !Number.isNaN(date.getTime())
+    ? date.toLocaleDateString(undefined, { month: 'short', day: 'numeric' })
+    : '';
+}
+
+async function ensureHandouts() {
+  try {
+    const body = await loadHandouts(viewingAs);
+    handouts = body.handouts || [];
+  } catch (error) {
+    handouts = 'error';
+  }
+  if (view === 'handouts') render();
 }
 
 /* Whose sheet this is. Unmistakable, because acting here changes their

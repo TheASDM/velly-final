@@ -153,6 +153,26 @@ export const rumorsStatusEl = document.getElementById('vos-dm-rumors-status');
 
 export const rumorsRefreshEl = document.getElementById('vos-dm-rumors-refresh');
 
+export const handoutFormEl = document.getElementById('vos-dm-handout-form');
+
+export const handoutIdEl = document.getElementById('vos-dm-handout-id');
+
+export const handoutTitleEl = document.getElementById('vos-dm-handout-title');
+
+export const handoutTextEl = document.getElementById('vos-dm-handout-text');
+
+export const handoutPlayersEl = document.getElementById('vos-dm-handout-players');
+
+export const handoutSaveEl = document.getElementById('vos-dm-handout-save');
+
+export const handoutCancelEl = document.getElementById('vos-dm-handout-cancel');
+
+export const handoutsListEl = document.getElementById('vos-dm-handouts-list');
+
+export const handoutsStatusEl = document.getElementById('vos-dm-handouts-status');
+
+export const handoutsRefreshEl = document.getElementById('vos-dm-handouts-refresh');
+
 export const npcRollEl = document.getElementById('vos-dm-npc-roll');
 
 export const npcResultEl = document.getElementById('vos-dm-npc-result');

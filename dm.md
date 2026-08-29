@@ -44,6 +44,7 @@ pageStyles:
     <button class="vos-seg-btn" type="button" data-view="lore">Lore</button>
     <button class="vos-seg-btn" type="button" data-view="records">Records</button>
     <button class="vos-seg-btn" type="button" data-view="rumors">Rumors</button>
+    <button class="vos-seg-btn" type="button" data-view="handouts">Handouts</button>
     <button class="vos-seg-btn" type="button" data-view="npc">Quick NPC</button>
     <button class="vos-seg-btn" type="button" data-view="inplay">In Play</button>
   </nav>
@@ -362,6 +363,44 @@ pageStyles:
     </form>
     <ul class="vos-dm-cal-events" id="vos-dm-rumors-list"></ul>
     <div class="vos-dm-status" id="vos-dm-rumors-status" role="status" aria-live="polite"></div>
+  </section>
+
+  </div>
+
+  <div class="vos-dm-view" data-vos-view="handouts" hidden>
+
+  <section class="vos-dm-panel" aria-labelledby="vos-dm-handouts-title">
+    <div class="vos-dm-panel-head">
+      <h2 id="vos-dm-handouts-title">Handouts</h2>
+      <div class="vos-dm-actions">
+        <button id="vos-dm-handouts-refresh" type="button">Refresh</button>
+      </div>
+    </div>
+    <p class="vos-dm-helper">A handout appears on the Handouts tab of each chosen
+    player's sheet — and only theirs. Same markdown dialect as the character sheets.</p>
+    <form class="vos-dm-form" id="vos-dm-handout-form">
+      <input type="hidden" id="vos-dm-handout-id">
+      <label>
+        Title
+        <input type="text" id="vos-dm-handout-title" maxlength="200" autocomplete="off"
+               placeholder="An unsent letter">
+      </label>
+      <label>
+        Text
+        <textarea id="vos-dm-handout-text" rows="10"
+                  placeholder="## What it says&#10;&#10;The paper smells of lamp oil…"></textarea>
+      </label>
+      <fieldset class="vos-dm-handout-players">
+        <legend>Who sees it</legend>
+        <div id="vos-dm-handout-players"></div>
+      </fieldset>
+      <div class="vos-dm-actions">
+        <button id="vos-dm-handout-save" type="submit">Give Handout</button>
+        <button id="vos-dm-handout-cancel" type="button" hidden>Cancel Edit</button>
+      </div>
+    </form>
+    <ul class="vos-dm-cal-events" id="vos-dm-handouts-list"></ul>
+    <div class="vos-dm-status" id="vos-dm-handouts-status" role="status" aria-live="polite"></div>
   </section>
 
   </div>
