@@ -240,6 +240,17 @@ def _admin_error_response():
     return None
 
 
+def _request_is_dm():
+    """True when the request carries a valid DM credential of either kind.
+    Unlike _admin_error_response() this writes nothing — it is for endpoints
+    that shape their output by role rather than refusing service."""
+    payload = _verify_player_token_payload(_extract_player_token())
+    if payload and bool(payload.get("is_dm") or _is_dm_player(payload.get("name"))):
+        return True
+    email, _reason = _verify_session_jwt(_extract_bearer_token())
+    return bool(email)
+
+
 def _safe_next_url(value):
     if not isinstance(value, str) or not value.startswith("/") or value.startswith("//"):
         return "/"
@@ -458,4 +469,4 @@ def _auth_session_payload(token):
         "provider": payload.get("provider") or "",
     }
 
-__all__ = ['_utc_now_iso', '_b64url_encode', '_b64url_decode', '_google_oauth_configured', '_discord_oauth_configured', '_oauth_login_configured', '_auth_login_required', '_is_dm_player', '_issue_player_token', '_verify_player_token_payload', '_verify_player_token', '_extract_player_token', '_authenticated_player_name', '_logged_in_player_name', '_player_name_from_request', '_admin_auth_configured', '_extract_bearer_token', '_verify_google_id_token', '_mint_session_jwt', '_verify_session_jwt', '_admin_error_response', '_safe_next_url', '_with_auth_status', '_oauth_redirect_uri', '_oauth_state_secret', '_issue_oauth_state', '_verify_oauth_state', '_auth_provider_list', '_verify_google_oauth_id_token', '_exchange_google_code', '_exchange_discord_code', '_resolve_oauth_player', '_auth_session_payload']
+__all__ = ['_utc_now_iso', '_b64url_encode', '_b64url_decode', '_google_oauth_configured', '_discord_oauth_configured', '_oauth_login_configured', '_auth_login_required', '_is_dm_player', '_issue_player_token', '_verify_player_token_payload', '_verify_player_token', '_extract_player_token', '_authenticated_player_name', '_logged_in_player_name', '_player_name_from_request', '_admin_auth_configured', '_extract_bearer_token', '_verify_google_id_token', '_mint_session_jwt', '_verify_session_jwt', '_admin_error_response', '_request_is_dm', '_safe_next_url', '_with_auth_status', '_oauth_redirect_uri', '_oauth_state_secret', '_issue_oauth_state', '_verify_oauth_state', '_auth_provider_list', '_verify_google_oauth_id_token', '_exchange_google_code', '_exchange_discord_code', '_resolve_oauth_player', '_auth_session_payload']

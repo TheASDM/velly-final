@@ -165,12 +165,40 @@ def calendar_events():
         if clauses:
             query += " WHERE " + " AND ".join(clauses)
         query += " ORDER BY date, id"
+        include_private = _calendar_reader_is_authenticated()
+        is_dm = _request_is_dm()
         with _app_db() as conn:
             rows = conn.execute(query, params).fetchall()
-        include_private = _calendar_reader_is_authenticated()
-        return jsonify({
-            "events": [_calendar_event_json(row, include_private) for row in rows]
-        })
+            events = [_calendar_event_json(row, include_private) for row in rows]
+            if rows and is_dm:
+                # The DM's view carries RSVPs per event, gathered in one
+                # grouped query — the console used to need a two-hop fetch
+                # that could only ever show the next event.
+                keys = {f"cal-{row['id']}": event for row, event in zip(rows, events)}
+                placeholders = ",".join("?" for _ in keys)
+                rsvp_rows = conn.execute(f"""
+                    SELECT event_id, player_name, status, updated_at
+                    FROM rsvps
+                    WHERE event_id IN ({placeholders})
+                    ORDER BY player_name COLLATE NOCASE
+                """, list(keys)).fetchall()
+                for event in events:
+                    event["rsvp"] = {
+                        "counts": {"going": 0, "maybe": 0, "out": 0},
+                        "responses": [],
+                    }
+                for row in rsvp_rows:
+                    event = keys.get(row["event_id"])
+                    if not event:
+                        continue
+                    if row["status"] in event["rsvp"]["counts"]:
+                        event["rsvp"]["counts"][row["status"]] += 1
+                    event["rsvp"]["responses"].append({
+                        "player_name": row["player_name"],
+                        "status": row["status"],
+                        "updated_at": row["updated_at"],
+                    })
+        return jsonify({"events": events})
 
     admin_error = _admin_error_response()
     if admin_error:

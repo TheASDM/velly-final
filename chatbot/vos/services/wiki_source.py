@@ -161,18 +161,22 @@ def _wiki_source_hash(text):
     return hashlib.sha256((text or "").encode("utf-8")).hexdigest()
 
 
+def _wiki_source_title(text):
+    title_match = re.search(r"(?m)^title:\s*(.+?)\s*$", text or "")
+    if not title_match:
+        return ""
+    raw = title_match.group(1).strip()
+    try:
+        return str(json.loads(raw))
+    except Exception:
+        return raw.strip("'\"")
+
+
 def _read_wiki_source_payload(source_path):
     text = source_path.read_text(encoding="utf-8")
     rel = source_path.resolve().relative_to(SITE_SOURCE_DIR.resolve()).as_posix()
     stat = source_path.stat()
-    title_match = re.search(r"(?m)^title:\s*(.+?)\s*$", text)
-    title = ""
-    if title_match:
-        raw = title_match.group(1).strip()
-        try:
-            title = json.loads(raw)
-        except Exception:
-            title = raw.strip("'\"")
+    title = _wiki_source_title(text)
     return {
         "url": _source_path_to_wiki_url(source_path),
         "source_file": rel,
@@ -224,4 +228,4 @@ def _append_image_to_wiki_gallery(source_path, image_abs_url, alt_text,
     _chown_like_site(source_path)
     return True
 
-__all__ = ['_yaml_quote', '_chown_like_site', 'IMAGE_PLACEHOLDER_RE', 'MARKDOWN_IMAGE_RE', '_WIKI_GALLERY_HEADING_RE', '_WIKI_NEXT_H2_RE', 'WIKI_CONTENT_ROOTS', '_wiki_source_in_content_roots', '_strip_markdown_title', '_strip_generated_images', '_markdown_with_image', '_page_frontmatter', '_source_file_url', '_source_path_to_wiki_url', '_wiki_url_to_source_path', '_validate_wiki_frontmatter', '_wiki_source_hash', '_read_wiki_source_payload', '_append_image_to_wiki_gallery']
+__all__ = ['_yaml_quote', '_chown_like_site', 'IMAGE_PLACEHOLDER_RE', 'MARKDOWN_IMAGE_RE', '_WIKI_GALLERY_HEADING_RE', '_WIKI_NEXT_H2_RE', 'WIKI_CONTENT_ROOTS', '_wiki_source_in_content_roots', '_strip_markdown_title', '_strip_generated_images', '_markdown_with_image', '_page_frontmatter', '_source_file_url', '_source_path_to_wiki_url', '_wiki_url_to_source_path', '_validate_wiki_frontmatter', '_wiki_source_hash', '_wiki_source_title', '_read_wiki_source_payload', '_append_image_to_wiki_gallery']

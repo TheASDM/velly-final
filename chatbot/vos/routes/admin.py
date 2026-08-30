@@ -63,6 +63,150 @@ def admin_session():
     return jsonify({"configured": True, "signed_in": True, "email": email})
 
 
+def _roster_player_names():
+    """Player names from _data/players.json — the canonical roster the auth
+    maps and records key off. The DM's seat is excluded."""
+    try:
+        path = SITE_SOURCE_DIR / "_data" / "players.json"
+        seats = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return []
+    names = []
+    for seat in seats if isinstance(seats, list) else []:
+        name = seat.get("name") if isinstance(seat, dict) else None
+        if name and name != "DM":
+            names.append(name)
+    return names
+
+
+@bp.route("/api/admin/dashboard", methods=["GET"])
+def admin_dashboard():
+    """Everything the console's summary needs in one call: the next session
+    with its RSVPs, who has weighed in on availability, the lore queue, who
+    has alerts on, and the rebuild state. Cold boot used to be 10+ round
+    trips before the DM saw a single number."""
+    admin_error = _admin_error_response()
+    if admin_error:
+        return admin_error
+
+    roster = _roster_player_names()
+    today_dt = datetime.now(CAMPAIGN_TZ).date()
+    today = today_dt.isoformat()
+    window_to = (today_dt + timedelta(days=90)).isoformat()
+
+    with _app_db() as conn:
+        next_row = conn.execute("""
+            SELECT * FROM calendar_events
+            WHERE kind = 'session' AND date >= ?
+            ORDER BY date, id
+            LIMIT 1
+        """, (today,)).fetchone()
+
+        gathering = _calendar_event_json(next_row) if next_row else None
+        rsvp = None
+        if next_row:
+            counts, responses = _rsvp_counts_and_responses(conn, f"cal-{next_row['id']}")
+            responded = {entry["player_name"] for entry in responses}
+            rsvp = {
+                "counts": counts,
+                "responses": responses,
+                "missing": [name for name in roster if name not in responded],
+            }
+
+        submitted = {
+            row["player_name"]
+            for row in conn.execute(
+                "SELECT DISTINCT player_name FROM availability WHERE date >= ? AND date <= ?",
+                (today, window_to),
+            )
+        }
+        availability = {
+            "submitted": sorted(submitted),
+            "missing": [name for name in roster if name not in submitted],
+        }
+
+        pending_lore = conn.execute("""
+            SELECT COUNT(*) AS n FROM lore_submissions
+            WHERE status IN ('submitted', 'drafting', 'needs_review')
+        """).fetchone()["n"]
+
+        subscribed = {
+            row["player_name"]
+            for row in conn.execute("SELECT DISTINCT player_name FROM subscriptions")
+        }
+
+    return jsonify({
+        "gathering": gathering,
+        "rsvp": rsvp,
+        "availability": availability,
+        "lore": {"pending": pending_lore},
+        "push": {
+            "subscribed": sorted(subscribed),
+            "missing": [name for name in roster if name not in subscribed],
+        },
+        "rebuild": _read_rebuild_status(),
+    })
+
+
+_WIKI_KIND_PREFIXES = [
+    ("/en/Venturia/DM/", "DM"),
+    ("/en/Venturia/Characters/PCs/", "PC"),
+    ("/en/Venturia/Characters/NPCs/", "NPC"),
+    ("/en/Venturia/Characters/", "Character"),
+    ("/en/Venturia/Locations/", "Location"),
+    ("/en/Venturia/Lore/", "Lore"),
+    ("/en/Venturia/Factions/", "Faction"),
+    ("/en/Venturia/Items/", "Item"),
+    ("/en/Venturia/Maps/", "Map"),
+    ("/en/Venturia/Creatures/", "Creature"),
+    ("/en/Venturia/Culture/", "Culture"),
+    ("/en/Venturia/Government/", "Government"),
+    ("/en/Venturia/College-of-the-Masquerade-Bard/", "Masquerade-Bard"),
+    ("/en/Articles/", "Article"),
+    ("/en/Updates/", "Update"),
+    ("/en/Session-Chronicles/", "Session"),
+]
+
+
+def _derive_wiki_kind(url):
+    for prefix, kind in _WIKI_KIND_PREFIXES:
+        if url.startswith(prefix):
+            return kind
+    return ""
+
+
+@bp.route("/api/admin/wiki-pages", methods=["GET"])
+def admin_wiki_pages():
+    """The editable wiki source tree, live from disk. The old picker read
+    the last build's JSON, so a page created since the previous rebuild was
+    invisible to the editor. DM-gated, and unlike the public build index it
+    includes the Venturia/DM tree."""
+    admin_error = _admin_error_response()
+    if admin_error:
+        return admin_error
+    pages = []
+    for root in WIKI_CONTENT_ROOTS:
+        base = SITE_SOURCE_DIR / root
+        if not base.is_dir():
+            continue
+        for path in base.rglob("*.md"):
+            rel = path.relative_to(SITE_SOURCE_DIR).as_posix()
+            url = _source_file_url(rel)
+            if not url:
+                continue
+            try:
+                with open(path, encoding="utf-8") as handle:
+                    head = handle.read(2048)
+            except OSError:
+                continue
+            title = _wiki_source_title(head)
+            if not title:
+                continue
+            pages.append({"url": url, "title": title, "kind": _derive_wiki_kind(url)})
+    pages.sort(key=lambda page: page["title"].lower())
+    return jsonify({"pages": pages})
+
+
 @bp.route("/files/<path:filename>", methods=["GET"])
 def files_document(filename):
     """Standalone documents (run-sheets, session prep) dropped into
@@ -371,4 +515,4 @@ def admin_lore_submission_publish(submission_id):
     payload, status = _publish_lore_submission(submission_id, request.get_json(silent=True) or {})
     return jsonify(payload), status
 
-__all__ = ['admin_config', 'admin_login', 'admin_session', 'files_document', 'admin_rebuild', 'admin_wiki_entry', 'admin_messages', 'dm_message_delete', 'admin_lore_submissions', 'admin_lore_submission_detail', 'admin_lore_submission_save', 'admin_lore_submission_redraft', 'admin_lore_submission_reject', 'admin_lore_submission_publish']
+__all__ = ['admin_config', 'admin_login', 'admin_session', '_roster_player_names', 'admin_dashboard', '_derive_wiki_kind', 'admin_wiki_pages', 'files_document', 'admin_rebuild', 'admin_wiki_entry', 'admin_messages', 'dm_message_delete', 'admin_lore_submissions', 'admin_lore_submission_detail', 'admin_lore_submission_save', 'admin_lore_submission_redraft', 'admin_lore_submission_reject', 'admin_lore_submission_publish']

@@ -1,5 +1,6 @@
 ROUTE_CONTRACT = """
 /api/admin/config|/api/admin/config|GET|admin_config|200:json.configured,google_client_id|200:json.configured,google_client_id|200:json.configured,google_client_id|200:json.configured,google_client_id
+/api/admin/dashboard|/api/admin/dashboard|GET|admin_dashboard|401:json.error,error_code|403:json.error,error_code|200:json.availability,gathering,lore,push,rebuild,rsvp|200:json.availability,gathering,lore,push,rebuild,rsvp
 /api/admin/login|/api/admin/login|POST|admin_login|401:json.error,error_code|401:json.error,error_code|401:json.error,error_code|401:json.error,error_code
 /api/admin/lore-submissions|/api/admin/lore-submissions|GET|admin_lore_submissions|401:json.error,error_code|403:json.error,error_code|200:json.submissions|200:json.submissions
 /api/admin/lore-submissions/<submission_id>|/api/admin/lore-submissions/missing|GET|admin_lore_submission_detail|401:json.error,error_code|403:json.error,error_code|404:json.error|404:json.error
@@ -12,6 +13,7 @@ ROUTE_CONTRACT = """
 /api/admin/rebuild|/api/admin/rebuild|GET|admin_rebuild|401:json.error,error_code|403:json.error,error_code|200:json.rebuild|200:json.rebuild
 /api/admin/session|/api/admin/session|GET|admin_session|200:json.configured,reason,signed_in|200:json.configured,reason,signed_in|200:json.app_auth,configured,email,signed_in|200:json.configured,email,signed_in
 /api/admin/wiki-entry|/api/admin/wiki-entry|GET|admin_wiki_entry|401:json.error,error_code|403:json.error,error_code|404:json.error|404:json.error
+/api/admin/wiki-pages|/api/admin/wiki-pages|GET|admin_wiki_pages|401:json.error,error_code|403:json.error,error_code|200:json.pages|200:json.pages
 /api/art-styles|/api/art-styles|GET|art_styles|200:json.default,styles|200:json.default,styles|200:json.default,styles|200:json.default,styles
 /api/auth/config|/api/auth/config|GET|auth_config|200:json.authConfigured,legacyCodeLogin,loginRequired,players,providers|200:json.authConfigured,legacyCodeLogin,loginRequired,players,providers|200:json.authConfigured,legacyCodeLogin,loginRequired,players,providers|200:json.authConfigured,legacyCodeLogin,loginRequired,players,providers
 /api/auth/login|/api/auth/login|POST|auth_login|400:json.error|400:json.error|400:json.error|400:json.error
@@ -117,7 +119,7 @@ def test_route_inventory_and_response_contract(app, auth_headers):
     }
     expected_routes = {rule for rule, _, _, _endpoint, _ in cases}
     assert actual_routes == expected_routes
-    assert len(cases) == 85
+    assert len(cases) == 87
 
     for rule, path, method, _endpoint, expected in cases:
         for role in ROLES:
