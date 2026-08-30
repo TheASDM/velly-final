@@ -54,10 +54,29 @@ async function fetchIdentity() {
   } catch { return null; }
 }
 
+/* The DM has no sheet worth a medallion; their centre of gravity is the
+ * table. Same slot, same mask, different door — and the active ring follows
+ * /party/ instead of /sheet/. */
+function paintDmTab() {
+  const tab = document.getElementById('vos-nav-sheet');
+  if (!tab) return;
+  tab.href = '/party/';
+  const label = tab.querySelector('.vos-app-tab-label');
+  if (label) label.textContent = 'The Table';
+  const onParty = window.location.pathname === '/party/';
+  tab.classList.toggle('is-active', onParty);
+  if (onParty) tab.setAttribute('aria-current', 'page');
+  else tab.removeAttribute('aria-current');
+}
+
 export function initCharacterBar() {
   const pwa = window.VOS_PWA;
   const name = pwa && pwa.getPlayerName ? pwa.getPlayerName() : null;
-  if (!name || name === 'DM' || (pwa.isDm && pwa.isDm())) return;
+  if (!name) return;
+  if (name === 'DM' || (pwa.isDm && pwa.isDm())) {
+    paintDmTab();
+    return;
+  }
 
   const known = cached(name);
   if (known) paint(known);
