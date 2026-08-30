@@ -277,7 +277,9 @@ def calendar_event_detail(event_id):
 @bp.route("/api/calendar/next", methods=["GET"])
 def calendar_next():
     """The next upcoming session event — the app's 'Next Gathering'."""
-    today = datetime.now(timezone.utc).date().isoformat()
+    # Today in the table's timezone, not UTC — otherwise the next session
+    # flips to next week's mid-afternoon on game day.
+    today = datetime.now(CAMPAIGN_TZ).date().isoformat()
     with _app_db() as conn:
         row = conn.execute("""
             SELECT * FROM calendar_events

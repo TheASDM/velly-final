@@ -69,7 +69,9 @@ def _markdown_with_image(markdown, title, image_url):
 
 
 def _page_frontmatter(title, summary, tags):
-    now = datetime.now(timezone.utc).strftime("%Y-%m-%dT00:00:00.000Z")
+    # Date-stamp in the table's timezone so a late-evening publish doesn't
+    # land on tomorrow's date.
+    now = datetime.now(CAMPAIGN_TZ).strftime("%Y-%m-%dT00:00:00.000Z")
     return (
         "---\n"
         f"title: {_yaml_quote(title)}\n"
