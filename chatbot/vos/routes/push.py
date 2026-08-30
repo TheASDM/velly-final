@@ -151,7 +151,59 @@ def _markdown_to_push_text(value):
     return text[:500] or "DM message"
 
 
-def _fanout_push(conn, title, message, url, recipients=None, message_id=None):
+def _snapshot_subscribers(recipients=None):
+    """Read the subscription rows and release the connection before any
+    network I/O starts."""
+    with _app_db() as conn:
+        if recipients:
+            placeholders = ",".join("?" for _ in recipients)
+            rows = conn.execute("""
+                SELECT id, player_name, endpoint, p256dh, auth
+                FROM subscriptions
+                WHERE player_name IN ({})
+                ORDER BY player_name COLLATE NOCASE, created_at ASC
+            """.format(placeholders), recipients).fetchall()
+        else:
+            rows = conn.execute("""
+                SELECT id, player_name, endpoint, p256dh, auth
+                FROM subscriptions
+                ORDER BY player_name COLLATE NOCASE, created_at ASC
+            """).fetchall()
+    return [dict(row) for row in rows]
+
+
+def _push_one(row, base_payload):
+    """Send one webpush. Network I/O only — no database access, so it is
+    safe on a worker thread. Returns (status, status_code, error_text)."""
+    try:
+        # Per-recipient payload so the tap beacon can say who tapped.
+        payload = json.dumps({**base_payload, "playerName": row["player_name"]})
+        send_webpush(
+            subscription_info=_subscription_info(row),
+            data=payload,
+            vapid_private_key=VAPID_PRIVATE_KEY,
+            vapid_claims={"sub": VAPID_SUBJECT},
+            ttl=86400,
+            timeout=15,
+        )
+        return ("sent", None, None)
+    except WebPushException as exc:
+        response = getattr(exc, "response", None)
+        status_code = getattr(response, "status_code", None)
+        status = "pruned" if status_code in (404, 410) else "failed"
+        return (status, status_code, str(exc)[:200])
+    except Exception as exc:
+        return ("failed", None, str(exc)[:200])
+
+
+def _fanout_push(title, message, url, recipients=None, message_id=None):
+    """Fan a push out to the subscribed devices.
+
+    Webpush calls block for up to 15 seconds each, so they must never run
+    inside an open write transaction — with two sync workers, one slow FCM
+    endpoint used to stall half the server. Snapshot the subscribers first,
+    fan out on a bounded thread pool, then record deliveries and prune dead
+    subscriptions on a fresh connection."""
     base_payload = {
         "title": title.strip()[:120],
         "body": message.strip()[:500],
@@ -159,75 +211,38 @@ def _fanout_push(conn, title, message, url, recipients=None, message_id=None):
         "messageId": message_id,
     }
 
+    rows = _snapshot_subscribers(recipients)
+    outcomes = []
+    if rows:
+        with ThreadPoolExecutor(max_workers=8) as pool:
+            outcomes = list(pool.map(lambda row: _push_one(row, base_payload), rows))
+
     sent = 0
     failed = 0
     pruned = 0
     errors = []
-
-    if recipients:
-        placeholders = ",".join("?" for _ in recipients)
-        rows = list(conn.execute("""
-            SELECT id, player_name, endpoint, p256dh, auth
-            FROM subscriptions
-            WHERE player_name IN ({})
-            ORDER BY player_name COLLATE NOCASE, created_at ASC
-        """.format(placeholders), recipients))
-    else:
-        rows = list(conn.execute("""
-            SELECT id, player_name, endpoint, p256dh, auth
-            FROM subscriptions
-            ORDER BY player_name COLLATE NOCASE, created_at ASC
-        """))
-
-    for row in rows:
-        try:
-            # Per-recipient payload so the tap beacon can say who tapped.
-            payload = json.dumps({**base_payload, "playerName": row["player_name"]})
-            send_webpush(
-                subscription_info=_subscription_info(row),
-                data=payload,
-                vapid_private_key=VAPID_PRIVATE_KEY,
-                vapid_claims={"sub": VAPID_SUBJECT},
-                ttl=86400,
-                timeout=15,
-            )
-            sent += 1
-            conn.execute("""
-                INSERT INTO push_deliveries (message_id, player_name, endpoint, status, error, created_at)
-                VALUES (?, ?, ?, 'sent', NULL, ?)
-            """, (message_id, row["player_name"], row["endpoint"], _utc_now_iso()))
-        except WebPushException as exc:
-            failed += 1
-            response = getattr(exc, "response", None)
-            status_code = getattr(response, "status_code", None)
-            if status_code in (404, 410):
-                conn.execute("DELETE FROM subscriptions WHERE id = ?", (row["id"],))
-                pruned += 1
-                status = "pruned"
-            else:
-                status = "failed"
-            error_text = str(exc)[:200]
-            conn.execute("""
-                INSERT INTO push_deliveries (message_id, player_name, endpoint, status, error, created_at)
-                VALUES (?, ?, ?, ?, ?, ?)
-            """, (message_id, row["player_name"], row["endpoint"], status, error_text, _utc_now_iso()))
-            errors.append({
-                "player_name": row["player_name"],
-                "status": status_code,
-                "error": error_text,
-            })
-        except Exception as exc:
-            failed += 1
-            error_text = str(exc)[:200]
-            conn.execute("""
-                INSERT INTO push_deliveries (message_id, player_name, endpoint, status, error, created_at)
-                VALUES (?, ?, ?, 'failed', ?, ?)
-            """, (message_id, row["player_name"], row["endpoint"], error_text, _utc_now_iso()))
-            errors.append({
-                "player_name": row["player_name"],
-                "status": None,
-                "error": error_text,
-            })
+    now = _utc_now_iso()
+    if rows:
+        with _app_db() as conn:
+            for row, (status, status_code, error_text) in zip(rows, outcomes):
+                if status == "sent":
+                    sent += 1
+                else:
+                    failed += 1
+                    if status == "pruned":
+                        conn.execute(
+                            "DELETE FROM subscriptions WHERE id = ?", (row["id"],)
+                        )
+                        pruned += 1
+                    errors.append({
+                        "player_name": row["player_name"],
+                        "status": status_code,
+                        "error": error_text,
+                    })
+                conn.execute("""
+                    INSERT INTO push_deliveries (message_id, player_name, endpoint, status, error, created_at)
+                    VALUES (?, ?, ?, ?, ?, ?)
+                """, (message_id, row["player_name"], row["endpoint"], status, error_text, now))
 
     return {
         "ok": True,
@@ -315,9 +330,8 @@ def push_send():
     if not isinstance(message, str) or not message.strip():
         return jsonify({"error": "Missing notification body"}), 400
 
-    with _app_db() as conn:
-        result = _fanout_push(conn, title, message, url, recipients=recipients)
+    result = _fanout_push(title, message, url, recipients=recipients)
 
     return jsonify(result)
 
-__all__ = ['push_config', 'push_subscribe', '_subscription_info', '_push_config_error', '_app_url', '_parse_recipients', '_delivery_summary', '_message_recipients', '_markdown_to_push_text', '_fanout_push', 'push_opened', 'push_subscribers', 'push_send']
+__all__ = ['push_config', 'push_subscribe', '_subscription_info', '_push_config_error', '_app_url', '_parse_recipients', '_delivery_summary', '_message_recipients', '_markdown_to_push_text', '_snapshot_subscribers', '_push_one', '_fanout_push', 'push_opened', 'push_subscribers', 'push_send']

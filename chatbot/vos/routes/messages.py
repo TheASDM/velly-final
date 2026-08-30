@@ -122,14 +122,16 @@ def dm_messages():
             FROM messages
             WHERE id = ?
         """, (message_id,)).fetchone()
-        push_result = _fanout_push(
-            conn,
-            title,
-            _markdown_to_push_text(message),
-            url,
-            recipients=recipients,
-            message_id=message_id,
-        )
+
+    # The message row is committed above; the fan-out's slow webpush calls
+    # run outside any transaction.
+    push_result = _fanout_push(
+        title,
+        _markdown_to_push_text(message),
+        url,
+        recipients=recipients,
+        message_id=message_id,
+    )
 
     return jsonify({
         "ok": True,

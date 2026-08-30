@@ -319,14 +319,12 @@ def _notify_art_ready(creator, result_url, gallery_id=None):
     else:
         target_url = result_url or "/en/Tools/art/"
     try:
-        with _app_db() as conn:
-            _fanout_push(
-                conn,
-                "Your Vallombrosa art is ready",
-                "Your Studio piece has finished in your private library.",
-                target_url,
-                recipients=[creator],
-            )
+        _fanout_push(
+            "Your Vallombrosa art is ready",
+            "Your Studio piece has finished in your private library.",
+            target_url,
+            recipients=[creator],
+        )
     except Exception:
         logging.exception("Art-ready push failed")
 
