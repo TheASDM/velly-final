@@ -23,10 +23,10 @@ ROUTE_CONTRACT = """
 /api/auth/session|/api/auth/session|GET|auth_session|401:json.error|200:json.isDm,loginRequired,ok,playerName,provider|200:json.isDm,loginRequired,ok,playerName,provider|401:json.error
 /api/availability|/api/availability|GET|availability|401:json.error|200:json.entries,playerName,updated_at|200:json.entries,playerName,updated_at|401:json.error
 /api/availability/summary|/api/availability/summary|GET|availability_summary|401:json.error,error_code|403:json.error,error_code|200:json.days,submitted|200:json.days,submitted
-/api/calendar/<event_id>.ics|/api/calendar/sample.ics|GET|calendar_event_ics|404:text/html|404:text/html|404:text/html|404:text/html
+/api/calendar/<event_id>.ics|/api/calendar/sample.ics|GET|calendar_event_ics|404:json.error,error_code|404:json.error,error_code|404:json.error,error_code|404:json.error,error_code
 /api/calendar/events|/api/calendar/events|GET|calendar_events|200:json.events|200:json.events|200:json.events|200:json.events
 /api/calendar/events/<int:event_id>|/api/calendar/events/1|PUT|calendar_event_detail|401:json.error,error_code|403:json.error,error_code|404:json.error|404:json.error
-/api/calendar/events/<int:event_id>.ics|/api/calendar/events/1.ics|GET|calendar_event_db_ics|404:text/html|404:text/html|404:text/html|404:text/html
+/api/calendar/events/<int:event_id>.ics|/api/calendar/events/1.ics|GET|calendar_event_db_ics|404:json.error,error_code|404:json.error,error_code|404:json.error,error_code|404:json.error,error_code
 /api/calendar/next|/api/calendar/next|GET|calendar_next|200:json.gathering|200:json.gathering|200:json.gathering|200:json.gathering
 /api/chat|/api/chat|POST|chat|400:json.error|400:json.error|400:json.error|400:json.error
 /api/descriptions|/api/descriptions|GET|list_descriptions|200:json.categories|200:json.categories|200:json.categories|200:json.categories
@@ -36,7 +36,7 @@ ROUTE_CONTRACT = """
 /api/gallery/<gallery_id>/pin|/api/gallery/missing/pin|POST|gallery_pin|400:json.error,error_code|400:json.error,error_code|400:json.error,error_code|400:json.error,error_code
 /api/gallery/<gallery_id>/share|/api/gallery/missing/share|POST|gallery_share|404:json.error,error_code|404:json.error,error_code|404:json.error,error_code|404:json.error,error_code
 /api/gallery/favorites|/api/gallery/favorites|GET|gallery_favorites_list|401:json.error|200:json.ids|200:json.ids|401:json.error
-/api/gallery/image/<path:filename>|/api/gallery/image/missing.png|GET|gallery_image|404:text/html|404:text/html|404:text/html|404:text/html
+/api/gallery/image/<path:filename>|/api/gallery/image/missing.png|GET|gallery_image|404:json.error,error_code|404:json.error,error_code|404:json.error,error_code|404:json.error,error_code
 /api/generate-image|/api/generate-image|POST|generate_image|400:json.error|400:json.error|400:json.error|400:json.error
 /api/handouts|/api/handouts|GET|api_my_handouts|401:json.error|200:json.handouts,ok,playerName|200:json.handouts,ok,playerName|401:json.error
 /api/handouts|/api/handouts|POST|api_create_handout|401:json.error,error_code|403:json.error,error_code|400:json.error|400:json.error
@@ -44,12 +44,12 @@ ROUTE_CONTRACT = """
 /api/handouts/<int:handout_id>|/api/handouts/1|DELETE|api_delete_handout|401:json.error,error_code|403:json.error,error_code|404:json.error|404:json.error
 /api/handouts/all|/api/handouts/all|GET|api_all_handouts|401:json.error,error_code|403:json.error,error_code|200:json.handouts,ok|200:json.handouts,ok
 /api/handouts/image|/api/handouts/image|POST|api_upload_handout_image|401:json.error,error_code|403:json.error,error_code|400:json.error|400:json.error
-/api/handouts/image/<filename>|/api/handouts/image/missing.png|GET|api_handout_image|404:text/html|404:text/html|404:text/html|404:text/html
+/api/handouts/image/<filename>|/api/handouts/image/missing.png|GET|api_handout_image|404:json.error,error_code|404:json.error,error_code|404:json.error,error_code|404:json.error,error_code
 /api/identity|/api/identity|GET|api_identity|401:json.error|200:json.character,ok,playerName|200:json.character,ok,playerName|401:json.error
 /api/in-play|/api/in-play|GET|in_play_endpoint|200:json.items|200:json.items|200:json.items|200:json.items
 /api/lore-submissions|/api/lore-submissions|POST|lore_submission_create|401:json.error|400:json.error|400:json.error|401:json.error
 /api/lore-submissions/<submission_id>|/api/lore-submissions/missing|GET|lore_submission_detail|404:json.error|404:json.error|404:json.error|404:json.error
-/api/lore-submissions/<submission_id>/image|/api/lore-submissions/missing/image|GET|lore_submission_image|404:text/html|404:text/html|404:text/html|404:text/html
+/api/lore-submissions/<submission_id>/image|/api/lore-submissions/missing/image|GET|lore_submission_image|404:json.error,error_code|404:json.error,error_code|404:json.error,error_code|404:json.error,error_code
 /api/lore-submissions/mine|/api/lore-submissions/mine|GET|lore_submissions_mine|401:json.error|200:json.submissions|200:json.submissions|401:json.error
 /api/messages|/api/messages|GET|dm_messages|401:json.error|200:json.messages|200:json.messages|401:json.error
 /api/messages/<int:message_id>|/api/messages/1|DELETE|dismiss_message|401:json.error|404:json.error|404:json.error|401:json.error

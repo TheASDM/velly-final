@@ -255,9 +255,9 @@ def admin_wiki_entry():
             return jsonify({"error": f"No wiki source found for {wiki_url or '(blank)'}"}), 404
         try:
             return jsonify({"entry": _read_wiki_source_payload(source_path)})
-        except Exception as exc:
+        except Exception:
             logging.exception("Failed to read wiki source %s", wiki_url)
-            return jsonify({"error": str(exc), "error_code": "read_failed"}), 500
+            return jsonify({"error": "Could not read the wiki source", "error_code": "read_failed"}), 500
 
     body = request.get_json(silent=True) or {}
     wiki_url = (body.get("url") or "").strip()
@@ -316,9 +316,9 @@ def admin_wiki_entry():
             "rebuild": rebuild,
             "next_steps": [],
         })
-    except Exception as exc:
+    except Exception:
         logging.exception("Failed to save wiki source %s", wiki_url)
-        return jsonify({"error": str(exc), "error_code": "save_failed"}), 500
+        return jsonify({"error": "Could not save the wiki source", "error_code": "save_failed"}), 500
 
 
 @bp.route("/api/admin/messages", methods=["GET"])

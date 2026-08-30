@@ -35,6 +35,36 @@ def _rate_limited(exc):
         "error_code": "rate_limited",
     }), 429
 
+
+# API clients parse JSON; an HTML error page from Flask's defaults reads as
+# a parse failure with no message. Non-API paths keep the default pages
+# (nginx serves those routes in production anyway).
+
+@app.errorhandler(404)
+def _not_found(exc):
+    if request.path.startswith("/api/"):
+        return jsonify({"error": "Not found", "error_code": "not_found"}), 404
+    return exc
+
+
+@app.errorhandler(405)
+def _method_not_allowed(exc):
+    if request.path.startswith("/api/"):
+        return jsonify({
+            "error": "Method not allowed",
+            "error_code": "method_not_allowed",
+        }), 405
+    return exc
+
+
+@app.errorhandler(500)
+def _internal_error(exc):
+    logging.exception("Unhandled error on %s", request.path)
+    if request.path.startswith("/api/"):
+        # Never the exception text — tracebacks and paths stay in the log.
+        return jsonify({"error": "Internal server error", "error_code": "internal"}), 500
+    return exc
+
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s [%(levelname)s] %(message)s",
