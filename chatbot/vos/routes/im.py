@@ -226,13 +226,36 @@ def im_thread(thread_key):
     return jsonify({"ok": True, "message": _chat_message_json(row)}), 201
 
 
+def _unread_total(conn, reader, roster):
+    """That reader's unread count across every thread they belong to — the
+    number the app-icon badge and the app-bar bubble both show."""
+    keys = _caller_thread_keys(reader, roster)
+    placeholders = ",".join("?" for _ in keys)
+    row = conn.execute(f"""
+        SELECT COUNT(*) AS unread
+        FROM chat_messages m
+        LEFT JOIN chat_reads r
+          ON r.thread_key = m.thread_key AND r.player_name = ?
+        WHERE m.thread_key IN ({placeholders})
+          AND m.sender != ?
+          AND m.deleted_at IS NULL
+          AND m.id > COALESCE(r.last_read_id, 0)
+    """, [reader, *keys, reader]).fetchone()
+    return int(row["unread"] or 0)
+
+
 def _notify_thread(thread_key, sender, text):
     """Best-effort push to the other members' backgrounded devices,
-    skipping anyone who muted the thread. Never blocks the send."""
+    skipping anyone who muted the thread. Never blocks the send.
+
+    The payload carries the thread key so the service worker can collapse a
+    conversation into one banner, hand an open tab a live badge update, and
+    open the overlay in place instead of navigating."""
     if _push_config_error():
         return
     try:
-        members = _thread_members(thread_key, _im_roster()) or set()
+        roster = _im_roster()
+        members = _thread_members(thread_key, roster) or set()
         with _app_db() as conn:
             muted = {
                 row["player_name"]
@@ -241,15 +264,21 @@ def _notify_thread(thread_key, sender, text):
                     (thread_key,),
                 )
             }
-        recipients = sorted(members - muted - {sender})
-        if not recipients:
-            return
+            recipients = sorted(members - muted - {sender})
+            if not recipients:
+                return
+            per_recipient = {
+                reader: {"unread": _unread_total(conn, reader, roster)}
+                for reader in recipients
+            }
         title = f"{sender} — The Party" if thread_key == PARTY_THREAD_KEY else sender
         _fanout_push(
             title,
             text[:200],
             f"/messages/#{thread_key}",
             recipients=recipients,
+            payload_extra={"threadKey": thread_key, "tag": f"im:{thread_key}"},
+            per_recipient=per_recipient,
         )
     except Exception:
         logging.exception("IM push for %s failed", thread_key)
@@ -327,5 +356,5 @@ def im_delete_message(message_id):
 
 __all__ = ['CHAT_BODY_MAX_BYTES', 'PARTY_THREAD_KEY', '_im_roster', '_direct_thread_key',
            '_thread_members', '_im_caller', '_thread_access_error', '_chat_message_json',
-           '_caller_thread_keys', '_thread_label', 'im_threads', 'im_thread',
+           '_caller_thread_keys', '_thread_label', 'im_threads', 'im_thread', '_unread_total',
            '_notify_thread', 'im_read', 'im_mute', 'im_delete_message']

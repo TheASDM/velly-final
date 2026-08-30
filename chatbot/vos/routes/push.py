@@ -171,12 +171,16 @@ def _snapshot_subscribers(recipients=None):
     return [dict(row) for row in rows]
 
 
-def _push_one(row, base_payload):
+def _push_one(row, base_payload, per_recipient=None):
     """Send one webpush. Network I/O only — no database access, so it is
     safe on a worker thread. Returns (status, status_code, error_text)."""
     try:
-        # Per-recipient payload so the tap beacon can say who tapped.
-        payload = json.dumps({**base_payload, "playerName": row["player_name"]})
+        # Per-recipient payload so the tap beacon can say who tapped, and
+        # so a chat push can carry that reader's own unread total.
+        extra = (per_recipient or {}).get(row["player_name"]) or {}
+        payload = json.dumps({
+            **base_payload, **extra, "playerName": row["player_name"]
+        })
         send_webpush(
             subscription_info=_subscription_info(row),
             data=payload,
@@ -195,7 +199,8 @@ def _push_one(row, base_payload):
         return ("failed", None, str(exc)[:200])
 
 
-def _fanout_push(title, message, url, recipients=None, message_id=None):
+def _fanout_push(title, message, url, recipients=None, message_id=None,
+                 payload_extra=None, per_recipient=None):
     """Fan a push out to the subscribed devices.
 
     Webpush calls block for up to 15 seconds each, so they must never run
@@ -208,13 +213,16 @@ def _fanout_push(title, message, url, recipients=None, message_id=None):
         "body": message.strip()[:500],
         "url": _app_url(url),
         "messageId": message_id,
+        **(payload_extra or {}),
     }
 
     rows = _snapshot_subscribers(recipients)
     outcomes = []
     if rows:
         with ThreadPoolExecutor(max_workers=8) as pool:
-            outcomes = list(pool.map(lambda row: _push_one(row, base_payload), rows))
+            outcomes = list(pool.map(
+                lambda row: _push_one(row, base_payload, per_recipient), rows
+            ))
 
     sent = 0
     failed = 0

@@ -186,3 +186,109 @@ def test_anonymous_gets_nothing(app):
         assert client.get("/api/im/threads").status_code == 401
         assert client.get(_thread_url("party")).status_code == 401
         assert client.post(_thread_url("party"), json={"body": "hi"}).status_code == 401
+
+
+
+def test_unread_total_counts_only_other_peoples_live_messages(app, server_module):
+    """The number the app-icon badge and the app-bar bubble both show."""
+    lotan = _headers(server_module, "Lotan")
+    roxy = _headers(server_module, 'Roxanya "Roxy"')
+    direct = 'Lotan|Roxanya "Roxy"'
+    roster = server_module._im_roster()
+
+    with server_module._app_db() as conn:
+        assert server_module._unread_total(conn, "Lotan", roster) == 0
+
+    _send(app, roxy, "party", "Anyone awake?")
+    _send(app, roxy, direct, "Just us, then.")
+
+    with server_module._app_db() as conn:
+        assert server_module._unread_total(conn, "Lotan", roster) == 2
+        # Roxy wrote both, so neither is unread for her.
+        assert server_module._unread_total(conn, 'Roxanya "Roxy"', roster) == 0
+
+    # Sending into a thread reads it: your own message never counts against
+    # you, and it carries the pointer past everything before it.
+    _send(app, lotan, "party", "Awake, and cold.")
+    with server_module._app_db() as conn:
+        assert server_module._unread_total(conn, "Lotan", roster) == 1
+        assert server_module._unread_total(conn, 'Roxanya "Roxy"', roster) == 1
+
+    # A soft-deleted message stops counting.
+    with server_module._app_db() as conn:
+        conn.execute(
+            "UPDATE chat_messages SET deleted_at = ? WHERE thread_key = ?",
+            (server_module._utc_now_iso(), direct),
+        )
+        assert server_module._unread_total(conn, "Lotan", roster) == 0
+
+
+def test_thread_push_carries_thread_key_tag_and_per_reader_unread(app, server_module, monkeypatch):
+    """The service worker needs the thread key to collapse a conversation
+    into one banner, badge the icon, and open the overlay in place."""
+    from vos.routes import im as im_routes
+
+    calls = {}
+
+    def fake_fanout(title, message, url, **kwargs):
+        calls.update({"title": title, "message": message, "url": url, **kwargs})
+        return {"ok": True}
+
+    monkeypatch.setattr(im_routes, "_push_config_error", lambda: None)
+    monkeypatch.setattr(im_routes, "_fanout_push", fake_fanout)
+
+    roxy = _headers(server_module, 'Roxanya "Roxy"')
+    _send(app, roxy, "party", "The fog is moving.")
+
+    assert calls["payload_extra"] == {"threadKey": "party", "tag": "im:party"}
+    assert calls["url"] == "/messages/#party"
+    assert "Roxanya" in calls["title"]
+    # Every other member gets their own count; the sender is not a recipient.
+    assert 'Roxanya "Roxy"' not in calls["recipients"]
+    assert set(calls["per_recipient"]) == set(calls["recipients"])
+    assert all(entry["unread"] == 1 for entry in calls["per_recipient"].values())
+
+
+def test_muted_members_are_left_out_of_the_chat_push(app, server_module, monkeypatch):
+    from vos.routes import im as im_routes
+
+    calls = {}
+    monkeypatch.setattr(im_routes, "_push_config_error", lambda: None)
+    monkeypatch.setattr(
+        im_routes, "_fanout_push",
+        lambda *a, **kw: calls.update(kw) or {"ok": True},
+    )
+
+    lotan = _headers(server_module, "Lotan")
+    roxy = _headers(server_module, 'Roxanya "Roxy"')
+    with app.test_client() as client:
+        client.post("/api/im/mute", json={"threadKey": "party", "muted": True}, headers=lotan)
+    _send(app, roxy, "party", "Still moving.")
+
+    assert "Lotan" not in calls["recipients"]
+    assert "Lotan" not in calls["per_recipient"]
+
+
+def test_push_payload_merges_per_recipient_extras(monkeypatch):
+    """_push_one folds the per-reader dict over the shared payload."""
+    import json
+
+    from vos.routes import push as push_routes
+
+    seen = []
+    monkeypatch.setattr(
+        push_routes, "send_webpush",
+        lambda subscription_info=None, data=None, **kwargs: seen.append(data),
+    )
+    row = {"player_name": "Lotan", "endpoint": "https://push.example/1",
+           "p256dh": "k", "auth": "a"}
+    status, _code, _error = push_routes._push_one(
+        row,
+        {"title": "T", "body": "B", "url": "/", "messageId": None, "tag": "im:party"},
+        {"Lotan": {"unread": 4}},
+    )
+    assert status == "sent"
+    payload = json.loads(seen[0])
+    assert payload["unread"] == 4
+    assert payload["tag"] == "im:party"
+    assert payload["playerName"] == "Lotan"

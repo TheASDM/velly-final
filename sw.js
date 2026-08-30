@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'foglight-pwa-v112';
+const CACHE_VERSION = 'foglight-pwa-v113';
 const PRECACHE = `${CACHE_VERSION}-precache`;
 const PAGES = `${CACHE_VERSION}-pages`;
 const ASSETS = `${CACHE_VERSION}-assets`;
@@ -202,14 +202,40 @@ self.addEventListener('push', (event) => {
     body: data.body || '',
     icon: '/images/app-icon/icon-192.png',
     badge: '/images/app-icon/icon-192.png',
+    // A conversation collapses into one banner instead of stacking: same
+    // tag replaces the previous notification, renotify still buzzes.
+    tag: data.tag || undefined,
+    renotify: data.tag ? true : undefined,
     data: {
       url: data.url || '/',
       messageId: data.messageId || null,
       playerName: data.playerName || '',
+      threadKey: data.threadKey || null,
     },
   };
 
-  event.waitUntil(self.registration.showNotification(title, options));
+  event.waitUntil((async () => {
+    await self.registration.showNotification(title, options);
+    // The count on the installed app's icon, and a live nudge to any open
+    // tab so the bubble moves while you are reading a wiki page.
+    if (typeof data.unread === 'number' && self.navigator) {
+      try {
+        if (data.unread > 0 && self.navigator.setAppBadge) {
+          await self.navigator.setAppBadge(data.unread);
+        } else if (self.navigator.clearAppBadge) {
+          await self.navigator.clearAppBadge();
+        }
+      } catch (error) { /* unsupported, or denied */ }
+    }
+    if (data.threadKey) {
+      const windows = await self.clients.matchAll({ type: 'window', includeUncontrolled: true });
+      windows.forEach((client) => client.postMessage({
+        type: 'VOS_IM_PUSH',
+        threadKey: data.threadKey,
+        unread: typeof data.unread === 'number' ? data.unread : null,
+      }));
+    }
+  })());
 });
 
 self.addEventListener('notificationclick', (event) => {
@@ -235,6 +261,12 @@ self.addEventListener('notificationclick', (event) => {
       const clientUrl = new URL(client.url);
       if (clientUrl.origin === targetUrl.origin && 'focus' in client) {
         await client.focus();
+        // A chat tap opens the overlay in place — the page you were on
+        // stays put. Only a cold start has to navigate.
+        if (noteData.threadKey) {
+          client.postMessage({ type: 'VOS_IM_OPEN', threadKey: noteData.threadKey });
+          return;
+        }
         if ('navigate' in client) {
           return client.navigate(targetUrl.href);
         }
