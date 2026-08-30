@@ -9,6 +9,11 @@ def _trim_output(text, max_chars=6000):
     return text[-max_chars:]
 
 
+def _last_lines(text, count=15):
+    lines = str(text or "").strip().splitlines()
+    return "\n".join(lines[-count:])
+
+
 def _join_process_output(*parts):
     output = []
     for part in parts:
@@ -183,6 +188,9 @@ def _run_one_rebuild(job_id, reason, include_knowledge):
                     "finished_at": _utc_now_iso(),
                     "current_step": label,
                     "error": f"{step['command']} exited {step['returncode']}",
+                    # The cause lives in the command output — surface the
+                    # tail instead of making the DM ssh in for it.
+                    "error_detail": _last_lines(step["output_tail"]),
                 })
                 _write_rebuild_status(status)
                 logging.error("Rebuild job %s failed at %s", job_id, label)
@@ -216,6 +224,7 @@ def _run_one_rebuild(job_id, reason, include_knowledge):
             "state": "failed",
             "finished_at": _utc_now_iso(),
             "error": f"Rebuild timed out after {REBUILD_COMMAND_TIMEOUT_SECONDS}s",
+            "error_detail": _last_lines(output),
         })
         _write_rebuild_status(status)
         logging.exception("Rebuild job %s timed out", job_id)
@@ -376,4 +385,4 @@ def _skip_rag(message):
         return True
     return False
 
-__all__ = ['_trim_output', '_join_process_output', '_write_rebuild_status', '_read_rebuild_status', '_run_rebuild_command', '_pending_rebuild_lock', '_write_pending_rebuild', '_consume_pending_rebuild', '_release_rebuild_lock', '_run_rebuild_job', '_run_one_rebuild', '_start_rebuild_job', '_fire_debounced_rebuild', '_schedule_debounced_rebuild', '_cancel_debounced_rebuild', '_skip_rag']
+__all__ = ['_trim_output', '_last_lines', '_join_process_output', '_write_rebuild_status', '_read_rebuild_status', '_run_rebuild_command', '_pending_rebuild_lock', '_write_pending_rebuild', '_consume_pending_rebuild', '_release_rebuild_lock', '_run_rebuild_job', '_run_one_rebuild', '_start_rebuild_job', '_fire_debounced_rebuild', '_schedule_debounced_rebuild', '_cancel_debounced_rebuild', '_skip_rag']

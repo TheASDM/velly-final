@@ -139,6 +139,25 @@
 .vos-dm-status.is-error {
   color: var(--vos-quest-bright);
 }
+.vos-dm-build-detail {
+  margin-top: 0.5rem;
+}
+.vos-dm-build-detail summary {
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+.vos-dm-build-detail pre {
+  margin: 0.4rem 0 0;
+  padding: 0.6rem;
+  border: 1px solid rgba(201,168,76,0.22);
+  border-radius: 6px;
+  font-size: 0.75rem;
+  line-height: 1.4;
+  white-space: pre-wrap;
+  word-break: break-word;
+  max-height: 14rem;
+  overflow-y: auto;
+}
 .vos-dm-counts {
   display: grid;
   grid-template-columns: repeat(3, 1fr);

@@ -481,6 +481,19 @@ export function rebuildStatusText(rebuild) {
 export function setStatusWithRebuild(target, base, rebuild) {
   const extra = rebuildStatusText(rebuild);
   setStatus(target, [base, extra].filter(Boolean).join(' '), rebuild && rebuild.state === 'failed');
+  // A failed build's cause is in the output tail — show it in place instead
+  // of sending the DM to the server logs. setStatus cleared the element, so
+  // this collapsible only ever exists alongside its own failure message.
+  if (target && rebuild && rebuild.state === 'failed' && rebuild.error_detail) {
+    const details = document.createElement('details');
+    details.className = 'vos-dm-build-detail';
+    const summary = document.createElement('summary');
+    summary.textContent = 'Build output';
+    const pre = document.createElement('pre');
+    pre.textContent = rebuild.error_detail;
+    details.append(summary, pre);
+    target.appendChild(details);
+  }
 }
 
 export function pollRebuildStatus(target) {
