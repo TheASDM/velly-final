@@ -272,8 +272,11 @@ def gallery_pin(gallery_id):
         }), 403
     actor = actor or "DM"
 
+    # Confine pins to the wiki content roots: every repo-root .md resolves
+    # as /en/<rel>/, and this endpoint is reachable by any image creator, so
+    # without this gate it is an arbitrary-markdown-append primitive.
     source_path = _wiki_url_to_source_path(wiki_url)
-    if not source_path:
+    if not source_path or not _wiki_source_in_content_roots(source_path):
         return jsonify({
             "error": f"No wiki page found at {wiki_url}",
             "error_code": "not_found",
@@ -285,11 +288,6 @@ def gallery_pin(gallery_id):
     if not filename:
         return jsonify({"error": "Gallery entry has no filename", "error_code": "invalid"}), 500
 
-    # A wiki page is visible to the table, so the pinned image must be shared
-    # too. The user's pin action is the explicit publication step.
-    if not _gallery_entry_is_shared(entry):
-        entry = _set_gallery_visibility(gallery_id, "shared", actor) or entry
-
     image_url = f"/api/gallery/image/{filename}"
     alt_text = _gallery_entry_title(entry) or "Pinned from the Studio"
 
@@ -297,9 +295,23 @@ def gallery_pin(gallery_id):
         modified = _append_image_to_wiki_gallery(
             source_path, image_url, alt_text, gallery_id, actor
         )
-    except Exception as exc:
+    except Exception:
         logging.exception("Failed to pin gallery image to wiki")
-        return jsonify({"error": str(exc), "error_code": "api_error"}), 500
+        return jsonify({"error": "Could not update the wiki page", "error_code": "api_error"}), 500
+
+    # A wiki page is visible to the table, so the pinned image must be shared
+    # too. Flip only once the append has succeeded — publishing the image and
+    # then failing to pin it would leak a private image for nothing.
+    if not _gallery_entry_is_shared(entry):
+        entry = _set_gallery_visibility(gallery_id, "shared", actor) or entry
+
+    # The site is a static build: the pin isn't visible until it's rebuilt.
+    rebuild = None
+    if modified:
+        rebuild = _start_rebuild_job(
+            f"gallery pin: {source_path.name}",
+            include_knowledge=AUTO_KNOWLEDGE_ON_WIKI_SAVE,
+        )
 
     return jsonify({
         "ok": True,
@@ -307,6 +319,7 @@ def gallery_pin(gallery_id):
         "source_file": str(source_path.relative_to(SITE_SOURCE_DIR)),
         "modified": modified,
         "already_pinned": not modified,
+        "rebuild": rebuild,
     })
 
 

@@ -16,6 +16,28 @@ def _chown_like_site(path):
 
 IMAGE_PLACEHOLDER_RE = re.compile(r"\{\{?\s*IMAGE\s*\}?\}", re.IGNORECASE)
 MARKDOWN_IMAGE_RE = re.compile(r"^\s*!\[[^\]]*\]\([^)]+\)\s*$", re.MULTILINE)
+_WIKI_GALLERY_HEADING_RE = re.compile(r"(?m)^##\s+Gallery\s*$")
+_WIKI_NEXT_H2_RE = re.compile(r"(?m)^##\s+")
+
+# The wiki content lives under these top-level directories. Any repo-root
+# markdown file is reachable as /en/<rel>/, so writes must be confined here —
+# otherwise README.md, CLAUDE.md, or node_modules docs are writable via the API.
+WIKI_CONTENT_ROOTS = (
+    "Articles",
+    "Class-Changes",
+    "House-Rules",
+    "Session-Chronicles",
+    "Updates",
+    "Venturia",
+)
+
+
+def _wiki_source_in_content_roots(source_path):
+    try:
+        rel = source_path.resolve().relative_to(SITE_SOURCE_DIR.resolve())
+    except (ValueError, OSError):
+        return False
+    return bool(rel.parts) and rel.parts[0] in WIKI_CONTENT_ROOTS
 
 def _strip_markdown_title(markdown):
     body = (markdown or "").strip()
@@ -178,4 +200,4 @@ def _append_image_to_wiki_gallery(source_path, image_abs_url, alt_text,
     _chown_like_site(source_path)
     return True
 
-__all__ = ['_yaml_quote', '_chown_like_site', 'IMAGE_PLACEHOLDER_RE', 'MARKDOWN_IMAGE_RE', '_strip_markdown_title', '_strip_generated_images', '_markdown_with_image', '_page_frontmatter', '_source_file_url', '_source_path_to_wiki_url', '_wiki_url_to_source_path', '_wiki_source_hash', '_read_wiki_source_payload', '_append_image_to_wiki_gallery']
+__all__ = ['_yaml_quote', '_chown_like_site', 'IMAGE_PLACEHOLDER_RE', 'MARKDOWN_IMAGE_RE', '_WIKI_GALLERY_HEADING_RE', '_WIKI_NEXT_H2_RE', 'WIKI_CONTENT_ROOTS', '_wiki_source_in_content_roots', '_strip_markdown_title', '_strip_generated_images', '_markdown_with_image', '_page_frontmatter', '_source_file_url', '_source_path_to_wiki_url', '_wiki_url_to_source_path', '_wiki_source_hash', '_read_wiki_source_payload', '_append_image_to_wiki_gallery']
