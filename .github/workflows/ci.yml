@@ -23,3 +23,7 @@ jobs:
       - run: ruff check .
       - run: npm run lint:js
       - run: npm run build
+      # The bundles under public/ are committed; a source edit without a
+      # rebuild ships stale JS/CSS. Fail if the fresh build differs.
+      - name: Committed bundles match a fresh build
+        run: git diff --exit-code public/
