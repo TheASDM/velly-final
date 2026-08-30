@@ -18,6 +18,7 @@ def admin_config():
 
 
 @bp.route("/api/admin/login", methods=["POST"])
+@limiter.limit("10/minute;60/hour")
 def admin_login():
     """Exchange a Google ID token for a server-signed session JWT.
     Client should send { credential: <id_token from GIS> }."""
@@ -328,6 +329,7 @@ def admin_lore_submission_save(submission_id):
 
 
 @bp.route("/api/admin/lore-submissions/<submission_id>/draft", methods=["POST"])
+@limiter.limit("10/hour")  # each redraft costs an LLM call
 def admin_lore_submission_redraft(submission_id):
     admin_error = _admin_error_response()
     if admin_error:

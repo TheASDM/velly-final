@@ -6,6 +6,7 @@ from ..web import limiter
 bp = Blueprint("lore", __name__)
 
 @bp.route("/api/lore-submissions", methods=["POST"])
+@limiter.limit("10/hour")  # each submission costs an LLM draft
 def lore_submission_create():
     body = request.get_json(silent=True) or {}
     submitter, auth_error = _authenticated_player_name(body)

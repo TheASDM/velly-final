@@ -11,6 +11,7 @@ browsing should not cost a round trip to Syrinscape per keystroke.
 from ..imports import *
 from ..symbols import *
 from ..config import *
+from ..web import limiter
 
 bp = Blueprint("sounds", __name__)
 
@@ -51,6 +52,11 @@ def _syrinscape_get(path):
 
 
 @bp.get("/api/sounds/soundsets")
+@limiter.limit(
+    "10/hour",
+    # Only a forced refresh hits the Syrinscape API; cached reads are free.
+    exempt_when=lambda: not request.args.get("refresh"),
+)
 def api_soundsets():
     """The whole library, trimmed to what a browser needs."""
     admin_error = _admin_error_response()

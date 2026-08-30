@@ -31,10 +31,7 @@ limiter = Limiter(
 @app.errorhandler(429)
 def _rate_limited(exc):
     return jsonify({
-        "error": (
-            "Slow down — you've hit the chat rate limit. "
-            "Try again in a minute."
-        ),
+        "error": "Slow down — too many requests. Try again in a minute.",
         "error_code": "rate_limited",
     }), 429
 

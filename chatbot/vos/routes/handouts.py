@@ -9,6 +9,7 @@ admin door as the rest of the DM console.
 from ..imports import *
 from ..symbols import *
 from ..config import *
+from ..web import limiter
 
 bp = Blueprint("handouts", __name__)
 
@@ -164,6 +165,7 @@ def api_update_handout(handout_id):
 
 
 @bp.post("/api/handouts/image")
+@limiter.limit("30/hour")
 def api_upload_handout_image():
     """Accept one image and answer with the markdown line that shows it."""
     admin_error = _admin_error_response()

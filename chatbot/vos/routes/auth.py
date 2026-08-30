@@ -104,6 +104,7 @@ def auth_oauth_callback(provider):
 
 
 @bp.route("/api/auth/login", methods=["POST"])
+@limiter.limit("10/minute;60/hour")
 def auth_login():
     if not _auth_login_required():
         return jsonify({
