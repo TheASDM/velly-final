@@ -32,6 +32,17 @@ THREAD_PAGE_LIMIT = 200
 # Not a roster seat — adding him to _data/players.json would break the auth
 # maps and the records that key off it. He exists only as a thread partner.
 ENZO_NAME = "Enzo"
+# An edit window, not an edit history: long enough to fix a typo or a name,
+# short enough that nobody rewrites what the table read an hour ago. The
+# row keeps edited_at, so an edited message says so forever.
+MESSAGE_EDIT_WINDOW_SECONDS = 3600
+# The client heartbeats every ~3s while composing; a row outlives two
+# missed beats and no more.
+TYPING_TTL_SECONDS = 8
+# Six faces, allow-listed here rather than trusted from the client — the
+# column would otherwise take any string a request cared to send.
+REACTION_EMOJI = ("\U0001F44D", "\u2764\uFE0F", "\U0001F602",
+                  "\U0001F62E", "\U0001F622", "\U0001F525")
 # How much of the thread Enzo is handed as memory. The engine trims again
 # against MAX_CONVERSATION_BYTES; this only bounds the read.
 ENZO_HISTORY_LIMIT = 40
@@ -41,6 +52,23 @@ ENZO_HISTORY_LIMIT = 40
 # still slip through, and CHAT_RATE_LIMIT is what actually bounds the spend.
 _enzo_in_flight = set()
 _enzo_lock = threading.Lock()
+
+
+def _utc_now_iso_in(seconds):
+    return (datetime.now(timezone.utc) + timedelta(seconds=seconds)) \
+        .isoformat().replace("+00:00", "Z")
+
+
+def _iso_age_seconds(value):
+    """How long ago an ISO timestamp was, in seconds. An unparseable stamp
+    reads as ancient, which fails closed on the edit window."""
+    try:
+        stamp = datetime.fromisoformat(str(value).replace("Z", "+00:00"))
+    except (TypeError, ValueError):
+        return float("inf")
+    if stamp.tzinfo is None:
+        stamp = stamp.replace(tzinfo=timezone.utc)
+    return (datetime.now(timezone.utc) - stamp).total_seconds()
 
 
 def _im_roster():
@@ -128,7 +156,103 @@ def _chat_message_json(row):
         "body": "" if deleted else row["body"],
         "created_at": row["created_at"],
         "deleted": deleted,
+        "replyToId": row["reply_to_id"],
+        # Stated, not hidden: an edited message is marked for everyone.
+        "editedAt": None if deleted else row["edited_at"],
     }
+
+
+def _touch_presence(conn, player_name):
+    """Last seen, per player rather than per thread. Touched by the polls
+    the client already makes, so presence costs no extra request."""
+    conn.execute("""
+        INSERT INTO player_presence (player_name, last_seen_at)
+        VALUES (?, ?)
+        ON CONFLICT(player_name) DO UPDATE SET last_seen_at = excluded.last_seen_at
+    """, (player_name, _utc_now_iso()))
+
+
+def _thread_reactions(conn, thread_key, caller):
+    """Reactions for the whole thread, keyed by message id as a string so
+    the payload survives JSON. Counts render under the bubble; `mine` is
+    what lets a second tap take it back."""
+    rows = conn.execute("""
+        SELECT r.message_id, r.emoji, r.player_name
+        FROM chat_reactions r
+        JOIN chat_messages m ON m.id = r.message_id
+        WHERE m.thread_key = ?
+        ORDER BY r.created_at ASC
+    """, (thread_key,)).fetchall()
+    grouped = {}
+    for row in rows:
+        faces = grouped.setdefault(str(row["message_id"]), {})
+        face = faces.setdefault(row["emoji"], {"emoji": row["emoji"], "players": [], "mine": False})
+        face["players"].append(row["player_name"])
+        if row["player_name"] == caller:
+            face["mine"] = True
+    return {key: list(faces.values()) for key, faces in grouped.items()}
+
+
+def _thread_typing(conn, thread_key, caller):
+    """Whoever is composing right now, minus you. Expired rows are swept on
+    the way past — they are disposable and nothing ever reads them again."""
+    now = _utc_now_iso()
+    conn.execute("DELETE FROM chat_typing WHERE expires_at <= ?", (now,))
+    return sorted(
+        row["player_name"]
+        for row in conn.execute(
+            "SELECT player_name FROM chat_typing WHERE thread_key = ? AND expires_at > ?",
+            (thread_key, now),
+        )
+        if row["player_name"] != caller
+    )
+
+
+def _thread_receipts(conn, thread_key, caller, members):
+    """The other members' read pointers. Nearly free: chat_reads already
+    holds one per (thread, reader), so "seen by" is only a matter of
+    exposing what the unread count was already computed from."""
+    others = [name for name in sorted(members) if name != caller]
+    if not others:
+        return {}
+    placeholders = ",".join("?" for _ in others)
+    return {
+        row["player_name"]: row["last_read_id"]
+        for row in conn.execute(f"""
+            SELECT player_name, last_read_id FROM chat_reads
+            WHERE thread_key = ? AND player_name IN ({placeholders})
+        """, [thread_key, *others])
+    }
+
+
+def _presence_map(conn, names):
+    names = [name for name in names if name != ENZO_NAME]
+    if not names:
+        return {}
+    placeholders = ",".join("?" for _ in names)
+    return {
+        row["player_name"]: row["last_seen_at"]
+        for row in conn.execute(f"""
+            SELECT player_name, last_seen_at FROM player_presence
+            WHERE player_name IN ({placeholders})
+        """, names)
+    }
+
+
+def _message_for_caller(conn, message_id, caller):
+    """Load a message the caller is entitled to touch. Returns
+    (row, error_response)."""
+    row = conn.execute(
+        "SELECT * FROM chat_messages WHERE id = ?", (message_id,)
+    ).fetchone()
+    if not row:
+        return None, (jsonify({"error": "Message not found", "error_code": "not_found"}), 404)
+    members = _thread_members(row["thread_key"], _im_roster())
+    if not members or caller not in members:
+        # Same shape as a missing message: whether a message exists in a
+        # thread you cannot read is not yours to learn.
+        return None, (jsonify({"error": "Message not found", "error_code": "not_found"}), 404)
+    return row, None
 
 
 def _caller_thread_keys(caller, roster):
@@ -196,6 +320,8 @@ def im_threads():
                   AND thread_key IN ({placeholders})
             """, [caller, *keys])
         }
+        _touch_presence(conn, caller)
+        presence = _presence_map(conn, roster)
 
     threads = []
     for key in keys:
@@ -218,7 +344,9 @@ def im_threads():
             "muted": key in muted,
             "last": preview,
         })
-    return jsonify({"ok": True, "playerName": caller, "threads": threads})
+    return jsonify({
+        "ok": True, "playerName": caller, "threads": threads, "presence": presence,
+    })
 
 
 @bp.route("/api/im/thread/<path:thread_key>", methods=["GET", "POST"])
@@ -236,15 +364,45 @@ def im_thread(thread_key):
             after = int(request.args.get("after", "0"))
         except ValueError:
             after = 0
+        # Everything an open thread needs in one request. `since` carries
+        # the previous poll's clock back, so an edit or a delete on a
+        # message the client already has still reaches it — `after` alone
+        # only ever finds new ids.
+        since = request.args.get("since") or ""
+        now = _utc_now_iso()
+        members = _thread_members(thread_key, _im_roster()) or set()
         with _app_db() as conn:
+            _touch_presence(conn, caller)
             rows = conn.execute("""
                 SELECT * FROM chat_messages
                 WHERE thread_key = ? AND id > ?
                 ORDER BY id DESC
                 LIMIT ?
             """, (thread_key, after, THREAD_PAGE_LIMIT)).fetchall()
-        messages = [_chat_message_json(row) for row in reversed(rows)]
-        return jsonify({"ok": True, "threadKey": thread_key, "messages": messages})
+            revised = []
+            if since:
+                revised = conn.execute("""
+                    SELECT * FROM chat_messages
+                    WHERE thread_key = ? AND id <= ?
+                      AND (edited_at > ? OR deleted_at > ?)
+                    ORDER BY id ASC
+                    LIMIT ?
+                """, (thread_key, after, since, since, THREAD_PAGE_LIMIT)).fetchall()
+            reactions = _thread_reactions(conn, thread_key, caller)
+            typing = _thread_typing(conn, thread_key, caller)
+            receipts = _thread_receipts(conn, thread_key, caller, members)
+            presence = _presence_map(conn, members)
+        return jsonify({
+            "ok": True,
+            "threadKey": thread_key,
+            "messages": [_chat_message_json(row) for row in reversed(rows)],
+            "revised": [_chat_message_json(row) for row in revised],
+            "reactions": reactions,
+            "typing": typing,
+            "receipts": receipts,
+            "presence": presence,
+            "now": now,
+        })
 
     body = request.get_json(silent=True) or {}
     text = body.get("body")
@@ -254,9 +412,33 @@ def im_thread(thread_key):
     if len(text.encode("utf-8")) > CHAT_BODY_MAX_BYTES:
         return jsonify({"error": "Message is too long (4KB max)", "error_code": "invalid"}), 400
 
+    reply_to_id = body.get("replyToId") or body.get("reply_to_id")
+    try:
+        reply_to_id = int(reply_to_id) if reply_to_id is not None else None
+    except (TypeError, ValueError):
+        return jsonify({"error": "replyToId must be a number", "error_code": "invalid"}), 400
+
     with _app_db() as conn:
+        if reply_to_id is not None:
+            # You can only answer something in this thread — a reply is not
+            # a way to quote a conversation you were never in.
+            quoted = conn.execute(
+                "SELECT thread_key FROM chat_messages WHERE id = ?", (reply_to_id,)
+            ).fetchone()
+            if not quoted or quoted["thread_key"] != thread_key:
+                return jsonify({
+                    "error": "That message is not in this thread.",
+                    "error_code": "invalid",
+                }), 400
+        _touch_presence(conn, caller)
+        # Sending is the end of composing.
+        conn.execute(
+            "DELETE FROM chat_typing WHERE thread_key = ? AND player_name = ?",
+            (thread_key, caller),
+        )
         # Your own message never counts against you as unread.
-        row = _store_chat_message(conn, thread_key, caller, text, reader=caller)
+        row = _store_chat_message(conn, thread_key, caller, text,
+                                  reader=caller, reply_to_id=reply_to_id)
 
     _notify_thread(thread_key, caller, text)
     return jsonify({"ok": True, "message": _chat_message_json(row)}), 201
@@ -359,13 +541,13 @@ def _enzo_release(caller):
         )
 
 
-def _store_chat_message(conn, thread_key, sender, text, reader=None):
+def _store_chat_message(conn, thread_key, sender, text, reader=None, reply_to_id=None):
     """Insert a message and carry the reader's unread pointer past it."""
     now = _utc_now_iso()
     cursor = conn.execute("""
-        INSERT INTO chat_messages (thread_key, sender, body, created_at)
-        VALUES (?, ?, ?, ?)
-    """, (thread_key, sender, text, now))
+        INSERT INTO chat_messages (thread_key, sender, body, created_at, reply_to_id)
+        VALUES (?, ?, ?, ?, ?)
+    """, (thread_key, sender, text, now, reply_to_id))
     message_id = cursor.lastrowid
     if reader:
         conn.execute("""
@@ -527,16 +709,133 @@ def im_mute():
     return jsonify({"ok": True, "muted": bool(muted)})
 
 
+@bp.route("/api/im/typing", methods=["POST"])
+def im_typing():
+    """A heartbeat while composing. Rows are disposable and expire on their
+    own; there is no "stopped typing" call to miss."""
+    caller, auth_error = _im_caller()
+    if auth_error:
+        return auth_error
+    body = request.get_json(silent=True) or {}
+    thread_key = str(body.get("threadKey") or body.get("thread_key") or "")
+    access_error = _thread_access_error(thread_key, caller)
+    if access_error:
+        return access_error
+    typing = body.get("typing", True)
+    with _app_db() as conn:
+        _touch_presence(conn, caller)
+        if typing:
+            expires = _utc_now_iso_in(TYPING_TTL_SECONDS)
+            conn.execute("""
+                INSERT INTO chat_typing (thread_key, player_name, expires_at)
+                VALUES (?, ?, ?)
+                ON CONFLICT(thread_key, player_name) DO UPDATE SET
+                    expires_at = excluded.expires_at
+            """, (thread_key, caller, expires))
+        else:
+            conn.execute(
+                "DELETE FROM chat_typing WHERE thread_key = ? AND player_name = ?",
+                (thread_key, caller),
+            )
+    return jsonify({"ok": True, "typing": bool(typing)})
+
+
+@bp.route("/api/im/message/<int:message_id>/reaction", methods=["POST", "DELETE"])
+def im_message_reaction(message_id):
+    """Add or take back one face. Members of the thread only, and only from
+    the six the bar offers."""
+    caller, auth_error = _im_caller()
+    if auth_error:
+        return auth_error
+    body = request.get_json(silent=True) or {}
+    emoji = body.get("emoji")
+    if emoji not in REACTION_EMOJI:
+        return jsonify({"error": "Unknown reaction", "error_code": "invalid"}), 400
+
+    with _app_db() as conn:
+        row, error = _message_for_caller(conn, message_id, caller)
+        if error:
+            return error
+        if row["deleted_at"]:
+            return jsonify({
+                "error": "That message is gone.",
+                "error_code": "not_found",
+            }), 404
+        _touch_presence(conn, caller)
+        if request.method == "POST":
+            conn.execute("""
+                INSERT OR IGNORE INTO chat_reactions
+                    (message_id, player_name, emoji, created_at)
+                VALUES (?, ?, ?, ?)
+            """, (message_id, caller, emoji, _utc_now_iso()))
+        else:
+            conn.execute("""
+                DELETE FROM chat_reactions
+                WHERE message_id = ? AND player_name = ? AND emoji = ?
+            """, (message_id, caller, emoji))
+        reactions = _thread_reactions(conn, row["thread_key"], caller)
+
+    return jsonify({
+        "ok": True,
+        "id": message_id,
+        "reactions": reactions.get(str(message_id), []),
+    })
+
+
+@bp.route("/api/im/message/<int:message_id>", methods=["PATCH"])
+def im_edit_message(message_id):
+    """Rewrite your own message, for an hour. After that it stands as sent —
+    and either way the row keeps edited_at, so it is never a quiet swap."""
+    caller, auth_error = _im_caller()
+    if auth_error:
+        return auth_error
+    body = request.get_json(silent=True) or {}
+    text = body.get("body")
+    if not isinstance(text, str) or not text.strip():
+        return jsonify({"error": "Write the message first", "error_code": "invalid"}), 400
+    text = text.strip()
+    if len(text.encode("utf-8")) > CHAT_BODY_MAX_BYTES:
+        return jsonify({"error": "Message is too long (4KB max)", "error_code": "invalid"}), 400
+
+    with _app_db() as conn:
+        row, error = _message_for_caller(conn, message_id, caller)
+        if error:
+            return error
+        if row["deleted_at"]:
+            return jsonify({"error": "That message is gone.", "error_code": "not_found"}), 404
+        if row["sender"] != caller:
+            return jsonify({
+                "error": "Only the sender can edit a message.",
+                "error_code": "forbidden",
+            }), 403
+        if _iso_age_seconds(row["created_at"]) > MESSAGE_EDIT_WINDOW_SECONDS:
+            return jsonify({
+                "error": "That message is older than an hour — it stands as sent.",
+                "error_code": "too_late",
+            }), 409
+        now = _utc_now_iso()
+        conn.execute(
+            "UPDATE chat_messages SET body = ?, edited_at = ? WHERE id = ?",
+            (text, now, message_id),
+        )
+        _touch_presence(conn, caller)
+        updated = conn.execute(
+            "SELECT * FROM chat_messages WHERE id = ?", (message_id,)
+        ).fetchone()
+
+    return jsonify({"ok": True, "message": _chat_message_json(updated)})
+
+
 @bp.route("/api/im/message/<int:message_id>", methods=["DELETE"])
 def im_delete_message(message_id):
     caller, auth_error = _im_caller()
     if auth_error:
         return auth_error
     with _app_db() as conn:
-        row = conn.execute(
-            "SELECT * FROM chat_messages WHERE id = ?", (message_id,)
-        ).fetchone()
-        if not row or row["deleted_at"]:
+        row, error = _message_for_caller(conn, message_id, caller)
+        if error:
+            return error
+        if row["deleted_at"]:
             return jsonify({"error": "Message not found", "error_code": "not_found"}), 404
         if row["sender"] != caller:
             return jsonify({
@@ -551,8 +850,13 @@ def im_delete_message(message_id):
 
 
 __all__ = ['CHAT_BODY_MAX_BYTES', 'PARTY_THREAD_KEY', 'ENZO_NAME', 'ENZO_HISTORY_LIMIT',
+           'MESSAGE_EDIT_WINDOW_SECONDS', 'TYPING_TTL_SECONDS', 'REACTION_EMOJI',
+           '_utc_now_iso_in', '_iso_age_seconds',
            '_im_roster', '_direct_thread_key', '_enzo_thread_key', '_enzo_partner',
            '_thread_members', '_im_caller', '_thread_access_error', '_chat_message_json',
+           '_touch_presence', '_thread_reactions', '_thread_typing', '_thread_receipts',
+           '_presence_map', '_message_for_caller',
            '_caller_thread_keys', '_thread_label', 'im_threads', 'im_thread', '_unread_total',
            '_enzo_history', '_enzo_claim', '_enzo_release', '_store_chat_message', '_sse',
-           'im_thread_enzo', '_notify_thread', 'im_read', 'im_mute', 'im_delete_message']
+           'im_thread_enzo', '_notify_thread', 'im_read', 'im_mute', 'im_typing',
+           'im_message_reaction', 'im_edit_message', 'im_delete_message']

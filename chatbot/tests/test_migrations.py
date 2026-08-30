@@ -24,6 +24,7 @@ EXPECTED_MIGRATIONS = {
     "023_character_play_state",
     "024_handouts",
     "025_chat",
+    "026_chat_depth",
 }
 
 EXPECTED_TABLES = {
@@ -34,7 +35,9 @@ EXPECTED_TABLES = {
     "character_play_state",
     "character_play_ops",
     "chat_messages",
+    "chat_reactions",
     "chat_reads",
+    "chat_typing",
     "gallery_favorites",
     "handouts",
     "in_play",
@@ -43,6 +46,7 @@ EXPECTED_TABLES = {
     "message_recipients",
     "messages",
     "notes",
+    "player_presence",
     "push_deliveries",
     "push_opens",
     "questionnaires",

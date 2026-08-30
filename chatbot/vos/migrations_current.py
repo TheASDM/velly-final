@@ -350,4 +350,52 @@ def apply_current_migrations(conn, done):
             ("025_chat", _utc_now_iso()),
         )
 
+    if "026_chat_depth" not in done:
+        # Replies and edits ride on the existing message row. edited_at is
+        # NULL until the first edit, so "edited" is a fact the row carries
+        # rather than a flag the client has to infer.
+        cols = _table_columns(conn, "chat_messages")
+        if "reply_to_id" not in cols:
+            conn.execute("ALTER TABLE chat_messages ADD COLUMN reply_to_id INTEGER")
+        if "edited_at" not in cols:
+            conn.execute("ALTER TABLE chat_messages ADD COLUMN edited_at TEXT")
+        # One row per (message, reader, emoji): reacting twice with the same
+        # face is the same reaction, and the primary key says so.
+        conn.execute("""
+            CREATE TABLE IF NOT EXISTS chat_reactions (
+                message_id INTEGER NOT NULL,
+                player_name TEXT NOT NULL,
+                emoji TEXT NOT NULL,
+                created_at TEXT NOT NULL,
+                PRIMARY KEY (message_id, player_name, emoji)
+            )
+        """)
+        conn.execute("""
+            CREATE INDEX IF NOT EXISTS idx_chat_reactions_message
+            ON chat_reactions (message_id)
+        """)
+        # Typing rows are disposable — a heartbeat with an expiry, no
+        # history. Readers treat an unexpired row as "typing" and nothing
+        # ever reads these again.
+        conn.execute("""
+            CREATE TABLE IF NOT EXISTS chat_typing (
+                thread_key TEXT NOT NULL,
+                player_name TEXT NOT NULL,
+                expires_at TEXT NOT NULL,
+                PRIMARY KEY (thread_key, player_name)
+            )
+        """)
+        # Presence is per player, not per thread, so it gets its own row
+        # rather than a column on the composite-keyed chat_reads.
+        conn.execute("""
+            CREATE TABLE IF NOT EXISTS player_presence (
+                player_name TEXT PRIMARY KEY,
+                last_seen_at TEXT NOT NULL
+            )
+        """)
+        conn.execute(
+            "INSERT INTO schema_migrations (name, applied_at) VALUES (?, ?)",
+            ("026_chat_depth", _utc_now_iso()),
+        )
+
 __all__ = ['apply_current_migrations']
