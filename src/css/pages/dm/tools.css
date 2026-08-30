@@ -454,19 +454,29 @@
 
 /* ── Phone fit for the Phase-3 additions ────────────────────────────── */
 @media (max-width: 560px) {
-  /* The summary strip is a glance, not a wall: one scrollable row instead
-     of a stack of wrapped chips eating the top of the screen. */
-  .vos-dm-summary {
-    flex-wrap: nowrap;
-    overflow-x: auto;
-    scrollbar-width: none;
-    -webkit-overflow-scrolling: touch;
-    padding-bottom: 0.2rem;
-  }
-  .vos-dm-summary::-webkit-scrollbar { display: none; }
+  /* Nothing on the console scrolls sideways on a phone: the summary and
+     the tool groups wrap into rows of much smaller pills instead. */
   .vos-dm-summary-chip {
-    flex: 0 0 auto;
+    flex-direction: row;
+    align-items: baseline;
+    gap: 0.35rem;
+    padding: 0.28rem 0.55rem;
     white-space: nowrap;
+  }
+  .vos-dm-summary-chip strong { font-size: 0.82rem; }
+  .vos-dm-summary-chip span { font-size: 0.56rem; }
+  .vos-dm-groups .vos-seg {
+    flex-wrap: wrap;
+    overflow-x: visible;
+    -webkit-mask-image: none;
+    mask-image: none;
+    margin-inline: 0;
+  }
+  .vos-dm-groups .vos-seg-btn {
+    min-height: 34px;
+    padding-block: 0.2rem;
+    padding-inline: 0.5rem;
+    font-size: 0.58rem;
   }
   /* The confirm sheet earns its name: it rises from the bottom edge with
      stacked full-width actions a thumb can hit. */

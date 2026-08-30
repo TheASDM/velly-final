@@ -124,25 +124,20 @@
   /* ── DM satellite link row (Table / Bench / Sheets / Dossiers) ──────── */
   .vos-dm-satellites {
     display: flex;
-    gap: 0.5rem;
+    flex-wrap: wrap;
+    gap: 0.4rem;
     margin: 0.25rem 0 0.9rem;
-    /* One thumb-scrollable row on a phone beats a two-row wrap over the
-       content it links away from. */
-    overflow-x: auto;
-    scrollbar-width: none;
-    -webkit-overflow-scrolling: touch;
   }
-  .vos-dm-satellites::-webkit-scrollbar { display: none; }
-  .vos-dm-satellites a { flex: 0 0 auto; white-space: nowrap; }
   .vos-dm-satellites a {
     display: inline-flex;
     align-items: center;
-    min-height: 44px;
-    padding: 0.3rem 0.85rem;
+    white-space: nowrap;
+    min-height: 34px;
+    padding: 0.2rem 0.65rem;
     border: 1px solid var(--vos-border, rgba(201, 168, 76, 0.24));
     border-radius: 999px;
     text-decoration: none;
-    font-size: 0.72rem;
+    font-size: 0.62rem;
     font-weight: 700;
     letter-spacing: 0.06em;
     text-transform: uppercase;
