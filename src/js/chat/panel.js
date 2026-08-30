@@ -882,6 +882,15 @@ export function createChatPanel(options) {
 
   inputEl.addEventListener('focus', () => window.setTimeout(scrollToLatest, 250));
 
+  // The software keyboard shrinks the visual viewport under the sheet. Keep
+  // the newest message in view when it does, or the line you just sent ends
+  // up behind the keyboard.
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener('resize', () => {
+      if (isTalkThread()) scrollToLatest();
+    });
+  }
+
   // A tap on empty space closes any open action bar.
   messagesEl.addEventListener('click', (event) => {
     if (event.target.closest('.vos-chat-bubble')) return;

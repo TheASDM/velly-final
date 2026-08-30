@@ -13,6 +13,14 @@
     z-index: 1400;
     pointer-events: none;
   }
+  /* On a phone the sheet owns the screen, so the layer behind it is opaque
+     too — a translucent gap anywhere lets the page bleed into a
+     conversation. On a desktop the dock is deliberately see-past. */
+  @media (max-width: 700px) {
+    .vos-chat-host:not([hidden]) {
+      background: var(--vos-bg, #0d0b11);
+    }
+  }
   .vos-chat-host[hidden] {
     display: none;
   }
@@ -807,12 +815,18 @@
 
   /* ── Mobile: a full-screen sheet ───────────────────────────────────── */
   @media (max-width: 700px) {
+    /* The sheet is the full height of the screen and paints all of it —
+       insetting the bottom by the keyboard height left a transparent strip
+       under the composer that the page (and iOS's own accessory bar) showed
+       through. Padding lifts the content above the keyboard instead, so the
+       background still covers everything. */
     .vos-chat--overlay .vos-chat-panel {
       top: 0;
       left: 0;
       right: 0;
-      bottom: var(--vos-vv-bottom, 0px);
+      bottom: 0;
       padding-top: var(--vos-safe-top);
+      padding-bottom: var(--vos-vv-bottom, 0px);
     }
     /* One pane at a time: the list, or the conversation with a back arrow. */
     .vos-chat-panel.is-thread-open .vos-chat-list {
@@ -821,8 +835,20 @@
     .vos-chat-panel:not(.is-thread-open) .vos-chat-thread {
       display: none;
     }
+    /* /messages/ is "the same component, full page" — on a phone that has
+       to mean the same sheet. As a flow element with a min-height it left
+       the page (and anything fixed to the bottom of it) showing under the
+       composer once the keyboard pushed things around. */
     .vos-chat--page .vos-chat-panel {
-      min-height: calc(100dvh - var(--vos-app-bar-h) - var(--vos-app-nav-h) - 2rem);
+      position: fixed;
+      top: var(--vos-app-bar-h);
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 1;
+      padding-bottom: calc(var(--vos-app-nav-h) + env(safe-area-inset-bottom, 0px)
+                           + var(--vos-vv-bottom, 0px));
+      background: var(--vos-bg, #0d0b11);
     }
   }
 
