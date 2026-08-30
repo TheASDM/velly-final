@@ -30,4 +30,8 @@ EXPOSE 3001
 
 # Build the Eleventy codex into /site/_site, then run the Flask API.
 # nginx serves the static build and proxies /api/* back to this container.
-CMD ["sh", "-c", "cd /site && npm run build && cd /app && exec gunicorn -b 0.0.0.0:3001 -w 2 --timeout 300 --preload server:app"]
+# gthread workers: two sync workers meant two concurrent requests total —
+# one slow call (an LLM draft, an image job) starved everything else, and
+# the instant-message polling would have finished the job. 2×16 threads is
+# plenty for one table; SQLite runs WAL so threaded writers coexist.
+CMD ["sh", "-c", "cd /site && npm run build && cd /app && exec gunicorn -b 0.0.0.0:3001 -w 2 -k gthread --threads 16 --timeout 300 --preload server:app"]
