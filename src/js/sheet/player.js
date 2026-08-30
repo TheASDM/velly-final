@@ -10,6 +10,7 @@ import { loadAllSheets, loadHandouts, loadMySheet, loadRoster, whenPwaReady } fr
 import { normalizeStatblock } from '../statblock/normalize.js';
 import { renderStatblock } from '../statblock/render.js';
 import { barLabel } from '../statblock/labels.js';
+import { wireImageZoom } from '../components/image-zoom.js';
 import { loadPlayState } from '../play/api.js';
 import { createControls } from '../play/controls.js';
 
@@ -677,6 +678,7 @@ async function boot() {
   loadPrefs();
   renderViewingAs();
   wire();
+  wireImageZoom(root);
   render();
   renderAppBar();
   if (hasStats) ensurePlay();

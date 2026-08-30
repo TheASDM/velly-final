@@ -66,6 +66,8 @@
   max-width: 100%;
   border: 1px solid var(--vos-border);
   border-radius: 10px;
+  /* Tapping opens the deep-zoom viewer; the cursor says so on desktop. */
+  cursor: zoom-in;
 }
 .vos-sheet-image figcaption {
   margin-top: 0.35rem;

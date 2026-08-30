@@ -11,6 +11,9 @@ import {
   handoutTitleEl, handoutsListEl, handoutsStatusEl, setStatus,
 } from './state.js';
 import { renderSheet } from '../sheet/render.js';
+import { wireImageZoom } from '../components/image-zoom.js';
+
+if (handoutsListEl) wireImageZoom(handoutsListEl);
 
 let rosterLoaded = false;
 let lastHandouts = [];

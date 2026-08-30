@@ -195,3 +195,26 @@
       overflow-x: hidden !important;
     }
   }
+
+/* ── Fullscreen image zoom (handout images, via components/image-zoom) ──
+   Reuses the map viewer's toolbar and OSD theming; only the overlay shell
+   is new. Sits above the play bar, the sheets, everything. */
+.vos-zoom-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1500;
+  display: flex;
+  flex-direction: column;
+  background: rgba(4, 3, 6, 0.97);
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+.vos-zoom-overlay .vos-map-viewer {
+  flex: 1;
+  height: auto;
+  min-height: 0;
+  max-height: none;
+}
+.vos-zoom-overlay .vos-map-toolbar {
+  border-top: 1px solid rgba(212, 165, 116, 0.35);
+}
