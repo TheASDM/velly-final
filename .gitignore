@@ -35,7 +35,10 @@ backups/
 
 # Generated Enzo knowledge artifacts (rebuilt on the deployment host)
 campaign-data/tier1.md
+campaign-data/.tier1.manifest.json
 campaign-data/vector_store.json
+# Raw verbatim sourcebook text staged for curation — copyrighted, repo is public
+campaign-data/curated/book-vgm.json
 # Legacy split-mode store from before the player-only refactor
 campaign-data/vector_store_player.json
 
@@ -77,28 +80,15 @@ claude-project-export/
 *.bak-*
 *.before-pull
 
-# Dated content dumps staged for import. These carry DM-only spoiler material
-# ("never share with players") and per-character sheets synthesised from player
-# questionnaire answers ("DM EYES ONLY"). This repo is public — keep them out.
-files/[0-9][0-9]-[0-9][0-9]-[0-9][0-9][0-9][0-9]/
-files/valley-of-shadows-*/
-# By kind rather than by folder, at any depth. The dated-folder rules above
-# only matched one naming convention and one nesting level, so a drop that
-# used a different folder name left DM secrets and every character sheet
-# trackable. Match what the file *is*.
-files/**/campaign-dm-secrets-*.md
-files/**/campaign-ground-truth-*
-files/**/dm-sheet-*.md
-files/**/player-sheet-*.md
-files/**/*-questionnaire*.md
-# Player-written backstory dropped at the repo root of files/. Same reason as
-# everything above: the players wrote it and this repo is public.
-files/*-backstory.*
-files/**/*-backstory.*
-
-# Foundry actors rebuilt by scripts/build_foundry_actor.py. These are player
-# character data and this repo is public.
-files/foundry-import/
+# files/ is a raw drop zone for standalone documents served at /files/. It
+# routinely holds DM-only spoiler material, player-written content, and
+# session prep — and this repo is public. Earlier rules here matched by
+# naming convention, which silently let anything with an unanticipated name
+# through. Deny everything; allow-list only documents that are intentionally
+# public. New public documents must be added to the allow-list explicitly.
+files/**
+!files/ValleyofShadowsFramework.pdf
+!files/update5-24-2026.html
 
 # Raw and cleaned Foundry character exports. Player character data — same
 # reason: this repo is public.
