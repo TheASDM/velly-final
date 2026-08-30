@@ -22,6 +22,7 @@ EXPECTED_MIGRATIONS = {
     "021_character_sheets",
     "022_character_statblocks",
     "023_character_play_state",
+    "024_handouts",
 }
 
 EXPECTED_TABLES = {
@@ -32,6 +33,7 @@ EXPECTED_TABLES = {
     "character_play_state",
     "character_play_ops",
     "gallery_favorites",
+    "handouts",
     "in_play",
     "lore_submissions",
     "message_dismissals",

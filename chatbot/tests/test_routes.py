@@ -36,6 +36,14 @@ ROUTE_CONTRACT = """
 /api/gallery/favorites|/api/gallery/favorites|GET|gallery_favorites_list|401:json.error|200:json.ids|200:json.ids|401:json.error
 /api/gallery/image/<path:filename>|/api/gallery/image/missing.png|GET|gallery_image|404:text/html|404:text/html|404:text/html|404:text/html
 /api/generate-image|/api/generate-image|POST|generate_image|400:json.error|400:json.error|400:json.error|400:json.error
+/api/handouts|/api/handouts|GET|api_my_handouts|401:json.error|200:json.handouts,ok,playerName|200:json.handouts,ok,playerName|401:json.error
+/api/handouts|/api/handouts|POST|api_create_handout|401:json.error,error_code|403:json.error,error_code|400:json.error|400:json.error
+/api/handouts/<int:handout_id>|/api/handouts/1|PUT|api_update_handout|401:json.error,error_code|403:json.error,error_code|400:json.error|400:json.error
+/api/handouts/<int:handout_id>|/api/handouts/1|DELETE|api_delete_handout|401:json.error,error_code|403:json.error,error_code|404:json.error|404:json.error
+/api/handouts/all|/api/handouts/all|GET|api_all_handouts|401:json.error,error_code|403:json.error,error_code|200:json.handouts,ok|200:json.handouts,ok
+/api/handouts/image|/api/handouts/image|POST|api_upload_handout_image|401:json.error,error_code|403:json.error,error_code|400:json.error|400:json.error
+/api/handouts/image/<filename>|/api/handouts/image/missing.png|GET|api_handout_image|404:text/html|404:text/html|404:text/html|404:text/html
+/api/identity|/api/identity|GET|api_identity|401:json.error|200:json.character,ok,playerName|200:json.character,ok,playerName|401:json.error
 /api/in-play|/api/in-play|GET|in_play_endpoint|200:json.items|200:json.items|200:json.items|200:json.items
 /api/lore-submissions|/api/lore-submissions|POST|lore_submission_create|401:json.error|400:json.error|400:json.error|401:json.error
 /api/lore-submissions/<submission_id>|/api/lore-submissions/missing|GET|lore_submission_detail|404:json.error|404:json.error|404:json.error|404:json.error
@@ -63,6 +71,10 @@ ROUTE_CONTRACT = """
 /api/rumors/roll|/api/rumors/roll|GET|rumors_roll|200:json.rumor|200:json.rumor|200:json.rumor|200:json.rumor
 /api/sheet|/api/sheet|GET|api_my_sheet|401:json.error|200:json.ok,playerName,sheet,statblock|200:json.ok,playerName,sheet,statblock|401:json.error
 /api/sheets|/api/sheets|GET|api_all_sheets|401:json.error,error_code|403:json.error,error_code|200:json.ok,sheets|200:json.ok,sheets
+/api/sounds/play|/api/sounds/play|POST|api_play|401:json.error,error_code|403:json.error,error_code|503:json.error,error_code|503:json.error,error_code
+/api/sounds/soundsets|/api/sounds/soundsets|GET|api_soundsets|401:json.error,error_code|403:json.error,error_code|503:json.error,error_code|503:json.error,error_code
+/api/sounds/soundsets/<uuid>|/api/sounds/soundsets/00000000-0000-0000-0000-000000000000|GET|api_soundset|401:json.error,error_code|403:json.error,error_code|503:json.error,error_code|503:json.error,error_code
+/api/sounds/stop-all|/api/sounds/stop-all|POST|api_stop_all|401:json.error,error_code|403:json.error,error_code|503:json.error,error_code|503:json.error,error_code
 /api/statblocks/ingest|/api/statblocks/ingest|POST|api_statblock_ingest|503:json.error,error_code|503:json.error,error_code|503:json.error,error_code|503:json.error,error_code
 /api/studio/generate|/api/studio/generate|POST|studio_generate|400:json.error,error_code|400:json.error,error_code|400:json.error,error_code|400:json.error,error_code
 /api/studio/jobs|/api/studio/jobs|GET|studio_jobs|400:json.error|400:json.error|400:json.error|400:json.error
@@ -102,7 +114,7 @@ def test_route_inventory_and_response_contract(app, auth_headers):
     }
     expected_routes = {rule for rule, _, _, _endpoint, _ in cases}
     assert actual_routes == expected_routes
-    assert len(cases) == 70
+    assert len(cases) == 82
 
     for rule, path, method, _endpoint, expected in cases:
         for role in ROLES:
