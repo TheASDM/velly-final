@@ -81,6 +81,7 @@ ROUTE_CONTRACT = """
 /api/studio/generate|/api/studio/generate|POST|studio_generate|400:json.error,error_code|400:json.error,error_code|400:json.error,error_code|400:json.error,error_code
 /api/studio/jobs|/api/studio/jobs|GET|studio_jobs|400:json.error|400:json.error|400:json.error|400:json.error
 /api/studio/jobs/<job_id>|/api/studio/jobs/missing|GET|studio_job|404:json.error|404:json.error|404:json.error|404:json.error
+/files/<path:filename>|/files/missing.txt|GET|files_document|401:json.error,error_code|403:json.error,error_code|404:text/html|404:text/html
 /health|/health|GET|health|200:json.service,status|200:json.service,status|200:json.service,status|200:json.service,status
 /static/<path:filename>|/static/missing.png|GET|static|404:text/html|404:text/html|404:text/html|404:text/html
 """.strip()
@@ -116,7 +117,7 @@ def test_route_inventory_and_response_contract(app, auth_headers):
     }
     expected_routes = {rule for rule, _, _, _endpoint, _ in cases}
     assert actual_routes == expected_routes
-    assert len(cases) == 84
+    assert len(cases) == 85
 
     for rule, path, method, _endpoint, expected in cases:
         for role in ROLES:

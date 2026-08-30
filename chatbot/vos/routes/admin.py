@@ -62,6 +62,18 @@ def admin_session():
     return jsonify({"configured": True, "signed_in": True, "email": email})
 
 
+@bp.route("/files/<path:filename>", methods=["GET"])
+def files_document(filename):
+    """Standalone documents (run-sheets, session prep) dropped into
+    PUBLIC_FILES_DIR on the host. These are DM material, so the route is
+    DM-gated — nginx proxies /files/ here rather than serving the directory
+    openly. The DM's auth cookie makes plain links work in their browser."""
+    admin_error = _admin_error_response()
+    if admin_error:
+        return admin_error
+    return send_from_directory(PUBLIC_FILES_DIR, filename)
+
+
 @bp.route("/api/admin/rebuild", methods=["GET", "POST"])
 def admin_rebuild():
     admin_error = _admin_error_response()
@@ -344,4 +356,4 @@ def admin_lore_submission_publish(submission_id):
     payload, status = _publish_lore_submission(submission_id, request.get_json(silent=True) or {})
     return jsonify(payload), status
 
-__all__ = ['admin_config', 'admin_login', 'admin_session', 'admin_rebuild', 'admin_wiki_entry', 'admin_messages', 'dm_message_delete', 'admin_lore_submissions', 'admin_lore_submission_detail', 'admin_lore_submission_save', 'admin_lore_submission_redraft', 'admin_lore_submission_reject', 'admin_lore_submission_publish']
+__all__ = ['admin_config', 'admin_login', 'admin_session', 'files_document', 'admin_rebuild', 'admin_wiki_entry', 'admin_messages', 'dm_message_delete', 'admin_lore_submissions', 'admin_lore_submission_detail', 'admin_lore_submission_save', 'admin_lore_submission_redraft', 'admin_lore_submission_reject', 'admin_lore_submission_publish']

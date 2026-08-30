@@ -93,6 +93,9 @@ services:
       # Eleventy + Pagefind live in /opt/eleventy (baked into the image),
       # so no anonymous-volume shadow is needed for /site/node_modules.
       - .:/site
+      # Standalone documents served DM-gated at /files/ — gitignored, lives
+      # only on the host. Drop a file in; the DM opens it signed in.
+      - ./public-files:/srv/public-files:ro
     networks:
       - dnd-network
     restart: unless-stopped
@@ -107,9 +110,6 @@ services:
       # Nginx config tells it how to route different URLs
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./nginx/conf.d:/etc/nginx/conf.d:ro
-      # Standalone documents served at /files/ — gitignored, lives only on
-      # the host. Drop a file in, share its (unguessable) URL.
-      - ./public-files:/srv/public-files:ro
       # Built Eleventy PWA. The chatbot container writes /site/_site.
       - .:/site:ro
     depends_on:
