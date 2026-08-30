@@ -84,10 +84,6 @@ def dm_messages():
     if admin_error:
         return admin_error
 
-    push_error = _push_config_error()
-    if push_error:
-        return jsonify({"error": push_error}), 503
-
     body = request.get_json(silent=True) or {}
     title = body.get("title", "")
     message = body.get("body", "")
@@ -123,15 +119,19 @@ def dm_messages():
             WHERE id = ?
         """, (message_id,)).fetchone()
 
-    # The message row is committed above; the fan-out's slow webpush calls
-    # run outside any transaction.
-    push_result = _fanout_push(
-        title,
-        _markdown_to_push_text(message),
-        url,
-        recipients=recipients,
-        message_id=message_id,
-    )
+    # The in-app message card needs no push — missing VAPID config must not
+    # block posting. The message row is committed above; the fan-out's slow
+    # webpush calls run outside any transaction.
+    if _push_config_error():
+        push_result = {"ok": False, "skipped": "not_configured"}
+    else:
+        push_result = _fanout_push(
+            title,
+            _markdown_to_push_text(message),
+            url,
+            recipients=recipients,
+            message_id=message_id,
+        )
 
     return jsonify({
         "ok": True,
