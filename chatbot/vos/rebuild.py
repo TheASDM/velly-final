@@ -294,6 +294,79 @@ def _start_rebuild_job(reason, include_knowledge=True):
     return status
 
 
+# ── Debounced rebuilds ───────────────────────────────────────────────────
+# Wiki saves come in bursts (an editing session is many small saves). Each
+# save restarts a trailing timer; the build fires once the burst goes quiet.
+# Per-worker state is fine: if both Gunicorn workers fire, the main rebuild
+# lock plus the pending queue serialize them into consecutive builds.
+
+_debounce_mutex = threading.Lock()
+_debounce_state = {"timer": None, "reason": "", "include_knowledge": False}
+_last_knowledge_build_at = 0.0
+
+
+def _fire_debounced_rebuild():
+    global _last_knowledge_build_at
+    with _debounce_mutex:
+        reason = _debounce_state["reason"]
+        include_knowledge = _debounce_state["include_knowledge"]
+        _debounce_state.update(timer=None, reason="", include_knowledge=False)
+    if include_knowledge:
+        now = time.time()
+        if now - _last_knowledge_build_at < REBUILD_KNOWLEDGE_MIN_INTERVAL_SECONDS:
+            include_knowledge = False
+        else:
+            _last_knowledge_build_at = now
+    try:
+        _start_rebuild_job(reason or "debounced wiki edits",
+                           include_knowledge=include_knowledge)
+    except Exception:
+        logging.exception("Debounced rebuild failed to start")
+
+
+def _schedule_debounced_rebuild(reason, include_knowledge=True):
+    """Ask for a rebuild soon rather than now. Returns a status the save
+    response can carry: state 'scheduled' plus the debounce window."""
+    if not AUTO_REBUILD_ON_WIKI_SAVE:
+        return {
+            "state": "disabled",
+            "reason": reason,
+            "include_knowledge": include_knowledge,
+            "updated_at": _utc_now_iso(),
+        }
+    with _debounce_mutex:
+        _debounce_state["reason"] = str(reason or "")[:160]
+        _debounce_state["include_knowledge"] = (
+            _debounce_state["include_knowledge"] or bool(include_knowledge)
+        )
+        if _debounce_state["timer"] is not None:
+            _debounce_state["timer"].cancel()
+        timer = threading.Timer(REBUILD_DEBOUNCE_SECONDS, _fire_debounced_rebuild)
+        timer.daemon = True
+        _debounce_state["timer"] = timer
+        timer.start()
+    return {
+        "state": "scheduled",
+        "reason": str(reason or "")[:160],
+        "debounce_seconds": REBUILD_DEBOUNCE_SECONDS,
+        "updated_at": _utc_now_iso(),
+    }
+
+
+def _cancel_debounced_rebuild():
+    """Cancel a scheduled debounce (an explicit build supersedes it).
+    Returns (reason, include_knowledge) of the canceled request, if any."""
+    with _debounce_mutex:
+        timer = _debounce_state["timer"]
+        reason = _debounce_state["reason"]
+        include_knowledge = _debounce_state["include_knowledge"]
+        _debounce_state.update(timer=None, reason="", include_knowledge=False)
+    if timer is None:
+        return None, False
+    timer.cancel()
+    return reason, include_knowledge
+
+
 def _skip_rag(message):
     """Return True if the message is too short/casual to benefit from RAG."""
     cleaned = message.strip().strip(string.punctuation).strip()
@@ -303,4 +376,4 @@ def _skip_rag(message):
         return True
     return False
 
-__all__ = ['_trim_output', '_join_process_output', '_write_rebuild_status', '_read_rebuild_status', '_run_rebuild_command', '_pending_rebuild_lock', '_write_pending_rebuild', '_consume_pending_rebuild', '_release_rebuild_lock', '_run_rebuild_job', '_run_one_rebuild', '_start_rebuild_job', '_skip_rag']
+__all__ = ['_trim_output', '_join_process_output', '_write_rebuild_status', '_read_rebuild_status', '_run_rebuild_command', '_pending_rebuild_lock', '_write_pending_rebuild', '_consume_pending_rebuild', '_release_rebuild_lock', '_run_rebuild_job', '_run_one_rebuild', '_start_rebuild_job', '_fire_debounced_rebuild', '_schedule_debounced_rebuild', '_cancel_debounced_rebuild', '_skip_rag']

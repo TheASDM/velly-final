@@ -471,6 +471,10 @@ export function rebuildStatusText(rebuild) {
   if (state === 'succeeded') return 'Rebuild complete.';
   if (state === 'failed') return `Rebuild failed: ${rebuild.error || 'check logs'}`;
   if (state === 'disabled') return 'Auto rebuild is disabled.';
+  if (state === 'scheduled') {
+    const seconds = rebuild.debounce_seconds || 90;
+    return `Publish scheduled — builds in ~${seconds}s (Rebuild Now publishes immediately).`;
+  }
   return '';
 }
 

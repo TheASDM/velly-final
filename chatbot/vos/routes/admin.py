@@ -87,9 +87,12 @@ def admin_rebuild():
     include_knowledge = body.get("knowledge")
     if include_knowledge is None:
         include_knowledge = AUTO_KNOWLEDGE_ON_WIKI_SAVE
+    # An explicit build supersedes any debounced one — fold its flags in so
+    # a pending knowledge request is not silently dropped.
+    _reason, pending_knowledge = _cancel_debounced_rebuild()
     rebuild = _start_rebuild_job(
         str(body.get("reason") or "manual DM rebuild").strip()[:160],
-        include_knowledge=bool(include_knowledge),
+        include_knowledge=bool(include_knowledge) or pending_knowledge,
     )
     return jsonify({"ok": rebuild.get("state") != "disabled", "rebuild": rebuild})
 
@@ -148,7 +151,9 @@ def admin_wiki_entry():
                 pass
         _chown_like_site(source_path)
         entry = _read_wiki_source_payload(source_path)
-        rebuild = _start_rebuild_job(
+        # Editing sessions are bursts of saves: debounce the rebuild instead
+        # of launching one per save. "Rebuild Now" publishes immediately.
+        rebuild = _schedule_debounced_rebuild(
             f"wiki edit: {entry.get('source_file') or wiki_url}",
             include_knowledge=AUTO_KNOWLEDGE_ON_WIKI_SAVE,
         )

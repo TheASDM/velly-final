@@ -59,6 +59,65 @@ def test_save_during_rebuild_queues_follow_up(monkeypatch):
     assert not rebuild.REBUILD_PENDING_PATH.exists()
 
 
+def test_debounced_saves_collapse_into_one_build(monkeypatch):
+    fired = []
+    monkeypatch.setattr(rebuild, "REBUILD_DEBOUNCE_SECONDS", 0.15)
+    monkeypatch.setattr(
+        rebuild,
+        "_start_rebuild_job",
+        lambda reason, include_knowledge=True: fired.append((reason, include_knowledge)),
+    )
+
+    first = rebuild._schedule_debounced_rebuild("edit one", include_knowledge=False)
+    assert first["state"] == "scheduled"
+    second = rebuild._schedule_debounced_rebuild("edit two", include_knowledge=True)
+    assert second["state"] == "scheduled"
+
+    deadline = time.time() + 5
+    while not fired and time.time() < deadline:
+        time.sleep(0.02)
+    time.sleep(0.2)  # would catch a second, spurious fire
+
+    # One build for the whole burst; the knowledge request survived the merge.
+    assert len(fired) == 1
+    assert fired[0][0] == "edit two"
+    assert fired[0][1] is True
+
+
+def test_cancel_supersedes_debounce(monkeypatch):
+    fired = []
+    monkeypatch.setattr(rebuild, "REBUILD_DEBOUNCE_SECONDS", 0.1)
+    monkeypatch.setattr(
+        rebuild,
+        "_start_rebuild_job",
+        lambda reason, include_knowledge=True: fired.append(reason),
+    )
+    rebuild._schedule_debounced_rebuild("about to be superseded", include_knowledge=True)
+    reason, include_knowledge = rebuild._cancel_debounced_rebuild()
+    assert reason == "about to be superseded"
+    assert include_knowledge is True
+    time.sleep(0.25)
+    assert fired == []
+
+
+def test_knowledge_rides_along_at_most_once_per_interval(monkeypatch):
+    fired = []
+    monkeypatch.setattr(
+        rebuild,
+        "_start_rebuild_job",
+        lambda reason, include_knowledge=True: fired.append(include_knowledge),
+    )
+    monkeypatch.setattr(rebuild, "REBUILD_KNOWLEDGE_MIN_INTERVAL_SECONDS", 3600)
+    monkeypatch.setattr(rebuild, "_last_knowledge_build_at", 0.0)
+
+    rebuild._debounce_state.update(timer=None, reason="k1", include_knowledge=True)
+    rebuild._fire_debounced_rebuild()
+    rebuild._debounce_state.update(timer=None, reason="k2", include_knowledge=True)
+    rebuild._fire_debounced_rebuild()
+
+    assert fired == [True, False]
+
+
 def test_idle_start_runs_one_job(monkeypatch):
     def fake_command(command, label):
         return {
