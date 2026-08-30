@@ -144,8 +144,11 @@ Keep `VAPID_PRIVATE_KEY` and all secrets server-side only.
 
 ## Runtime data to back up
 
-Instant-message conversations (`chat_messages` / `chat_reads`) live in the
-SQLite file below — player-written, never in the repo, backed up with it.
+Instant-message conversations live in the SQLite file below — player-written,
+never in the repo, backed up with it: `chat_messages` (bodies, replies, edits,
+soft deletes, and Enzo's half of every thread), `chat_reads` (unread pointers,
+which double as read receipts), `chat_reactions`, and the two disposable
+tables `chat_typing` and `player_presence`.
 
 ```bash
 cp app-data/vallombrosa.sqlite3 "app-data/vallombrosa-$(date +%F).sqlite3"

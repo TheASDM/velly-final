@@ -26,14 +26,48 @@ export function fetchThreads() {
   return getJson('/api/im/threads');
 }
 
-export function fetchMessages(threadKey, afterId) {
-  return getJson(
-    `/api/im/thread/${encodeURIComponent(threadKey)}?after=${afterId || 0}`
-  );
+/* One poll answers everything an open thread needs: new messages, edits
+ * and deletes to messages it already has (that is what `since` is for —
+ * `after` only ever finds new ids), reactions, typing, receipts, presence. */
+export function fetchMessages(threadKey, afterId, since) {
+  const query = new URLSearchParams({ after: String(afterId || 0) });
+  if (since) query.set('since', since);
+  return getJson(`/api/im/thread/${encodeURIComponent(threadKey)}?${query}`);
 }
 
-export function sendMessage(threadKey, body) {
-  return postJson(`/api/im/thread/${encodeURIComponent(threadKey)}`, { body });
+export function sendMessage(threadKey, body, replyToId) {
+  return postJson(`/api/im/thread/${encodeURIComponent(threadKey)}`,
+    replyToId ? { body, replyToId } : { body });
+}
+
+export async function editMessage(messageId, body) {
+  const response = await fetch(`/api/im/message/${messageId}`, {
+    method: 'PATCH',
+    cache: 'no-store',
+    headers: authHeaders({ 'Content-Type': 'application/json' }),
+    body: JSON.stringify({ body }),
+  });
+  const data = await response.json().catch(() => ({}));
+  if (!response.ok) throw new Error(data.error || `HTTP ${response.status}`);
+  return data;
+}
+
+export async function setReaction(messageId, emoji, on) {
+  const response = await fetch(`/api/im/message/${messageId}/reaction`, {
+    method: on ? 'POST' : 'DELETE',
+    cache: 'no-store',
+    headers: authHeaders({ 'Content-Type': 'application/json' }),
+    body: JSON.stringify({ emoji }),
+  });
+  const data = await response.json().catch(() => ({}));
+  if (!response.ok) throw new Error(data.error || `HTTP ${response.status}`);
+  return data;
+}
+
+/* Fire-and-forget: a missed heartbeat just means the row expires, and
+ * there is nothing worth surfacing when it fails. */
+export function sendTyping(threadKey, typing) {
+  return postJson('/api/im/typing', { threadKey, typing }).catch(() => {});
 }
 
 export function markThreadRead(threadKey, lastReadId) {

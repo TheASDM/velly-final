@@ -307,7 +307,7 @@
     opacity: 0.55;
     font-size: 0.7rem;
   }
-  .vos-chat-bubble-delete {
+  .vos-chat-bubble-menu {
     position: absolute;
     top: 0.1rem;
     right: 0.25rem;
@@ -316,26 +316,161 @@
     color: inherit;
     opacity: 0;
     font-size: 0.9rem;
+    line-height: 1;
     cursor: pointer;
   }
-  .vos-chat-bubble.is-mine:hover .vos-chat-bubble-delete,
-  .vos-chat-bubble.is-mine:focus-within .vos-chat-bubble-delete,
-  .vos-chat-announcement:hover .vos-chat-bubble-delete,
-  .vos-chat-announcement:focus-within .vos-chat-bubble-delete {
+  .vos-chat-bubble:hover .vos-chat-bubble-menu,
+  .vos-chat-bubble:focus-within .vos-chat-bubble-menu,
+  .vos-chat-bubble.has-actions .vos-chat-bubble-menu,
+  .vos-chat-announcement:hover .vos-chat-bubble-menu,
+  .vos-chat-announcement:focus-within .vos-chat-bubble-menu {
     opacity: 0.7;
   }
   @media (pointer: coarse) {
-    /* No hover on touch: the control is simply there, finger-sized. */
-    .vos-chat-bubble.is-mine .vos-chat-bubble-delete,
-    .vos-chat-announcement .vos-chat-bubble-delete {
+    /* No hover on touch: the control is simply there, finger-sized — and a
+       long-press anywhere on the bubble opens the same bar. */
+    .vos-chat-bubble .vos-chat-bubble-menu,
+    .vos-chat-announcement .vos-chat-bubble-menu {
       top: 0;
       right: 0;
       padding: 0.35rem 0.5rem;
-      opacity: 0.55;
+      opacity: 0.5;
     }
-    .vos-chat-bubble.is-mine { padding-right: 1.9rem; }
+    .vos-chat-bubble { padding-right: 1.9rem; }
     .vos-chat-announcement { padding-right: 1.9rem; }
   }
+
+  /* ── The message you are answering ─────────────────────────────────── */
+  .vos-chat-quote {
+    display: grid;
+    gap: 0.1rem;
+    width: 100%;
+    margin-bottom: 0.35rem;
+    padding: 0.3rem 0.5rem;
+    border: 0;
+    border-left: 2px solid rgba(212, 165, 116, 0.6);
+    border-radius: 4px;
+    background: rgba(212, 165, 116, 0.08);
+    color: inherit;
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+  }
+  .vos-chat-quote:hover { background: rgba(212, 165, 116, 0.15); }
+  .vos-chat-quote.is-missing { cursor: default; opacity: 0.6; }
+  .vos-chat-quote-who {
+    color: var(--vos-gold-bright);
+    font-family: 'Cinzel', Georgia, serif;
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .vos-chat-quote-text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    opacity: 0.72;
+    font-size: 0.82rem;
+  }
+  .vos-chat-bubble.is-highlit {
+    border-color: var(--vos-gold-bright);
+    box-shadow: 0 0 0 2px rgba(212, 165, 116, 0.28);
+  }
+  .vos-chat-edited { opacity: 0.75; font-style: italic; }
+
+  /* ── Reactions ─────────────────────────────────────────────────────── */
+  .vos-chat-reactions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem;
+    margin-top: 0.35rem;
+  }
+  .vos-chat-reaction {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.2rem;
+    min-height: 26px;
+    padding: 0.1rem 0.4rem;
+    border: 1px solid var(--vos-border, rgba(139, 115, 85, 0.28));
+    border-radius: 999px;
+    background: rgba(7, 6, 10, 0.5);
+    color: inherit;
+    font: inherit;
+    font-size: 0.78rem;
+    line-height: 1;
+    cursor: pointer;
+  }
+  .vos-chat-reaction.is-mine {
+    border-color: var(--vos-border-strong, rgba(212, 165, 116, 0.45));
+    background: rgba(212, 165, 116, 0.16);
+  }
+  .vos-chat-reaction-count { font-size: 0.7rem; opacity: 0.8; }
+
+  /* ── The action bar: inside the bubble, and it wraps ───────────────── */
+  .vos-chat-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem;
+    margin-top: 0.45rem;
+    padding-top: 0.4rem;
+    border-top: 1px solid rgba(212, 165, 116, 0.2);
+  }
+  .vos-chat-action-emoji,
+  .vos-chat-action {
+    min-height: 32px;
+    padding: 0.2rem 0.5rem;
+    border: 1px solid var(--vos-border, rgba(139, 115, 85, 0.28));
+    border-radius: 8px;
+    background: rgba(7, 6, 10, 0.55);
+    color: inherit;
+    font: inherit;
+    font-size: 0.8rem;
+    line-height: 1;
+    cursor: pointer;
+  }
+  .vos-chat-action-emoji { min-width: 34px; }
+  .vos-chat-action-emoji.is-mine {
+    border-color: var(--vos-border-strong, rgba(212, 165, 116, 0.45));
+    background: rgba(212, 165, 116, 0.18);
+  }
+  .vos-chat-action-emoji:hover,
+  .vos-chat-action:hover { background: rgba(212, 165, 116, 0.14); }
+  .vos-chat-action.is-danger { color: var(--vos-quest-bright, #d44d3f); }
+
+  /* ── Seen by ───────────────────────────────────────────────────────── */
+  .vos-chat-receipt {
+    align-self: flex-end;
+    max-width: 85%;
+    margin-top: -0.25rem;
+    opacity: 0.55;
+    font-size: 0.68rem;
+    text-align: right;
+  }
+
+  /* ── Presence ──────────────────────────────────────────────────────── */
+  .vos-chat-presence {
+    display: inline-block;
+    width: 7px;
+    height: 7px;
+    margin-right: 0.35rem;
+    border-radius: 50%;
+    background: rgba(139, 115, 85, 0.5);
+    vertical-align: middle;
+  }
+  .vos-chat-presence.is-online {
+    background: #37d67a;
+    box-shadow: 0 0 6px rgba(55, 214, 122, 0.6);
+  }
+  .vos-chat-head-presence {
+    flex: 0 0 auto;
+    opacity: 0.6;
+    font-size: 0.68rem;
+    letter-spacing: 0.04em;
+    text-transform: lowercase;
+  }
+  .vos-chat-head-presence.is-online { color: #37d67a; opacity: 0.9; }
+  .vos-chat-head-presence[hidden] { display: none; }
 
   /* The DM's broadcasts: one-way and dismissible, so they read as notices
      rather than as anybody's half of a conversation. */
@@ -370,15 +505,70 @@
     overflow-wrap: anywhere;
   }
 
+  .vos-chat-typing-live {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.3rem 0.15rem 0;
+    opacity: 0.75;
+    font-size: 0.78rem;
+  }
+  .vos-chat-typing-live[hidden] { display: none; }
+
   /* ── Composer ──────────────────────────────────────────────────────── */
   .vos-chat-composer {
     flex: 0 0 auto;
-    display: flex;
-    gap: 0.5rem;
+    display: grid;
+    gap: 0.4rem;
     padding-top: 0.5rem;
   }
   .vos-chat-composer[hidden] {
     display: none;
+  }
+  .vos-chat-composer-row {
+    display: flex;
+    gap: 0.5rem;
+  }
+  /* Replying to, or editing — stated above the box you are typing in. */
+  .vos-chat-context {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.3rem 0.5rem;
+    border-left: 2px solid rgba(212, 165, 116, 0.6);
+    border-radius: 4px;
+    background: rgba(212, 165, 116, 0.08);
+  }
+  .vos-chat-context[hidden] { display: none; }
+  .vos-chat-context-label {
+    color: var(--vos-gold-bright);
+    font-family: 'Cinzel', Georgia, serif;
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .vos-chat-context-text {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    opacity: 0.7;
+    font-size: 0.82rem;
+  }
+  .vos-chat-context-cancel {
+    min-width: 30px;
+    min-height: 30px;
+    border: 0;
+    border-radius: 6px;
+    background: transparent;
+    color: inherit;
+    font-size: 1rem;
+    line-height: 1;
+    cursor: pointer;
   }
   .vos-chat-input {
     flex: 1;
