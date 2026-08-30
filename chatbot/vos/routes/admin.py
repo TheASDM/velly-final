@@ -106,7 +106,7 @@ def admin_wiki_entry():
     if request.method == "GET":
         wiki_url = (request.args.get("url") or "").strip()
         source_path = _wiki_url_to_source_path(wiki_url)
-        if not source_path:
+        if not source_path or not _wiki_source_in_content_roots(source_path):
             return jsonify({"error": f"No wiki source found for {wiki_url or '(blank)'}"}), 404
         try:
             return jsonify({"entry": _read_wiki_source_payload(source_path)})
@@ -123,8 +123,16 @@ def admin_wiki_entry():
     if len(content.encode("utf-8")) > 750_000:
         return jsonify({"error": "Wiki entry is too large to save here", "error_code": "invalid"}), 413
 
+    # Broken frontmatter used to return ok:true and then fail the async
+    # build silently — refuse it at save time instead.
+    frontmatter_error = _validate_wiki_frontmatter(content)
+    if frontmatter_error:
+        return jsonify({"error": frontmatter_error, "error_code": "invalid_frontmatter"}), 400
+
+    # Any repo-root .md resolves as /en/<rel>/ (README, CLAUDE.md,
+    # node_modules docs) — only the wiki content roots are editable.
     source_path = _wiki_url_to_source_path(wiki_url)
-    if not source_path:
+    if not source_path or not _wiki_source_in_content_roots(source_path):
         return jsonify({"error": f"No wiki source found for {wiki_url or '(blank)'}"}), 404
 
     try:

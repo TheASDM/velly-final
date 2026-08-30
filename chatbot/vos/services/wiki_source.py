@@ -135,6 +135,28 @@ def _wiki_url_to_source_path(wiki_url):
     return None
 
 
+_FRONTMATTER_RE = re.compile(r"\A\ufeff?---\r?\n(.*?)\r?\n---(?:\r?\n|\Z)", re.DOTALL)
+
+
+def _validate_wiki_frontmatter(content):
+    """Validate a wiki page's frontmatter before it is written. Broken YAML
+    used to save fine and then fail the async build silently. Returns an
+    error message, or None when the content is publishable."""
+    match = _FRONTMATTER_RE.match(content or "")
+    if not match:
+        return "The page must start with a '---' YAML frontmatter block"
+    try:
+        data = yaml.safe_load(match.group(1))
+    except yaml.YAMLError as exc:
+        return f"Frontmatter is not valid YAML: {exc}"
+    if not isinstance(data, dict):
+        return "Frontmatter must be a YAML mapping (title: ..., description: ...)"
+    title = data.get("title")
+    if title is None or not str(title).strip():
+        return "Frontmatter must include a non-empty title"
+    return None
+
+
 def _wiki_source_hash(text):
     return hashlib.sha256((text or "").encode("utf-8")).hexdigest()
 
@@ -202,4 +224,4 @@ def _append_image_to_wiki_gallery(source_path, image_abs_url, alt_text,
     _chown_like_site(source_path)
     return True
 
-__all__ = ['_yaml_quote', '_chown_like_site', 'IMAGE_PLACEHOLDER_RE', 'MARKDOWN_IMAGE_RE', '_WIKI_GALLERY_HEADING_RE', '_WIKI_NEXT_H2_RE', 'WIKI_CONTENT_ROOTS', '_wiki_source_in_content_roots', '_strip_markdown_title', '_strip_generated_images', '_markdown_with_image', '_page_frontmatter', '_source_file_url', '_source_path_to_wiki_url', '_wiki_url_to_source_path', '_wiki_source_hash', '_read_wiki_source_payload', '_append_image_to_wiki_gallery']
+__all__ = ['_yaml_quote', '_chown_like_site', 'IMAGE_PLACEHOLDER_RE', 'MARKDOWN_IMAGE_RE', '_WIKI_GALLERY_HEADING_RE', '_WIKI_NEXT_H2_RE', 'WIKI_CONTENT_ROOTS', '_wiki_source_in_content_roots', '_strip_markdown_title', '_strip_generated_images', '_markdown_with_image', '_page_frontmatter', '_source_file_url', '_source_path_to_wiki_url', '_wiki_url_to_source_path', '_validate_wiki_frontmatter', '_wiki_source_hash', '_read_wiki_source_payload', '_append_image_to_wiki_gallery']
