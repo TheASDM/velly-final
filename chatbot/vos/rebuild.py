@@ -69,7 +69,93 @@ def _run_rebuild_command(command, label):
     }
 
 
+@contextmanager
+def _pending_rebuild_lock():
+    """Serializes 'write pending + try main lock' (savers) against 'final
+    pending check + main lock release' (the worker). Without it, a save that
+    lands in the gap between those two worker steps is never built."""
+    REBUILD_PENDING_LOCK_PATH.parent.mkdir(parents=True, exist_ok=True)
+    lock_file = open(REBUILD_PENDING_LOCK_PATH, "a+")
+    try:
+        fcntl.flock(lock_file.fileno(), fcntl.LOCK_EX)
+        yield
+    finally:
+        try:
+            fcntl.flock(lock_file.fileno(), fcntl.LOCK_UN)
+        except Exception:
+            pass
+        lock_file.close()
+
+
+def _write_pending_rebuild(reason, include_knowledge):
+    """Record that (at least) one more rebuild is wanted. Merges with any
+    existing request: include_knowledge is OR'd, the reason keeps the latest."""
+    current = {}
+    try:
+        current = json.loads(REBUILD_PENDING_PATH.read_text(encoding="utf-8"))
+    except Exception:
+        current = {}
+    if not isinstance(current, dict):
+        current = {}
+    payload = {
+        "reason": str(reason or "")[:160],
+        "include_knowledge": bool(include_knowledge) or bool(current.get("include_knowledge")),
+        "requested_at": _utc_now_iso(),
+    }
+    tmp = REBUILD_PENDING_PATH.with_name(
+        REBUILD_PENDING_PATH.name + f".{secrets.token_hex(4)}.tmp"
+    )
+    tmp.write_text(json.dumps(payload) + "\n", encoding="utf-8")
+    os.replace(tmp, REBUILD_PENDING_PATH)
+
+
+def _consume_pending_rebuild():
+    """Read and clear the pending request. Returns the request dict or None."""
+    try:
+        payload = json.loads(REBUILD_PENDING_PATH.read_text(encoding="utf-8"))
+    except Exception:
+        payload = None
+    try:
+        REBUILD_PENDING_PATH.unlink()
+    except OSError:
+        pass
+    return payload if isinstance(payload, dict) else None
+
+
+def _release_rebuild_lock(lock_file):
+    try:
+        fcntl.flock(lock_file.fileno(), fcntl.LOCK_UN)
+    except Exception:
+        pass
+    try:
+        lock_file.close()
+    except Exception:
+        pass
+
+
 def _run_rebuild_job(lock_file, job_id, reason, include_knowledge):
+    """Worker thread: run the requested rebuild, then keep re-looping on any
+    request that queued while it ran. The final empty check and the lock
+    release happen under the pending lock — see _pending_rebuild_lock."""
+    released = False
+    try:
+        while True:
+            _run_one_rebuild(job_id, reason, include_knowledge)
+            with _pending_rebuild_lock():
+                pending = _consume_pending_rebuild()
+                if not pending:
+                    _release_rebuild_lock(lock_file)
+                    released = True
+                    return
+            job_id = secrets.token_hex(6)
+            reason = str(pending.get("reason") or "queued during rebuild")
+            include_knowledge = bool(pending.get("include_knowledge"))
+    finally:
+        if not released:
+            _release_rebuild_lock(lock_file)
+
+
+def _run_one_rebuild(job_id, reason, include_knowledge):
     commands = [("site", ["npm", "run", "build"])]
     if include_knowledge:
         commands.append(("knowledge", ["npm", "run", "knowledge"]))
@@ -141,15 +227,6 @@ def _run_rebuild_job(lock_file, job_id, reason, include_knowledge):
         })
         _write_rebuild_status(status)
         logging.exception("Rebuild job %s failed", job_id)
-    finally:
-        try:
-            fcntl.flock(lock_file.fileno(), fcntl.LOCK_UN)
-        except Exception:
-            pass
-        try:
-            lock_file.close()
-        except Exception:
-            pass
 
 
 def _start_rebuild_job(reason, include_knowledge=True):
@@ -162,15 +239,25 @@ def _start_rebuild_job(reason, include_knowledge=True):
         }
 
     REBUILD_LOCK_PATH.parent.mkdir(parents=True, exist_ok=True)
-    lock_file = open(REBUILD_LOCK_PATH, "a+")
-    try:
-        fcntl.flock(lock_file.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
-    except BlockingIOError:
-        lock_file.close()
-        status = _read_rebuild_status()
-        if status.get("state") not in {"queued", "running"}:
-            status["state"] = "running"
-        return status
+    with _pending_rebuild_lock():
+        # Record the request first, then try for the lock: either this call
+        # runs it (and consumes it below), or the current holder's re-loop
+        # picks it up before releasing.
+        _write_pending_rebuild(reason, include_knowledge)
+        lock_file = open(REBUILD_LOCK_PATH, "a+")
+        try:
+            fcntl.flock(lock_file.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except BlockingIOError:
+            lock_file.close()
+            status = _read_rebuild_status()
+            if status.get("state") not in {"queued", "running"}:
+                status["state"] = "running"
+            status["pending"] = True
+            status["pending_reason"] = str(reason or "")[:160]
+            return status
+        pending = _consume_pending_rebuild() or {}
+        reason = str(pending.get("reason") or reason)
+        include_knowledge = bool(pending.get("include_knowledge", include_knowledge))
 
     job_id = secrets.token_hex(6)
     status = _write_rebuild_status({
@@ -188,7 +275,22 @@ def _start_rebuild_job(reason, include_knowledge=True):
         args=(lock_file, job_id, reason, include_knowledge),
         daemon=True,
     )
-    thread.start()
+    try:
+        thread.start()
+    except Exception:
+        # The lock must not leak if the thread cannot start, or every later
+        # save reports "running" forever against a job that does not exist.
+        _release_rebuild_lock(lock_file)
+        _write_rebuild_status({
+            "job_id": job_id,
+            "state": "failed",
+            "reason": reason,
+            "include_knowledge": include_knowledge,
+            "error": "Could not start the rebuild worker thread",
+            "finished_at": _utc_now_iso(),
+            "commands": [],
+        })
+        raise
     return status
 
 
@@ -201,4 +303,4 @@ def _skip_rag(message):
         return True
     return False
 
-__all__ = ['_trim_output', '_join_process_output', '_write_rebuild_status', '_read_rebuild_status', '_run_rebuild_command', '_run_rebuild_job', '_start_rebuild_job', '_skip_rag']
+__all__ = ['_trim_output', '_join_process_output', '_write_rebuild_status', '_read_rebuild_status', '_run_rebuild_command', '_pending_rebuild_lock', '_write_pending_rebuild', '_consume_pending_rebuild', '_release_rebuild_lock', '_run_rebuild_job', '_run_one_rebuild', '_start_rebuild_job', '_skip_rag']
