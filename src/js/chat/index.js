@@ -8,6 +8,10 @@
 import { applyCount, syncBadge } from './badge.js';
 import { closeOverlay, initOverlay, isOverlayOpen, getOverlayPanel, openOverlay } from './overlay.js';
 
+// Comfortably inside the server's "they are watching" window, so an open
+// tab never falls out of it between beats.
+const PRESENCE_HEARTBEAT_MS = 25000;
+
 const isMessagesPage = () => document.body.classList.contains('vos-is-messages-page');
 
 /* /messages/ mounts the same component full-page and registers itself here,
@@ -62,6 +66,33 @@ window.addEventListener('DOMContentLoaded', () => {
   window.addEventListener('focus', syncBadge);
   window.addEventListener('vos:im-read', syncBadge);
   window.addEventListener('vos:identity-ready', syncBadge);
+
+  // A slow heartbeat while the tab is on screen. It keeps the bubble count
+  // honest without a push, and — because the same request touches presence
+  // — it is how the server knows not to send a notification for a message
+  // you are sitting there looking at. Stops dead when the tab is hidden,
+  // which is exactly when a notification becomes useful again.
+  let heartbeat = null;
+  const stopHeartbeat = () => {
+    if (heartbeat) window.clearInterval(heartbeat);
+    heartbeat = null;
+  };
+  const startHeartbeat = () => {
+    stopHeartbeat();
+    heartbeat = window.setInterval(() => {
+      if (document.visibilityState === 'visible') syncBadge();
+      else stopHeartbeat();
+    }, PRESENCE_HEARTBEAT_MS);
+  };
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') {
+      syncBadge();
+      startHeartbeat();
+    } else {
+      stopHeartbeat();
+    }
+  });
+  if (document.visibilityState === 'visible') startHeartbeat();
 
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.addEventListener('message', handleServiceWorkerMessage);
