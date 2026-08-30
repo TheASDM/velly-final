@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'foglight-pwa-v106';
+const CACHE_VERSION = 'foglight-pwa-v107';
 const PRECACHE = `${CACHE_VERSION}-precache`;
 const PAGES = `${CACHE_VERSION}-pages`;
 const ASSETS = `${CACHE_VERSION}-assets`;
@@ -23,7 +23,9 @@ const APP_SHELL = [
   '/css/dossiers.css',
   '/css/gallery-carousel.css',
   '/css/home.css',
+  '/css/monsters.css',
   '/css/notes.css',
+  '/css/sheet.css',
   '/css/studio.css',
   '/css/submit-lore.css',
   '/js/chatbot.js',
@@ -38,6 +40,10 @@ const APP_SHELL = [
   '/js/vos-dm.js',
   '/js/vos-questionnaire.js',
   '/js/vos-dossiers.js',
+  '/js/vos-sheet.js',
+  '/js/vos-sheets.js',
+  '/js/vos-party.js',
+  '/js/vos-monsters.js',
   '/js/gallery-carousel.js',
   '/js/vos-art-submissions.js',
   '/js/vos-home.js',
@@ -47,6 +53,10 @@ const APP_SHELL = [
   '/js/vos-submit-lore.js',
   '/questionnaire/',
   '/dossiers/',
+  '/sheet/',
+  '/sheets/',
+  '/party/',
+  '/monsters/',
   '/data/players.json',
   '/pagefind/pagefind-ui.css',
   '/pagefind/pagefind-ui.js',
