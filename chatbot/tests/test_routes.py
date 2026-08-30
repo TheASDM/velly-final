@@ -50,6 +50,7 @@ ROUTE_CONTRACT = """
 /api/im/read|/api/im/read|POST|im_read|401:json.error|404:json.error,error_code|404:json.error,error_code|401:json.error
 /api/im/thread/<path:thread_key>|/api/im/thread/party|GET|im_thread|401:json.error|200:json.messages,ok,threadKey|200:json.messages,ok,threadKey|401:json.error
 /api/im/thread/<path:thread_key>|/api/im/thread/party|POST|im_thread|401:json.error|400:json.error,error_code|400:json.error,error_code|401:json.error
+/api/im/thread/<path:thread_key>/enzo|/api/im/thread/Enzo%7CLotan/enzo|POST|im_thread_enzo|401:json.error|400:json.error,error_code|403:json.error,error_code|401:json.error
 /api/im/threads|/api/im/threads|GET|im_threads|401:json.error|200:json.ok,playerName,threads|200:json.ok,playerName,threads|401:json.error
 /api/identity|/api/identity|GET|api_identity|401:json.error|200:json.character,ok,playerName|200:json.character,ok,playerName|401:json.error
 /api/in-play|/api/in-play|GET|in_play_endpoint|200:json.items|200:json.items|200:json.items|200:json.items
@@ -125,7 +126,7 @@ def test_route_inventory_and_response_contract(app, auth_headers):
     }
     expected_routes = {rule for rule, _, _, _endpoint, _ in cases}
     assert actual_routes == expected_routes
-    assert len(cases) == 93
+    assert len(cases) == 94
 
     for rule, path, method, _endpoint, expected in cases:
         for role in ROLES:
