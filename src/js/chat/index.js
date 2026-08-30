@@ -49,6 +49,15 @@ window.addEventListener('DOMContentLoaded', () => {
   if (button && isMessagesPage()) button.hidden = true;
   else initOverlay();
 
+  // The pill and the panel are the same conversation: when one of them
+  // finishes an exchange with Enzo, the other catches up.
+  window.addEventListener('vos:enzo-exchange', (event) => {
+    if (!event.detail || event.detail.source === 'panel') return;
+    const panel = api.pagePanel || getOverlayPanel();
+    if (panel && (api.pagePanel || isOverlayOpen())) panel.refresh().catch(() => {});
+    syncBadge();
+  });
+
   syncBadge();
   window.addEventListener('focus', syncBadge);
   window.addEventListener('vos:im-read', syncBadge);

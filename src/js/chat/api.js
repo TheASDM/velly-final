@@ -4,6 +4,7 @@
  * failure throws an Error carrying the server's message — the panel turns
  * those into a status line rather than swallowing them. */
 import { authHeaders, getJson } from '../shared/pwa.js';
+import { readEventStream, supportsEventStream } from '../shared/sse.js';
 
 async function postJson(url, body) {
   const response = await fetch(url, {
@@ -69,4 +70,30 @@ export async function dismissAnnouncement(messageId) {
     const data = await response.json().catch(() => ({}));
     throw new Error(data.error || `HTTP ${response.status}`);
   }
+}
+
+/* Enzo's thread streams: the reply arrives token by token, and both halves
+ * are stored server-side before the stream closes. Handlers fire as events
+ * land; the promise resolves when the stream ends. */
+export async function streamToEnzo(threadKey, body, options, onEvent) {
+  const response = await fetch(
+    `/api/im/thread/${encodeURIComponent(threadKey)}/enzo`,
+    {
+      method: 'POST',
+      cache: 'no-store',
+      headers: authHeaders({
+        'Content-Type': 'application/json',
+        Accept: 'text/event-stream',
+      }),
+      body: JSON.stringify({ body, ...(options || {}) }),
+    }
+  );
+  if (!supportsEventStream(response)) {
+    const data = await response.json().catch(() => ({}));
+    const error = new Error(data.error || `HTTP ${response.status}`);
+    error.status = response.status;
+    error.code = data.error_code;
+    throw error;
+  }
+  await readEventStream(response, onEvent);
 }

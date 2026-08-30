@@ -11,11 +11,16 @@
 import { escapeHtml, whenPwaReady } from '../shared/pwa.js';
 import {
   deleteMessage, dismissAnnouncement, fetchAnnouncements, fetchMessages,
-  fetchThreads, markThreadRead, sendMessage, setThreadMuted,
+  fetchThreads, markThreadRead, sendMessage, setThreadMuted, streamToEnzo,
 } from './api.js';
 import { getDraft, getOpenKey, getScrollTop, setDraft, setOpenKey, setScrollTop } from './state.js';
 
 const POLL_MS = 15000;
+const EMPTY_COPY = {
+  party: 'The party channel is quiet. Break the silence.',
+  enzo: 'Ask Enzo about the valley, its people, or the rules.',
+  direct: 'No messages yet — say something.',
+};
 const ANNOUNCEMENTS_KEY = '@announcements';
 const PUSH_ASKED_KEY = 'vos:chat:push-asked';
 // A finger, not a pointer: Enter makes a newline on touch, the Send button
@@ -75,6 +80,7 @@ export function createChatPanel(options) {
   let threads = [];
   let announcements = [];
   let openKey = null;
+  let openKind = null;
   let openMuted = false;
   let lastId = 0;
   let pollTimer = null;
@@ -340,9 +346,10 @@ export function createChatPanel(options) {
 
     lastId = 0;
     const thread = threads.find((entry) => entry.key === key);
+    openKind = thread ? thread.kind : null;
     openMuted = !!(thread && thread.muted);
     titleEl.textContent = thread ? displayName(thread.label) : key;
-    muteEl.hidden = false;
+    muteEl.hidden = openKind === 'enzo';
     muteEl.textContent = openMuted ? 'Unmute' : 'Mute';
     muteEl.setAttribute('aria-pressed', openMuted ? 'true' : 'false');
     composerEl.hidden = false;
@@ -355,9 +362,8 @@ export function createChatPanel(options) {
     try {
       await fetchNew();
       if (!messagesEl.children.length) {
-        messagesEl.append(el('p', 'vos-chat-empty', key === 'party'
-          ? 'The party channel is quiet. Break the silence.'
-          : 'No messages yet — say something.'));
+        messagesEl.append(el('p', 'vos-chat-empty', EMPTY_COPY[openKind]
+          || EMPTY_COPY.direct));
       }
       const saved = getScrollTop(key);
       if (saved != null) messagesEl.scrollTop = saved;
@@ -375,6 +381,7 @@ export function createChatPanel(options) {
       setDraft(openKey, inputEl.value);
     }
     openKey = null;
+    openKind = null;
     setOpenKey(null);
     panelEl.classList.remove('is-thread-open');
     backEl.hidden = true;
@@ -400,7 +407,80 @@ export function createChatPanel(options) {
     return bubble;
   }
 
+  function typingRow() {
+    const row = el('div', 'vos-chat-typing');
+    row.append(el('span', 'vos-chat-typing-who', 'Enzo is typing'));
+    const dots = el('span', 'vos-chat-typing-dots');
+    dots.append(el('i'), el('i'), el('i'));
+    row.append(dots);
+    return row;
+  }
+
+  /* Enzo's reply arrives token by token over SSE, and the server stores
+   * both halves before the stream closes — so the pill and this panel are
+   * reading the same conversation, not two copies of one. */
+  async function deliverToEnzo(bubble, key, text) {
+    const typing = typingRow();
+    messagesEl.append(typing);
+    scrollToLatest();
+    let reply = null;
+    let streamError = null;
+    try {
+      await streamToEnzo(key, text, {}, (name, payload) => {
+        if (name === 'sent' && payload.message) {
+          if (payload.message.id > lastId) lastId = payload.message.id;
+          if (openKey === key) bubble.replaceWith(messageBubble(payload.message));
+          return;
+        }
+        if (name === 'token') {
+          if (!reply) {
+            typing.remove();
+            reply = el('div', 'vos-chat-bubble is-streaming');
+            reply.append(el('div', 'vos-chat-bubble-body', ''));
+            messagesEl.append(reply);
+          }
+          const body = reply.querySelector('.vos-chat-bubble-body');
+          body.textContent += payload.text || '';
+          scrollToLatest();
+          return;
+        }
+        if (name === 'message' && payload.message) {
+          if (payload.message.id > lastId) lastId = payload.message.id;
+          if (reply) reply.replaceWith(messageBubble(payload.message));
+          else messagesEl.append(messageBubble(payload.message));
+          reply = null;
+          scrollToLatest();
+          markRead();
+          return;
+        }
+        if (name === 'error') streamError = payload.message || 'Enzo lost the thread.';
+      });
+      if (streamError) setStatus(streamError, true);
+      maybeAskForPush();
+      window.dispatchEvent(new CustomEvent('vos:enzo-exchange', {
+        detail: { key, source: 'panel' },
+      }));
+    } catch (error) {
+      failBubble(bubble, key, text, error);
+    } finally {
+      typing.remove();
+      if (reply) reply.remove();
+    }
+  }
+
+  function failBubble(bubble, key, text, error) {
+    bubble.classList.add('is-failed');
+    const meta = bubble.querySelector('.vos-chat-bubble-meta');
+    if (meta) meta.textContent = `Failed: ${error.message} — tap to retry`;
+    bubble.addEventListener('click', function retry() {
+      bubble.classList.remove('is-failed');
+      if (meta) meta.textContent = 'Sending…';
+      deliver(bubble, key, text);
+    }, { once: true });
+  }
+
   async function deliver(bubble, key, text) {
+    if (openKind === 'enzo') return deliverToEnzo(bubble, key, text);
     try {
       const data = await sendMessage(key, text);
       const message = data.message;
@@ -412,14 +492,7 @@ export function createChatPanel(options) {
       }
       maybeAskForPush();
     } catch (error) {
-      bubble.classList.add('is-failed');
-      const meta = bubble.querySelector('.vos-chat-bubble-meta');
-      meta.textContent = `Failed: ${error.message} — tap to retry`;
-      bubble.addEventListener('click', function retry() {
-        bubble.classList.remove('is-failed');
-        meta.textContent = 'Sending…';
-        deliver(bubble, key, text);
-      }, { once: true });
+      failBubble(bubble, key, text, error);
     }
   }
 

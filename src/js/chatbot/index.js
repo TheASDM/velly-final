@@ -1,4 +1,5 @@
 import { historyMethods } from './history.js';
+import { threadMethods } from './thread.js';
 import { renderingMethods } from './rendering.js';
 import { shellMethods } from './shell.js';
 import { transportMethods } from './transport.js';
@@ -14,6 +15,9 @@ class LoreMasterChatbot {
             this.baseUrl = '';
         }
         this.conversationHistory = [];
+        // Set once the signed-in player's Enzo thread is adopted; until
+        // then the widget is local and anonymous, as it always was.
+        this.enzoThreadKey = null;
         this.rules = false;
         this.vibe = null;
         this.artMode = false;
@@ -42,6 +46,15 @@ class LoreMasterChatbot {
         this.updateVibeIndicator();
         this.updateArtIndicator();
         this.renderEmptyState();
+        // Signed in, the stored thread replaces the localStorage history.
+        this.adoptServerThread().catch(() => {});
+        window.addEventListener('vos:enzo-exchange', (event) => {
+            if (event.detail && event.detail.source === 'pill') return;
+            this.adoptServerThread().catch(() => {});
+        });
+        window.addEventListener('vos:identity-ready', () => {
+            this.adoptServerThread().catch(() => {});
+        });
         console.log('Enzo initialized');
     }
 }
@@ -52,6 +65,7 @@ Object.assign(
   transportMethods,
   renderingMethods,
   historyMethods,
+  threadMethods,
 );
 let loreMaster;
 function initLoreMaster() {

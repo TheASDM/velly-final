@@ -2,12 +2,18 @@ import { loadFromLocalStorage, saveToLocalStorage } from './format.js';
 
 export const historyMethods = {
   saveHistory() {
-        saveToLocalStorage('loreMasterHistory', this.conversationHistory);
+        // With a thread adopted, the server holds the conversation; keeping
+        // a second copy in localStorage is how the two used to diverge.
+        if (!this.enzoThreadKey) {
+            saveToLocalStorage('loreMasterHistory', this.conversationHistory);
+        }
         saveToLocalStorage('loreMasterRules', this.rules);
         saveToLocalStorage('loreMasterVibe', this.vibe);
         saveToLocalStorage('loreMasterArtMode', this.artMode);
     },
   loadHistory() {
+        // Only ever the signed-out path — adoptServerThread() overwrites
+        // this the moment an identity resolves.
         const saved = loadFromLocalStorage('loreMasterHistory');
         if (saved && Array.isArray(saved)) {
             this.conversationHistory = saved;

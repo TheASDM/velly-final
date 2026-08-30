@@ -106,6 +106,11 @@ export const transportMethods = {
             }
             this.conversationHistory = response.conversationHistory;
             this.saveHistory();
+            if (this.enzoThreadKey) {
+                window.dispatchEvent(new CustomEvent('vos:enzo-exchange', {
+                    detail: { key: this.enzoThreadKey, source: 'pill' },
+                }));
+            }
             if (response.historyTruncated && !this.historyTruncatedNoticed) {
                 this.historyTruncatedNoticed = true;
                 this.addSystemMessage('Older messages condensed to fit Enzo’s memory budget.');
@@ -137,10 +142,25 @@ export const transportMethods = {
         messagesContainer.appendChild(wrapper);
         this.scrollToBottom();
     },
+  syncModeFromServer(rules, vibe) {
+        if (typeof rules === 'boolean' && rules !== this.rules) {
+            this.rules = rules;
+            this.updateRulesIndicator();
+            saveToLocalStorage('loreMasterRules', this.rules);
+        }
+        if (vibe !== undefined && vibe !== this.vibe) {
+            this.vibe = vibe;
+            this.updateVibeIndicator();
+            saveToLocalStorage('loreMasterVibe', this.vibe);
+        }
+    },
   async sendMessageToAPI(message) {
         if (!navigator.onLine) {
             throw new Error('You appear to be offline. Enzo requires a connection to consult the archives.');
         }
+        // Signed in: one conversation, stored server-side, shared with the
+        // chat panel. Signed out: the anonymous endpoint, as before.
+        if (this.enzoThreadKey) return this.sendThroughThread(message);
         const response = await fetch(this.chatApiUrl, {
             method: 'POST',
             headers: {
@@ -160,16 +180,7 @@ export const transportMethods = {
             return await this._consumeStreamResponse(response);
         }
         const data = await response.json();
-        if (typeof data.rules === 'boolean' && data.rules !== this.rules) {
-            this.rules = data.rules;
-            this.updateRulesIndicator();
-            saveToLocalStorage('loreMasterRules', this.rules);
-        }
-        if (data.vibe !== undefined && data.vibe !== this.vibe) {
-            this.vibe = data.vibe;
-            this.updateVibeIndicator();
-            saveToLocalStorage('loreMasterVibe', this.vibe);
-        }
+        this.syncModeFromServer(data.rules, data.vibe);
         return data;
     },
   async _consumeStreamResponse(response) {
@@ -236,16 +247,7 @@ export const transportMethods = {
         }
 
         // Reflect mode-bearing fields the server toggled mid-stream.
-        if (typeof meta.rules === 'boolean' && meta.rules !== this.rules) {
-            this.rules = meta.rules;
-            this.updateRulesIndicator();
-            saveToLocalStorage('loreMasterRules', this.rules);
-        }
-        if (meta.vibe !== undefined && meta.vibe !== this.vibe) {
-            this.vibe = meta.vibe;
-            this.updateVibeIndicator();
-            saveToLocalStorage('loreMasterVibe', this.vibe);
-        }
+        this.syncModeFromServer(meta.rules, meta.vibe);
 
         return {
             response: accumulated,
