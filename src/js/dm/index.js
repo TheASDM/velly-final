@@ -9,6 +9,7 @@ import './questionnaires.js';
 import './push.js';
 import './rumors.js';
 import './handouts.js';
+import './sounds.js';
 import './availability.js';
 import './in-play.js';
 import './boot.js';

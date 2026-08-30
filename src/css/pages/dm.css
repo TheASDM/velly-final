@@ -34,3 +34,83 @@
   width: 1.05rem;
   height: 1.05rem;
 }
+
+/* ── Sounds: the Syrinscape remote ─────────────────────────────────── */
+
+.vos-dm-sounds-search {
+  width: 100%;
+  min-height: 44px;
+  margin: 0 0 0.7rem;
+  padding: 0 0.8rem;
+  border: 1px solid var(--vos-border, #3a3147);
+  border-radius: 8px;
+  background: rgba(8, 7, 11, 0.6);
+  color: var(--vos-cream, #e8d5b7);
+  font-size: 0.95rem;
+}
+
+.vos-dm-soundset {
+  border-bottom: 1px solid rgba(139, 115, 85, 0.16);
+}
+.vos-dm-soundset-row {
+  display: block;
+  width: 100%;
+  min-height: 46px;
+  padding: 0.55rem 0.2rem;
+  border: 0;
+  background: none;
+  color: var(--vos-text, #c9c0b4);
+  text-align: left;
+  cursor: pointer;
+}
+.vos-dm-soundset-row b {
+  display: block;
+  font-weight: 600;
+  color: var(--vos-cream, #e8d5b7);
+}
+.vos-dm-soundset-row span {
+  display: block;
+  font-size: 0.76rem;
+  color: var(--vos-gold-dim, #8b7355);
+}
+.vos-dm-soundset.is-open .vos-dm-soundset-row b { color: var(--vos-gold-bright, #d4a574); }
+
+.vos-dm-soundset-body { padding: 0 0 0.7rem; }
+.vos-dm-sounds-moods {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin: 0.3rem 0;
+}
+.vos-dm-sound {
+  min-height: 40px;
+  padding: 0.3rem 0.75rem;
+  border: 1px solid var(--vos-border, #3a3147);
+  border-radius: 999px;
+  background: rgba(8, 7, 11, 0.6);
+  color: var(--vos-text, #c9c0b4);
+  font-size: 0.86rem;
+  cursor: pointer;
+}
+.vos-dm-sound:hover { border-color: var(--vos-border-strong, #5a4d3a); color: var(--vos-cream, #e8d5b7); }
+.vos-dm-sound i {
+  font-style: normal;
+  margin-left: 0.4rem;
+  font-size: 0.62rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--vos-gold-dim, #8b7355);
+}
+.vos-dm-sound.is-playing {
+  border-color: rgba(95, 168, 148, 0.7);
+  background: rgba(95, 168, 148, 0.14);
+  color: #9fd4c4;
+}
+.vos-dm-sound.is-oneshot { border-style: dashed; }
+
+.vos-dm-sounds-note {
+  margin: 0.5rem 0;
+  font-size: 0.82rem;
+  font-style: italic;
+  color: var(--vos-gold-dim, #8b7355);
+}

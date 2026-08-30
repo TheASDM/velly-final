@@ -185,6 +185,16 @@ export const handoutsStatusEl = document.getElementById('vos-dm-handouts-status'
 
 export const handoutsRefreshEl = document.getElementById('vos-dm-handouts-refresh');
 
+export const soundsListEl = document.getElementById('vos-dm-sounds-list');
+
+export const soundsSearchEl = document.getElementById('vos-dm-sounds-search');
+
+export const soundsStatusEl = document.getElementById('vos-dm-sounds-status');
+
+export const soundsStopEl = document.getElementById('vos-dm-sounds-stop');
+
+export const soundsRefreshEl = document.getElementById('vos-dm-sounds-refresh');
+
 export const npcRollEl = document.getElementById('vos-dm-npc-roll');
 
 export const npcResultEl = document.getElementById('vos-dm-npc-result');

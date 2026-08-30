@@ -45,6 +45,7 @@ pageStyles:
     <button class="vos-seg-btn" type="button" data-view="records">Records</button>
     <button class="vos-seg-btn" type="button" data-view="rumors">Rumors</button>
     <button class="vos-seg-btn" type="button" data-view="handouts">Handouts</button>
+    <button class="vos-seg-btn" type="button" data-view="sounds">Sounds</button>
     <button class="vos-seg-btn" type="button" data-view="npc">Quick NPC</button>
     <button class="vos-seg-btn" type="button" data-view="inplay">In Play</button>
   </nav>
@@ -406,6 +407,27 @@ pageStyles:
     </form>
     <ul class="vos-dm-cal-events" id="vos-dm-handouts-list"></ul>
     <div class="vos-dm-status" id="vos-dm-handouts-status" role="status" aria-live="polite"></div>
+  </section>
+
+  </div>
+
+  <div class="vos-dm-view" data-vos-view="sounds" hidden>
+
+  <section class="vos-dm-panel" aria-labelledby="vos-dm-sounds-title">
+    <div class="vos-dm-panel-head">
+      <h2 id="vos-dm-sounds-title">Sounds</h2>
+      <div class="vos-dm-actions">
+        <button id="vos-dm-sounds-stop" type="button">Stop All</button>
+        <button id="vos-dm-sounds-refresh" type="button">Refresh</button>
+      </div>
+    </div>
+    <p class="vos-dm-helper">Your Syrinscape library. Tapping a mood switches the
+    whole soundscape; a one-shot fires over it. The audio comes out of whatever
+    device runs your Syrinscape player — this page is the remote, not the speaker.</p>
+    <input type="search" id="vos-dm-sounds-search" class="vos-dm-sounds-search"
+           placeholder="Search the library…" autocomplete="off" aria-label="Search soundsets">
+    <div id="vos-dm-sounds-list" class="vos-dm-sounds-list"></div>
+    <div class="vos-dm-status" id="vos-dm-sounds-status" role="status" aria-live="polite"></div>
   </section>
 
   </div>

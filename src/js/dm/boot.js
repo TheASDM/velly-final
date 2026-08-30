@@ -7,6 +7,7 @@ import { refreshQuestionnaires } from './questionnaires.js';
 import { refreshRsvps } from './rsvp.js';
 import { addRumor, refreshRumors } from './rumors.js';
 import { attachHandoutImage, cancelHandoutEdit, refreshHandouts, saveHandout } from './handouts.js';
+import { wireSounds } from './sounds.js';
 import { handoutCancelEl, handoutFormEl, handoutImageEl, handoutsRefreshEl } from './state.js';
 import { availRefreshEl, calCancelEl, calFormEl, calRefreshEl, historyRefreshEl, loreBulkPublishEl, loreBulkRejectEl, loreForm, loreRedraftEl, loreRefreshEl, loreRejectEl, loreSaveEl, loreSelectAllEl, npcRollEl, pushSubsRefreshEl, recordsRefreshEl, rsvpRefreshEl, rumorFormEl, rumorsRefreshEl, setStatus, showDeletedEl, triggerRebuild, wikiForm, wikiLoadEl, wikiQueryEl, wikiRebuildEl, wikiStatusEl } from './state.js';
 import { loadAdminDataOnce } from './tabs.js';
@@ -29,6 +30,8 @@ if (handoutFormEl) handoutFormEl.addEventListener('submit', saveHandout);
 if (handoutCancelEl) handoutCancelEl.addEventListener('click', cancelHandoutEdit);
 if (handoutsRefreshEl) handoutsRefreshEl.addEventListener('click', refreshHandouts);
 if (handoutImageEl) handoutImageEl.addEventListener('change', attachHandoutImage);
+
+wireSounds();
 
 if (rumorsRefreshEl) rumorsRefreshEl.addEventListener('click', refreshRumors);
 

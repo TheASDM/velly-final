@@ -74,6 +74,7 @@ ROUTE_MODULES = [
         ".routes.sheets",
         ".routes.play",
         ".routes.handouts",
+        ".routes.sounds",
         ".routes.rumors",
         ".routes.chat",
         ".routes.lore",
