@@ -1,8 +1,29 @@
-import { adminJson, getToken, loreBulkBarEl, loreBulkPublishEl, loreBulkRejectEl, loreForm, loreImageEl, loreImagePromptEl, loreListEl, loreMarkdownEl, lorePublishEl, loreRedraftEl, loreRefreshEl, loreRejectEl, loreRejectReasonEl, loreSaveEl, loreSelectAllEl, loreSelectCountEl, loreSlugEl, loreStatusEl, loreSummaryEl, loreTitleEl, pollRebuildStatus, postJson, selectedLoreIds, setStatus, setStatusWithRebuild, triggerRebuild } from './state.js';
+import { loreBulkBarEl, loreBulkPublishEl, loreBulkRejectEl, loreForm, loreImageEl, loreImagePromptEl, loreListEl, loreMarkdownEl, lorePublishEl, loreRedraftEl, loreRefreshEl, loreRejectEl, loreRejectReasonEl, loreSaveEl, loreSelectAllEl, loreSelectCountEl, loreSlugEl, loreStatusEl, loreSummaryEl, loreTitleEl, selectedLoreIds, setStatus } from './dom.js';
+import { adminJson, postJson, withPanel } from './http.js';
+import { followRebuild, triggerRebuild } from './rebuild.js';
+import { confirmDiscard, trackDirty } from './dirty.js';
 
 export let selectedLoreId = null;
 
 export let selectedLoreStatus = null;
+
+/* Status per listed submission, so bulk publish can tell "needs overwrite"
+ * (already published) apart from real failures instead of blind-retrying
+ * everything with overwrite:true. */
+const statusById = new Map();
+
+/* The editor's fields as last loaded/saved — anything else is unsaved work. */
+let editorSnapshot = null;
+
+function editorState() {
+  return JSON.stringify(lorePayloadFromForm());
+}
+
+export function loreEditorDirty() {
+  return !loreForm.hidden && editorSnapshot !== null && editorState() !== editorSnapshot;
+}
+
+trackDirty('lore-editor', loreEditorDirty);
 
 export function lorePayloadFromForm() {
   return {
@@ -16,11 +37,21 @@ export function lorePayloadFromForm() {
 
 export function renderLoreList(submissions) {
   loreListEl.innerHTML = '';
+  statusById.clear();
+  submissions.forEach((s) => statusById.set(s.id, s.status));
   // Drop any selections that aren't in the new list anymore (e.g.,
   // after a refresh that removed published / rejected items).
   const incomingIds = new Set(submissions.map((s) => s.id));
   for (const id of Array.from(selectedLoreIds)) {
     if (!incomingIds.has(id)) selectedLoreIds.delete(id);
+  }
+  // Same for the editor's selection: a vanished submission must not leave
+  // the editor pointed at an id that will 404.
+  if (selectedLoreId && !incomingIds.has(selectedLoreId)) {
+    selectedLoreId = null;
+    selectedLoreStatus = null;
+    editorSnapshot = null;
+    loreForm.hidden = true;
   }
 
   if (!submissions.length) {
@@ -31,6 +62,7 @@ export function renderLoreList(submissions) {
     loreForm.hidden = true;
     selectedLoreId = null;
     selectedLoreStatus = null;
+    editorSnapshot = null;
     updateBulkBar();
     return;
   }
@@ -110,9 +142,42 @@ export function toggleSelectAll() {
   updateBulkBar();
 }
 
+async function runBulk(ids, label, act) {
+  loreBulkPublishEl.disabled = true;
+  loreBulkRejectEl.disabled = true;
+  const failures = [];
+  let ok = 0;
+  try {
+    for (let i = 0; i < ids.length; i += 1) {
+      const id = ids[i];
+      setStatus(loreStatusEl, `${label} ${i + 1} / ${ids.length}…`);
+      try {
+        await act(id);
+        ok += 1;
+      } catch (error) {
+        failures.push({ id, message: error.message });
+      }
+    }
+    selectedLoreIds.clear();
+    await refreshLoreSubmissions();
+    if (failures.length) {
+      const detail = failures
+        .slice(0, 3)
+        .map((f) => f.message)
+        .join(' · ');
+      setStatus(loreStatusEl, `${label}: ${ok} done, ${failures.length} failed — ${detail}`, true);
+    } else {
+      setStatus(loreStatusEl, `${label}: ${ok} done.`);
+    }
+  } finally {
+    // Selection is gone, so the buttons come back disabled-until-selected —
+    // but never stuck disabled after an exception.
+    updateBulkBar();
+  }
+  return { ok, failures };
+}
+
 export async function bulkPublishSelected() {
-  const token = getToken(loreStatusEl);
-  if (!token) return;
   const ids = Array.from(selectedLoreIds);
   if (!ids.length) return;
   const confirmText = ids.length === 1
@@ -120,35 +185,13 @@ export async function bulkPublishSelected() {
     : `Publish ${ids.length} submissions to the wiki?`;
   if (!window.confirm(confirmText)) return;
 
-  loreBulkPublishEl.disabled = true;
-  loreBulkRejectEl.disabled = true;
-  let ok = 0;
-  let failed = 0;
-  for (let i = 0; i < ids.length; i += 1) {
-    const id = ids[i];
-    setStatus(loreStatusEl, `Publishing ${i + 1} / ${ids.length}...`);
-    try {
-      // Empty body — server falls back to stored title/slug/markdown/etc.
-      // Retry once with overwrite=true so already-published rows refresh.
-      try {
-        await postJson(`/api/admin/lore-submissions/${encodeURIComponent(id)}/publish`, token, { auto_rebuild: false });
-      } catch (firstError) {
-        await postJson(`/api/admin/lore-submissions/${encodeURIComponent(id)}/publish`, token, { overwrite: true, auto_rebuild: false });
-      }
-      ok += 1;
-    } catch (error) {
-      failed += 1;
-    }
-  }
-  selectedLoreIds.clear();
-  await refreshLoreSubmissions();
-  setStatus(
-    loreStatusEl,
-    failed
-      ? `Published ${ok}, ${failed} failed.`
-      : `Published ${ok}.`,
-    failed > 0
-  );
+  const { ok } = await runBulk(ids, 'Publishing', async (id) => {
+    // Already-published rows need overwrite to refresh their page; anything
+    // else publishes plainly, and its real error surfaces if it fails.
+    const payload = { auto_rebuild: false };
+    if (statusById.get(id) === 'published') payload.overwrite = true;
+    await postJson(`/api/admin/lore-submissions/${encodeURIComponent(id)}/publish`, payload);
+  });
   if (ok > 0) {
     try {
       await triggerRebuild(loreStatusEl, `bulk lore publish: ${ok}`);
@@ -159,45 +202,21 @@ export async function bulkPublishSelected() {
 }
 
 export async function bulkRejectSelected() {
-  const token = getToken(loreStatusEl);
-  if (!token) return;
   const ids = Array.from(selectedLoreIds);
   if (!ids.length) return;
-  const reason = window.prompt(
-    `Reject ${ids.length === 1 ? '1 submission' : ids.length + ' submissions'}. Reason shown to players (optional):`,
-    ''
-  );
-  // prompt() returns null on Cancel, '' on empty OK
-  if (reason === null) return;
-  const trimmed = reason.trim();
+  const reason = (loreRejectReasonEl && loreRejectReasonEl.value || '').trim();
+  const confirmText = reason
+    ? `Reject ${ids.length === 1 ? 'this submission' : ids.length + ' submissions'} with the reason in the editor?`
+    : `Reject ${ids.length === 1 ? 'this submission' : ids.length + ' submissions'} without a reason? (Players see "Rejected by DM".)`;
+  if (!window.confirm(confirmText)) return;
 
-  loreBulkPublishEl.disabled = true;
-  loreBulkRejectEl.disabled = true;
-  let ok = 0;
-  let failed = 0;
-  for (let i = 0; i < ids.length; i += 1) {
-    const id = ids[i];
-    setStatus(loreStatusEl, `Rejecting ${i + 1} / ${ids.length}...`);
-    try {
-      await postJson(
-        `/api/admin/lore-submissions/${encodeURIComponent(id)}/reject`,
-        token,
-        trimmed ? { reason: trimmed } : {}
-      );
-      ok += 1;
-    } catch (error) {
-      failed += 1;
-    }
-  }
-  selectedLoreIds.clear();
-  await refreshLoreSubmissions();
-  setStatus(
-    loreStatusEl,
-    failed
-      ? `Rejected ${ok}, ${failed} failed.`
-      : `Rejected ${ok}.`,
-    failed > 0
-  );
+  await runBulk(ids, 'Rejecting', async (id) => {
+    await postJson(
+      `/api/admin/lore-submissions/${encodeURIComponent(id)}/reject`,
+      reason ? { reason } : {}
+    );
+  });
+  if (loreRejectReasonEl) loreRejectReasonEl.value = '';
 }
 
 export function fillLoreForm(submission) {
@@ -217,145 +236,97 @@ export function fillLoreForm(submission) {
     loreImageEl.hidden = true;
     loreImageEl.removeAttribute('src');
   }
+  editorSnapshot = editorState();
   setStatus(loreStatusEl, submission.error_message || `Loaded ${submission.status}.`, !!submission.error_message);
 }
 
-export async function refreshLoreSubmissions() {
-  const token = getToken(loreStatusEl);
-  if (!token) return;
-  loreRefreshEl.disabled = true;
-  setStatus(loreStatusEl, 'Loading...');
-  try {
-    const data = await adminJson('/api/admin/lore-submissions?limit=40', token);
+export function refreshLoreSubmissions() {
+  return withPanel(loreStatusEl, loreRefreshEl, async () => {
+    const data = await adminJson('/api/admin/lore-submissions?limit=40');
     const submissions = data.submissions || [];
     renderLoreList(submissions);
     setStatus(loreStatusEl, 'Updated.');
     if (!selectedLoreId && submissions.length) {
-      await selectLoreSubmission(submissions[0].id);
-    } else if (selectedLoreId) {
-      Array.from(loreListEl.querySelectorAll('.vos-dm-submission-item')).forEach((button) => {
-        button.classList.toggle('is-selected', button.dataset.id === selectedLoreId);
-      });
+      await selectLoreSubmission(submissions[0].id, { skipDirtyCheck: true });
     }
-  } catch (error) {
-    setStatus(loreStatusEl, error.message, true);
-  } finally {
-    loreRefreshEl.disabled = false;
-  }
+  });
 }
 
-export async function selectLoreSubmission(id) {
-  const token = getToken(loreStatusEl);
-  if (!token) return;
-  selectedLoreId = id;
-  setStatus(loreStatusEl, 'Loading draft...');
-  try {
-    const data = await adminJson(`/api/admin/lore-submissions/${encodeURIComponent(id)}`, token);
+export async function selectLoreSubmission(id, { skipDirtyCheck = false } = {}) {
+  if (!skipDirtyCheck && id !== selectedLoreId
+      && !confirmDiscard('lore-editor', 'Discard unsaved edits to the open draft?')) {
+    return;
+  }
+  await withPanel(loreStatusEl, null, async () => {
+    const data = await adminJson(`/api/admin/lore-submissions/${encodeURIComponent(id)}`);
     fillLoreForm(data.submission);
     Array.from(loreListEl.querySelectorAll('.vos-dm-submission-item')).forEach((button) => {
       button.classList.toggle('is-selected', button.dataset.id === id);
     });
-  } catch (error) {
-    setStatus(loreStatusEl, error.message, true);
-  }
+  }, { loading: 'Loading draft…' });
 }
 
 export async function saveLoreSubmission() {
   if (!selectedLoreId) return;
-  const token = getToken(loreStatusEl);
-  if (!token) return;
-  loreSaveEl.disabled = true;
-  setStatus(loreStatusEl, 'Saving...');
-  try {
+  await withPanel(loreStatusEl, loreSaveEl, async () => {
     const data = await postJson(
       `/api/admin/lore-submissions/${encodeURIComponent(selectedLoreId)}/save`,
-      token,
       lorePayloadFromForm()
     );
     fillLoreForm(data.submission);
     await refreshLoreSubmissions();
     setStatus(loreStatusEl, 'Saved.');
-  } catch (error) {
-    setStatus(loreStatusEl, error.message, true);
-  } finally {
-    loreSaveEl.disabled = false;
-  }
+  }, { loading: 'Saving…' });
 }
 
 export async function redraftLoreSubmission() {
   if (!selectedLoreId) return;
-  const token = getToken(loreStatusEl);
-  if (!token) return;
   if (!window.confirm('Regenerate this draft? Current edits are replaced when the new draft finishes.')) return;
-  loreRedraftEl.disabled = true;
-  setStatus(loreStatusEl, 'Regenerating...');
-  try {
-    await postJson(`/api/admin/lore-submissions/${encodeURIComponent(selectedLoreId)}/draft`, token, {});
+  await withPanel(loreStatusEl, loreRedraftEl, async () => {
+    await postJson(`/api/admin/lore-submissions/${encodeURIComponent(selectedLoreId)}/draft`, {});
+    editorSnapshot = null;
     await refreshLoreSubmissions();
-    setStatus(loreStatusEl, 'Regeneration started.');
-  } catch (error) {
-    setStatus(loreStatusEl, error.message, true);
-  } finally {
-    loreRedraftEl.disabled = false;
-  }
+    setStatus(loreStatusEl, 'Regeneration started — reload the draft in a minute.');
+  }, { loading: 'Regenerating…' });
 }
 
 export async function rejectLoreSubmission() {
   if (!selectedLoreId) return;
-  const token = getToken(loreStatusEl);
-  if (!token) return;
   const reason = (loreRejectReasonEl && loreRejectReasonEl.value || '').trim();
   const confirmText = reason
-    ? `Reject this submission with the reason above? The player will see it.`
+    ? 'Reject this submission with the reason above? The player will see it.'
     : 'Reject without a reason? (The player will only see "Rejected by DM".)';
   if (!window.confirm(confirmText)) return;
-  loreRejectEl.disabled = true;
-  setStatus(loreStatusEl, 'Rejecting...');
-  try {
+  await withPanel(loreStatusEl, loreRejectEl, async () => {
     await postJson(
       `/api/admin/lore-submissions/${encodeURIComponent(selectedLoreId)}/reject`,
-      token,
       reason ? { reason } : {}
     );
     if (loreRejectReasonEl) loreRejectReasonEl.value = '';
+    editorSnapshot = null;
     await refreshLoreSubmissions();
     setStatus(loreStatusEl, 'Rejected.');
-  } catch (error) {
-    setStatus(loreStatusEl, error.message, true);
-  } finally {
-    loreRejectEl.disabled = false;
-  }
+  }, { loading: 'Rejecting…' });
 }
 
 export async function publishLoreSubmission(event) {
   event.preventDefault();
   if (!selectedLoreId) return;
-  const token = getToken(loreStatusEl);
-  if (!token) return;
   const confirmText = selectedLoreStatus === 'published'
     ? 'Republish and overwrite this wiki source file with the current draft?'
     : 'Publish this draft into the wiki source files?';
   if (!window.confirm(confirmText)) return;
-  lorePublishEl.disabled = true;
-  setStatus(loreStatusEl, 'Publishing...');
-  try {
+  await withPanel(loreStatusEl, lorePublishEl, async () => {
     const payload = lorePayloadFromForm();
     if (selectedLoreStatus === 'published') {
       payload.overwrite = true;
     }
     const data = await postJson(
       `/api/admin/lore-submissions/${encodeURIComponent(selectedLoreId)}/publish`,
-      token,
       payload
     );
+    editorSnapshot = editorState();
     await refreshLoreSubmissions();
-    setStatusWithRebuild(loreStatusEl, `Published: ${data.url}.`, data.rebuild);
-    if (data.rebuild && (data.rebuild.state === 'queued' || data.rebuild.state === 'running')) {
-      pollRebuildStatus(loreStatusEl);
-    }
-  } catch (error) {
-    setStatus(loreStatusEl, error.message, true);
-  } finally {
-    lorePublishEl.disabled = false;
-  }
+    followRebuild(loreStatusEl, `Published: ${data.url}.`, data.rebuild);
+  }, { loading: 'Publishing…' });
 }

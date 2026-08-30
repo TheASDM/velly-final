@@ -1,19 +1,14 @@
-import { AVAIL_RANGE, prettyDate } from './calendar.js';
-import { DEFAULT_PLAYERS, authHeaders, availStatusEl, availSubmittedEl, availSummaryEl, getToken, initGoogleButton, npcResultEl, persistSession, setStatus } from './state.js';
+import { availStatusEl, availSubmittedEl, availSummaryEl, npcResultEl, setStatus } from './dom.js';
+import { adminJson, withPanel } from './http.js';
+import { playerNames } from './roster.js';
+import { availRange, prettyDate } from './calendar.js';
 
 export let npcTables = null;
 
 export async function rollNpc() {
   if (!npcTables) {
-    const token = getToken(npcResultEl);
-    if (!token) return;
     try {
-      const response = await fetch('/api/questionnaire/definitions', {
-        cache: 'no-store',
-        headers: authHeaders(token),
-      });
-      if (!response.ok) throw new Error(`HTTP ${response.status}`);
-      const data = await response.json();
+      const data = await adminJson('/api/questionnaire/definitions');
       npcTables = data.tables || {};
     } catch (error) {
       npcTables = null;
@@ -42,35 +37,24 @@ export function availabilityChip(entry) {
   const chip = document.createElement('span');
   chip.className = `vos-dm-avail-chip is-${entry.rating}`;
   const symbols = { preferred: '★', available: '✓', unavailable: '✕' };
-  chip.textContent = `${symbols[entry.rating]} ${entry.player}`;
+  chip.textContent = `${symbols[entry.rating] || '?'} ${entry.player}`;
   return chip;
 }
 
-export async function refreshAvailabilitySummary() {
-  const token = getToken(availStatusEl);
-  if (!token) return;
-  setStatus(availStatusEl, 'Loading...');
-  try {
-    const response = await fetch(
-      `/api/availability/summary?from=${AVAIL_RANGE.from}&to=${AVAIL_RANGE.to}`,
-      { headers: authHeaders(token), cache: 'no-store' }
-    );
-    const data = await response.json().catch(() => ({}));
-    if (response.status === 401) {
-      persistSession(null);
-      initGoogleButton();
-      throw new Error(data.error || 'Session expired — sign in again.');
-    }
-    if (!response.ok) throw new Error(data.error || `HTTP ${response.status}`);
+export function refreshAvailabilitySummary() {
+  return withPanel(availStatusEl, null, async () => {
+    const range = availRange();
+    const [names, data] = await Promise.all([
+      playerNames(),
+      adminJson(`/api/availability/summary?from=${range.from}&to=${range.to}`),
+    ]);
 
     const days = data.days || {};
     const submitted = data.submitted || [];
 
     // Who has and hasn't weighed in (the DM doesn't count).
     const submittedNames = new Set(submitted.map((s) => s.player));
-    const missing = DEFAULT_PLAYERS.filter(
-      (name) => name !== 'DM' && !submittedNames.has(name)
-    );
+    const missing = names.filter((name) => !submittedNames.has(name));
     availSubmittedEl.innerHTML = '';
     const submittedLine = document.createElement('div');
     submittedLine.append('Submitted: ');
@@ -106,7 +90,9 @@ export async function refreshAvailabilitySummary() {
     const scored = weekendDays.map((dateIso) => {
       const entries = days[dateIso];
       const counts = { preferred: 0, available: 0, unavailable: 0 };
-      entries.forEach((entry) => { counts[entry.rating] += 1; });
+      entries.forEach((entry) => {
+        if (counts[entry.rating] !== undefined) counts[entry.rating] += 1;
+      });
       return {
         dateIso,
         entries,
@@ -177,7 +163,5 @@ export async function refreshAvailabilitySummary() {
     availSummaryEl.appendChild(weekdayGroup);
 
     setStatus(availStatusEl, 'Updated.');
-  } catch (error) {
-    setStatus(availStatusEl, error.message, true);
-  }
+  });
 }

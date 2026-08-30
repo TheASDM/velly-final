@@ -7,9 +7,10 @@
  * because at a loud table "did I hit it?" is a real question.
  */
 import {
-  authHeaders, getToken, setStatus, soundsListEl, soundsSearchEl,
-  soundsStatusEl, soundsStopEl, soundsRefreshEl,
-} from './state.js';
+  setStatus, soundsListEl, soundsRefreshEl, soundsSearchEl, soundsStatusEl,
+  soundsStopEl,
+} from './dom.js';
+import { adminJson, postJson, withPanel } from './http.js';
 
 const SHOW_LIMIT = 60;
 
@@ -20,38 +21,22 @@ let nowPlaying = null;       // pk of the mood we last started
 
 function esc(value) {
   return String(value == null ? '' : value).replace(
-    /[&<>"]/g,
-    (m) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[m]),
+    /[&<>"']/g,
+    (m) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m]),
   );
 }
 
-async function api(path, options) {
-  const token = getToken(soundsStatusEl);
-  if (!token) throw new Error('Sign in as DM first.');
-  const response = await fetch(path, {
-    cache: 'no-store',
-    ...(options || {}),
-    headers: authHeaders(token, (options || {}).headers),
-  });
-  const data = await response.json().catch(() => ({}));
-  if (!response.ok) throw new Error(data.error || `HTTP ${response.status}`);
-  return data;
-}
-
-export async function refreshSounds({ force = false } = {}) {
+export function refreshSounds({ force = false } = {}) {
   if (library && !force) {
     renderSounds();
-    return;
+    return Promise.resolve(true);
   }
-  setStatus(soundsStatusEl, 'Loading the library...');
-  try {
-    const data = await api(`/api/sounds/soundsets${force ? '?refresh=1' : ''}`);
+  return withPanel(soundsStatusEl, soundsRefreshEl, async () => {
+    const data = await adminJson(`/api/sounds/soundsets${force ? '?refresh=1' : ''}`);
     library = data.soundsets || [];
     setStatus(soundsStatusEl, '');
     renderSounds();
-  } catch (error) {
-    setStatus(soundsStatusEl, error.message, true);
-  }
+  }, { loading: 'Loading the library…' });
 }
 
 function matches(term) {
@@ -68,11 +53,11 @@ function detailHtml(uuid) {
   if (detail === 'error' || !detail) return '<p class="vos-dm-sounds-note">Could not open this one.</p>';
   const moods = detail.moods.map((mood) => `
     <button type="button" class="vos-dm-sound${mood.pk === nowPlaying ? ' is-playing' : ''}"
-            data-play="mood" data-pk="${mood.pk}">
+            data-play="mood" data-pk="${esc(mood.pk)}">
       ${esc(mood.name)}${mood.pk === nowPlaying ? '<i>playing</i>' : ''}
     </button>`).join('');
   const oneshots = detail.oneshots.map((shot) => `
-    <button type="button" class="vos-dm-sound is-oneshot" data-play="oneshot" data-pk="${shot.pk}">
+    <button type="button" class="vos-dm-sound is-oneshot" data-play="oneshot" data-pk="${esc(shot.pk)}">
       ${esc(shot.name)}<i>one-shot</i>
     </button>`).join('');
   return `
@@ -113,7 +98,7 @@ async function toggleSet(uuid) {
     details[uuid] = 'loading';
     renderSounds();
     try {
-      const data = await api(`/api/sounds/soundsets/${encodeURIComponent(uuid)}`);
+      const data = await adminJson(`/api/sounds/soundsets/${encodeURIComponent(uuid)}`);
       details[uuid] = { moods: data.moods || [], oneshots: data.oneshots || [] };
     } catch (error) {
       details[uuid] = 'error';
@@ -125,11 +110,7 @@ async function toggleSet(uuid) {
 
 async function play(kind, pk) {
   try {
-    await api('/api/sounds/play', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ kind, pk }),
-    });
+    await postJson('/api/sounds/play', { kind, pk });
     if (kind === 'mood') nowPlaying = pk;
     setStatus(soundsStatusEl, kind === 'mood' ? 'Playing.' : 'Fired.');
     renderSounds();
@@ -140,7 +121,7 @@ async function play(kind, pk) {
 
 export async function stopAllSounds() {
   try {
-    await api('/api/sounds/stop-all', { method: 'POST' });
+    await postJson('/api/sounds/stop-all', {});
     nowPlaying = null;
     setStatus(soundsStatusEl, 'Silence.');
     renderSounds();
@@ -152,6 +133,7 @@ export async function stopAllSounds() {
 export function refreshSoundsHard() {
   library = null;
   details = {};
+  openSets = new Set();
   refreshSounds({ force: true });
 }
 

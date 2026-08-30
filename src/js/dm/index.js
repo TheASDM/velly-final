@@ -1,4 +1,9 @@
-import './state.js';
+import './dom.js';
+import './dirty.js';
+import './session.js';
+import './http.js';
+import './rebuild.js';
+import './roster.js';
 import './tabs.js';
 import './wiki.js';
 import './messages.js';

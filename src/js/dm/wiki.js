@@ -1,4 +1,7 @@
-import { adminJson, getToken, pollRebuildStatus, setStatus, setStatusWithRebuild, wikiContentEl, wikiContentRowEl, wikiLoadEl, wikiMetaEl, wikiOpenEl, wikiQueryEl, wikiSaveEl, wikiStatusEl } from './state.js';
+import { setStatus, wikiContentEl, wikiContentRowEl, wikiLoadEl, wikiMetaEl, wikiOpenEl, wikiQueryEl, wikiSaveEl, wikiStatusEl } from './dom.js';
+import { adminJson, putJson, withPanel } from './http.js';
+import { followRebuild } from './rebuild.js';
+import { confirmDiscard, trackDirty } from './dirty.js';
 
 export let loadedWikiEntry = null;
 
@@ -17,6 +20,12 @@ export function renderMarkdown(s) {
   if (renderer) return renderer(s || '');
   return escapeHtml(s).replace(/\r\n?/g, '\n').replace(/\n/g, '<br>');
 }
+
+export function wikiEditorDirty() {
+  return !!loadedWikiEntry && wikiContentEl.value !== (loadedWikiEntry.content || '');
+}
+
+trackDirty('wiki-editor', wikiEditorDirty);
 
 export function resolveWikiQuery(value) {
   const raw = String(value || '').trim();
@@ -44,64 +53,41 @@ export function renderWikiEntry(entry) {
 }
 
 export async function loadWikiEntry() {
-  const token = getToken(wikiStatusEl);
-  if (!token) return;
   await loadWikiPages();
   const wikiUrl = resolveWikiQuery(wikiQueryEl.value);
-  loadedWikiEntry = null;
-  wikiContentEl.value = '';
-  wikiContentRowEl.hidden = true;
-  wikiOpenEl.hidden = true;
-  wikiSaveEl.disabled = true;
-  wikiMetaEl.textContent = '';
   if (!wikiUrl) {
     setStatus(wikiStatusEl, 'Choose a known wiki page or paste a /en/... URL.', true);
-    return;
+    return null;
   }
-  wikiLoadEl.disabled = true;
-  setStatus(wikiStatusEl, 'Loading wiki source...');
-  try {
-    const data = await adminJson(`/api/admin/wiki-entry?url=${encodeURIComponent(wikiUrl)}`, token);
+  // The editor keeps showing what it has until the new page has actually
+  // arrived — and never silently discards edits in progress.
+  if (!confirmDiscard('wiki-editor', 'Discard unsaved wiki edits and load another page?')) {
+    return null;
+  }
+  return withPanel(wikiStatusEl, wikiLoadEl, async () => {
+    const data = await adminJson(`/api/admin/wiki-entry?url=${encodeURIComponent(wikiUrl)}`);
     renderWikiEntry(data.entry || {});
     if (wikiQueryEl.value.trim().startsWith('/en/')) {
       wikiQueryEl.value = (data.entry && data.entry.url) || wikiUrl;
     }
     setStatus(wikiStatusEl, 'Loaded.');
-  } catch (error) {
-    setStatus(wikiStatusEl, error.message, true);
-  } finally {
-    wikiLoadEl.disabled = false;
-    wikiSaveEl.disabled = !loadedWikiEntry;
-  }
+  }, { loading: 'Loading wiki source…' });
 }
 
 export async function saveWikiEntry(event) {
   event.preventDefault();
-  const token = getToken(wikiStatusEl);
-  if (!token || !loadedWikiEntry) return;
+  if (!loadedWikiEntry) return;
   if (!window.confirm('Save this wiki source file?')) return;
-  wikiSaveEl.disabled = true;
-  setStatus(wikiStatusEl, 'Saving wiki source...');
-  try {
-    const data = await adminJson('/api/admin/wiki-entry', token, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        url: loadedWikiEntry.url,
-        content: wikiContentEl.value,
-        expected_hash: loadedWikiEntry.hash,
-      }),
+  await withPanel(wikiStatusEl, wikiSaveEl, async () => {
+    const data = await putJson('/api/admin/wiki-entry', {
+      url: loadedWikiEntry.url,
+      content: wikiContentEl.value,
+      expected_hash: loadedWikiEntry.hash,
     });
     renderWikiEntry(data.entry || {});
-    setStatusWithRebuild(wikiStatusEl, 'Saved.', data.rebuild);
-    if (data.rebuild && (data.rebuild.state === 'queued' || data.rebuild.state === 'running')) {
-      pollRebuildStatus(wikiStatusEl);
-    }
-  } catch (error) {
-    setStatus(wikiStatusEl, error.message, true);
-  } finally {
-    wikiSaveEl.disabled = false;
-  }
+    followRebuild(wikiStatusEl, 'Saved.', data.rebuild);
+  }, { loading: 'Saving wiki source…' });
+  wikiSaveEl.disabled = !loadedWikiEntry;
 }
 
 export async function loadWikiPages() {

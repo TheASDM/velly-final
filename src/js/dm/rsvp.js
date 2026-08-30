@@ -1,44 +1,25 @@
-import { authHeaders, getToken, initGoogleButton, persistSession, rsvpGoingEl, rsvpListEl, rsvpMaybeEl, rsvpOutEl, rsvpRefreshEl, rsvpStatusEl, setStatus } from './state.js';
+import { rsvpGoingEl, rsvpListEl, rsvpMaybeEl, rsvpOutEl, rsvpRefreshEl, rsvpStatusEl, setStatus } from './dom.js';
+import { adminJson, withPanel } from './http.js';
 
-export async function refreshRsvps() {
-  const token = getToken(rsvpStatusEl);
-  if (!token) return;
-  // RSVPs are keyed to the next scheduled session in calendar_events.
-  let eventId = null;
-  let gatheringDate = '';
-  try {
-    const nextResponse = await fetch('/api/calendar/next', { cache: 'no-store' });
-    const nextData = await nextResponse.json().catch(() => ({}));
-    if (nextResponse.ok && nextData.gathering) {
-      eventId = nextData.gathering.eventKey;
-      gatheringDate = nextData.gathering.date;
+export function refreshRsvps() {
+  return withPanel(rsvpStatusEl, rsvpRefreshEl, async () => {
+    // RSVPs are keyed to the next scheduled session in calendar_events.
+    // A network failure here is a failure — it must not read as "nothing
+    // is scheduled".
+    const nextData = await adminJson('/api/calendar/next');
+    const gathering = nextData.gathering;
+    if (!gathering) {
+      setStatus(rsvpStatusEl, 'No upcoming session is scheduled, so there is nothing to RSVP to.');
+      rsvpListEl.innerHTML = '';
+      return;
     }
-  } catch (error) { /* handled below */ }
-  if (!eventId) {
-    setStatus(rsvpStatusEl, 'No upcoming session is scheduled, so there is nothing to RSVP to.', true);
-    return;
-  }
-  const rsvpHeading = document.getElementById('vos-dm-rsvp-title');
-  if (rsvpHeading && gatheringDate) {
-    rsvpHeading.textContent = 'RSVP Summary — ' + new Date(gatheringDate + 'T00:00:00')
-      .toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
-  }
-
-  rsvpRefreshEl.disabled = true;
-  setStatus(rsvpStatusEl, 'Loading...');
-
-  try {
-    const response = await fetch(`/api/rsvp?eventId=${encodeURIComponent(eventId)}`, {
-      headers: authHeaders(token),
-      cache: 'no-store',
-    });
-    const data = await response.json().catch(() => ({}));
-    if (response.status === 401) {
-      persistSession(null);
-      initGoogleButton();
-      throw new Error(data.error || 'Session expired — sign in again.');
+    const rsvpHeading = document.getElementById('vos-dm-rsvp-title');
+    if (rsvpHeading && gathering.date) {
+      rsvpHeading.textContent = 'RSVP Summary — ' + new Date(gathering.date + 'T00:00:00')
+        .toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
     }
-    if (!response.ok) throw new Error(data.error || `HTTP ${response.status}`);
+
+    const data = await adminJson(`/api/rsvp?eventId=${encodeURIComponent(gathering.eventKey)}`);
     const counts = data.counts || {};
     rsvpGoingEl.textContent = counts.going || 0;
     rsvpMaybeEl.textContent = counts.maybe || 0;
@@ -60,9 +41,5 @@ export async function refreshRsvps() {
       rsvpListEl.appendChild(li);
     }
     setStatus(rsvpStatusEl, 'Updated.');
-  } catch (error) {
-    setStatus(rsvpStatusEl, error.message, true);
-  } finally {
-    rsvpRefreshEl.disabled = false;
-  }
+  });
 }

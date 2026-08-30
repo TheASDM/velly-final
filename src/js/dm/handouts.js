@@ -1,15 +1,18 @@
 /* Handouts — write one, choose who receives it, hand it over.
  *
- * The audience checkboxes come from the roster file, not a hand-kept list,
- * and the DM's own seat is left out: handouts are for characters. Editing
- * reuses the same form — the id field decides whether saving creates or
- * updates, so there is one path for both and they cannot drift.
- */
+ * The audience checkboxes come from the shared roster, and the DM's own seat
+ * is left out: handouts are for characters. Editing reuses the same form —
+ * the id field decides whether saving creates or updates, so there is one
+ * path for both and they cannot drift. */
 import {
-  authHeaders, getToken, handoutCancelEl, handoutFormEl, handoutIdEl,
-  handoutImageEl, handoutPlayersEl, handoutSaveEl, handoutTextEl,
-  handoutTitleEl, handoutsListEl, handoutsStatusEl, setStatus,
-} from './state.js';
+  handoutCancelEl, handoutFormEl, handoutIdEl, handoutImageEl,
+  handoutPlayersEl, handoutSaveEl, handoutTextEl, handoutTitleEl,
+  handoutsListEl, handoutsRefreshEl, handoutsStatusEl, setStatus,
+} from './dom.js';
+import { adminJson, deleteJson, withPanel } from './http.js';
+import { authHeaders } from './session.js';
+import { loadRoster } from './roster.js';
+import { confirmDiscard, trackDirty } from './dirty.js';
 import { renderSheet } from '../sheet/render.js';
 import { wireImageZoom } from '../components/image-zoom.js';
 
@@ -21,12 +24,38 @@ let lastHandouts = [];
  * one-document activity, and two open previews is a scroll of confusion. */
 let previewId = null;
 
+/* The form counts as unsaved work once it has any content that isn't the
+ * saved handout it was loaded from. */
+function formSnapshot() {
+  return JSON.stringify({
+    id: handoutIdEl.value,
+    title: handoutTitleEl.value.trim(),
+    text: handoutTextEl.value.trim(),
+    players: chosenPlayers(),
+  });
+}
+
+let cleanSnapshot = null;
+
+function markClean() {
+  cleanSnapshot = formSnapshot();
+}
+
+export function handoutFormDirty() {
+  if (cleanSnapshot === null) markClean();
+  return formSnapshot() !== cleanSnapshot;
+}
+
+trackDirty('handout-form', () => {
+  // An empty compose form is never "work".
+  if (!handoutTitleEl.value.trim() && !handoutTextEl.value.trim()) return false;
+  return handoutFormDirty();
+});
+
 async function ensureRoster() {
   if (rosterLoaded || !handoutPlayersEl) return;
-  let roster = [];
-  try {
-    roster = await (await fetch('/data/players.json', { cache: 'no-store' })).json();
-  } catch (error) {
+  const roster = await loadRoster();
+  if (!roster.length) {
     setStatus(handoutsStatusEl, 'Could not load the roster.', true);
     return;
   }
@@ -41,9 +70,11 @@ async function ensureRoster() {
     handoutPlayersEl.appendChild(label);
   });
   rosterLoaded = true;
+  markClean();
 }
 
 function chosenPlayers() {
+  if (!handoutPlayersEl) return [];
   return [...handoutPlayersEl.querySelectorAll('input:checked')].map((box) => box.value);
 }
 
@@ -54,14 +85,17 @@ function resetForm() {
   handoutPlayersEl.querySelectorAll('input').forEach((box) => { box.checked = false; });
   handoutSaveEl.textContent = 'Give Handout';
   handoutCancelEl.hidden = true;
+  markClean();
 }
 
 export function cancelHandoutEdit() {
+  if (!confirmDiscard('handout-form', 'Discard this handout draft?')) return;
   resetForm();
   setStatus(handoutsStatusEl, '');
 }
 
 function startEdit(handout) {
+  if (!confirmDiscard('handout-form', 'Discard the handout you are composing and edit this one instead?')) return;
   handoutIdEl.value = String(handout.id);
   handoutTitleEl.value = handout.title;
   handoutTextEl.value = handout.markdown;
@@ -70,27 +104,18 @@ function startEdit(handout) {
   });
   handoutSaveEl.textContent = 'Save Changes';
   handoutCancelEl.hidden = false;
+  markClean();
   handoutTitleEl.focus();
 }
 
-export async function refreshHandouts() {
-  const token = getToken(handoutsStatusEl);
-  if (!token) return;
-  await ensureRoster();
-  setStatus(handoutsStatusEl, 'Loading...');
-  try {
-    const response = await fetch('/api/handouts/all', {
-      headers: authHeaders(token),
-      cache: 'no-store',
-    });
-    const data = await response.json().catch(() => ({}));
-    if (!response.ok) throw new Error(data.error || `HTTP ${response.status}`);
+export function refreshHandouts() {
+  return withPanel(handoutsStatusEl, handoutsRefreshEl, async () => {
+    await ensureRoster();
+    const data = await adminJson('/api/handouts/all');
     lastHandouts = data.handouts || [];
     renderHandoutsList();
     setStatus(handoutsStatusEl, '');
-  } catch (error) {
-    setStatus(handoutsStatusEl, error.message, true);
-  }
+  });
 }
 
 function renderHandoutsList() {
@@ -139,30 +164,43 @@ function renderHandoutsList() {
 
 export async function saveHandout(eventArg) {
   eventArg.preventDefault();
-  const token = getToken(handoutsStatusEl);
-  if (!token) return;
-
   const id = handoutIdEl.value.trim();
-  const body = {
-    title: handoutTitleEl.value.trim(),
-    markdown: handoutTextEl.value.trim(),
-    players: chosenPlayers(),
-  };
-  setStatus(handoutsStatusEl, 'Saving...');
-  try {
-    const response = await fetch(id ? `/api/handouts/${id}` : '/api/handouts', {
-      method: id ? 'PUT' : 'POST',
-      headers: authHeaders(token, { 'Content-Type': 'application/json' }),
-      body: JSON.stringify(body),
-    });
-    const data = await response.json().catch(() => ({}));
-    if (!response.ok) throw new Error(data.error || `HTTP ${response.status}`);
-    resetForm();
-    setStatus(handoutsStatusEl, id ? 'Updated.' : 'Handed out.');
-    refreshHandouts();
-  } catch (error) {
-    setStatus(handoutsStatusEl, error.message, true);
+  const title = handoutTitleEl.value.trim();
+  const markdown = handoutTextEl.value.trim();
+  const players = chosenPlayers();
+  // A handout addressed to nobody "succeeds" and then no player ever sees
+  // it — refuse it here, with the reason.
+  if (!title) {
+    setStatus(handoutsStatusEl, 'Give the handout a title.', true);
+    return;
   }
+  if (!markdown) {
+    setStatus(handoutsStatusEl, 'Write the handout text first.', true);
+    return;
+  }
+  if (!players.length) {
+    setStatus(handoutsStatusEl, 'Choose at least one player to receive it.', true);
+    return;
+  }
+  await withPanel(handoutsStatusEl, handoutSaveEl, async () => {
+    const body = { title, markdown, players };
+    if (id) {
+      await adminJson(`/api/handouts/${encodeURIComponent(id)}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      });
+    } else {
+      await adminJson('/api/handouts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      });
+    }
+    resetForm();
+    await refreshHandouts();
+    setStatus(handoutsStatusEl, id ? 'Updated.' : 'Handed out.');
+  }, { loading: 'Saving…' });
 }
 
 /* Upload the chosen image and drop its markdown line into the text at the
@@ -171,16 +209,12 @@ export async function saveHandout(eventArg) {
 export async function attachHandoutImage() {
   const file = handoutImageEl.files && handoutImageEl.files[0];
   if (!file) return;
-  const token = getToken(handoutsStatusEl);
-  if (!token) return;
-
-  const form = new FormData();
-  form.append('image', file);
-  setStatus(handoutsStatusEl, 'Uploading image...');
-  try {
+  await withPanel(handoutsStatusEl, null, async () => {
+    const form = new FormData();
+    form.append('image', file);
     const response = await fetch('/api/handouts/image', {
       method: 'POST',
-      headers: authHeaders(token),
+      headers: authHeaders(),
       body: form,
     });
     const data = await response.json().catch(() => ({}));
@@ -190,28 +224,16 @@ export async function attachHandoutImage() {
     const at = handoutTextEl.selectionStart != null ? handoutTextEl.selectionStart : text.length;
     const line = `${at && text[at - 1] !== '\n' ? '\n' : ''}${data.markdown}\n`;
     handoutTextEl.value = text.slice(0, at) + line + text.slice(at);
-    setStatus(handoutsStatusEl, 'Image attached — it shows where the line sits.');
-  } catch (error) {
-    setStatus(handoutsStatusEl, error.message, true);
-  } finally {
     handoutImageEl.value = '';
-  }
+    setStatus(handoutsStatusEl, 'Image attached — it shows where the line sits.');
+  }, { loading: 'Uploading image…' });
 }
 
-async function deleteHandout(handout) {
-  if (!window.confirm(`Take back "${handout.title}"? The players lose it too.`)) return;
-  const token = getToken(handoutsStatusEl);
-  if (!token) return;
-  try {
-    const response = await fetch(`/api/handouts/${handout.id}`, {
-      method: 'DELETE',
-      headers: authHeaders(token),
-    });
-    const data = await response.json().catch(() => ({}));
-    if (!response.ok) throw new Error(data.error || `HTTP ${response.status}`);
+function deleteHandout(handout) {
+  if (!window.confirm(`Take back "${handout.title}"? The players lose it too.`)) return null;
+  return withPanel(handoutsStatusEl, null, async () => {
+    await deleteJson(`/api/handouts/${encodeURIComponent(handout.id)}`);
     if (handoutIdEl.value === String(handout.id)) resetForm();
-    refreshHandouts();
-  } catch (error) {
-    setStatus(handoutsStatusEl, error.message, true);
-  }
+    await refreshHandouts();
+  }, { loading: 'Deleting…' });
 }

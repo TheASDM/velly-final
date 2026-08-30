@@ -1,4 +1,6 @@
-import { adminJson, getToken, inPlayAddEl, inPlayListEl, inPlayRefreshEl, inPlaySaveEl, inPlayStatusEl, setStatus } from './state.js';
+import { inPlayAddEl, inPlayListEl, inPlayRefreshEl, inPlaySaveEl, inPlayStatusEl, setStatus } from './dom.js';
+import { adminJson, putJson, withPanel } from './http.js';
+import { confirmDiscard, trackDirty } from './dirty.js';
 import { loadWikiPages, wikiPagesByTitle } from './wiki.js';
 
 export const EMBLEM_PRESETS = ['PC', 'NPC', 'DM', 'Loc', 'Fac', 'Lore', 'Item', 'Map', 'Cre', 'Cul', 'Gov', 'Ses', 'Upd', 'Tbl'];
@@ -33,29 +35,60 @@ export function buildEmblemOptions(currentEmblem) {
   return options;
 }
 
+/* Dirty when the rows on screen differ from what the server last gave us. */
+let savedSnapshot = '[]';
+
+function currentSnapshot() {
+  return JSON.stringify(collectRows());
+}
+
+export function inPlayDirty() {
+  if (!inPlayListEl) return false;
+  return currentSnapshot() !== savedSnapshot;
+}
+
+trackDirty('in-play', inPlayDirty);
+
 export function renderInPlayRow(item) {
   const row = document.createElement('div');
   row.className = 'vos-dm-inplay-row';
   const initialEmblem = (item && item.emblem) || '';
-  const optionsHtml = buildEmblemOptions(initialEmblem)
-    .map((o) => `<option value="${o.value}"${o.value === initialEmblem ? ' selected' : ''}>${o.label}</option>`)
-    .join('');
 
-  row.innerHTML =
-    `<input class="vos-dm-inplay-name" list="vos-dm-inplay-pages" placeholder="Pick a wiki entry or type a custom name" maxlength="120">` +
-    `<input class="vos-dm-inplay-role" placeholder="Role / context (e.g. 'Missing fiance')" maxlength="120">` +
-    `<select class="vos-dm-inplay-emblem-select">${optionsHtml}</select>` +
-    `<input class="vos-dm-inplay-emblem-custom" placeholder="2-3 char" maxlength="8" hidden>` +
-    `<button class="vos-dm-button is-danger" type="button" aria-label="Remove row">×</button>` +
-    `<input type="hidden" class="vos-dm-inplay-link">` +
-    `<input type="hidden" class="vos-dm-inplay-kind">`;
-
-  const nameEl = row.querySelector('.vos-dm-inplay-name');
-  const roleEl = row.querySelector('.vos-dm-inplay-role');
-  const linkEl = row.querySelector('.vos-dm-inplay-link');
-  const kindEl = row.querySelector('.vos-dm-inplay-kind');
-  const emblemSelectEl = row.querySelector('.vos-dm-inplay-emblem-select');
-  const emblemCustomEl = row.querySelector('.vos-dm-inplay-emblem-custom');
+  const nameEl = document.createElement('input');
+  nameEl.className = 'vos-dm-inplay-name';
+  nameEl.setAttribute('list', 'vos-dm-inplay-pages');
+  nameEl.placeholder = 'Pick a wiki entry or type a custom name';
+  nameEl.maxLength = 120;
+  const roleEl = document.createElement('input');
+  roleEl.className = 'vos-dm-inplay-role';
+  roleEl.placeholder = "Role / context (e.g. 'Missing fiance')";
+  roleEl.maxLength = 120;
+  const emblemSelectEl = document.createElement('select');
+  emblemSelectEl.className = 'vos-dm-inplay-emblem-select';
+  buildEmblemOptions(initialEmblem).forEach((option) => {
+    const el = document.createElement('option');
+    el.value = option.value;
+    el.textContent = option.label;
+    if (option.value === initialEmblem) el.selected = true;
+    emblemSelectEl.appendChild(el);
+  });
+  const emblemCustomEl = document.createElement('input');
+  emblemCustomEl.className = 'vos-dm-inplay-emblem-custom';
+  emblemCustomEl.placeholder = '2-3 char';
+  emblemCustomEl.maxLength = 8;
+  emblemCustomEl.hidden = true;
+  const removeEl = document.createElement('button');
+  removeEl.className = 'vos-dm-button is-danger';
+  removeEl.type = 'button';
+  removeEl.setAttribute('aria-label', 'Remove row');
+  removeEl.textContent = '×';
+  const linkEl = document.createElement('input');
+  linkEl.type = 'hidden';
+  linkEl.className = 'vos-dm-inplay-link';
+  const kindEl = document.createElement('input');
+  kindEl.type = 'hidden';
+  kindEl.className = 'vos-dm-inplay-kind';
+  row.append(nameEl, roleEl, emblemSelectEl, emblemCustomEl, removeEl, linkEl, kindEl);
 
   if (item) {
     nameEl.value = item.name || '';
@@ -93,34 +126,19 @@ export function renderInPlayRow(item) {
   emblemSelectEl.addEventListener('change', syncEmblemCustomVisibility);
   syncEmblemCustomVisibility();
 
-  row.querySelector('button').addEventListener('click', () => row.remove());
+  removeEl.addEventListener('click', () => row.remove());
   return row;
 }
 
 export function renderInPlayList(items) {
   inPlayListEl.innerHTML = '';
   (items || []).forEach((item) => inPlayListEl.appendChild(renderInPlayRow(item)));
+  savedSnapshot = currentSnapshot();
 }
 
-export async function refreshInPlay() {
-  setStatus(inPlayStatusEl, 'Loading...');
-  try {
-    await loadWikiPages();
-    const response = await fetch('/api/in-play', { cache: 'no-store' });
-    const data = await response.json().catch(() => ({}));
-    if (!response.ok) throw new Error(data.error || `HTTP ${response.status}`);
-    renderInPlayList(data.items || []);
-    setStatus(inPlayStatusEl, `Loaded ${data.items ? data.items.length : 0} rows.`);
-  } catch (error) {
-    setStatus(inPlayStatusEl, error.message, true);
-  }
-}
-
-export async function saveInPlay() {
-  const token = getToken(inPlayStatusEl);
-  if (!token) return;
+function collectRows() {
   const rows = Array.from(inPlayListEl.querySelectorAll('.vos-dm-inplay-row'));
-  const items = rows.map((row) => {
+  return rows.map((row) => {
     const name = row.querySelector('.vos-dm-inplay-name').value.trim();
     const role = row.querySelector('.vos-dm-inplay-role').value.trim();
     const link = row.querySelector('.vos-dm-inplay-link').value.trim();
@@ -132,23 +150,33 @@ export async function saveInPlay() {
     else if (selectVal) emblem = selectVal;
     else emblem = autoEmblem(name);
     return { name, role, kind, emblem, link };
-  }).filter((item) => item.name);
+  });
+}
 
-  inPlaySaveEl.disabled = true;
-  setStatus(inPlayStatusEl, 'Saving...');
-  try {
-    const data = await adminJson('/api/in-play', token, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ items }),
-    });
-    setStatus(inPlayStatusEl, `Saved ${data.count || 0} rows.`);
-    await refreshInPlay();
-  } catch (error) {
-    setStatus(inPlayStatusEl, error.message, true);
-  } finally {
-    inPlaySaveEl.disabled = false;
-  }
+/* Loads on tab open (not at import time), and never silently wipes rows the
+ * DM is mid-edit on. */
+export function refreshInPlay() {
+  if (!confirmDiscard('in-play', 'Reload and discard the unsaved in-play rows?')) return null;
+  return withPanel(inPlayStatusEl, inPlayRefreshEl, async () => {
+    await loadWikiPages();
+    const data = await adminJson('/api/in-play');
+    renderInPlayList(data.items || []);
+    setStatus(inPlayStatusEl, `Loaded ${data.items ? data.items.length : 0} rows.`);
+  });
+}
+
+export async function saveInPlay() {
+  const collected = collectRows();
+  const items = collected.filter((item) => item.name);
+  const skipped = collected.length - items.length;
+  await withPanel(inPlayStatusEl, inPlaySaveEl, async () => {
+    const data = await putJson('/api/in-play', { items });
+    savedSnapshot = JSON.stringify(collectRows());
+    const skippedNote = skipped
+      ? ` ${skipped} row${skipped === 1 ? '' : 's'} without a name skipped.`
+      : '';
+    setStatus(inPlayStatusEl, `Saved ${data.count || 0} rows.${skippedNote}`, skipped > 0);
+  }, { loading: 'Saving…' });
 }
 
 if (inPlayAddEl) inPlayAddEl.addEventListener('click', () => {
@@ -158,5 +186,3 @@ if (inPlayAddEl) inPlayAddEl.addEventListener('click', () => {
 if (inPlayRefreshEl) inPlayRefreshEl.addEventListener('click', refreshInPlay);
 
 if (inPlaySaveEl) inPlaySaveEl.addEventListener('click', saveInPlay);
-
-if (inPlayListEl) refreshInPlay();

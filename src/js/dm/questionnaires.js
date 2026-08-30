@@ -1,22 +1,19 @@
-import { DEFAULT_PLAYERS, authHeaders, getToken, recordsListEl, recordsStatusEl, setStatus } from './state.js';
+import { recordsListEl, recordsRefreshEl, recordsStatusEl, setStatus } from './dom.js';
+import { adminJson, withPanel } from './http.js';
+import { playerNames } from './roster.js';
 
-export async function refreshQuestionnaires() {
-  const token = getToken(recordsStatusEl);
-  if (!token) return;
-  setStatus(recordsStatusEl, 'Loading...');
-  try {
-    const response = await fetch('/api/questionnaire/all', {
-      headers: authHeaders(token),
-      cache: 'no-store',
-    });
-    const data = await response.json().catch(() => ({}));
-    if (!response.ok) throw new Error(data.error || `HTTP ${response.status}`);
+export function refreshQuestionnaires() {
+  return withPanel(recordsStatusEl, recordsRefreshEl, async () => {
+    const [names, data] = await Promise.all([
+      playerNames(),
+      adminJson('/api/questionnaire/all'),
+    ]);
     const byPlayer = {};
     (data.records || []).forEach((record) => {
       byPlayer[record.playerName] = record;
     });
     recordsListEl.innerHTML = '';
-    DEFAULT_PLAYERS.filter((name) => name !== 'DM').forEach((name) => {
+    names.forEach((name) => {
       const record = byPlayer[name];
       const li = document.createElement('li');
       const who = document.createElement('strong');
@@ -33,7 +30,5 @@ export async function refreshQuestionnaires() {
       recordsListEl.appendChild(li);
     });
     setStatus(recordsStatusEl, 'Updated.');
-  } catch (error) {
-    setStatus(recordsStatusEl, error.message, true);
-  }
+  });
 }

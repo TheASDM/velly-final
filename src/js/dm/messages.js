@@ -1,16 +1,9 @@
-import { DEFAULT_PLAYERS, adminJson, formatDate, getToken, historyEl, historyRefreshEl, historyStatusEl, messageBodyEl, messageForm, messageSendEl, messageStatusEl, messageTitleEl, messageUrlEl, postJson, recipientPickers, setStatus, showDeletedEl } from './state.js';
+import { formatDate, historyEl, historyRefreshEl, historyStatusEl, messageBodyEl, messageForm, messageSendEl, messageStatusEl, messageTitleEl, messageUrlEl, recipientPickers, setStatus, showDeletedEl } from './dom.js';
+import { adminJson, deleteJson, postJson, withPanel } from './http.js';
+import { playerNames } from './roster.js';
 import { renderMarkdown } from './wiki.js';
 
-export async function loadPlayers() {
-  try {
-    const response = await fetch('/api/auth/config', { cache: 'no-store' });
-    if (!response.ok) throw new Error();
-    const data = await response.json();
-    return Array.isArray(data.players) && data.players.length ? data.players : DEFAULT_PLAYERS;
-  } catch (error) {
-    return DEFAULT_PLAYERS;
-  }
-}
+let rosterCache = [];
 
 export function setupRecipientPicker(picker, players) {
   const all = picker.querySelector('[data-all-recipients]');
@@ -62,9 +55,9 @@ export function setupRecipientPicker(picker, players) {
 }
 
 export async function initRecipientPickers() {
-  const players = await loadPlayers();
+  rosterCache = await playerNames();
   document.querySelectorAll('[data-recipient-picker]').forEach((picker) => {
-    const state = setupRecipientPicker(picker, players);
+    const state = setupRecipientPicker(picker, rosterCache);
     if (state) recipientPickers.set(picker.id, state);
   });
 }
@@ -78,6 +71,14 @@ export function recipientsFor(pickerId, statusTarget) {
     return undefined;
   }
   return recipients;
+}
+
+/* After a successful send, the audience must not leak into the next
+ * message — an un-reset picker sent the next broadcast to the previous
+ * message's recipients. */
+export function resetRecipients(pickerId) {
+  const picker = recipientPickers.get(pickerId);
+  if (picker) picker.reset();
 }
 
 export function renderBadges(container, values) {
@@ -147,7 +148,7 @@ export function renderHistory(messages) {
     // Read receipts: dismissed the card in-app ("seen"), tapped the
     // push notification ("tapped"), or neither yet.
     const audience = message.target_type === 'all'
-      ? DEFAULT_PLAYERS.filter((name) => name !== 'DM')
+      ? rosterCache
       : (Array.isArray(message.recipients) ? message.recipients : []);
     const seen = message.seenBy || [];
     const opened = message.openedBy || [];
@@ -169,61 +170,44 @@ export function renderHistory(messages) {
   });
 }
 
-export async function refreshMessages() {
-  const token = getToken(historyStatusEl);
-  if (!token) return;
-  historyRefreshEl.disabled = true;
-  setStatus(historyStatusEl, 'Loading...');
-  try {
+export function refreshMessages() {
+  return withPanel(historyStatusEl, historyRefreshEl, async () => {
+    if (!rosterCache.length) rosterCache = await playerNames();
     const includeDeleted = showDeletedEl.checked ? '1' : '0';
-    const data = await adminJson(`/api/admin/messages?limit=30&includeDeleted=${includeDeleted}`, token);
+    const data = await adminJson(`/api/admin/messages?limit=30&includeDeleted=${includeDeleted}`);
     renderHistory(data.messages || []);
     setStatus(historyStatusEl, 'Updated.');
-  } catch (error) {
-    setStatus(historyStatusEl, error.message, true);
-  } finally {
-    historyRefreshEl.disabled = false;
-  }
+  });
 }
 
-export async function deleteMessage(id) {
-  const token = getToken(historyStatusEl);
-  if (!token) return;
-  if (!window.confirm('Delete this DM message from player views?')) return;
-  setStatus(historyStatusEl, 'Deleting...');
-  try {
-    await adminJson(`/api/admin/messages/${encodeURIComponent(id)}`, token, { method: 'DELETE' });
+export function deleteMessage(id) {
+  if (!window.confirm('Delete this DM message from player views?')) return null;
+  return withPanel(historyStatusEl, null, async () => {
+    await deleteJson(`/api/admin/messages/${encodeURIComponent(id)}`);
     await refreshMessages();
     setStatus(historyStatusEl, 'Deleted.');
-  } catch (error) {
-    setStatus(historyStatusEl, error.message, true);
-  }
+  }, { loading: 'Deleting…' });
 }
 
 messageForm.addEventListener('submit', async (event) => {
   event.preventDefault();
-  const token = getToken(messageStatusEl);
-  if (!token) return;
   const recipients = recipientsFor('vos-dm-message-recipients', messageStatusEl);
   if (recipients === undefined) return;
-
-  messageSendEl.disabled = true;
-  setStatus(messageStatusEl, 'Posting...');
-
-  try {
-    const data = await postJson('/api/messages', token, {
+  await withPanel(messageStatusEl, messageSendEl, async () => {
+    const data = await postJson('/api/messages', {
       title: messageTitleEl.value.trim(),
       body: messageBodyEl.value.trim(),
       url: messageUrlEl.value.trim() || '/',
       recipients,
     });
     const push = data.push || {};
-    setStatus(messageStatusEl, `Posted. Push sent ${push.sent || 0} of ${push.attempted || 0}.`);
+    const pushNote = push.skipped
+      ? 'Push skipped (not configured).'
+      : `Push sent ${push.sent || 0} of ${push.attempted || 0}.`;
     messageBodyEl.value = '';
+    resetRecipients('vos-dm-message-recipients');
     await refreshMessages();
-  } catch (error) {
-    setStatus(messageStatusEl, error.message, true);
-  } finally {
-    messageSendEl.disabled = false;
-  }
+    // After the refresh, so its own "Updated." can't swallow the result.
+    setStatus(messageStatusEl, `Posted. ${pushNote}`);
+  }, { loading: 'Posting…' });
 });

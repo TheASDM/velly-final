@@ -1,17 +1,10 @@
-import { recipientsFor } from './messages.js';
-import { authHeaders, bodyEl, form, getToken, postJson, pushSubsEl, pushSubsStatusEl, sendEl, setStatus, statusEl, titleEl, urlEl } from './state.js';
+import { bodyEl, form, pushSubsEl, pushSubsRefreshEl, pushSubsStatusEl, sendEl, setStatus, statusEl, titleEl, urlEl } from './dom.js';
+import { adminJson, postJson, withPanel } from './http.js';
+import { recipientsFor, resetRecipients } from './messages.js';
 
-export async function refreshPushSubscribers() {
-  const token = getToken(pushSubsStatusEl);
-  if (!token) return;
-  setStatus(pushSubsStatusEl, 'Loading...');
-  try {
-    const response = await fetch('/api/push/subscribers', {
-      headers: authHeaders(token),
-      cache: 'no-store',
-    });
-    const data = await response.json().catch(() => ({}));
-    if (!response.ok) throw new Error(data.error || `HTTP ${response.status}`);
+export function refreshPushSubscribers() {
+  return withPanel(pushSubsStatusEl, pushSubsRefreshEl, async () => {
+    const data = await adminJson('/api/push/subscribers');
     pushSubsEl.innerHTML = '';
     (data.subscribed || []).forEach((sub) => {
       const li = document.createElement('li');
@@ -38,32 +31,21 @@ export async function refreshPushSubscribers() {
       pushSubsEl.appendChild(li);
     }
     setStatus(pushSubsStatusEl, 'Stale devices only get pruned when a push to them fails.');
-  } catch (error) {
-    setStatus(pushSubsStatusEl, error.message, true);
-  }
+  });
 }
 
 form.addEventListener('submit', async (event) => {
   event.preventDefault();
-  const token = getToken(statusEl);
-  if (!token) return;
   const recipients = recipientsFor('vos-dm-push-recipients', statusEl);
   if (recipients === undefined) return;
-
-  sendEl.disabled = true;
-  setStatus(statusEl, 'Sending...');
-
-  try {
-    const data = await postJson('/api/push/send', token, {
+  await withPanel(statusEl, sendEl, async () => {
+    const data = await postJson('/api/push/send', {
       title: titleEl.value.trim(),
       body: bodyEl.value.trim(),
       url: urlEl.value.trim() || '/',
       recipients,
     });
+    resetRecipients('vos-dm-push-recipients');
     setStatus(statusEl, `Sent ${data.sent} of ${data.attempted}. Pruned ${data.pruned}.`);
-  } catch (error) {
-    setStatus(statusEl, error.message, true);
-  } finally {
-    sendEl.disabled = false;
-  }
+  }, { loading: 'Sending…' });
 });

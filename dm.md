@@ -6,16 +6,17 @@ pageStyles:
   - /css/dm.css
 ---
 
-<script src="https://accounts.google.com/gsi/client" async defer></script>
-
 <div class="vos-dm">
   <h1>DM</h1>
 
   <section class="vos-dm-panel vos-dm-auth-panel" aria-labelledby="vos-dm-auth-title">
     <h2 id="vos-dm-auth-title">Sign in</h2>
     <div class="vos-dm-auth-signed-out" id="vos-dm-auth-signed-out" hidden>
-      <p class="vos-dm-helper">Sign in with the DM Google account to manage submissions, RSVPs, and pushes.</p>
-      <div id="vos-dm-google-button" class="vos-dm-google-button"></div>
+      <p class="vos-dm-helper">The console uses the same sign-in as the rest of the app — sign in with the DM account.</p>
+      <div class="vos-dm-actions">
+        <button type="button" class="vos-dm-button" id="vos-dm-sign-in">Sign in</button>
+        <a class="vos-dm-button" id="vos-dm-site-login" href="/api/auth/oauth/discord/start?next=/dm/">Sign in with Discord</a>
+      </div>
       <div class="vos-dm-status" id="vos-dm-auth-status" role="status" aria-live="polite"></div>
     </div>
     <div class="vos-dm-auth-signed-in" id="vos-dm-auth-signed-in" hidden>
@@ -25,9 +26,9 @@ pageStyles:
       <button type="button" class="vos-dm-button" id="vos-dm-sign-out">Sign out</button>
     </div>
     <div class="vos-dm-auth-blocked" id="vos-dm-auth-blocked" hidden>
-      <p class="vos-dm-helper">Sign in through the site menu with the DM Discord account, then return here.</p>
+      <p class="vos-dm-helper">You're signed in, but this console is the DM's. Switch to the DM account to use it.</p>
       <div class="vos-dm-actions">
-        <a class="vos-dm-button" id="vos-dm-site-login" href="/api/auth/oauth/discord/start?next=/dm/">Sign in with Discord</a>
+        <button type="button" class="vos-dm-button" id="vos-dm-switch-account">Switch account</button>
       </div>
     </div>
   </section>

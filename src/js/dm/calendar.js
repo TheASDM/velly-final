@@ -1,6 +1,9 @@
-import { authHeaders, calCancelEl, calDateEl, calEventsEl, calFormEl, calKindEl, calLocationEl, calNotesEl, calSaveEl, calStatusEl, calTasksEl, calTimeEl, calTitleEl, getToken, setStatus } from './state.js';
+import { calCancelEl, calDateEl, calEventsEl, calFormEl, calKindEl, calLocationEl, calNotesEl, calSaveEl, calStatusEl, calTasksEl, calTimeEl, calTitleEl, setStatus } from './dom.js';
+import { adminJson, deleteJson, postJson, putJson, withPanel } from './http.js';
 
-export const AVAIL_RANGE = (() => {
+/* Computed per call — a module-load constant went stale in a tab left open
+ * overnight. */
+export function availRange() {
   const now = new Date();
   const pad = (n) => String(n).padStart(2, '0');
   const iso = (d) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
@@ -8,7 +11,7 @@ export const AVAIL_RANGE = (() => {
     from: iso(new Date(now.getFullYear(), now.getMonth(), 1)),
     to: iso(new Date(now.getFullYear(), now.getMonth() + 3, 0)),
   };
-})();
+}
 
 export function prettyDate(isoDate) {
   return new Date(isoDate + 'T00:00:00').toLocaleDateString(undefined, {
@@ -59,17 +62,9 @@ export function exitEditMode() {
   if (calCancelEl) calCancelEl.hidden = true;
 }
 
-export async function refreshCalendarEvents() {
-  const token = getToken(calStatusEl);
-  if (!token) return;
-  setStatus(calStatusEl, 'Loading...');
-  try {
-    const response = await fetch(
-      `/api/calendar/events?from=${AVAIL_RANGE.from}`,
-      { cache: 'no-store', headers: authHeaders(token) }
-    );
-    const data = await response.json().catch(() => ({}));
-    if (!response.ok) throw new Error(data.error || `HTTP ${response.status}`);
+export function refreshCalendarEvents() {
+  return withPanel(calStatusEl, null, async () => {
+    const data = await adminJson(`/api/calendar/events?from=${availRange().from}`);
     calEventsEl.innerHTML = '';
     const today = new Date();
     const todayIso = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
@@ -109,67 +104,40 @@ export async function refreshCalendarEvents() {
       calEventsEl.appendChild(li);
     }
     setStatus(calStatusEl, '');
-  } catch (error) {
-    setStatus(calStatusEl, error.message, true);
-  }
+  });
 }
 
 export async function saveCalendarEvent(eventArg) {
   eventArg.preventDefault();
-  const token = getToken(calStatusEl);
-  if (!token) return;
   if (!calDateEl.value || !calTitleEl.value.trim()) {
     setStatus(calStatusEl, 'Date and title are required.', true);
     return;
   }
-  calSaveEl.disabled = true;
-  setStatus(calStatusEl, 'Saving...');
-  try {
-    const url = editingEventId
-      ? `/api/calendar/events/${editingEventId}`
-      : '/api/calendar/events';
-    const response = await fetch(url, {
-      method: editingEventId ? 'PUT' : 'POST',
-      headers: authHeaders(token, { 'Content-Type': 'application/json' }),
-      body: JSON.stringify({
-        date: calDateEl.value,
-        title: calTitleEl.value.trim(),
-        timeLabel: calTimeEl.value.trim(),
-        location: calLocationEl.value.trim(),
-        notes: calNotesEl.value.trim(),
-        kind: calKindEl.value,
-        tasks: calTasksEl ? parseTaskLines(calTasksEl.value) : [],
-      }),
-    });
-    const data = await response.json().catch(() => ({}));
-    if (!response.ok) throw new Error(data.error || `HTTP ${response.status}`);
+  await withPanel(calStatusEl, calSaveEl, async () => {
+    const payload = {
+      date: calDateEl.value,
+      title: calTitleEl.value.trim(),
+      timeLabel: calTimeEl.value.trim(),
+      location: calLocationEl.value.trim(),
+      notes: calNotesEl.value.trim(),
+      kind: calKindEl.value,
+      tasks: calTasksEl ? parseTaskLines(calTasksEl.value) : [],
+    };
     const wasEdit = !!editingEventId;
+    if (editingEventId) await putJson(`/api/calendar/events/${encodeURIComponent(editingEventId)}`, payload);
+    else await postJson('/api/calendar/events', payload);
     exitEditMode();
-    setStatus(calStatusEl, wasEdit ? 'Updated.' : 'Scheduled.');
     await refreshCalendarEvents();
-  } catch (error) {
-    setStatus(calStatusEl, error.message, true);
-  } finally {
-    calSaveEl.disabled = false;
-  }
+    setStatus(calStatusEl, wasEdit ? 'Updated.' : 'Scheduled.');
+  }, { loading: 'Saving…' });
 }
 
-export async function deleteCalendarEvent(event) {
-  const token = getToken(calStatusEl);
-  if (!token) return;
-  if (!window.confirm(`Delete "${event.title}" on ${prettyDate(event.date)}?`)) return;
-  setStatus(calStatusEl, 'Deleting...');
-  try {
-    const response = await fetch(`/api/calendar/events/${event.id}`, {
-      method: 'DELETE',
-      headers: authHeaders(token),
-    });
-    const data = await response.json().catch(() => ({}));
-    if (!response.ok) throw new Error(data.error || `HTTP ${response.status}`);
+export function deleteCalendarEvent(event) {
+  if (!window.confirm(`Delete "${event.title}" on ${prettyDate(event.date)}?`)) return null;
+  return withPanel(calStatusEl, null, async () => {
+    await deleteJson(`/api/calendar/events/${encodeURIComponent(event.id)}`);
     if (editingEventId === event.id) exitEditMode();
-    setStatus(calStatusEl, 'Deleted.');
     await refreshCalendarEvents();
-  } catch (error) {
-    setStatus(calStatusEl, error.message, true);
-  }
+    setStatus(calStatusEl, 'Deleted.');
+  }, { loading: 'Deleting…' });
 }

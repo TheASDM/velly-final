@@ -1,16 +1,9 @@
-import { authHeaders, getToken, rumorAddEl, rumorTextEl, rumorsListEl, rumorsStatusEl, setStatus } from './state.js';
+import { rumorAddEl, rumorTextEl, rumorsListEl, rumorsRefreshEl, rumorsStatusEl, setStatus } from './dom.js';
+import { adminJson, deleteJson, postJson, withPanel } from './http.js';
 
-export async function refreshRumors() {
-  const token = getToken(rumorsStatusEl);
-  if (!token) return;
-  setStatus(rumorsStatusEl, 'Loading...');
-  try {
-    const response = await fetch('/api/rumors', {
-      headers: authHeaders(token),
-      cache: 'no-store',
-    });
-    const data = await response.json().catch(() => ({}));
-    if (!response.ok) throw new Error(data.error || `HTTP ${response.status}`);
+export function refreshRumors() {
+  return withPanel(rumorsStatusEl, rumorsRefreshEl, async () => {
+    const data = await adminJson('/api/rumors');
     rumorsListEl.innerHTML = '';
     (data.rumors || []).forEach((rumor) => {
       const li = document.createElement('li');
@@ -31,54 +24,28 @@ export async function refreshRumors() {
       rumorsListEl.appendChild(li);
     }
     setStatus(rumorsStatusEl, '');
-  } catch (error) {
-    setStatus(rumorsStatusEl, error.message, true);
-  }
+  });
 }
 
 export async function addRumor(eventArg) {
   eventArg.preventDefault();
-  const token = getToken(rumorsStatusEl);
-  if (!token) return;
   const text = rumorTextEl.value.trim();
   if (!text) {
     setStatus(rumorsStatusEl, 'Write the rumor first.', true);
     return;
   }
-  rumorAddEl.disabled = true;
-  setStatus(rumorsStatusEl, 'Adding...');
-  try {
-    const response = await fetch('/api/rumors', {
-      method: 'POST',
-      headers: authHeaders(token, { 'Content-Type': 'application/json' }),
-      body: JSON.stringify({ text }),
-    });
-    const data = await response.json().catch(() => ({}));
-    if (!response.ok) throw new Error(data.error || `HTTP ${response.status}`);
+  await withPanel(rumorsStatusEl, rumorAddEl, async () => {
+    await postJson('/api/rumors', { text });
     rumorTextEl.value = '';
-    setStatus(rumorsStatusEl, 'Added.');
     await refreshRumors();
-  } catch (error) {
-    setStatus(rumorsStatusEl, error.message, true);
-  } finally {
-    rumorAddEl.disabled = false;
-  }
+    setStatus(rumorsStatusEl, 'Added.');
+  }, { loading: 'Adding…' });
 }
 
-export async function deleteRumor(rumor) {
-  const token = getToken(rumorsStatusEl);
-  if (!token) return;
-  setStatus(rumorsStatusEl, 'Deleting...');
-  try {
-    const response = await fetch(`/api/rumors/${rumor.id}`, {
-      method: 'DELETE',
-      headers: authHeaders(token),
-    });
-    const data = await response.json().catch(() => ({}));
-    if (!response.ok) throw new Error(data.error || `HTTP ${response.status}`);
-    setStatus(rumorsStatusEl, 'Deleted.');
+export function deleteRumor(rumor) {
+  return withPanel(rumorsStatusEl, null, async () => {
+    await deleteJson(`/api/rumors/${encodeURIComponent(rumor.id)}`);
     await refreshRumors();
-  } catch (error) {
-    setStatus(rumorsStatusEl, error.message, true);
-  }
+    setStatus(rumorsStatusEl, 'Deleted.');
+  }, { loading: 'Deleting…' });
 }

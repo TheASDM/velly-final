@@ -1,16 +1,16 @@
 import { refreshAvailabilitySummary, rollNpc } from './availability.js';
 import { exitEditMode, refreshCalendarEvents, saveCalendarEvent } from './calendar.js';
+import { availRefreshEl, calCancelEl, calFormEl, calRefreshEl, handoutCancelEl, handoutFormEl, handoutImageEl, handoutsRefreshEl, historyRefreshEl, loreBulkPublishEl, loreBulkRejectEl, loreForm, loreRedraftEl, loreRefreshEl, loreRejectEl, loreSaveEl, loreSelectAllEl, npcRollEl, pushSubsRefreshEl, recordsRefreshEl, rsvpRefreshEl, rumorFormEl, rumorsRefreshEl, setStatus, showDeletedEl, wikiForm, wikiLoadEl, wikiQueryEl, wikiRebuildEl, wikiStatusEl } from './dom.js';
+import { attachHandoutImage, cancelHandoutEdit, refreshHandouts, saveHandout } from './handouts.js';
 import { bulkPublishSelected, bulkRejectSelected, publishLoreSubmission, redraftLoreSubmission, refreshLoreSubmissions, rejectLoreSubmission, saveLoreSubmission, toggleSelectAll } from './lore.js';
 import { initRecipientPickers, refreshMessages } from './messages.js';
 import { refreshPushSubscribers } from './push.js';
 import { refreshQuestionnaires } from './questionnaires.js';
+import { triggerRebuild } from './rebuild.js';
 import { refreshRsvps } from './rsvp.js';
 import { addRumor, refreshRumors } from './rumors.js';
-import { attachHandoutImage, cancelHandoutEdit, refreshHandouts, saveHandout } from './handouts.js';
+import { bootAdminAuth, onSessionLive } from './session.js';
 import { wireSounds } from './sounds.js';
-import { handoutCancelEl, handoutFormEl, handoutImageEl, handoutsRefreshEl } from './state.js';
-import { availRefreshEl, calCancelEl, calFormEl, calRefreshEl, historyRefreshEl, loreBulkPublishEl, loreBulkRejectEl, loreForm, loreRedraftEl, loreRefreshEl, loreRejectEl, loreSaveEl, loreSelectAllEl, npcRollEl, pushSubsRefreshEl, recordsRefreshEl, rsvpRefreshEl, rumorFormEl, rumorsRefreshEl, setStatus, showDeletedEl, triggerRebuild, wikiForm, wikiLoadEl, wikiQueryEl, wikiRebuildEl, wikiStatusEl } from './state.js';
-import { loadAdminDataOnce } from './tabs.js';
 import { loadWikiEntry, saveWikiEntry } from './wiki.js';
 
 rsvpRefreshEl.addEventListener('click', refreshRsvps);
@@ -84,6 +84,10 @@ if (wikiQueryEl) {
   });
 }
 
-initRecipientPickers().then(() => {
-  loadAdminDataOnce();
+// Recipient pickers need the roster; build them once the session is live so
+// a signed-out visit doesn't fetch for nothing.
+onSessionLive(() => {
+  initRecipientPickers();
 });
+
+bootAdminAuth();
