@@ -56,6 +56,7 @@ ROUTE_CONTRACT = """
 /api/play|/api/play|GET|api_play_state|401:json.error|200:json.limits,ok,playerName,state,version|200:json.limits,ok,playerName,state,version|401:json.error
 /api/play/party|/api/play/party|GET|api_play_party|401:json.error,error_code|403:json.error,error_code|200:json.at,ok,party|200:json.at,ok,party
 /api/play/log|/api/play/log|GET|api_play_log|401:json.error|200:json.entries,ok,playerName|200:json.entries,ok,playerName|401:json.error
+/api/play/monsters|/api/play/monsters|GET|api_play_monsters|401:json.error,error_code|403:json.error,error_code|200:json._meta,monster|200:json._meta,monster
 /api/play/op|/api/play/op|POST|api_play_op|401:json.error|400:json.allowed,error,error_code|400:json.allowed,error,error_code|401:json.error
 /api/push/config|/api/push/config|GET|push_config|200:json.publicKey,pushConfigured|200:json.publicKey,pushConfigured|200:json.publicKey,pushConfigured|200:json.publicKey,pushConfigured
 /api/push/opened|/api/push/opened|POST|push_opened|400:json.error|400:json.error|400:json.error|400:json.error
@@ -115,7 +116,7 @@ def test_route_inventory_and_response_contract(app, auth_headers):
     }
     expected_routes = {rule for rule, _, _, _endpoint, _ in cases}
     assert actual_routes == expected_routes
-    assert len(cases) == 83
+    assert len(cases) == 84
 
     for rule, path, method, _endpoint, expected in cases:
         for role in ROLES:

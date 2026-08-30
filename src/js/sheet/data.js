@@ -48,6 +48,12 @@ export function loadAllSheets() {
   return getJson('/api/sheets');
 }
 
+/* The DM's monster bench. DM-gated server-side — the bench names what the
+ * DM has prepped, so it never ships in the public static build. */
+export function loadMonsterBench() {
+  return getJson('/api/play/monsters');
+}
+
 /* Roster display names and colors, so a sheet can be labelled the same way the
  * player appears everywhere else in the app. */
 export async function loadRoster() {

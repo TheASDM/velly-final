@@ -7,11 +7,12 @@
  * The selection lives in the URL hash, so the back button and a shared link
  * both land on the right creature.
  *
- * The page is unlisted and asks for the DM seat before showing anything —
- * the same courtesy gate the rest of the DM surfaces use, not a vault.
+ * The page is unlisted and asks for the DM seat before showing anything; the
+ * bench data itself comes from /api/play/monsters, which is DM-gated
+ * server-side — the client check is presentation, not security.
  */
 import { renderMonster } from '../statblock/monster.js';
-import { whenPwaReady } from '../sheet/data.js';
+import { loadMonsterBench, whenPwaReady } from '../sheet/data.js';
 
 const root = document.getElementById('vos-monsters-root');
 
@@ -58,8 +59,7 @@ async function boot() {
   }
 
   try {
-    const response = await fetch('/data/play/monsters.json', { cache: 'no-store' });
-    monsters = (await response.json()).monster || [];
+    monsters = (await loadMonsterBench()).monster || [];
   } catch (error) {
     notice('Could not load the bench.', 'Try again in a moment.');
     return;

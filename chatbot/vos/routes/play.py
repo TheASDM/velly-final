@@ -275,5 +275,22 @@ def api_play_log():
     return jsonify({"ok": True, "playerName": player_name, "entries": entries})
 
 
+@bp.route("/api/play/monsters", methods=["GET"])
+def api_play_monsters():
+    """The DM's monster bench. The curated bestiary data names the creatures
+    the DM has prepped, so it is DM-gated — it must never be readable by a
+    player, and it is deliberately not part of the public static build."""
+    admin_error = _admin_error_response()
+    if admin_error:
+        return admin_error
+    path = SITE_SOURCE_DIR / "campaign-data" / "play" / "monsters.json"
+    try:
+        with open(path, encoding="utf-8") as handle:
+            data = json.load(handle)
+    except (OSError, ValueError):
+        return jsonify({"error": "The monster bench data is unavailable"}), 503
+    return jsonify(data)
+
+
 __all__ = ['OP_LOG_LIMIT', '_decorate', 'api_play_party', '_load_statblock', '_load_play_row', '_read_state',
-           '_persist', '_target_player', 'api_play_state', 'api_play_op', 'api_play_log']
+           '_persist', '_target_player', 'api_play_state', 'api_play_op', 'api_play_log', 'api_play_monsters']
