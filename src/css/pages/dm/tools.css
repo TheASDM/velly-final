@@ -436,3 +436,44 @@
 .vos-dm select {
   scroll-margin-top: 5.5rem;
 }
+
+/* ── Phone fit for the Phase-3 additions ────────────────────────────── */
+@media (max-width: 560px) {
+  /* The summary strip is a glance, not a wall: one scrollable row instead
+     of a stack of wrapped chips eating the top of the screen. */
+  .vos-dm-summary {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 0.2rem;
+  }
+  .vos-dm-summary::-webkit-scrollbar { display: none; }
+  .vos-dm-summary-chip {
+    flex: 0 0 auto;
+    white-space: nowrap;
+  }
+  /* The confirm sheet earns its name: it rises from the bottom edge with
+     stacked full-width actions a thumb can hit. */
+  .vos-dm-confirm {
+    width: 100%;
+    max-width: none;
+    margin: auto 0 0;
+    border-radius: 14px 14px 0 0;
+    border-bottom: 0;
+    padding-bottom: calc(1.1rem + env(safe-area-inset-bottom, 0px));
+  }
+  .vos-dm-confirm .vos-dm-actions {
+    flex-direction: column-reverse;
+    align-items: stretch;
+  }
+  .vos-dm-confirm .vos-dm-actions button { width: 100%; }
+}
+
+/* The grouped chip rows settle on chip boundaries when flicked. */
+.vos-dm-group-chips {
+  scroll-snap-type: x proximity;
+}
+.vos-dm-group-chips .vos-seg-btn {
+  scroll-snap-align: start;
+}

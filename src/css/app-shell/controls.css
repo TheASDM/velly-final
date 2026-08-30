@@ -400,6 +400,8 @@
     gap: 0.5rem;
     max-height: 55vh;
     overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
     padding: 0.25rem 0.1rem;
   }
   .vos-im-bubble {
@@ -452,6 +454,17 @@
   }
   .vos-im-bubble.is-mine:hover .vos-im-bubble-delete,
   .vos-im-bubble.is-mine:focus-within .vos-im-bubble-delete { opacity: 0.7; }
+  @media (pointer: coarse) {
+    /* No hover on touch: the delete control is simply there, with a
+       finger-sized hit area. */
+    .vos-im-bubble.is-mine .vos-im-bubble-delete {
+      opacity: 0.55;
+      padding: 0.35rem 0.5rem;
+      top: 0;
+      right: 0;
+    }
+    .vos-im-bubble.is-mine { padding-right: 1.9rem; }
+  }
   .vos-im-composer {
     position: sticky;
     bottom: calc(var(--vos-app-nav-h, 0px) + 0.5rem);
@@ -463,7 +476,7 @@
     flex: 1;
     min-height: 44px;
     max-height: 9rem;
-    resize: vertical;
+    resize: none;
     padding: 0.6rem 0.75rem;
     border: 1px solid var(--vos-border, rgba(201, 168, 76, 0.24));
     border-radius: 10px;
@@ -482,10 +495,48 @@
     cursor: pointer;
   }
   .vos-im-empty { opacity: 0.65; font-style: italic; }
-  /* On a phone, an open thread replaces the list. */
+  /* On a phone, an open thread takes the whole screen between the app bar
+     and the bottom nav: header / messages (flex 1) / composer. The bottom
+     offset tracks the visual viewport (--vos-vv-bottom) the same way the
+     Enzo widget does, so the composer rides above the software keyboard. */
   @media (max-width: 700px) {
     body.vos-im-thread-open .vos-im-threads,
-    body.vos-im-thread-open .vos-im-announcements { display: none; }
+    body.vos-im-thread-open .vos-im-announcements,
+    body.vos-im-thread-open .vos-messages-page-head,
+    body.vos-im-thread-open .vos-messages-page-status { display: none; }
+    body.vos-im-thread-open .vos-im-thread {
+      position: fixed;
+      top: var(--vos-app-bar-h, 56px);
+      left: 0;
+      right: 0;
+      bottom: calc(var(--vos-app-nav-h, 0px) + var(--vos-vv-bottom, 0px)
+                   + env(safe-area-inset-bottom, 0px));
+      z-index: 40;
+      display: flex;
+      flex-direction: column;
+      padding: 0.5rem max(0.75rem, env(safe-area-inset-right))
+               0.5rem max(0.75rem, env(safe-area-inset-left));
+      background: var(--vos-bg, #0d0b11);
+    }
+    body.vos-im-thread-open { overflow: hidden; }
+    body.vos-im-thread-open .vos-im-thread-head { margin-bottom: 0.4rem; }
+    body.vos-im-thread-open .vos-im-messages {
+      flex: 1;
+      max-height: none;
+    }
+    body.vos-im-thread-open .vos-im-composer {
+      position: static;
+      padding-bottom: 0.25rem;
+    }
+  }
+  /* On a wide screen, an open thread sits beside the list instead of
+     under it. */
+  @media (min-width: 701px) {
+    body.vos-im-thread-open .vos-im {
+      grid-template-columns: minmax(240px, 320px) 1fr;
+      align-items: start;
+    }
+    body.vos-im-thread-open .vos-im-back { display: none; }
   }
 
   /* Unread IM badge in the user menu + dot on the menu button. */

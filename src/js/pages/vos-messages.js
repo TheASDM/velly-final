@@ -24,6 +24,10 @@ const backEl = document.getElementById('vos-im-back');
 const muteEl = document.getElementById('vos-im-mute');
 
 const POLL_MS = 15000;
+// A finger, not a pointer: Enter makes a newline, the Send button sends,
+// and nothing auto-focuses the composer (that would pop the keyboard over
+// the conversation you came to read).
+const COARSE_POINTER = window.matchMedia && window.matchMedia('(pointer: coarse)').matches;
 
 let playerName = null;
 let threads = [];
@@ -261,7 +265,7 @@ async function openThread(key) {
     setStatus(error.message, true);
   }
   schedulePoll();
-  inputEl.focus();
+  if (!COARSE_POINTER) inputEl.focus();
 }
 
 function closeThread() {
@@ -332,15 +336,35 @@ composerEl.addEventListener('submit', (event) => {
   messagesEl.appendChild(bubble);
   scrollToLatest();
   inputEl.value = '';
+  autogrow();
   deliver(bubble, openKey, text);
 });
 
 inputEl.addEventListener('keydown', (event) => {
+  if (COARSE_POINTER) return; // Enter is a newline on touch keyboards
   if (event.key === 'Enter' && !event.shiftKey) {
     event.preventDefault();
     composerEl.requestSubmit();
   }
 });
+
+// Autogrow up to the CSS max-height — a resize handle is useless on touch.
+function autogrow() {
+  inputEl.style.height = 'auto';
+  inputEl.style.height = `${Math.min(inputEl.scrollHeight, 144)}px`;
+}
+inputEl.addEventListener('input', autogrow);
+
+// When the software keyboard opens (or the visual viewport resizes under
+// it), keep the newest message in view.
+inputEl.addEventListener('focus', () => {
+  window.setTimeout(scrollToLatest, 250);
+});
+if (window.visualViewport) {
+  window.visualViewport.addEventListener('resize', () => {
+    if (openKey) scrollToLatest();
+  });
+}
 
 backEl.addEventListener('click', closeThread);
 
