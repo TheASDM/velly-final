@@ -10,7 +10,7 @@
         loads — health readable from every screen in the app. -#}
     <a class="vos-app-tab vos-app-tab--hero{% if isActive %} is-active{% endif %}"
        href="{{ tab.href }}"{% if isActive %} aria-current="page"{% endif %}
-       id="vos-nav-sheet" data-vos-sheet-tab>
+       id="vos-nav-sheet" data-vos-sheet-tab{% if tab.dm %} data-dm-href="{{ tab.dm.href }}" data-dm-label="{{ tab.dm.label }}"{% endif %}>
       <span class="vos-hero-medallion">
         <svg class="vos-hero-ring" viewBox="0 0 44 44" aria-hidden="true">
           <circle class="vos-hero-ring-track" cx="22" cy="22" r="20"/>

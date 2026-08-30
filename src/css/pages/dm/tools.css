@@ -341,6 +341,10 @@
   position: static;
   flex: none;
 }
+/* Three grouped rows must not each try to stick under the app bar. */
+.vos-dm-groups .vos-seg {
+  position: static;
+}
 .vos-seg-link {
   text-decoration: none;
   display: inline-flex;

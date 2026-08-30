@@ -120,3 +120,24 @@
     padding-inline: 0.85rem;
     white-space: nowrap;
   }
+
+  /* ── DM satellite link row (Table / Bench / Sheets / Dossiers) ──────── */
+  .vos-dm-satellites {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 0.25rem 0 0.9rem;
+  }
+  .vos-dm-satellites a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 38px;
+    padding: 0.3rem 0.85rem;
+    border: 1px solid var(--vos-border, rgba(201, 168, 76, 0.24));
+    border-radius: 999px;
+    text-decoration: none;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }

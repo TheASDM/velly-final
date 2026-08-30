@@ -38,6 +38,10 @@ module.exports = {
       href: "/sheet/",
       match: "exact",
       hero: true,
+      /* The DM's centre of gravity is the table, not a sheet. Declared here
+         (and emitted as data attributes) so the runtime swap in
+         character-bar.js applies data instead of hardcoding a variant. */
+      dm: { label: "The Table", href: "/party/" },
       /* A mask, because in Venturia the sheet is the face you wear. */
       svg: '<path d="M3.2 6.4c0-1 .8-1.7 1.8-1.6 2.3.3 4.6.3 7 0 1-.1 1.8.6 1.8 1.6v3.1c0 4.2-2.6 7.9-6.3 9.4a.9.9 0 0 1-.7 0C3.1 17.4.5 13.7.5 9.5" transform="translate(4.5)"/><path d="M8.4 10.2c.7-.6 1.7-.6 2.4 0"/><path d="M13.2 10.2c.7-.6 1.7-.6 2.4 0"/><path d="M10.4 15.1c1 .7 2.2.7 3.2 0"/>',
     },

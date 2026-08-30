@@ -11,9 +11,14 @@ pageScripts:
 ---
 
 <div class="vos-party-page">
+  <nav class="vos-dm-satellites" aria-label="DM surfaces">
+    <a href="/dm/">Console</a>
+    <a href="/monsters/">Bench</a>
+    <a href="/sheets/">Sheets</a>
+    <a href="/dossiers/">Dossiers</a>
+  </nav>
   <div class="vos-party-bar">
     <span class="vos-party-status" id="vos-party-status">Loading…</span>
-    <a class="vos-party-view" href="/monsters/">Monsters</a>
     <button type="button" id="vos-party-refresh">Refresh</button>
     <button type="button" id="vos-party-pause" aria-pressed="false">Pause updates</button>
   </div>

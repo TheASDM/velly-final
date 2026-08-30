@@ -55,17 +55,17 @@ async function fetchIdentity() {
 }
 
 /* The DM has no sheet worth a medallion; their centre of gravity is the
- * table. Same slot, same mask, different door — and the active ring follows
- * /party/ instead of /sheet/. */
+ * table. The variant is declared in _data/navigation.js and emitted as data
+ * attributes — this only applies what the nav data says. */
 function paintDmTab() {
   const tab = document.getElementById('vos-nav-sheet');
-  if (!tab) return;
-  tab.href = '/party/';
+  if (!tab || !tab.dataset.dmHref) return;
+  tab.href = tab.dataset.dmHref;
   const label = tab.querySelector('.vos-app-tab-label');
-  if (label) label.textContent = 'The Table';
-  const onParty = window.location.pathname === '/party/';
-  tab.classList.toggle('is-active', onParty);
-  if (onParty) tab.setAttribute('aria-current', 'page');
+  if (label && tab.dataset.dmLabel) label.textContent = tab.dataset.dmLabel;
+  const active = window.location.pathname === tab.dataset.dmHref;
+  tab.classList.toggle('is-active', active);
+  if (active) tab.setAttribute('aria-current', 'page');
   else tab.removeAttribute('aria-current');
 }
 
