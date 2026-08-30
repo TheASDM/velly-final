@@ -48,7 +48,7 @@ const SPAN_ATTRS = new Set(['colspan', 'rowspan']);
  * raw syntax in a player-facing description. */
 function replaceDocLinks(text) {
   return text.replace(
-    /@[A-Za-z]+\[((?:[^\[\]]|\[[^\]]*\])*)\](?:\{([^}]*)\})?/g,
+    /@[A-Za-z]+\[((?:[^[\]]|\[[^\]]*\])*)\](?:\{([^}]*)\})?/g,
     (_match, target, label) => {
       if (label) return label;
       const parts = String(target).split('|');

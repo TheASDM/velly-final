@@ -9,7 +9,7 @@
  * fast, honest surface over them.
  */
 import { inverseOf, predict, sendOp } from './api.js';
-import { loadConditions, loadSpellList, preparedLimit, spellKey, spellListNameFor } from './reference.js';
+import { loadConditions, loadSpellList, preparedLimit, spellListNameFor } from './reference.js';
 import { formCrCap, formOverrides, formsForMask, loadForms, loadMasquerade, masksFor } from './masquerade.js';
 import { cleanEnrichers } from '../statblock/html.js';
 
@@ -248,7 +248,6 @@ export function createControls(options) {
     if (!(await apply({ op: 'useCharge', feature: rite.id, max: rite.uses.max },
       { undoable: false }))) return;
     for (let i = 0; i < regained; i += 1) {
-      // eslint-disable-next-line no-await-in-loop
       await apply({ op: 'restorePactSlot' }, { undoable: false });
     }
     toast(`${rite.name} — ${regained} pact slot${regained === 1 ? '' : 's'} regained.`);

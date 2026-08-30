@@ -76,6 +76,3 @@ if (document.readyState === 'loading') {
 } else {
     initLoreMaster();
 }
-function clearChatHistory() {
-    if (loreMaster) loreMaster.clearHistory();
-}

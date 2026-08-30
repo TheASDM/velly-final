@@ -14,4 +14,16 @@ exclude = [
 ]
 
 [tool.ruff.lint]
-select = ["E9", "F63", "F7", "F82"]
+# Full pycodestyle-error + pyflakes + warnings coverage. The vos package
+# deliberately uses star imports (the runtime splice) until they're replaced
+# module-by-module, so F403/F405 stay off for now — F82 (undefined names) is
+# defeated by them anyway, which is what the route-map smoke test covers.
+select = ["E4", "E7", "E9", "F", "W"]
+ignore = ["F403", "F405", "E731"]
+
+[tool.ruff.lint.per-file-ignores]
+# imports.py exists to be star-exported into every vos module — its imports
+# are the product, not leftovers.
+"chatbot/vos/imports.py" = ["F401"]
+# Dense one-line lookup mappings, intentionally compact.
+"campaign_lib/fivetools.py" = ["E701"]

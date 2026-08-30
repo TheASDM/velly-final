@@ -112,7 +112,7 @@ def parse_page(path, expected_type):
 
     head = section(text, "NAME & TYPE")
     lines = [strip_tags(d) for d in re.findall(r"<div[^>]*>(.*?)</div>", head, re.S)]
-    lines = [l for l in lines if l]
+    lines = [line for line in lines if line]
     if len(lines) < 2:
         raise ValueError(f"{path}: could not read name/type")
     name, descriptor = lines[0], lines[1]

@@ -23,7 +23,6 @@ lists are exactly what a subclass should carry.
 """
 import argparse
 import json
-import sys
 import time
 from pathlib import Path
 

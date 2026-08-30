@@ -51,8 +51,8 @@ def _inject(modules, registry):
 registry = _collect([config, *CORE_MODULES])
 _inject(CORE_MODULES, registry)
 
-from .engine.loremaster import Loremaster
-from .web import app, limiter
+from .engine.loremaster import Loremaster  # noqa: E402
+from .web import app, limiter  # noqa: E402
 
 engine = Loremaster()
 registry.update({"app": app, "limiter": limiter, "engine": engine})

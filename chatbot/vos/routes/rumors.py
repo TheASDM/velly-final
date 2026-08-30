@@ -1,7 +1,6 @@
 from ..imports import *
 from ..symbols import *
 from ..config import *
-from ..web import limiter
 
 bp = Blueprint("rumors", __name__)
 

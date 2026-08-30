@@ -56,6 +56,7 @@ export function decodeMarkdownUrl(value) {
 
 export function safeMarkdownUrl(value) {
   const url = decodeMarkdownUrl(value);
+  // eslint-disable-next-line no-control-regex -- rejecting control chars is the point
   if (!url || /[\u0000-\u001f\s]/.test(url)) return '';
   if (url.startsWith('/') && !url.startsWith('//')) return url;
   if (url.startsWith('#')) return url;

@@ -29,10 +29,8 @@ Guessing a location for a page is how a second copy of an article appears.
     python3 scripts/import_canon.py --dir files/valley-of-shadows-08-26-2026/canon
 """
 import argparse
-import difflib
 import json
 import re
-import sys
 import unicodedata
 from pathlib import Path
 
@@ -191,7 +189,7 @@ def leading_html(body):
     that is usually a comment or an image line.
     """
     lines = body.split("\n")
-    start = next((i for i, l in enumerate(lines) if l.lstrip().startswith("<div")), None)
+    start = next((i for i, line in enumerate(lines) if line.lstrip().startswith("<div")), None)
     if start is None:
         return "", body
 

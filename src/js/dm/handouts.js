@@ -5,7 +5,7 @@
  * the id field decides whether saving creates or updates, so there is one
  * path for both and they cannot drift. */
 import {
-  handoutCancelEl, handoutFormEl, handoutIdEl, handoutImageEl,
+  handoutCancelEl, handoutIdEl, handoutImageEl,
   handoutPlayersEl, handoutSaveEl, handoutTextEl, handoutTitleEl,
   handoutsListEl, handoutsStatusEl, setStatus,
 } from './dom.js';

@@ -16,7 +16,6 @@ playing by.
     python3 scripts/build_play_data.py
 """
 import json
-import re
 import sys
 from pathlib import Path
 

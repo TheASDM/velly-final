@@ -10,7 +10,7 @@
  * poll only ever catches what the players did on their own phones.
  */
 import { createControls } from './controls.js';
-import { loadPlayState, sendOp } from './api.js';
+import { sendOp } from './api.js';
 
 const REFRESH_MS = 12000;
 

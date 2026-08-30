@@ -120,7 +120,6 @@ def _wiki_url_to_source_path(wiki_url):
     # a wiki source file under SITE_SOURCE_DIR.
     if ".." in rel.split("/") or rel.startswith("/"):
         return None
-    base = SITE_SOURCE_DIR / rel
     candidates = [
         SITE_SOURCE_DIR / f"{rel}.md",
         SITE_SOURCE_DIR / rel / "index.md",

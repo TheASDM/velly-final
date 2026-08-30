@@ -21,8 +21,8 @@ export function renderMarkdown(text) {
         // HR
         p = p.replace(/^---+$/gm, '<hr style="border:none;border-top:1px solid rgba(212,165,116,0.3);margin:0.5em 0">');
         // List items — collect runs then wrap
-        p = p.replace(/((?:^[*\-] .+\n?)+)/gm, match => {
-            const items = match.trim().split('\n').map(l => `<li>${l.replace(/^[*\-] /, '')}</li>`).join('');
+        p = p.replace(/((?:^[*-] .+\n?)+)/gm, match => {
+            const items = match.trim().split('\n').map(l => `<li>${l.replace(/^[*-] /, '')}</li>`).join('');
             return `<ul style="margin:0.4em 0;padding-left:1.4em">${items}</ul>`;
         });
         // Paragraph breaks
