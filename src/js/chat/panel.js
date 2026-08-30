@@ -18,6 +18,8 @@ import {
   setReaction, setThreadMuted, streamToEnzo,
 } from './api.js';
 import { renderBubble } from './bubble.js';
+import { ACCEPT, createAttachmentTray, wireFileIntake } from './attachments.js';
+import { openImageViewer } from '../components/image-zoom.js';
 import { getDraft, getOpenKey, getScrollTop, setDraft, setOpenKey, setScrollTop } from './state.js';
 
 // Typing indicators only mean anything if the poll is faster than a
@@ -153,7 +155,12 @@ export function createChatPanel(options) {
               <span class="vos-chat-context-text"></span>
               <button type="button" class="vos-chat-context-cancel" aria-label="Cancel">×</button>
             </div>
+            <div class="vos-chat-tray" hidden></div>
             <div class="vos-chat-composer-row">
+              <button type="button" class="vos-chat-attach" aria-label="Attach a file" title="Attach a file">
+                <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M21 11.5 12.5 20a5 5 0 0 1-7-7l8.5-8.5a3.4 3.4 0 0 1 4.8 4.8l-8.5 8.5a1.8 1.8 0 0 1-2.5-2.5l7.8-7.8"/></svg>
+              </button>
+              <input type="file" class="vos-chat-file-input" accept="${ACCEPT}" multiple hidden>
               <textarea class="vos-chat-input" rows="1" maxlength="4000"
                         placeholder="Write a message…" aria-label="Message"></textarea>
               <button type="submit" class="vos-chat-send">Send</button>
@@ -180,9 +187,33 @@ export function createChatPanel(options) {
   const contextLabelEl = root.querySelector('.vos-chat-context-label');
   const contextTextEl = root.querySelector('.vos-chat-context-text');
   const contextCancelEl = root.querySelector('.vos-chat-context-cancel');
+  const trayEl = root.querySelector('.vos-chat-tray');
+  const attachEl = root.querySelector('.vos-chat-attach');
+  const fileInputEl = root.querySelector('.vos-chat-file-input');
+  const threadPaneEl = root.querySelector('.vos-chat-thread');
   const inputEl = root.querySelector('.vos-chat-input');
   const sendEl = root.querySelector('.vos-chat-send');
   const statusEl = root.querySelector('.vos-chat-status');
+
+  const tray = createAttachmentTray({
+    trayEl,
+    getThreadKey: () => openKey,
+    onChange: () => {
+      sendEl.disabled = tray.uploading;
+      scrollToLatest();
+    },
+  });
+
+  function canAttach() {
+    return isTalkThread() && !editing;
+  }
+
+  attachEl.addEventListener('click', () => fileInputEl.click());
+  fileInputEl.addEventListener('change', () => {
+    tray.addFiles(fileInputEl.files);
+    fileInputEl.value = '';
+  });
+  wireFileIntake(root, threadPaneEl, (files) => tray.addFiles(files), canAttach);
 
   function setStatus(text, isError) {
     statusEl.textContent = text || '';
@@ -248,6 +279,7 @@ export function createChatPanel(options) {
         setStatus(error.message, true);
       }
     },
+    onOpenImage: (file) => openImageViewer(file.url, file.filename || ''),
     onJump: (id) => {
       const target = messagesEl.querySelector(`[data-id="${id}"]`);
       if (!target) return;
@@ -527,6 +559,7 @@ export function createChatPanel(options) {
     editing = null;
     since = '';
     lastId = 0;
+    tray.clear();
     renderContext();
     renderTyping();
   }
@@ -610,6 +643,7 @@ export function createChatPanel(options) {
   // ── Composer context: replying to, or editing ────────────────────────
 
   function renderContext() {
+    attachEl.hidden = !!editing;
     if (editing) {
       contextEl.hidden = false;
       contextLabelEl.textContent = 'Editing';
@@ -678,14 +712,16 @@ export function createChatPanel(options) {
   /* Enzo's reply arrives token by token over SSE, and the server stores
    * both halves before the stream closes — so the pill and this panel are
    * reading the same conversation, not two copies of one. */
-  async function deliverToEnzo(bubble, key, text) {
+  async function deliverToEnzo(bubble, key, text, attachmentIds) {
     const typing = typingRow();
     messagesEl.append(typing);
     scrollToLatest();
     let reply = null;
     let streamError = null;
     try {
-      await streamToEnzo(key, text, {}, (name, payload) => {
+      const options = attachmentIds && attachmentIds.length
+        ? { attachments: attachmentIds } : {};
+      await streamToEnzo(key, text, options, (name, payload) => {
         if (name === 'sent' && payload.message) {
           if (payload.message.id > lastId) lastId = payload.message.id;
           if (openKey === key) bubble.replaceWith(messageBubble(payload.message));
@@ -734,14 +770,16 @@ export function createChatPanel(options) {
     bubble.addEventListener('click', function retry() {
       bubble.classList.remove('is-failed');
       if (meta) meta.textContent = 'Sending…';
+      // No attachment ids on a retry: if the first attempt claimed them
+      // the second cannot, and if it did not they are already gone.
       deliver(bubble, key, text);
     }, { once: true });
   }
 
-  async function deliver(bubble, key, text, replyToId) {
-    if (openKind === 'enzo') return deliverToEnzo(bubble, key, text);
+  async function deliver(bubble, key, text, replyToId, attachmentIds) {
+    if (openKind === 'enzo') return deliverToEnzo(bubble, key, text, attachmentIds);
     try {
-      const data = await sendMessage(key, text, replyToId);
+      const data = await sendMessage(key, text, replyToId, attachmentIds);
       const message = data.message;
       if (message.id > lastId) lastId = message.id;
       if (openKey === key) {
@@ -780,11 +818,21 @@ export function createChatPanel(options) {
   composerEl.addEventListener('submit', (event) => {
     event.preventDefault();
     const text = inputEl.value.trim();
-    if (!text || !isTalkThread()) return;
-    if (editing) return saveEdit(text);
+    if (!isTalkThread()) return;
+    if (editing) {
+      if (!text) return;
+      return saveEdit(text);
+    }
+    const attachmentIds = tray.take();
+    if (attachmentIds === null) {
+      setStatus('Still uploading — one moment.', false);
+      return;
+    }
+    // A photo with no caption is a message; nothing at all is not.
+    if (!text && !attachmentIds.length) return;
     const empty = messagesEl.querySelector('.vos-chat-empty');
     if (empty) empty.remove();
-    const bubble = pendingBubble(text);
+    const bubble = pendingBubble(text || (attachmentIds.length === 1 ? '1 file' : `${attachmentIds.length} files`));
     messagesEl.append(bubble);
     scrollToLatest();
     const replyToId = replyTo ? replyTo.id : null;
@@ -792,9 +840,11 @@ export function createChatPanel(options) {
     renderContext();
     inputEl.value = '';
     setDraft(openKey, '');
+    tray.clear();
     autogrow();
     stopTyping();
-    deliver(bubble, openKey, text, replyToId);
+    setStatus('');
+    deliver(bubble, openKey, text, replyToId, attachmentIds);
   });
 
   inputEl.addEventListener('input', () => {

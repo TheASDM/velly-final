@@ -35,9 +35,11 @@ export function fetchMessages(threadKey, afterId, since) {
   return getJson(`/api/im/thread/${encodeURIComponent(threadKey)}?${query}`);
 }
 
-export function sendMessage(threadKey, body, replyToId) {
-  return postJson(`/api/im/thread/${encodeURIComponent(threadKey)}`,
-    replyToId ? { body, replyToId } : { body });
+export function sendMessage(threadKey, body, replyToId, attachmentIds) {
+  const payload = { body };
+  if (replyToId) payload.replyToId = replyToId;
+  if (attachmentIds && attachmentIds.length) payload.attachments = attachmentIds;
+  return postJson(`/api/im/thread/${encodeURIComponent(threadKey)}`, payload);
 }
 
 export async function editMessage(messageId, body) {
@@ -130,4 +132,26 @@ export async function streamToEnzo(threadKey, body, options, onEvent) {
     throw error;
   }
   await readEventStream(response, onEvent);
+}
+
+/* Files go up before the message that carries them exists, so the send
+ * itself stays fast and a failed upload never costs you the words. */
+export async function uploadAttachment(threadKey, file) {
+  const form = new FormData();
+  form.append('threadKey', threadKey);
+  form.append('file', file);
+  const response = await fetch('/api/im/attachment', {
+    method: 'POST',
+    cache: 'no-store',
+    // No Content-Type: the browser has to set the multipart boundary.
+    headers: authHeaders(),
+    body: form,
+  });
+  const data = await response.json().catch(() => ({}));
+  if (!response.ok) {
+    const error = new Error(data.error || `HTTP ${response.status}`);
+    error.status = response.status;
+    throw error;
+  }
+  return data.attachment;
 }

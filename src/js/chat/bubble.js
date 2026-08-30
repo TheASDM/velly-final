@@ -45,6 +45,75 @@ function quoteRow(quoted, ctx) {
   return row;
 }
 
+function humanBytes(value) {
+  if (!value) return '';
+  if (value < 1024) return `${value} B`;
+  if (value < 1024 * 1024) return `${Math.round(value / 1024)} KB`;
+  return `${(value / (1024 * 1024)).toFixed(1)} MB`;
+}
+
+/* Images inline, opening in the deep-zoom viewer the wiki's maps use;
+ * PDFs as a row you download, because handing a PDF to the page to render
+ * is a bigger surface than a conversation needs. */
+function docRow(file) {
+  const link = el('a', 'vos-chat-file-doc');
+  link.href = file.url;
+  link.rel = 'noopener';
+  const label = file.kind === 'image' ? 'IMG' : 'PDF';
+  link.append(el('span', 'vos-chat-file-icon', label));
+  const text = el('span', 'vos-chat-file-text');
+  text.append(el('span', 'vos-chat-file-name', file.filename || 'attachment'));
+  text.append(el('span', 'vos-chat-file-size', humanBytes(file.bytes)));
+  link.append(text);
+  link.addEventListener('click', (event) => event.stopPropagation());
+  return link;
+}
+
+function attachmentsRow(message, ctx) {
+  const files = message.attachments || [];
+  if (!files.length) return null;
+  const row = el('div', 'vos-chat-files');
+  const images = files.filter((file) => file.kind === 'image');
+  row.classList.toggle('is-grid', images.length > 1);
+  files.forEach((file) => {
+    if (file.kind === 'image') {
+      const figure = el('button', 'vos-chat-file-image');
+      figure.type = 'button';
+      figure.setAttribute('aria-label', `Open ${file.filename}`);
+      const img = document.createElement('img');
+      img.loading = 'lazy';
+      img.decoding = 'async';
+      img.alt = file.filename || '';
+      img.src = images.length > 1 && file.thumbUrl ? file.thumbUrl : file.url;
+      if (file.width && file.height) {
+        img.width = file.width;
+        img.height = file.height;
+      }
+      // A thumb that will not load falls back to the full image, and an
+      // image that will not load at all becomes a plain row rather than a
+      // broken-picture icon.
+      let triedFull = false;
+      img.addEventListener('error', () => {
+        if (!triedFull && img.src !== file.url) {
+          triedFull = true;
+          img.src = file.url;
+          return;
+        }
+        figure.replaceWith(docRow(file));
+      });
+      figure.append(img);
+      figure.addEventListener('click', (event) => {
+        event.stopPropagation();
+        ctx.onOpenImage(file);
+      });
+      row.append(figure);
+      return;
+    }
+    row.append(docRow(file));
+  });
+  return row;
+}
+
 function reactionsRow(message, ctx) {
   const faces = ctx.getReactions(message.id);
   if (!faces.length) return null;
@@ -74,7 +143,7 @@ function actionsRow(message, ctx, close) {
     row.append(button);
   });
   row.append(pill('Reply', 'vos-chat-action', () => { ctx.onReply(message); close(); }));
-  if (ctx.canEdit(message)) {
+  if (message.body && ctx.canEdit(message)) {
     row.append(pill('Edit', 'vos-chat-action', () => { ctx.onEdit(message); close(); }));
   }
   if (message.sender === ctx.playerName) {
@@ -102,9 +171,14 @@ export function renderBubble(message, ctx) {
   if (ctx.showSenders() && !mine) {
     bubble.append(el('div', 'vos-chat-bubble-sender', ctx.displayName(message.sender)));
   }
-  const body = el('div', 'vos-chat-bubble-body vos-safe-markdown');
-  body.innerHTML = ctx.renderMarkdown(message.body || '');
-  bubble.append(body);
+  if (message.body) {
+    const body = el('div', 'vos-chat-bubble-body vos-safe-markdown');
+    body.innerHTML = ctx.renderMarkdown(message.body);
+    bubble.append(body);
+  }
+
+  const files = attachmentsRow(message, ctx);
+  if (files) bubble.append(files);
 
   const meta = el('div', 'vos-chat-bubble-meta', ctx.formatDate(message.created_at));
   if (message.editedAt) {
