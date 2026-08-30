@@ -32,6 +32,11 @@ THREAD_PAGE_LIMIT = 200
 # Not a roster seat — adding him to _data/players.json would break the auth
 # maps and the records that key off it. He exists only as a thread partner.
 ENZO_NAME = "Enzo"
+# Someone whose client checked in this recently is looking at the app: the
+# live badge update and the 4-second poll will show them the message, and a
+# banner on top of that is just noise. Comfortably longer than the poll
+# interval so a slow round trip does not read as absence.
+PRESENT_WITHIN_SECONDS = 45
 # An edit window, not an edit history: long enough to fix a typo or a name,
 # short enough that nobody rewrites what the table read an hour ago. The
 # row keeps edited_at, so an edited message says so forever.
@@ -225,6 +230,18 @@ def _thread_receipts(conn, thread_key, caller, members):
             SELECT player_name, last_read_id FROM chat_reads
             WHERE thread_key = ? AND player_name IN ({placeholders})
         """, [thread_key, *others])
+    }
+
+
+def _present_since(conn, cutoff):
+    """Everyone whose client has checked in since `cutoff`. Presence is
+    touched by the polls the app already makes, so this costs nothing."""
+    return {
+        row["player_name"]
+        for row in conn.execute(
+            "SELECT player_name FROM player_presence WHERE last_seen_at > ?",
+            (cutoff,),
+        )
     }
 
 
@@ -516,7 +533,11 @@ def _notify_thread(thread_key, sender, text):
                     (thread_key,),
                 )
             }
-            recipients = sorted(members - muted - {sender})
+            # A notification is for a device that is not being looked at.
+            # Anyone whose client checked in seconds ago is already being
+            # told, live, by the open tab.
+            watching = _present_since(conn, _utc_now_iso_in(-PRESENT_WITHIN_SECONDS))
+            recipients = sorted(members - muted - watching - {sender})
             if not recipients:
                 return
             per_recipient = {
@@ -898,11 +919,12 @@ def im_delete_message(message_id):
 
 __all__ = ['CHAT_BODY_MAX_BYTES', 'PARTY_THREAD_KEY', 'ENZO_NAME', 'ENZO_HISTORY_LIMIT',
            'MESSAGE_EDIT_WINDOW_SECONDS', 'TYPING_TTL_SECONDS', 'REACTION_EMOJI',
+           'PRESENT_WITHIN_SECONDS',
            '_utc_now_iso_in', '_iso_age_seconds',
            '_im_roster', '_direct_thread_key', '_enzo_thread_key', '_enzo_partner',
            '_thread_members', '_im_caller', '_thread_access_error', '_chat_message_json',
            '_touch_presence', '_thread_reactions', '_thread_typing', '_thread_receipts',
-           '_presence_map', '_message_for_caller',
+           '_presence_map', '_present_since', '_message_for_caller',
            '_caller_thread_keys', '_thread_label', 'im_threads', 'im_thread', '_unread_total',
            '_enzo_history', '_enzo_claim', '_enzo_release', '_store_chat_message', '_sse',
            'im_thread_enzo', '_attachment_summary', '_notify_thread', 'im_read', 'im_mute', 'im_typing',

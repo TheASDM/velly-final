@@ -18,6 +18,7 @@ def _clear_chat(server_module):
     with server_module._app_db() as conn:
         conn.execute("DELETE FROM chat_messages")
         conn.execute("DELETE FROM chat_reads")
+        conn.execute("DELETE FROM player_presence")
 
 
 @pytest.fixture(autouse=True)
@@ -292,3 +293,58 @@ def test_push_payload_merges_per_recipient_extras(monkeypatch):
     assert payload["unread"] == 4
     assert payload["tag"] == "im:party"
     assert payload["playerName"] == "Lotan"
+
+
+def test_no_push_to_someone_who_is_sitting_there_looking_at_it(app, server_module):
+    """A notification is for a device that is not being looked at. An open
+    tab is already being told, live, by the badge poll."""
+    from vos.routes import im as im_routes
+
+    calls = {}
+    monkey = {}
+
+    def fake_fanout(title, message, url, **kwargs):
+        calls.update(kwargs)
+        return {"ok": True}
+
+    original_config, original_fanout = (im_routes._push_config_error,
+                                        im_routes._fanout_push)
+    im_routes._push_config_error = lambda: None
+    im_routes._fanout_push = fake_fanout
+    try:
+        roxy = _headers(server_module, 'Roxanya "Roxy"')
+        with server_module._app_db() as conn:
+            # Lotan's client checked in a moment ago; Valentro's was an hour.
+            server_module._touch_presence(conn, "Lotan")
+            conn.execute("""
+                INSERT INTO player_presence (player_name, last_seen_at) VALUES (?, ?)
+                ON CONFLICT(player_name) DO UPDATE SET last_seen_at = excluded.last_seen_at
+            """, ("Valentro", server_module._utc_now_iso_in(-3600)))
+        _send(app, roxy, "party", "Anyone there?")
+    finally:
+        im_routes._push_config_error = original_config
+        im_routes._fanout_push = original_fanout
+        monkey.clear()
+
+    assert "Lotan" not in calls["recipients"]
+    assert "Valentro" in calls["recipients"]
+    assert "Lotan" not in calls["per_recipient"]
+
+
+def test_presence_window_is_wider_than_the_poll_interval(server_module):
+    """A slow round trip must not read as absence — the open-thread poll is
+    4s and the badge heartbeat 25s."""
+    from vos.routes import im as im_routes
+
+    assert im_routes.PRESENT_WITHIN_SECONDS > 25
+
+
+def test_present_since_reads_the_presence_table(app, server_module):
+    from vos.routes import im as im_routes
+
+    with server_module._app_db() as conn:
+        server_module._touch_presence(conn, "Lotan")
+        recent = im_routes._present_since(conn, server_module._utc_now_iso_in(-60))
+        ancient = im_routes._present_since(conn, server_module._utc_now_iso_in(60))
+    assert "Lotan" in recent
+    assert "Lotan" not in ancient
