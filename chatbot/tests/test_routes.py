@@ -45,6 +45,8 @@ ROUTE_CONTRACT = """
 /api/handouts/all|/api/handouts/all|GET|api_all_handouts|401:json.error,error_code|403:json.error,error_code|200:json.handouts,ok|200:json.handouts,ok
 /api/handouts/image|/api/handouts/image|POST|api_upload_handout_image|401:json.error,error_code|403:json.error,error_code|400:json.error|400:json.error
 /api/handouts/image/<filename>|/api/handouts/image/missing.png|GET|api_handout_image|404:json.error,error_code|404:json.error,error_code|404:json.error,error_code|404:json.error,error_code
+/api/im/attachment|/api/im/attachment|POST|im_attachment_upload|401:json.error|404:json.error,error_code|404:json.error,error_code|401:json.error
+/api/im/attachment/<attachment_id>|/api/im/attachment/00000000000000000000000000000000|GET|im_attachment_file|404:json.error,error_code|404:json.error,error_code|404:json.error,error_code|404:json.error,error_code
 /api/im/message/<int:message_id>|/api/im/message/1|DELETE|im_delete_message|401:json.error|404:json.error,error_code|404:json.error,error_code|401:json.error
 /api/im/message/<int:message_id>|/api/im/message/1|PATCH|im_edit_message|401:json.error|400:json.error,error_code|400:json.error,error_code|401:json.error
 /api/im/message/<int:message_id>/reaction|/api/im/message/1/reaction|POST|im_message_reaction|401:json.error|400:json.error,error_code|400:json.error,error_code|401:json.error
@@ -130,7 +132,7 @@ def test_route_inventory_and_response_contract(app, auth_headers):
     }
     expected_routes = {rule for rule, _, _, _endpoint, _ in cases}
     assert actual_routes == expected_routes
-    assert len(cases) == 98
+    assert len(cases) == 100
 
     for rule, path, method, _endpoint, expected in cases:
         for role in ROLES:

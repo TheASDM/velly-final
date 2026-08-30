@@ -398,4 +398,40 @@ def apply_current_migrations(conn, done):
             ("026_chat_depth", _utc_now_iso()),
         )
 
+    if "027_chat_attachments" not in done:
+        # Files land before the message that carries them exists, so
+        # message_id is NULL until the send claims them. thread_key is
+        # bound at upload time: serving has to answer "is this caller a
+        # member" for a file nobody has attached yet.
+        conn.execute("""
+            CREATE TABLE IF NOT EXISTS chat_attachments (
+                id TEXT PRIMARY KEY,
+                thread_key TEXT NOT NULL,
+                uploader TEXT NOT NULL,
+                message_id INTEGER,
+                kind TEXT NOT NULL,
+                filename TEXT NOT NULL,
+                mime TEXT NOT NULL,
+                bytes INTEGER NOT NULL,
+                width INTEGER,
+                height INTEGER,
+                -- The order the sender picked them in. Uploads run
+                -- concurrently, so created_at is arrival order, not intent.
+                position INTEGER NOT NULL DEFAULT 0,
+                created_at TEXT NOT NULL
+            )
+        """)
+        conn.execute("""
+            CREATE INDEX IF NOT EXISTS idx_chat_attachments_message
+            ON chat_attachments (message_id)
+        """)
+        conn.execute("""
+            CREATE INDEX IF NOT EXISTS idx_chat_attachments_unclaimed
+            ON chat_attachments (message_id, created_at)
+        """)
+        conn.execute(
+            "INSERT INTO schema_migrations (name, applied_at) VALUES (?, ?)",
+            ("027_chat_attachments", _utc_now_iso()),
+        )
+
 __all__ = ['apply_current_migrations']

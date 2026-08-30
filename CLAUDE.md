@@ -53,6 +53,7 @@ images live in `generated-art/`.
 | Path | Purpose |
 |---|---|
 | `chatbot/server.py`, `chatbot/vos/` | Gunicorn compatibility shim plus Flask blueprints, services, migrations, and RAG engine |
+| `chatbot/vos/services/uploads.py` | Magic bytes, a real image decode, and the pixel cap — shared by chat attachments and handout images |
 | `campaign_lib/` | Shared frontmatter, wiki traversal, chunking, and 5e build helpers |
 | `build_tiers.py` | Published markdown + 5e data → `campaign-data/tier1.md` |
 | `build_vectors.py` | → `campaign-data/vector_store.json` via Ollama embeddings |
@@ -150,8 +151,12 @@ soft deletes, and Enzo's half of every thread), `chat_reads` (unread pointers,
 which double as read receipts), `chat_reactions`, and the two disposable
 tables `chat_typing` and `player_presence`.
 
+Chat attachments (images and PDFs) are files rather than rows, under
+`app-data/chat-attachments/` — inside the volume the database already lives
+in, so one archive covers both. Same for `app-data/handout-images/`.
+
 ```bash
-cp app-data/vallombrosa.sqlite3 "app-data/vallombrosa-$(date +%F).sqlite3"
+tar -czf "app-data-$(date +%F).tgz" app-data/   # database + attachments + handouts
 tar -czf "generated-art-$(date +%F).tgz" generated-art/
 python3 export_questionnaires.py
 ```

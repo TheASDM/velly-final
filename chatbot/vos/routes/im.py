@@ -145,7 +145,7 @@ def _thread_access_error(thread_key, caller):
     return None
 
 
-def _chat_message_json(row):
+def _chat_message_json(row, attachments=None):
     deleted = bool(row["deleted_at"])
     return {
         "id": row["id"],
@@ -159,6 +159,9 @@ def _chat_message_json(row):
         "replyToId": row["reply_to_id"],
         # Stated, not hidden: an edited message is marked for everyone.
         "editedAt": None if deleted else row["edited_at"],
+        # A deleted message takes its files with it as far as the client is
+        # concerned; the rows stay for the orphan sweep to find.
+        "attachments": [] if deleted else (attachments or []),
     }
 
 
@@ -392,11 +395,16 @@ def im_thread(thread_key):
             typing = _thread_typing(conn, thread_key, caller)
             receipts = _thread_receipts(conn, thread_key, caller, members)
             presence = _presence_map(conn, members)
+            files = _attachments_for_messages(
+                conn, [row["id"] for row in rows] + [row["id"] for row in revised]
+            )
         return jsonify({
             "ok": True,
             "threadKey": thread_key,
-            "messages": [_chat_message_json(row) for row in reversed(rows)],
-            "revised": [_chat_message_json(row) for row in revised],
+            "messages": [_chat_message_json(row, files.get(row["id"]))
+                         for row in reversed(rows)],
+            "revised": [_chat_message_json(row, files.get(row["id"]))
+                        for row in revised],
             "reactions": reactions,
             "typing": typing,
             "receipts": receipts,
@@ -405,10 +413,17 @@ def im_thread(thread_key):
         })
 
     body = request.get_json(silent=True) or {}
+    attachment_ids = _attachment_ids_from(body)
+    if attachment_ids is None:
+        return jsonify({"error": "attachments must be a list",
+                        "error_code": "invalid"}), 400
     text = body.get("body")
-    if not isinstance(text, str) or not text.strip():
-        return jsonify({"error": "Write the message first", "error_code": "invalid"}), 400
+    if not isinstance(text, str):
+        text = ""
     text = text.strip()
+    # A photo with no caption is still a message; nothing at all is not.
+    if not text and not attachment_ids:
+        return jsonify({"error": "Write the message first", "error_code": "invalid"}), 400
     if len(text.encode("utf-8")) > CHAT_BODY_MAX_BYTES:
         return jsonify({"error": "Message is too long (4KB max)", "error_code": "invalid"}), 400
 
@@ -439,9 +454,28 @@ def im_thread(thread_key):
         # Your own message never counts against you as unread.
         row = _store_chat_message(conn, thread_key, caller, text,
                                   reader=caller, reply_to_id=reply_to_id)
+        attachments, claim_error = _claim_attachments(
+            conn, attachment_ids, caller, thread_key, row["id"]
+        )
+        if claim_error:
+            # Nothing has been handed to anyone yet: drop the message
+            # rather than leave a stub whose files never arrived.
+            conn.execute("DELETE FROM chat_messages WHERE id = ?", (row["id"],))
+            return claim_error
 
-    _notify_thread(thread_key, caller, text)
-    return jsonify({"ok": True, "message": _chat_message_json(row)}), 201
+    _notify_thread(thread_key, caller, text or _attachment_summary(attachments))
+    return jsonify({
+        "ok": True, "message": _chat_message_json(row, attachments),
+    }), 201
+
+
+def _attachment_summary(attachments):
+    """What a push says when the message is only files."""
+    if not attachments:
+        return ""
+    if len(attachments) == 1:
+        return "Sent an image" if attachments[0]["kind"] == "image" else "Sent a PDF"
+    return f"Sent {len(attachments)} files"
 
 
 def _unread_total(conn, reader, roster):
@@ -596,6 +630,10 @@ def im_thread_enzo(thread_key):
 
     rules = bool(body.get("rules"))
     vibe = body.get("vibe") if isinstance(body.get("vibe"), str) else None
+    attachment_ids = _attachment_ids_from(body)
+    if attachment_ids is None:
+        return jsonify({"error": "attachments must be a list",
+                        "error_code": "invalid"}), 400
 
     if not _enzo_claim(caller):
         return jsonify({
@@ -606,12 +644,21 @@ def im_thread_enzo(thread_key):
     try:
         with _app_db() as conn:
             sent = _store_chat_message(conn, thread_key, caller, text, reader=caller)
+            # Kept on the message so the thread reads back whole; not
+            # forwarded to the model, which is text-only here.
+            attachments, claim_error = _claim_attachments(
+                conn, attachment_ids, caller, thread_key, sent["id"]
+            )
+            if claim_error:
+                conn.execute("DELETE FROM chat_messages WHERE id = ?", (sent["id"],))
+                _enzo_release(caller)
+                return claim_error
             history = _enzo_history(conn, thread_key, caller, sent["id"])
     except Exception:
         _enzo_release(caller)
         raise
 
-    sent_json = _chat_message_json(sent)
+    sent_json = _chat_message_json(sent, attachments)
     write_log("user", text)
 
     def event_stream():
@@ -858,5 +905,5 @@ __all__ = ['CHAT_BODY_MAX_BYTES', 'PARTY_THREAD_KEY', 'ENZO_NAME', 'ENZO_HISTORY
            '_presence_map', '_message_for_caller',
            '_caller_thread_keys', '_thread_label', 'im_threads', 'im_thread', '_unread_total',
            '_enzo_history', '_enzo_claim', '_enzo_release', '_store_chat_message', '_sse',
-           'im_thread_enzo', '_notify_thread', 'im_read', 'im_mute', 'im_typing',
+           'im_thread_enzo', '_attachment_summary', '_notify_thread', 'im_read', 'im_mute', 'im_typing',
            'im_message_reaction', 'im_edit_message', 'im_delete_message']
