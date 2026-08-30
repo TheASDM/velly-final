@@ -5,33 +5,9 @@
  * _admin_error_response(). Any check in the UI is presentation, not security.
  */
 
-export function whenPwaReady(timeoutMs = 6000) {
-  return new Promise((resolve) => {
-    const startedAt = Date.now();
-    (function poll() {
-      if (window.VOS_PWA) return resolve(window.VOS_PWA);
-      if (Date.now() - startedAt > timeoutMs) return resolve(null);
-      setTimeout(poll, 80);
-    })();
-  });
-}
+import { getJson, whenPwaReady } from '../shared/pwa.js';
 
-function authHeaders(extra) {
-  const pwa = window.VOS_PWA;
-  if (pwa && pwa.authHeaders) return pwa.authHeaders(extra || {});
-  return extra || {};
-}
-
-async function getJson(url) {
-  const response = await fetch(url, { cache: 'no-store', headers: authHeaders() });
-  if (!response.ok) {
-    const body = await response.json().catch(() => ({}));
-    const error = new Error(body.error || `HTTP ${response.status}`);
-    error.status = response.status;
-    throw error;
-  }
-  return response.json();
-}
+export { whenPwaReady };
 
 export function loadMySheet() {
   return getJson('/api/sheet');

@@ -11,22 +11,12 @@ import {
   authBlockedEl, authEmailEl, authSignedInEl, authSignedOutEl, authStatusEl,
   setStatus, signInEl, signOutEl, switchAccountEl,
 } from './dom.js';
+import { whenPwaReady } from '../shared/pwa.js';
 
 let pwa = null;
 let live = false;
 const liveHooks = [];
 const deadHooks = [];
-
-export function whenPwaReady(timeoutMs = 8000) {
-  return new Promise((resolve) => {
-    const startedAt = Date.now();
-    (function poll() {
-      if (window.VOS_PWA) return resolve(window.VOS_PWA);
-      if (Date.now() - startedAt > timeoutMs) return resolve(null);
-      setTimeout(poll, 80);
-    })();
-  });
-}
 
 export function isSessionLive() {
   return live;

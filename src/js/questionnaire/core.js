@@ -12,22 +12,8 @@ export const state = {
   status: 'draft',
 };
 
-export function whenPwaReady(timeoutMs = 6000) {
-  return new Promise((resolve) => {
-    const startedAt = Date.now();
-    (function poll() {
-      if (window.VOS_PWA) return resolve(window.VOS_PWA);
-      if (Date.now() - startedAt > timeoutMs) return resolve(null);
-      setTimeout(poll, 80);
-    })();
-  });
-}
-
-export function authHeaders(extra) {
-  const pwa = window.VOS_PWA;
-  if (pwa && pwa.authHeaders) return pwa.authHeaders(extra || {});
-  return extra || {};
-}
+export { authHeaders, whenPwaReady } from '../shared/pwa.js';
+import { authHeaders } from '../shared/pwa.js';
 
 export function el(tag, className, text) {
   const node = document.createElement(tag);

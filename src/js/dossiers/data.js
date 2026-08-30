@@ -19,22 +19,7 @@ export const STRIP = [
 
 const FALLBACK_COLOR = '#D0AE5E';
 
-function authHeaders(extra) {
-  const pwa = window.VOS_PWA;
-  if (pwa && pwa.authHeaders) return pwa.authHeaders(extra || {});
-  return extra || {};
-}
-
-async function getJson(url, options) {
-  const response = await fetch(url, { cache: 'no-store', ...(options || {}) });
-  if (!response.ok) {
-    const body = await response.json().catch(() => ({}));
-    const error = new Error(body.error || `HTTP ${response.status}`);
-    error.status = response.status;
-    throw error;
-  }
-  return response.json();
-}
+import { getJson } from '../shared/pwa.js';
 
 // Every character shares the same vitals group structure (build_questionnaire.py
 // derives them from one template), so the first entry defines the shape.
@@ -89,9 +74,9 @@ function tally(definitions, character, answers) {
 
 export async function loadDossiers() {
   const [definitions, roster, payload] = await Promise.all([
-    getJson('/api/questionnaire/definitions', { headers: authHeaders() }),
+    getJson('/api/questionnaire/definitions'),
     getJson('/data/players.json'),
-    getJson('/api/questionnaire/all', { headers: authHeaders() }),
+    getJson('/api/questionnaire/all'),
   ]);
 
   const byPlayer = {};

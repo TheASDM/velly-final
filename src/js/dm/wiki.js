@@ -10,11 +10,8 @@ export let wikiPagesByTitle = null;
 
 export let wikiPages = [];
 
-export function escapeHtml(s) {
-  return String(s ?? '')
-    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
-}
+export { escapeHtml } from '../shared/pwa.js';
+import { escapeHtml } from '../shared/pwa.js';
 
 export function renderMarkdown(s) {
   const renderer = window.VOS_RENDER_MARKDOWN || (window.VOS_PWA && window.VOS_PWA.renderSafeMarkdown);
