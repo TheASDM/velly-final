@@ -137,6 +137,7 @@ export function createChatPanel(options) {
           <svg aria-hidden="true" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg>
         </button>
         <h2 class="vos-chat-title">Chat</h2>
+        <a class="vos-chat-title-link" href="/profile/" hidden>Profile</a>
         <span class="vos-chat-head-presence" hidden></span>
         <div class="vos-chat-head-actions">
           <button type="button" class="vos-chat-mute" aria-pressed="false" hidden>Mute</button>
@@ -175,6 +176,7 @@ export function createChatPanel(options) {
   const panelEl = root.querySelector('.vos-chat-panel');
   const backEl = root.querySelector('.vos-chat-back');
   const titleEl = root.querySelector('.vos-chat-title');
+  const titleLinkEl = root.querySelector('.vos-chat-title-link');
   const headPresenceEl = root.querySelector('.vos-chat-head-presence');
   const muteEl = root.querySelector('.vos-chat-mute');
   const closeEl = root.querySelector('.vos-chat-close');
@@ -236,6 +238,7 @@ export function createChatPanel(options) {
     renderMarkdown,
     formatDate,
     showSenders: () => openKind === 'party',
+    profileHref: (name) => `/profile/?p=${encodeURIComponent(name)}`,
     getReactions: (id) => reactions[String(id)] || [],
     getMessage: (id) => messagesById.get(Number(id)) || null,
     canEdit: (message) => message.sender === playerName
@@ -543,6 +546,7 @@ export function createChatPanel(options) {
     composerEl.hidden = true;
     placeholderEl.hidden = true;
     headPresenceEl.hidden = true;
+    titleLinkEl.hidden = true;
     typingLiveEl.hidden = true;
     messagesEl.textContent = '';
     messagesEl.classList.add('is-announcements');
@@ -589,6 +593,13 @@ export function createChatPanel(options) {
     openKind = thread ? thread.kind : null;
     openMuted = !!(thread && thread.muted);
     titleEl.textContent = thread ? displayName(thread.label) : key;
+    // Enzo is not a person; everyone else in a direct thread has a profile.
+    const person = openKind === 'direct' && thread ? thread.label : null;
+    titleLinkEl.hidden = !person;
+    if (person) {
+      titleLinkEl.href = `/profile/?p=${encodeURIComponent(person)}`;
+      titleLinkEl.setAttribute('aria-label', `${displayName(person)}'s profile`);
+    }
     muteEl.hidden = openKind === 'enzo';
     muteEl.textContent = openMuted ? 'Unmute' : 'Mute';
     muteEl.setAttribute('aria-pressed', openMuted ? 'true' : 'false');
@@ -630,6 +641,7 @@ export function createChatPanel(options) {
     composerEl.hidden = true;
     placeholderEl.hidden = false;
     headPresenceEl.hidden = true;
+    titleLinkEl.hidden = true;
     typingLiveEl.hidden = true;
     messagesEl.textContent = '';
     messagesEl.classList.remove('is-announcements');

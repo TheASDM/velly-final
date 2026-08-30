@@ -34,7 +34,7 @@ images live in `generated-art/`.
 | `_data/campaign.js` | Latest session, open threads (edit after each session, then rebuild) |
 | `home.md`, `calendar.md`, `enzo.md` | Root tab surfaces |
 | `Tools/art.md` | Studio |
-| `dm.md`, `questionnaire.md`, `submit-lore.md`, `messages.md`, `notes.md`, `settings.md` | Player/DM surfaces |
+| `dm.md`, `questionnaire.md`, `submit-lore.md`, `messages.md`, `notes.md`, `settings.md`, `profile.md` | Player/DM surfaces |
 
 ### Client
 
@@ -153,7 +153,9 @@ tables `chat_typing` and `player_presence`.
 
 Chat attachments (images and PDFs) are files rather than rows, under
 `app-data/chat-attachments/` — inside the volume the database already lives
-in, so one archive covers both. Same for `app-data/handout-images/`.
+in, so one archive covers both. Same for `app-data/handout-images/` and
+`app-data/profile-avatars/`. Player-written bios live in `player_profiles`
+in the database.
 
 ```bash
 tar -czf "app-data-$(date +%F).tgz" app-data/   # database + attachments + handouts

@@ -103,9 +103,9 @@
             <button role="menuitem" id="vos-user-menu-sign-out" type="button" hidden>Sign out</button>
           </div>
         </div>
-        {#- The avatar crossed from the left. In step 5 it opens /profile/;
-            until that page exists it still lands on settings. -#}
-        <a class="vos-app-icon-button vos-app-profile" id="vos-profile-button" href="/settings/" aria-label="Settings" title="Settings">
+        {#- The avatar opens your own profile; the gear beside it is the
+            door to settings. -#}
+        <a class="vos-app-icon-button vos-app-profile" id="vos-profile-button" href="/profile/" aria-label="Your profile" title="Your profile">
           <span class="vos-app-avatar-wrap">
             <img class="vos-app-avatar-img" id="vos-app-avatar-img" alt="">
             <svg class="vos-app-avatar-fallback" id="vos-app-avatar-fallback" aria-hidden="true" viewBox="0 0 24 24"><path d="M20 21a8 8 0 0 0-16 0"/><circle cx="12" cy="8" r="4"/></svg>

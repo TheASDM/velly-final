@@ -148,6 +148,8 @@ function card(entry) {
       <button type="button" data-act="conditions">Conditions</button>
       <a class="vos-party-view" href="/sheet/?as=${encodeURIComponent(entry.playerName)}"
          title="Open their sheet as they see it">View</a>
+      <a class="vos-party-view" href="/profile/?p=${encodeURIComponent(entry.playerName)}"
+         title="Open their profile">Profile</a>
     </div>
   </article>`;
 }

@@ -169,7 +169,10 @@ export function renderBubble(message, ctx) {
     bubble.append(quoteRow(ctx.getMessage(message.replyToId), ctx));
   }
   if (ctx.showSenders() && !mine) {
-    bubble.append(el('div', 'vos-chat-bubble-sender', ctx.displayName(message.sender)));
+    const who = el('a', 'vos-chat-bubble-sender', ctx.displayName(message.sender));
+    who.href = ctx.profileHref(message.sender);
+    who.addEventListener('click', (event) => event.stopPropagation());
+    bubble.append(who);
   }
   if (message.body) {
     const body = el('div', 'vos-chat-bubble-body vos-safe-markdown');

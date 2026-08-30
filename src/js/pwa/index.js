@@ -2,7 +2,7 @@ import { AUTH_TOKEN_KEY, PLAYER_KEY, getStorage, renderSafeMarkdown } from './co
 import { initNextGathering } from './gathering.js';
 import { announceIdentity, authHeaders, getAuthConfig, loadRoster, lookupRoster, roster } from './identity.js';
 import { authSession, clearIdentity, ensureIdentity, getActivePlayerName, isAuthenticated, syncAuthSession } from './identity-modal.js';
-import { closeUserMenu, getProfileDisplayName, syncAvatarBadge, toggleUserMenu, updateIdentityControls } from './profile.js';
+import { closeUserMenu, getProfileDisplayName, syncAvatarBadge, syncUploadedAvatar, toggleUserMenu, updateIdentityControls } from './profile.js';
 import { disablePush, enablePush, getPushStatus, maybeShowPushPrompt, maybeSyncExistingSubscription } from './push.js';
 import { initRsvpControls } from './rsvp.js';
 import { enhanceWikiLinkedLists } from './wiki.js';
@@ -20,6 +20,7 @@ window.VOS_PWA = {
   openIdentitySettings: () => ensureIdentity({ force: true }),
   signOut: clearIdentity,
   refreshAvatarBadge: () => syncAvatarBadge(),
+  refreshUploadedAvatar: () => syncUploadedAvatar(),
   getPushStatus,
   enablePush,
   disablePush,

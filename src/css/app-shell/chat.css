@@ -58,6 +58,32 @@
     font-weight: 700;
     letter-spacing: 0.04em;
   }
+  /* A name in a conversation is a way to that person's profile. */
+  .vos-chat-bubble-sender[href] {
+    display: inline-block;
+    color: var(--vos-gold-bright);
+    text-decoration: none;
+    border-bottom: 0;
+  }
+  .vos-chat-bubble-sender[href]:hover { text-decoration: underline; }
+  .vos-chat-title-link {
+    flex: 0 0 auto;
+    padding: 0.25rem 0.45rem;
+    border: 1px solid rgba(212, 165, 116, 0.28);
+    border-radius: 6px;
+    color: var(--vos-gold-bright);
+    font-family: 'Cinzel', Georgia, serif;
+    font-size: 0.6rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-decoration: none;
+  }
+  .vos-chat-title-link:hover {
+    color: var(--vos-cream);
+    background: rgba(212, 165, 116, 0.12);
+  }
+  .vos-chat-title-link[hidden] { display: none; }
   .vos-chat-head-actions {
     display: inline-flex;
     align-items: center;

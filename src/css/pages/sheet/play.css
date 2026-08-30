@@ -963,9 +963,16 @@
 }
 .vos-party-conds span.is-empty { border: 0; color: var(--vos-gold-dim); }
 
-.vos-party-acts { display: flex; gap: 0.3rem; margin-top: auto; }
+/* Five controls on a card at 390px: wrap them rather than let the row
+   scroll sideways or squeeze every label to nothing. */
+.vos-party-acts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  margin-top: auto;
+}
+.vos-party-acts button { flex: 1 1 5rem; }
 .vos-party-acts button {
-  flex: 1;
   min-height: 38px;
   border: 1px solid var(--vos-border);
   border-radius: 8px;
@@ -1020,7 +1027,10 @@
 
 .vos-party-view {
   display: inline-flex;
+  flex: 1 1 5rem;
   align-items: center;
+  justify-content: center;
+  min-height: 38px;
   padding: 0 0.7rem;
   border: 1px solid var(--vos-border);
   border-radius: 8px;

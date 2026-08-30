@@ -1,6 +1,35 @@
 import { PLAYER_KEY, PROFILE_AVATAR_FALLBACK, getStorage } from './core.js';
-import { getAuthConfig, lookupRoster } from './identity.js';
+import { authHeaders, getAuthConfig, lookupRoster } from './identity.js';
 import { authSession, getActivePlayerName } from './identity-modal.js';
+
+/* The signed-in player's own uploaded avatar, once we have asked for it. */
+let uploadedAvatar = null;
+
+export async function syncUploadedAvatar() {
+  const name = getStorage(PLAYER_KEY);
+  if (!name) {
+    uploadedAvatar = null;
+    return;
+  }
+  try {
+    const response = await fetch(`/api/profiles/${encodeURIComponent(name)}`, {
+      cache: 'no-store',
+      headers: authHeaders(),
+    });
+    if (!response.ok) return;
+    const data = await response.json();
+    const url = data.profile && data.profile.avatarUrl;
+    if (url && url.startsWith('/api/') && url !== uploadedAvatar) {
+      uploadedAvatar = url;
+      updateProfileAvatar(name);
+    } else if (!url || !url.startsWith('/api/')) {
+      if (uploadedAvatar) {
+        uploadedAvatar = null;
+        updateProfileAvatar(name);
+      }
+    }
+  } catch (error) { /* the curated portrait is a fine answer */ }
+}
 
 export function setAvatarBadge(active) {
   const badge = document.getElementById('vos-app-avatar-badge');
@@ -20,7 +49,9 @@ export function updateProfileAvatar(name) {
   const displayName = getProfileDisplayName(name);
   const labelName = displayName || 'profile';
   const entry = lookupRoster(name);
-  const src = (entry && entry.avatar) || PROFILE_AVATAR_FALLBACK;
+  // An uploaded avatar wins over the curated portrait. Resolved lazily so
+  // the first paint is never blocked on a request.
+  const src = uploadedAvatar || (entry && entry.avatar) || PROFILE_AVATAR_FALLBACK;
   const alt = displayName || 'Unmapped profile';
   profileButton.setAttribute('aria-label', name ? `Open profile — ${displayName}` : 'Log in');
   profileButton.title = name ? `Open profile — ${displayName}` : 'Log in';
@@ -128,4 +159,5 @@ export async function syncAvatarBadge(config = null) {
   const activeConfig = config || await getAuthConfig();
   const name = getActivePlayerName(activeConfig);
   setAvatarBadge(!!name);
+  if (name) syncUploadedAvatar();
 }
