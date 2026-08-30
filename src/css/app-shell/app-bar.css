@@ -46,7 +46,7 @@
     display: grid;
     grid-template-columns: auto minmax(0, 1fr) auto;
     align-items: center;
-    gap: 0.72rem;
+    gap: 0.5rem;
   }
   .vos-app-icon-button {
     display: inline-flex;
@@ -77,12 +77,14 @@
     stroke-linejoin: round;
   }
   .vos-app-profile {
-    width: 44px;
-    height: 44px;
     padding: 0;
     border: none;
     border-radius: 50%;
     background: transparent;
+  }
+  .vos-app-actions .vos-app-profile {
+    width: 38px;
+    height: 38px;
   }
   .vos-app-profile:hover {
     background: transparent;
@@ -93,8 +95,8 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 36px;
-    height: 36px;
+    width: 32px;
+    height: 32px;
     border-radius: 50%;
     background:
       radial-gradient(circle at 50% 32%, rgba(232, 205, 132, 0.18), transparent 62%),
@@ -183,6 +185,68 @@
     letter-spacing: 0.04em;
     line-height: 1.18;
   }
+  /* Four icon-only controls beside the title: chat, settings, menu, you.
+     At 390px that is 4 x 38px + gaps ~= 170px, the crest takes 42px, and
+     the title block gets the rest and truncates. Below 360px the gear
+     folds back into the menu rather than squeezing the title to nothing. */
+  .vos-app-actions {
+    display: inline-flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.3rem;
+  }
+  .vos-app-actions .vos-app-icon-button {
+    width: 38px;
+    height: 38px;
+    flex: 0 0 auto;
+  }
+  .vos-app-actions .vos-app-icon-button svg {
+    width: 19px;
+    height: 19px;
+  }
+  .vos-app-chat {
+    position: relative;
+  }
+  .vos-app-chat-count {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 17px;
+    height: 17px;
+    padding: 0 4px;
+    border-radius: 999px;
+    background: var(--vos-quest-bright);
+    box-shadow: 0 0 0 2px rgba(8, 7, 11, 0.98);
+    color: #fff;
+    font-family: 'Cinzel', Georgia, serif;
+    font-size: 0.6rem;
+    font-weight: 700;
+    line-height: 1;
+  }
+  .vos-app-chat-count[hidden] {
+    display: none;
+  }
+  .vos-app-chat.is-open {
+    color: var(--vos-cream);
+    border-color: rgba(212, 165, 116, 0.56);
+    background: rgba(212, 165, 116, 0.14);
+  }
+  /* Matched at the same weight as the `.vos-user-menu a` rule that gives
+     every row its display: flex, or the row never hides. */
+  .vos-user-menu a.vos-user-menu-narrow-only {
+    display: none;
+  }
+  @media (max-width: 359px) {
+    .vos-app-gear {
+      display: none;
+    }
+    .vos-user-menu a.vos-user-menu-narrow-only {
+      display: flex;
+    }
+  }
   .vos-app-user-menu-wrap {
     position: relative;
     display: inline-flex;
@@ -192,10 +256,10 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 40px;
-    min-width: 40px;
-    max-width: 40px;
-    min-height: 38px;
+    width: 38px;
+    min-width: 38px;
+    max-width: 38px;
+    height: 38px;
     border: 1px solid rgba(212, 165, 116, 0.24);
     border-radius: 8px;
     background: rgba(212, 165, 116, 0.065);

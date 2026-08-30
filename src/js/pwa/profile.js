@@ -63,7 +63,7 @@ export function updateIdentityControls(config = null) {
   const identityButton = document.getElementById('vos-app-identity-button');
   const profileButton = document.getElementById('vos-profile-button');
   const text = name ? displayName : 'Log in';
-  const action = name ? 'User menu' : 'Log in';
+  const action = name ? `Menu — ${displayName}` : 'Log in';
 
   if (label) label.textContent = text;
   if (identityButton) {

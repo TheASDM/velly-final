@@ -1,0 +1,437 @@
+/* ── Chat: the overlay, and the same component full-page ─────────────
+ *
+ * Mobile is a full-screen sheet over whatever you were reading, with the
+ * body locked behind it and the composer riding above the software
+ * keyboard on --vos-vv-bottom. Desktop is a right-docked two-pane panel —
+ * list and conversation side by side, no scrim, the page still readable
+ * and clickable beside it.
+ */
+
+  .vos-chat-host {
+    position: fixed;
+    inset: 0;
+    z-index: 1400;
+    pointer-events: none;
+  }
+  .vos-chat-host[hidden] {
+    display: none;
+  }
+  .vos-chat--overlay {
+    pointer-events: auto;
+  }
+  body.vos-chat-locked {
+    overflow: hidden;
+  }
+
+  .vos-chat-panel {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    background:
+      radial-gradient(ellipse 70% 40% at 100% 0%, rgba(212, 165, 116, 0.08), transparent 70%),
+      var(--vos-bg, #0d0b11);
+  }
+  .vos-chat--overlay .vos-chat-panel {
+    position: fixed;
+    box-shadow: var(--vos-shadow);
+  }
+
+  /* ── Head ──────────────────────────────────────────────────────────── */
+  .vos-chat-head {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex: 0 0 auto;
+    padding: 0.55rem 0.7rem;
+    border-bottom: 1px solid rgba(212, 165, 116, 0.24);
+  }
+  .vos-chat-title {
+    flex: 1;
+    min-width: 0;
+    margin: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: var(--vos-cream);
+    font-family: 'Cinzel', Georgia, serif;
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+  }
+  .vos-chat-head-actions {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    flex: 0 0 auto;
+  }
+  .vos-chat-back,
+  .vos-chat-close,
+  .vos-chat-mute {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 38px;
+    padding: 0 0.6rem;
+    border: 1px solid rgba(212, 165, 116, 0.28);
+    border-radius: 8px;
+    background: rgba(13, 11, 17, 0.62);
+    color: var(--vos-gold-bright);
+    font: 700 0.76rem 'Cinzel', Georgia, serif;
+    letter-spacing: 0.04em;
+    cursor: pointer;
+  }
+  .vos-chat-back,
+  .vos-chat-close {
+    width: 38px;
+    padding: 0;
+  }
+  .vos-chat-back svg,
+  .vos-chat-close svg {
+    width: 19px;
+    height: 19px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .vos-chat-back:hover,
+  .vos-chat-close:hover,
+  .vos-chat-mute:hover {
+    color: var(--vos-cream);
+    border-color: rgba(212, 165, 116, 0.56);
+    background: rgba(212, 165, 116, 0.1);
+  }
+  .vos-chat-back[hidden],
+  .vos-chat-mute[hidden] {
+    display: none;
+  }
+
+  /* ── Body: list and conversation ───────────────────────────────────── */
+  .vos-chat-body {
+    flex: 1;
+    min-height: 0;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .vos-chat-list {
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    padding: 0.6rem;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+  }
+  .vos-chat-row {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 0.55rem;
+    min-height: 52px;
+    padding: 0.5rem 0.7rem;
+    border: 1px solid var(--vos-border, rgba(139, 115, 85, 0.28));
+    border-radius: 10px;
+    background: rgba(7, 6, 10, 0.45);
+    color: inherit;
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+  }
+  .vos-chat-row:hover {
+    border-color: rgba(212, 165, 116, 0.46);
+    background: rgba(212, 165, 116, 0.07);
+  }
+  .vos-chat-row.is-open {
+    border-color: var(--vos-border-strong, rgba(212, 165, 116, 0.45));
+    background: rgba(212, 165, 116, 0.1);
+  }
+  .vos-chat-row--pinned {
+    border-color: rgba(212, 165, 116, 0.42);
+    background: rgba(212, 165, 116, 0.06);
+  }
+  .vos-chat-row-label {
+    color: var(--vos-cream);
+    font-family: 'Cinzel', Georgia, serif;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+  }
+  .vos-chat-row.is-unread .vos-chat-row-label {
+    color: var(--vos-gold-bright);
+  }
+  .vos-chat-row-preview {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    opacity: 0.62;
+    font-size: 0.86rem;
+  }
+  .vos-chat-row-side {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+  }
+  .vos-chat-row-muted {
+    opacity: 0.6;
+    font-size: 0.8rem;
+  }
+  .vos-chat-count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 1.35rem;
+    height: 1.35rem;
+    padding: 0 0.32rem;
+    border-radius: 999px;
+    background: var(--vos-quest-bright, #d44d3f);
+    color: #fff;
+    font-family: 'Cinzel', Georgia, serif;
+    font-size: 0.68rem;
+    font-weight: 700;
+    line-height: 1;
+  }
+
+  .vos-chat-thread {
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    padding: 0.6rem;
+  }
+  .vos-chat-placeholder {
+    margin: auto;
+    opacity: 0.5;
+    font-style: italic;
+  }
+  .vos-chat-placeholder[hidden] {
+    display: none;
+  }
+  .vos-chat-messages {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 0.15rem 0.1rem;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+  }
+  .vos-chat-empty {
+    margin: auto;
+    opacity: 0.6;
+    font-style: italic;
+  }
+  /* A short conversation sits on the composer rather than floating at the
+     top of an empty column. margin-top on the first child rather than
+     justify-content: flex-end, which strands the top of a long scroll. */
+  .vos-chat-messages:not(.is-announcements) > :first-child {
+    margin-top: auto;
+  }
+
+  .vos-chat-bubble {
+    position: relative;
+    max-width: 85%;
+    align-self: flex-start;
+    padding: 0.5rem 0.7rem;
+    border: 1px solid var(--vos-border, rgba(139, 115, 85, 0.28));
+    border-radius: 12px 12px 12px 4px;
+    background: rgba(7, 6, 10, 0.45);
+  }
+  .vos-chat-bubble.is-mine {
+    align-self: flex-end;
+    border-radius: 12px 12px 4px 12px;
+    background: rgba(212, 165, 116, 0.12);
+  }
+  .vos-chat-bubble.is-pending { opacity: 0.7; }
+  .vos-chat-bubble.is-failed {
+    border-color: var(--vos-quest-bright, #d44d3f);
+    cursor: pointer;
+  }
+  .vos-chat-bubble.is-deleted {
+    opacity: 0.55;
+    font-style: italic;
+  }
+  .vos-chat-bubble-sender {
+    margin-bottom: 0.18rem;
+    opacity: 0.75;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .vos-chat-bubble-body {
+    overflow-wrap: anywhere;
+  }
+  .vos-chat-bubble-meta {
+    margin-top: 0.24rem;
+    opacity: 0.55;
+    font-size: 0.7rem;
+  }
+  .vos-chat-bubble-delete {
+    position: absolute;
+    top: 0.1rem;
+    right: 0.25rem;
+    border: 0;
+    background: transparent;
+    color: inherit;
+    opacity: 0;
+    font-size: 0.9rem;
+    cursor: pointer;
+  }
+  .vos-chat-bubble.is-mine:hover .vos-chat-bubble-delete,
+  .vos-chat-bubble.is-mine:focus-within .vos-chat-bubble-delete,
+  .vos-chat-announcement:hover .vos-chat-bubble-delete,
+  .vos-chat-announcement:focus-within .vos-chat-bubble-delete {
+    opacity: 0.7;
+  }
+  @media (pointer: coarse) {
+    /* No hover on touch: the control is simply there, finger-sized. */
+    .vos-chat-bubble.is-mine .vos-chat-bubble-delete,
+    .vos-chat-announcement .vos-chat-bubble-delete {
+      top: 0;
+      right: 0;
+      padding: 0.35rem 0.5rem;
+      opacity: 0.55;
+    }
+    .vos-chat-bubble.is-mine { padding-right: 1.9rem; }
+    .vos-chat-announcement { padding-right: 1.9rem; }
+  }
+
+  /* The DM's broadcasts: one-way and dismissible, so they read as notices
+     rather than as anybody's half of a conversation. */
+  .vos-chat-messages.is-announcements {
+    gap: 0.6rem;
+  }
+  .vos-chat-announcement {
+    position: relative;
+    align-self: stretch;
+    max-width: none;
+    padding: 0.6rem 0.75rem;
+    border: 1px solid rgba(212, 165, 116, 0.34);
+    border-radius: 10px;
+    background: rgba(212, 165, 116, 0.06);
+  }
+  .vos-chat-announcement-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.6rem;
+    margin-bottom: 0.3rem;
+  }
+  .vos-chat-announcement-title {
+    color: var(--vos-gold-bright);
+    font-family: 'Cinzel', Georgia, serif;
+    font-size: 0.76rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .vos-chat-announcement-body {
+    overflow-wrap: anywhere;
+  }
+
+  /* ── Composer ──────────────────────────────────────────────────────── */
+  .vos-chat-composer {
+    flex: 0 0 auto;
+    display: flex;
+    gap: 0.5rem;
+    padding-top: 0.5rem;
+  }
+  .vos-chat-composer[hidden] {
+    display: none;
+  }
+  .vos-chat-input {
+    flex: 1;
+    min-width: 0;
+    min-height: 44px;
+    max-height: 9rem;
+    padding: 0.6rem 0.7rem;
+    border: 1px solid var(--vos-border, rgba(139, 115, 85, 0.28));
+    border-radius: 10px;
+    background: rgba(7, 6, 10, 0.72);
+    color: inherit;
+    font: inherit;
+    resize: none;
+  }
+  .vos-chat-send {
+    flex: 0 0 auto;
+    min-height: 44px;
+    padding: 0 1rem;
+    border: 1px solid var(--vos-border-strong, rgba(212, 165, 116, 0.45));
+    border-radius: 10px;
+    background: rgba(212, 165, 116, 0.12);
+    color: var(--vos-cream);
+    font: 700 0.82rem 'Cinzel', Georgia, serif;
+    letter-spacing: 0.04em;
+    cursor: pointer;
+  }
+  .vos-chat-send:hover {
+    background: rgba(212, 165, 116, 0.2);
+  }
+
+  .vos-chat-status {
+    flex: 0 0 auto;
+    margin: 0;
+    padding: 0 0.7rem 0.5rem;
+    opacity: 0.7;
+    font-size: 0.82rem;
+  }
+  .vos-chat-status:empty {
+    display: none;
+  }
+  .vos-chat-status.is-error {
+    color: var(--vos-quest-bright, #d44d3f);
+    opacity: 1;
+  }
+
+  /* ── Mobile: a full-screen sheet ───────────────────────────────────── */
+  @media (max-width: 700px) {
+    .vos-chat--overlay .vos-chat-panel {
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: var(--vos-vv-bottom, 0px);
+      padding-top: var(--vos-safe-top);
+    }
+    /* One pane at a time: the list, or the conversation with a back arrow. */
+    .vos-chat-panel.is-thread-open .vos-chat-list {
+      display: none;
+    }
+    .vos-chat-panel:not(.is-thread-open) .vos-chat-thread {
+      display: none;
+    }
+    .vos-chat--page .vos-chat-panel {
+      min-height: calc(100dvh - var(--vos-app-bar-h) - var(--vos-app-nav-h) - 2rem);
+    }
+  }
+
+  /* ── Desktop: a right-docked two-pane panel, no scrim ──────────────── */
+  @media (min-width: 701px) {
+    .vos-chat--overlay .vos-chat-panel {
+      top: var(--vos-app-bar-h);
+      right: 0;
+      bottom: 0;
+      width: min(640px, 100vw);
+      border-left: 1px solid rgba(212, 165, 116, 0.28);
+    }
+    .vos-chat-body {
+      grid-template-columns: minmax(200px, 240px) minmax(0, 1fr);
+    }
+    .vos-chat-list {
+      border-right: 1px solid rgba(212, 165, 116, 0.18);
+    }
+    /* Both panes are always on screen, so the back arrow has no job. */
+    .vos-chat-back {
+      display: none;
+    }
+    .vos-chat--page .vos-chat-panel {
+      min-height: min(70vh, 640px);
+      border: 1px solid rgba(212, 165, 116, 0.24);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+  }
