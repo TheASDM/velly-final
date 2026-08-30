@@ -4,11 +4,25 @@ from .config import *
 from .migrations_legacy import apply_legacy_migrations
 from .migrations_current import apply_current_migrations
 
+@contextmanager
 def _app_db():
+    """One SQLite connection per `with` block: commit on success, rollback on
+    exception, and — unlike a bare sqlite3 connection used as a context
+    manager — actually closed on exit. WAL + a generous busy timeout let the
+    two Gunicorn workers, the rebuild thread, and the studio/lore threads
+    write without tripping over each other."""
     APP_DB_PATH.parent.mkdir(parents=True, exist_ok=True)
-    conn = sqlite3.connect(APP_DB_PATH, timeout=10)
+    conn = sqlite3.connect(APP_DB_PATH, timeout=30)
     conn.row_factory = sqlite3.Row
-    return conn
+    try:
+        conn.execute("PRAGMA journal_mode=WAL")
+        conn.execute("PRAGMA busy_timeout=30000")
+        conn.execute("PRAGMA synchronous=NORMAL")
+        conn.execute("PRAGMA foreign_keys=ON")
+        with conn:
+            yield conn
+    finally:
+        conn.close()
 
 
 def _table_columns(conn, table_name):
