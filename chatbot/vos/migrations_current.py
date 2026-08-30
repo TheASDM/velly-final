@@ -434,4 +434,22 @@ def apply_current_migrations(conn, done):
             ("027_chat_attachments", _utc_now_iso()),
         )
 
+    if "028_player_profiles" not in done:
+        # Bios are player-written and avatars are player-uploaded, so both
+        # are runtime data: this table and app-data/profile-avatars/, never
+        # the repo. avatar_file is NULL until someone uploads one, and the
+        # curated portrait in _data/players.json is what shows until then.
+        conn.execute("""
+            CREATE TABLE IF NOT EXISTS player_profiles (
+                player_name TEXT PRIMARY KEY,
+                bio TEXT NOT NULL DEFAULT '',
+                avatar_file TEXT,
+                updated_at TEXT NOT NULL
+            )
+        """)
+        conn.execute(
+            "INSERT INTO schema_migrations (name, applied_at) VALUES (?, ?)",
+            ("028_player_profiles", _utc_now_iso()),
+        )
+
 __all__ = ['apply_current_migrations']

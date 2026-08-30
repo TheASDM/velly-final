@@ -26,6 +26,7 @@ EXPECTED_MIGRATIONS = {
     "025_chat",
     "026_chat_depth",
     "027_chat_attachments",
+    "028_player_profiles",
 }
 
 EXPECTED_TABLES = {
@@ -49,6 +50,7 @@ EXPECTED_TABLES = {
     "messages",
     "notes",
     "player_presence",
+    "player_profiles",
     "push_deliveries",
     "push_opens",
     "questionnaires",

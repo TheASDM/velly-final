@@ -73,6 +73,12 @@ ROUTE_CONTRACT = """
 /api/play/log|/api/play/log|GET|api_play_log|401:json.error|200:json.entries,ok,playerName|200:json.entries,ok,playerName|401:json.error
 /api/play/monsters|/api/play/monsters|GET|api_play_monsters|401:json.error,error_code|403:json.error,error_code|200:json._meta,monster|200:json._meta,monster
 /api/play/op|/api/play/op|POST|api_play_op|401:json.error|400:json.allowed,error,error_code|400:json.allowed,error,error_code|401:json.error
+/api/profile|/api/profile|PUT|profile_update|401:json.error|200:json.avatarUrl,bio,ok|200:json.avatarUrl,bio,ok|401:json.error
+/api/profile/avatar|/api/profile/avatar|POST|profile_avatar_update|401:json.error|400:json.error,error_code|400:json.error,error_code|401:json.error
+/api/profile/avatar|/api/profile/avatar|DELETE|profile_avatar_update|401:json.error|200:json.avatarUrl,ok|200:json.avatarUrl,ok|401:json.error
+/api/profiles|/api/profiles|GET|profiles_directory|401:json.error|200:json.ok,playerName,profiles|200:json.ok,playerName,profiles|401:json.error
+/api/profiles/<path:player_name>|/api/profiles/Lotan|GET|profile_detail|401:json.error|200:json.ok,profile|200:json.ok,profile|401:json.error
+/api/profiles/<path:player_name>/avatar|/api/profiles/Lotan/avatar|GET|profile_avatar_file|404:json.error,error_code|404:json.error,error_code|404:json.error,error_code|404:json.error,error_code
 /api/push/config|/api/push/config|GET|push_config|200:json.publicKey,pushConfigured|200:json.publicKey,pushConfigured|200:json.publicKey,pushConfigured|200:json.publicKey,pushConfigured
 /api/push/opened|/api/push/opened|POST|push_opened|400:json.error|400:json.error|400:json.error|400:json.error
 /api/push/send|/api/push/send|POST|push_send|401:json.error,error_code|403:json.error,error_code|503:json.error|503:json.error
@@ -132,7 +138,7 @@ def test_route_inventory_and_response_contract(app, auth_headers):
     }
     expected_routes = {rule for rule, _, _, _endpoint, _ in cases}
     assert actual_routes == expected_routes
-    assert len(cases) == 100
+    assert len(cases) == 106
 
     for rule, path, method, _endpoint, expected in cases:
         for role in ROLES:

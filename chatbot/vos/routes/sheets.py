@@ -278,6 +278,6 @@ def api_statblock_ingest():
     return jsonify({"ok": True, "playerName": player_name, "updated_at": now})
 
 
-__all__ = ['_sheet_row_json', '_statblock_row_json', '_ingest_authorised',
-           '_statblock_player_for', 'api_my_sheet', 'api_all_sheets',
-           'api_statblock_ingest']
+__all__ = ['_identity_from_statblock', '_sheet_row_json', '_statblock_row_json',
+           '_ingest_authorised', '_statblock_player_for', 'api_identity',
+           'api_my_sheet', 'api_all_sheets', 'api_statblock_ingest']
