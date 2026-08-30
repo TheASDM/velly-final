@@ -315,4 +315,39 @@ def apply_current_migrations(conn, done):
             ("024_handouts", _utc_now_iso()),
         )
 
+    if "025_chat" not in done:
+        # Instant messages: player↔DM, player↔player, and the party channel.
+        # thread_key is derived, never a membership table — the sorted pair
+        # "Alice|Bob" for directs, "party" for the table — and membership is
+        # checked against the roster at request time. Soft delete only.
+        conn.execute("""
+            CREATE TABLE IF NOT EXISTS chat_messages (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                thread_key TEXT NOT NULL,
+                sender TEXT NOT NULL,
+                body TEXT NOT NULL,
+                created_at TEXT NOT NULL,
+                deleted_at TEXT
+            )
+        """)
+        conn.execute("""
+            CREATE INDEX IF NOT EXISTS idx_chat_messages_thread
+            ON chat_messages (thread_key, id)
+        """)
+        # One row per (thread, reader): the unread pointer and the mute flag.
+        conn.execute("""
+            CREATE TABLE IF NOT EXISTS chat_reads (
+                thread_key TEXT NOT NULL,
+                player_name TEXT NOT NULL,
+                last_read_id INTEGER NOT NULL DEFAULT 0,
+                muted INTEGER NOT NULL DEFAULT 0,
+                updated_at TEXT NOT NULL,
+                PRIMARY KEY (thread_key, player_name)
+            )
+        """)
+        conn.execute(
+            "INSERT INTO schema_migrations (name, applied_at) VALUES (?, ?)",
+            ("025_chat", _utc_now_iso()),
+        )
+
 __all__ = ['apply_current_migrations']

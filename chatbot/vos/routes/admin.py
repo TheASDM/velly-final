@@ -135,7 +135,20 @@ def admin_dashboard():
             for row in conn.execute("SELECT DISTINCT player_name FROM subscriptions")
         }
 
+        # Unread instant messages across the DM's threads (directs + party).
+        im_unread = conn.execute("""
+            SELECT COUNT(*) AS n
+            FROM chat_messages m
+            LEFT JOIN chat_reads r
+              ON r.thread_key = m.thread_key AND r.player_name = 'DM'
+            WHERE m.deleted_at IS NULL
+              AND m.sender != 'DM'
+              AND (m.thread_key = 'party' OR m.thread_key LIKE 'DM|%' OR m.thread_key LIKE '%|DM')
+              AND m.id > COALESCE(r.last_read_id, 0)
+        """).fetchone()["n"]
+
     return jsonify({
+        "im": {"unread": im_unread},
         "gathering": gathering,
         "rsvp": rsvp,
         "availability": availability,

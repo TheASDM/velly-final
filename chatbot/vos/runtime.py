@@ -67,6 +67,7 @@ ROUTE_MODULES = [
         ".routes.push",
         ".routes.messages",
         ".routes.notes",
+        ".routes.im",
         ".routes.in_play",
         ".routes.rsvp",
         ".routes.availability",

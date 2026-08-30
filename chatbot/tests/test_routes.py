@@ -1,6 +1,6 @@
 ROUTE_CONTRACT = """
 /api/admin/config|/api/admin/config|GET|admin_config|200:json.configured,google_client_id|200:json.configured,google_client_id|200:json.configured,google_client_id|200:json.configured,google_client_id
-/api/admin/dashboard|/api/admin/dashboard|GET|admin_dashboard|401:json.error,error_code|403:json.error,error_code|200:json.availability,gathering,lore,push,rebuild,rsvp|200:json.availability,gathering,lore,push,rebuild,rsvp
+/api/admin/dashboard|/api/admin/dashboard|GET|admin_dashboard|401:json.error,error_code|403:json.error,error_code|200:json.availability,gathering,im,lore,push,rebuild,rsvp|200:json.availability,gathering,im,lore,push,rebuild,rsvp
 /api/admin/login|/api/admin/login|POST|admin_login|401:json.error,error_code|401:json.error,error_code|401:json.error,error_code|401:json.error,error_code
 /api/admin/lore-submissions|/api/admin/lore-submissions|GET|admin_lore_submissions|401:json.error,error_code|403:json.error,error_code|200:json.submissions|200:json.submissions
 /api/admin/lore-submissions/<submission_id>|/api/admin/lore-submissions/missing|GET|admin_lore_submission_detail|401:json.error,error_code|403:json.error,error_code|404:json.error|404:json.error
@@ -45,6 +45,12 @@ ROUTE_CONTRACT = """
 /api/handouts/all|/api/handouts/all|GET|api_all_handouts|401:json.error,error_code|403:json.error,error_code|200:json.handouts,ok|200:json.handouts,ok
 /api/handouts/image|/api/handouts/image|POST|api_upload_handout_image|401:json.error,error_code|403:json.error,error_code|400:json.error|400:json.error
 /api/handouts/image/<filename>|/api/handouts/image/missing.png|GET|api_handout_image|404:json.error,error_code|404:json.error,error_code|404:json.error,error_code|404:json.error,error_code
+/api/im/message/<int:message_id>|/api/im/message/1|DELETE|im_delete_message|401:json.error|404:json.error,error_code|404:json.error,error_code|401:json.error
+/api/im/mute|/api/im/mute|POST|im_mute|401:json.error|404:json.error,error_code|404:json.error,error_code|401:json.error
+/api/im/read|/api/im/read|POST|im_read|401:json.error|404:json.error,error_code|404:json.error,error_code|401:json.error
+/api/im/thread/<path:thread_key>|/api/im/thread/party|GET|im_thread|401:json.error|200:json.messages,ok,threadKey|200:json.messages,ok,threadKey|401:json.error
+/api/im/thread/<path:thread_key>|/api/im/thread/party|POST|im_thread|401:json.error|400:json.error,error_code|400:json.error,error_code|401:json.error
+/api/im/threads|/api/im/threads|GET|im_threads|401:json.error|200:json.ok,playerName,threads|200:json.ok,playerName,threads|401:json.error
 /api/identity|/api/identity|GET|api_identity|401:json.error|200:json.character,ok,playerName|200:json.character,ok,playerName|401:json.error
 /api/in-play|/api/in-play|GET|in_play_endpoint|200:json.items|200:json.items|200:json.items|200:json.items
 /api/lore-submissions|/api/lore-submissions|POST|lore_submission_create|401:json.error|400:json.error|400:json.error|401:json.error
@@ -119,7 +125,7 @@ def test_route_inventory_and_response_contract(app, auth_headers):
     }
     expected_routes = {rule for rule, _, _, _endpoint, _ in cases}
     assert actual_routes == expected_routes
-    assert len(cases) == 87
+    assert len(cases) == 93
 
     for rule, path, method, _endpoint, expected in cases:
         for role in ROLES:
