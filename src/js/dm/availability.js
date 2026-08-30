@@ -5,8 +5,14 @@ export let npcTables = null;
 
 export async function rollNpc() {
   if (!npcTables) {
+    const token = getToken(npcResultEl);
+    if (!token) return;
     try {
-      const response = await fetch('/data/questionnaire.json', { cache: 'default' });
+      const response = await fetch('/api/questionnaire/definitions', {
+        cache: 'no-store',
+        headers: authHeaders(token),
+      });
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
       const data = await response.json();
       npcTables = data.tables || {};
     } catch (error) {

@@ -1,9 +1,9 @@
 /* Assemble the dossier model from live sources.
  *
  * Nothing here is baked at build time — the questions come from
- * /data/questionnaire.json, the roster (display names + colors) from
- * /data/players.json, and the answers from /api/questionnaire/all, which is
- * DM-gated server-side by _admin_error_response().
+ * /api/questionnaire/definitions, the roster (display names + colors) from
+ * /data/players.json, and the answers from /api/questionnaire/all. Both API
+ * sources are DM-gated server-side.
  */
 
 // The handful of answers worth surfacing before anything else. Keys must exist
@@ -89,7 +89,7 @@ function tally(definitions, character, answers) {
 
 export async function loadDossiers() {
   const [definitions, roster, payload] = await Promise.all([
-    getJson('/data/questionnaire.json'),
+    getJson('/api/questionnaire/definitions', { headers: authHeaders() }),
     getJson('/data/players.json'),
     getJson('/api/questionnaire/all', { headers: authHeaders() }),
   ]);

@@ -64,6 +64,7 @@ ROUTE_CONTRACT = """
 /api/push/subscribers|/api/push/subscribers|GET|push_subscribers|401:json.error,error_code|403:json.error,error_code|200:json.missing,subscribed|200:json.missing,subscribed
 /api/questionnaire|/api/questionnaire|GET|questionnaire|401:json.error|200:json.answers,playerName,status,submitted_at,updated_at|200:json.answers,playerName,status,submitted_at,updated_at|401:json.error
 /api/questionnaire/all|/api/questionnaire/all|GET|questionnaire_all|401:json.error,error_code|403:json.error,error_code|200:json.records|200:json.records
+/api/questionnaire/definitions|/api/questionnaire/definitions|GET|questionnaire_definitions|401:json.error|200:json.characters,codaKey,codaPrompt,part1,tables|200:json.characters,codaKey,codaPrompt,part1,tables|200:json.characters,codaKey,codaPrompt,part1,tables
 /api/questionnaire/submit|/api/questionnaire/submit|POST|questionnaire_submit|401:json.error|400:json.error|400:json.error|401:json.error
 /api/rsvp|/api/rsvp|GET|rsvp|400:json.error|400:json.error|400:json.error|400:json.error
 /api/rumors|/api/rumors|GET|rumors|401:json.error,error_code|403:json.error,error_code|200:json.rumors|200:json.rumors
@@ -114,7 +115,7 @@ def test_route_inventory_and_response_contract(app, auth_headers):
     }
     expected_routes = {rule for rule, _, _, _endpoint, _ in cases}
     assert actual_routes == expected_routes
-    assert len(cases) == 82
+    assert len(cases) == 83
 
     for rule, path, method, _endpoint, expected in cases:
         for role in ROLES:

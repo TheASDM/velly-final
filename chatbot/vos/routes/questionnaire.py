@@ -123,4 +123,44 @@ def questionnaire_all():
         ).fetchall()
     return jsonify({"records": [_questionnaire_row_json(row) for row in rows]})
 
-__all__ = ['QUESTIONNAIRE_MAX_FIELDS', 'QUESTIONNAIRE_MAX_VALUE', 'QUESTIONNAIRE_MAX_TOTAL', '_clean_questionnaire_answers', '_questionnaire_row_json', '_save_questionnaire', 'questionnaire', 'questionnaire_submit', 'questionnaire_all']
+
+def _load_questionnaire_definitions():
+    path = SITE_SOURCE_DIR / "_data" / "questionnaire.json"
+    with open(path, encoding="utf-8") as handle:
+        data = json.load(handle)
+    if not isinstance(data, dict):
+        raise ValueError("questionnaire.json is not an object")
+    return data
+
+
+@bp.route("/api/questionnaire/definitions", methods=["GET"])
+def questionnaire_definitions():
+    """Question definitions, scoped to the caller. Per-character Part II
+    prompts and on-file vitals are DM-written spoiler material, so a player
+    receives only their own character; the DM receives all of them."""
+    if _admin_error_response() is None:
+        is_dm, player_name = True, None
+    else:
+        player_name, auth_error = _authenticated_player_name()
+        if auth_error:
+            return auth_error
+        if not player_name:
+            return jsonify({"error": "Missing player name"}), 400
+        is_dm = _is_dm_player(player_name)
+    try:
+        data = _load_questionnaire_definitions()
+    except (OSError, ValueError):
+        return jsonify({"error": "Question definitions are unavailable"}), 503
+    if not is_dm:
+        characters = data.get("characters") or {}
+        data = {
+            **data,
+            "characters": {
+                key: value
+                for key, value in characters.items()
+                if isinstance(value, dict) and value.get("player") == player_name
+            },
+        }
+    return jsonify(data)
+
+__all__ = ['QUESTIONNAIRE_MAX_FIELDS', 'QUESTIONNAIRE_MAX_VALUE', 'QUESTIONNAIRE_MAX_TOTAL', '_clean_questionnaire_answers', '_questionnaire_row_json', '_save_questionnaire', 'questionnaire', 'questionnaire_submit', 'questionnaire_all', '_load_questionnaire_definitions', 'questionnaire_definitions']

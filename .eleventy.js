@@ -55,9 +55,10 @@ module.exports = function (eleventyConfig) {
   // Reference data the playable sheet fetches at runtime (conditions, spell
   // lists). Built by scripts/build_play_data.py.
   eleventyConfig.addPassthroughCopy({ "public/data": "data" });
-  // Question definitions for /questionnaire/ — also available to templates
-  // as `questionnaire` via _data.
-  eleventyConfig.addPassthroughCopy({ "_data/questionnaire.json": "data/questionnaire.json" });
+  // _data/questionnaire.json is deliberately NOT passed through: it carries
+  // every character's secret Part II prompts and on-file vitals. Clients get
+  // it from the authenticated /api/questionnaire/definitions endpoint, scoped
+  // to the caller. Templates can still read it as `questionnaire` via _data.
   // Player roster — also lives in _data/players.json so templates can read
   // it as `players`. Passed through so the PWA client can fetch it at
   // /data/players.json (used as a fallback when /api/auth/config is down).

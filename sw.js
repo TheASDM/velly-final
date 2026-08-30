@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'foglight-pwa-v98';
+const CACHE_VERSION = 'foglight-pwa-v99';
 const PRECACHE = `${CACHE_VERSION}-precache`;
 const PAGES = `${CACHE_VERSION}-pages`;
 const ASSETS = `${CACHE_VERSION}-assets`;
@@ -47,7 +47,6 @@ const APP_SHELL = [
   '/js/vos-submit-lore.js',
   '/questionnaire/',
   '/dossiers/',
-  '/data/questionnaire.json',
   '/data/players.json',
   '/pagefind/pagefind-ui.css',
   '/pagefind/pagefind-ui.js',
