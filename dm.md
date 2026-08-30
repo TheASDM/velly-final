@@ -34,21 +34,39 @@ pageStyles:
   </section>
 
 
-  <nav class="vos-seg vos-seg--index" data-vos-tabs role="tablist" aria-label="DM tools">
-    <button class="vos-seg-btn" type="button" data-view="schedule">Schedule</button>
-    <button class="vos-seg-btn" type="button" data-view="availability">Availability</button>
-    <button class="vos-seg-btn" type="button" data-view="rsvps">RSVPs</button>
-    <button class="vos-seg-btn" type="button" data-view="message">Message</button>
-    <button class="vos-seg-btn" type="button" data-view="history">History</button>
-    <button class="vos-seg-btn" type="button" data-view="push">Push</button>
-    <button class="vos-seg-btn" type="button" data-view="wiki">Wiki</button>
-    <button class="vos-seg-btn" type="button" data-view="lore">Lore</button>
-    <button class="vos-seg-btn" type="button" data-view="records">Records</button>
-    <button class="vos-seg-btn" type="button" data-view="rumors">Rumors</button>
-    <button class="vos-seg-btn" type="button" data-view="handouts">Handouts</button>
-    <button class="vos-seg-btn" type="button" data-view="sounds">Sounds</button>
-    <button class="vos-seg-btn" type="button" data-view="npc">Quick NPC</button>
-    <button class="vos-seg-btn" type="button" data-view="inplay">In Play</button>
+  <div class="vos-dm-summary" id="vos-dm-summary" hidden></div>
+
+  <nav class="vos-dm-groups" data-vos-tabs aria-label="DM tools">
+    <div class="vos-dm-group">
+      <div class="vos-dm-group-label">Run the table<span class="vos-seg-dot" id="vos-dm-dot-table" hidden></span></div>
+      <div class="vos-seg vos-seg--index vos-dm-group-chips" role="tablist" aria-label="Run the table">
+        <button class="vos-seg-btn" type="button" data-view="inplay">In Play</button>
+        <button class="vos-seg-btn" type="button" data-view="sounds">Sounds</button>
+        <button class="vos-seg-btn" type="button" data-view="handouts">Handouts</button>
+        <button class="vos-seg-btn" type="button" data-view="npc">Quick NPC</button>
+        <a class="vos-seg-btn vos-seg-link" href="/party/">The Table ↗</a>
+        <a class="vos-seg-btn vos-seg-link" href="/monsters/">Bench ↗</a>
+      </div>
+    </div>
+    <div class="vos-dm-group">
+      <div class="vos-dm-group-label">Prep the week<span class="vos-seg-dot" id="vos-dm-dot-prep" hidden></span></div>
+      <div class="vos-seg vos-seg--index vos-dm-group-chips" role="tablist" aria-label="Prep the week">
+        <button class="vos-seg-btn" type="button" data-view="schedule">Schedule</button>
+        <button class="vos-seg-btn" type="button" data-view="availability">Availability</button>
+        <button class="vos-seg-btn" type="button" data-view="rsvps">RSVPs</button>
+        <button class="vos-seg-btn" type="button" data-view="records">Records</button>
+      </div>
+    </div>
+    <div class="vos-dm-group">
+      <div class="vos-dm-group-label">World &amp; comms<span class="vos-seg-dot" id="vos-dm-dot-comms" hidden></span></div>
+      <div class="vos-seg vos-seg--index vos-dm-group-chips" role="tablist" aria-label="World and comms">
+        <button class="vos-seg-btn" type="button" data-view="compose">Compose</button>
+        <button class="vos-seg-btn" type="button" data-view="history">History</button>
+        <button class="vos-seg-btn" type="button" data-view="lore">Lore</button>
+        <button class="vos-seg-btn" type="button" data-view="wiki">Wiki</button>
+        <button class="vos-seg-btn" type="button" data-view="rumors">Rumors</button>
+      </div>
+    </div>
   </nav>
 
   <div class="vos-dm-view" data-vos-view="schedule">
@@ -56,9 +74,6 @@ pageStyles:
   <section class="vos-dm-panel" aria-labelledby="vos-dm-cal-title-h">
     <div class="vos-dm-panel-head">
       <h2 id="vos-dm-cal-title-h">Schedule Event</h2>
-      <div class="vos-dm-actions">
-        <button id="vos-dm-cal-refresh" type="button">Refresh</button>
-      </div>
     </div>
     <form class="vos-dm-form" id="vos-dm-cal-form">
       <label>
@@ -109,9 +124,6 @@ pageStyles:
   <section class="vos-dm-panel" aria-labelledby="vos-dm-avail-title">
     <div class="vos-dm-panel-head">
       <h2 id="vos-dm-avail-title">Player Availability</h2>
-      <div class="vos-dm-actions">
-        <button id="vos-dm-avail-refresh" type="button">Refresh</button>
-      </div>
     </div>
     <div class="vos-dm-avail-submitted" id="vos-dm-avail-submitted"></div>
     <div class="vos-dm-avail-summary" id="vos-dm-avail-summary"></div>
@@ -130,18 +142,15 @@ pageStyles:
       <div class="vos-dm-count"><strong id="vos-rsvp-out">0</strong><span>Out</span></div>
     </div>
     <ul class="vos-dm-rsvps" id="vos-dm-rsvps"></ul>
-    <div class="vos-dm-actions">
-      <button id="vos-dm-rsvp-refresh" type="button">Refresh RSVPs</button>
-    </div>
     <div class="vos-dm-status" id="vos-dm-rsvp-status" role="status" aria-live="polite"></div>
   </section>
 
   </div>
 
-  <div class="vos-dm-view" data-vos-view="message" hidden>
+  <div class="vos-dm-view" data-vos-view="compose" hidden>
 
   <section class="vos-dm-panel" aria-labelledby="vos-dm-message-title">
-    <h2 id="vos-dm-message-title">DM Message</h2>
+    <h2 id="vos-dm-message-title">Compose</h2>
     <form class="vos-dm-form" id="vos-dm-message-form">
       <label>
         Title
@@ -163,11 +172,21 @@ pageStyles:
         </label>
         <div class="vos-dm-recipient-list" data-player-list></div>
       </fieldset>
+      <label class="vos-dm-toggle">
+        <input id="vos-dm-message-notify-only" type="checkbox">
+        <span>Notify only — push alert without an in-app message card</span>
+      </label>
       <div class="vos-dm-actions">
         <button id="vos-dm-message-send" type="submit">Post + Notify</button>
       </div>
     </form>
     <div class="vos-dm-status" id="vos-dm-message-status" role="status" aria-live="polite"></div>
+  </section>
+
+  <section class="vos-dm-panel" aria-labelledby="vos-dm-subs-title">
+    <h2 id="vos-dm-subs-title">Who Has Alerts On</h2>
+    <ul class="vos-dm-rsvps" id="vos-dm-push-subs"></ul>
+    <div class="vos-dm-status" id="vos-dm-subs-status" role="status" aria-live="polite"></div>
   </section>
 
   </div>
@@ -182,56 +201,10 @@ pageStyles:
           <input id="vos-dm-show-deleted" type="checkbox">
           <span>Show deleted</span>
         </label>
-        <button id="vos-dm-history-refresh" type="button">Refresh</button>
       </div>
     </div>
     <div class="vos-dm-history" id="vos-dm-history"></div>
     <div class="vos-dm-status" id="vos-dm-history-status" role="status" aria-live="polite"></div>
-  </section>
-
-  </div>
-
-  <div class="vos-dm-view" data-vos-view="push" hidden>
-
-  <section class="vos-dm-panel" aria-labelledby="vos-dm-subs-title">
-    <div class="vos-dm-panel-head">
-      <h2 id="vos-dm-subs-title">Who Has Alerts On</h2>
-      <div class="vos-dm-actions">
-        <button id="vos-dm-subs-refresh" type="button">Refresh</button>
-      </div>
-    </div>
-    <ul class="vos-dm-rsvps" id="vos-dm-push-subs"></ul>
-    <div class="vos-dm-status" id="vos-dm-subs-status" role="status" aria-live="polite"></div>
-  </section>
-
-  <section class="vos-dm-panel" aria-labelledby="vos-dm-push-title">
-    <h2 id="vos-dm-push-title">Test Push</h2>
-    <form class="vos-dm-form" id="vos-dm-push-form">
-      <label>
-        Title
-        <input id="vos-dm-title" type="text" value="Foglight">
-      </label>
-      <label>
-        Message
-        <textarea id="vos-dm-body">Test push from the DM page.</textarea>
-      </label>
-      <label>
-        URL
-        <input id="vos-dm-url" type="text" value="/">
-      </label>
-      <fieldset class="vos-dm-recipient-picker" id="vos-dm-push-recipients" data-recipient-picker>
-        <legend>Recipients</legend>
-        <label class="vos-dm-check">
-          <input type="checkbox" data-all-recipients checked>
-          <span>All players</span>
-        </label>
-        <div class="vos-dm-recipient-list" data-player-list></div>
-      </fieldset>
-      <div class="vos-dm-actions">
-        <button id="vos-dm-send" type="submit">Send Test Push</button>
-      </div>
-    </form>
-    <div class="vos-dm-status" id="vos-dm-status" role="status" aria-live="polite"></div>
   </section>
 
   </div>
@@ -273,9 +246,6 @@ pageStyles:
   <section class="vos-dm-panel" aria-labelledby="vos-dm-lore-title">
     <div class="vos-dm-panel-head">
       <h2 id="vos-dm-lore-title">Lore Submissions</h2>
-      <div class="vos-dm-actions">
-        <button id="vos-dm-lore-refresh" type="button">Refresh</button>
-      </div>
     </div>
     <div class="vos-dm-bulk-bar" id="vos-dm-lore-bulk-bar" hidden>
       <label class="vos-dm-bulk-select-all">
@@ -336,7 +306,6 @@ pageStyles:
       <div class="vos-dm-actions">
         <a class="vos-dm-button" href="/dossiers/">Dossiers</a>
         <a class="vos-dm-button" href="/questionnaire/">Proof Records</a>
-        <button id="vos-dm-records-refresh" type="button">Refresh</button>
       </div>
     </div>
     <ul class="vos-dm-rsvps" id="vos-dm-records-list"></ul>
@@ -350,9 +319,6 @@ pageStyles:
   <section class="vos-dm-panel" aria-labelledby="vos-dm-rumors-title">
     <div class="vos-dm-panel-head">
       <h2 id="vos-dm-rumors-title">Tavern Rumors</h2>
-      <div class="vos-dm-actions">
-        <button id="vos-dm-rumors-refresh" type="button">Refresh</button>
-      </div>
     </div>
     <form class="vos-dm-form" id="vos-dm-rumor-form">
       <label>
@@ -374,9 +340,6 @@ pageStyles:
   <section class="vos-dm-panel" aria-labelledby="vos-dm-handouts-title">
     <div class="vos-dm-panel-head">
       <h2 id="vos-dm-handouts-title">Handouts</h2>
-      <div class="vos-dm-actions">
-        <button id="vos-dm-handouts-refresh" type="button">Refresh</button>
-      </div>
     </div>
     <p class="vos-dm-helper">A handout appears on the Handouts tab of each chosen
     player's sheet — and only theirs. Same markdown dialect as the character sheets.</p>
@@ -419,7 +382,7 @@ pageStyles:
       <h2 id="vos-dm-sounds-title">Sounds</h2>
       <div class="vos-dm-actions">
         <button id="vos-dm-sounds-stop" type="button">Stop All</button>
-        <button id="vos-dm-sounds-refresh" type="button">Refresh</button>
+        <button id="vos-dm-sounds-refresh" type="button">Reload Library</button>
       </div>
     </div>
     <p class="vos-dm-helper">Your Syrinscape library. Tapping a mood switches the
@@ -455,7 +418,6 @@ pageStyles:
     <div class="vos-dm-panel-head">
       <h2 id="vos-dm-inplay-title">Currently In Play</h2>
       <div class="vos-dm-actions">
-        <button id="vos-dm-inplay-refresh" type="button">Refresh</button>
         <button id="vos-dm-inplay-add" type="button">Add row</button>
         <button class="vos-dm-button" id="vos-dm-inplay-save" type="button">Save</button>
       </div>

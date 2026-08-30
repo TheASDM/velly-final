@@ -1,4 +1,4 @@
-import { inPlayAddEl, inPlayListEl, inPlayRefreshEl, inPlaySaveEl, inPlayStatusEl, setStatus } from './dom.js';
+import { inPlayAddEl, inPlayListEl, inPlaySaveEl, inPlayStatusEl, setStatus } from './dom.js';
 import { adminJson, putJson, withPanel } from './http.js';
 import { confirmDiscard, trackDirty } from './dirty.js';
 import { loadWikiPages, wikiPagesByTitle } from './wiki.js';
@@ -155,9 +155,9 @@ function collectRows() {
 
 /* Loads on tab open (not at import time), and never silently wipes rows the
  * DM is mid-edit on. */
-export function refreshInPlay() {
-  if (!confirmDiscard('in-play', 'Reload and discard the unsaved in-play rows?')) return null;
-  return withPanel(inPlayStatusEl, inPlayRefreshEl, async () => {
+export async function refreshInPlay() {
+  if (!(await confirmDiscard('in-play', 'Reload and discard the unsaved in-play rows?'))) return null;
+  return withPanel(inPlayStatusEl, null, async () => {
     await loadWikiPages();
     const data = await adminJson('/api/in-play');
     renderInPlayList(data.items || []);
@@ -182,7 +182,5 @@ export async function saveInPlay() {
 if (inPlayAddEl) inPlayAddEl.addEventListener('click', () => {
   inPlayListEl.appendChild(renderInPlayRow(null));
 });
-
-if (inPlayRefreshEl) inPlayRefreshEl.addEventListener('click', refreshInPlay);
 
 if (inPlaySaveEl) inPlaySaveEl.addEventListener('click', saveInPlay);

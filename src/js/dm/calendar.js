@@ -1,5 +1,6 @@
 import { calCancelEl, calDateEl, calEventsEl, calFormEl, calKindEl, calLocationEl, calNotesEl, calSaveEl, calStatusEl, calTasksEl, calTimeEl, calTitleEl, setStatus } from './dom.js';
 import { adminJson, deleteJson, postJson, putJson, withPanel } from './http.js';
+import { confirmSheet } from './confirm.js';
 
 /* Computed per call — a module-load constant went stale in a tab left open
  * overnight. */
@@ -132,8 +133,8 @@ export async function saveCalendarEvent(eventArg) {
   }, { loading: 'Saving…' });
 }
 
-export function deleteCalendarEvent(event) {
-  if (!window.confirm(`Delete "${event.title}" on ${prettyDate(event.date)}?`)) return null;
+export async function deleteCalendarEvent(event) {
+  if (!(await confirmSheet(`Delete "${event.title}" on ${prettyDate(event.date)}?`, { confirmLabel: 'Delete', danger: true }))) return null;
   return withPanel(calStatusEl, null, async () => {
     await deleteJson(`/api/calendar/events/${encodeURIComponent(event.id)}`);
     if (editingEventId === event.id) exitEditMode();

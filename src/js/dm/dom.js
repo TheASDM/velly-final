@@ -13,31 +13,27 @@ export const signInEl = document.getElementById('vos-dm-sign-in');
 export const signOutEl = document.getElementById('vos-dm-sign-out');
 export const switchAccountEl = document.getElementById('vos-dm-switch-account');
 
+export const summaryEl = document.getElementById('vos-dm-summary');
+export const dotPrepEl = document.getElementById('vos-dm-dot-prep');
+export const dotCommsEl = document.getElementById('vos-dm-dot-comms');
+
 export const messageForm = document.getElementById('vos-dm-message-form');
 export const messageTitleEl = document.getElementById('vos-dm-message-heading');
 export const messageBodyEl = document.getElementById('vos-dm-message-body');
 export const messageUrlEl = document.getElementById('vos-dm-message-url');
 export const messageStatusEl = document.getElementById('vos-dm-message-status');
 export const messageSendEl = document.getElementById('vos-dm-message-send');
+export const messageNotifyOnlyEl = document.getElementById('vos-dm-message-notify-only');
 
 export const historyEl = document.getElementById('vos-dm-history');
 export const historyStatusEl = document.getElementById('vos-dm-history-status');
-export const historyRefreshEl = document.getElementById('vos-dm-history-refresh');
 export const showDeletedEl = document.getElementById('vos-dm-show-deleted');
 
-export const rsvpRefreshEl = document.getElementById('vos-dm-rsvp-refresh');
 export const rsvpStatusEl = document.getElementById('vos-dm-rsvp-status');
 export const rsvpListEl = document.getElementById('vos-dm-rsvps');
 export const rsvpGoingEl = document.getElementById('vos-rsvp-going');
 export const rsvpMaybeEl = document.getElementById('vos-rsvp-maybe');
 export const rsvpOutEl = document.getElementById('vos-rsvp-out');
-
-export const form = document.getElementById('vos-dm-push-form');
-export const titleEl = document.getElementById('vos-dm-title');
-export const bodyEl = document.getElementById('vos-dm-body');
-export const urlEl = document.getElementById('vos-dm-url');
-export const statusEl = document.getElementById('vos-dm-status');
-export const sendEl = document.getElementById('vos-dm-send');
 
 export const recipientPickers = new Map();
 
@@ -53,18 +49,15 @@ export const calSaveEl = document.getElementById('vos-dm-cal-save');
 export const calCancelEl = document.getElementById('vos-dm-cal-cancel');
 export const calEventsEl = document.getElementById('vos-dm-cal-events');
 export const calStatusEl = document.getElementById('vos-dm-cal-status');
-export const calRefreshEl = document.getElementById('vos-dm-cal-refresh');
 
 export const pushSubsEl = document.getElementById('vos-dm-push-subs');
 export const pushSubsStatusEl = document.getElementById('vos-dm-subs-status');
-export const pushSubsRefreshEl = document.getElementById('vos-dm-subs-refresh');
 
 export const rumorFormEl = document.getElementById('vos-dm-rumor-form');
 export const rumorTextEl = document.getElementById('vos-dm-rumor-text');
 export const rumorAddEl = document.getElementById('vos-dm-rumor-add');
 export const rumorsListEl = document.getElementById('vos-dm-rumors-list');
 export const rumorsStatusEl = document.getElementById('vos-dm-rumors-status');
-export const rumorsRefreshEl = document.getElementById('vos-dm-rumors-refresh');
 
 export const handoutFormEl = document.getElementById('vos-dm-handout-form');
 export const handoutIdEl = document.getElementById('vos-dm-handout-id');
@@ -76,7 +69,6 @@ export const handoutSaveEl = document.getElementById('vos-dm-handout-save');
 export const handoutCancelEl = document.getElementById('vos-dm-handout-cancel');
 export const handoutsListEl = document.getElementById('vos-dm-handouts-list');
 export const handoutsStatusEl = document.getElementById('vos-dm-handouts-status');
-export const handoutsRefreshEl = document.getElementById('vos-dm-handouts-refresh');
 
 export const soundsListEl = document.getElementById('vos-dm-sounds-list');
 export const soundsSearchEl = document.getElementById('vos-dm-sounds-search');
@@ -89,12 +81,10 @@ export const npcResultEl = document.getElementById('vos-dm-npc-result');
 
 export const recordsListEl = document.getElementById('vos-dm-records-list');
 export const recordsStatusEl = document.getElementById('vos-dm-records-status');
-export const recordsRefreshEl = document.getElementById('vos-dm-records-refresh');
 
 export const availSummaryEl = document.getElementById('vos-dm-avail-summary');
 export const availSubmittedEl = document.getElementById('vos-dm-avail-submitted');
 export const availStatusEl = document.getElementById('vos-dm-avail-status');
-export const availRefreshEl = document.getElementById('vos-dm-avail-refresh');
 
 export const loreListEl = document.getElementById('vos-dm-lore-list');
 export const loreBulkBarEl = document.getElementById('vos-dm-lore-bulk-bar');
@@ -118,11 +108,9 @@ export const wikiStatusEl = document.getElementById('vos-dm-wiki-status');
 export const inPlayListEl = document.getElementById('vos-dm-inplay-list');
 export const inPlayStatusEl = document.getElementById('vos-dm-inplay-status');
 export const inPlayAddEl = document.getElementById('vos-dm-inplay-add');
-export const inPlayRefreshEl = document.getElementById('vos-dm-inplay-refresh');
 export const inPlaySaveEl = document.getElementById('vos-dm-inplay-save');
 
 export const loreForm = document.getElementById('vos-dm-lore-form');
-export const loreRefreshEl = document.getElementById('vos-dm-lore-refresh');
 export const loreStatusEl = document.getElementById('vos-dm-lore-status');
 export const loreTitleEl = document.getElementById('vos-dm-lore-entry-title');
 export const loreSlugEl = document.getElementById('vos-dm-lore-slug');

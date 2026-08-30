@@ -316,3 +316,119 @@
   padding: 0;
   font-size: 1.1rem;
 }
+
+/* ── Grouped tool index ─────────────────────────────────────────────── */
+.vos-dm-groups {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin: 1rem 0 1.25rem;
+}
+.vos-dm-group-label {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.35rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--vos-gold-bright);
+  opacity: 0.85;
+}
+.vos-dm-group-label .vos-seg-dot {
+  position: static;
+  flex: none;
+}
+.vos-seg-link {
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+}
+
+/* ── Dashboard summary strip ────────────────────────────────────────── */
+.vos-dm-summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0.75rem 0;
+}
+.vos-dm-summary-chip {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  padding: 0.45rem 0.7rem;
+  border: 1px solid rgba(201, 168, 76, 0.22);
+  border-radius: 8px;
+  background: rgba(7, 6, 10, 0.4);
+}
+.vos-dm-summary-chip strong {
+  color: var(--vos-cream);
+  font-size: 0.95rem;
+}
+.vos-dm-summary-chip span {
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0.7;
+}
+.vos-dm-summary-chip.is-alert {
+  border-color: rgba(212, 77, 63, 0.5);
+}
+.vos-dm-summary-chip.is-alert strong {
+  color: var(--vos-quest-bright);
+}
+
+/* ── Confirm sheet ──────────────────────────────────────────────────── */
+.vos-dm-confirm {
+  max-width: 26rem;
+  padding: 1.1rem 1.25rem;
+  border: 1px solid rgba(201, 168, 76, 0.4);
+  border-radius: 10px;
+  background: #14101a;
+  color: var(--vos-cream);
+}
+.vos-dm-confirm::backdrop {
+  background: rgba(0, 0, 0, 0.55);
+}
+.vos-dm-confirm-message {
+  margin: 0 0 0.9rem;
+  line-height: 1.5;
+}
+.vos-dm-confirm .vos-dm-actions {
+  justify-content: flex-end;
+  /* Danger never sits flush against Cancel. */
+  gap: 0.9rem;
+}
+
+/* ── Wiki save conflict ─────────────────────────────────────────────── */
+.vos-dm-conflict {
+  margin-top: 0.75rem;
+  padding: 0.75rem;
+  border: 1px solid rgba(212, 77, 63, 0.5);
+  border-radius: 8px;
+}
+.vos-dm-conflict pre {
+  margin: 0.4rem 0 0;
+  padding: 0.6rem;
+  border: 1px solid rgba(201, 168, 76, 0.22);
+  border-radius: 6px;
+  font-size: 0.75rem;
+  line-height: 1.4;
+  white-space: pre-wrap;
+  word-break: break-word;
+  max-height: 18rem;
+  overflow-y: auto;
+}
+.vos-dm-conflict summary {
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+/* Focused fields land below the sticky app bar, not under it. */
+.vos-dm input,
+.vos-dm textarea,
+.vos-dm select {
+  scroll-margin-top: 5.5rem;
+}

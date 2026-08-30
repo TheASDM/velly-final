@@ -1,8 +1,8 @@
-import { rsvpGoingEl, rsvpListEl, rsvpMaybeEl, rsvpOutEl, rsvpRefreshEl, rsvpStatusEl, setStatus } from './dom.js';
+import { rsvpGoingEl, rsvpListEl, rsvpMaybeEl, rsvpOutEl, rsvpStatusEl, setStatus } from './dom.js';
 import { adminJson, withPanel } from './http.js';
 
 export function refreshRsvps() {
-  return withPanel(rsvpStatusEl, rsvpRefreshEl, async () => {
+  return withPanel(rsvpStatusEl, null, async () => {
     // RSVPs are keyed to the next scheduled session in calendar_events.
     // A network failure here is a failure — it must not read as "nothing
     // is scheduled".

@@ -1,49 +1,29 @@
-import { refreshAvailabilitySummary, rollNpc } from './availability.js';
-import { exitEditMode, refreshCalendarEvents, saveCalendarEvent } from './calendar.js';
-import { availRefreshEl, calCancelEl, calFormEl, calRefreshEl, handoutCancelEl, handoutFormEl, handoutImageEl, handoutsRefreshEl, historyRefreshEl, loreBulkPublishEl, loreBulkRejectEl, loreForm, loreRedraftEl, loreRefreshEl, loreRejectEl, loreSaveEl, loreSelectAllEl, npcRollEl, pushSubsRefreshEl, recordsRefreshEl, rsvpRefreshEl, rumorFormEl, rumorsRefreshEl, setStatus, showDeletedEl, wikiForm, wikiLoadEl, wikiQueryEl, wikiRebuildEl, wikiStatusEl } from './dom.js';
-import { attachHandoutImage, cancelHandoutEdit, refreshHandouts, saveHandout } from './handouts.js';
-import { bulkPublishSelected, bulkRejectSelected, publishLoreSubmission, redraftLoreSubmission, refreshLoreSubmissions, rejectLoreSubmission, saveLoreSubmission, toggleSelectAll } from './lore.js';
+import { rollNpc } from './availability.js';
+import { exitEditMode, saveCalendarEvent } from './calendar.js';
+import { calCancelEl, calFormEl, handoutCancelEl, handoutFormEl, handoutImageEl, loreBulkPublishEl, loreBulkRejectEl, loreForm, loreRedraftEl, loreRejectEl, loreSaveEl, loreSelectAllEl, npcRollEl, rumorFormEl, setStatus, showDeletedEl, wikiForm, wikiLoadEl, wikiQueryEl, wikiRebuildEl, wikiStatusEl } from './dom.js';
+import { attachHandoutImage, cancelHandoutEdit, saveHandout } from './handouts.js';
+import { bulkPublishSelected, bulkRejectSelected, publishLoreSubmission, redraftLoreSubmission, rejectLoreSubmission, saveLoreSubmission, toggleSelectAll } from './lore.js';
 import { initRecipientPickers, refreshMessages } from './messages.js';
-import { refreshPushSubscribers } from './push.js';
-import { refreshQuestionnaires } from './questionnaires.js';
 import { triggerRebuild } from './rebuild.js';
-import { refreshRsvps } from './rsvp.js';
-import { addRumor, refreshRumors } from './rumors.js';
+import { addRumor } from './rumors.js';
 import { bootAdminAuth, onSessionLive } from './session.js';
 import { wireSounds } from './sounds.js';
 import { loadWikiEntry, saveWikiEntry } from './wiki.js';
-
-rsvpRefreshEl.addEventListener('click', refreshRsvps);
 
 calFormEl.addEventListener('submit', saveCalendarEvent);
 
 if (calCancelEl) calCancelEl.addEventListener('click', exitEditMode);
 
-calRefreshEl.addEventListener('click', refreshCalendarEvents);
-
-availRefreshEl.addEventListener('click', refreshAvailabilitySummary);
-
-if (recordsRefreshEl) recordsRefreshEl.addEventListener('click', refreshQuestionnaires);
-
 if (rumorFormEl) rumorFormEl.addEventListener('submit', addRumor);
 if (handoutFormEl) handoutFormEl.addEventListener('submit', saveHandout);
 if (handoutCancelEl) handoutCancelEl.addEventListener('click', cancelHandoutEdit);
-if (handoutsRefreshEl) handoutsRefreshEl.addEventListener('click', refreshHandouts);
 if (handoutImageEl) handoutImageEl.addEventListener('change', attachHandoutImage);
 
 wireSounds();
 
-if (rumorsRefreshEl) rumorsRefreshEl.addEventListener('click', refreshRumors);
-
 if (npcRollEl) npcRollEl.addEventListener('click', rollNpc);
 
-if (pushSubsRefreshEl) pushSubsRefreshEl.addEventListener('click', refreshPushSubscribers);
-
-historyRefreshEl.addEventListener('click', refreshMessages);
-
 showDeletedEl.addEventListener('change', refreshMessages);
-
-loreRefreshEl.addEventListener('click', refreshLoreSubmissions);
 
 loreSaveEl.addEventListener('click', saveLoreSubmission);
 

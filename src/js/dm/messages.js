@@ -1,5 +1,6 @@
-import { formatDate, historyEl, historyRefreshEl, historyStatusEl, messageBodyEl, messageForm, messageSendEl, messageStatusEl, messageTitleEl, messageUrlEl, recipientPickers, setStatus, showDeletedEl } from './dom.js';
+import { formatDate, historyEl, historyStatusEl, messageBodyEl, messageForm, messageNotifyOnlyEl, messageSendEl, messageStatusEl, messageTitleEl, messageUrlEl, recipientPickers, setStatus, showDeletedEl } from './dom.js';
 import { adminJson, deleteJson, postJson, withPanel } from './http.js';
+import { confirmSheet } from './confirm.js';
 import { playerNames } from './roster.js';
 import { renderMarkdown } from './wiki.js';
 
@@ -171,7 +172,7 @@ export function renderHistory(messages) {
 }
 
 export function refreshMessages() {
-  return withPanel(historyStatusEl, historyRefreshEl, async () => {
+  return withPanel(historyStatusEl, null, async () => {
     if (!rosterCache.length) rosterCache = await playerNames();
     const includeDeleted = showDeletedEl.checked ? '1' : '0';
     const data = await adminJson(`/api/admin/messages?limit=30&includeDeleted=${includeDeleted}`);
@@ -180,8 +181,8 @@ export function refreshMessages() {
   });
 }
 
-export function deleteMessage(id) {
-  if (!window.confirm('Delete this DM message from player views?')) return null;
+export async function deleteMessage(id) {
+  if (!(await confirmSheet('Delete this DM message from player views?', { confirmLabel: 'Delete', danger: true }))) return null;
   return withPanel(historyStatusEl, null, async () => {
     await deleteJson(`/api/admin/messages/${encodeURIComponent(id)}`);
     await refreshMessages();
@@ -193,13 +194,22 @@ messageForm.addEventListener('submit', async (event) => {
   event.preventDefault();
   const recipients = recipientsFor('vos-dm-message-recipients', messageStatusEl);
   if (recipients === undefined) return;
+  const notifyOnly = !!(messageNotifyOnlyEl && messageNotifyOnlyEl.checked);
+  const payload = {
+    title: messageTitleEl.value.trim(),
+    body: messageBodyEl.value.trim(),
+    url: messageUrlEl.value.trim() || '/',
+    recipients,
+  };
   await withPanel(messageStatusEl, messageSendEl, async () => {
-    const data = await postJson('/api/messages', {
-      title: messageTitleEl.value.trim(),
-      body: messageBodyEl.value.trim(),
-      url: messageUrlEl.value.trim() || '/',
-      recipients,
-    });
+    if (notifyOnly) {
+      // A push alert with no in-app message card.
+      const data = await postJson('/api/push/send', payload);
+      resetRecipients('vos-dm-message-recipients');
+      setStatus(messageStatusEl, `Notified ${data.sent} of ${data.attempted}. Pruned ${data.pruned}.`);
+      return;
+    }
+    const data = await postJson('/api/messages', payload);
     const push = data.push || {};
     const pushNote = push.skipped
       ? 'Push skipped (not configured).'
@@ -209,5 +219,5 @@ messageForm.addEventListener('submit', async (event) => {
     await refreshMessages();
     // After the refresh, so its own "Updated." can't swallow the result.
     setStatus(messageStatusEl, `Posted. ${pushNote}`);
-  }, { loading: 'Posting…' });
+  }, { loading: notifyOnly ? 'Notifying…' : 'Posting…' });
 });

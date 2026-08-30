@@ -7,12 +7,13 @@
 import {
   handoutCancelEl, handoutFormEl, handoutIdEl, handoutImageEl,
   handoutPlayersEl, handoutSaveEl, handoutTextEl, handoutTitleEl,
-  handoutsListEl, handoutsRefreshEl, handoutsStatusEl, setStatus,
+  handoutsListEl, handoutsStatusEl, setStatus,
 } from './dom.js';
 import { adminJson, deleteJson, withPanel } from './http.js';
 import { authHeaders } from './session.js';
 import { loadRoster } from './roster.js';
 import { confirmDiscard, trackDirty } from './dirty.js';
+import { confirmSheet } from './confirm.js';
 import { renderSheet } from '../sheet/render.js';
 import { wireImageZoom } from '../components/image-zoom.js';
 
@@ -88,14 +89,14 @@ function resetForm() {
   markClean();
 }
 
-export function cancelHandoutEdit() {
-  if (!confirmDiscard('handout-form', 'Discard this handout draft?')) return;
+export async function cancelHandoutEdit() {
+  if (!(await confirmDiscard('handout-form', 'Discard this handout draft?'))) return;
   resetForm();
   setStatus(handoutsStatusEl, '');
 }
 
-function startEdit(handout) {
-  if (!confirmDiscard('handout-form', 'Discard the handout you are composing and edit this one instead?')) return;
+async function startEdit(handout) {
+  if (!(await confirmDiscard('handout-form', 'Discard the handout you are composing and edit this one instead?'))) return;
   handoutIdEl.value = String(handout.id);
   handoutTitleEl.value = handout.title;
   handoutTextEl.value = handout.markdown;
@@ -109,7 +110,7 @@ function startEdit(handout) {
 }
 
 export function refreshHandouts() {
-  return withPanel(handoutsStatusEl, handoutsRefreshEl, async () => {
+  return withPanel(handoutsStatusEl, null, async () => {
     await ensureRoster();
     const data = await adminJson('/api/handouts/all');
     lastHandouts = data.handouts || [];
@@ -229,8 +230,8 @@ export async function attachHandoutImage() {
   }, { loading: 'Uploading image…' });
 }
 
-function deleteHandout(handout) {
-  if (!window.confirm(`Take back "${handout.title}"? The players lose it too.`)) return null;
+async function deleteHandout(handout) {
+  if (!(await confirmSheet(`Take back "${handout.title}"? The players lose it too.`, { confirmLabel: 'Take back', danger: true }))) return null;
   return withPanel(handoutsStatusEl, null, async () => {
     await deleteJson(`/api/handouts/${encodeURIComponent(handout.id)}`);
     if (handoutIdEl.value === String(handout.id)) resetForm();

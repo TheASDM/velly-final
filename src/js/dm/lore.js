@@ -1,7 +1,8 @@
-import { loreBulkBarEl, loreBulkPublishEl, loreBulkRejectEl, loreForm, loreImageEl, loreImagePromptEl, loreListEl, loreMarkdownEl, lorePublishEl, loreRedraftEl, loreRefreshEl, loreRejectEl, loreRejectReasonEl, loreSaveEl, loreSelectAllEl, loreSelectCountEl, loreSlugEl, loreStatusEl, loreSummaryEl, loreTitleEl, selectedLoreIds, setStatus } from './dom.js';
+import { loreBulkBarEl, loreBulkPublishEl, loreBulkRejectEl, loreForm, loreImageEl, loreImagePromptEl, loreListEl, loreMarkdownEl, lorePublishEl, loreRedraftEl, loreRejectEl, loreRejectReasonEl, loreSaveEl, loreSelectAllEl, loreSelectCountEl, loreSlugEl, loreStatusEl, loreSummaryEl, loreTitleEl, selectedLoreIds, setStatus } from './dom.js';
 import { adminJson, postJson, withPanel } from './http.js';
 import { followRebuild, triggerRebuild } from './rebuild.js';
 import { confirmDiscard, trackDirty } from './dirty.js';
+import { confirmSheet } from './confirm.js';
 
 export let selectedLoreId = null;
 
@@ -183,7 +184,7 @@ export async function bulkPublishSelected() {
   const confirmText = ids.length === 1
     ? 'Publish 1 submission to the wiki?'
     : `Publish ${ids.length} submissions to the wiki?`;
-  if (!window.confirm(confirmText)) return;
+  if (!(await confirmSheet(confirmText, { confirmLabel: 'Publish' }))) return;
 
   const { ok } = await runBulk(ids, 'Publishing', async (id) => {
     // Already-published rows need overwrite to refresh their page; anything
@@ -208,7 +209,7 @@ export async function bulkRejectSelected() {
   const confirmText = reason
     ? `Reject ${ids.length === 1 ? 'this submission' : ids.length + ' submissions'} with the reason in the editor?`
     : `Reject ${ids.length === 1 ? 'this submission' : ids.length + ' submissions'} without a reason? (Players see "Rejected by DM".)`;
-  if (!window.confirm(confirmText)) return;
+  if (!(await confirmSheet(confirmText, { confirmLabel: 'Reject', danger: true }))) return;
 
   await runBulk(ids, 'Rejecting', async (id) => {
     await postJson(
@@ -241,7 +242,7 @@ export function fillLoreForm(submission) {
 }
 
 export function refreshLoreSubmissions() {
-  return withPanel(loreStatusEl, loreRefreshEl, async () => {
+  return withPanel(loreStatusEl, null, async () => {
     const data = await adminJson('/api/admin/lore-submissions?limit=40');
     const submissions = data.submissions || [];
     renderLoreList(submissions);
@@ -254,7 +255,7 @@ export function refreshLoreSubmissions() {
 
 export async function selectLoreSubmission(id, { skipDirtyCheck = false } = {}) {
   if (!skipDirtyCheck && id !== selectedLoreId
-      && !confirmDiscard('lore-editor', 'Discard unsaved edits to the open draft?')) {
+      && !(await confirmDiscard('lore-editor', 'Discard unsaved edits to the open draft?'))) {
     return;
   }
   await withPanel(loreStatusEl, null, async () => {
@@ -279,15 +280,47 @@ export async function saveLoreSubmission() {
   }, { loading: 'Saving…' });
 }
 
+/* Follow a regeneration to its end instead of firing and forgetting — the
+ * old console said "started" and never checked again. */
+async function pollRedraft(id) {
+  const deadline = Date.now() + 3 * 60 * 1000;
+  while (Date.now() < deadline) {
+    await new Promise((resolve) => { setTimeout(resolve, 4000); });
+    if (selectedLoreId !== id) return; // the DM moved on
+    let submission = null;
+    try {
+      const data = await adminJson(`/api/admin/lore-submissions/${encodeURIComponent(id)}`);
+      submission = data.submission;
+    } catch (error) {
+      setStatus(loreStatusEl, error.message, true);
+      return;
+    }
+    if (submission && submission.status !== 'drafting') {
+      fillLoreForm(submission);
+      setStatus(
+        loreStatusEl,
+        submission.error_message
+          ? `Regeneration failed: ${submission.error_message}`
+          : 'New draft ready.',
+        !!submission.error_message
+      );
+      return;
+    }
+    setStatus(loreStatusEl, 'Regenerating…');
+  }
+  setStatus(loreStatusEl, 'Still regenerating — reload the draft in a minute.', true);
+}
+
 export async function redraftLoreSubmission() {
   if (!selectedLoreId) return;
-  if (!window.confirm('Regenerate this draft? Current edits are replaced when the new draft finishes.')) return;
+  if (!(await confirmSheet('Regenerate this draft? Current edits are replaced when the new draft finishes.', { confirmLabel: 'Regenerate' }))) return;
+  const id = selectedLoreId;
   await withPanel(loreStatusEl, loreRedraftEl, async () => {
-    await postJson(`/api/admin/lore-submissions/${encodeURIComponent(selectedLoreId)}/draft`, {});
+    await postJson(`/api/admin/lore-submissions/${encodeURIComponent(id)}/draft`, {});
     editorSnapshot = null;
-    await refreshLoreSubmissions();
-    setStatus(loreStatusEl, 'Regeneration started — reload the draft in a minute.');
+    setStatus(loreStatusEl, 'Regenerating…');
   }, { loading: 'Regenerating…' });
+  pollRedraft(id);
 }
 
 export async function rejectLoreSubmission() {
@@ -296,7 +329,7 @@ export async function rejectLoreSubmission() {
   const confirmText = reason
     ? 'Reject this submission with the reason above? The player will see it.'
     : 'Reject without a reason? (The player will only see "Rejected by DM".)';
-  if (!window.confirm(confirmText)) return;
+  if (!(await confirmSheet(confirmText, { confirmLabel: 'Reject', danger: true }))) return;
   await withPanel(loreStatusEl, loreRejectEl, async () => {
     await postJson(
       `/api/admin/lore-submissions/${encodeURIComponent(selectedLoreId)}/reject`,
@@ -315,7 +348,7 @@ export async function publishLoreSubmission(event) {
   const confirmText = selectedLoreStatus === 'published'
     ? 'Republish and overwrite this wiki source file with the current draft?'
     : 'Publish this draft into the wiki source files?';
-  if (!window.confirm(confirmText)) return;
+  if (!(await confirmSheet(confirmText, { confirmLabel: 'Publish' }))) return;
   await withPanel(loreStatusEl, lorePublishEl, async () => {
     const payload = lorePayloadFromForm();
     if (selectedLoreStatus === 'published') {

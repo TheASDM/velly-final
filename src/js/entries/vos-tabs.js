@@ -1,13 +1,16 @@
-/* Segmented sub-navigation shared by the calendar hub and the DM panel.
+/* Segmented sub-navigation shared by the calendar hub and the DM console.
  *
  * Markup contract:
- *   <nav data-vos-tabs> <button data-view="foo">…</button> … </nav>
+ *   <nav data-vos-tabs> …optional group wrappers… <button data-view="foo">…</button> … </nav>
  *   <section data-vos-view="foo">…</section> …
  *
- * The active view syncs to location.hash (#foo) so views are deep-linkable,
- * and the last-viewed segment is remembered per page for return visits.
- * Emits window 'vos:view-shown' {view} whenever a view becomes active —
- * pages use it to lazy-load a view's data on first open.
+ * Full tab semantics: the buttons are a roving-tabindex tablist (arrow keys,
+ * Home/End), each button controls its named panel, and panels carry
+ * role=tabpanel. The active view syncs to location.hash (#foo) so views are
+ * deep-linkable, and the last-viewed segment is remembered per page in
+ * localStorage — sessionStorage died on iOS PWA relaunch, which is exactly
+ * when the DM wants to land back on the tab they were running the table
+ * from. Emits window 'vos:view-shown' {view} whenever a view becomes active.
  */
 (function () {
   const nav = document.querySelector('[data-vos-tabs]');
@@ -18,6 +21,18 @@
 
   const valid = new Set(buttons.map((button) => button.dataset.view));
   const storageKey = 'vos.view.' + location.pathname;
+
+  buttons.forEach((button) => {
+    button.setAttribute('role', 'tab');
+    button.id = button.id || 'vos-tab-' + button.dataset.view;
+    button.setAttribute('aria-controls', 'vos-view-' + button.dataset.view);
+  });
+  views.forEach((section) => {
+    section.setAttribute('role', 'tabpanel');
+    section.id = section.id || 'vos-view-' + section.dataset.vosView;
+    section.setAttribute('aria-labelledby', 'vos-tab-' + section.dataset.vosView);
+    section.setAttribute('tabindex', '-1');
+  });
 
   function fromHash() {
     const hash = location.hash.replace('#', '');
@@ -30,11 +45,12 @@
       const active = button.dataset.view === view;
       button.classList.toggle('is-active', active);
       button.setAttribute('aria-selected', active ? 'true' : 'false');
+      button.setAttribute('tabindex', active ? '0' : '-1');
     });
     views.forEach((section) => {
       section.hidden = section.dataset.vosView !== view;
     });
-    try { sessionStorage.setItem(storageKey, view); } catch (error) {}
+    try { localStorage.setItem(storageKey, view); } catch (error) {}
     if (updateHash && location.hash !== '#' + view) {
       history.replaceState(null, '', '#' + view);
     }
@@ -48,9 +64,24 @@
     window.dispatchEvent(new CustomEvent('vos:view-shown', { detail: { view } }));
   }
 
-  buttons.forEach((button) => {
-    button.setAttribute('role', 'tab');
+  buttons.forEach((button, index) => {
     button.addEventListener('click', () => show(button.dataset.view, true));
+    button.addEventListener('keydown', (event) => {
+      let target = null;
+      if (event.key === 'ArrowRight' || event.key === 'ArrowDown') {
+        target = buttons[(index + 1) % buttons.length];
+      } else if (event.key === 'ArrowLeft' || event.key === 'ArrowUp') {
+        target = buttons[(index - 1 + buttons.length) % buttons.length];
+      } else if (event.key === 'Home') {
+        target = buttons[0];
+      } else if (event.key === 'End') {
+        target = buttons[buttons.length - 1];
+      }
+      if (!target) return;
+      event.preventDefault();
+      show(target.dataset.view, true);
+      target.focus();
+    });
   });
   window.addEventListener('hashchange', () => {
     const view = fromHash();
@@ -59,7 +90,7 @@
 
   let initial = fromHash();
   if (!initial) {
-    try { initial = sessionStorage.getItem(storageKey); } catch (error) {}
+    try { initial = localStorage.getItem(storageKey); } catch (error) {}
   }
   if (!initial || !valid.has(initial)) initial = buttons[0].dataset.view;
   show(initial, false);

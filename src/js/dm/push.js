@@ -1,9 +1,10 @@
-import { bodyEl, form, pushSubsEl, pushSubsRefreshEl, pushSubsStatusEl, sendEl, setStatus, statusEl, titleEl, urlEl } from './dom.js';
-import { adminJson, postJson, withPanel } from './http.js';
-import { recipientsFor, resetRecipients } from './messages.js';
+/* Who has alerts on. Sending lives in the Compose tab (messages.js) — one
+ * composer posts messages and, with the notify-only toggle, bare pushes. */
+import { pushSubsEl, pushSubsStatusEl, setStatus } from './dom.js';
+import { adminJson, withPanel } from './http.js';
 
 export function refreshPushSubscribers() {
-  return withPanel(pushSubsStatusEl, pushSubsRefreshEl, async () => {
+  return withPanel(pushSubsStatusEl, null, async () => {
     const data = await adminJson('/api/push/subscribers');
     pushSubsEl.innerHTML = '';
     (data.subscribed || []).forEach((sub) => {
@@ -33,19 +34,3 @@ export function refreshPushSubscribers() {
     setStatus(pushSubsStatusEl, 'Stale devices only get pruned when a push to them fails.');
   });
 }
-
-form.addEventListener('submit', async (event) => {
-  event.preventDefault();
-  const recipients = recipientsFor('vos-dm-push-recipients', statusEl);
-  if (recipients === undefined) return;
-  await withPanel(statusEl, sendEl, async () => {
-    const data = await postJson('/api/push/send', {
-      title: titleEl.value.trim(),
-      body: bodyEl.value.trim(),
-      url: urlEl.value.trim() || '/',
-      recipients,
-    });
-    resetRecipients('vos-dm-push-recipients');
-    setStatus(statusEl, `Sent ${data.sent} of ${data.attempted}. Pruned ${data.pruned}.`);
-  }, { loading: 'Sending…' });
-});

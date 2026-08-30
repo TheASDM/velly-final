@@ -1,9 +1,11 @@
 import './dom.js';
+import './confirm.js';
 import './dirty.js';
 import './session.js';
 import './http.js';
 import './rebuild.js';
 import './roster.js';
+import './dashboard.js';
 import './tabs.js';
 import './wiki.js';
 import './messages.js';

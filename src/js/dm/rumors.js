@@ -1,8 +1,8 @@
-import { rumorAddEl, rumorTextEl, rumorsListEl, rumorsRefreshEl, rumorsStatusEl, setStatus } from './dom.js';
+import { rumorAddEl, rumorTextEl, rumorsListEl, rumorsStatusEl, setStatus } from './dom.js';
 import { adminJson, deleteJson, postJson, withPanel } from './http.js';
 
 export function refreshRumors() {
-  return withPanel(rumorsStatusEl, rumorsRefreshEl, async () => {
+  return withPanel(rumorsStatusEl, null, async () => {
     const data = await adminJson('/api/rumors');
     rumorsListEl.innerHTML = '';
     (data.rumors || []).forEach((rumor) => {

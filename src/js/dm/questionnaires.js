@@ -1,9 +1,9 @@
-import { recordsListEl, recordsRefreshEl, recordsStatusEl, setStatus } from './dom.js';
+import { recordsListEl, recordsStatusEl, setStatus } from './dom.js';
 import { adminJson, withPanel } from './http.js';
 import { playerNames } from './roster.js';
 
 export function refreshQuestionnaires() {
-  return withPanel(recordsStatusEl, recordsRefreshEl, async () => {
+  return withPanel(recordsStatusEl, null, async () => {
     const [names, data] = await Promise.all([
       playerNames(),
       adminJson('/api/questionnaire/all'),

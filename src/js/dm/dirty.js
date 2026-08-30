@@ -4,6 +4,8 @@
  * closes while any of them reports unsaved work, and editors call
  * confirmDiscard() before replacing their own content. */
 
+import { confirmSheet } from './confirm.js';
+
 const sources = new Map(); // key -> () => boolean
 
 export function trackDirty(key, isDirty) {
@@ -20,13 +22,16 @@ export function anyDirty() {
 }
 
 /* True means "go ahead" — either nothing is unsaved or the DM said discard. */
-export function confirmDiscard(key, message) {
+export async function confirmDiscard(key, message) {
   const isDirty = sources.get(key);
   if (!isDirty) return true;
   let dirty = false;
   try { dirty = !!isDirty(); } catch (error) { dirty = false; }
   if (!dirty) return true;
-  return window.confirm(message || 'Discard unsaved changes?');
+  return confirmSheet(message || 'Discard unsaved changes?', {
+    confirmLabel: 'Discard',
+    danger: true,
+  });
 }
 
 window.addEventListener('beforeunload', (event) => {

@@ -18,7 +18,13 @@ export async function adminJson(url, options) {
     sessionExpired(data.error);
     throw new Error(data.error || 'Session expired — sign in again.');
   }
-  if (!response.ok) throw new Error(data.error || `HTTP ${response.status}`);
+  if (!response.ok) {
+    const error = new Error(data.error || `HTTP ${response.status}`);
+    // Callers that care (the wiki 409 merge flow) can read the shape.
+    error.status = response.status;
+    error.payload = data;
+    throw error;
+  }
   return data;
 }
 

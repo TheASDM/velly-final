@@ -29,9 +29,8 @@ export const TAB_LOADERS = {
   schedule: () => refreshCalendarEvents(),
   availability: () => refreshAvailabilitySummary(),
   rsvps: () => refreshRsvps(),
-  message: () => true,
+  compose: () => refreshPushSubscribers(),
   history: () => refreshMessages(),
-  push: () => refreshPushSubscribers(),
   wiki: async () => {
     await loadWikiPages();
     if (pendingWikiAutoLoad) {
