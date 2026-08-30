@@ -1,3 +1,4 @@
+import { authHeaders } from './identity.js';
 import { initRsvpControls } from './rsvp.js';
 
 export function gatheringDaysLabel(iso) {
@@ -89,7 +90,12 @@ export async function initNextGathering() {
   if (!roots.length) return;
   let gathering = null;
   try {
-    const response = await fetch('/api/calendar/next', { cache: 'no-store' });
+    // Signed-in readers get location and notes; anonymous readers get the
+    // stripped shape.
+    const response = await fetch('/api/calendar/next', {
+      cache: 'no-store',
+      headers: authHeaders(),
+    });
     const data = await response.json().catch(() => ({}));
     if (response.ok) gathering = data.gathering;
   } catch (error) { /* leave the fallback state */ }

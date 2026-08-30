@@ -60,11 +60,13 @@ export function exitEditMode() {
 }
 
 export async function refreshCalendarEvents() {
+  const token = getToken(calStatusEl);
+  if (!token) return;
   setStatus(calStatusEl, 'Loading...');
   try {
     const response = await fetch(
       `/api/calendar/events?from=${AVAIL_RANGE.from}`,
-      { cache: 'no-store' }
+      { cache: 'no-store', headers: authHeaders(token) }
     );
     const data = await response.json().catch(() => ({}));
     if (!response.ok) throw new Error(data.error || `HTTP ${response.status}`);

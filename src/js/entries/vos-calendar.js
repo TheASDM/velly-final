@@ -164,9 +164,12 @@
     if (!calRoot) return;
     let events = [];
     try {
+      // Signed-in readers get location and notes; anonymous readers get the
+      // stripped shape. Waiting for the PWA client means the token is sent.
+      await whenPwaReady();
       const response = await fetch(
         `/api/calendar/events?from=${calFrom}&to=${calTo}`,
-        { cache: 'no-store' }
+        { cache: 'no-store', headers: authHeaders() }
       );
       const data = await response.json();
       if (response.ok && Array.isArray(data.events)) events = data.events;

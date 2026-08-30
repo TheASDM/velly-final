@@ -91,15 +91,25 @@ def _calendar_event_tasks(raw):
     return cleaned[:20]
 
 
-def _calendar_event_json(row):
+def _calendar_reader_is_authenticated():
+    """True for any signed-in player, and for the DM via either credential
+    (player token or Google session JWT). Controls whether location and the
+    DM's notes are included — those are for the table, not the open web."""
+    if _verify_player_token(_extract_player_token()):
+        return True
+    email, _reason = _verify_session_jwt(_extract_bearer_token())
+    return bool(email)
+
+
+def _calendar_event_json(row, include_private=True):
     keys = row.keys()
     return {
         "id": row["id"],
         "date": row["date"],
         "title": row["title"],
         "timeLabel": row["time_label"] or "",
-        "location": row["location"] or "",
-        "notes": row["notes"] or "",
+        "location": (row["location"] or "") if include_private else "",
+        "notes": (row["notes"] or "") if include_private else "",
         "kind": row["kind"],
         "tasks": _calendar_event_tasks(row["tasks"] if "tasks" in keys else "[]"),
         "eventKey": f"cal-{row['id']}",
@@ -157,7 +167,10 @@ def calendar_events():
         query += " ORDER BY date, id"
         with _app_db() as conn:
             rows = conn.execute(query, params).fetchall()
-        return jsonify({"events": [_calendar_event_json(row) for row in rows]})
+        include_private = _calendar_reader_is_authenticated()
+        return jsonify({
+            "events": [_calendar_event_json(row, include_private) for row in rows]
+        })
 
     admin_error = _admin_error_response()
     if admin_error:
@@ -272,7 +285,10 @@ def calendar_next():
             ORDER BY date, id
             LIMIT 1
         """, (today,)).fetchone()
-    return jsonify({"gathering": _calendar_event_json(row) if row else None})
+    include_private = _calendar_reader_is_authenticated()
+    return jsonify({
+        "gathering": _calendar_event_json(row, include_private) if row else None
+    })
 
 
 @bp.route("/api/calendar/events/<int:event_id>.ics", methods=["GET"])
@@ -289,12 +305,10 @@ def calendar_event_db_ics(event_id):
     if not event_date:
         abort(404)
     day_after = event_date + timedelta(days=1)
-    description = " / ".join(
-        part for part in (
-            row["time_label"] or "",
-            row["notes"] or "",
-        ) if part
-    )
+    # Calendar apps fetch this URL themselves, without the player's auth —
+    # so the DM's notes stay out of it. Title, time, and location are what
+    # an imported event needs.
+    description = row["time_label"] or ""
     lines = [
         "BEGIN:VCALENDAR",
         "VERSION:2.0",
@@ -323,4 +337,4 @@ def calendar_event_db_ics(event_id):
     response.headers["Cache-Control"] = "no-store"
     return response
 
-__all__ = ['AVAILABILITY_RATINGS', 'AVAILABILITY_TIMES', 'CALENDAR_EVENT_KINDS', 'calendar_event_ics', '_parse_iso_date', '_date_range_from_request', '_calendar_event_tasks', '_calendar_event_json', '_ics_escape', '_availability_times_json', '_normalized_times', 'calendar_events', 'calendar_event_detail', 'calendar_next', 'calendar_event_db_ics']
+__all__ = ['AVAILABILITY_RATINGS', 'AVAILABILITY_TIMES', 'CALENDAR_EVENT_KINDS', 'calendar_event_ics', '_parse_iso_date', '_date_range_from_request', '_calendar_event_tasks', '_calendar_reader_is_authenticated', '_calendar_event_json', '_ics_escape', '_availability_times_json', '_normalized_times', 'calendar_events', 'calendar_event_detail', 'calendar_next', 'calendar_event_db_ics']
