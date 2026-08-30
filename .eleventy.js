@@ -46,6 +46,7 @@ module.exports = function (eleventyConfig) {
   // happens to be sitting in it.
   eleventyConfig.addPassthroughCopy("files/ValleyofShadowsFramework.pdf");
   eleventyConfig.addPassthroughCopy("manifest.webmanifest");
+  eleventyConfig.addPassthroughCopy("robots.txt");
   eleventyConfig.addPassthroughCopy("sw.js");
   // Enzo widget assets — also live in public/ for the standalone /enzo PWA.
   // Mounted at /css and /js so the codex can load them locally for previews

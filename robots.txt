@@ -1,0 +1,17 @@
+# The wiki is the public face; the app and DM surfaces are for the table.
+User-agent: *
+Disallow: /api/
+Disallow: /art-submissions/
+Disallow: /calendar/
+Disallow: /dm/
+Disallow: /dossiers/
+Disallow: /files/
+Disallow: /messages/
+Disallow: /monsters/
+Disallow: /notes/
+Disallow: /party/
+Disallow: /questionnaire/
+Disallow: /settings/
+Disallow: /sheet/
+Disallow: /sheets/
+Disallow: /submit-lore/
