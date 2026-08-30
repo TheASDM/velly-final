@@ -54,6 +54,19 @@ function render(data) {
   const pendingLore = (data.lore && data.lore.pending) || 0;
   summaryEl.appendChild(chip('lore queue', String(pendingLore), { alert: pendingLore > 0 }));
 
+  const imUnread = (data.im && data.im.unread) || 0;
+  if (imUnread) {
+    const link = document.createElement('a');
+    link.href = '/messages/';
+    link.className = 'vos-dm-summary-chip is-alert';
+    const strong = document.createElement('strong');
+    strong.textContent = String(imUnread);
+    const span = document.createElement('span');
+    span.textContent = 'unread messages';
+    link.append(strong, span);
+    summaryEl.appendChild(link);
+  }
+
   const rebuild = data.rebuild || {};
   if (rebuild.state && rebuild.state !== 'idle') {
     summaryEl.appendChild(chip('build', rebuildStatusText(rebuild) || rebuild.state,
@@ -62,7 +75,7 @@ function render(data) {
 
   const rsvpMissing = (data.rsvp && data.rsvp.missing) || [];
   if (dotPrepEl) dotPrepEl.hidden = !(rsvpMissing.length || availMissing.length);
-  if (dotCommsEl) dotCommsEl.hidden = !(pendingLore > 0);
+  if (dotCommsEl) dotCommsEl.hidden = !(pendingLore > 0 || imUnread > 0);
 }
 
 export async function refreshDashboard({ force = false } = {}) {

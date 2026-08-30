@@ -65,6 +65,7 @@ pageStyles:
         <button class="vos-seg-btn" type="button" data-view="lore">Lore</button>
         <button class="vos-seg-btn" type="button" data-view="wiki">Wiki</button>
         <button class="vos-seg-btn" type="button" data-view="rumors">Rumors</button>
+        <a class="vos-seg-btn vos-seg-link" href="/messages/">Inbox ↗</a>
       </div>
     </div>
   </nav>

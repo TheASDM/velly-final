@@ -7,6 +7,7 @@ import { disablePush, enablePush, getPushStatus, maybeShowPushPrompt, maybeSyncE
 import { initRsvpControls } from './rsvp.js';
 import { enhanceWikiLinkedLists } from './wiki.js';
 import { initSheetBadge } from './sheet-badge.js';
+import { initImBadge } from './im-badge.js';
 import { initCharacterBar } from './character-bar.js';
 
 window.VOS_PWA = {
@@ -84,6 +85,7 @@ window.addEventListener('DOMContentLoaded', () => {
     });
     ensureIdentity();
     initSheetBadge();
+    initImBadge();
     initCharacterBar();
     maybeSyncExistingSubscription();
     maybeShowPushPrompt();
