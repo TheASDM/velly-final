@@ -10,8 +10,13 @@ import {
   handoutImageEl, handoutPlayersEl, handoutSaveEl, handoutTextEl,
   handoutTitleEl, handoutsListEl, handoutsStatusEl, setStatus,
 } from './state.js';
+import { renderSheet } from '../sheet/render.js';
 
 let rosterLoaded = false;
+let lastHandouts = [];
+/* The one handout whose preview is open. One at a time: proofing is a
+ * one-document activity, and two open previews is a scroll of confusion. */
+let previewId = null;
 
 async function ensureRoster() {
   if (rosterLoaded || !handoutPlayersEl) return;
@@ -77,34 +82,55 @@ export async function refreshHandouts() {
     });
     const data = await response.json().catch(() => ({}));
     if (!response.ok) throw new Error(data.error || `HTTP ${response.status}`);
-
-    handoutsListEl.innerHTML = '';
-    (data.handouts || []).forEach((handout) => {
-      const li = document.createElement('li');
-      li.className = 'vos-dm-cal-event';
-      const text = document.createElement('span');
-      const audience = (handout.players || []).join(', ') || 'nobody';
-      text.textContent = `${handout.title} — ${audience}`;
-      const edit = document.createElement('button');
-      edit.type = 'button';
-      edit.textContent = 'Edit';
-      edit.addEventListener('click', () => startEdit(handout));
-      const remove = document.createElement('button');
-      remove.type = 'button';
-      remove.textContent = 'Delete';
-      remove.addEventListener('click', () => deleteHandout(handout));
-      li.append(text, edit, remove);
-      handoutsListEl.appendChild(li);
-    });
-    if (!handoutsListEl.children.length) {
-      const li = document.createElement('li');
-      li.className = 'vos-dm-avail-empty';
-      li.textContent = 'Nothing handed out yet.';
-      handoutsListEl.appendChild(li);
-    }
+    lastHandouts = data.handouts || [];
+    renderHandoutsList();
     setStatus(handoutsStatusEl, '');
   } catch (error) {
     setStatus(handoutsStatusEl, error.message, true);
+  }
+}
+
+function renderHandoutsList() {
+  handoutsListEl.innerHTML = '';
+  lastHandouts.forEach((handout) => {
+    const li = document.createElement('li');
+    li.className = 'vos-dm-cal-event';
+    const text = document.createElement('span');
+    const audience = (handout.players || []).join(', ') || 'nobody';
+    text.textContent = `${handout.title} — ${audience}`;
+    const preview = document.createElement('button');
+    preview.type = 'button';
+    preview.textContent = previewId === handout.id ? 'Close' : 'Preview';
+    preview.addEventListener('click', () => {
+      previewId = previewId === handout.id ? null : handout.id;
+      renderHandoutsList();
+    });
+    const edit = document.createElement('button');
+    edit.type = 'button';
+    edit.textContent = 'Edit';
+    edit.addEventListener('click', () => startEdit(handout));
+    const remove = document.createElement('button');
+    remove.type = 'button';
+    remove.textContent = 'Delete';
+    remove.addEventListener('click', () => deleteHandout(handout));
+    li.append(text, preview, edit, remove);
+    handoutsListEl.appendChild(li);
+
+    // The preview is the players' own renderer verbatim — what the DM proofs
+    // here is exactly what the Handouts tab shows them.
+    if (previewId === handout.id) {
+      const pane = document.createElement('li');
+      pane.className = 'vos-dm-handout-preview';
+      pane.innerHTML = `<div class="vos-handout-body">${
+        renderSheet(handout.markdown, { fallbackTitle: handout.title })}</div>`;
+      handoutsListEl.appendChild(pane);
+    }
+  });
+  if (!handoutsListEl.children.length) {
+    const li = document.createElement('li');
+    li.className = 'vos-dm-avail-empty';
+    li.textContent = 'Nothing handed out yet.';
+    handoutsListEl.appendChild(li);
   }
 }
 
