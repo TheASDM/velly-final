@@ -68,9 +68,12 @@ cloudpw.txt
 # Unused image scratch dir
 Tools/image/
 
-# macOS Finder duplicates ("file 2.json" style — note: no quotes; literal
-# quotes in gitignore are matched as characters, not metacharacters)
+# macOS Finder duplicates — both "file 2.json" and duplicate DIRECTORIES
+# ("_site/en 2" style). Note: no quotes; literal quotes in gitignore are
+# matched as characters, not metacharacters.
 * 2.*
+* 2
+* 2/
 claude-project-export/
 
 # Env/config backups — these are verbatim copies of .env and hold live secrets.
