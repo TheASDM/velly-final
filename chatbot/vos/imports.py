@@ -5,6 +5,7 @@ import fcntl
 import hashlib
 import hmac
 import html
+import io
 import json
 import logging
 import os
@@ -26,6 +27,7 @@ from zoneinfo import ZoneInfo
 
 import requests as http_requests
 import yaml
+from PIL import Image
 from flask import (
     Blueprint,
     Flask,

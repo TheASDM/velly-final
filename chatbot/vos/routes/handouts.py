@@ -20,16 +20,6 @@ MARKDOWN_MAX = 60_000
 # so a backup of app-data captures both.
 HANDOUT_IMAGE_DIR = APP_DB_PATH.parent / "handout-images"
 IMAGE_MAX_BYTES = 8 * 1024 * 1024
-IMAGE_TYPES = {"image/png": ".png", "image/jpeg": ".jpg",
-               "image/webp": ".webp", "image/gif": ".gif"}
-# What the first bytes of each accepted format actually look like — the
-# client's declared type is a claim, not a fact.
-IMAGE_MAGIC = {
-    ".png": (b"\x89PNG",),
-    ".jpg": (b"\xff\xd8\xff",),
-    ".webp": (b"RIFF",),
-    ".gif": (b"GIF87a", b"GIF89a"),
-}
 IMAGE_NAME = re.compile(r"^[0-9a-f]{24}\.(png|jpg|webp|gif)$")
 
 
@@ -175,15 +165,17 @@ def api_upload_handout_image():
     upload = request.files.get("image")
     if upload is None:
         return jsonify({"error": "Send the file as multipart field 'image'."}), 400
-    ext = IMAGE_TYPES.get((upload.mimetype or "").lower())
-    if not ext:
-        return jsonify({"error": "PNG, JPEG, WebP or GIF only."}), 415
 
     data = upload.read(IMAGE_MAX_BYTES + 1)
     if len(data) > IMAGE_MAX_BYTES:
         return jsonify({"error": f"Image is larger than {IMAGE_MAX_BYTES // (1024 * 1024)} MB."}), 413
-    if not any(data.startswith(magic) for magic in IMAGE_MAGIC[ext]):
-        return jsonify({"error": "That file does not look like the image type it claims."}), 415
+    # Shared with the chat attachment pipeline: magic bytes and then a real
+    # decode. This check used to accept any RIFF container as a WebP, so a
+    # .wav renamed .webp went straight through.
+    try:
+        ext, _width, _height = validate_image(data, upload.mimetype)
+    except UploadRejected as rejected:
+        return jsonify({"error": rejected.message}), rejected.status
 
     HANDOUT_IMAGE_DIR.mkdir(parents=True, exist_ok=True)
     filename = secrets.token_hex(12) + ext
