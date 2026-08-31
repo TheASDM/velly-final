@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'foglight-pwa-v124';
+const CACHE_VERSION = 'foglight-pwa-v125';
 const PRECACHE = `${CACHE_VERSION}-precache`;
 const PAGES = `${CACHE_VERSION}-pages`;
 const ASSETS = `${CACHE_VERSION}-assets`;
@@ -12,8 +12,6 @@ const APP_SHELL = [
   '/submit-lore/',
   '/art-submissions/',
   '/studio/',
-  '/sheet/',
-  '/party/',
   '/dm/',
   '/offline/',
   '/js/pwa-client.js',
@@ -166,9 +164,16 @@ async function notifyClients(type) {
 }
 
 self.addEventListener('install', (event) => {
+  /* Deduplicated, because addAll() rejects outright on a repeated URL and a
+     rejected install is invisible: the worker goes straight to redundant, no
+     version ever ships, and every client silently keeps the build it already
+     had. That happened — /sheet/ and /party/ were added to the list above
+     while already in it, and updates stopped for everyone until someone
+     noticed the icon had not changed. A Set is cheaper than that. */
+  const shell = [...new Set(APP_SHELL)];
   event.waitUntil(
     caches.open(PRECACHE)
-      .then((cache) => cache.addAll(APP_SHELL))
+      .then((cache) => cache.addAll(shell))
   );
 });
 

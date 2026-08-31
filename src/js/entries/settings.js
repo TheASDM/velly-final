@@ -158,6 +158,16 @@
           waitingWorker = installing;
           status('A new version is ready.');
           setHidden('vos-settings-apply-update', false);
+          return;
+        }
+        /* A worker whose install fails goes straight to redundant. Without
+           this branch the screen kept saying "Installing new version…" — the
+           same thing it says while the install is healthy — so a build that
+           could never ship looked indistinguishable from one that was three
+           seconds away. It stayed that way for four releases. */
+        if (installing.state === 'redundant') {
+          status('That version could not install. It is a bug in the app, not '
+               + 'this device — tell the DM, and check again once it is fixed.');
         }
       });
       return;
