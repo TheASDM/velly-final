@@ -160,8 +160,11 @@ LOGIN_NAME_ALIASES = {
     "val": "Valentro",
     "valentro": "Valentro",
     "dustin": "DM",
-    # The DM's own character, so it imports and reads like any other.
-    "dm test wizard": "DM",
+    # "dm test wizard" used to live here so the DM's own character imported
+    # like anyone else's. The character is gone, and the alias with it — an
+    # actor by that name in a Foundry export is now refused rather than
+    # quietly rebuilding a character nobody plays. A real DM PC would arrive
+    # as "DM" or "Dustin", which still resolve.
     "me": "DM",
     "me (dustin, dm)": "DM",
     "dm": "DM",

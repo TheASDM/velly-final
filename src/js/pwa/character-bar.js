@@ -9,8 +9,8 @@
  * from sessionStorage immediately, refreshed from /api/identity once, and
  * updated again only when a new statblock push changes the answer.
  *
- * The DM is exempt — their "character" is a test wizard, and their app bar
- * should keep saying where they are.
+ * The DM is exempt: they have no character, and their app bar should keep
+ * saying where they are.
  */
 import { clearSheetBadge, initSheetBadge } from './sheet-badge.js';
 import { exitPreview, isPreviewing, stashedDmSeat } from './preview.js';

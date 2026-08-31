@@ -218,16 +218,24 @@ def test_ingest_maps_the_foundry_actor_name_onto_the_roster(app, ingest_enabled,
     assert row["player_name"] == 'Caravel "Car" Asteri'
 
 
-def test_the_dms_own_character_is_accepted_like_any_other(app, ingest_enabled, server_module):
-    """"DM Test Wizard" resolves to the DM, who is a roster name for this
-    purpose even though they are not a player."""
+def test_the_dms_test_wizard_no_longer_resolves(app, ingest_enabled, server_module):
+    """The DM's test character was removed from the game, so the alias that
+    used to admit it went too. A Foundry export that still contains the actor
+    is refused rather than quietly rebuilding a character nobody plays."""
     response = _post(app, _export("DM Test Wizard"))
-    assert response.status_code == 200
-    assert response.get_json()["playerName"] == "DM"
+    assert response.status_code == 422
 
     with server_module._app_db() as conn:
         row = conn.execute("SELECT player_name FROM character_statblocks").fetchone()
-    assert row["player_name"] == "DM"
+    assert row is None
+
+
+def test_the_dm_can_still_own_a_character(app, ingest_enabled, server_module):
+    """Removing the wizard did not close the door on the DM ever playing one —
+    an actor named for the DM still lands in their seat."""
+    response = _post(app, _export("Dustin"))
+    assert response.status_code == 200
+    assert response.get_json()["playerName"] == "DM"
 
 
 def test_ingest_refuses_an_actor_that_is_not_on_the_roster(app, ingest_enabled):

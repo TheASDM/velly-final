@@ -183,10 +183,9 @@ def _ingest_authorised():
 def _statblock_player_for(actor_name):
     """Map a Foundry actor name onto a roster player.
 
-    Reuses the login aliases, so "Car" resolves the same way it does at sign-in
-    and "DM Test Wizard" resolves to the DM. A name that is not on the roster —
-    or one whose access has been revoked — is refused rather than creating a row
-    nobody can read.
+    Reuses the login aliases, so "Car" resolves the same way it does at sign-in.
+    A name that is not on the roster — or one whose access has been revoked — is
+    refused rather than creating a row nobody can read.
     """
     canonical = _canonical_login_name(actor_name)
     if not canonical:

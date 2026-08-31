@@ -377,12 +377,12 @@ def test_the_dm_joins_the_table_only_with_a_character(app, auth_headers, server_
         conn.execute(
             "INSERT OR REPLACE INTO character_statblocks (player_name, data, updated_at)"
             " VALUES ('DM', ?, '2026-08-26T00:00:00Z')",
-            (json.dumps({"name": "DM Test Wizard", "derived": {"level": 5, "ac": 12,
+            (json.dumps({"name": "The DM\u2019s Own Character", "derived": {"level": 5, "ac": 12,
                                                                "hp": {"max": 22}}}),),
         )
     party = get(app, auth_headers["dm"], "/api/play/party").get_json()["party"]
     dm = next(e for e in party if e["playerName"] == "DM")
-    assert dm["character"] == "DM Test Wizard"
+    assert dm["character"] == "The DM\u2019s Own Character"
     assert dm["limits"]["maxHp"] == 22
 
 
@@ -460,7 +460,7 @@ def test_the_dm_can_read_another_players_log(app, auth_headers):
 
 PREPARED_BLOCK = {
     "vosExport": {"version": 1},
-    "name": "DM Test Wizard",
+    "name": "A Prepared Caster",
     "system": {},
     "derived": {"level": 3, "prof": 2, "ac": 12, "hp": {"value": 20, "max": 20},
                 "spells": {"spell1": {"value": 4, "max": 4}}},
