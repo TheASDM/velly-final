@@ -32,10 +32,9 @@ THREAD_PAGE_LIMIT = 200
 # Not a roster seat — adding him to _data/players.json would break the auth
 # maps and the records that key off it. He exists only as a thread partner.
 ENZO_NAME = "Enzo"
-# Someone whose client checked in this recently is looking at the app: the
-# live badge update and the 4-second poll will show them the message, and a
-# banner on top of that is just noise. Comfortably longer than the poll
-# interval so a slow round trip does not read as absence.
+# Kept for presence labels and backward-compatible tests. Presence is never
+# used to suppress push: it is a player-wide timestamp, not proof that every
+# subscribed device can currently see this conversation.
 PRESENT_WITHIN_SECONDS = 45
 # An edit window, not an edit history: long enough to fix a typo or a name,
 # short enough that nobody rewrites what the table read an hour ago. The
@@ -51,12 +50,14 @@ REACTION_EMOJI = ("\U0001F44D", "\u2764\uFE0F", "\U0001F602",
 # How much of the thread Enzo is handed as memory. The engine trims again
 # against MAX_CONVERSATION_BYTES; this only bounds the read.
 ENZO_HISTORY_LIMIT = 40
+CLIENT_MESSAGE_ID = re.compile(
+    r"^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$",
+    re.IGNORECASE,
+)
 
-# One reply in flight per player. Per-process, like the rate limiter's
-# memory:// storage — with more than one worker a determined double-tap can
-# still slip through, and CHAT_RATE_LIMIT is what actually bounds the spend.
-_enzo_in_flight = set()
-_enzo_lock = threading.Lock()
+# Web-push network calls are outside the request critical path. This is still
+# best-effort delivery; the durable outbox is a later compatibility phase.
+_im_push_executor = ThreadPoolExecutor(max_workers=2, thread_name_prefix="im-push")
 
 
 def _utc_now_iso_in(seconds):
@@ -123,7 +124,15 @@ def _thread_members(thread_key, roster):
 
 def _im_caller():
     """The verified sender, from the token only. Returns (name, error)."""
-    return _logged_in_player_name()
+    caller, error = _logged_in_player_name()
+    if error:
+        return caller, error
+    if _preview_actor():
+        return None, (jsonify({
+            "error": "Messaging is unavailable while previewing a player.",
+            "error_code": "preview_forbidden",
+        }), 403)
+    return caller, None
 
 
 def _thread_access_error(thread_key, caller):
@@ -164,6 +173,7 @@ def _chat_message_json(row, attachments=None):
         "replyToId": row["reply_to_id"],
         # Stated, not hidden: an edited message is marked for everyone.
         "editedAt": None if deleted else row["edited_at"],
+        "clientMessageId": row["client_message_id"],
         # A deleted message takes its files with it as far as the client is
         # concerned; the rows stay for the orphan sweep to find.
         "attachments": [] if deleted else (attachments or []),
@@ -188,7 +198,7 @@ def _thread_reactions(conn, thread_key, caller):
         SELECT r.message_id, r.emoji, r.player_name
         FROM chat_reactions r
         JOIN chat_messages m ON m.id = r.message_id
-        WHERE m.thread_key = ?
+        WHERE m.thread_key = ? AND m.deleted_at IS NULL
         ORDER BY r.created_at ASC
     """, (thread_key,)).fetchall()
     grouped = {}
@@ -384,6 +394,12 @@ def im_thread(thread_key):
             after = int(request.args.get("after", "0"))
         except ValueError:
             after = 0
+        try:
+            before = int(request.args.get("before", "0"))
+        except ValueError:
+            before = 0
+        after = max(0, after)
+        before = max(0, before)
         # Everything an open thread needs in one request. `since` carries
         # the previous poll's clock back, so an edit or a delete on a
         # message the client already has still reaches it — `after` alone
@@ -393,14 +409,46 @@ def im_thread(thread_key):
         members = _thread_members(thread_key, _im_roster()) or set()
         with _app_db() as conn:
             _touch_presence(conn, caller)
-            rows = conn.execute("""
-                SELECT * FROM chat_messages
-                WHERE thread_key = ? AND id > ?
-                ORDER BY id DESC
-                LIMIT ?
-            """, (thread_key, after, THREAD_PAGE_LIMIT)).fetchall()
+            if before:
+                rows = conn.execute("""
+                    SELECT * FROM chat_messages
+                    WHERE thread_key = ? AND id < ?
+                    ORDER BY id DESC
+                    LIMIT ?
+                """, (thread_key, before, THREAD_PAGE_LIMIT + 1)).fetchall()
+                has_older = len(rows) > THREAD_PAGE_LIMIT
+                has_newer = False
+                rows = list(reversed(rows[:THREAD_PAGE_LIMIT]))
+            elif after:
+                # Catch up from the first unseen row. DESC used to return the
+                # newest 200 and silently strand a gap after a long sleep.
+                rows = conn.execute("""
+                    SELECT * FROM chat_messages
+                    WHERE thread_key = ? AND id > ?
+                    ORDER BY id ASC
+                    LIMIT ?
+                """, (thread_key, after, THREAD_PAGE_LIMIT + 1)).fetchall()
+                has_newer = len(rows) > THREAD_PAGE_LIMIT
+                rows = rows[:THREAD_PAGE_LIMIT]
+                oldest_visible = min(
+                    [after, *[row["id"] for row in rows]], default=after
+                )
+                has_older = bool(conn.execute("""
+                    SELECT 1 FROM chat_messages
+                    WHERE thread_key = ? AND id < ? LIMIT 1
+                """, (thread_key, oldest_visible)).fetchone())
+            else:
+                rows = conn.execute("""
+                    SELECT * FROM chat_messages
+                    WHERE thread_key = ?
+                    ORDER BY id DESC
+                    LIMIT ?
+                """, (thread_key, THREAD_PAGE_LIMIT + 1)).fetchall()
+                has_older = len(rows) > THREAD_PAGE_LIMIT
+                has_newer = False
+                rows = list(reversed(rows[:THREAD_PAGE_LIMIT]))
             revised = []
-            if since:
+            if since and not before:
                 revised = conn.execute("""
                     SELECT * FROM chat_messages
                     WHERE thread_key = ? AND id <= ?
@@ -419,13 +467,16 @@ def im_thread(thread_key):
             "ok": True,
             "threadKey": thread_key,
             "messages": [_chat_message_json(row, files.get(row["id"]))
-                         for row in reversed(rows)],
+                         for row in rows],
             "revised": [_chat_message_json(row, files.get(row["id"]))
                         for row in revised],
             "reactions": reactions,
             "typing": typing,
             "receipts": receipts,
             "presence": presence,
+            "hasOlder": has_older,
+            "hasNewer": has_newer,
+            "oldestId": rows[0]["id"] if rows else None,
             "now": now,
         })
 
@@ -450,7 +501,28 @@ def im_thread(thread_key):
     except (TypeError, ValueError):
         return jsonify({"error": "replyToId must be a number", "error_code": "invalid"}), 400
 
+    client_message_id = body.get("clientMessageId") or body.get("client_message_id")
+    if client_message_id is not None:
+        if not isinstance(client_message_id, str) or not CLIENT_MESSAGE_ID.fullmatch(client_message_id):
+            return jsonify({
+                "error": "clientMessageId must be a UUID",
+                "error_code": "invalid",
+            }), 400
+        client_message_id = client_message_id.lower()
+
     with _app_db() as conn:
+        if client_message_id:
+            existing = conn.execute("""
+                SELECT * FROM chat_messages
+                WHERE thread_key = ? AND sender = ? AND client_message_id = ?
+            """, (thread_key, caller, client_message_id)).fetchone()
+            if existing:
+                files = _attachments_for_messages(conn, [existing["id"]])
+                return jsonify({
+                    "ok": True,
+                    "idempotent": True,
+                    "message": _chat_message_json(existing, files.get(existing["id"])),
+                }), 200
         if reply_to_id is not None:
             # You can only answer something in this thread — a reply is not
             # a way to quote a conversation you were never in.
@@ -469,8 +541,30 @@ def im_thread(thread_key):
             (thread_key, caller),
         )
         # Your own message never counts against you as unread.
-        row = _store_chat_message(conn, thread_key, caller, text,
-                                  reader=caller, reply_to_id=reply_to_id)
+        try:
+            row = _store_chat_message(
+                conn, thread_key, caller, text,
+                reader=caller,
+                reply_to_id=reply_to_id,
+                client_message_id=client_message_id,
+            )
+        except sqlite3.IntegrityError:
+            # Two workers can both miss the optimistic lookup, then meet at
+            # the unique index. The loser returns the winner's canonical row.
+            if not client_message_id:
+                raise
+            existing = conn.execute("""
+                SELECT * FROM chat_messages
+                WHERE thread_key = ? AND sender = ? AND client_message_id = ?
+            """, (thread_key, caller, client_message_id)).fetchone()
+            if not existing:
+                raise
+            files = _attachments_for_messages(conn, [existing["id"]])
+            return jsonify({
+                "ok": True,
+                "idempotent": True,
+                "message": _chat_message_json(existing, files.get(existing["id"])),
+            }), 200
         attachments, claim_error = _claim_attachments(
             conn, attachment_ids, caller, thread_key, row["id"]
         )
@@ -514,12 +608,13 @@ def _unread_total(conn, reader, roster):
 
 
 def _notify_thread(thread_key, sender, text):
-    """Best-effort push to the other members' backgrounded devices,
-    skipping anyone who muted the thread. Never blocks the send.
+    """Queue best-effort push to every eligible subscribed device.
 
     The payload carries the thread key so the service worker can collapse a
     conversation into one banner, hand an open tab a live badge update, and
-    open the overlay in place instead of navigating."""
+    open the overlay in place instead of navigating. Each device's service
+    worker decides whether its own visible client makes a system banner noisy;
+    a player-wide presence timestamp cannot safely make that decision."""
     if _push_config_error():
         return
     try:
@@ -533,11 +628,7 @@ def _notify_thread(thread_key, sender, text):
                     (thread_key,),
                 )
             }
-            # A notification is for a device that is not being looked at.
-            # Anyone whose client checked in seconds ago is already being
-            # told, live, by the open tab.
-            watching = _present_since(conn, _utc_now_iso_in(-PRESENT_WITHIN_SECONDS))
-            recipients = sorted(members - muted - watching - {sender})
+            recipients = sorted(members - muted - {sender})
             if not recipients:
                 return
             per_recipient = {
@@ -545,7 +636,8 @@ def _notify_thread(thread_key, sender, text):
                 for reader in recipients
             }
         title = f"{sender} — The Party" if thread_key == PARTY_THREAD_KEY else sender
-        _fanout_push(
+        _im_push_executor.submit(
+            _fanout_push,
             title,
             text[:200],
             f"/messages/#{thread_key}",
@@ -576,33 +668,44 @@ def _enzo_history(conn, thread_key, caller, before_id):
 
 
 def _enzo_claim(caller):
-    """One reply in flight per player. Entries carry a deadline so a client
-    that drops the stream mid-generation cannot wedge the thread shut."""
-    now = time.monotonic()
-    with _enzo_lock:
-        _enzo_in_flight.difference_update(
-            {entry for entry in _enzo_in_flight if entry[1] < now}
-        )
-        if any(entry[0] == caller for entry in _enzo_in_flight):
-            return False
-        _enzo_in_flight.add((caller, now + 180))
-    return True
+    """Acquire one cross-worker reply lease for this player."""
+    now = _utc_now_iso()
+    expires = _utc_now_iso_in(180)
+    token = secrets.token_hex(16)
+    with _app_db() as conn:
+        cursor = conn.execute("""
+            INSERT INTO chat_enzo_leases (player_name, lease_token, expires_at)
+            VALUES (?, ?, ?)
+            ON CONFLICT(player_name) DO UPDATE SET
+                lease_token = excluded.lease_token,
+                expires_at = excluded.expires_at
+            WHERE chat_enzo_leases.expires_at <= ?
+        """, (caller, token, expires, now))
+    return token if cursor.rowcount else None
 
 
-def _enzo_release(caller):
-    with _enzo_lock:
-        _enzo_in_flight.difference_update(
-            {entry for entry in _enzo_in_flight if entry[0] == caller}
-        )
+def _enzo_release(caller, lease_token=None):
+    with _app_db() as conn:
+        if lease_token:
+            conn.execute(
+                "DELETE FROM chat_enzo_leases WHERE player_name = ? AND lease_token = ?",
+                (caller, lease_token),
+            )
+        else:
+            conn.execute(
+                "DELETE FROM chat_enzo_leases WHERE player_name = ?", (caller,)
+            )
 
 
-def _store_chat_message(conn, thread_key, sender, text, reader=None, reply_to_id=None):
+def _store_chat_message(conn, thread_key, sender, text, reader=None,
+                        reply_to_id=None, client_message_id=None):
     """Insert a message and carry the reader's unread pointer past it."""
     now = _utc_now_iso()
     cursor = conn.execute("""
-        INSERT INTO chat_messages (thread_key, sender, body, created_at, reply_to_id)
-        VALUES (?, ?, ?, ?, ?)
-    """, (thread_key, sender, text, now, reply_to_id))
+        INSERT INTO chat_messages
+            (thread_key, sender, body, created_at, reply_to_id, client_message_id)
+        VALUES (?, ?, ?, ?, ?, ?)
+    """, (thread_key, sender, text, now, reply_to_id, client_message_id))
     message_id = cursor.lastrowid
     if reader:
         conn.execute("""
@@ -659,28 +762,90 @@ def im_thread_enzo(thread_key):
         return jsonify({"error": "attachments must be a list",
                         "error_code": "invalid"}), 400
 
-    if not _enzo_claim(caller):
+    client_message_id = body.get("clientMessageId") or body.get("client_message_id")
+    if client_message_id is not None:
+        if (not isinstance(client_message_id, str)
+                or not CLIENT_MESSAGE_ID.fullmatch(client_message_id)):
+            return jsonify({
+                "error": "clientMessageId must be a UUID",
+                "error_code": "invalid",
+            }), 400
+        client_message_id = client_message_id.lower()
+
+    # A completed replay needs neither a lease nor another model call.
+    if client_message_id:
+        with _app_db() as conn:
+            existing = conn.execute("""
+                SELECT * FROM chat_messages
+                WHERE thread_key = ? AND sender = ? AND client_message_id = ?
+            """, (thread_key, caller, client_message_id)).fetchone()
+            completed = None
+            existing_files = {}
+            if existing:
+                existing_files = _attachments_for_messages(conn, [existing["id"]])
+                completed = conn.execute("""
+                    SELECT * FROM chat_messages
+                    WHERE thread_key = ? AND sender = ? AND reply_to_id = ?
+                      AND deleted_at IS NULL
+                    ORDER BY id ASC LIMIT 1
+                """, (thread_key, ENZO_NAME, existing["id"])).fetchone()
+        if existing and completed:
+            def replay_stream():
+                yield _sse("sent", {"message": _chat_message_json(
+                    existing, existing_files.get(existing["id"])
+                )})
+                yield _sse("message", {"message": _chat_message_json(completed)})
+                yield _sse("done", {"idempotent": True})
+
+            return Response(
+                stream_with_context(replay_stream()),
+                mimetype="text/event-stream",
+                headers={"Cache-Control": "no-store", "X-Accel-Buffering": "no"},
+            )
+
+    lease_token = _enzo_claim(caller)
+    if not lease_token:
         return jsonify({
             "error": "Enzo is still answering your last message.",
             "error_code": "busy",
         }), 429
 
+    claim_failure = None
+    history = None
     try:
         with _app_db() as conn:
-            sent = _store_chat_message(conn, thread_key, caller, text, reader=caller)
-            # Kept on the message so the thread reads back whole; not
-            # forwarded to the model, which is text-only here.
-            attachments, claim_error = _claim_attachments(
-                conn, attachment_ids, caller, thread_key, sent["id"]
-            )
-            if claim_error:
-                conn.execute("DELETE FROM chat_messages WHERE id = ?", (sent["id"],))
-                _enzo_release(caller)
-                return claim_error
-            history = _enzo_history(conn, thread_key, caller, sent["id"])
+            sent = None
+            if client_message_id:
+                sent = conn.execute("""
+                    SELECT * FROM chat_messages
+                    WHERE thread_key = ? AND sender = ? AND client_message_id = ?
+                """, (thread_key, caller, client_message_id)).fetchone()
+            if sent:
+                files = _attachments_for_messages(conn, [sent["id"]])
+                attachments = files.get(sent["id"], [])
+            else:
+                sent = _store_chat_message(
+                    conn, thread_key, caller, text, reader=caller,
+                    client_message_id=client_message_id,
+                )
+                # Kept on the message so the thread reads back whole; not
+                # forwarded to the model, which is text-only here.
+                attachments, claim_error = _claim_attachments(
+                    conn, attachment_ids, caller, thread_key, sent["id"]
+                )
+                if claim_error:
+                    conn.execute("DELETE FROM chat_messages WHERE id = ?", (sent["id"],))
+                    claim_failure = claim_error
+                else:
+                    history = _enzo_history(conn, thread_key, caller, sent["id"])
+            if sent and not claim_failure and history is None:
+                history = _enzo_history(conn, thread_key, caller, sent["id"])
     except Exception:
-        _enzo_release(caller)
+        _enzo_release(caller, lease_token)
         raise
+    if claim_failure:
+        _enzo_release(caller, lease_token)
+        return claim_failure
 
     sent_json = _chat_message_json(sent, attachments)
     write_log("user", text)
@@ -711,7 +876,9 @@ def im_thread_enzo(thread_key):
             if reply:
                 write_log("assistant", reply)
                 with _app_db() as conn:
-                    stored = _store_chat_message(conn, thread_key, ENZO_NAME, reply)
+                    stored = _store_chat_message(
+                        conn, thread_key, ENZO_NAME, reply, reply_to_id=sent["id"]
+                    )
                 yield _sse("message", {"message": _chat_message_json(stored)})
                 # He answered while you were reading something else.
                 _notify_thread(thread_key, ENZO_NAME, reply)
@@ -720,7 +887,7 @@ def im_thread_enzo(thread_key):
             logging.exception("Enzo thread stream failed for %s", thread_key)
             yield _sse("error", {"message": str(exc)})
         finally:
-            _enzo_release(caller)
+            _enzo_release(caller, lease_token)
 
     return Response(
         stream_with_context(event_stream()),
@@ -744,18 +911,27 @@ def im_read():
     if access_error:
         return access_error
     try:
-        last_read_id = int(body.get("lastReadId") or body.get("last_read_id") or 0)
+        requested_id = int(body.get("lastReadId") or body.get("last_read_id") or 0)
     except (TypeError, ValueError):
         return jsonify({"error": "lastReadId must be a number", "error_code": "invalid"}), 400
     with _app_db() as conn:
+        # IDs are global to chat_messages. A caller may only advance to an ID
+        # that exists in this thread, never to a different thread or the
+        # future. The nearest preceding message is the truthful pointer.
+        row = conn.execute("""
+            SELECT COALESCE(MAX(id), 0) AS last_read_id
+            FROM chat_messages
+            WHERE thread_key = ? AND id <= ?
+        """, (thread_key, max(0, requested_id))).fetchone()
+        last_read_id = int(row["last_read_id"] or 0)
         conn.execute("""
             INSERT INTO chat_reads (thread_key, player_name, last_read_id, updated_at)
             VALUES (?, ?, ?, ?)
             ON CONFLICT(thread_key, player_name) DO UPDATE SET
                 last_read_id = MAX(last_read_id, excluded.last_read_id),
                 updated_at = excluded.updated_at
-        """, (thread_key, caller, max(0, last_read_id), _utc_now_iso()))
-    return jsonify({"ok": True})
+        """, (thread_key, caller, last_read_id, _utc_now_iso()))
+    return jsonify({"ok": True, "lastReadId": last_read_id})
 
 
 @bp.route("/api/im/mute", methods=["POST"])
@@ -894,7 +1070,12 @@ def im_edit_message(message_id):
             "SELECT * FROM chat_messages WHERE id = ?", (message_id,)
         ).fetchone()
 
-    return jsonify({"ok": True, "message": _chat_message_json(updated)})
+        files = _attachments_for_messages(conn, [message_id])
+
+    return jsonify({
+        "ok": True,
+        "message": _chat_message_json(updated, files.get(message_id)),
+    })
 
 
 @bp.route("/api/im/message/<int:message_id>", methods=["DELETE"])
@@ -921,6 +1102,7 @@ def im_delete_message(message_id):
 
 
 __all__ = ['CHAT_BODY_MAX_BYTES', 'PARTY_THREAD_KEY', 'ENZO_NAME', 'ENZO_HISTORY_LIMIT',
+           'CLIENT_MESSAGE_ID',
            'MESSAGE_EDIT_WINDOW_SECONDS', 'TYPING_TTL_SECONDS', 'REACTION_EMOJI',
            'PRESENT_WITHIN_SECONDS',
            '_utc_now_iso_in', '_iso_age_seconds',

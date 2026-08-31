@@ -45,6 +45,7 @@ function ensurePanel() {
 
 export async function openOverlay(threadKey) {
   ensurePanel();
+  const wasBooted = !!panel.playerName;
   if (!open) {
     open = true;
     host.hidden = false;
@@ -61,7 +62,7 @@ export async function openOverlay(threadKey) {
   panel.setActive(true);
   const name = await panel.boot();
   if (!name) return;
-  await panel.refresh();
+  if (wasBooted) await panel.refresh();
   if (threadKey && panel.hasThread(threadKey)) panel.openThread(threadKey);
   else if (!panel.openKey) panel.restore();
 }

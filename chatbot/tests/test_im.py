@@ -4,6 +4,7 @@ The conftest player fixture is Lotan; more players are minted here. The DM
 must be refused — with a stated reason — on player-pair threads.
 """
 
+import threading
 import urllib.parse
 
 import pytest
@@ -135,6 +136,102 @@ def test_unread_math_and_read_pointer(app, server_module):
     assert data["threads"][-1]["key"] == "party"
 
 
+def test_read_pointer_is_clamped_to_an_existing_message_in_that_thread(app,
+                                                                        server_module):
+    lotan = _headers(server_module, "Lotan")
+    roxy = _headers(server_module, 'Roxanya "Roxy"')
+    party = _send(app, roxy, "party", "At the table.").get_json()["message"]
+    elsewhere = _send(app, roxy, 'Lotan|Roxanya "Roxy"', "Private.").get_json()["message"]
+    assert elsewhere["id"] > party["id"]
+
+    with app.test_client() as client:
+        marked = client.post(
+            "/api/im/read",
+            json={"threadKey": "party", "lastReadId": elsewhere["id"] + 10000},
+            headers=lotan,
+        )
+    assert marked.status_code == 200
+    assert marked.get_json()["lastReadId"] == party["id"]
+
+    _send(app, roxy, "party", "This must still be unread.")
+    with app.test_client() as client:
+        listing = client.get("/api/im/threads", headers=lotan).get_json()
+    assert next(t for t in listing["threads"] if t["key"] == "party")["unread"] == 1
+
+
+def test_replaying_a_client_message_id_returns_the_original_message(app,
+                                                                    server_module):
+    lotan = _headers(server_module, "Lotan")
+    payload = {
+        "body": "Only once.",
+        "clientMessageId": "0b8e8ea1-45df-42e4-8b7a-29028e0ac3e8",
+    }
+    with app.test_client() as client:
+        first = client.post(_thread_url("party"), json=payload, headers=lotan)
+        replay = client.post(_thread_url("party"), json=payload, headers=lotan)
+        fetched = client.get(_thread_url("party"), headers=lotan).get_json()["messages"]
+
+    assert first.status_code == 201
+    assert replay.status_code == 200
+    assert replay.get_json()["idempotent"] is True
+    assert replay.get_json()["message"]["id"] == first.get_json()["message"]["id"]
+    assert [message["body"] for message in fetched] == ["Only once."]
+
+
+def test_thread_history_pages_backward_without_gaps(app, server_module):
+    lotan = _headers(server_module, "Lotan")
+    with server_module._app_db() as conn:
+        created = [
+            server_module._store_chat_message(conn, "party", "DM", f"Message {n}")
+            for n in range(205)
+        ]
+
+    with app.test_client() as client:
+        latest = client.get(_thread_url("party"), headers=lotan).get_json()
+        older = client.get(
+            _thread_url("party") + f"?before={latest['oldestId']}", headers=lotan
+        ).get_json()
+
+    assert len(latest["messages"]) == 200
+    assert latest["hasOlder"] is True
+    assert [message["id"] for message in latest["messages"]] == [
+        row["id"] for row in created[5:]
+    ]
+    assert [message["id"] for message in older["messages"]] == [
+        row["id"] for row in created[:5]
+    ]
+    assert older["hasOlder"] is False
+
+
+def test_large_incremental_catchup_starts_at_the_first_unseen_message(app,
+                                                                      server_module):
+    lotan = _headers(server_module, "Lotan")
+    with server_module._app_db() as conn:
+        anchor = server_module._store_chat_message(conn, "party", "DM", "Anchor")
+        created = [
+            server_module._store_chat_message(conn, "party", "DM", f"New {n}")
+            for n in range(205)
+        ]
+
+    with app.test_client() as client:
+        first = client.get(
+            _thread_url("party") + f"?after={anchor['id']}", headers=lotan
+        ).get_json()
+        rest = client.get(
+            _thread_url("party") + f"?after={first['messages'][-1]['id']}",
+            headers=lotan,
+        ).get_json()
+
+    assert [message["id"] for message in first["messages"]] == [
+        row["id"] for row in created[:200]
+    ]
+    assert first["hasNewer"] is True
+    assert [message["id"] for message in rest["messages"]] == [
+        row["id"] for row in created[200:]
+    ]
+    assert rest["hasNewer"] is False
+
+
 def test_party_thread_includes_everyone(app, server_module):
     lotan = _headers(server_module, "Lotan")
     dm = _headers(server_module, "DM", is_dm=True)
@@ -230,9 +327,11 @@ def test_thread_push_carries_thread_key_tag_and_per_reader_unread(app, server_mo
     from vos.routes import im as im_routes
 
     calls = {}
+    delivered = threading.Event()
 
     def fake_fanout(title, message, url, **kwargs):
         calls.update({"title": title, "message": message, "url": url, **kwargs})
+        delivered.set()
         return {"ok": True}
 
     monkeypatch.setattr(im_routes, "_push_config_error", lambda: None)
@@ -240,6 +339,7 @@ def test_thread_push_carries_thread_key_tag_and_per_reader_unread(app, server_mo
 
     roxy = _headers(server_module, 'Roxanya "Roxy"')
     _send(app, roxy, "party", "The fog is moving.")
+    assert delivered.wait(1)
 
     assert calls["payload_extra"] == {"threadKey": "party", "tag": "im:party"}
     assert calls["url"] == "/messages/#party"
@@ -254,17 +354,22 @@ def test_muted_members_are_left_out_of_the_chat_push(app, server_module, monkeyp
     from vos.routes import im as im_routes
 
     calls = {}
+    delivered = threading.Event()
     monkeypatch.setattr(im_routes, "_push_config_error", lambda: None)
-    monkeypatch.setattr(
-        im_routes, "_fanout_push",
-        lambda *a, **kw: calls.update(kw) or {"ok": True},
-    )
+
+    def fake_fanout(*args, **kwargs):
+        calls.update(kwargs)
+        delivered.set()
+        return {"ok": True}
+
+    monkeypatch.setattr(im_routes, "_fanout_push", fake_fanout)
 
     lotan = _headers(server_module, "Lotan")
     roxy = _headers(server_module, 'Roxanya "Roxy"')
     with app.test_client() as client:
         client.post("/api/im/mute", json={"threadKey": "party", "muted": True}, headers=lotan)
     _send(app, roxy, "party", "Still moving.")
+    assert delivered.wait(1)
 
     assert "Lotan" not in calls["recipients"]
     assert "Lotan" not in calls["per_recipient"]
@@ -295,16 +400,17 @@ def test_push_payload_merges_per_recipient_extras(monkeypatch):
     assert payload["playerName"] == "Lotan"
 
 
-def test_no_push_to_someone_who_is_sitting_there_looking_at_it(app, server_module):
-    """A notification is for a device that is not being looked at. An open
-    tab is already being told, live, by the badge poll."""
+def test_recent_presence_does_not_suppress_push_to_another_device(app, server_module):
+    """Presence belongs to a player, not a device. Every subscribed device
+    receives the push and its own service worker decides whether to show it."""
     from vos.routes import im as im_routes
 
     calls = {}
-    monkey = {}
+    delivered = threading.Event()
 
     def fake_fanout(title, message, url, **kwargs):
         calls.update(kwargs)
+        delivered.set()
         return {"ok": True}
 
     original_config, original_fanout = (im_routes._push_config_error,
@@ -321,14 +427,47 @@ def test_no_push_to_someone_who_is_sitting_there_looking_at_it(app, server_modul
                 ON CONFLICT(player_name) DO UPDATE SET last_seen_at = excluded.last_seen_at
             """, ("Valentro", server_module._utc_now_iso_in(-3600)))
         _send(app, roxy, "party", "Anyone there?")
+        assert delivered.wait(1)
     finally:
         im_routes._push_config_error = original_config
         im_routes._fanout_push = original_fanout
-        monkey.clear()
 
-    assert "Lotan" not in calls["recipients"]
+    assert "Lotan" in calls["recipients"]
     assert "Valentro" in calls["recipients"]
-    assert "Lotan" not in calls["per_recipient"]
+    assert "Lotan" in calls["per_recipient"]
+
+
+def test_slow_push_delivery_never_blocks_message_acknowledgement(
+        app, server_module, monkeypatch):
+    from vos.routes import im as im_routes
+
+    started = threading.Event()
+    release = threading.Event()
+    result = {}
+
+    def slow_fanout(*args, **kwargs):
+        started.set()
+        release.wait(2)
+        return {"ok": True}
+
+    monkeypatch.setattr(im_routes, "_push_config_error", lambda: None)
+    monkeypatch.setattr(im_routes, "_fanout_push", slow_fanout)
+    roxy = _headers(server_module, 'Roxanya "Roxy"')
+
+    sender = threading.Thread(
+        target=lambda: result.setdefault("response", _send(
+            app, roxy, "party", "Do not wait for push.",
+        )),
+    )
+    try:
+        sender.start()
+        assert started.wait(1)
+        sender.join(0.25)
+        assert not sender.is_alive()
+        assert result["response"].status_code == 201
+    finally:
+        release.set()
+        sender.join(2)
 
 
 def test_presence_window_is_wider_than_the_poll_interval(server_module):

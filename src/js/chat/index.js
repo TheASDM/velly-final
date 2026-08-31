@@ -13,6 +13,8 @@ import { closeOverlay, initOverlay, isOverlayOpen, getOverlayPanel, openOverlay 
 const PRESENCE_HEARTBEAT_MS = 25000;
 
 const isMessagesPage = () => document.body.classList.contains('vos-is-messages-page');
+const isPreviewing = () => !!(window.VOS_PWA && window.VOS_PWA.isPreviewing
+  && window.VOS_PWA.isPreviewing());
 
 /* /messages/ mounts the same component full-page and registers itself here,
  * so a push tap opens the thread there instead of stacking an overlay on
@@ -46,12 +48,38 @@ function handleServiceWorkerMessage(event) {
   }
 }
 
+async function handleIdentity(event) {
+  const nextName = event.detail && event.detail.name ? event.detail.name : null;
+  const preview = isPreviewing();
+  const button = document.getElementById('vos-chat-button');
+  if (button) button.hidden = isMessagesPage() || preview;
+
+  const panels = [api.pagePanel, getOverlayPanel()].filter(Boolean);
+  const changedPanels = panels.filter((panel) => panel.playerName !== nextName);
+  changedPanels.forEach((panel) => panel.resetForIdentity(nextName));
+
+  if (!nextName || preview) {
+    closeOverlay();
+    applyCount(0);
+    return;
+  }
+
+  // A full-page conversation cannot close during a seat switch, so hydrate
+  // it immediately for the new identity. The overlay waits until reopened.
+  if (api.pagePanel && changedPanels.includes(api.pagePanel)) {
+    const name = await api.pagePanel.boot();
+    if (name) api.pagePanel.restore();
+  }
+  syncBadge();
+}
+
 window.addEventListener('DOMContentLoaded', () => {
   // The bubble is the door to the overlay everywhere except the page that
   // already is the overlay.
   const button = document.getElementById('vos-chat-button');
-  if (button && isMessagesPage()) button.hidden = true;
-  else initOverlay();
+  const preview = isPreviewing();
+  if (button) button.hidden = isMessagesPage() || preview;
+  if (!isMessagesPage() && !preview) initOverlay();
 
   // The pill and the panel are the same conversation: when one of them
   // finishes an exchange with Enzo, the other catches up.
@@ -65,13 +93,12 @@ window.addEventListener('DOMContentLoaded', () => {
   syncBadge();
   window.addEventListener('focus', syncBadge);
   window.addEventListener('vos:im-read', syncBadge);
-  window.addEventListener('vos:identity-ready', syncBadge);
+  window.addEventListener('vos:identity', handleIdentity);
 
   // A slow heartbeat while the tab is on screen. It keeps the bubble count
-  // honest without a push, and — because the same request touches presence
-  // — it is how the server knows not to send a notification for a message
-  // you are sitting there looking at. Stops dead when the tab is hidden,
-  // which is exactly when a notification becomes useful again.
+  // honest without a push. The same request also renews the lightweight
+  // "active recently" presence label. Push is sent to every eligible device;
+  // each service worker suppresses only its own banner when this app is visible.
   let heartbeat = null;
   const stopHeartbeat = () => {
     if (heartbeat) window.clearInterval(heartbeat);

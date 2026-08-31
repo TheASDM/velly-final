@@ -614,6 +614,22 @@
   .vos-chat-placeholder[hidden] {
     display: none;
   }
+  .vos-chat-older {
+    align-self: center;
+    flex: 0 0 auto;
+    margin: 0.05rem 0 0.35rem;
+    padding: 0.28rem 0.72rem;
+    border: 1px solid rgba(139, 115, 85, 0.34);
+    border-radius: 999px;
+    background: rgba(7, 6, 10, 0.56);
+    color: rgba(212, 165, 116, 0.86);
+    font: inherit;
+    font-size: 0.76rem;
+    cursor: pointer;
+  }
+  .vos-chat-older:hover { background: rgba(212, 165, 116, 0.12); }
+  .vos-chat-older:disabled { cursor: wait; opacity: 0.58; }
+  .vos-chat-older[hidden] { display: none; }
   .vos-chat-messages {
     flex: 1;
     min-height: 0;

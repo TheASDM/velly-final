@@ -3,7 +3,7 @@ person, private to that person, absent from the party channel, and backed
 by the stored thread rather than the browser's localStorage."""
 
 import json
-import time
+import threading
 import urllib.parse
 
 import pytest
@@ -20,15 +20,21 @@ def _clear_chat(server_module):
     with server_module._app_db() as conn:
         conn.execute("DELETE FROM chat_messages")
         conn.execute("DELETE FROM chat_reads")
+        conn.execute("DELETE FROM chat_enzo_leases")
+
+
+def _lease_count(server_module):
+    with server_module._app_db() as conn:
+        return conn.execute(
+            "SELECT COUNT(*) AS n FROM chat_enzo_leases"
+        ).fetchone()["n"]
 
 
 @pytest.fixture(autouse=True)
 def clean_chat(server_module):
     _clear_chat(server_module)
-    im_routes._enzo_in_flight.clear()
     yield
     _clear_chat(server_module)
-    im_routes._enzo_in_flight.clear()
     server_module.limiter.reset()
 
 
@@ -137,6 +143,33 @@ def test_send_streams_and_stores_both_halves(app, server_module, scripted_enzo):
     ]
 
 
+def test_replaying_an_enzo_client_id_reuses_the_complete_exchange(
+        app, server_module, scripted_enzo):
+    lotan = _headers(server_module, "Lotan")
+    key = server_module._enzo_thread_key("Lotan")
+    payload = {
+        "body": "Only ask this once.",
+        "clientMessageId": "c6372f06-fcca-45bb-8711-8eac8817d976",
+    }
+    with app.test_client() as client:
+        first = _events(client.post(_enzo_url(key), json=payload, headers=lotan))
+        replay = _events(client.post(_enzo_url(key), json=payload, headers=lotan))
+
+    assert [name for name, _ in first] == [
+        "sent", "token", "token", "meta", "message", "done",
+    ]
+    assert [name for name, _ in replay] == ["sent", "message", "done"]
+    assert replay[-1][1]["idempotent"] is True
+    assert replay[0][1]["message"]["id"] == first[0][1]["message"]["id"]
+    assert replay[1][1]["message"]["id"] == first[-2][1]["message"]["id"]
+    with server_module._app_db() as conn:
+        rows = conn.execute(
+            "SELECT id, reply_to_id FROM chat_messages ORDER BY id"
+        ).fetchall()
+    assert len(rows) == 2
+    assert rows[1]["reply_to_id"] == rows[0]["id"]
+
+
 def test_his_memory_is_the_stored_thread(app, server_module, scripted_enzo):
     """The point of moving it server-side: the second question arrives with
     the first exchange attached, without the client replaying anything."""
@@ -178,19 +211,42 @@ def test_a_second_send_is_refused_while_one_is_in_flight(app, server_module):
     buy two of them."""
     lotan = _headers(server_module, "Lotan")
     key = server_module._enzo_thread_key("Lotan")
-    assert im_routes._enzo_claim("Lotan") is True
+    lease_token = im_routes._enzo_claim("Lotan")
+    assert lease_token
     with app.test_client() as client:
         refused = client.post(_enzo_url(key), json={"body": "again"}, headers=lotan)
     assert refused.status_code == 429
     assert refused.get_json()["error_code"] == "busy"
 
-    im_routes._enzo_release("Lotan")
-    assert im_routes._enzo_claim("Lotan") is True
+    im_routes._enzo_release("Lotan", lease_token)
+    assert im_routes._enzo_claim("Lotan")
 
 
 def test_a_dropped_stream_does_not_wedge_the_thread(server_module):
-    im_routes._enzo_in_flight.add(("Lotan", time.monotonic() - 1))
-    assert im_routes._enzo_claim("Lotan") is True
+    with server_module._app_db() as conn:
+        conn.execute("""
+            INSERT INTO chat_enzo_leases (player_name, lease_token, expires_at)
+            VALUES (?, ?, ?)
+        """, ("Lotan", "dead", server_module._utc_now_iso_in(-1)))
+    assert im_routes._enzo_claim("Lotan")
+
+
+def test_enzo_lease_is_atomic_across_concurrent_workers(server_module):
+    barrier = threading.Barrier(3)
+    claims = []
+
+    def claim():
+        barrier.wait()
+        claims.append(im_routes._enzo_claim("Lotan"))
+
+    workers = [threading.Thread(target=claim) for _ in range(2)]
+    for worker in workers:
+        worker.start()
+    barrier.wait()
+    for worker in workers:
+        worker.join(2)
+
+    assert sum(bool(token) for token in claims) == 1
 
 
 def test_the_endpoint_refuses_threads_enzo_is_not_in(app, server_module):
@@ -213,7 +269,7 @@ def test_body_limits_apply_before_any_llm_call(app, server_module):
     with server_module._app_db() as conn:
         rows = conn.execute("SELECT COUNT(*) AS n FROM chat_messages").fetchone()
     assert rows["n"] == 0
-    assert not im_routes._enzo_in_flight
+    assert _lease_count(server_module) == 0
 
 
 def test_an_empty_reply_stores_nothing(app, server_module, monkeypatch):
@@ -231,7 +287,7 @@ def test_an_empty_reply_stores_nothing(app, server_module, monkeypatch):
             "SELECT sender FROM chat_messages ORDER BY id")]
     # The question is kept — it is the player's — but no empty Enzo bubble.
     assert senders == ["Lotan"]
-    assert not im_routes._enzo_in_flight
+    assert _lease_count(server_module) == 0
 
 
 def test_enzo_is_told_who_is_asking(app, server_module, scripted_enzo):

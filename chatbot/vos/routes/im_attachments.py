@@ -22,8 +22,8 @@ from ..config import *
 bp = Blueprint("im_attachments", __name__)
 
 ATTACHMENT_DIR = APP_DB_PATH.parent / "chat-attachments"
-# nginx's client_max_body_size is 10M; asking for more here would only move
-# the rejection somewhere less helpful.
+# nginx allows a small multipart envelope above this application-level cap,
+# so a file that is exactly 10 MiB reaches this explicit validation.
 ATTACHMENT_MAX_BYTES = 10 * 1024 * 1024
 ATTACHMENTS_PER_MESSAGE = 6
 # An upload nobody ever sent is rubbish after a day.
@@ -106,10 +106,17 @@ def _claim_attachments(conn, ids, caller, thread_key, message_id):
             "error_code": "invalid",
         }), 400)
     claimed = []
+    seen = set()
     for value in ids:
         if not isinstance(value, str) or not ATTACHMENT_ID.fullmatch(value):
             return None, (jsonify({"error": "Unknown attachment",
                                    "error_code": "invalid"}), 400)
+        if value in seen:
+            return None, (jsonify({
+                "error": "The same attachment cannot be added twice.",
+                "error_code": "invalid",
+            }), 400)
+        seen.add(value)
         row = conn.execute(
             "SELECT * FROM chat_attachments WHERE id = ?", (value,)
         ).fetchone()
@@ -177,23 +184,41 @@ def im_attachment_upload():
 
     attachment_id = secrets.token_hex(16)
     ATTACHMENT_DIR.mkdir(parents=True, exist_ok=True)
-    (ATTACHMENT_DIR / f"{attachment_id}{ext}").write_bytes(data)
-    if kind == "image":
-        write_thumbnail(data, ATTACHMENT_DIR / f"{attachment_id}.thumb.jpg")
-
-    with _app_db() as conn:
-        conn.execute("""
-            INSERT INTO chat_attachments
-                (id, thread_key, uploader, message_id, kind, filename, mime,
-                 bytes, width, height, created_at)
-            VALUES (?, ?, ?, NULL, ?, ?, ?, ?, ?, ?, ?)
-        """, (attachment_id, thread_key, caller, kind,
-              _safe_filename(upload.filename), mimetype, len(data),
-              width, height, _utc_now_iso()))
-        _sweep_orphans(conn)
-        row = conn.execute(
-            "SELECT * FROM chat_attachments WHERE id = ?", (attachment_id,)
-        ).fetchone()
+    original = ATTACHMENT_DIR / f"{attachment_id}{ext}"
+    thumb = ATTACHMENT_DIR / f"{attachment_id}.thumb.jpg"
+    original_staged = ATTACHMENT_DIR / f".{attachment_id}{ext}.upload"
+    thumb_staged = ATTACHMENT_DIR / f".{attachment_id}.thumb.upload"
+    created_paths = [original_staged, thumb_staged, original, thumb]
+    try:
+        original_staged.write_bytes(data)
+        has_thumb = kind == "image" and write_thumbnail(data, thumb_staged)
+        if not has_thumb:
+            thumb_staged.unlink(missing_ok=True)
+        with _app_db() as conn:
+            conn.execute("""
+                INSERT INTO chat_attachments
+                    (id, thread_key, uploader, message_id, kind, filename, mime,
+                     bytes, width, height, created_at)
+                VALUES (?, ?, ?, NULL, ?, ?, ?, ?, ?, ?, ?)
+            """, (attachment_id, thread_key, caller, kind,
+                  _safe_filename(upload.filename), mimetype, len(data),
+                  width, height, _utc_now_iso()))
+            # Rename on the same volume is atomic. It happens before commit,
+            # so readers can never observe a committed row with half a file.
+            original_staged.replace(original)
+            if has_thumb:
+                thumb_staged.replace(thumb)
+            _sweep_orphans(conn)
+            row = conn.execute(
+                "SELECT * FROM chat_attachments WHERE id = ?", (attachment_id,)
+            ).fetchone()
+    except Exception:
+        for path in created_paths:
+            try:
+                path.unlink(missing_ok=True)
+            except OSError:
+                logging.warning("Could not clean failed attachment %s", path)
+        raise
 
     return jsonify({"ok": True, "attachment": _attachment_json(row)}), 201
 
@@ -204,6 +229,11 @@ def im_attachment_file(attachment_id):
     learn answers 404 — including whether the id exists at all."""
     if not ATTACHMENT_ID.fullmatch(attachment_id or ""):
         abort(404)
+    if _preview_actor():
+        return jsonify({
+            "error": "Messaging is unavailable while previewing a player.",
+            "error_code": "preview_forbidden",
+        }), 403
     caller = _verify_player_token(_extract_player_token())
     if not caller:
         abort(404)
@@ -214,6 +244,14 @@ def im_attachment_file(attachment_id):
         ).fetchone()
     if not row:
         abort(404)
+    if row["message_id"] is not None:
+        with _app_db() as conn:
+            parent = conn.execute(
+                "SELECT deleted_at FROM chat_messages WHERE id = ?",
+                (row["message_id"],),
+            ).fetchone()
+        if not parent or parent["deleted_at"]:
+            abort(404)
     members = _thread_members(row["thread_key"], _im_roster())
     if not members or caller not in members:
         abort(404)
@@ -233,7 +271,9 @@ def im_attachment_file(attachment_id):
         download_name=row["filename"] if row["kind"] == "pdf" else None,
     )
     response.headers["X-Content-Type-Options"] = "nosniff"
-    response.headers["Cache-Control"] = "private, max-age=3600"
+    # Authorization and deletion are checked on every use. A private browser
+    # cache would otherwise keep a deleted image visible for up to an hour.
+    response.headers["Cache-Control"] = "private, no-store"
     return response
 
 

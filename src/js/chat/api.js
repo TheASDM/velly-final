@@ -22,21 +22,26 @@ async function postJson(url, body) {
   return data;
 }
 
-export function fetchThreads() {
-  return getJson('/api/im/threads');
+export function fetchThreads(options) {
+  return getJson('/api/im/threads', options);
 }
 
 /* One poll answers everything an open thread needs: new messages, edits
  * and deletes to messages it already has (that is what `since` is for —
  * `after` only ever finds new ids), reactions, typing, receipts, presence. */
-export function fetchMessages(threadKey, afterId, since) {
+export function fetchMessages(threadKey, afterId, since, options) {
   const query = new URLSearchParams({ after: String(afterId || 0) });
   if (since) query.set('since', since);
-  return getJson(`/api/im/thread/${encodeURIComponent(threadKey)}?${query}`);
+  return getJson(`/api/im/thread/${encodeURIComponent(threadKey)}?${query}`, options);
 }
 
-export function sendMessage(threadKey, body, replyToId, attachmentIds) {
-  const payload = { body };
+export function fetchOlderMessages(threadKey, beforeId, options) {
+  const query = new URLSearchParams({ before: String(beforeId) });
+  return getJson(`/api/im/thread/${encodeURIComponent(threadKey)}?${query}`, options);
+}
+
+export function sendMessage(threadKey, body, replyToId, attachmentIds, clientMessageId) {
+  const payload = { body, clientMessageId };
   if (replyToId) payload.replyToId = replyToId;
   if (attachmentIds && attachmentIds.length) payload.attachments = attachmentIds;
   return postJson(`/api/im/thread/${encodeURIComponent(threadKey)}`, payload);
@@ -95,8 +100,8 @@ export async function deleteMessage(messageId) {
  * and dismissible — shown as a pinned row above the conversations. */
 /* The roster, for the faces in the conversation list. Same endpoint the
  * profile pages use — names and avatar URLs only, no bios. */
-export function fetchProfiles() {
-  return getJson('/api/profiles');
+export function fetchProfiles(options) {
+  return getJson('/api/profiles', options);
 }
 
 export function fetchAnnouncements(playerName) {
@@ -117,7 +122,7 @@ export async function dismissAnnouncement(messageId) {
 /* Enzo's thread streams: the reply arrives token by token, and both halves
  * are stored server-side before the stream closes. Handlers fire as events
  * land; the promise resolves when the stream ends. */
-export async function streamToEnzo(threadKey, body, options, onEvent) {
+export async function streamToEnzo(threadKey, body, options, onEvent, requestOptions = {}) {
   const response = await fetch(
     `/api/im/thread/${encodeURIComponent(threadKey)}/enzo`,
     {
@@ -128,6 +133,7 @@ export async function streamToEnzo(threadKey, body, options, onEvent) {
         Accept: 'text/event-stream',
       }),
       body: JSON.stringify({ body, ...(options || {}) }),
+      signal: requestOptions.signal,
     }
   );
   if (!supportsEventStream(response)) {

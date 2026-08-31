@@ -109,6 +109,7 @@ export function createAttachmentTray(options) {
     get count() { return pending.length; },
     get uploading() { return pending.some((entry) => entry.state === 'uploading'); },
     get hasReady() { return pending.some((entry) => entry.state === 'ready'); },
+    get hasFailed() { return pending.some((entry) => entry.state === 'failed'); },
     clear() {
       pending.splice(0).forEach((entry) => {
         if (entry.previewUrl) URL.revokeObjectURL(entry.previewUrl);

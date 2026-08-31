@@ -169,6 +169,31 @@ def test_upload_then_send_attaches_the_files(app, server_module):
     assert [a["kind"] for a in fetched[0]["attachments"]] == ["image", "pdf"]
 
 
+def test_duplicate_attachment_ids_are_refused(app, server_module):
+    lotan = _headers(server_module, "Lotan")
+    with app.test_client() as client:
+        one = _upload(client, lotan, png_bytes(), "a.png", "image/png").get_json()["attachment"]
+        response = client.post(
+            _url("party"),
+            json={"body": "Not twice.", "attachments": [one["id"], one["id"]]},
+            headers=lotan,
+        )
+    assert response.status_code == 400
+    assert response.get_json()["error_code"] == "invalid"
+
+
+def test_malformed_attachment_values_are_a_400_not_a_server_error(app, server_module):
+    lotan = _headers(server_module, "Lotan")
+    with app.test_client() as client:
+        response = client.post(
+            _url("party"),
+            json={"body": "Nope.", "attachments": [{"id": "not hashable"}]},
+            headers=lotan,
+        )
+    assert response.status_code == 400
+    assert response.get_json()["error_code"] == "invalid"
+
+
 def test_a_picture_with_no_caption_is_still_a_message(app, server_module):
     lotan = _headers(server_module, "Lotan")
     with app.test_client() as client:
@@ -316,10 +341,35 @@ def test_a_deleted_message_stops_showing_its_files(app, server_module):
         sent = client.post(_url("party"), json={"body": "Look",
                                                 "attachments": [one["id"]]},
                            headers=lotan).get_json()["message"]
+        before_delete = client.get(one["url"], headers=lotan)
         client.delete(f"/api/im/message/{sent['id']}", headers=lotan)
         fetched = client.get(_url("party"), headers=lotan).get_json()["messages"]
+        after_delete = client.get(one["url"], headers=lotan)
+        thumb_after_delete = client.get(one["thumbUrl"], headers=lotan)
+    assert before_delete.status_code == 200
+    assert before_delete.headers["Cache-Control"] == "private, no-store"
     assert fetched[0]["deleted"] is True
     assert fetched[0]["attachments"] == []
+    assert after_delete.status_code == 404
+    assert thumb_after_delete.status_code == 404
+
+
+def test_edit_response_keeps_the_messages_attachments(app, server_module):
+    lotan = _headers(server_module, "Lotan")
+    with app.test_client() as client:
+        one = _upload(client, lotan, png_bytes(), "a.png", "image/png").get_json()["attachment"]
+        sent = client.post(
+            _url("party"),
+            json={"body": "Before", "attachments": [one["id"]]},
+            headers=lotan,
+        ).get_json()["message"]
+        edited = client.patch(
+            f"/api/im/message/{sent['id']}",
+            json={"body": "After"},
+            headers=lotan,
+        )
+    assert edited.status_code == 200
+    assert [item["id"] for item in edited.get_json()["message"]["attachments"]] == [one["id"]]
 
 
 def test_enzo_keeps_files_on_the_message_but_never_sees_them(app, server_module, monkeypatch):

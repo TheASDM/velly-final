@@ -479,4 +479,31 @@ def apply_current_migrations(conn, done):
             ("030_studio_job_compiler", _utc_now_iso()),
         )
 
+    if "031_chat_delivery_hardening" not in done:
+        # A sender-created UUID makes an ambiguous retry safe. The same UUID
+        # in the same thread from the same sender names the message already
+        # committed; it must never create a second row.
+        cols = _table_columns(conn, "chat_messages")
+        if "client_message_id" not in cols:
+            conn.execute("ALTER TABLE chat_messages ADD COLUMN client_message_id TEXT")
+        conn.execute("""
+            CREATE UNIQUE INDEX IF NOT EXISTS idx_chat_messages_client_id
+            ON chat_messages (thread_key, sender, client_message_id)
+            WHERE client_message_id IS NOT NULL
+        """)
+        # Enzo's single-flight guard must be shared by every Gunicorn worker.
+        # A deadline makes a dead stream self-healing; the opaque token keeps
+        # an older stream from releasing a newer lease.
+        conn.execute("""
+            CREATE TABLE IF NOT EXISTS chat_enzo_leases (
+                player_name TEXT PRIMARY KEY,
+                lease_token TEXT NOT NULL,
+                expires_at TEXT NOT NULL
+            )
+        """)
+        conn.execute(
+            "INSERT INTO schema_migrations (name, applied_at) VALUES (?, ?)",
+            ("031_chat_delivery_hardening", _utc_now_iso()),
+        )
+
 __all__ = ['apply_current_migrations']

@@ -13,7 +13,7 @@
  */
 import { escapeHtml, whenPwaReady } from '../shared/pwa.js';
 import {
-  deleteMessage, editMessage, fetchMessages, fetchProfiles, fetchThreads,
+  deleteMessage, editMessage, fetchMessages, fetchOlderMessages, fetchProfiles, fetchThreads,
   markThreadRead, sendMessage, sendTyping, setReaction, setThreadMuted,
   streamToEnzo,
 } from './api.js';
@@ -21,7 +21,8 @@ import { renderBubble } from './bubble.js';
 import { ACCEPT, createAttachmentTray, wireFileIntake } from './attachments.js';
 import { openImageViewer } from '../components/image-zoom.js';
 import {
-  getDraft, getListWidth, getOpenKey, getScrollTop,
+  clearChatState, getDraft, getListWidth, getOpenKey, getScrollTop,
+  setStateIdentity,
   setDraft, setListWidth, setOpenKey, setScrollTop,
 } from './state.js';
 
@@ -29,6 +30,7 @@ import {
 // sentence. Six players at 4s is ~90 requests a minute worst case, and it
 // stops dead the moment the tab blurs or the thread closes.
 const POLL_ACTIVE_MS = 4000;
+const THREAD_LIST_REFRESH_MS = 12000;
 const TYPING_HEARTBEAT_MS = 3000;
 const PRESENCE_ONLINE_MS = 5 * 60 * 1000;
 const EDIT_WINDOW_MS = 60 * 60 * 1000;
@@ -96,6 +98,20 @@ function isOnline(lastSeenAt) {
   return !Number.isNaN(date.getTime()) && Date.now() - date.getTime() < PRESENCE_ONLINE_MS;
 }
 
+function newClientMessageId() {
+  if (window.crypto && typeof window.crypto.randomUUID === 'function') {
+    return window.crypto.randomUUID();
+  }
+  // UUIDv4 fallback for older installed WebViews. Randomness is collision
+  // avoidance, not authorization; the signed sender credential remains that.
+  const bytes = new Uint8Array(16);
+  window.crypto.getRandomValues(bytes);
+  bytes[6] = (bytes[6] & 0x0f) | 0x40;
+  bytes[8] = (bytes[8] & 0x3f) | 0x80;
+  const hex = [...bytes].map((value) => value.toString(16).padStart(2, '0')).join('');
+  return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20)}`;
+}
+
 /* Ask for notification permission the first time you send — at sign-in it
  * is a demand from a stranger, here it is obviously about this message. */
 async function maybeAskForPush() {
@@ -125,9 +141,18 @@ export function createChatPanel(options) {
   let lastId = 0;
   let since = '';
   let pollTimer = null;
+  let threadGeneration = 0;
+  let lastListRefreshAt = 0;
   let pendingSeq = 0;
   let active = mode === 'page';
   let booted = false;
+  let stateIdentity = null;
+  let lifecycleGeneration = 0;
+  let requestController = new AbortController();
+  let threadFetchSeq = 0;
+  let appliedThreadFetchSeq = 0;
+  let listFetchSeq = 0;
+  let appliedListFetchSeq = 0;
 
   // Per-thread depth, reset on every open.
   const messagesById = new Map();
@@ -138,6 +163,9 @@ export function createChatPanel(options) {
   let replyTo = null;
   let editing = null;
   let lastTypingAt = 0;
+  let lastReadSent = 0;
+  let hasOlder = false;
+  let loadingOlder = false;
 
   // ── Shell ────────────────────────────────────────────────────────────
   const root = el('div', `vos-chat vos-chat--${mode}`);
@@ -168,6 +196,7 @@ export function createChatPanel(options) {
         <div class="vos-chat-resizer" role="separator" aria-orientation="vertical"
              aria-label="Resize the conversation list" tabindex="0"></div>
         <section class="vos-chat-thread" aria-label="Conversation">
+          <button type="button" class="vos-chat-older" hidden>Load earlier messages</button>
           <div class="vos-chat-messages" aria-live="polite"></div>
           <button type="button" class="vos-chat-jump" hidden aria-label="Jump to the newest message">
             <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 5v14"/><path d="m19 12-7 7-7-7"/></svg>
@@ -210,6 +239,7 @@ export function createChatPanel(options) {
   const pinnedEl = root.querySelector('.vos-chat-pinned');
   const resizerEl = root.querySelector('.vos-chat-resizer');
   const jumpEl = root.querySelector('.vos-chat-jump');
+  const olderEl = root.querySelector('.vos-chat-older');
   const messagesEl = root.querySelector('.vos-chat-messages');
   const placeholderEl = root.querySelector('.vos-chat-placeholder');
   const typingLiveEl = root.querySelector('.vos-chat-typing-live');
@@ -237,7 +267,7 @@ export function createChatPanel(options) {
 
   function syncSendEnabled() {
     const hasText = !!inputEl.value.trim();
-    const hasFiles = !editing && tray.count > 0;
+    const hasFiles = !editing && tray.hasReady;
     sendEl.disabled = tray.uploading || !(hasText || hasFiles);
   }
 
@@ -668,9 +698,14 @@ export function createChatPanel(options) {
   }
 
   async function loadThreads() {
-    const data = await fetchThreads();
+    const generation = lifecycleGeneration;
+    const sequence = ++listFetchSeq;
+    const data = await fetchThreads({ signal: requestController.signal });
+    if (generation !== lifecycleGeneration || sequence < appliedListFetchSeq) return threads;
+    appliedListFetchSeq = sequence;
     threads = data.threads || [];
     presence = { ...presence, ...(data.presence || {}) };
+    lastListRefreshAt = Date.now();
     renderList();
     return threads;
   }
@@ -680,7 +715,9 @@ export function createChatPanel(options) {
    * portrait or self-uploaded, so nothing new had to be built for this. */
   async function loadAvatars() {
     try {
-      const data = await fetchProfiles();
+      const generation = lifecycleGeneration;
+      const data = await fetchProfiles({ signal: requestController.signal });
+      if (generation !== lifecycleGeneration) return;
       const next = {};
       (data.profiles || []).forEach((profile) => {
         if (profile && profile.name && profile.avatarUrl) {
@@ -819,21 +856,44 @@ export function createChatPanel(options) {
   }
 
   async function markRead() {
-    if (!isTalkThread() || !lastId) return;
+    if (!isTalkThread() || !lastId || !active) return;
+    if (document.visibilityState !== 'visible' || !atBottom()) return;
+    const key = openKey;
+    const generation = threadGeneration;
+    const pointer = lastId;
+    if (pointer <= lastReadSent) return;
+    const previousPointer = lastReadSent;
+    lastReadSent = pointer;
     try {
-      await markThreadRead(openKey, lastId);
-      const thread = threads.find((entry) => entry.key === openKey);
+      const data = await markThreadRead(key, pointer);
+      if (openKey !== key || generation !== threadGeneration) return;
+      lastReadSent = Math.max(lastReadSent, data.lastReadId || 0);
+      const thread = threads.find((entry) => entry.key === key);
       if (thread) thread.unread = 0;
       renderList();
       window.dispatchEvent(new CustomEvent('vos:im-read'));
-    } catch (error) { /* the badge catches up on the next refresh */ }
+    } catch (error) {
+      if (openKey === key && generation === threadGeneration) lastReadSent = previousPointer;
+    }
   }
 
-  async function fetchNew() {
+  async function fetchNew(options = {}) {
     if (!isTalkThread()) return;
     const key = openKey;
-    const data = await fetchMessages(key, lastId, since);
-    if (openKey !== key) return; // switched threads mid-flight
+    const generation = threadGeneration;
+    const sequence = ++threadFetchSeq;
+    const requestedAfter = lastId;
+    const oldReactionState = JSON.stringify(reactions);
+    const data = await fetchMessages(
+      key, lastId, since, { signal: requestController.signal },
+    );
+    if (openKey !== key || generation !== threadGeneration
+        || sequence < appliedThreadFetchSeq) return;
+    appliedThreadFetchSeq = sequence;
+    if (!requestedAfter) {
+      hasOlder = !!data.hasOlder;
+      olderEl.hidden = !hasOlder;
+    }
     since = data.now || since;
     reactions = data.reactions || {};
     receipts = data.receipts || {};
@@ -848,7 +908,7 @@ export function createChatPanel(options) {
     });
 
     const messages = data.messages || [];
-    const wasAtBottom = atBottom();
+    const wasAtBottom = options.preservePosition ? false : atBottom();
     if (messages.length) {
       const empty = messagesEl.querySelector('.vos-chat-empty');
       if (empty) empty.remove();
@@ -867,9 +927,14 @@ export function createChatPanel(options) {
       // it. Someone else's message must not yank the view while you read.
       if (wasAtBottom) scrollToLatest();
       else syncJump();
-      markRead();
-    } else if (data.revised && data.revised.length) {
-      // Reaction and receipt state moved even though no message did.
+      if (wasAtBottom) markRead();
+      const thread = threads.find((entry) => entry.key === key);
+      if (thread) thread.last = messages[messages.length - 1];
+      renderList();
+    } else if ((data.revised && data.revised.length)
+               || oldReactionState !== JSON.stringify(reactions)) {
+      // Reactions are independent entities. They can move without a new or
+      // edited message, so a reaction-only poll still repaints its bubbles.
       messagesEl.querySelectorAll('.vos-chat-bubble[data-id]').forEach((node) => {
         redrawMessage(node.dataset.id);
       });
@@ -878,6 +943,58 @@ export function createChatPanel(options) {
     renderTyping();
     renderReceipts();
     renderHeadPresence();
+    // A message may have arrived while the tab was hidden. The hidden fetch
+    // correctly refused to mark it read; the first visible catch-up should
+    // acknowledge it if the reader is still at the bottom.
+    if (!options.preservePosition && atBottom()) markRead();
+    if (data.hasNewer && openKey === key && generation === threadGeneration) {
+      window.setTimeout(() => fetchNew().catch(() => {}), 0);
+    }
+  }
+
+  async function loadOlder() {
+    if (!isTalkThread() || !hasOlder || loadingOlder || !messagesById.size) return;
+    const key = openKey;
+    const generation = threadGeneration;
+    const beforeId = Math.min(...messagesById.keys());
+    const previousHeight = messagesEl.scrollHeight;
+    const previousTop = messagesEl.scrollTop;
+    loadingOlder = true;
+    olderEl.disabled = true;
+    olderEl.textContent = 'Loading…';
+    try {
+      const data = await fetchOlderMessages(
+        key, beforeId, { signal: requestController.signal },
+      );
+      if (openKey !== key || generation !== threadGeneration) return;
+      reactions = data.reactions || reactions;
+      receipts = data.receipts || receipts;
+      presence = { ...presence, ...(data.presence || {}) };
+      const fragment = document.createDocumentFragment();
+      (data.messages || []).forEach((message) => {
+        messagesById.set(message.id, message);
+        fragment.append(messageBubble(message));
+      });
+      messagesEl.insertBefore(fragment, messagesEl.firstChild);
+      // Quotes that pointed beyond the first page can now resolve.
+      messagesEl.querySelectorAll('.vos-chat-bubble[data-id]').forEach((node) => {
+        redrawMessage(node.dataset.id);
+      });
+      regroup();
+      hasOlder = !!data.hasOlder;
+      messagesEl.scrollTop = previousTop + (messagesEl.scrollHeight - previousHeight);
+      renderReceipts();
+      setStatus('');
+    } catch (error) {
+      if (error.name !== 'AbortError') setStatus(error.message, true);
+    } finally {
+      if (openKey === key && generation === threadGeneration) {
+        loadingOlder = false;
+        olderEl.disabled = false;
+        olderEl.textContent = 'Load earlier messages';
+        olderEl.hidden = !hasOlder;
+      }
+    }
   }
 
   function schedulePoll() {
@@ -886,6 +1003,9 @@ export function createChatPanel(options) {
       pollTimer = null;
       if (!active || document.visibilityState !== 'visible' || !isTalkThread()) return;
       try { await fetchNew(); } catch (error) { /* retry next tick */ }
+      if (Date.now() - lastListRefreshAt >= THREAD_LIST_REFRESH_MS) {
+        await loadThreads().catch(() => {});
+      }
       if (isTalkThread()) schedulePoll();
     }, POLL_ACTIVE_MS);
   }
@@ -904,6 +1024,13 @@ export function createChatPanel(options) {
     editing = null;
     since = '';
     lastId = 0;
+    lastReadSent = 0;
+    appliedThreadFetchSeq = 0;
+    hasOlder = false;
+    loadingOlder = false;
+    olderEl.hidden = true;
+    olderEl.disabled = false;
+    olderEl.textContent = 'Load earlier messages';
     tray.clear();
     renderContext();
     renderTyping();
@@ -916,6 +1043,7 @@ export function createChatPanel(options) {
       stopTyping();
     }
     openKey = key;
+    threadGeneration += 1;
     setOpenKey(key);
     panelEl.classList.add('is-thread-open');
     backEl.hidden = false;
@@ -944,14 +1072,15 @@ export function createChatPanel(options) {
     renderList();
     renderHeadPresence();
 
+    const saved = getScrollTop(key);
     try {
-      await fetchNew();
+      await fetchNew({ preservePosition: saved != null });
       regroup();
       if (!messagesEl.querySelector('.vos-chat-bubble')) {
         messagesEl.append(el('p', 'vos-chat-empty', EMPTY_COPY[openKind] || EMPTY_COPY.direct));
       }
-      const saved = getScrollTop(key);
       if (saved != null) messagesEl.scrollTop = saved;
+      if (atBottom()) markRead();
       syncJump();
       setStatus('');
     } catch (error) {
@@ -968,6 +1097,7 @@ export function createChatPanel(options) {
       stopTyping();
     }
     openKey = null;
+    threadGeneration += 1;
     openKind = null;
     setOpenKey(null);
     panelEl.classList.remove('is-thread-open');
@@ -1059,19 +1189,28 @@ export function createChatPanel(options) {
   /* Enzo's reply arrives token by token over SSE, and the server stores
    * both halves before the stream closes — so the pill and this panel are
    * reading the same conversation, not two copies of one. */
-  async function deliverToEnzo(bubble, key, text, attachmentIds) {
+  async function deliverToEnzo(
+    bubble, key, text, attachmentIds, generation, clientMessageId,
+  ) {
     const typing = typingRow();
-    messagesEl.append(typing);
-    scrollToLatest();
+    if (openKey === key && threadGeneration === generation) {
+      messagesEl.append(typing);
+      scrollToLatest();
+    }
     let reply = null;
     let streamError = null;
     try {
       const options = attachmentIds && attachmentIds.length
         ? { attachments: attachmentIds } : {};
+      options.clientMessageId = clientMessageId;
       await streamToEnzo(key, text, options, (name, payload) => {
+        // The stream belongs to the thread that started it. If the reader has
+        // moved elsewhere, leave the server to finish and let a later fetch
+        // hydrate this thread; never paint into the newly selected one.
+        if (openKey !== key || threadGeneration !== generation) return;
         if (name === 'sent' && payload.message) {
           if (payload.message.id > lastId) lastId = payload.message.id;
-          if (openKey === key) bubble.replaceWith(messageBubble(payload.message));
+          bubble.replaceWith(messageBubble(payload.message));
           return;
         }
         if (name === 'token') {
@@ -1096,64 +1235,85 @@ export function createChatPanel(options) {
           return;
         }
         if (name === 'error') streamError = payload.message || 'Enzo lost the thread.';
-      });
+      }, { signal: requestController.signal });
       if (streamError) setStatus(streamError, true);
       maybeAskForPush();
       window.dispatchEvent(new CustomEvent('vos:enzo-exchange', {
         detail: { key, source: 'panel' },
       }));
     } catch (error) {
-      failBubble(bubble, key, text, error);
+      failBubble(bubble, {
+        key, text, attachmentIds, generation, kind: 'enzo', clientMessageId,
+      }, error);
     } finally {
       typing.remove();
       if (reply) reply.remove();
     }
   }
 
-  function failBubble(bubble, key, text, error) {
+  function failBubble(bubble, payload, error) {
+    if (!bubble.isConnected || openKey !== payload.key
+        || threadGeneration !== payload.generation) return;
     bubble.classList.add('is-failed');
     const meta = bubble.querySelector('.vos-chat-bubble-meta');
     if (meta) meta.textContent = `Failed: ${error.message} — tap to retry`;
     bubble.addEventListener('click', function retry() {
       bubble.classList.remove('is-failed');
       if (meta) meta.textContent = 'Sending…';
-      // No attachment ids on a retry: if the first attempt claimed them
-      // the second cannot, and if it did not they are already gone.
-      deliver(bubble, key, text);
+      // The same client id makes an ambiguous retry safe, and the complete
+      // payload means a retry can never silently drop its quote or files.
+      deliver(bubble, payload);
     }, { once: true });
   }
 
-  async function deliver(bubble, key, text, replyToId, attachmentIds) {
-    if (openKind === 'enzo') return deliverToEnzo(bubble, key, text, attachmentIds);
+  async function deliver(bubble, payload) {
+    const { key, text, replyToId, attachmentIds, clientMessageId, generation, kind } = payload;
+    if (kind === 'enzo') {
+      return deliverToEnzo(
+        bubble, key, text, attachmentIds, generation, clientMessageId,
+      );
+    }
     try {
-      const data = await sendMessage(key, text, replyToId, attachmentIds);
+      const data = await sendMessage(
+        key, text, replyToId, attachmentIds, clientMessageId,
+      );
       const message = data.message;
-      if (message.id > lastId) lastId = message.id;
-      if (openKey === key) {
+      if (openKey === key && threadGeneration === generation) {
+        if (message.id > lastId) lastId = message.id;
         bubble.replaceWith(messageBubble(message));
         scrollToLatest();
         markRead();
         renderReceipts();
       }
+      const thread = threads.find((entry) => entry.key === key);
+      if (thread) {
+        thread.last = message;
+        thread.unread = 0;
+        renderList();
+      }
       maybeAskForPush();
     } catch (error) {
-      failBubble(bubble, key, text, error);
+      failBubble(bubble, payload, error);
     }
   }
 
   async function saveEdit(text) {
     const target = editing;
-    editing = null;
-    inputEl.value = getDraft(openKey);
-    renderContext();
-    autogrow();
+    sendEl.disabled = true;
     try {
       const data = await editMessage(target.id, text);
       messagesById.set(data.message.id, data.message);
       redrawMessage(data.message.id);
+      editing = null;
+      inputEl.value = getDraft(openKey);
+      renderContext();
+      autogrow();
       setStatus('');
     } catch (error) {
+      // Stay in edit mode with the attempted correction intact.
       setStatus(error.message, true);
+    } finally {
+      syncSendEnabled();
     }
   }
 
@@ -1183,6 +1343,15 @@ export function createChatPanel(options) {
     messagesEl.append(bubble);
     scrollToLatest();
     const replyToId = replyTo ? replyTo.id : null;
+    const payload = {
+      key: openKey,
+      kind: openKind,
+      generation: threadGeneration,
+      text,
+      replyToId,
+      attachmentIds,
+      clientMessageId: newClientMessageId(),
+    };
     replyTo = null;
     renderContext();
     inputEl.value = '';
@@ -1192,7 +1361,7 @@ export function createChatPanel(options) {
     syncSendEnabled();
     stopTyping();
     setStatus('');
-    deliver(bubble, openKey, text, replyToId, attachmentIds);
+    deliver(bubble, payload);
   });
 
   inputEl.addEventListener('input', () => {
@@ -1341,7 +1510,10 @@ export function createChatPanel(options) {
     if (scrollSaveTimer) window.clearTimeout(scrollSaveTimer);
     scrollSaveTimer = window.setTimeout(() => {
       scrollSaveTimer = null;
-      if (isTalkThread()) setScrollTop(openKey, messagesEl.scrollTop);
+      if (isTalkThread()) {
+        setScrollTop(openKey, messagesEl.scrollTop);
+        if (atBottom()) markRead();
+      }
     }, 200);
   }, { passive: true });
 
@@ -1351,6 +1523,7 @@ export function createChatPanel(options) {
   });
 
   backEl.addEventListener('click', closeThread);
+  olderEl.addEventListener('click', loadOlder);
 
   if (closeEl) closeEl.addEventListener('click', () => onCloseRequest());
 
@@ -1374,23 +1547,91 @@ export function createChatPanel(options) {
   async function boot() {
     if (booted) return playerName;
     booted = true;
+    const generation = lifecycleGeneration;
     const pwa = await whenPwaReady();
+    if (generation !== lifecycleGeneration) return null;
+    if (pwa && pwa.isPreviewing && pwa.isPreviewing()) {
+      setStateIdentity(null);
+      setStatus('Messaging is unavailable while previewing a player.', true);
+      return null;
+    }
     playerName = pwa && pwa.ensureIdentity
       ? await pwa.ensureIdentity().catch(() => null)
       : null;
+    if (generation !== lifecycleGeneration) return null;
     if (!playerName) {
+      setStateIdentity(null);
       setStatus('Sign in to see your messages.', true);
       booted = false;
       return null;
     }
+    setStateIdentity(playerName);
+    stateIdentity = playerName;
     setStatus('Loading…');
     try {
       await Promise.all([loadAvatars(), loadThreads()]);
+      if (generation !== lifecycleGeneration) return null;
       setStatus('');
     } catch (error) {
-      setStatus(error.message, true);
+      if (generation === lifecycleGeneration && error.name !== 'AbortError') {
+        setStatus(error.message, true);
+      }
     }
     return playerName;
+  }
+
+  function resetForIdentity(nextName = null) {
+    const previousName = playerName || stateIdentity;
+    lifecycleGeneration += 1;
+    threadGeneration += 1;
+    requestController.abort();
+    requestController = new AbortController();
+    stopPoll();
+    // The identity event fires after credentials change. A network "stopped
+    // typing" request here could mutate the incoming seat, so invalidate the
+    // local lease and let the old server row expire naturally.
+    lastTypingAt = 0;
+    if (scrollSaveTimer) window.clearTimeout(scrollSaveTimer);
+    scrollSaveTimer = null;
+    if (filterTimer) window.clearTimeout(filterTimer);
+    filterTimer = null;
+
+    // A session ending is a privacy boundary. Keep no drafts, scroll
+    // bookmarks, open-thread pointers, or rendered entities from that seat.
+    if (previousName && previousName !== nextName) clearChatState(previousName);
+    setStateIdentity(nextName);
+    stateIdentity = nextName;
+    playerName = null;
+    booted = false;
+    threads = [];
+    avatars = {};
+    presence = {};
+    filterText = '';
+    filterInputEl.value = '';
+    openKey = null;
+    openKind = null;
+    openMuted = false;
+    lastListRefreshAt = 0;
+    appliedListFetchSeq = 0;
+    listEl.textContent = '';
+    pinnedEl.textContent = '';
+    rowsByKey.clear();
+    pinnedRows.clear();
+    messagesEl.textContent = '';
+    inputEl.value = '';
+    panelEl.classList.remove('is-thread-open');
+    backEl.hidden = true;
+    muteEl.hidden = true;
+    composerEl.hidden = true;
+    placeholderEl.hidden = false;
+    placeholderEl.textContent = 'Pick a conversation.';
+    titleEl.textContent = 'Chat';
+    titleLinkEl.hidden = true;
+    headPresenceEl.hidden = true;
+    jumpEl.hidden = true;
+    resetThreadState();
+    setStatus(nextName ? '' : 'Sign in to see your messages.', !nextName);
+    onUnreadChange(0);
   }
 
   document.addEventListener('visibilitychange', () => {
@@ -1408,6 +1649,7 @@ export function createChatPanel(options) {
   return {
     root,
     boot,
+    resetForIdentity,
     get playerName() { return playerName; },
     /* The panel only polls while it is on screen. */
     setActive(value) {

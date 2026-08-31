@@ -1,9 +1,12 @@
-"""Previewing a player must actually be being that player.
+"""Previewing a player opens their app surfaces without impersonating them in chat.
 
 Hiding DM controls is not authorization. These tests hold the line that the
-brief's preview mode is a different credential rather than a client flag: a
-preview token opens every player door and none of the DM ones.
+brief's preview mode is a different credential rather than a client flag. It
+can inspect ordinary player surfaces, but private messaging is a boundary the
+DM cannot cross by changing seats.
 """
+
+import urllib.parse
 
 
 def _preview_headers(client, auth_headers, player="Lotan"):
@@ -64,3 +67,27 @@ def test_preview_token_cannot_open_dm_doors(app, auth_headers):
         # And it cannot mint itself a fresh preview of somebody else.
         assert client.post("/api/auth/preview", headers=headers,
                            json={"player": "Car"}).status_code == 403
+
+
+def test_preview_token_cannot_read_or_act_as_the_player_in_chat(app, auth_headers,
+                                                                server_module):
+    roxy = {
+        "Authorization":
+            f"Bearer {server_module._issue_player_token('Roxanya \"Roxy\"')}"
+    }
+    key = 'Lotan|Roxanya "Roxy"'
+    url = "/api/im/thread/" + urllib.parse.quote(key, safe="")
+    with app.test_client() as client:
+        client.post(url, headers=roxy, json={"body": "Between players."})
+        preview = _preview_headers(client, auth_headers)
+
+        for method, path, body in (
+            ("GET", "/api/im/threads", None),
+            ("GET", url, None),
+            ("POST", url, {"body": "Not from the player."}),
+            ("POST", "/api/im/read", {"threadKey": key, "lastReadId": 1}),
+            ("POST", "/api/im/typing", {"threadKey": key, "typing": True}),
+        ):
+            response = client.open(path, method=method, headers=preview, json=body)
+            assert response.status_code == 403, (method, path, response.get_json())
+            assert response.get_json()["error_code"] == "preview_forbidden"

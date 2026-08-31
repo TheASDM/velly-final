@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'foglight-pwa-v134';
+const CACHE_VERSION = 'foglight-pwa-v135';
 const PRECACHE = `${CACHE_VERSION}-precache`;
 const PAGES = `${CACHE_VERSION}-pages`;
 const ASSETS = `${CACHE_VERSION}-assets`;
@@ -265,7 +265,14 @@ self.addEventListener('push', (event) => {
   };
 
   event.waitUntil((async () => {
-    await self.registration.showNotification(title, options);
+    const windows = await self.clients.matchAll({ type: 'window', includeUncontrolled: true });
+    const hasVisibleClient = windows.some((client) => client.visibilityState === 'visible');
+    // Chat always reaches every subscribed device. On this device, an open
+    // visible app gets the live nudge below; only a backgrounded device needs
+    // a system banner. Non-chat broadcasts retain their existing behavior.
+    if (!data.threadKey || !hasVisibleClient) {
+      await self.registration.showNotification(title, options);
+    }
     // The count on the installed app's icon, and a live nudge to any open
     // tab so the bubble moves while you are reading a wiki page.
     if (typeof data.unread === 'number' && self.navigator) {
@@ -278,7 +285,6 @@ self.addEventListener('push', (event) => {
       } catch (error) { /* unsupported, or denied */ }
     }
     if (data.threadKey) {
-      const windows = await self.clients.matchAll({ type: 'window', includeUncontrolled: true });
       windows.forEach((client) => client.postMessage({
         type: 'VOS_IM_PUSH',
         threadKey: data.threadKey,

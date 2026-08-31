@@ -13,5 +13,5 @@
 module.exports = {
   name: "Foglight",
   version: "2.0",
-  build: 5,
+  build: 6,
 };

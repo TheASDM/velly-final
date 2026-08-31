@@ -34,7 +34,10 @@ export function getCount() {
 export async function syncBadge() {
   const pwa = window.VOS_PWA;
   const name = pwa && pwa.getPlayerName ? pwa.getPlayerName() : null;
-  if (!name) return;
+  if (!name || (pwa.isPreviewing && pwa.isPreviewing())) {
+    applyCount(0);
+    return;
+  }
   try {
     const response = await fetch('/api/im/threads', {
       cache: 'no-store',

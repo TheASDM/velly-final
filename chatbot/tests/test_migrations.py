@@ -29,6 +29,7 @@ EXPECTED_MIGRATIONS = {
     "028_player_profiles",
     "029_app_settings",
     "030_studio_job_compiler",
+    "031_chat_delivery_hardening",
 }
 
 EXPECTED_TABLES = {
@@ -40,6 +41,7 @@ EXPECTED_TABLES = {
     "character_play_state",
     "character_play_ops",
     "chat_attachments",
+    "chat_enzo_leases",
     "chat_messages",
     "chat_reactions",
     "chat_reads",

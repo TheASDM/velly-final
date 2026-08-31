@@ -107,6 +107,21 @@ def test_reacting_twice_with_the_same_face_is_one_reaction(app, server_module):
     assert removed["reactions"] == []
 
 
+def test_deleted_messages_do_not_leak_reactions(app, server_module):
+    lotan = _headers(server_module, "Lotan")
+    roxy = _headers(server_module, 'Roxanya "Roxy"')
+    with app.test_client() as client:
+        message = _send(client, lotan, "party", "Gone.").get_json()["message"]
+        client.post(
+            f"/api/im/message/{message['id']}/reaction",
+            json={"emoji": THUMB},
+            headers=roxy,
+        )
+        client.delete(f"/api/im/message/{message['id']}", headers=lotan)
+        fetched = client.get(_url("party"), headers=roxy).get_json()
+    assert str(message["id"]) not in fetched["reactions"]
+
+
 def test_only_the_six_faces_are_accepted(app, server_module):
     lotan = _headers(server_module, "Lotan")
     with app.test_client() as client:

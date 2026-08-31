@@ -6,8 +6,17 @@
  * as this shape of app gets. Session-scoped on purpose: closing the tab is
  * meant to forget. */
 
-const KEY = 'vos:chat:state';
-const EMPTY = { openKey: null, scrollTop: {}, drafts: {} };
+const KEY_PREFIX = 'vos:chat:state:';
+const LEGACY_KEY = 'vos:chat:state';
+let activeIdentity = null;
+
+function emptyState() {
+  return { openKey: null, scrollTop: {}, drafts: {} };
+}
+
+function stateKey(identity = activeIdentity) {
+  return identity ? `${KEY_PREFIX}${encodeURIComponent(identity)}` : null;
+}
 
 /* Chrome, unlike conversation, is meant to be remembered. Where you dragged
  * the split is a preference, not a place in a thread, so it lives in
@@ -16,8 +25,10 @@ const LAYOUT_KEY = 'vos:chat:layout';
 
 function read() {
   try {
-    const raw = window.sessionStorage.getItem(KEY);
-    if (!raw) return { ...EMPTY };
+    const key = stateKey();
+    if (!key) return emptyState();
+    const raw = window.sessionStorage.getItem(key);
+    if (!raw) return emptyState();
     const parsed = JSON.parse(raw);
     return {
       openKey: typeof parsed.openKey === 'string' ? parsed.openKey : null,
@@ -25,14 +36,29 @@ function read() {
       drafts: parsed.drafts && typeof parsed.drafts === 'object' ? parsed.drafts : {},
     };
   } catch (error) {
-    return { ...EMPTY };
+    return emptyState();
   }
 }
 
 function write(state) {
   try {
-    window.sessionStorage.setItem(KEY, JSON.stringify(state));
+    const key = stateKey();
+    if (key) window.sessionStorage.setItem(key, JSON.stringify(state));
   } catch (error) { /* private mode, quota — the panel still works */ }
+}
+
+export function setStateIdentity(identity) {
+  activeIdentity = typeof identity === 'string' && identity ? identity : null;
+  // The pre-isolation key may contain another seat's drafts. It has no safe
+  // owner, so migrate by deletion rather than guessing.
+  try { window.sessionStorage.removeItem(LEGACY_KEY); } catch (error) { /* unavailable */ }
+}
+
+export function clearChatState(identity = activeIdentity) {
+  try {
+    const key = stateKey(identity);
+    if (key) window.sessionStorage.removeItem(key);
+  } catch (error) { /* unavailable */ }
 }
 
 export function getOpenKey() {
