@@ -1,9 +1,9 @@
 ---
 title: Tartuzi
-description: A DM-only reference for the sphinx who became the lock of the Keeper's prison and Kryton's hidden patron.
+description: A DM-only reference for the sphinx who became the lock of the Keeper's prison.
 published: false
 date: 2026-05-25T00:00:00.000Z
-tags: dm-only, spoilers, npc, sphinx, tartuzi, prison-lock, kryton, patron
+tags: dm-only, spoilers, npc, sphinx, tartuzi, prison-lock
 editor: markdown
 dateCreated: 2026-05-25T00:00:00.000Z
 ---
@@ -39,13 +39,10 @@ She calculated correctly that she could reach him. She did not calculate Silas.
 
 Tartuzi is both prisoner and prison mechanism. She can perceive the prison's structure, but every available ending is compromised: ending the prison may free dangerous powers, while preserving it prolongs her own enslavement and the Keeper's suffering.
 
-She is also Kryton's hidden warlock patron. The memory Kryton won at the Undertow was arranged so he would find it.
-
 ---
 
 ## Connections
 
-- **[Kryton Novelli](/en/Venturia/Characters/PCs/kryton-novelli)** - Her unknown warlock champion.
 - **[Tolomeo Lucente](/en/Venturia/Characters/NPCs/tolomeo-lucente)** - The person she entered the prison to reach.
 - **[Silas](/en/Venturia/DM/silas)** - Exploited Tolomeo and escaped while Tartuzi could not intervene.
 - **[The Keeper of Faces](/en/Venturia/DM/keeper-of-faces)** - The Archfey whose prison she locks.

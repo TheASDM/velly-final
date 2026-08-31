@@ -1,12 +1,13 @@
 {
   "_meta": {
     "purpose": "Physical-description grounding map for the Art Studio / Enzo prompt enhancer. Keyed by canonical name; 'aliases' help the grounder match nicknames and bare surnames; 'desc' is the short visual string to inject. Groups expand into the visual descriptions of their member entries at lookup time.",
-    "sources": "Locations + council NPCs from wiki text (campaign canon). PCs and the remaining NPCs derived from the actual portrait art in /images/character-art/. Items are hand-curated from their wiki entries. Pure visual detail only.",
+    "sources": "Locations + council NPCs from wiki text (campaign canon). PCs and most NPCs derived from the actual portrait art in /images/character-art/. Items are hand-curated from their wiki entries. Creatures come from the stat blocks under Venturia/Creatures/ — the campaign-original ones are described from their wiki lore, and the rest are the standard bench that doubles as Car's Masquerade transformation list. Pure visual detail only.",
     "corrections_applied": [
       "Noname is an ORC (the old campaign-data export said human).",
-      "Noname's missing fiancé is Maruk Grommarg, an ORC (the old export called him 'Marcus')."
+      "Noname's missing fiancé is Maruk Grommarg, an ORC (the old export called him 'Marcus').",
+      "Retired player characters are removed from this file outright rather than left as dead entries."
     ],
-    "alias_policy": "Only specific, identifying aliases — proper-noun-likes, distinctive titles, and obvious nicknames. Bare profession words ('the cleric', 'the wizard') are excluded because they cause false positives when prompts mention those concepts generically."
+    "alias_policy": "Only specific, identifying aliases — proper-noun-likes, distinctive titles, and obvious nicknames. Bare profession words ('the cleric', 'the wizard') are excluded from PERSON entries because they cause false positives when prompts mention those concepts generically. Creature entries are the exception: their canonical names are the stat-block names ('Guard', 'Performer', 'Fairy'), so a prompt that mentions one casually will ground to the Venturian version of it. That is intentional."
   },
   "locations": {
     "Venturia": {
@@ -159,10 +160,120 @@
       "aliases": [
         "Fog Wardens' Garrison",
         "the Garrison",
-        "the Overlook",
         "Fog Wardens Garrison"
       ],
       "desc": "Small stone watch-building and tower at the Overlook, where the city ends and the Vallombrosa fog begins; spare, cold, lonely."
+    },
+    "The High Quarter": {
+      "aliases": [
+        "High Quarter",
+        "the upper city",
+        "upper Venturia"
+      ],
+      "desc": "Venturia's upper city: autumn-coloured towers and polished pale stone above the rest of the island, private salons behind expensive doors, Academy robes on clean-swept streets, wrought-iron lamps and cypress in stone planters; quiet in a political rather than peaceful way, with the whole city laid out below."
+    },
+    "The Harbor District": {
+      "aliases": [
+        "Harbor District",
+        "the Harbour District",
+        "the lower city",
+        "lower Venturia",
+        "the docks"
+      ],
+      "desc": "Venturia's lower city at the waterline: working docks, rope and salt and stacked cargo, warehouse fronts, ferry houses and tide-marked steps, sailors' shrines in wall niches, gulls and bell-noise, gondolas going silent under low bridges. Grey-green water, weathered timber, wet stone."
+    },
+    "The Market Tiers": {
+      "aliases": [
+        "Market Tiers",
+        "the middle city",
+        "middle Venturia",
+        "the tiers"
+      ],
+      "desc": "Venturia's working middle: terraced lanes and stepped streets of shopfronts, guild halls, taverns, care houses and maskmakers' workshops stacked up the hillside; awnings, hanging trade signs, laundry lines, crowds who all know each other's business. Warm lamplight, ochre plaster, autumn leaves in the gutters."
+    },
+    "The Overlook": {
+      "aliases": [
+        "Overlook",
+        "the fog boundary",
+        "the watch line",
+        "the cliff terraces"
+      ],
+      "desc": "The cliff-edge district where Venturia's streets stop and Vallombrosa's fog begins: stone terraces and a low balustrade at the drop, watchfires and Fog Warden signal lamps, offerings and tied ribbons left on the rail, grey flat light and a wall of still mist filling the whole view. People lower their voices here."
+    },
+    "The Veiled Tower": {
+      "aliases": [
+        "Veiled Tower",
+        "VAVA's divination tower",
+        "the divination tower"
+      ],
+      "desc": "VAVA's divination tower: a slender autumn-stone spire hung floor to ceiling with veiled and unveiled mirrors, star-charts and scrying basins on brass stands, candle-light doubling wrongly in the glass. Some of the reflections are showing the past."
+    },
+    "The Binding Hall": {
+      "aliases": [
+        "Binding Hall",
+        "VAVA's hall of contracts",
+        "the hall of oaths"
+      ],
+      "desc": "VAVA's hall of contract magic and oath-craft: a severe vaulted chamber of dark wood and pale stone, long witness benches, a raised signing table, wax and seal-matrices laid out in rows, and walls of ribboned contracts whose ink glows faintly where a promise is still holding."
+    },
+    "The Glamour Courts": {
+      "aliases": [
+        "Glamour Courts",
+        "VAVA's illusion courts",
+        "the illusion courts"
+      ],
+      "desc": "VAVA's illusion training spaces: open colonnaded courts with mirrored walls, costume racks and mask stands at the edges, chalk performance rings on the floor, and half-finished illusions hanging in the air — a face, a doorway, a second sun — none of them quite agreeing with each other."
+    },
+    "The Hall of Reflected Faces": {
+      "aliases": [
+        "Hall of Reflected Faces",
+        "the mask gallery",
+        "the Veil Court gallery"
+      ],
+      "desc": "The Veil Court's private gallery: a long dim mirrored room holding one mask from every Autumn Masquerade for nearly three hundred years, mounted in ranked gold-and-glass cases and lit by candle sconces; hundreds of empty white and gilded faces looking back from both walls at once."
+    },
+    "Sconce Row": {
+      "aliases": [
+        "Sconce Row",
+        "Valentro's family house",
+        "Valen's family house"
+      ],
+      "desc": "A narrow quiet street of tall thin houses over shopfronts, three streets downhill from the Tiered Gardens' lower gate; iron wall-sconces along the plaster, and one house with its shopfront shuttered and boarded for years, two dark rooms above it. Nobody has opened it in a long time."
+    },
+    "The Second Bell": {
+      "aliases": [
+        "Second Bell",
+        "the Warden tavern",
+        "the tavern below the Overlook"
+      ],
+      "desc": "The low-ceilinged tavern fifty feet downhill from the Overlook stair, where off-shift Fog Wardens drink: smoke-darkened beams, a long bench along the fog-facing wall that the regulars leave empty, a brass bell over the bar rung only for the second round, rooms upstairs, and grey light in the windows."
+    },
+    "The Sorcerer of the Spirits": {
+      "aliases": [
+        "Sorcerer of the Spirits",
+        "Lotan's winery",
+        "Lotan's tasting room",
+        "the winery"
+      ],
+      "desc": "Lotan's winery and tasting room in the Winecradle: a stone press floor, a short cool cellar of barrels, a worn tasting counter, and living quarters off the back; a rack of coins from a dozen different ports nailed along a ceiling beam. No frontage on the canal side, which suits its owner."
+    },
+    "The Prompt Loft": {
+      "aliases": [
+        "Prompt Loft",
+        "the loft above the Amaranth",
+        "the scene dock loft"
+      ],
+      "desc": "A disused low loft over the Amaranth Theater's north scene dock, reached by two flights of external iron ladder to a shuttered window: crates of retired prompt-books, painted scene stock nobody has needed in years, thick dust, and a view across the theater roofline to the canal."
+    },
+    "The Cask & Cube": {
+      "aliases": [
+        "Cask and Cube",
+        "the Cask & Cube",
+        "the Cask Cube",
+        "the game room",
+        "the real table"
+      ],
+      "desc": "The real-world room the campaign is played in: a deep-blue wainscoted den under a cedar-beamed coffered ceiling, an oval blue-felt gaming table with leather captain's chairs on a patterned rug, a stone fireplace with candelabra, a lit bottle cabinet, a dartboard in a built-in wood surround, and a wrought-iron lantern chandelier over the table. Warm low lamplight, night in the windows."
     }
   },
   "player_characters": {
@@ -201,23 +312,6 @@
         "the gardener-ranger"
       ],
       "desc": "Elf man (he/him), 19; fair/pale skin; thin, lean build; unmistakably pale platinum-blonde shoulder-length hair, tousled and light-catching, with light stubble, blue eyes, pointed ears; a weathered green cloak over leather, bow and quiver across his back; a faint arcane mark on the back of one hand; warm and quiet."
-    },
-    "Kryton Novelli": {
-      "aliases": [
-        "Kryton",
-        "Novelli",
-        "Professor Novelli",
-        "the VAVA faculty mage"
-      ],
-      "desc": "Human man (he/him), 40s; pale/white skin; dark hair greying to grey-and-black, swept back; a grey-flecked beard; sharp blue eyes often lit with crackling blue arcane light; navy high-collared scholar's coat with wands and vials at the breast; staff and a glowing tome. Brilliant and frayed."
-    },
-    "Orabella": {
-      "aliases": [
-        "Bella",
-        "Ora",
-        "the Cleric of Art"
-      ],
-      "desc": "Human woman (she/her), 24; fair skin; slender, thin build; short tousled brunette hair, blue eyes; blue-and-cream hooded cleric's robes; carries a staff topped with a glowing blue orb, often with a book and a painter's things to hand. Gentle, watchful."
     },
     "Roxanya \"Roxy\"": {
       "aliases": [
@@ -482,6 +576,487 @@
         "Brownies"
       ],
       "desc": "A small fey creature, approximately 5 inches tall, with disheveled spiked dark brown hair and striking attractive features. The face is clearly that of a mature adult — weathered with defined features, a set jawline, and the lived-in character of someone well into adulthood, with no youthful or childlike qualities whatsoever. Shirtless, wearing a deer-hide loin cloth and boots, with a rabbit-fur cape draped across the shoulders. Dull red and blue body paint marks the arms. The brownie stands in front of a small cave dwelling carved into a rocky mountainside, with a modest porch. Feathers are woven into the hair and clothing. The setting is a wooded, mountainous region with natural light filtering through the trees."
+    },
+    "Valeria Tessere": {
+      "aliases": [
+        "Valeria",
+        "Tessere",
+        "Lady Tessere",
+        "the leader of the Veil Court",
+        "the masked actress"
+      ],
+      "desc": "Human woman, apparent late 30s but plainly older than her face admits; warm olive-tan skin, dark hair braided and pinned up with loose strands at the temple, dark level eyes, an unreadable expression; a deep midnight-blue silk-and-velvet gown heavily embroidered in gold filigree, a jewelled gold coronet and a sapphire collar; holds an ornate filigree gold half-mask on a slim staff, raised to hide one side of her face. Candlelit gallery of hanging white-and-gold masks behind her. Regal and theatrical."
+    },
+    "Strider": {
+      "aliases": [
+        "the gardener-mentor",
+        "Valentro's mentor",
+        "Valen's mentor",
+        "the way of the leaf mentor"
+      ],
+      "desc": "Half-elf-looking man of indeterminate age, lean and weather-browned with a gardener's hands; dark curly shoulder-length hair pushed back, faintly pointed ears, freckled sun-worn skin, a quiet measuring gaze; a long moss-green hooded cloak embroidered with leaf-work over an undyed linen shirt with rolled sleeves and a leather work-belt; heavy pruning shears hanging at the hip. Usually against birch trunks on the terraces of the Tiered Gardens at dusk, the lamplit city below. Watchful and unhurried."
+    },
+    "Professor Emiliana Sarto": {
+      "aliases": [
+        "Emiliana",
+        "Sarto",
+        "Professor Sarto",
+        "Emiliana Sarto",
+        "the Vallombrosa scholar"
+      ],
+      "desc": "Human woman, late 40s; olive skin, dark greying hair escaping a hasty pinned-up knot, ink on her fingers, tired bright eyes behind reading lenses; unfashionable, hard-worn VAVA academic robes in faded russet with chalk dust at the cuffs; carries an overfull satchel of fog-boundary notes, sketch-maps, and pressed specimens. Dogged and slightly obsessive."
+    },
+    "Velonar Kaligor": {
+      "aliases": [
+        "Velonar",
+        "Lotan's ancestor",
+        "the warlock who burned Strahd",
+        "the founder of House Kaligor"
+      ],
+      "desc": "Historical figure, some seven generations before Lotan — a tiefling warlock in his prime; deep red skin, curved dark horns, black hair, a hard-lined face; battered travelling leathers and a patched dark mantle from a decade of campaigning; purple-black otherworldly flame runs up both forearms and wreathes his hands. Depict him in the smoke and ruin of Castle Ravenloft or in the amber-veined dark of the Amber Temple. Exhausted, victorious, and holding a power that is not the one he asked for."
+    },
+    "Andrea Kaliskiny": {
+      "aliases": [
+        "Andrea",
+        "Kaliskiny",
+        "the druid of the Fifth Order",
+        "Velonar's wife"
+      ],
+      "desc": "Historical figure, ancestor of Lotan — a human druid of the Fifth Order of Celtans, 30s; pale skin weathered by travel, long dark-blonde hair in a thick braid with green thread worked through it, steady grey eyes; layered grey-green woollen robes and a hide mantle, amber beads and bone charms at the throat, a rowan staff; Barovian mist and dark firs behind her. Calm, capable, holding knowledge no one else in the room has."
+    },
+    "Lady Noctyrix": {
+      "aliases": [
+        "Noctyrix",
+        "Noctryix",
+        "the bruxa",
+        "the bruxa of the Amber Temple"
+      ],
+      "desc": "A bruxa — a vampire the equal of Strahd, dead a thousand years by Lotan's reckoning. A tall, beautiful, imperious woman with bloodless white skin that takes daylight without harm, black hair coiled high, black-red eyes and a mouth that hides its fangs until it does not; a severe high-collared gown of black and old wine-red with amber at the throat. A hall of black marble veined with amber behind her, mad wine-drunk followers at the edges. Beautiful, hateful, unafraid."
+    }
+  },
+  "creatures": {
+    "Fated One": {
+      "aliases": [
+        "the fated one",
+        "fated ones",
+        "angelo of fate"
+      ],
+      "desc": "Campaign-original celestiale (Angelo subtype): the half-remembered shape of a person made of pale starlight — a Medium translucent humanoid with no fixed face, hovering a foot off the ground, robe and hair trailing away into vapour; faint constellations turn inside its chest and cold blue-white light collects at its hands. A soul that should have become undead and became this instead. Sad, weightless, watchful."
+    },
+    "Hidden One": {
+      "aliases": [
+        "the hidden one",
+        "hidden ones",
+        "angelo beast form"
+      ],
+      "desc": "Campaign-original celestiale (Angelo subtype) in beast shape: a large four-legged creature of banked white-gold light, lion- and stag-like but of no nameable species, its face blank and eyeless, its outline soft as if seen through gauze; warmth glows between its ribs and its paws leave brief prints of light. Silent, protective, patient."
+    },
+    "Radiant One": {
+      "aliases": [
+        "the radiant one",
+        "radiant ones",
+        "angelo of retribution"
+      ],
+      "desc": "Campaign-original celestiale (Angelo subtype) as an armoured retributor: a Medium winged figure in plain burnished plate, the helm's face-opening filled with white light instead of a face; hard-edged wings of pure radiance, a greatsword whose edge burns white. Often passing as a guard, soldier, or crusader among mortals. Stern, blinding, judicial."
+    },
+    "Arcobaleno": {
+      "aliases": [
+        "arcobaleni",
+        "the rainbow fairy",
+        "rainbow fairy"
+      ],
+      "desc": "Campaign-original fey — the rainbow fairy: a Small-to-Medium fey with thin iridescent dragonfly wings and a soft prismatic sheen over fair skin, hair and ragged layered clothing dyed in the one colour of the spectrum it has chosen; glittering fairy dust hangs in the air wherever it has flown and a small rainbow arcs behind it. Coastlines, tide-flats, and the light after rain. Loud, warm, hopeful."
+    },
+    "Vivo": {
+      "aliases": [
+        "vivi",
+        "the bright fairy",
+        "bright fairy"
+      ],
+      "desc": "Campaign-original fey — the bright fairy: a Small quick trickster with luminous freckle-like motes scattered across sea-pale skin, oversized dark curious eyes, cropped bright hair, and ragged sea-glass-green clothes; gauzy wings, and usually half-hidden inside one of its own flickering minor illusions. Can shrink to Tiny or swell to Medium at will. Coastal glades, harbour rafters, ships' rigging."
+    },
+    "Il Rosso": {
+      "aliases": [
+        "il rosso",
+        "the crimson fiend",
+        "crimson fiend"
+      ],
+      "desc": "Campaign-original devil — the crimson fiend: a Medium humanoid devil the colour of banked coals, its cracked red-black hide glowing furnace-orange in the seams; hairless, with short blunt horns and two ember eyes, heat-shimmer around it and scorch prints where it stands. Can collapse into a man-shaped column of pure elemental fire that pours through keyholes."
+    },
+    "Il Caduto": {
+      "aliases": [
+        "il caduto",
+        "the fallen demon",
+        "fallen demon"
+      ],
+      "desc": "Campaign-original demon — the fallen: in true form a Large hunched shapechanger with charred cracked hide, over-long arms built for leaping and climbing, hooked fiendish claws, and fire visible in its throat and joints beneath a burning-eyed skull-like face; in disguise, an unremarkable Small or Medium humanoid whose expression never quite moves. The reveal is usually the last thing a mortal sees."
+    },
+    "L'anima Vuota": {
+      "aliases": [
+        "lanima vuota",
+        "l'anima vuota",
+        "the hollow skin",
+        "hollow skin",
+        "hollow skins"
+      ],
+      "desc": "Campaign-original demon — the hollow skin: a fiend indistinguishable from an ordinary person, flesh and eyes and mannerisms all correct, betrayed only by something slack behind the face, as though the skin were worn rather than lived in. Plain, forgettable city clothes; a poisoned dagger kept out of sight. Reads as whatever creature type it wishes when anyone looks."
+    },
+    "Red Hand of Mammon": {
+      "aliases": [
+        "the red hand",
+        "red hand",
+        "red hands",
+        "hand of Mammon"
+      ],
+      "desc": "Campaign-original devil — a servant of Mammon: a Medium stooped figure in a threadbare merchant's coat, both hands crimson to the wrist as if dipped in hot wax, fingers too long and always counting; gold-flecked eyes, a starved covetous face, coins and gems and stolen trinkets stuffed into every pocket and seam. Greed given a body."
+    },
+    "Callus": {
+      "aliases": [
+        "the Callus",
+        "Captain Callus"
+      ],
+      "desc": "Pirate duellist and crew leader, CR 7: a lean fast human man in the prime of his thirties, well-kept studded leather under a salt-faded captain's coat, a rapier worn high on the hip and a pouch of crushed glass and ash at the belt; dark hair tied back, a duellist's balance, a scar or two kept as decoration. Unhurried and theatrical right up until he moves."
+    },
+    "Torek": {
+      "aliases": [
+        "Torek the Bosun",
+        "the bosun",
+        "Callus's bosun"
+      ],
+      "desc": "Callus's bosun and enforcer: a heavy-shouldered human man in a chain shirt over sailcloth, scarred knuckles, a flattened nose, close-cropped hair; a scimitar in one hand and a belaying pin in the other. Keeps the crew in line with fear and the occasional cracked skull."
+    },
+    "Pirate Deckhand": {
+      "aliases": [
+        "pirate deckhands",
+        "deckhand",
+        "pirate crew"
+      ],
+      "desc": "Common pirate crew: a leather jerkin over sun-bleached slops, bare feet, tar-black hands, a cutlass and a handaxe, a crude tattoo or a knotted headscarf. Never alone — they fight shoulder to shoulder."
+    },
+    "Pirate Sharpshooter": {
+      "aliases": [
+        "pirate sharpshooters",
+        "pirate marksman"
+      ],
+      "desc": "Pirate marksman: lean and quiet in dark oiled leathers, perched in the rigging or on a crosstree with a light crossbow braced against the shoulder and a dagger in the boot; weather-squinted, unhurried, steady-handed at any range."
+    },
+    "Empyrean Iota": {
+      "aliases": [
+        "empyrean iotas",
+        "the iota",
+        "divine mote"
+      ],
+      "desc": "A Tiny celestial — a god's stray thought given shape: a hovering mote of divine light the size of a fist, haloed in slow-turning gold script and thin rings, casting light on everything it passes and moving through walls as though they were water."
+    },
+    "Giant Eagle": {
+      "aliases": [
+        "giant eagles"
+      ],
+      "desc": "A Large celestial eagle with a fifteen-foot wingspan, bronze-and-white plumage with a faint gold sheen at the feather edges, a great hooked beak and knowing, uncannily intelligent eyes."
+    },
+    "Giant Owl": {
+      "aliases": [
+        "giant owls"
+      ],
+      "desc": "A Large celestial owl, soft grey-white barred plumage, a broad pale facial disc and huge dark eyes; utterly silent in flight, with the still attention of something that understands speech."
+    },
+    "Sphinx of Wonder": {
+      "aliases": [
+        "sphinxes of wonder",
+        "cosmic sphinx",
+        "tiny sphinx"
+      ],
+      "desc": "A Tiny celestial sphinx the size of a housecat: a small lion's body with feathered wings and a soft cat-like face, its dark fur shot through with drifting star-fields and nebula colour, faintly luminous at the edges. Available as a familiar."
+    },
+    "Blink Dog": {
+      "aliases": [
+        "blink dogs"
+      ],
+      "desc": "A Medium fey hound with tawny-gold coat, upright ears and pale intelligent eyes; edges blurred and doubled where it phases in and out of the ethereal, leaving brief afterimages when it moves."
+    },
+    "Bugbear Warrior": {
+      "aliases": [
+        "bugbear warriors",
+        "bugbear"
+      ],
+      "desc": "A Large fey goblinoid, seven feet of long-limbed muscle under coarse red-brown fur, a wedge-shaped snouted face with small yellow eyes and jutting lower teeth; scavenged hide and plate, a heavy morningstar, and a silence that shouldn't be possible at that size."
+    },
+    "Bullywug Warrior": {
+      "aliases": [
+        "bullywug warriors",
+        "bullywug"
+      ],
+      "desc": "A Medium fey frog-folk: mottled olive and swamp-brown amphibian skin, a wide lipless mouth and bulging side-set eyes, webbed hands and feet; scraps of looted armour, a rusted spear, and a permanent slick of marsh water."
+    },
+    "Dryad": {
+      "aliases": [
+        "dryads"
+      ],
+      "desc": "A Medium fey nature-spirit shaped like a beautiful woman grown out of a tree: bark-textured skin in birch silver or oak brown, hair of living leaves and small branches turning autumn colours, eyes like sap-lit amber; steps into and out of trunks as though through a doorway."
+    },
+    "Faerie Dragon": {
+      "aliases": [
+        "faerie dragons"
+      ],
+      "desc": "A Tiny fey dragon the size of a cat, scales in one saturated jewel colour, butterfly-like membranous wings patterned with eyespots, a long curling tail and a face fixed in permanent mischief; usually caught mid-turn while turning invisible."
+    },
+    "Fairy": {
+      "aliases": [
+        "fairies"
+      ],
+      "desc": "A Small fey the height of a child, delicate and sharp-featured with pointed ears and insect-thin iridescent wings; clothes cut from petals, cobweb and stolen cloth; leaves a faint trail of light in flight."
+    },
+    "Goblin Minion": {
+      "aliases": [
+        "goblin minions"
+      ],
+      "desc": "A Small fey goblin, scrawny and knock-kneed, sallow green skin, oversized flat ears, a snub nose and too many small teeth; filthy rags, a cracked leather cap, a stolen knife. Fragile, and never alone."
+    },
+    "Goblin Warrior": {
+      "aliases": [
+        "goblin warriors",
+        "goblin"
+      ],
+      "desc": "A Small fey goblin fighter: wiry green-skinned body, broad flat ears, yellow eyes, a wide mouth of small teeth; mismatched scavenged leather and a scimitar or shortbow, crouched low and already looking for the next place to be."
+    },
+    "Hobgoblin Warrior": {
+      "aliases": [
+        "hobgoblin warriors",
+        "hobgoblin"
+      ],
+      "desc": "A Medium fey goblinoid soldier: orange-red skin, a blunt flat-nosed face with dark bristling hair and small tusks; disciplined matched half-plate in the unit's colours, longsword and shield, standing in formation and unimpressed."
+    },
+    "Pixie": {
+      "aliases": [
+        "pixies"
+      ],
+      "desc": "A Tiny fey barely a foot tall, luminous pale skin, wide dark eyes and translucent moth-like wings that scatter glowing dust; usually only half-visible, laughing, and holding a spell it should not be trusted with."
+    },
+    "Quickling": {
+      "aliases": [
+        "quicklings"
+      ],
+      "desc": "A Small fey shrunken and hollowed by speed: grey-white leathery skin drawn tight over a gaunt frame, sunken black eyes, a needle-toothed grin; permanently blurred with motion — three afterimages for every real limb — and a pair of tiny wicked daggers."
+    },
+    "Satyr": {
+      "aliases": [
+        "satyrs"
+      ],
+      "desc": "A Medium fey with a human upper body and the shaggy legs and cloven hooves of a goat, curling ram's horns, pointed ears and a broad reckless grin; a shortbow or a set of pipes, a wineskin, and no shirt worth mentioning."
+    },
+    "Sprite": {
+      "aliases": [
+        "sprites"
+      ],
+      "desc": "A Tiny fey the size of a hand, sharp-featured and stern, dragonfly wings and leaf-cut armour, carrying a shortbow of thorn and grass whose arrows carry sleep-poison. Invisible far more often than not."
+    },
+    "Worg": {
+      "aliases": [
+        "worgs"
+      ],
+      "desc": "A Large fey wolf, black or slate-grey coarse fur, a heavy blunt skull, orange-red eyes and a mouth built for tearing; broad enough to be ridden, and clever enough to resent it."
+    },
+    "Abyssal Wretch": {
+      "aliases": [
+        "abyssal wretches"
+      ],
+      "desc": "A Medium demon barely holding a shape: grey slumped flesh, a lipless mouth and a face rubbed almost featureless, arms too long, hands ending in blunt claws; the failed remnant of a soul, shuffling and mindless."
+    },
+    "Dretch": {
+      "aliases": [
+        "dretches"
+      ],
+      "desc": "A Small demon, squat and bloated with pallid grey-blue skin, a wide fanged mouth, stubby arms and clawed hands, tiny black eyes; wreathed in its own stinking gas. Stupid, cowardly, foul."
+    },
+    "Gnoll Warrior": {
+      "aliases": [
+        "gnoll warriors",
+        "gnoll"
+      ],
+      "desc": "A Medium fiend with the head of a hyena on a hunched seven-foot frame, matted spotted fur, a laughing muzzle full of teeth, hands ending in black claws; strapped scavenged armour, a notched spear, and blood already on it."
+    },
+    "Imp": {
+      "aliases": [
+        "imps"
+      ],
+      "desc": "A Tiny devil, crimson-scaled and knee-high, bat wings, a barbed whipping tail, small curved horns and a narrow malicious grin; hovers at shoulder height where it can whisper, and turns invisible the moment it is inconvenient."
+    },
+    "Larva": {
+      "aliases": [
+        "larvae",
+        "soul larva"
+      ],
+      "desc": "A Medium soul-slug of the Hells: a pale grub-like body of grey wet flesh, and pushing up out of it the recognisable, silently screaming face of the damned person it used to be. Slow, pitiful, horrible."
+    },
+    "Lemure": {
+      "aliases": [
+        "lemures"
+      ],
+      "desc": "A Medium devil of the lowest order: a half-melted blob of moulded flesh in a vague humanoid shape, a drooping weeping face with no eyes worth the name, pushing itself forward in a slick of its own substance. Reforms unless holy water gets to it."
+    },
+    "Manes": {
+      "aliases": [
+        "manes demon"
+      ],
+      "desc": "A Small demon drone: a wretched, claw-handed, blank-faced thing of grey rotting flesh with rows of small teeth and black pit eyes; dissolves into a thin sulphurous vapour when killed."
+    },
+    "Maw Demon": {
+      "aliases": [
+        "maw demons"
+      ],
+      "desc": "A Medium demon that is essentially a walking mouth: a hunched legged body dominated by an enormous circular jaw of jagged teeth split down its whole front, tiny useless arms, no eyes. Hunger with a gait."
+    },
+    "Nupperibo": {
+      "aliases": [
+        "nupperibos"
+      ],
+      "desc": "A Medium devil, blind and bloated, its face a lipless ring of teeth and its eyes sealed over with grey skin; wreathed in a crawling cloud of biting insects that shows the shape of it. Moves in shoals."
+    },
+    "Quasit": {
+      "aliases": [
+        "quasits"
+      ],
+      "desc": "A Tiny demon, dark green-black and gaunt, bat wings, spindly clawed limbs, curved horns and a needle-toothed sneer; shifts between this form, a bat, a centipede, and a toad, and is never quite where it was."
+    },
+    "Vargouille": {
+      "aliases": [
+        "vargouilles"
+      ],
+      "desc": "A Tiny fiend that is a severed human head flying on two leathery bat wings sprouted where its ears were; green-grey skin, a mouth of long needle teeth, wet writhing tendrils for hair, and eyes that still look like they belonged to somebody."
+    },
+    "Acolyte": {
+      "aliases": [
+        "acolytes"
+      ],
+      "desc": "A junior temple servant of Venturia: plain undyed robes with a rope cincture and the silver-hand token of St. Viro's or a Four Winds pendant at the throat; a censer or prayer book to hand, and the careful over-earnestness of someone still learning the words."
+    },
+    "Apprentice": {
+      "aliases": [
+        "apprentices",
+        "VAVA apprentice",
+        "academy apprentice"
+      ],
+      "desc": "A VAVA student mage: a short autumn-russet Academy robe over ordinary clothes, ink-stained fingers, a borrowed wand and an overloaded book-strap; young, underslept, and trying very hard to look composed."
+    },
+    "Bandit": {
+      "aliases": [
+        "bandits"
+      ],
+      "desc": "A road or canal-side robber: patched leathers, a hood or a rag mask pulled up, a scimitar and a light crossbow, boots that have outrun somebody. Opportunistic and jumpy."
+    },
+    "Commoner": {
+      "aliases": [
+        "commoners",
+        "Venturian commoner"
+      ],
+      "desc": "An ordinary Venturian: plain wool and linen in muted autumn colours, an apron or a carry-basket, wooden clogs worn down by the tiers' stairs, and a cheap plain mask pushed up on the forehead the way everyone in this city keeps one."
+    },
+    "Cultist": {
+      "aliases": [
+        "cultists"
+      ],
+      "desc": "A robed devotee of something not on the Council's list: a dark hooded robe over street clothes, a symbol stitched at the breast, a ritual dagger, and a blank mask with no expression cut into it."
+    },
+    "Drow Warrior": {
+      "aliases": [
+        "drow warriors",
+        "drow"
+      ],
+      "desc": "A Medium humanoid dark elf: obsidian-dark skin, stark white hair, pale red-violet eyes, sharp fine features and pointed ears; close-fitting dark chain and a spider-motif cloak, hand crossbow and short sword."
+    },
+    "Duergar": {
+      "aliases": [
+        "duergars",
+        "grey dwarf",
+        "gray dwarf"
+      ],
+      "desc": "A Medium grey dwarf: ashen bald head and a wiry iron-grey beard, hard colourless eyes, a body squat and over-muscled from the deep places; plain blackened plate and a war pick. Grim and joyless."
+    },
+    "Grimlock": {
+      "aliases": [
+        "grimlocks"
+      ],
+      "desc": "A Medium humanoid gone blind underground: grey warty hide, a flat face with smooth skin sealed over where the eyes were, wide flared nostrils and a jaw of pointed teeth; ragged hides and a stone-headed club."
+    },
+    "Guard": {
+      "aliases": [
+        "guards",
+        "city watch",
+        "Venturian guard",
+        "watch guard"
+      ],
+      "desc": "A Venturian City Watch soldier: a chain shirt under a slate-and-autumn-gold tabard, a plain half-helm, spear and shield, a lantern hook at the belt; posted at a bridge-head, a gate, or the foot of a tier stair."
+    },
+    "Jackalwere": {
+      "aliases": [
+        "jackalweres"
+      ],
+      "desc": "A shapechanger caught mid-turn: an ordinary-looking person whose face is sliding into a jackal's narrow muzzle, ears rising into points and eyes going flat amber-yellow; sand-coloured fur breaking through the skin at the jaw and forearms."
+    },
+    "Kenku": {
+      "aliases": [
+        "kenkus"
+      ],
+      "desc": "A Medium crow-folk: glossy black feathers over a lean humanoid frame, a heavy dark beak, bright inquisitive eyes, stubby flightless wings folded at the arms; layered scavenged clothing full of pockets, and a stolen shortsword."
+    },
+    "Lizardfolk Warrior": {
+      "aliases": [
+        "lizardfolk warriors",
+        "lizardfolk"
+      ],
+      "desc": "A Medium reptilian humanoid: green-grey scaled hide, a blunt crocodilian snout, a heavy tail and clawed feet, flat unreadable eyes; bone-and-hide armour, a spiked shield, and a bone-tipped spear."
+    },
+    "Orc Warrior": {
+      "aliases": [
+        "orc warriors",
+        "orc"
+      ],
+      "desc": "A Medium orc fighter: grey-green skin over heavy muscle, jutting lower tusks, a low heavy brow and dark hair in braids or a scalp-lock; layered hide and scavenged plate, a greataxe held one-handed while shouting."
+    },
+    "Performer": {
+      "aliases": [
+        "performers",
+        "street performer"
+      ],
+      "desc": "A Venturian entertainer: a bright motley of theatre-cast silks and mismatched velvets, ribbons at the sleeve, a decorated commedia half-mask pushed up or held on a stick; a lute, a tambourine, or juggling knives, working a Market Tiers crowd."
+    },
+    "Sahuagin": {
+      "aliases": [
+        "sahuagins",
+        "sea devil",
+        "sea devils"
+      ],
+      "desc": "A Medium sea devil: green-black scaled hide fading to a pale belly, a shark's head with black eyes and rows of needle teeth, webbed clawed hands and a finned crest down the spine; a coral trident and a net, dripping harbour water."
+    },
+    "Scout": {
+      "aliases": [
+        "scouts"
+      ],
+      "desc": "A ranging tracker: mottled green-brown travelling leathers and a hooded cloak, a longbow and a hand axe, boots caked in fog-country mud; quiet, watchful, and dressed to be missed."
+    },
+    "Soldier": {
+      "aliases": [
+        "soldiers"
+      ],
+      "desc": "A professional man-at-arms: matched chain and plate over a padded gambeson, a kettle helm, a spear or longsword and a shield with a house or garrison device; drilled posture and a hundred-yard patience."
+    },
+    "Spy": {
+      "aliases": [
+        "spies"
+      ],
+      "desc": "An agent dressed to be forgettable: good but unremarkable city clothes in dark colours, a hooded half-cloak, a hand crossbow and a thin blade both out of sight, a plain unadorned mask in a pocket. Nothing about them stays in the memory."
+    },
+    "Thug": {
+      "aliases": [
+        "thugs"
+      ],
+      "desc": "Hired muscle from the Harbor District: a heavy leather coat over a barrel chest, scarred knuckles, a broken nose, a mace or a length of chain; stands too close on purpose."
+    },
+    "Tribal Warrior": {
+      "aliases": [
+        "tribal warriors"
+      ],
+      "desc": "A warrior from outside the city's walls: hide and fur armour, painted markings on the face and arms, braided hair strung with bone and bead, a heavy spear and a hide shield."
     }
   },
   "items": {
@@ -515,16 +1090,14 @@
         "the player characters",
         "the adventurers",
         "the heroes",
-        "the seven",
-        "the group"
+        "the group",
+        "the five"
       ],
       "members": [
         "Lotan",
         "Caravel \"Car\" Asteri",
         "Noname",
         "Valentro",
-        "Kryton Novelli",
-        "Orabella",
         "Roxanya \"Roxy\""
       ]
     },
@@ -554,7 +1127,6 @@
       ],
       "members": [
         "Noname",
-        "Orabella",
         "Valentro"
       ]
     },
@@ -604,11 +1176,64 @@
         "Tolomeo Lucente",
         "Silas"
       ]
+    },
+    "House Kaligor (the ancestors)": {
+      "aliases": [
+        "the Kaligor ancestors",
+        "Lotan's ancestors",
+        "House Kaligor",
+        "the Amber Temple party",
+        "Velonar and Andrea"
+      ],
+      "members": [
+        "Velonar Kaligor",
+        "Andrea Kaliskiny",
+        "Lady Noctyrix"
+      ]
+    },
+    "The VAVA Faculty": {
+      "aliases": [
+        "VAVA faculty",
+        "the Academy faculty",
+        "the faculty"
+      ],
+      "members": [
+        "Archmagister Dorian Silvermarch",
+        "Professor Emiliana Sarto"
+      ]
+    },
+    "Callus's Crew": {
+      "aliases": [
+        "Callus's crew",
+        "Callus and Torek",
+        "the pirate crew",
+        "the pirates"
+      ],
+      "members": [
+        "Callus",
+        "Torek",
+        "Pirate Deckhand",
+        "Pirate Sharpshooter"
+      ]
+    },
+    "The Celestiali": {
+      "aliases": [
+        "celestiali",
+        "the Angelo",
+        "the angeli",
+        "the three Ones"
+      ],
+      "members": [
+        "Fated One",
+        "Hidden One",
+        "Radiant One"
+      ]
     }
   },
   "_notes": {
     "tartuzi_two_states": "Tartuzi has two keyed entries. Bare 'Tartuzi' grounds to the present-day defeated look; reference 'Tartuzi (in her prime)' (or aliases like 'ancient Tartuzi') in the prompt to ground the regal historical look. The grounder matches by name, so you choose the state by what you type.",
     "silas_echo": "Silas is intentionally built to share Tolomeo Lucente's face, scarred and burned. The 'The Tolomeo Echo' group exists so prompts about their resemblance pull both descriptions at once.",
-    "groups_expansion": "Group entries are matched by their name/aliases like any other entry, but at injection time the grounder expands them into the concatenated descriptions of their members. 'Draw the party in the Salted Cup' pulls all 7 PC descriptions plus the bathhouse setting in one go."
+    "groups_expansion": "Group entries are matched by their name/aliases like any other entry, but at injection time the grounder expands them into the concatenated descriptions of their members. 'Draw the party in the Salted Cup' pulls all 7 PC descriptions plus the bathhouse setting in one go.",
+    "creatures_section": "The 'creatures' section is loaded exactly like npcs/items by the grounder (chatbot/vos/services/descriptions.py, _flatten_descriptions). The first thirteen entries are campaign-original stat blocks; the rest are the standard bench, which is also Car's Masquerade form list — so 'Car as a quickling' grounds both Car and the quickling in one prompt."
   }
 }

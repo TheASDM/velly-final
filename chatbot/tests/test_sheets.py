@@ -239,8 +239,8 @@ def test_ingest_refuses_an_actor_that_is_not_on_the_roster(app, ingest_enabled):
 def test_ingest_refuses_a_revoked_player(app, ingest_enabled, monkeypatch):
     """Revocation should not be undone by a push from Foundry."""
     from vos.routes import sheets as sheets_route
-    monkeypatch.setattr(sheets_route, "REVOKED_PLAYERS", {"Orabella"})
-    response = _post(app, _export("Orabella"))
+    monkeypatch.setattr(sheets_route, "REVOKED_PLAYERS", {"Valentro"})
+    response = _post(app, _export("Valentro"))
     assert response.status_code == 422
 
 

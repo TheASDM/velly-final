@@ -116,6 +116,7 @@ def list_descriptions():
     category_labels = {
         "player_characters": "Player Characters",
         "npcs": "NPCs",
+        "creatures": "Creatures",
         "locations": "Locations",
         "items": "Items",
         "groups": "Groups",

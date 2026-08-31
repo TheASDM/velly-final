@@ -15,7 +15,7 @@ dateCreated: 2026-05-25T00:00:00.000Z
 
 **Type:** NPC / antagonist &nbsp;|&nbsp; **Public face:** Scarred comatose patient &nbsp;|&nbsp; **Current place:** [St. Viro's Respite](/en/Venturia/Locations/viros-respite)
 
-Silas is the scarred stranger who appeared at the fog line the same night Maruk Grommarg vanished. Publicly, he is a comatose patient covered in strange brands and watched over by Orabella at St. Viro's Respite. Privately, he is much older, much more dangerous, and connected to the prison beneath the Vallombrosa crisis.
+Silas is the scarred stranger who appeared at the fog line the same night Maruk Grommarg vanished. Publicly, he is a comatose patient covered in strange brands, kept under the abbey's care at St. Viro's Respite. Privately, he is much older, much more dangerous, and connected to the prison beneath the Vallombrosa crisis.
 
 ---
 
@@ -45,9 +45,9 @@ Silas's early memory manipulation touched Noname's account of the night Maruk di
 
 ## Connections
 
+- **[Mother-Abbot Lucia Virosdottir](/en/Venturia/Characters/NPCs/lucia-virosdottir)** - Oversees his care at St. Viro's Respite.
 - **[Maruk Grommarg](/en/Venturia/Characters/NPCs/maruk-grommarg)** - Disappeared the same night Silas appeared.
 - **[Noname](/en/Venturia/Characters/PCs/noname)** - Her memory of that night was manipulated.
-- **[Orabella](/en/Venturia/Characters/PCs/orabella)** - His current caretaker at St. Viro's Respite.
 - **[Tolomeo Lucente](/en/Venturia/Characters/NPCs/tolomeo-lucente)** - Murdered by Silas inside the prison.
 - **[Tartuzi](/en/Venturia/DM/tartuzi)** - Knew what Silas was but could not warn Tolomeo safely.
 - **[The Keeper of Faces](/en/Venturia/DM/keeper-of-faces)** - The source of the prisoner brands.

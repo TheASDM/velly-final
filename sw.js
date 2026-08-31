@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'foglight-pwa-v118';
+const CACHE_VERSION = 'foglight-pwa-v119';
 const PRECACHE = `${CACHE_VERSION}-precache`;
 const PAGES = `${CACHE_VERSION}-pages`;
 const ASSETS = `${CACHE_VERSION}-assets`;
@@ -79,10 +79,8 @@ const APP_SHELL = [
   '/images/loremasterYasQueen192x192.png',
   '/images/loremasterfabio192x192.png',
   '/images/app-profiles/avatar-caravel-asteri.png',
-  '/images/app-profiles/avatar-kryton-novelli.png',
   '/images/app-profiles/avatar-lotan.png',
   '/images/app-profiles/avatar-noname.png',
-  '/images/app-profiles/avatar-orabella.png',
   '/images/app-profiles/avatar-roxanya.png',
   '/images/app-profiles/avatar-valentro.png',
   '/images/app-profiles/dustin.png',

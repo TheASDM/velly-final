@@ -690,15 +690,9 @@
           "target_name": "The Venturian Academy of Veiled Arts",
           "relationship": "Academy leader and keeper of the Veil Archive",
           "spoiler": false
-        },
-        {
-          "target_id": "kryton",
-          "target_name": "Kryton Novelli",
-          "relationship": "Faculty member — Dorian is likely aware of Kryton's erratic behavior and possibly his unauthorized research",
-          "spoiler": false
         }
       ],
-      "dm_notes": "Dorian is the campaign's institutional tragedy — a good man trapped by the system he maintains. His relationship with Kryton (faculty member going off the rails) creates personal stakes. The Veil Archive is one of the most important investigation resources in the campaign. Whether the party earns access through trust, leverage, or crisis should be a significant narrative moment."
+      "dm_notes": "Dorian is the campaign's institutional tragedy — a good man trapped by the system he maintains. The Veil Archive is one of the most important investigation resources in the campaign. Whether the party earns access through trust, leverage, or crisis should be a significant narrative moment."
     }
   ]
 }

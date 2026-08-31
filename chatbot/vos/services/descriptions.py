@@ -74,7 +74,7 @@ def _flatten_descriptions(raw):
             name_to_desc[canon] = payload.get("desc", "")
             name_to_aliases[canon] = list(payload.get("aliases") or [])
 
-    for section in ("player_characters", "npcs", "items"):
+    for section in ("player_characters", "npcs", "creatures", "items"):
         for canon, payload in (raw.get(section) or {}).items():
             if isinstance(payload, dict):
                 name_to_desc[canon] = payload.get("desc", "")

@@ -122,8 +122,8 @@ def test_the_dm_may_act_on_a_named_player(app, auth_headers):
 
 def test_the_dm_cannot_act_on_a_revoked_player(app, auth_headers, monkeypatch):
     from vos.routes import play as play_route
-    monkeypatch.setattr(play_route, "REVOKED_PLAYERS", {"Orabella"})
-    response = post(app, auth_headers["dm"], {"op": "heal", "amount": 1, "playerName": "Orabella"})
+    monkeypatch.setattr(play_route, "REVOKED_PLAYERS", {"Valentro"})
+    response = post(app, auth_headers["dm"], {"op": "heal", "amount": 1, "playerName": "Valentro"})
     assert response.status_code == 422
 
 
@@ -409,11 +409,11 @@ def test_the_party_reflects_play_state(app, auth_headers):
 
 def test_a_revoked_player_is_not_in_the_party(app, auth_headers, monkeypatch):
     from vos.routes import play as play_route
-    monkeypatch.setattr(play_route, "REVOKED_PLAYERS", {"Orabella", "Kryton Novelli"})
+    monkeypatch.setattr(play_route, "REVOKED_PLAYERS", {"Valentro", 'Caravel "Car" Asteri'})
     party = get(app, auth_headers["dm"], "/api/play/party").get_json()["party"]
     names = {entry["playerName"] for entry in party}
-    assert "Orabella" not in names
-    assert "Kryton Novelli" not in names
+    assert "Valentro" not in names
+    assert 'Caravel "Car" Asteri' not in names
 
 
 # ── Viewing as a player ───────────────────────────────────────────────

@@ -58,7 +58,7 @@ def test_revoked_player_loses_a_still_valid_token(app, server_module, monkeypatc
 def test_revoking_one_player_leaves_the_others_alone(app, server_module, monkeypatch):
     from vos import auth as vos_auth
 
-    monkeypatch.setattr(vos_auth, "REVOKED_PLAYERS", {"Orabella"})
+    monkeypatch.setattr(vos_auth, "REVOKED_PLAYERS", {"Valentro"})
 
     for name in ("Lotan", 'Roxanya "Roxy"', "DM"):
         token = server_module._issue_player_token(name)
@@ -69,12 +69,12 @@ def test_revoked_player_cannot_log_back_in_through_oauth(server_module, monkeypa
     """Even with the principal still mapped, OAuth refuses a revoked player."""
     from vos import auth as vos_auth
 
-    monkeypatch.setattr(vos_auth, "DISCORD_PLAYER_MAP", {"123456789012345678": "Orabella"})
+    monkeypatch.setattr(vos_auth, "DISCORD_PLAYER_MAP", {"123456789012345678": "Valentro"})
     profile = {"provider": "discord", "principal": "123456789012345678", "email": ""}
 
-    assert vos_auth._resolve_oauth_player(profile) == ("Orabella", False)
+    assert vos_auth._resolve_oauth_player(profile) == ("Valentro", False)
 
-    monkeypatch.setattr(vos_auth, "REVOKED_PLAYERS", {"Orabella"})
+    monkeypatch.setattr(vos_auth, "REVOKED_PLAYERS", {"Valentro"})
     with pytest.raises(ValueError, match="revoked"):
         vos_auth._resolve_oauth_player(profile)
 
@@ -82,7 +82,7 @@ def test_revoked_player_cannot_log_back_in_through_oauth(server_module, monkeypa
 def test_revoked_players_accepts_display_names_and_aliases():
     from vos.config import _parse_revoked_players
 
-    assert _parse_revoked_players("Kryton,Orabella") == {"Kryton Novelli", "Orabella"}
+    assert _parse_revoked_players("Car,Noname") == {'Caravel "Car" Asteri', "Noname"}
     assert _parse_revoked_players("Roxy; Val") == {'Roxanya "Roxy"', "Valentro"}
     assert _parse_revoked_players("") == set()
     assert _parse_revoked_players(None) == set()

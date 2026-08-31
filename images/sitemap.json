@@ -4,10 +4,6 @@
     "title": "Valley of Shadows — Codex"
   },
   {
-    "url": "/en/Archive/index",
-    "title": "All Posts"
-  },
-  {
     "url": "/en/Articles/building-a-character-for-long-form-play",
     "title": "Building a Character for Long-Form Play"
   },
@@ -92,6 +88,10 @@
     "title": "Session Chronicles"
   },
   {
+    "url": "/en/Session-Chronicles/mirrored-room-epilogue",
+    "title": "The Mirrored Room — Epilogue"
+  },
+  {
     "url": "/en/Tools/art",
     "title": "Art Studio"
   },
@@ -116,8 +116,16 @@
     "title": "Updates"
   },
   {
+    "url": "/en/Venturia/Characters/NPCs/andrea-kaliskiny",
+    "title": "Andrea Kaliskiny"
+  },
+  {
     "url": "/en/Venturia/Characters/NPCs/aurelio-volante",
     "title": "Aurelio Volante"
+  },
+  {
+    "url": "/en/Venturia/Characters/NPCs/brownie",
+    "title": "Brownie"
   },
   {
     "url": "/en/Venturia/Characters/NPCs/celeste-orion",
@@ -164,6 +172,10 @@
     "title": "Isidore Verdigris"
   },
   {
+    "url": "/en/Venturia/Characters/NPCs/lady-noctyrix",
+    "title": "Lady Noctyrix"
+  },
+  {
     "url": "/en/Venturia/Characters/NPCs/lorenzo-di-errante",
     "title": "Lorenzo di Errante"
   },
@@ -208,6 +220,10 @@
     "title": "Valeria Tessere"
   },
   {
+    "url": "/en/Venturia/Characters/NPCs/velonar-kaligor",
+    "title": "Velonar Kaligor"
+  },
+  {
     "url": "/en/Venturia/Characters/NPCs/verdigris-family",
     "title": "The Verdigris Family"
   },
@@ -232,20 +248,12 @@
     "title": "Player Characters"
   },
   {
-    "url": "/en/Venturia/Characters/PCs/kryton-novelli",
-    "title": "Kryton Novelli"
-  },
-  {
     "url": "/en/Venturia/Characters/PCs/lotan",
     "title": "Lotan"
   },
   {
     "url": "/en/Venturia/Characters/PCs/noname",
     "title": "Noname"
-  },
-  {
-    "url": "/en/Venturia/Characters/PCs/orabella",
-    "title": "Orabella"
   },
   {
     "url": "/en/Venturia/Characters/PCs/roxanya",
@@ -272,6 +280,10 @@
     "title": "Empyrean Iota"
   },
   {
+    "url": "/en/Venturia/Creatures/Celestials/fated-one",
+    "title": "Fated One"
+  },
+  {
     "url": "/en/Venturia/Creatures/Celestials/giant-eagle",
     "title": "Giant Eagle"
   },
@@ -280,8 +292,24 @@
     "title": "Giant Owl"
   },
   {
+    "url": "/en/Venturia/Creatures/Celestials/hidden-one",
+    "title": "Hidden One"
+  },
+  {
+    "url": "/en/Venturia/Creatures/Celestials/index",
+    "title": "Celestials"
+  },
+  {
+    "url": "/en/Venturia/Creatures/Celestials/radiant-one",
+    "title": "Radiant One"
+  },
+  {
     "url": "/en/Venturia/Creatures/Celestials/sphinx-of-wonder",
     "title": "Sphinx of Wonder"
+  },
+  {
+    "url": "/en/Venturia/Creatures/Fey/arcobaleno",
+    "title": "Arcobaleno"
   },
   {
     "url": "/en/Venturia/Creatures/Fey/blink-dog",
@@ -320,6 +348,10 @@
     "title": "Hobgoblin Warrior"
   },
   {
+    "url": "/en/Venturia/Creatures/Fey/index",
+    "title": "Fey"
+  },
+  {
     "url": "/en/Venturia/Creatures/Fey/pixie",
     "title": "Pixie"
   },
@@ -334,6 +366,10 @@
   {
     "url": "/en/Venturia/Creatures/Fey/sprite",
     "title": "Sprite"
+  },
+  {
+    "url": "/en/Venturia/Creatures/Fey/vivo",
+    "title": "Vivo"
   },
   {
     "url": "/en/Venturia/Creatures/Fey/worg",
@@ -352,8 +388,24 @@
     "title": "Gnoll Warrior"
   },
   {
+    "url": "/en/Venturia/Creatures/Fiends/il-caduto",
+    "title": "Il Caduto"
+  },
+  {
+    "url": "/en/Venturia/Creatures/Fiends/il-rosso",
+    "title": "Il Rosso"
+  },
+  {
     "url": "/en/Venturia/Creatures/Fiends/imp",
     "title": "Imp"
+  },
+  {
+    "url": "/en/Venturia/Creatures/Fiends/index",
+    "title": "Fiends"
+  },
+  {
+    "url": "/en/Venturia/Creatures/Fiends/lanima-vuota",
+    "title": "L'anima Vuota"
   },
   {
     "url": "/en/Venturia/Creatures/Fiends/larva",
@@ -380,6 +432,10 @@
     "title": "Quasit"
   },
   {
+    "url": "/en/Venturia/Creatures/Fiends/red-hand-of-mammon",
+    "title": "Red Hand of Mammon"
+  },
+  {
     "url": "/en/Venturia/Creatures/Fiends/vargouille",
     "title": "Vargouille"
   },
@@ -394,6 +450,10 @@
   {
     "url": "/en/Venturia/Creatures/Humanoids/bandit",
     "title": "Bandit"
+  },
+  {
+    "url": "/en/Venturia/Creatures/Humanoids/callus",
+    "title": "Callus"
   },
   {
     "url": "/en/Venturia/Creatures/Humanoids/commoner",
@@ -420,6 +480,10 @@
     "title": "Guard"
   },
   {
+    "url": "/en/Venturia/Creatures/Humanoids/index",
+    "title": "Humanoids"
+  },
+  {
     "url": "/en/Venturia/Creatures/Humanoids/jackalwere",
     "title": "Jackalwere"
   },
@@ -440,6 +504,14 @@
     "title": "Performer"
   },
   {
+    "url": "/en/Venturia/Creatures/Humanoids/pirate-deckhand",
+    "title": "Pirate Deckhand"
+  },
+  {
+    "url": "/en/Venturia/Creatures/Humanoids/pirate-sharpshooter",
+    "title": "Pirate Sharpshooter"
+  },
+  {
     "url": "/en/Venturia/Creatures/Humanoids/sahuagin",
     "title": "Sahuagin"
   },
@@ -458,6 +530,10 @@
   {
     "url": "/en/Venturia/Creatures/Humanoids/thug",
     "title": "Thug"
+  },
+  {
+    "url": "/en/Venturia/Creatures/Humanoids/torek",
+    "title": "Torek"
   },
   {
     "url": "/en/Venturia/Creatures/Humanoids/tribal-warrior",
@@ -492,6 +568,18 @@
     "title": "Culture"
   },
   {
+    "url": "/en/Venturia/Culture/low-water",
+    "title": "Low Water"
+  },
+  {
+    "url": "/en/Venturia/Culture/the-binding",
+    "title": "The Binding"
+  },
+  {
+    "url": "/en/Venturia/Culture/the-settling",
+    "title": "The Settling"
+  },
+  {
     "url": "/en/Venturia/Culture/tragedy-of-vallombrosa",
     "title": "The Tragedy of Vallombrosa"
   },
@@ -516,6 +604,10 @@
     "title": "The Covenant of Silver Scales"
   },
   {
+    "url": "/en/Venturia/Factions/ferriers-confraternity",
+    "title": "The Ferriers' Confraternity"
+  },
+  {
     "url": "/en/Venturia/Factions/fog-wardens",
     "title": "The Fog Wardens and the Shadowed Wardens"
   },
@@ -532,8 +624,16 @@
     "title": "Factions"
   },
   {
+    "url": "/en/Venturia/Factions/masquers-sodality",
+    "title": "The Masquers' Sodality"
+  },
+  {
     "url": "/en/Venturia/Factions/metals-guild",
     "title": "The Metals Guild"
+  },
+  {
+    "url": "/en/Venturia/Factions/tidekeepers-lodge",
+    "title": "The Tidekeeper's Lodge"
   },
   {
     "url": "/en/Venturia/Factions/veil-court",
@@ -572,6 +672,10 @@
     "title": "Kaligor"
   },
   {
+    "url": "/en/Venturia/Items/the-listener-s-coin",
+    "title": "The Listener's Coin"
+  },
+  {
     "url": "/en/Venturia/Locations/amaranth-theater",
     "title": "The Amaranth Theater"
   },
@@ -590,10 +694,6 @@
   {
     "url": "/en/Venturia/Locations/echoing-court",
     "title": "The Echoing Court"
-  },
-  {
-    "url": "/en/Venturia/Locations/ferriers-confraternity",
-    "title": "The Ferriers' Confraternity"
   },
   {
     "url": "/en/Venturia/Locations/fog-wardens-garrison",
@@ -628,10 +728,6 @@
     "title": "The Market Tiers"
   },
   {
-    "url": "/en/Venturia/Locations/masquers-sodality",
-    "title": "The Masquers' Sodality"
-  },
-  {
     "url": "/en/Venturia/Locations/mirrorwrights-court",
     "title": "The Mirrorwright's Court"
   },
@@ -648,12 +744,28 @@
     "title": "The Salted Cup"
   },
   {
-    "url": "/en/Venturia/Locations/the-undertow",
-    "title": "The Undertow"
+    "url": "/en/Venturia/Locations/sconce-row",
+    "title": "Sconce Row"
   },
   {
-    "url": "/en/Venturia/Locations/tidekeepers-lodge",
-    "title": "The Tidekeeper's Lodge"
+    "url": "/en/Venturia/Locations/second-bell",
+    "title": "The Second Bell"
+  },
+  {
+    "url": "/en/Venturia/Locations/sorcerer-of-the-spirits",
+    "title": "The Sorcerer of the Spirits"
+  },
+  {
+    "url": "/en/Venturia/Locations/the-cask-cube",
+    "title": "The Cask & Cube"
+  },
+  {
+    "url": "/en/Venturia/Locations/the-prompt-loft",
+    "title": "The Prompt Loft"
+  },
+  {
+    "url": "/en/Venturia/Locations/the-undertow",
+    "title": "The Undertow"
   },
   {
     "url": "/en/Venturia/Locations/tiered-gardens",
@@ -690,6 +802,10 @@
   {
     "url": "/en/Venturia/Lore/eldoria-history",
     "title": "Pre-Great Reunion History of Eldoria"
+  },
+  {
+    "url": "/en/Venturia/Lore/house-kaligor",
+    "title": "House Kaligor"
   },
   {
     "url": "/en/Venturia/Lore/index",

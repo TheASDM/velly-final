@@ -192,17 +192,11 @@
         },
         {
           "label": "PC Connections",
-          "content": "Kryton is a faculty member. Roxy is a first-year student maintaining a facade of magical competence. Car may have connections through family.",
+          "content": "Roxy is a first-year student maintaining a facade of magical competence. Car may have connections through family.",
           "spoiler": false
         }
       ],
       "connections": [
-        {
-          "target_id": "kryton",
-          "target_name": "Kryton Novelli",
-          "relationship": "Faculty member — brilliant but increasingly erratic",
-          "spoiler": false
-        },
         {
           "target_id": "roxy",
           "target_name": "Roxy",
@@ -312,7 +306,7 @@
         },
         {
           "label": "PC Connections",
-          "content": "Orabella attends performances here regularly, drawn to Celina Cross. Car is a Masquers' Sodality apprentice with professional connections to the theater world. The Autumn Masquerade where Car's friend died was held here.",
+          "content": "Car is a Masquers' Sodality apprentice with professional connections to the theater world. The Autumn Masquerade where Car's friend died was held here.",
           "spoiler": false
         }
       ],
@@ -321,12 +315,6 @@
           "target_id": "celina_cross",
           "target_name": "Celina Cross",
           "relationship": "Celina is a star performer of the resident company",
-          "spoiler": false
-        },
-        {
-          "target_id": "orabella",
-          "target_name": "Orabella",
-          "relationship": "Orabella attends Celina's performances here whenever possible",
           "spoiler": false
         },
         {
@@ -582,11 +570,6 @@
           "spoiler": false
         },
         {
-          "label": "Kryton's History Here",
-          "content": "Kryton's gambling problem has deep roots at The Undertow. Someone working through this establishment stole his memories — including his wizard spell knowledge. When he returned desperate to recover them, he instead won 'someone else's memory' — a vision of a warlock tome and ritual.",
-          "spoiler": false
-        },
-        {
           "label": "Supernatural Significance",
           "content": "The Undertow appears to be a venue where memories can be traded, stolen, or won. The mechanism — whether deliberate supernatural operation or emergent property — is unknown. It is likely connected to the broader memory manipulation occurring in Venturia.",
           "spoiler": true
@@ -599,19 +582,13 @@
       ],
       "connections": [
         {
-          "target_id": "kryton",
-          "target_name": "Kryton Novelli",
-          "relationship": "Regular patron with a gambling problem; site of his memory theft and warlock ritual discovery",
-          "spoiler": false
-        },
-        {
           "target_id": "constanza_marea",
           "target_name": "Constanza Marea",
           "relationship": "She has been meeting secretly with Undertow representatives — leverage or obligation unknown",
           "spoiler": true
         }
       ],
-      "dm_notes": "The Undertow is almost certainly a hub for the memory manipulation network. Who runs it and how the memory trading works are investigative threads. The Constanza connection gives this political weight. Kryton winning the 'wrong' memory there may have been arranged — someone wanted him to find that ritual and bind himself to Tartuzi."
+      "dm_notes": "The Undertow is almost certainly a hub for the memory manipulation network. Who runs it and how the memory trading works are investigative threads. The Constanza connection gives this political weight."
     },
     {
       "id": "viros_respite",
@@ -648,12 +625,12 @@
         },
         {
           "label": "Current Notable Patients",
-          "content": "Noname is receiving treatment for foggy memories surrounding her fiancé's disappearance. Silas — the mysterious comatose man with unusual scars — is housed here under Orabella's care.",
+          "content": "Noname is receiving treatment for foggy memories surrounding her fiancé's disappearance. Silas — the mysterious comatose man with unusual scars — is housed here.",
           "spoiler": false
         },
         {
           "label": "Hidden Records",
-          "content": "Viro's Respite maintains hidden records documenting fog children, their experiences, and information the institution refuses to share publicly. These likely contain documentation of other fog children with dreams similar to Orabella's, historical accounts of similar cases, and theories the staff have suppressed.",
+          "content": "Viro's Respite maintains hidden records documenting fog children, their experiences, and information the institution refuses to share publicly. These likely contain documentation of other fog children and their dreams, historical accounts of similar cases, and theories the staff have suppressed.",
           "spoiler": true
         },
         {
@@ -664,12 +641,6 @@
       ],
       "connections": [
         {
-          "target_id": "orabella",
-          "target_name": "Orabella",
-          "relationship": "Orabella works here as a cleric and caretaker to both Noname and Silas",
-          "spoiler": false
-        },
-        {
           "target_id": "noname",
           "target_name": "Noname",
           "relationship": "Patient receiving treatment for memory issues",
@@ -678,7 +649,7 @@
         {
           "target_id": "silas",
           "target_name": "Silas",
-          "relationship": "Comatose patient of unknown identity; Orabella is studying his unusual scars",
+          "relationship": "Comatose patient of unknown identity; the Respite's staff are studying his unusual scars",
           "spoiler": false
         },
         {
@@ -688,7 +659,7 @@
           "spoiler": false
         }
       ],
-      "dm_notes": "Orabella's quest to access hidden records is a major early plot thread. The records almost certainly contain information that would help the party — and information someone doesn't want discovered. The institutional silence is likely a combination of genuine protection and politically motivated suppression."
+      "dm_notes": "Getting at the Respite's hidden records is a major early plot thread. The records almost certainly contain information that would help the party — and information someone doesn't want discovered. The institutional silence is likely a combination of genuine protection and politically motivated suppression."
     },
     {
       "id": "burnt_quill",
@@ -817,7 +788,7 @@
       "tier": "Market Tiers",
       "tagline": "Home for those who came from nowhere",
       "spoiler": false,
-      "summary": "An institution in the lower Market Tiers operating for over four hundred years, taking in children regardless of origin. Many residents arrive with no memory of family or home. Three PCs grew up here: Noname, Valentro, and Orabella.",
+      "summary": "An institution in the lower Market Tiers operating for over four hundred years, taking in children regardless of origin. Many residents arrive with no memory of family or home. Two PCs grew up here: Noname and Valentro.",
       "details": [
         {
           "label": "Description",
@@ -856,12 +827,6 @@
           "target_id": "valentro",
           "target_name": "Valentro",
           "relationship": "Raised here after being orphaned",
-          "spoiler": false
-        },
-        {
-          "target_id": "orabella",
-          "target_name": "Orabella",
-          "relationship": "Appeared from Vallombrosa as a fog child and was raised here; began experiencing her dreams shortly after arrival",
           "spoiler": false
         },
         {

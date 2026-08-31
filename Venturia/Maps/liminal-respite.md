@@ -22,5 +22,4 @@ A parchment rendering of the linked grounds of [Liminal House](/en/Venturia/Loca
 - [Liminal House](/en/Venturia/Locations/liminal-house/) — the orphanage
 - [St. Viro's Respite](/en/Venturia/Locations/viros-respite/) — the sanitarium
 - [Noname](/en/Venturia/Characters/PCs/noname/) — current patient
-- [Orabella](/en/Venturia/Characters/PCs/orabella/) — cleric on staff
 - [Valentro](/en/Venturia/Characters/PCs/valentro/) — raised at [Liminal House](/en/Venturia/Locations/liminal-house)

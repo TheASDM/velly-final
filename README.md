@@ -173,8 +173,6 @@ Studio quotas, and the CORS allowlist.
   use `.eleventyignore` or `permalink: false` for content that must not render.
 - **`DM_PASSPHRASE` is dead config.** Still in `.env.example`; no longer read by
   `chatbot/server.py` or any client. DM access is decided by roster name.
-- **`campaign-data/vector_store_player.json`** is a leftover from the old
-  split player/DM store. Only `vector_store.json` is used.
 
 ## Repo docs
 

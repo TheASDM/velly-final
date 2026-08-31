@@ -25,7 +25,7 @@ def _clear_push_tables(server_module):
 def test_fanout_sends_and_records_deliveries(server_module, monkeypatch):
     _clear_push_tables(server_module)
     _seed_subscription(server_module, "Lotan", "https://push.example/1")
-    _seed_subscription(server_module, "Orabella", "https://push.example/2")
+    _seed_subscription(server_module, "Valentro", "https://push.example/2")
 
     sent_payloads = []
 

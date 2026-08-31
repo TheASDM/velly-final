@@ -1,6 +1,6 @@
 ---
 title: Player Characters
-description: The seven adventurers of the Vallombrosa campaign — a wizard-turned-warlock, an orc Fog Warden, a fog-child cleric, a forest gnome arcane trickster, a satyr masquerade bard, a tiefling pirate, and an elf ranger.
+description: The five adventurers of the Vallombrosa campaign — an orc Fog Warden, a forest gnome arcane trickster, a satyr masquerade bard, a tiefling pirate, and an elf ranger.
 published: true
 date: 2026-05-23T00:00:00.000Z
 tags: characters, pcs, index, navigation
@@ -21,13 +21,6 @@ dateCreated: 2026-05-23T00:00:00.000Z
     </span>
     <span class="vos-row-chip-badge" aria-hidden="true">Car</span>
   </a>
-  <a class="vos-row-chip" href="/en/Venturia/Characters/PCs/kryton-novelli/">
-    <span>
-      <span class="vos-row-chip-title">Kryton Novelli</span>
-      <span class="vos-row-chip-meta">Human Warlock, former Wizard. A VAVA faculty mage with a gambling-table pact he intends to escape.</span>
-    </span>
-    <span class="vos-row-chip-badge" aria-hidden="true">KN</span>
-  </a>
   <a class="vos-row-chip" href="/en/Venturia/Characters/PCs/lotan/">
     <span>
       <span class="vos-row-chip-title">Lotan</span>
@@ -41,13 +34,6 @@ dateCreated: 2026-05-23T00:00:00.000Z
       <span class="vos-row-chip-meta">Orc Barbarian Fog Warden. Raised at Liminal House, now hunting the memory of the night her fiance vanished.</span>
     </span>
     <span class="vos-row-chip-badge" aria-hidden="true">FW</span>
-  </a>
-  <a class="vos-row-chip" href="/en/Venturia/Characters/PCs/orabella/">
-    <span>
-      <span class="vos-row-chip-title">Orabella</span>
-      <span class="vos-row-chip-meta">Human Cleric of Art. A fog child raised by Liminal House, haunted by vivid dreams she cannot explain.</span>
-    </span>
-    <span class="vos-row-chip-badge" aria-hidden="true">Or</span>
   </a>
   <a class="vos-row-chip" href="/en/Venturia/Characters/PCs/roxanya/">
     <span>

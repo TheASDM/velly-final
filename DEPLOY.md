@@ -43,10 +43,8 @@ Edit `.env` and set:
 ADMIN_TOKEN=<long random value>
 AUTH_TOKEN_SECRET=<long random value>
 PLAYER_CODE_CAR=<code>
-PLAYER_CODE_KRYTON=<code>
 PLAYER_CODE_LOTAN=<code>
 PLAYER_CODE_NONAME=<code>
-PLAYER_CODE_ORABELLA=<code>
 PLAYER_CODE_ROXY=<code>
 PLAYER_CODE_VALEN=<code>
 PLAYER_CODE_DUSTIN=<code>

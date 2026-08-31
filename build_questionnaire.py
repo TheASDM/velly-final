@@ -12,10 +12,8 @@ SRC = ROOT / "questionaire"
 # char key -> roster player_name (must match _data/players.json "name")
 PLAYERS = {
     "car": 'Caravel "Car" Asteri',
-    "kryton": "Kryton Novelli",
     "lotan": "Lotan",
     "noname": "Noname",
-    "orabella": "Orabella",
     "roxy": 'Roxanya "Roxy"',
     "valentro": "Valentro",
 }

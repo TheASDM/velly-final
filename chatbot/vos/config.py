@@ -130,20 +130,16 @@ RSVP_STATUSES = {"going", "maybe", "out"}
 
 DEFAULT_PLAYERS = [
     'Caravel "Car" Asteri',
-    "Kryton Novelli",
     "Lotan",
     "Noname",
-    "Orabella",
     'Roxanya "Roxy"',
     "Valentro",
     "DM",
 ]
 PLAYER_CODE_ENV_VARS = [
     ('Caravel "Car" Asteri', ("PLAYER_CODE_CAR", "PLAYER_CODE_CARAVEL")),
-    ("Kryton Novelli", ("PLAYER_CODE_KRYTON",)),
     ("Lotan", ("PLAYER_CODE_LOTAN",)),
     ("Noname", ("PLAYER_CODE_NONAME",)),
-    ("Orabella", ("PLAYER_CODE_ORABELLA",)),
     ('Roxanya "Roxy"', ("PLAYER_CODE_ROXY", "PLAYER_CODE_ROXANYA")),
     ("Valentro", ("PLAYER_CODE_VALEN", "PLAYER_CODE_VALENTRO")),
     ("DM", ("PLAYER_CODE_DUSTIN", "PLAYER_CODE_DM")),
@@ -152,15 +148,11 @@ LOGIN_NAME_ALIASES = {
     "car": 'Caravel "Car" Asteri',
     "caravel": 'Caravel "Car" Asteri',
     'caravel "car" asteri': 'Caravel "Car" Asteri',
-    "kryton": "Kryton Novelli",
-    "kryton novelli": "Kryton Novelli",
     "lotan": "Lotan",
     "noname": "Noname",
     "no name": "Noname",
     "no-name": "Noname",
     "noanme": "Noname",
-    "orabella": "Orabella",
-    "orabell": "Orabella",
     "roxy": 'Roxanya "Roxy"',
     "roxanya": 'Roxanya "Roxy"',
     'roxanya "roxy"': 'Roxanya "Roxy"',
@@ -191,8 +183,8 @@ def _canonical_login_name(name):
 def _parse_revoked_players(raw):
     """Roster names whose already-issued tokens must stop working.
 
-    Accepts either display or canonical names — `Kryton,Orabella` and
-    `Kryton Novelli, Orabella` both resolve the same way.
+    Accepts either display or canonical names — `Roxy,Valen` and
+    `Roxanya "Roxy", Valentro` both resolve the same way.
     """
     return {
         _canonical_login_name(part)

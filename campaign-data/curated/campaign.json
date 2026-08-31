@@ -446,17 +446,17 @@
       "details": [
         {
           "label": "The Night It Happens",
-          "content": "Same night: Maruk (Noname's fiancé, Kryton's close friend, active Fog Warden) disappears from his post. A figure wrapped in tattered clothes, body covered in strange supernatural scars, appears at the same location, collapses, and slips into a coma. He's brought to St. Viro's Respite under Orabella's care. The scars are the Archfey's prisoner brands marking Silas as property of the Keeper of Faces.",
+          "content": "Same night: Maruk (Noname's fiancé, active Fog Warden) disappears from his post. A figure wrapped in tattered clothes, body covered in strange supernatural scars, appears at the same location, collapses, and slips into a coma. He's brought to St. Viro's Respite. The scars are the Archfey's prisoner brands marking Silas as property of the Keeper of Faces.",
           "spoiler": true
         },
         {
           "label": "Immediate Multi-PC Stakes",
-          "content": "Noname: her fiancé is missing, mysterious scarred man appeared in his place, her memory of the night is foggy (Silas manipulated it). Kryton: his close friend Maruk disappeared the same night, driving his obsessive investigation. Orabella: actively caring for the comatose patient, trying to understand the supernatural scars — she's a fog child herself, so supernatural phenomena resonate differently for her. Lotan: his patron (the Keeper) can potentially identify the prisoner brands if shown or described. Party-wide: personal crisis affecting multiple members from session one.",
+          "content": "Noname: her fiancé is missing, mysterious scarred man appeared in his place, her memory of the night is foggy (Silas manipulated it). Lotan: his patron (the Keeper) can potentially identify the prisoner brands if shown or described. Party-wide: personal crisis affecting multiple members from session one.",
           "spoiler": true
         },
         {
           "label": "Investigation Threads",
-          "content": "The Fog Warden post — what happened that night, garrison logs, other witnesses. The scarred patient — who is he, where did the marks come from, why won't he wake. Orabella's memory — why is it foggy, can magic restore it, what's been blocked. The missing fiancé — where did Maruk go, is he alive. The scars themselves — patterns suggest brands not wounds, faint magical energy, Lotan's Keeper patron might recognize them as prisoner marks.",
+          "content": "The Fog Warden post — what happened that night, garrison logs, other witnesses. The scarred patient — who is he, where did the marks come from, why won't he wake. Noname's memory — why is it foggy, can magic restore it, what's been blocked. The missing fiancé — where did Maruk go, is he alive. The scars themselves — patterns suggest brands not wounds, faint magical energy, Lotan's Keeper patron might recognize them as prisoner marks.",
           "spoiler": true
         },
         {
@@ -485,18 +485,6 @@
           "spoiler": true
         },
         {
-          "target_id": "orabella",
-          "target_name": "Orabella",
-          "relationship": "Caring for the comatose Silas at St. Viro's Respite",
-          "spoiler": true
-        },
-        {
-          "target_id": "kryton",
-          "target_name": "Kryton Novelli",
-          "relationship": "His close friend is the missing Fog Warden; feels guilt over the disappearance",
-          "spoiler": true
-        },
-        {
           "target_id": "lotan",
           "target_name": "Lotan",
           "relationship": "His patron can potentially identify the prisoner brands",
@@ -509,7 +497,7 @@
           "spoiler": true
         }
       ],
-      "dm_notes": "This opening immediately gives four PCs personal stakes in the central mystery without any forced exposition. The noble kidnapping investigation from the Unified Framework may still occur as a later Act One thread once Silas wakes and begins operating, but THIS is the session one hook. Open questions: what does Orabella believe about the comatose man (thinks he IS Maruk, knows Maruk was replaced, or conflicting memories)? Where is the real Maruk? When does Silas wake (recommended sessions 3-5)?"
+      "dm_notes": "This opening immediately gives several PCs personal stakes in the central mystery without any forced exposition. The noble kidnapping investigation from the Unified Framework may still occur as a later Act One thread once Silas wakes and begins operating, but THIS is the session one hook. Open questions: where is the real Maruk? When does Silas wake (recommended sessions 3-5)?"
     },
     {
       "id": "session_one_decisions",
@@ -522,7 +510,6 @@
       "tags": [
         "session_one",
         "decisions",
-        "orabella",
         "silas",
         "marcus",
         "noname",
@@ -547,13 +534,13 @@
           "spoiler": true
         },
         {
-          "label": "How Silas Manipulated Orabella's Memory",
+          "label": "How Silas Manipulated Noname's Memory",
           "content": "Used emerging abilities (first use in Venturia, crude and incomplete). OR the prison escape itself caused memory disruption in nearby people. OR he created a temporary Bound to handle it (that person might still be around as evidence).",
           "spoiler": true
         },
         {
           "label": "What Each PC Knows at Opening",
-          "content": "Kryton: does he know his friend was Noname's fiancé? Has he visited St. Viro's to see the comatose man? Does his patron (Tartuzi) have any reaction? Orabella: what can she discover before Silas wakes? (Scars aren't natural wounds — they're brands in patterns, coma is magically induced, patient occasionally sounds conscious, scars radiate faint magic.) Does she know the patient replaced a Fog Warden? Lotan: can the Keeper identify prisoner brands from descriptions? Will the Keeper communicate this? What does the Keeper want done? Caravel: does the friend whose death she blames on secrets connect to Silas or the opening mystery?",
+          "content": "Noname: how much of that night can she actually account for, and does she know the patient replaced a Fog Warden? What is discoverable at the Respite before Silas wakes: the scars aren't natural wounds — they're brands in patterns, the coma is magically induced, the patient occasionally sounds conscious, and the scars radiate faint magic. Lotan: can the Keeper identify prisoner brands from descriptions? Will the Keeper communicate this? What does the Keeper want done? Caravel: does the friend whose death she blames on secrets connect to Silas or the opening mystery?",
           "spoiler": true
         }
       ],
@@ -565,7 +552,7 @@
           "spoiler": true
         }
       ],
-      "dm_notes": "These decisions interact with each other — Orabella's memory state affects what the party knows going in, Maruk's fate determines whether there's a rescue mission or a grief arc, Silas's awakening timing controls pacing. Decide the memory state and Maruk's fate before session one. Silas timing can be adjusted based on how investigation plays at the table."
+      "dm_notes": "These decisions interact with each other — Noname's memory state affects what the party knows going in, Maruk's fate determines whether there's a rescue mission or a grief arc, Silas's awakening timing controls pacing. Decide the memory state and Maruk's fate before session one. Silas timing can be adjusted based on how investigation plays at the table."
     },
     {
       "id": "pc_connection_web",
@@ -588,7 +575,7 @@
       "details": [
         {
           "label": "The Liminal House Hub",
-          "content": "Three PCs connect through Liminal House: Noname (fog child's daughter, raised there after parents died), Orabella (fog child herself, raised there after appearing from Vallombrosa), Valentro (orphan, raised there after losing both parents). This institution has been dealing with fog children for centuries — exactly the population that manifests when Marcello transforms Vallombrosa. Liminal House likely has records going back generations and may know more about Vallombrosa's true nature than publicly admitted.",
+          "content": "Two PCs connect through Liminal House: Noname (fog child's daughter, raised there after parents died) and Valentro (orphan, raised there after losing both parents). This institution has been dealing with fog children for centuries — exactly the population that manifests when Marcello transforms Vallombrosa. Liminal House likely has records going back generations and may know more about Vallombrosa's true nature than publicly admitted.",
           "spoiler": true
         },
         {
@@ -603,7 +590,7 @@
         },
         {
           "label": "Supernatural Patron Connections",
-          "content": "Lotan: The Keeper of Faces (imprisoned Archfey, direct campaign connection). Roxy: Garl Glittergold (made her interested in Vallombrosa). Kryton: his patron is connected to Tartuzi. Three PCs have divine/supernatural patrons with campaign relevance — natural exposition channels and moral complexity.",
+          "content": "Lotan: The Keeper of Faces (imprisoned Archfey, direct campaign connection). Roxy: Garl Glittergold (made her interested in Vallombrosa). Two PCs have divine/supernatural patrons with campaign relevance — natural exposition channels and moral complexity.",
           "spoiler": true
         },
         {
@@ -613,17 +600,17 @@
         },
         {
           "label": "Forgotten/Stolen Identity Cluster",
-          "content": "Valentro: sees tools as swords, muscle memory suggesting warrior past — exactly the kind of memory bleed the campaign uses. Orabella: memories returning that frighten her. Noname's father: no memory of life before appearing. Kryton: lost wizard knowledge and abilities. All tie directly to the campaign's memory manipulation and identity theft themes.",
+          "content": "Valentro: sees tools as swords, muscle memory suggesting warrior past — exactly the kind of memory bleed the campaign uses. Noname's father: no memory of life before appearing. Both tie directly to the campaign's memory manipulation and identity theft themes.",
           "spoiler": true
         },
         {
           "label": "The Tiered Gardens as Convergence Point",
-          "content": "Valentro works there professionally. Maruk proposed to Noname there (Valentro witnessed). Kryton's 'sword moment' happened there (Roxy witnessed). Kryton frequents for peace and contemplation. This location is a natural recurring setting for character moments.",
+          "content": "Valentro works there professionally. Maruk proposed to Noname there (Valentro witnessed). This location is a natural recurring setting for character moments.",
           "spoiler": true
         },
         {
           "label": "Pre-Campaign Timeline of Intersections",
-          "content": "Lotan meets Roxy (1 year before campaign). Caravel befriends Roxy (timing unclear). Noname and Orabella (childhood at Liminal House, current patient-healer relationship). Roxy discovers Kryton's secret (recent). Kryton is close friends with Maruk (past). Kryton taught at VAVA (connections to any PC students).",
+          "content": "Lotan meets Roxy (1 year before campaign). Caravel befriends Roxy (timing unclear). Noname and Valentro (childhood at Liminal House).",
           "spoiler": true
         }
       ],

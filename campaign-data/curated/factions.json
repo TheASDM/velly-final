@@ -286,19 +286,13 @@
           "spoiler": false
         },
         {
-          "target_id": "kryton",
-          "target_name": "Kryton Novelli",
-          "relationship": "Faculty member — brilliant but increasingly erratic",
-          "spoiler": false
-        },
-        {
           "target_id": "roxy",
           "target_name": "Roxy",
           "relationship": "First-year student maintaining a facade of magical competence",
           "spoiler": false
         }
       ],
-      "dm_notes": "VAVA's institutional politics are a campaign-long thread. The Veil Archive is a critical investigation resource that requires earning Dorian's trust or forcing his hand. The surveillance culture creates paranoia that could affect Kryton (secret research?) and Roxy (her powers aren't academic). The catastrophic historical incidents — the divination student who never woke, the transmutation professor who went mad, the memory cascade that killed two students — are usable as warnings or investigative leads."
+      "dm_notes": "VAVA's institutional politics are a campaign-long thread. The Veil Archive is a critical investigation resource that requires earning Dorian's trust or forcing his hand. The surveillance culture creates paranoia that could affect Roxy (her powers aren't academic). The catastrophic historical incidents — the divination student who never woke, the transmutation professor who went mad, the memory cascade that killed two students — are usable as warnings or investigative leads."
     },
     {
       "id": "covenant_silver_scales",
@@ -516,12 +510,6 @@
           "target_id": "valentro",
           "target_name": "Valentro",
           "relationship": "Raised here after being orphaned",
-          "spoiler": false
-        },
-        {
-          "target_id": "orabella",
-          "target_name": "Orabella",
-          "relationship": "Appeared from Vallombrosa as a fog child; raised here",
           "spoiler": false
         }
       ],

@@ -46,7 +46,13 @@ def parse_frontmatter(content: str) -> dict:
         if not line or line.startswith("#") or ":" not in line:
             continue
         k, _, v = line.partition(":")
-        v = v.strip().strip('"').strip("'")
+        v = v.strip()
+        # YAML single-quoted scalars escape a quote by doubling it, so unwrap
+        # before unescaping or titles like 'What I''m Working On' keep the pair.
+        if len(v) >= 2 and v[0] == v[-1] == "'":
+            v = v[1:-1].replace("''", "'")
+        elif len(v) >= 2 and v[0] == v[-1] == '"':
+            v = v[1:-1]
         if v == "true":
             v = True
         elif v == "false":
