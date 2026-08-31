@@ -13,7 +13,6 @@
  * saying where they are.
  */
 import { clearSheetBadge, initSheetBadge } from './sheet-badge.js';
-import { exitPreview, isPreviewing, stashedDmSeat } from './preview.js';
 
 const KEY = 'vos-character-identity';
 
@@ -61,8 +60,10 @@ async function fetchIdentity() {
  * table. The variant is declared in _data/navigation.js and emitted as data
  * attributes — this only applies what the nav data says.
  *
- * This is also the DM's way out of a preview: whatever seat they are looking
- * through, the middle of the rail still says The Table and still goes there.
+ * Not applied inside a preview. The rail there belongs to the player being
+ * previewed, medallion and hit points included, because a preview that keeps
+ * one of the DM's own controls is not showing what the player sees. The way
+ * back is Exit Preview on the strip, which is on every page and cannot fail.
  */
 function paintDmTab() {
   const tab = document.getElementById('vos-nav-sheet');
@@ -73,15 +74,6 @@ function paintDmTab() {
   if (label && tab.dataset.dmLabel) label.textContent = tab.dataset.dmLabel;
   tab.setAttribute('aria-label', `Open ${tab.dataset.dmLabel || 'the table'}`);
   clearSheetBadge();
-  /* From inside a preview this is the way out, not just a link: The Table
-     refuses a preview credential, so following the href would land the DM
-     on "DM only." Take the seat back first, then go. */
-  if (isPreviewing()) {
-    tab.addEventListener('click', (event) => {
-      event.preventDefault();
-      exitPreview({ to: tab.dataset.dmHref });
-    });
-  }
   const active = window.location.pathname === tab.dataset.dmHref;
   tab.classList.toggle('is-active', active);
   if (active) tab.setAttribute('aria-current', 'page');
@@ -108,12 +100,7 @@ export function initCharacterBar() {
   const name = pwa && pwa.getPlayerName ? pwa.getPlayerName() : null;
   if (!name) return;
 
-  /* Keyed off the seat they will get back, not the one they are wearing.
-     Inside a preview everything else on screen is the player's; the middle
-     of the rail is the one thing that must still belong to the DM, because
-     it is the way out. */
-  const dmSeat = stashedDmSeat();
-  if (dmSeat || name === 'DM' || (pwa.isDm && pwa.isDm())) {
+  if (name === 'DM' || (pwa.isDm && pwa.isDm())) {
     paintDmTab();
     return;
   }

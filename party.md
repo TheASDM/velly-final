@@ -135,9 +135,9 @@ pageScripts:
        player, and this is where the players are. #}
     <h2 class="vos-table-heading">Preview as a player</h2>
     <p class="vos-table-lede">
-      Open the app as someone at the table sees it. Anything you change is
-      theirs. The middle of the tab bar stays The Table, so you always have a
-      way back.
+      Open the app exactly as someone at the table sees it — their sheet, their
+      hit points, their tab bar. Anything you change is theirs. Exit Preview,
+      on the strip at the top of every page, brings you back here.
     </p>
     <div class="vos-table-roster" id="vos-table-roster" aria-label="Preview a player's app"></div>
   </section>

@@ -37,9 +37,10 @@ export function isPreviewing() {
   return !!previewState();
 }
 
-/* The seat the DM will get back. Read by the nav so the middle of the tab bar
- * keeps saying The Table while they are wearing someone else's face. */
-export function stashedDmSeat() {
+/* The seat the DM will get back. Only exitPreview() needs it now — the nav
+ * used to read it to keep The Table in the middle of the rail during a
+ * preview, and the rail belongs to the previewed player instead. */
+function stashedDmSeat() {
   try {
     return JSON.parse(getStorage(STASH_KEY) || 'null');
   } catch (error) { return null; }
