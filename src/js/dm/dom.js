@@ -5,12 +5,11 @@
  * lives in its own module beside this one. */
 
 export const authSignedOutEl = document.getElementById('vos-dm-auth-signed-out');
-export const authSignedInEl = document.getElementById('vos-dm-auth-signed-in');
+export const authPanelEl = document.getElementById('vos-dm-auth-panel');
 export const authBlockedEl = document.getElementById('vos-dm-auth-blocked');
 export const authEmailEl = document.getElementById('vos-dm-auth-email');
 export const authStatusEl = document.getElementById('vos-dm-auth-status');
 export const signInEl = document.getElementById('vos-dm-sign-in');
-export const signOutEl = document.getElementById('vos-dm-sign-out');
 export const switchAccountEl = document.getElementById('vos-dm-switch-account');
 
 export const summaryEl = document.getElementById('vos-dm-summary');

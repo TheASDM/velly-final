@@ -1,15 +1,14 @@
 ---
-title: DM
-description: DM tools for Vallombrosa.
+title: Campaign Settings
+description: The DM's console — scheduling, announcements, lore review, and the wiki editor.
 permalink: /dm/
 pageStyles:
   - /css/dm.css
 ---
 
 <div class="vos-dm">
-  <h1>DM</h1>
 
-  <section class="vos-dm-panel vos-dm-auth-panel" aria-labelledby="vos-dm-auth-title">
+  <section class="vos-dm-panel vos-dm-auth-panel" id="vos-dm-auth-panel" aria-labelledby="vos-dm-auth-title" hidden>
     <h2 id="vos-dm-auth-title">Sign in</h2>
     <div class="vos-dm-auth-signed-out" id="vos-dm-auth-signed-out" hidden>
       <p class="vos-dm-helper">The console uses the same sign-in as the rest of the app — sign in with the DM account.</p>
@@ -19,12 +18,11 @@ pageStyles:
       </div>
       <div class="vos-dm-status" id="vos-dm-auth-status" role="status" aria-live="polite"></div>
     </div>
-    <div class="vos-dm-auth-signed-in" id="vos-dm-auth-signed-in" hidden>
-      <div class="vos-dm-auth-meta">
-        Signed in as <strong id="vos-dm-auth-email"></strong>
-      </div>
-      <button type="button" class="vos-dm-button" id="vos-dm-sign-out">Sign out</button>
-    </div>
+    {#- No signed-in state here. It said "Signed in as DM" beside a Sign out
+        button, in a panel the height of a phone screen, directly under an app
+        bar already reading DM and next to a menu already offering Sign out.
+        The panel appears when you are signed out or refused; otherwise this
+        page opens on the tools. -#}
     <div class="vos-dm-auth-blocked" id="vos-dm-auth-blocked" hidden>
       <p class="vos-dm-helper">You're signed in, but this console is the DM's. Switch to the DM account to use it.</p>
       <div class="vos-dm-actions">

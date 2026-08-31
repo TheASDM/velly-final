@@ -539,3 +539,63 @@
   object-fit: cover;
   display: block;
 }
+
+
+/* ── Dashboard rows ───────────────────────────────────────────────────
+ *
+ * Label, then the detail under it. The detail wraps, which is the whole
+ * point: these carry lists of player names, and the calendar's task row —
+ * which these used to borrow — ends in a nowrap right-aligned slot sized for
+ * "Due Sep 2". Names overflowed it and printed over the label.
+ */
+.vos-dash-row {
+  display: grid;
+  gap: 0.15rem;
+  padding: 0.6rem 0;
+  border-top: 1px solid rgba(212, 165, 116, 0.13);
+}
+.vos-dash-row:first-child { border-top: 0; }
+.vos-dash-row-label {
+  color: rgba(233, 225, 208, 0.9);
+  font-size: 1rem;
+  line-height: 1.3;
+}
+a.vos-dash-row-label {
+  color: var(--vos-gold-bright);
+  border-bottom: none;
+}
+a.vos-dash-row-label:hover { color: var(--vos-cream); }
+.vos-dash-row-meta {
+  color: rgba(203, 190, 168, 0.72);
+  font-family: 'Crimson Text', Georgia, serif;
+  font-size: 0.88rem;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
+/* ── Desktop ──────────────────────────────────────────────────────────
+ *
+ * Two ragged columns of different-height cards left holes down the page.
+ * Stretching each row makes the pairs read as bands, which is what a
+ * dashboard of boxes wants to be.
+ */
+@media (min-width: 769px) {
+  /* Deliberately NOT align-items: stretch. Making each pair equal height
+     sounded tidier and looked worse: an empty Next Gathering grew into a
+     190px box holding one sentence at the top. Cards keep their own height
+     and the gaps stay gaps. */
+  .vos-dash-side-card { display: flex; flex-direction: column; }
+  .vos-dash-side-card .vos-dash-more { margin-top: auto; padding-top: 0.75rem; }
+  /* A rail of chips reads better across the page than boxed into one column. */
+  .vos-inplay-card { grid-column: 1 / -1; }
+}
+
+/* The wiki list is the longest text on the page; one column of it at full
+   desktop width runs past 150 characters a line. */
+@media (min-width: 900px) {
+  .vos-news-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 26rem), 1fr));
+    gap: 0.5rem;
+  }
+}

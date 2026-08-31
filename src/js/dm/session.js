@@ -8,8 +8,8 @@
  * or signed in as someone else. No network call gates the rendering. */
 
 import {
-  authBlockedEl, authEmailEl, authSignedInEl, authSignedOutEl, authStatusEl,
-  setStatus, signInEl, signOutEl, switchAccountEl,
+  authBlockedEl, authEmailEl, authPanelEl, authSignedOutEl, authStatusEl,
+  setStatus, signInEl, switchAccountEl,
 } from './dom.js';
 import { whenPwaReady } from '../shared/pwa.js';
 
@@ -60,11 +60,14 @@ function computeLive() {
   return name === 'DM' || !!(pwa.isDm && pwa.isDm());
 }
 
+/* The panel is only worth its space when something is wrong. Signed in, it
+ * said "Signed in as DM" under an app bar already reading DM, beside a menu
+ * already offering Sign out — a screenful of a fact you could see. */
 function renderAuthState() {
   const name = pwa && pwa.getPlayerName ? pwa.getPlayerName() : null;
   if (authSignedOutEl) authSignedOutEl.hidden = !!name;
   if (authBlockedEl) authBlockedEl.hidden = !name || live;
-  if (authSignedInEl) authSignedInEl.hidden = !live;
+  if (authPanelEl) authPanelEl.hidden = live;
   if (live && authEmailEl) authEmailEl.textContent = name || 'DM';
 }
 
@@ -92,8 +95,8 @@ export function sessionExpired(message) {
   const wasLive = live;
   live = false;
   renderAuthState();
+  if (authPanelEl) authPanelEl.hidden = false;
   if (authSignedOutEl) authSignedOutEl.hidden = false;
-  if (authSignedInEl) authSignedInEl.hidden = true;
   if (authBlockedEl) authBlockedEl.hidden = true;
   setStatus(authStatusEl, message || 'Session expired — sign in again.', true);
   if (wasLive) {
@@ -109,12 +112,6 @@ async function requestSignIn() {
   syncSession();
 }
 
-function requestSignOut() {
-  if (pwa && pwa.signOut) pwa.signOut();
-  syncSession();
-  setStatus(authStatusEl, 'Signed out.');
-}
-
 export async function bootAdminAuth() {
   pwa = await whenPwaReady();
   if (!pwa) {
@@ -124,7 +121,6 @@ export async function bootAdminAuth() {
   }
   if (signInEl) signInEl.addEventListener('click', requestSignIn);
   if (switchAccountEl) switchAccountEl.addEventListener('click', requestSignIn);
-  if (signOutEl) signOutEl.addEventListener('click', requestSignOut);
   window.addEventListener('vos:identity', syncSession);
   syncSession();
 }

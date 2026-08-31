@@ -12,8 +12,11 @@
   transform: translateX(-50%);
 }
 @media (min-width: 1024px) {
+  /* 1440 was the whole content width, which put ~150 characters on a line of
+     card copy and made the banner nearly 300px tall. Narrower reads better
+     and costs nothing — the dashboard is two columns either way. */
   .vos-home {
-    --vos-home-wide: min(1440px, calc(100vw - 3rem));
+    --vos-home-wide: min(1180px, calc(100vw - 3rem));
   }
 }
 

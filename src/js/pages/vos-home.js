@@ -230,17 +230,24 @@
     } catch (error) { return null; }
   }
 
+  /* Its own row shape, not the calendar's.
+   *
+   * These borrowed .vos-task-row, whose second slot is a nowrap right-aligned
+   * chip built to hold "Due Sep 2". Five comma-separated player names do not
+   * fit that, and being nowrap they did not wrap or truncate — they overflowed
+   * the column and printed straight over the label beside them. A label above
+   * a meta line that is allowed to wrap cannot collide with anything. */
   function row(text, meta, href) {
     const li = document.createElement('li');
-    li.className = 'vos-task-row';
+    li.className = 'vos-dash-row';
     const main = document.createElement(href ? 'a' : 'span');
-    main.className = 'vos-task-main';
+    main.className = 'vos-dash-row-label';
     main.textContent = text;
     if (href) main.href = href;
     li.appendChild(main);
     if (meta) {
       const span = document.createElement('span');
-      span.className = 'vos-task-date';
+      span.className = 'vos-dash-row-meta';
       span.textContent = meta;
       li.appendChild(span);
     }

@@ -502,3 +502,15 @@
 .vos-dm-group-chips .vos-seg-btn {
   scroll-snap-align: start;
 }
+
+/* The console column is 860px because that is a sane measure for forms. The
+ * page shell it sits in is 1392px and draws a bordered, filled panel, so on a
+ * desktop the result was a narrow strip of tools floating in the middle of a
+ * very large empty box. Let the frame hug what it frames. */
+@media (min-width: 1024px) {
+  .vos-is-console-page .vos-page-shell {
+    max-width: 920px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
