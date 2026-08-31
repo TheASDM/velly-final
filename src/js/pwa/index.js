@@ -8,7 +8,7 @@ import { initRsvpControls } from './rsvp.js';
 import { enhanceWikiLinkedLists } from './wiki.js';
 import { initCharacterBar } from './character-bar.js';
 import { beginPreview, exitPreview, initPreview, isPreviewing, previewState } from './preview.js';
-import { askEnzo, initEnzoActions } from './enzo-actions.js';
+import { initEnzoActions, openEnzoThread } from './enzo-actions.js';
 
 window.VOS_PWA = {
   getPlayerName: () => getStorage(PLAYER_KEY),
@@ -37,7 +37,7 @@ window.VOS_PWA = {
   getProfileDisplayName,
   renderSafeMarkdown,
   initRsvpControls,
-  askEnzo,
+  openEnzoThread,
 };
 
 window.addEventListener('DOMContentLoaded', () => {

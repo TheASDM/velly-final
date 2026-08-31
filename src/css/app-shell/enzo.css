@@ -99,6 +99,20 @@
     background: rgba(212, 165, 116, 0.13);
     color: var(--vos-cream);
   }
+  /* Said on the control itself, not in a tooltip nobody opens. The button
+     still does something — it opens Enzo's real conversation — so this marks
+     what is missing rather than disabling the thing that works. */
+  .vos-enzo-soon {
+    margin-left: 0.45rem;
+    padding: 0.1rem 0.4rem;
+    border: 1px solid rgba(212, 165, 116, 0.34);
+    border-radius: 999px;
+    color: rgba(212, 165, 116, 0.82);
+    font-family: 'Cinzel', Georgia, serif;
+    font-size: 0.5rem;
+    letter-spacing: 0.1em;
+    white-space: nowrap;
+  }
   .vos-enzo-action::before {
     content: '';
     width: 15px;

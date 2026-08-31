@@ -113,8 +113,8 @@ templateEngineOverride: njk
       </a>
     </div>
     <button class="vos-enzo-action" type="button"
-            data-enzo-ask="Help me prepare the next session. What threads are open, and what did the party leave unfinished?">
-      Help me prepare
+            data-enzo-ask>
+      Help me prepare<span class="vos-enzo-soon">Coming soon</span>
     </button>
   </section>
 

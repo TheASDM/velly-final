@@ -463,3 +463,42 @@
     cursor: pointer;
   }
   .vos-preview-exit:hover { background: rgba(246, 217, 164, 0.2); }
+
+  /* ── Wordmark ────────────────────────────────────────────────────────
+   *
+   * The crest and the wordmark are the same control — the way home — and
+   * only one is ever shown. A phone gives the bar about 240px between the
+   * home button and the two actions, and the page title has the better claim
+   * on it; from 640px there is room for both, so the app says its own name.
+   */
+  .vos-app-wordmark { display: none; }
+  @media (min-width: 640px) {
+    .vos-app-crest {
+      width: auto;
+      min-width: 0;
+      padding: 0 0.7rem 0 0.5rem;
+      border: 0;
+      background: none;
+    }
+    .vos-app-crest:hover { background: none; border: 0; }
+    .vos-app-crest-glyph { display: none; }
+    .vos-app-wordmark {
+      display: block;
+      /* Height-led: the art is 5.8:1, so the width follows and the bar keeps
+         its own rhythm regardless of what the file measures. */
+      height: 26px;
+      width: auto;
+      /* The artwork is gold on transparent and reads a touch hot against the
+         near-black bar at this size. */
+      opacity: 0.92;
+    }
+    .vos-app-crest:hover .vos-app-wordmark { opacity: 1; }
+  }
+  @media (min-width: 1024px) {
+    .vos-app-wordmark { height: 30px; }
+  }
+  /* The crumb rail is indented to clear the home button; the wordmark is
+     wider than the crest, so the indent has to follow it. */
+  @media (min-width: 640px) {
+    .vos-app-crumbs { padding-left: 0; }
+  }

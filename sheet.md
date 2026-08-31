@@ -21,8 +21,8 @@ templateEngineOverride: njk
   <nav class="vos-sheet-index" id="vos-sheet-index" aria-label="Jump to a section" hidden></nav>
 
   <button class="vos-enzo-action" type="button"
-          data-enzo-ask="Explain one of my character's abilities. Ask me which one.">
-    Ask Enzo about this
+          data-enzo-ask>
+    Ask Enzo about this<span class="vos-enzo-soon">Coming soon</span>
   </button>
 
   <div class="vos-sheet-root" id="vos-sheet-root">

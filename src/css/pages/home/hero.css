@@ -27,9 +27,9 @@
   display: flex; flex-direction: column;
   align-items: center;
   text-align: center;
-  /* Trimmed: the banner is identity, and it was pushing the one thing
-     anybody opens this page for below the fold. */
-  padding: 0.6rem 0 0.5rem;
+  /* The app bar carries the wordmark now, so this is atmosphere rather than
+     introduction and can sit quietly at the top. */
+  padding: 0.35rem 0 0.55rem;
 }
 .vos-hero-banner {
   display: block;
@@ -46,7 +46,7 @@
   position: relative;
   width: 100%;
   max-width: 1440px;
-  aspect-ratio: 2712 / 517;
+  aspect-ratio: 1600 / 320;
   margin: 0 auto 0.7rem;
 }
 .vos-hero-banner-wrap::after {

@@ -1,68 +1,46 @@
-/* Enzo, offered inside the work.
+/* Enzo, offered inside the work — and honest about how much of him exists.
  *
- * He used to hold a tab, which made asking him something a place you went
- * rather than a thing you did — you left the page you had the question about
- * in order to ask about it. The tab is Studio now, and this puts the asking
- * where the question is.
+ * The app describes a contextual Enzo who knows what page you are on and what
+ * you are permitted to know. That is not built. What these buttons did was
+ * seed the floating widget with a generic question and let it look like the
+ * real thing, which is the worst of both: it is not contextual, and it hides
+ * that it is not.
  *
- * Every action does the same small thing: open the widget and put a question
- * in the box, already written, not yet sent. Sending it for the reader would
- * take away the edit that makes it their question.
+ * So they say "Coming Soon" and hand you the conversation that does work —
+ * Enzo's thread in Messages, which is stored, scrollable, and his half of an
+ * actual back-and-forth. When the contextual version lands, these become it.
  *
- * Mark up an action with data-enzo-ask="<the question>" on any button. The
- * seed may carry {title} and {selection}, filled in here.
+ * Mark up an action with data-enzo-ask on any button.
  */
-const OPEN_KEY = 'loreMasterOpen';
 
-function widget() {
-  return document.getElementById('chatbot-widget');
+function playerName() {
+  const pwa = window.VOS_PWA;
+  return (pwa && pwa.getPlayerName && pwa.getPlayerName()) || '';
 }
 
-function openWidget() {
-  const host = widget();
-  if (!host) return false;
-  host.classList.remove('chatbot-collapsed');
-  try { localStorage.setItem(OPEN_KEY, 'true'); } catch (error) { /* private mode */ }
-  return true;
+/* Server-side this is _enzo_thread_key(): the two names sorted and joined,
+ * so "Enzo" leads for every player whose name sorts after it. Built the same
+ * way here rather than guessed at. */
+export function enzoThreadKey(name) {
+  const who = name || playerName();
+  if (!who) return null;
+  return ['Enzo', who].sort().join('|');
 }
 
-export function askEnzo(seed) {
-  if (!openWidget()) return;
-  // The widget's input is swapped for a textarea by a compatibility pass in
-  // enzo-widget.js, so read it back rather than holding a reference.
-  const input = document.getElementById('chat-input');
-  if (!input) return;
-  input.value = seed || '';
-  input.dispatchEvent(new Event('input', { bubbles: true }));
-  try { input.focus(); } catch (error) { /* focus is a courtesy */ }
-  const at = input.value.length;
-  if (input.setSelectionRange) {
-    try { input.setSelectionRange(at, at); } catch (error) { /* not all inputs */ }
+/* Open Enzo's conversation, brought to the front. VOS_CHAT.open() puts it in
+ * the overlay on every page, and on /messages/ — which is that panel already
+ * — it selects the thread in place instead of stacking a second one. */
+export function openEnzoThread() {
+  const chat = window.VOS_CHAT;
+  const key = enzoThreadKey();
+  if (chat && chat.open) {
+    chat.open(key);
+    return true;
   }
-}
-
-/* What this page is about, in the reader's words rather than the tab bar's.
- * The app bar carries the character's name on every page for a signed-in
- * player and the tab's own name on an index, so neither is the subject of
- * the question — the page's own heading is. */
-function pageTitle() {
-  const heading = document.querySelector('main h1, .vos-page-shell h1');
-  if (heading && heading.textContent.trim()) return heading.textContent.trim();
-  const crumbs = document.querySelectorAll('.vos-app-crumbs li');
-  if (crumbs.length) return crumbs[crumbs.length - 1].textContent.trim();
-  const bar = document.querySelector('.vos-app-bar .vos-app-title');
-  if (bar && bar.textContent.trim()) return bar.textContent.trim();
-  return (document.title || 'this page').split('·')[0].trim();
-}
-
-function fillSeed(template) {
-  const title = pageTitle();
-  let selection = '';
-  try { selection = String(window.getSelection() || '').trim().slice(0, 300); }
-  catch (error) { /* no selection is the normal case */ }
-  return String(template || '')
-    .replace('{title}', title)
-    .replace('{selection}', selection);
+  // No chat bundle on this page. The full-page conversation is the same
+  // thread, so send them there rather than doing nothing.
+  window.location.href = '/messages/';
+  return true;
 }
 
 export function initEnzoActions() {
@@ -70,6 +48,6 @@ export function initEnzoActions() {
     const trigger = event.target.closest('[data-enzo-ask]');
     if (!trigger) return;
     event.preventDefault();
-    askEnzo(fillSeed(trigger.dataset.enzoAsk));
+    openEnzoThread();
   });
 }

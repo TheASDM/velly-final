@@ -97,3 +97,8 @@ files/**
 # reason: this repo is public.
 foundry/
 public-files/
+
+# Gigapixel upscale masters. Kept locally, never committed: a 28MB PNG in a
+# public repo is permanent history for a file only the person who made it
+# needs. The web-sized derivatives beside them are what the app serves.
+images/logos/*gigapixel*

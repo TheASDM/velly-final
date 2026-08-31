@@ -23,10 +23,17 @@ pageScripts:
 <div class="vos-home" id="vos-home" data-home-role="">
 
 <!-- ── HERO ─────────────────────────────────────────────────────────── -->
-{# Kept for identity, sized so Next Gathering is above the fold. #}
+{# The banner is campaign art, not a logo — the app bar carries the wordmark
+   now, so this does not have to introduce anything. The new plate is 5:1
+   where the old was 3:1, which is most of a phone screen given back to the
+   thing people actually opened Home to read. #}
 <section class="vos-home-hero">
   <div class="vos-hero-banner-wrap">
-    <img src="/images/logos/foglight-logo-3to1-2.jpg" alt="Foglight" class="vos-hero-banner">
+    <img src="/images/logos/foglight-banner.jpg"
+         srcset="/images/logos/foglight-banner.jpg 1600w, /images/logos/foglight-banner@2x.jpg 2400w"
+         sizes="(min-width: 1024px) 1180px, 100vw"
+         alt="" class="vos-hero-banner" width="1600" height="320"
+         fetchpriority="high" decoding="async">
   </div>
 </section>
 
@@ -148,8 +155,8 @@ pageScripts:
         <span class="vos-row-chip-arrow" aria-hidden="true">›</span>
       </a>
       <button class="vos-enzo-action" type="button"
-              data-enzo-ask="Help me draft a piece of lore for the campaign. Ask me what it is about first.">
-        Draft with Enzo
+              data-enzo-ask>
+        Draft with Enzo<span class="vos-enzo-soon">Coming soon</span>
       </button>
     </div>
 

@@ -292,17 +292,16 @@ ALLOWED_DM_DISCORD_IDS = {
 }
 
 # Style preset keys are stable strings sent from the UI; the corresponding
-# prompt prefix is prepended to the user prompt at generation time. Keep
-# these tight — overly long prefixes eat into the user's prompt budget
-# (OpenAI's gpt-image accepts ~4000 chars total per request).
+# prompt prefix is prepended to the user prompt at generation time.
 #
-# The three "valley-*" presets are the campaign's house look — a Reign-style
-# (TV show) cinematic period drama: rich fantasy costumes, contemporary
-# editorial gloss, soft romantic lighting, jewel-tone color grade. Each
-# variant tunes the prefix for a different subject type (portrait vs. wider
-# scene vs. environmental establishing shot) so the model frames the image
-# appropriately. Everything below the valley group is an alternative look
-# the player can opt into.
+# These no longer need to be short. The old note here said to keep them tight
+# because the prefix ate the user's ~4000-character budget — that budget is
+# 30000 now, and the composer treats the style as the last thing it would ever
+# drop rather than the first. Say the look properly.
+#
+# Everything below the valley group is an alternative look a player can opt
+# into; the valley group is the campaign's own.
+
 # The house look, in one place.
 #
 # The three Valley presets are the same photograph taken three ways, so the
