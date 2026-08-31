@@ -211,6 +211,36 @@
     });
   }
 
+  /* Which build is actually serving this device. Asked of the controlling
+     worker, so it reports what is running rather than what was deployed —
+     the two disagreed for four releases once, silently. */
+  function reportRunningVersion() {
+    const el = document.getElementById('vos-settings-sw-version');
+    if (!el) return;
+    const controller = ('serviceWorker' in navigator) && navigator.serviceWorker.controller;
+    if (!controller) {
+      el.textContent = 'Not installed on this device';
+      return;
+    }
+    const channel = new MessageChannel();
+    const timer = setTimeout(() => { el.textContent = 'No answer from the app cache'; }, 2500);
+    channel.port1.onmessage = (event) => {
+      clearTimeout(timer);
+      const version = (event.data || {}).version;
+      el.textContent = version || 'Unknown';
+    };
+    try {
+      controller.postMessage({ type: 'VOS_VERSION' }, [channel.port2]);
+    } catch (error) {
+      clearTimeout(timer);
+      el.textContent = 'Unavailable';
+    }
+  }
+  reportRunningVersion();
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.addEventListener('controllerchange', reportRunningVersion);
+  }
+
   document.getElementById('vos-settings-check-updates').addEventListener('click', checkForUpdates);
   document.getElementById('vos-settings-apply-update').addEventListener('click', applyUpdate);
   setText('vos-settings-update-status', 'Press “Check for updates” to look for a newer version.');

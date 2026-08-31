@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'foglight-pwa-v129';
+const CACHE_VERSION = 'foglight-pwa-v130';
 const PRECACHE = `${CACHE_VERSION}-precache`;
 const PAGES = `${CACHE_VERSION}-pages`;
 const ASSETS = `${CACHE_VERSION}-assets`;
@@ -193,6 +193,14 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('message', (event) => {
   if (event.data && event.data.type === 'SKIP_WAITING') {
     self.skipWaiting();
+    return;
+  }
+  /* Settings asks the *controlling* worker what it is, rather than reading
+     caches.keys() and guessing: during a handover both the old and new caches
+     exist, and the one that answers here is the one actually serving. */
+  if (event.data && event.data.type === 'VOS_VERSION') {
+    const port = event.ports && event.ports[0];
+    if (port) port.postMessage({ version: CACHE_VERSION });
   }
 });
 

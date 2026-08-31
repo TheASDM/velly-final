@@ -4,6 +4,7 @@ description: Manage your profile, notifications, and app updates.
 permalink: /settings/
 autoIndex: false
 published: false
+templateEngineOverride: njk
 ---
 
 <section class="vos-compact-panel vos-settings-panel" id="vos-settings-profile">
@@ -53,6 +54,25 @@ published: false
     <button class="vos-button" id="vos-settings-check-updates" type="button">Check for updates</button>
     <button class="vos-button" id="vos-settings-apply-update" type="button" hidden>Refresh to update</button>
   </div>
+</section>
+
+<section class="vos-compact-panel vos-settings-panel" id="vos-settings-about">
+  <div class="vos-panel-head">
+    <h2 class="vos-panel-title">About</h2>
+  </div>
+  <dl class="vos-settings-facts">
+    <div>
+      <dt>Version</dt>
+      <dd>{{ app.name }} {{ app.version }} &middot; Build {{ app.build }}</dd>
+    </div>
+    {#- What is actually serving this device, which is not always what was
+        shipped: a service worker hands over on its own schedule, and an app
+        that quietly kept an old one is invisible without a number to read. -#}
+    <div>
+      <dt>Running on this device</dt>
+      <dd id="vos-settings-sw-version">Checking&hellip;</dd>
+    </div>
+  </dl>
 </section>
 
 <script src="/js/settings.js" defer></script>
