@@ -115,7 +115,6 @@ export function showGenerating(job) {
 export function showJobDone(job) {
     try {
       localStorage.setItem(studio.SEEN_DONE_JOB_KEY, String(job.id || job.jobId));
-      window.dispatchEvent(new CustomEvent('vos:avatar-badge-refresh'));
     } catch (e) {}
     storeActiveJob(null);
     setImageSrc(studio.latestImg, job.result_url, { visibility: 'private' }, true);

@@ -1,6 +1,6 @@
 import { AUTH_TOKEN_KEY, PLAYER_KEY, PUSH_DISMISSED_KEY, getStorage, removeNode, removeStorage, setStorage, trapFocus } from './core.js';
 import { announceIdentity, getAuthConfig, renderAuthReturnStatus, rosterNames } from './identity.js';
-import { setAvatarBadge, updateIdentityControls } from './profile.js';
+import { updateIdentityControls } from './profile.js';
 import { maybeShowPushPrompt } from './push.js';
 import { previewState } from './preview.js';
 
@@ -14,7 +14,6 @@ export function clearIdentity() {
   removeStorage(PUSH_DISMISSED_KEY);
   authSession = null;
   fetch('/api/auth/logout', { method: 'POST', cache: 'no-store' }).catch(() => {});
-  setAvatarBadge(false);
   updateIdentityControls();
 }
 

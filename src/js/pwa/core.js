@@ -4,10 +4,6 @@ export const AUTH_TOKEN_KEY = 'vos.authToken';
 
 export const PUSH_DISMISSED_KEY = 'vos.pushPromptDismissed';
 
-export const DM_SEEN_KEY = 'vos.dmMessage.seenId';
-
-export const STUDIO_SEEN_JOB_KEY = 'vos.studio.seenDoneJobId';
-
 export const AUTH_CONFIG_CACHE_KEY = 'vos.authConfig.cache';
 
 export const AUTH_CONFIG_CACHE_TTL_MS = 5 * 60 * 1000;

@@ -31,11 +31,6 @@ export async function syncUploadedAvatar() {
   } catch (error) { /* the curated portrait is a fine answer */ }
 }
 
-export function setAvatarBadge(active) {
-  const badge = document.getElementById('vos-app-avatar-badge');
-  if (badge) badge.hidden = !active;
-}
-
 export function getProfileDisplayName(name) {
   const entry = lookupRoster(name);
   return (entry && entry.display) || name || '';
@@ -165,9 +160,10 @@ export function toggleUserMenu() {
   button.setAttribute('aria-expanded', open ? 'true' : 'false');
 }
 
-export async function syncAvatarBadge(config = null) {
+/* Named for what it does. It used to also light a green dot that was on
+ * whenever you were signed in — an indicator with one state, costing a third
+ * of your own face to say something the face already said. */
+export async function refreshAvatar(config = null) {
   const activeConfig = config || await getAuthConfig();
-  const name = getActivePlayerName(activeConfig);
-  setAvatarBadge(!!name);
-  if (name) syncUploadedAvatar();
+  if (getActivePlayerName(activeConfig)) syncUploadedAvatar();
 }

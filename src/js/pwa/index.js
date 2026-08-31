@@ -2,7 +2,7 @@ import { AUTH_TOKEN_KEY, PLAYER_KEY, getStorage, renderSafeMarkdown } from './co
 import { initNextGathering } from './gathering.js';
 import { announceIdentity, authHeaders, getAuthConfig, loadRoster, lookupRoster, roster } from './identity.js';
 import { authSession, clearIdentity, ensureIdentity, getActivePlayerName, isAuthenticated, syncAuthSession } from './identity-modal.js';
-import { closeUserMenu, getProfileDisplayName, syncAvatarBadge, syncUploadedAvatar, toggleUserMenu, updateIdentityControls } from './profile.js';
+import { closeUserMenu, getProfileDisplayName, refreshAvatar, syncUploadedAvatar, toggleUserMenu, updateIdentityControls } from './profile.js';
 import { disablePush, enablePush, getPushStatus, maybeShowPushPrompt, maybeSyncExistingSubscription } from './push.js';
 import { initRsvpControls } from './rsvp.js';
 import { enhanceWikiLinkedLists } from './wiki.js';
@@ -27,7 +27,7 @@ window.VOS_PWA = {
   ensureIdentity,
   openIdentitySettings: () => ensureIdentity({ force: true }),
   signOut: clearIdentity,
-  refreshAvatarBadge: () => syncAvatarBadge(),
+  refreshAvatar: () => refreshAvatar(),
   refreshUploadedAvatar: () => syncUploadedAvatar(),
   getPushStatus,
   enablePush,
@@ -102,7 +102,7 @@ window.addEventListener('DOMContentLoaded', () => {
       updateIdentityControls(config);
       const activeName = getActivePlayerName(config);
       if (activeName) announceIdentity(activeName);
-      syncAvatarBadge(config);
+      refreshAvatar(config);
     });
     ensureIdentity();
     /* One role check owns the whole medallion — the ring, the number and the
@@ -112,6 +112,5 @@ window.addEventListener('DOMContentLoaded', () => {
     maybeSyncExistingSubscription();
     maybeShowPushPrompt();
   });
-  window.addEventListener('vos:avatar-badge-refresh', () => syncAvatarBadge());
-  window.addEventListener('focus', () => syncAvatarBadge());
+  window.addEventListener('focus', () => refreshAvatar());
 });

@@ -155,8 +155,8 @@ function avatarControls(reload) {
       if (!response.ok) throw new Error(data.error || `HTTP ${response.status}`);
       setStatus(status, '');
       // The app bar carries this face too.
-      if (window.VOS_PWA && window.VOS_PWA.refreshAvatarBadge) {
-        window.VOS_PWA.refreshAvatarBadge();
+      if (window.VOS_PWA && window.VOS_PWA.refreshAvatar) {
+        window.VOS_PWA.refreshAvatar();
       }
       await reload();
     } catch (error) {

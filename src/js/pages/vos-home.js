@@ -119,9 +119,6 @@
           list.appendChild(renderMessage(fetched[0]));
         }
         syncEmptyState();
-        try {
-          window.dispatchEvent(new CustomEvent('vos:avatar-badge-refresh'));
-        } catch (error) {}
       } catch (error) {
         button.disabled = false;
       }
@@ -157,18 +154,6 @@
       loadMore.hidden = messages.length < PAGE_SIZE;
       syncEmptyState();
 
-      const hasAny = list.children.length > 0;
-
-      // Mark the newest message as seen so the avatar badge resolves.
-      if (hasAny) {
-        const firstId = list.children[0].dataset.messageId;
-        if (firstId) {
-          try {
-            localStorage.setItem('vos.dmMessage.seenId', firstId);
-            window.dispatchEvent(new CustomEvent('vos:avatar-badge-refresh'));
-          } catch (error) {}
-        }
-      }
     }
 
     /* An empty card collapses to a line rather than holding a card's worth of

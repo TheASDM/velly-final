@@ -124,22 +124,6 @@
   .vos-app-avatar-img.is-loaded + .vos-app-avatar-fallback {
     opacity: 0;
   }
-  .vos-app-avatar-badge {
-    position: absolute;
-    right: -3px;
-    bottom: -2px;
-    width: 11px;
-    height: 11px;
-    border-radius: 50%;
-    background: #37d67a;
-    box-shadow:
-      0 0 0 2px rgba(8, 7, 11, 0.98),
-      0 0 0 3px rgba(55, 214, 122, 0.35),
-      0 0 12px rgba(55, 214, 122, 0.55);
-  }
-  .vos-app-avatar-badge[hidden] {
-    display: none;
-  }
   .vos-app-title-block {
     min-width: 0;
     display: grid;
