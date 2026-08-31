@@ -85,6 +85,38 @@ images live in `generated-art/`.
 build; the chatbot container produces it. Rebuild `chatbot` to pick up markdown,
 template, or client-JS changes.
 
+**Vector rebuilds do not travel with git — always rebuild them live.**
+`campaign-data/` is gitignored, so `tier1.md` and `vector_store.json` never
+reach the VPS through a deploy. Rebuilding them on your laptop changes nothing
+Enzo can see. Any change to published wiki content, `_data/campaign.js`, or the
+curated corpus is not actually live until you have run `build_tiers.py` and
+`build_vectors.py` **on the server** and restarted `chatbot`:
+
+```bash
+ssh vapp 'cd ~/vallombrosa && set -a && . ./.env && set +a \
+  && python3 build_tiers.py && python3 build_vectors.py \
+  && docker compose restart chatbot'
+```
+
+The `.env` sourcing is what supplies `OLLAMA_API_KEY`; without it the embedding
+step fails. `app-data/vector_store.sqlite3` is the sqlite-vec index built from
+`vector_store.json` — it re-derives itself on the next knowledge load whenever
+the JSON's hash changes, so it needs no separate step. Verify with
+`grep -c '<the changed thing>' campaign-data/vector_store.json`.
+
+**Deleting a page does not remove it from `_site`.** Eleventy writes output but
+never prunes it, so a deleted or renamed page keeps being served from the stale
+build. Clear the directory inside the container (it is root-owned) and rebuild:
+
+```bash
+ssh vapp 'cd ~/vallombrosa && docker exec dnd_chatbot sh -c "rm -rf /site/_site" \
+  && docker exec -w /site dnd_chatbot npm run build'
+```
+
+**Deleted SQLite rows stay in the file until `VACUUM`.** `DELETE` frees the page
+but leaves the bytes, so the runtime DB still greps positive for content you
+removed. Run `VACUUM` when the deletion was the point.
+
 **Bump `CACHE_VERSION` in `sw.js`** when shipping client changes, or installed
 apps keep serving the old shell.
 
@@ -111,7 +143,9 @@ and hot-reloading Enzo's corpus on the next chat. Local edits do not.
 ## Common tasks
 
 ```bash
-# Content changes Enzo should know about
+# Content changes Enzo should know about — run these ON THE VPS, not locally.
+# campaign-data/ is gitignored; a deploy does not carry vectors with it.
+set -a && . ./.env && set +a          # OLLAMA_API_KEY for the embedding step
 python3 build_tiers.py && python3 build_vectors.py && docker compose restart chatbot
 
 # Character-record questions changed
@@ -120,8 +154,10 @@ python3 build_questionnaire.py       # regenerates _data/questionnaire.json
 # Back up player records (VPS: reads SQLite; laptop: needs --url + token)
 python3 export_questionnaires.py
 
-# Deploy
+# Deploy — then rebuild vectors, because git does not carry them
 git pull --ff-only && docker compose up -d --build --remove-orphans
+set -a && . ./.env && set +a && python3 build_tiers.py && python3 build_vectors.py \
+  && docker compose restart chatbot
 ```
 
 Pre-deploy checks:
