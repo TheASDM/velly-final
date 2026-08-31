@@ -1,4 +1,4 @@
-import { formatDate, historyEl, historyStatusEl, messageBodyEl, messageForm, messageNotifyOnlyEl, messageSendEl, messageStatusEl, messageTitleEl, messageUrlEl, recipientPickers, setStatus, showDeletedEl } from './dom.js';
+import { formatDate, historyEl, historyStatusEl, messageBodyEl, messageForm, messageNotifyOnlyEl, messagePreviewBodyEl, messagePreviewEl, messagePreviewMetaEl, messagePreviewTitleEl, messagePreviewToggleEl, messageSendEl, messageStatusEl, messageTitleEl, messageUrlEl, recipientPickers, setStatus, showDeletedEl } from './dom.js';
 import { adminJson, deleteJson, postJson, withPanel } from './http.js';
 import { confirmSheet } from './confirm.js';
 import { playerNames } from './roster.js';
@@ -221,3 +221,50 @@ messageForm.addEventListener('submit', async (event) => {
     setStatus(messageStatusEl, `Posted. ${pushNote}`);
   }, { loading: notifyOnly ? 'Notifying…' : 'Posting…' });
 });
+
+
+/* ── Preview ──────────────────────────────────────────────────────────
+ *
+ * Markdown you cannot see rendered is markdown you find out about after the
+ * whole table has read it. This draws the announcement through the same
+ * renderer Home uses (window.VOS_RENDER_MARKDOWN, via renderMarkdown) into
+ * the same .vos-message-item / .vos-message-body.vos-safe-markdown classes
+ * the card on Home is built from — so what appears here is not a rendering
+ * of the same text, it is the same rendering.
+ *
+ * Empty is worth showing rather than hiding: an announcement whose body did
+ * not survive the round trip should look empty here too.
+ */
+export function renderMessagePreview() {
+  if (!messagePreviewEl) return;
+  const title = (messageTitleEl && messageTitleEl.value.trim()) || 'News from the DM';
+  const body = (messageBodyEl && messageBodyEl.value) || '';
+  if (messagePreviewTitleEl) messagePreviewTitleEl.textContent = title;
+  if (messagePreviewBodyEl) {
+    messagePreviewBodyEl.innerHTML = body.trim()
+      ? renderMarkdown(body)
+      : '<p class="vos-dm-preview-empty">Nothing written yet.</p>';
+  }
+  if (messagePreviewMetaEl) messagePreviewMetaEl.textContent = formatDate(new Date().toISOString());
+}
+
+export function initMessagePreview() {
+  if (!messagePreviewToggleEl || !messagePreviewEl) return;
+
+  const setOpen = (open) => {
+    messagePreviewEl.hidden = !open;
+    messagePreviewToggleEl.setAttribute('aria-expanded', String(open));
+    messagePreviewToggleEl.textContent = open ? 'Hide preview' : 'Preview';
+    if (open) renderMessagePreview();
+  };
+
+  messagePreviewToggleEl.addEventListener('click', () => {
+    setOpen(messagePreviewEl.hidden);
+  });
+
+  // Live while it is open: the point is to watch the markup resolve as you
+  // type, not to keep pressing a button to ask.
+  const onEdit = () => { if (!messagePreviewEl.hidden) renderMessagePreview(); };
+  if (messageBodyEl) messageBodyEl.addEventListener('input', onEdit);
+  if (messageTitleEl) messageTitleEl.addEventListener('input', onEdit);
+}

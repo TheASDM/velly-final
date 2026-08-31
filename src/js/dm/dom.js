@@ -23,6 +23,11 @@ export const messageUrlEl = document.getElementById('vos-dm-message-url');
 export const messageStatusEl = document.getElementById('vos-dm-message-status');
 export const messageSendEl = document.getElementById('vos-dm-message-send');
 export const messageNotifyOnlyEl = document.getElementById('vos-dm-message-notify-only');
+export const messagePreviewToggleEl = document.getElementById('vos-dm-message-preview-toggle');
+export const messagePreviewEl = document.getElementById('vos-dm-message-preview');
+export const messagePreviewTitleEl = document.getElementById('vos-dm-preview-title');
+export const messagePreviewBodyEl = document.getElementById('vos-dm-preview-body');
+export const messagePreviewMetaEl = document.getElementById('vos-dm-preview-meta');
 
 export const historyEl = document.getElementById('vos-dm-history');
 export const historyStatusEl = document.getElementById('vos-dm-history-status');

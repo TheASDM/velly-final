@@ -4,6 +4,10 @@ description: The DM's console — scheduling, announcements, lore review, and th
 permalink: /dm/
 pageStyles:
   - /css/dm.css
+  # The announcement preview borrows Home's card classes so the DM sees the
+  # real thing. Those rules live in home.css, which is entirely class-scoped —
+  # nothing in it matches anything else on this page.
+  - /css/home.css
 ---
 
 <div class="vos-dm">
@@ -177,8 +181,24 @@ pageStyles:
       </label>
       <div class="vos-dm-actions">
         <button id="vos-dm-message-send" type="submit">Post + Notify</button>
+        <button id="vos-dm-message-preview-toggle" class="vos-dm-button" type="button" aria-expanded="false" aria-controls="vos-dm-message-preview">Preview</button>
       </div>
     </form>
+
+    {#- Rendered by the same function and wearing the same classes as the card
+        on Home, because a preview drawn any other way is a guess about what
+        the table will see rather than a look at it. -#}
+    <section class="vos-dm-preview" id="vos-dm-message-preview" aria-label="Announcement preview" hidden>
+      <div class="vos-dm-preview-note">What players will see on Home</div>
+      <article class="vos-message-item">
+        <div class="vos-message-head">
+          <div class="vos-message-title" id="vos-dm-preview-title"></div>
+        </div>
+        <div class="vos-message-body vos-safe-markdown" id="vos-dm-preview-body"></div>
+        <div class="vos-message-meta" id="vos-dm-preview-meta"></div>
+      </article>
+    </section>
+
     <div class="vos-dm-status" id="vos-dm-message-status" role="status" aria-live="polite"></div>
   </section>
 

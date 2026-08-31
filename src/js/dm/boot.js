@@ -3,7 +3,7 @@ import { exitEditMode, saveCalendarEvent } from './calendar.js';
 import { calCancelEl, calFormEl, handoutCancelEl, handoutFormEl, handoutImageEl, loreBulkPublishEl, loreBulkRejectEl, loreForm, loreRedraftEl, loreRejectEl, loreSaveEl, loreSelectAllEl, npcRollEl, rumorFormEl, setStatus, showDeletedEl, wikiForm, wikiLoadEl, wikiQueryEl, wikiRebuildEl, wikiStatusEl } from './dom.js';
 import { attachHandoutImage, cancelHandoutEdit, saveHandout } from './handouts.js';
 import { bulkPublishSelected, bulkRejectSelected, publishLoreSubmission, redraftLoreSubmission, rejectLoreSubmission, saveLoreSubmission, toggleSelectAll } from './lore.js';
-import { initRecipientPickers, refreshMessages } from './messages.js';
+import { initMessagePreview, initRecipientPickers, refreshMessages } from './messages.js';
 import { triggerRebuild } from './rebuild.js';
 import { addRumor } from './rumors.js';
 import { bootAdminAuth, onSessionLive } from './session.js';
@@ -20,6 +20,10 @@ if (handoutCancelEl) handoutCancelEl.addEventListener('click', cancelHandoutEdit
 if (handoutImageEl) handoutImageEl.addEventListener('change', attachHandoutImage);
 
 wireSounds();
+
+/* Not gated on the session: checking how your markdown renders is a local
+   question, and it should answer before you have signed in. */
+initMessagePreview();
 
 if (npcRollEl) npcRollEl.addEventListener('click', rollNpc);
 
