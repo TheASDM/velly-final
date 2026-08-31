@@ -33,11 +33,13 @@ const TYPING_HEARTBEAT_MS = 3000;
 const PRESENCE_ONLINE_MS = 5 * 60 * 1000;
 const EDIT_WINDOW_MS = 60 * 60 * 1000;
 const PUSH_ASKED_KEY = 'vos:chat:push-asked';
-// Enzo sits at the foot of the list rather than in the sort: he is always
-// there, he is never "recent", and shuffling an assistant up and down by
-// activity reads as noise.
+// The Party and Enzo are pinned above the sort — the table's own channel and
+// its loremaster are always there and are never meaningfully "recent", so
+// ranking them by last activity only shuffles the two rows everybody reaches
+// for most.
 const ENZO_SENDER = 'Enzo';
-const LIST_MIN_W = 168;
+const PINNED_KINDS = ['party', 'enzo'];
+const LIST_MIN_W = 184;
 const LIST_MAX_W = 340;
 const EMPTY_COPY = {
   party: 'The party channel is quiet. Break the silence.',
@@ -160,8 +162,8 @@ export function createChatPanel(options) {
             <input type="search" class="vos-chat-filter-input" autocomplete="off"
                    placeholder="Filter" aria-label="Filter conversations">
           </div>
+          <div class="vos-chat-pinned" aria-label="Pinned conversations"></div>
           <div class="vos-chat-list" role="listbox" aria-label="Conversations" tabindex="0"></div>
-          <div class="vos-chat-enzo-slot"></div>
         </div>
         <div class="vos-chat-resizer" role="separator" aria-orientation="vertical"
              aria-label="Resize the conversation list" tabindex="0"></div>
@@ -205,7 +207,7 @@ export function createChatPanel(options) {
   const listPaneEl = root.querySelector('.vos-chat-list-pane');
   const listEl = root.querySelector('.vos-chat-list');
   const filterInputEl = root.querySelector('.vos-chat-filter-input');
-  const enzoSlotEl = root.querySelector('.vos-chat-enzo-slot');
+  const pinnedEl = root.querySelector('.vos-chat-pinned');
   const resizerEl = root.querySelector('.vos-chat-resizer');
   const jumpEl = root.querySelector('.vos-chat-jump');
   const messagesEl = root.querySelector('.vos-chat-messages');
@@ -532,31 +534,96 @@ export function createChatPanel(options) {
     return row;
   }
 
-  function renderEnzoRow(thread) {
-    enzoSlotEl.textContent = '';
-    if (!thread) return;
-    const row = el('button', 'vos-chat-enzo');
+  /* The two pinned rows, drawn as feature cards rather than list rows.
+   *
+   * The Party leads and carries the party portrait behind a scrim — it is
+   * the table's own channel and the one everybody opens first, so it is
+   * allowed to be the loudest thing in the panel. Enzo sits directly under
+   * it, plainly a fixture too but quieter, and violet rather than gold
+   * because he is not one of the players. */
+  const PIN_COPY = {
+    party: { name: 'The Party', empty: 'The whole table, in one thread' },
+    enzo: { name: 'Enzo', empty: 'Ask about the valley' },
+  };
+
+  function buildPinnedRow(variant) {
+    const row = el('button', `vos-chat-pin vos-chat-pin--${variant}`);
     row.type = 'button';
+    if (variant === 'party') row.append(el('span', 'vos-chat-pin-art'));
+    else row.append(el('span', 'vos-chat-pin-mark', '✦'));
+    const text = el('span', 'vos-chat-pin-text');
+    text.append(el('span', 'vos-chat-pin-name', PIN_COPY[variant].name));
+    text.append(el('span', 'vos-chat-pin-sub'));
+    row.append(text);
+    const side = el('span', 'vos-chat-pin-side');
+    side.append(el('span', 'vos-chat-pin-time'));
+    side.append(el('span', 'vos-chat-count'));
+    row.append(side);
+    return row;
+  }
+
+  function paintPinnedRow(row, thread, variant) {
+    row.dataset.key = thread.key;
     row.classList.toggle('is-open', thread.key === openKey);
     row.classList.toggle('is-unread', !!thread.unread);
-    row.append(el('span', 'vos-chat-enzo-mark', '✦'));
-    const text = el('span', 'vos-chat-enzo-text');
-    text.append(el('span', 'vos-chat-enzo-name', 'Enzo'));
-    text.append(el('span', 'vos-chat-enzo-sub',
-      thread.last ? previewText(thread) : 'Ask about the valley'));
-    row.append(text);
-    if (thread.unread) {
-      row.append(el('span', 'vos-chat-count', String(thread.unread)));
+    row.querySelector('.vos-chat-pin-sub').textContent =
+      thread.last ? previewText(thread) : PIN_COPY[variant].empty;
+
+    const stamp = row.querySelector('.vos-chat-pin-time');
+    if (thread.last) {
+      stamp.textContent = formatStamp(thread.last.created_at);
+      stamp.title = fullStamp(thread.last.created_at);
+      stamp.hidden = false;
+    } else {
+      stamp.textContent = '';
+      stamp.hidden = true;
     }
-    row.setAttribute('aria-label', 'Enzo, the loremaster');
-    row.addEventListener('click', () => openThread(thread.key));
-    enzoSlotEl.append(row);
+
+    const badge = row.querySelector('.vos-chat-count');
+    if (thread.unread) {
+      badge.textContent = thread.unread > 99 ? '99+' : String(thread.unread);
+      badge.hidden = false;
+    } else {
+      badge.textContent = '';
+      badge.hidden = true;
+    }
+
+    row.setAttribute('aria-label',
+      `${PIN_COPY[variant].name}${thread.unread ? `, ${thread.unread} unread` : ''}`);
+  }
+
+  /* Built once and repainted, for the same reason the list rows are: a poll
+   * every four seconds must not take the focus off a card somebody is about
+   * to press, or make the browser re-decode the party portrait. */
+  const pinnedRows = new Map();
+
+  function renderPinned() {
+    PINNED_KINDS.forEach((variant) => {
+      const thread = threads.find((entry) => entry.kind === variant);
+      let row = pinnedRows.get(variant);
+      if (!thread) {
+        if (row) { row.remove(); pinnedRows.delete(variant); }
+        return;
+      }
+      if (!row) {
+        row = buildPinnedRow(variant);
+        row.addEventListener('click', () => {
+          const key = row.dataset.key;
+          if (key) openThread(key);
+        });
+        pinnedRows.set(variant, row);
+        pinnedEl.append(row);
+      }
+      paintPinnedRow(row, thread, variant);
+    });
+    pinnedEl.hidden = !pinnedEl.children.length;
   }
 
   function renderList() {
-    const enzo = threads.find((thread) => thread.kind === 'enzo') || null;
-    const rest = sortThreads(threads.filter((thread) => thread.kind !== 'enzo'))
-      .filter(matchesFilter);
+    // The pinned pair are drawn above; the list is everything else.
+    const rest = sortThreads(
+      threads.filter((thread) => !PINNED_KINDS.includes(thread.kind)),
+    ).filter(matchesFilter);
 
     // Drop rows for threads that are gone or filtered out.
     const wanted = new Set(rest.map((thread) => thread.key));
@@ -596,7 +663,7 @@ export function createChatPanel(options) {
     const current = rows.find((row) => row.classList.contains('is-open')) || rows[0];
     rows.forEach((row) => { row.tabIndex = row === current ? 0 : -1; });
 
-    renderEnzoRow(enzo);
+    renderPinned();
     onUnreadChange(totalUnread());
   }
 
