@@ -159,6 +159,9 @@ export function renderBubble(message, ctx) {
   const mine = message.sender === ctx.playerName;
   bubble.classList.toggle('is-mine', mine);
 
+  bubble.dataset.sender = message.sender || '';
+  bubble.dataset.at = message.created_at || '';
+
   if (message.deleted) {
     bubble.classList.add('is-deleted');
     bubble.textContent = 'Message removed';
@@ -168,11 +171,24 @@ export function renderBubble(message, ctx) {
   if (message.replyToId) {
     bubble.append(quoteRow(ctx.getMessage(message.replyToId), ctx));
   }
+  // Enzo answers in the same shape as a person and is not one. The marker
+  // is on every one of his bubbles, not just the first of a group, because
+  // it is what the bubble *is* rather than who sent it.
+  const isEnzo = ctx.isAssistant(message.sender);
+  bubble.classList.toggle('is-enzo', isEnzo);
+
   if (ctx.showSenders() && !mine) {
+    // One label per group: the continuation bubbles are hidden by CSS, so
+    // regrouping never has to add or remove the node.
     const who = el('a', 'vos-chat-bubble-sender', ctx.displayName(message.sender));
     who.href = ctx.profileHref(message.sender);
     who.addEventListener('click', (event) => event.stopPropagation());
     bubble.append(who);
+  }
+  if (isEnzo) {
+    const badge = el('span', 'vos-chat-enzo-badge', 'Loremaster');
+    badge.title = 'Enzo is the campaign assistant, not a player';
+    bubble.append(badge);
   }
   if (message.body) {
     const body = el('div', 'vos-chat-bubble-body vos-safe-markdown');
@@ -183,10 +199,18 @@ export function renderBubble(message, ctx) {
   const files = attachmentsRow(message, ctx);
   if (files) bubble.append(files);
 
-  const meta = el('div', 'vos-chat-bubble-meta', ctx.formatDate(message.created_at));
+  /* Every bubble carries its time, and CSS shows it only on the last of a
+     group — so grouping is a class toggle rather than a DOM rewrite, and no
+     message moves on the screen when the one after it arrives. The exact
+     moment is always a hover away. */
+  const meta = el('div', 'vos-chat-bubble-meta');
+  const time = el('time', 'vos-chat-bubble-time', ctx.formatStamp(message.created_at));
+  time.dateTime = message.created_at || '';
+  time.title = ctx.formatDate(message.created_at);
+  meta.append(time);
   if (message.editedAt) {
     // Marked, not hidden: an edited message says so for everyone.
-    meta.append(el('span', 'vos-chat-edited', ' · edited'));
+    meta.append(el('span', 'vos-chat-edited', 'edited'));
   }
   bubble.append(meta);
 

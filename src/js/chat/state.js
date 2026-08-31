@@ -9,6 +9,11 @@
 const KEY = 'vos:chat:state';
 const EMPTY = { openKey: null, scrollTop: {}, drafts: {} };
 
+/* Chrome, unlike conversation, is meant to be remembered. Where you dragged
+ * the split is a preference, not a place in a thread, so it lives in
+ * localStorage while everything above stays session-scoped. */
+const LAYOUT_KEY = 'vos:chat:layout';
+
 function read() {
   try {
     const raw = window.sessionStorage.getItem(KEY);
@@ -60,4 +65,19 @@ export function setScrollTop(key, value) {
   const state = read();
   state.scrollTop[key] = Math.max(0, Math.round(value || 0));
   write(state);
+}
+
+export function getListWidth() {
+  try {
+    const value = Number(window.localStorage.getItem(LAYOUT_KEY));
+    return Number.isFinite(value) && value > 0 ? value : null;
+  } catch (error) {
+    return null;
+  }
+}
+
+export function setListWidth(px) {
+  try {
+    window.localStorage.setItem(LAYOUT_KEY, String(Math.round(px)));
+  } catch (error) { /* private mode — the split just resets next visit */ }
 }

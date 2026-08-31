@@ -93,6 +93,12 @@ export async function deleteMessage(messageId) {
 
 /* The DM's one-way broadcasts. A different system from threads — one-way
  * and dismissible — shown as a pinned row above the conversations. */
+/* The roster, for the faces in the conversation list. Same endpoint the
+ * profile pages use — names and avatar URLs only, no bios. */
+export function fetchProfiles() {
+  return getJson('/api/profiles');
+}
+
 export function fetchAnnouncements(playerName) {
   return getJson(`/api/messages?limit=10&name=${encodeURIComponent(playerName)}`);
 }

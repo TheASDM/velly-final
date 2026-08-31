@@ -13,14 +13,17 @@
  */
 import { escapeHtml, whenPwaReady } from '../shared/pwa.js';
 import {
-  deleteMessage, dismissAnnouncement, editMessage, fetchAnnouncements,
-  fetchMessages, fetchThreads, markThreadRead, sendMessage, sendTyping,
-  setReaction, setThreadMuted, streamToEnzo,
+  deleteMessage, editMessage, fetchMessages, fetchProfiles, fetchThreads,
+  markThreadRead, sendMessage, sendTyping, setReaction, setThreadMuted,
+  streamToEnzo,
 } from './api.js';
 import { renderBubble } from './bubble.js';
 import { ACCEPT, createAttachmentTray, wireFileIntake } from './attachments.js';
 import { openImageViewer } from '../components/image-zoom.js';
-import { getDraft, getOpenKey, getScrollTop, setDraft, setOpenKey, setScrollTop } from './state.js';
+import {
+  getDraft, getListWidth, getOpenKey, getScrollTop,
+  setDraft, setListWidth, setOpenKey, setScrollTop,
+} from './state.js';
 
 // Typing indicators only mean anything if the poll is faster than a
 // sentence. Six players at 4s is ~90 requests a minute worst case, and it
@@ -29,8 +32,13 @@ const POLL_ACTIVE_MS = 4000;
 const TYPING_HEARTBEAT_MS = 3000;
 const PRESENCE_ONLINE_MS = 5 * 60 * 1000;
 const EDIT_WINDOW_MS = 60 * 60 * 1000;
-const ANNOUNCEMENTS_KEY = '@announcements';
 const PUSH_ASKED_KEY = 'vos:chat:push-asked';
+// Enzo sits at the foot of the list rather than in the sort: he is always
+// there, he is never "recent", and shuffling an assistant up and down by
+// activity reads as noise.
+const ENZO_SENDER = 'Enzo';
+const LIST_MIN_W = 168;
+const LIST_MAX_W = 340;
 const EMPTY_COPY = {
   party: 'The party channel is quiet. Break the silence.',
   enzo: 'Ask Enzo about the valley, its people, or the rules.',
@@ -107,7 +115,8 @@ export function createChatPanel(options) {
 
   let playerName = null;
   let threads = [];
-  let announcements = [];
+  let avatars = {};
+  let filterText = '';
   let openKey = null;
   let openKind = null;
   let openMuted = false;
@@ -145,9 +154,22 @@ export function createChatPanel(options) {
         </div>
       </header>
       <div class="vos-chat-body">
-        <div class="vos-chat-list" aria-label="Conversations"></div>
+        <div class="vos-chat-list-pane">
+          <div class="vos-chat-filter">
+            <svg class="vos-chat-filter-icon" aria-hidden="true" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.6-3.6"/></svg>
+            <input type="search" class="vos-chat-filter-input" autocomplete="off"
+                   placeholder="Filter" aria-label="Filter conversations">
+          </div>
+          <div class="vos-chat-list" role="listbox" aria-label="Conversations" tabindex="0"></div>
+          <div class="vos-chat-enzo-slot"></div>
+        </div>
+        <div class="vos-chat-resizer" role="separator" aria-orientation="vertical"
+             aria-label="Resize the conversation list" tabindex="0"></div>
         <section class="vos-chat-thread" aria-label="Conversation">
           <div class="vos-chat-messages" aria-live="polite"></div>
+          <button type="button" class="vos-chat-jump" hidden aria-label="Jump to the newest message">
+            <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 5v14"/><path d="m19 12-7 7-7-7"/></svg>
+          </button>
           <p class="vos-chat-placeholder">Pick a conversation.</p>
           <div class="vos-chat-typing-live" hidden></div>
           <form class="vos-chat-composer" hidden>
@@ -180,7 +202,12 @@ export function createChatPanel(options) {
   const headPresenceEl = root.querySelector('.vos-chat-head-presence');
   const muteEl = root.querySelector('.vos-chat-mute');
   const closeEl = root.querySelector('.vos-chat-close');
+  const listPaneEl = root.querySelector('.vos-chat-list-pane');
   const listEl = root.querySelector('.vos-chat-list');
+  const filterInputEl = root.querySelector('.vos-chat-filter-input');
+  const enzoSlotEl = root.querySelector('.vos-chat-enzo-slot');
+  const resizerEl = root.querySelector('.vos-chat-resizer');
+  const jumpEl = root.querySelector('.vos-chat-jump');
   const messagesEl = root.querySelector('.vos-chat-messages');
   const placeholderEl = root.querySelector('.vos-chat-placeholder');
   const typingLiveEl = root.querySelector('.vos-chat-typing-live');
@@ -201,10 +228,16 @@ export function createChatPanel(options) {
     trayEl,
     getThreadKey: () => openKey,
     onChange: () => {
-      sendEl.disabled = tray.uploading;
+      syncSendEnabled();
       scrollToLatest();
     },
   });
+
+  function syncSendEnabled() {
+    const hasText = !!inputEl.value.trim();
+    const hasFiles = !editing && tray.count > 0;
+    sendEl.disabled = tray.uploading || !(hasText || hasFiles);
+  }
 
   function canAttach() {
     return isTalkThread() && !editing;
@@ -227,7 +260,7 @@ export function createChatPanel(options) {
   }
 
   function isTalkThread() {
-    return !!openKey && openKey !== ANNOUNCEMENTS_KEY;
+    return !!openKey;
   }
 
   // ── Bubble context ───────────────────────────────────────────────────
@@ -237,6 +270,8 @@ export function createChatPanel(options) {
     displayName,
     renderMarkdown,
     formatDate,
+    formatStamp: (value) => formatStamp(value),
+    isAssistant: (sender) => sender === ENZO_SENDER,
     showSenders: () => openKind === 'party',
     profileHref: (name) => `/profile/?p=${encodeURIComponent(name)}`,
     getReactions: (id) => reactions[String(id)] || [],
@@ -269,6 +304,7 @@ export function createChatPanel(options) {
       inputEl.value = message.body || '';
       renderContext();
       autogrow();
+      syncSendEnabled();
       inputEl.focus();
     },
     onDelete: async (message) => {
@@ -302,6 +338,7 @@ export function createChatPanel(options) {
     const message = messagesById.get(Number(id));
     if (!existing || !message) return;
     existing.replaceWith(messageBubble(message));
+    regroup();
     renderReceipts();
   }
 
@@ -316,56 +353,250 @@ export function createChatPanel(options) {
     return dot;
   }
 
-  function announcementRow() {
-    const row = el('button', 'vos-chat-row vos-chat-row--pinned');
-    row.type = 'button';
-    if (openKey === ANNOUNCEMENTS_KEY) row.classList.add('is-open');
-    row.append(el('span', 'vos-chat-row-label', 'From the DM'));
-    const latest = announcements[0];
-    row.append(el('span', 'vos-chat-row-preview', latest ? (latest.title || 'DM message') : ''));
-    const side = el('span', 'vos-chat-row-side');
-    side.append(el('span', 'vos-chat-count', String(announcements.length)));
-    row.append(side);
-    row.addEventListener('click', () => openThread(ANNOUNCEMENTS_KEY));
-    return row;
+  /* Initials, the way the rest of the app does them: up to two letters from
+   * the display name, gold on dark. Shown until a portrait loads and left in
+   * place for anyone who has none. */
+  function monogram(name) {
+    const words = displayName(name).replace(/["'']/g, '').split(/\s+/).filter(Boolean);
+    if (!words.length) return '?';
+    if (words.length === 1) return words[0].slice(0, 2).toUpperCase();
+    return (words[0][0] + words[1][0]).toUpperCase();
   }
 
-  function threadRow(thread) {
-    const row = el('button', 'vos-chat-row');
-    row.type = 'button';
-    if (thread.key === openKey) row.classList.add('is-open');
-    if (thread.unread) row.classList.add('is-unread');
-    const label = el('span', 'vos-chat-row-label');
+  function avatarFor(thread) {
+    const wrap = el('span', 'vos-chat-avatar');
+    if (thread.kind === 'party') {
+      wrap.classList.add('is-party');
+      wrap.append(el('span', 'vos-chat-avatar-text', '∴'));
+      wrap.title = 'The Party';
+      return wrap;
+    }
+    if (thread.kind === 'enzo') {
+      wrap.classList.add('is-enzo');
+      wrap.append(el('span', 'vos-chat-avatar-text', '✦'));
+      return wrap;
+    }
+    wrap.append(el('span', 'vos-chat-avatar-text', monogram(thread.label)));
+    const url = avatars[thread.label];
+    if (url) {
+      const img = document.createElement('img');
+      img.loading = 'lazy';
+      img.decoding = 'async';
+      img.alt = '';
+      img.src = url;
+      // The monogram stays underneath, so a portrait that 404s degrades to
+      // initials instead of a hole.
+      img.addEventListener('error', () => img.remove());
+      wrap.append(img);
+    }
+    return wrap;
+  }
+
+  /* now / 4m / 2h / Tue / Aug 12 — the shape a list wants, where the exact
+   * minute matters less than how long ago. */
+  function formatStamp(value) {
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return '';
+    const diff = Date.now() - date.getTime();
+    const minutes = Math.floor(diff / 60000);
+    if (minutes < 1) return 'now';
+    if (minutes < 60) return `${minutes}m`;
+    const hours = Math.floor(minutes / 60);
+    if (hours < 24) return `${hours}h`;
+    const days = Math.floor(hours / 24);
+    if (days < 7) return date.toLocaleDateString([], { weekday: 'short' });
+    return date.toLocaleDateString([], { month: 'short', day: 'numeric' });
+  }
+
+  function fullStamp(value) {
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return '';
+    return date.toLocaleString([], {
+      weekday: 'long', month: 'long', day: 'numeric',
+      hour: 'numeric', minute: '2-digit',
+    });
+  }
+
+  function previewText(thread) {
+    if (!thread.last) return 'No messages yet';
+    if (thread.last.deleted) return 'Message removed';
+    const body = thread.last.body
+      || ((thread.last.attachments || []).length ? 'Sent a file' : '');
+    const who = thread.last.sender === playerName ? 'You: ' : '';
+    return `${who}${body}` || 'No messages yet';
+  }
+
+  /* Most recent activity first, from anyone in the thread — the API already
+   * hands us the last message per thread, so this needs no extra request and
+   * no server-side ordering. Threads nobody has written in yet fall to the
+   * bottom, alphabetically, because there is no activity to rank them by.
+   * Unread threads are NOT floated: a badge says what is unread, and moving
+   * a row out from under the cursor to say it is a worse way to say it. */
+  function sortThreads(list) {
+    return list.slice().sort((a, b) => {
+      const at = a.last ? Date.parse(a.last.created_at) : NaN;
+      const bt = b.last ? Date.parse(b.last.created_at) : NaN;
+      const aHas = !Number.isNaN(at);
+      const bHas = !Number.isNaN(bt);
+      if (aHas && bHas) return bt - at;
+      if (aHas) return -1;
+      if (bHas) return 1;
+      return displayName(a.label).localeCompare(displayName(b.label));
+    });
+  }
+
+  function matchesFilter(thread) {
+    if (!filterText) return true;
+    const needle = filterText.toLowerCase();
+    if (displayName(thread.label).toLowerCase().includes(needle)) return true;
+    return previewText(thread).toLowerCase().includes(needle);
+  }
+
+  /* Rows are built once and patched afterwards.
+   *
+   * This used to be `listEl.textContent = ''` on every poll, which threw away
+   * the row under the pointer, the focused row, and the list's scroll
+   * position four seconds at a time. Now each row is keyed, updated in place,
+   * and only moved when the order genuinely changed. */
+  const rowsByKey = new Map();
+
+  function paintRow(row, thread) {
+    row.dataset.key = thread.key;
+    row.classList.toggle('is-open', thread.key === openKey);
+    row.classList.toggle('is-unread', !!thread.unread);
+    row.classList.toggle('is-muted', !!thread.muted);
+    row.setAttribute('aria-selected', thread.key === openKey ? 'true' : 'false');
+
+    const avatarSlot = row.querySelector('.vos-chat-row-avatar');
+    avatarSlot.textContent = '';
+    avatarSlot.append(avatarFor(thread));
     if (thread.kind === 'direct') {
       const dot = presenceDot(thread.label);
-      if (dot) label.append(dot);
+      if (dot) avatarSlot.append(dot);
     }
-    label.append(el('span', null, displayName(thread.label)));
-    row.append(label);
+
+    row.querySelector('.vos-chat-row-name').textContent = displayName(thread.label);
+
+    const preview = row.querySelector('.vos-chat-row-preview');
+    preview.textContent = previewText(thread);
+    preview.classList.toggle('is-empty', !thread.last);
+
+    const stamp = row.querySelector('.vos-chat-row-time');
     if (thread.last) {
-      const preview = thread.last.deleted
-        ? 'Message removed'
-        : `${thread.last.sender === playerName ? 'You: ' : ''}${thread.last.body}`;
-      row.append(el('span', 'vos-chat-row-preview', preview));
+      stamp.textContent = formatStamp(thread.last.created_at);
+      stamp.title = fullStamp(thread.last.created_at);
+      stamp.hidden = false;
     } else {
-      row.append(el('span', 'vos-chat-row-preview', ''));
+      stamp.textContent = '';
+      stamp.removeAttribute('title');
+      stamp.hidden = true;
     }
-    const side = el('span', 'vos-chat-row-side');
-    if (thread.muted) {
-      const muted = el('span', 'vos-chat-row-muted', '🔕');
-      muted.title = 'Muted';
-      side.append(muted);
+
+    const badge = row.querySelector('.vos-chat-count');
+    if (thread.unread) {
+      badge.textContent = thread.unread > 99 ? '99+' : String(thread.unread);
+      badge.hidden = false;
+      badge.setAttribute('aria-label', `${thread.unread} unread`);
+    } else {
+      badge.textContent = '';
+      badge.hidden = true;
     }
-    if (thread.unread) side.append(el('span', 'vos-chat-count', String(thread.unread)));
-    row.append(side);
+
+    const muted = row.querySelector('.vos-chat-row-muted');
+    muted.hidden = !thread.muted;
+
+    row.setAttribute('aria-label',
+      `${displayName(thread.label)}${thread.unread ? `, ${thread.unread} unread` : ''}`);
+  }
+
+  function buildRow(thread) {
+    const row = el('button', 'vos-chat-row');
+    row.type = 'button';
+    row.setAttribute('role', 'option');
+    row.tabIndex = -1;
+    row.innerHTML = `
+      <span class="vos-chat-row-avatar"></span>
+      <span class="vos-chat-row-text">
+        <span class="vos-chat-row-name"></span>
+        <span class="vos-chat-row-preview"></span>
+      </span>
+      <span class="vos-chat-row-side">
+        <span class="vos-chat-row-time"></span>
+        <span class="vos-chat-row-badges">
+          <span class="vos-chat-row-muted" title="Muted" hidden>🔕</span>
+          <span class="vos-chat-count" hidden></span>
+        </span>
+      </span>
+    `;
     row.addEventListener('click', () => openThread(thread.key));
     return row;
   }
 
+  function renderEnzoRow(thread) {
+    enzoSlotEl.textContent = '';
+    if (!thread) return;
+    const row = el('button', 'vos-chat-enzo');
+    row.type = 'button';
+    row.classList.toggle('is-open', thread.key === openKey);
+    row.classList.toggle('is-unread', !!thread.unread);
+    row.append(el('span', 'vos-chat-enzo-mark', '✦'));
+    const text = el('span', 'vos-chat-enzo-text');
+    text.append(el('span', 'vos-chat-enzo-name', 'Enzo'));
+    text.append(el('span', 'vos-chat-enzo-sub',
+      thread.last ? previewText(thread) : 'Ask about the valley'));
+    row.append(text);
+    if (thread.unread) {
+      row.append(el('span', 'vos-chat-count', String(thread.unread)));
+    }
+    row.setAttribute('aria-label', 'Enzo, the loremaster');
+    row.addEventListener('click', () => openThread(thread.key));
+    enzoSlotEl.append(row);
+  }
+
   function renderList() {
-    listEl.textContent = '';
-    if (announcements.length) listEl.append(announcementRow());
-    threads.forEach((thread) => listEl.append(threadRow(thread)));
+    const enzo = threads.find((thread) => thread.kind === 'enzo') || null;
+    const rest = sortThreads(threads.filter((thread) => thread.kind !== 'enzo'))
+      .filter(matchesFilter);
+
+    // Drop rows for threads that are gone or filtered out.
+    const wanted = new Set(rest.map((thread) => thread.key));
+    rowsByKey.forEach((row, key) => {
+      if (!wanted.has(key)) {
+        row.remove();
+        rowsByKey.delete(key);
+      }
+    });
+
+    const emptyEl = listEl.querySelector('.vos-chat-list-empty');
+    if (emptyEl) emptyEl.remove();
+
+    // Patch content, then put each row where it belongs. insertBefore on a
+    // node already in position is a no-op in every engine, so a poll that
+    // changes nothing touches nothing.
+    let cursor = null;
+    rest.forEach((thread) => {
+      let row = rowsByKey.get(thread.key);
+      if (!row) {
+        row = buildRow(thread);
+        rowsByKey.set(thread.key, row);
+      }
+      paintRow(row, thread);
+      const next = cursor ? cursor.nextSibling : listEl.firstChild;
+      if (next !== row) listEl.insertBefore(row, next);
+      cursor = row;
+    });
+
+    if (!rest.length) {
+      listEl.append(el('p', 'vos-chat-list-empty',
+        filterText ? 'No conversations match that.' : 'No conversations yet.'));
+    }
+
+    // One row is reachable by Tab; the arrows move between them.
+    const rows = [...listEl.querySelectorAll('.vos-chat-row')];
+    const current = rows.find((row) => row.classList.contains('is-open')) || rows[0];
+    rows.forEach((row) => { row.tabIndex = row === current ? 0 : -1; });
+
+    renderEnzoRow(enzo);
     onUnreadChange(totalUnread());
   }
 
@@ -377,40 +608,91 @@ export function createChatPanel(options) {
     return threads;
   }
 
-  async function loadAnnouncements() {
+  /* Faces for the list. One request on boot, and a failure just means
+   * monograms — the roster endpoint already carries the avatar URL, curated
+   * portrait or self-uploaded, so nothing new had to be built for this. */
+  async function loadAvatars() {
     try {
-      const data = await fetchAnnouncements(playerName);
-      announcements = Array.isArray(data.messages) ? data.messages : [];
+      const data = await fetchProfiles();
+      const next = {};
+      (data.profiles || []).forEach((profile) => {
+        if (profile && profile.name && profile.avatarUrl) {
+          next[profile.name] = profile.avatarUrl;
+        }
+      });
+      avatars = next;
     } catch (error) {
-      announcements = [];
+      avatars = {};
     }
   }
 
   // ── Conversation ─────────────────────────────────────────────────────
 
-  function announcementCard(message) {
-    const card = el('article', 'vos-chat-announcement');
-    const head = el('div', 'vos-chat-announcement-head');
-    head.append(el('span', 'vos-chat-announcement-title', message.title || 'DM message'));
-    head.append(el('span', 'vos-chat-bubble-meta', formatDate(message.created_at)));
-    const body = el('div', 'vos-chat-announcement-body vos-safe-markdown');
-    body.innerHTML = renderMarkdown(message.body || '');
-    const dismiss = el('button', 'vos-chat-bubble-menu', '×');
-    dismiss.type = 'button';
-    dismiss.setAttribute('aria-label', 'Dismiss this announcement');
-    dismiss.addEventListener('click', async () => {
-      try {
-        await dismissAnnouncement(message.id);
-        announcements = announcements.filter((entry) => entry.id !== message.id);
-        card.remove();
-        renderList();
-        if (!announcements.length) closeThread();
-      } catch (error) {
-        setStatus(error.message, true);
+  function dayKey(value) {
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return '';
+    return `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
+  }
+
+  function dayLabel(value) {
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return '';
+    const today = new Date();
+    const yesterday = new Date(today.getTime() - 86400000);
+    if (dayKey(date) === dayKey(today)) return 'Today';
+    if (dayKey(date) === dayKey(yesterday)) return 'Yesterday';
+    const sameYear = date.getFullYear() === today.getFullYear();
+    return date.toLocaleDateString([], sameYear
+      ? { weekday: 'short', month: 'short', day: 'numeric' }
+      : { month: 'short', day: 'numeric', year: 'numeric' });
+  }
+
+  /* Grouping is a second pass over what is already rendered, and it only
+   * ever toggles classes or inserts a day separator — no bubble is rebuilt
+   * and none of them move, so a message arriving mid-read shifts nothing
+   * above it. A run breaks on a new sender, a gap of more than five
+   * minutes, or a change of day. */
+  const GROUP_GAP_MS = 5 * 60 * 1000;
+
+  function regroup() {
+    const bubbles = [...messagesEl.querySelectorAll('.vos-chat-bubble[data-id]')];
+    let previous = null;
+    let previousDay = null;
+
+    bubbles.forEach((bubble) => {
+      const sender = bubble.dataset.sender || '';
+      const at = Date.parse(bubble.dataset.at || '');
+      const day = dayKey(bubble.dataset.at);
+
+      const newDay = day && day !== previousDay;
+      const gap = previous ? Math.abs(at - Date.parse(previous.dataset.at || '')) : Infinity;
+      const starts = newDay || !previous
+        || previous.dataset.sender !== sender
+        || !(gap < GROUP_GAP_MS);
+
+      // The separator belongs to the bubble that opens the day, so it moves
+      // with it and cannot be orphaned by a delete.
+      const existing = bubble.previousElementSibling;
+      const hasSeparator = existing && existing.classList.contains('vos-chat-day');
+      if (newDay) {
+        if (hasSeparator) {
+          existing.textContent = dayLabel(bubble.dataset.at);
+        } else {
+          const separator = el('div', 'vos-chat-day', dayLabel(bubble.dataset.at));
+          separator.setAttribute('role', 'separator');
+          messagesEl.insertBefore(separator, bubble);
+        }
+      } else if (hasSeparator) {
+        existing.remove();
       }
+
+      bubble.classList.toggle('is-group-start', starts);
+      if (previous) previous.classList.toggle('is-group-end', starts);
+      previous = bubble;
+      previousDay = day || previousDay;
     });
-    card.append(head, body, dismiss);
-    return card;
+
+    if (previous) previous.classList.add('is-group-end');
   }
 
   function scrollToLatest() {
@@ -499,6 +781,7 @@ export function createChatPanel(options) {
     });
 
     const messages = data.messages || [];
+    const wasAtBottom = atBottom();
     if (messages.length) {
       const empty = messagesEl.querySelector('.vos-chat-empty');
       if (empty) empty.remove();
@@ -512,13 +795,18 @@ export function createChatPanel(options) {
         messagesEl.append(messageBubble(message));
         if (message.id > lastId) lastId = message.id;
       });
-      scrollToLatest();
+      regroup();
+      // Only follow the conversation if you were already at the bottom of
+      // it. Someone else's message must not yank the view while you read.
+      if (wasAtBottom) scrollToLatest();
+      else syncJump();
       markRead();
     } else if (data.revised && data.revised.length) {
       // Reaction and receipt state moved even though no message did.
       messagesEl.querySelectorAll('.vos-chat-bubble[data-id]').forEach((node) => {
         redrawMessage(node.dataset.id);
       });
+      regroup();
     }
     renderTyping();
     renderReceipts();
@@ -538,20 +826,6 @@ export function createChatPanel(options) {
   function stopPoll() {
     if (pollTimer) window.clearTimeout(pollTimer);
     pollTimer = null;
-  }
-
-  function showAnnouncements() {
-    titleEl.textContent = 'From the DM';
-    muteEl.hidden = true;
-    composerEl.hidden = true;
-    placeholderEl.hidden = true;
-    headPresenceEl.hidden = true;
-    titleLinkEl.hidden = true;
-    typingLiveEl.hidden = true;
-    messagesEl.textContent = '';
-    messagesEl.classList.add('is-announcements');
-    announcements.forEach((message) => messagesEl.append(announcementCard(message)));
-    messagesEl.scrollTop = 0;
   }
 
   function resetThreadState() {
@@ -578,16 +852,7 @@ export function createChatPanel(options) {
     setOpenKey(key);
     panelEl.classList.add('is-thread-open');
     backEl.hidden = false;
-    messagesEl.classList.remove('is-announcements');
     resetThreadState();
-
-    if (key === ANNOUNCEMENTS_KEY) {
-      openKind = null;
-      renderList();
-      showAnnouncements();
-      setStatus('');
-      return;
-    }
 
     const thread = threads.find((entry) => entry.key === key);
     openKind = thread ? thread.kind : null;
@@ -608,16 +873,19 @@ export function createChatPanel(options) {
     messagesEl.textContent = '';
     inputEl.value = getDraft(key);
     autogrow();
+    syncSendEnabled();
     renderList();
     renderHeadPresence();
 
     try {
       await fetchNew();
+      regroup();
       if (!messagesEl.querySelector('.vos-chat-bubble')) {
         messagesEl.append(el('p', 'vos-chat-empty', EMPTY_COPY[openKind] || EMPTY_COPY.direct));
       }
       const saved = getScrollTop(key);
       if (saved != null) messagesEl.scrollTop = saved;
+      syncJump();
       setStatus('');
     } catch (error) {
       setStatus(error.message, true);
@@ -644,7 +912,6 @@ export function createChatPanel(options) {
     titleLinkEl.hidden = true;
     typingLiveEl.hidden = true;
     messagesEl.textContent = '';
-    messagesEl.classList.remove('is-announcements');
     titleEl.textContent = 'Chat';
     resetThreadState();
     stopPoll();
@@ -682,13 +949,14 @@ export function createChatPanel(options) {
     editing = null;
     renderContext();
     autogrow();
+    syncSendEnabled();
     inputEl.focus();
   });
 
   // ── Typing heartbeat ─────────────────────────────────────────────────
 
   function beatTyping() {
-    // Enzo does not read the room, and an announcement has no composer.
+    // Enzo does not read the room.
     if (!isTalkThread() || openKind === 'enzo') return;
     const now = Date.now();
     if (now - lastTypingAt < TYPING_HEARTBEAT_MS) return;
@@ -854,6 +1122,7 @@ export function createChatPanel(options) {
     setDraft(openKey, '');
     tray.clear();
     autogrow();
+    syncSendEnabled();
     stopTyping();
     setStatus('');
     deliver(bubble, openKey, text, replyToId, attachmentIds);
@@ -861,6 +1130,7 @@ export function createChatPanel(options) {
 
   inputEl.addEventListener('input', () => {
     autogrow();
+    syncSendEnabled();
     if (openKey && !editing) setDraft(openKey, inputEl.value);
     if (inputEl.value.trim()) beatTyping();
   });
@@ -895,6 +1165,122 @@ export function createChatPanel(options) {
   messagesEl.addEventListener('click', (event) => {
     if (event.target.closest('.vos-chat-bubble')) return;
     bubbleContext.closeOtherActions(null);
+  });
+
+  let filterTimer = null;
+  filterInputEl.addEventListener('input', () => {
+    // Debounced so typing does not reorder the list under the cursor on
+    // every keystroke.
+    if (filterTimer) window.clearTimeout(filterTimer);
+    filterTimer = window.setTimeout(() => {
+      filterTimer = null;
+      filterText = filterInputEl.value.trim();
+      renderList();
+    }, 120);
+  });
+  filterInputEl.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && filterInputEl.value) {
+      event.stopPropagation();
+      filterInputEl.value = '';
+      filterText = '';
+      renderList();
+      return;
+    }
+    if (event.key === 'ArrowDown') {
+      event.preventDefault();
+      const first = listEl.querySelector('.vos-chat-row');
+      if (first) first.focus();
+    }
+  });
+
+  /* Arrow keys walk the list, Enter opens. The rows are buttons, so Enter
+   * and Space already fire their click — only the movement is ours. */
+  listEl.addEventListener('keydown', (event) => {
+    const rows = [...listEl.querySelectorAll('.vos-chat-row')];
+    if (!rows.length) return;
+    const index = rows.indexOf(document.activeElement);
+    let next = null;
+    if (event.key === 'ArrowDown') next = rows[Math.min(index + 1, rows.length - 1)];
+    else if (event.key === 'ArrowUp') next = index <= 0 ? null : rows[index - 1];
+    else if (event.key === 'Home') next = rows[0];
+    else if (event.key === 'End') next = rows[rows.length - 1];
+    else return;
+    event.preventDefault();
+    if (!next && event.key === 'ArrowUp') {
+      filterInputEl.focus();
+      return;
+    }
+    if (next) {
+      rows.forEach((row) => { row.tabIndex = row === next ? 0 : -1; });
+      next.focus();
+    }
+  });
+
+  /* The list/thread split, dragged and remembered. Pointer events rather
+   * than mouse so a trackpad, a pen and a touch drag all behave. */
+  function applyListWidth(px) {
+    const width = Math.round(Math.min(LIST_MAX_W, Math.max(LIST_MIN_W, px)));
+    root.style.setProperty('--vos-chat-list-w', `${width}px`);
+    return width;
+  }
+
+  const savedWidth = getListWidth();
+  if (savedWidth) applyListWidth(savedWidth);
+
+  resizerEl.addEventListener('pointerdown', (event) => {
+    event.preventDefault();
+    resizerEl.setPointerCapture(event.pointerId);
+    panelEl.classList.add('is-resizing');
+    const origin = listPaneEl.getBoundingClientRect().left;
+    const move = (moveEvent) => applyListWidth(moveEvent.clientX - origin);
+    const done = (upEvent) => {
+      resizerEl.removeEventListener('pointermove', move);
+      resizerEl.removeEventListener('pointerup', done);
+      resizerEl.removeEventListener('pointercancel', done);
+      panelEl.classList.remove('is-resizing');
+      setListWidth(applyListWidth(upEvent.clientX - origin));
+    };
+    resizerEl.addEventListener('pointermove', move);
+    resizerEl.addEventListener('pointerup', done);
+    resizerEl.addEventListener('pointercancel', done);
+  });
+  resizerEl.addEventListener('keydown', (event) => {
+    const step = event.shiftKey ? 32 : 8;
+    const current = listPaneEl.getBoundingClientRect().width;
+    if (event.key === 'ArrowLeft') setListWidth(applyListWidth(current - step));
+    else if (event.key === 'ArrowRight') setListWidth(applyListWidth(current + step));
+    else return;
+    event.preventDefault();
+  });
+
+  /* The jump button appears only once you have scrolled away from the
+   * bottom, and `atBottom` is also what decides whether an arriving message
+   * scrolls the view — reading back through a thread should not be yanked
+   * out from under you by someone else typing. */
+  function atBottom() {
+    return messagesEl.scrollHeight - messagesEl.scrollTop - messagesEl.clientHeight < 72;
+  }
+
+  function syncJump() {
+    const away = isTalkThread() && !atBottom();
+    jumpEl.hidden = !away;
+  }
+
+  let scrollSaveTimer = null;
+  messagesEl.addEventListener('scroll', () => {
+    syncJump();
+    // The button has to answer instantly; the bookmark can wait. Writing
+    // sessionStorage on every scroll frame is a JSON round-trip per event.
+    if (scrollSaveTimer) window.clearTimeout(scrollSaveTimer);
+    scrollSaveTimer = window.setTimeout(() => {
+      scrollSaveTimer = null;
+      if (isTalkThread()) setScrollTop(openKey, messagesEl.scrollTop);
+    }, 200);
+  }, { passive: true });
+
+  jumpEl.addEventListener('click', () => {
+    messagesEl.scrollTo({ top: messagesEl.scrollHeight, behavior: 'smooth' });
+    jumpEl.hidden = true;
   });
 
   backEl.addEventListener('click', closeThread);
@@ -932,8 +1318,7 @@ export function createChatPanel(options) {
     }
     setStatus('Loading…');
     try {
-      await loadAnnouncements();
-      await loadThreads();
+      await Promise.all([loadAvatars(), loadThreads()]);
       setStatus('');
     } catch (error) {
       setStatus(error.message, true);
@@ -970,7 +1355,6 @@ export function createChatPanel(options) {
     },
     async refresh() {
       if (!playerName) return;
-      await loadAnnouncements();
       await loadThreads().catch(() => {});
       if (isTalkThread()) await fetchNew().catch(() => {});
     },
@@ -981,19 +1365,15 @@ export function createChatPanel(options) {
     restore() {
       const key = getOpenKey();
       if (!key) return;
-      if (key === ANNOUNCEMENTS_KEY ? announcements.length : threads.some((t) => t.key === key)) {
+      if (threads.some((thread) => thread.key === key)) {
         openThread(key);
       } else {
         setOpenKey(null);
       }
     },
     hasThread(key) {
-      return key === ANNOUNCEMENTS_KEY
-        ? announcements.length > 0
-        : threads.some((thread) => thread.key === key);
+      return threads.some((thread) => thread.key === key);
     },
     totalUnread,
   };
 }
-
-export { ANNOUNCEMENTS_KEY };

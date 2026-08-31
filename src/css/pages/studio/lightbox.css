@@ -8,7 +8,10 @@
      reachable instead of being clipped to 90vh. */
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
-  padding: 2rem;
+  /* Extra room at the top is where the close and delete buttons live. They
+     are fixed to the overlay, so the content has to start below them rather
+     than under them. */
+  padding: 3.6rem 2rem 2rem;
   backdrop-filter: blur(6px);
 }
 .vos-art-lightbox.is-open {
@@ -62,9 +65,16 @@
   color: var(--art-gold);
   margin-top: 0.5rem;
 }
+/* Anchored to the overlay, not to the image.
+   These used to be `top: -2.4rem` off the inner box, which put them 2.4rem
+   above content that starts 2rem below the viewport edge — so the button sat
+   ~6px off-screen and could not be clicked at all. Worse once the details
+   panel expanded and the overlay scrolled: the negative offset scrolled away
+   with the content. Fixed to the overlay's top-right, they stay reachable at
+   any content height and any scroll position. */
 .vos-art-lightbox-close {
-  position: absolute; top: -2.4rem; right: 0;
-  background: transparent;
+  position: fixed; top: 0.85rem; right: 0.85rem; z-index: 10;
+  background: rgba(10, 8, 12, 0.85);
   color: var(--art-gold);
   border: 1px solid var(--art-border-strong);
   border-radius: 50%;
@@ -117,9 +127,9 @@ body.is-dm-mode .vos-art-delete { display: inline-flex; }
 .vos-art-delete[disabled] { opacity: 0.5; cursor: progress; }
 
 .vos-art-lightbox-delete {
-  position: absolute; top: -2.4rem; right: 3rem;
+  position: fixed; top: 0.85rem; right: 3.75rem; z-index: 10;
   display: none;
-  background: transparent;
+  background: rgba(10, 8, 12, 0.85);
   color: #ff8780;
   border: 1px solid rgba(180, 50, 50, 0.55);
   border-radius: 50%;
