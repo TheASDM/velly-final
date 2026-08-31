@@ -1,3 +1,8 @@
+---
+permalink: false
+eleventyExcludeFromCollections: true
+---
+
 # Messaging System Audit and Remediation Plan
 
 Status: audit complete; implementation intentionally paused for review  
