@@ -47,6 +47,7 @@ def _studio_creator_from_body(body, required=True, require_login=False):
 def _generate_image_payload(
     prompt, style_key, created_by, enhance=True,
     save_gallery=True, image_output_path=None,
+    compiler=None, references=None,
 ):
     openai_key = os.environ.get("OPENAI_KEY", "")
     image_model = IMAGE_MODEL
@@ -59,39 +60,56 @@ def _generate_image_payload(
             "error": "Image generation not configured — OPENAI_KEY missing in server env"
         }, 503
 
-    # Resolve the style prefix. Explicit `style` from the body wins; if none
+    # Resolve the style block. Explicit `style` from the body wins; if none
     # provided, fall back to the legacy env var so existing /art chatbot
     # callers keep working unchanged.
     if style_key:
-        style_prefix = ART_STYLE_PRESETS[style_key]["prefix"]
+        style_text = (ART_STYLE_PRESETS.get(style_key) or {}).get("style") or ""
         style_label = style_key
+        if not style_text:
+            # A known preset with no text means the configuration did not
+            # load. Refuse rather than quietly generate an unstyled image:
+            # style drift is invisible in the response and obvious in the art.
+            logging.error(
+                "Style preset %s has no style text — %s did not load",
+                style_key, IMAGE_COMPILER_CONFIG_PATH,
+            )
+            return {
+                "error": "Art styles are unavailable on this server "
+                         "(image_prompt_compiler.json did not load)",
+            }, 503
     elif legacy_style_prefix:
-        style_prefix = legacy_style_prefix
+        style_text = legacy_style_prefix
         style_label = "legacy"
     else:
-        style_prefix = ""
+        style_text = ""
         style_label = None
 
     # Resolve campaign references regardless of whether the player wants the
-    # LLM rewrite. The rewrite is optional; canonical visual locking is cheap
+    # compiler run. Compilation is optional; canonical visual locking is cheap
     # and should still protect named characters from model drift.
-    enhanced_prompt = None
     matched = _extract_campaign_entities(prompt)
     grounded_in = _grounded_entity_names(matched)
-    if enhance:
-        result = _enhance_image_prompt(prompt, style_key, matched)
-        if isinstance(result, dict):
-            enhanced_prompt = result.get("prompt")
-            grounded_in = result.get("grounded_in") or []
-    if matched and not grounded_in:
-        grounded_in = _grounded_entity_names(matched)
 
-    # The text we actually send to OpenAI is: style prefix + enhanced (or
-    # raw) prompt, with matched curated visual references pinned between the
-    # style and scene text. Keep the original raw prompt around for the gallery
-    # so human readers see what the player typed, not the rewrite.
-    image_prompt_body = enhanced_prompt or prompt
-    full_prompt = _compose_final_image_prompt(style_prefix, image_prompt_body, matched)
+    # user request → compiler → structured scene → style → hard constraints.
+    # Which compiler ran is a DM setting; `compiler` here is the DM's
+    # per-request override for comparing the two, ignored for everyone else
+    # upstream in the route.
+    if enhance:
+        compilation = _compile_image_prompt(
+            prompt, style_key, matched,
+            references=references, provider=compiler, style_text=style_text,
+        )
+    else:
+        compilation = _uncompiled_image_prompt(
+            prompt, style_key, matched, style_text=style_text,
+        )
+
+    full_prompt = compilation["compiled_prompt"]
+    # "How Enzo saw it" is the scene the compiler wrote — the style is
+    # configuration and the raw prompt is kept separately, so this column
+    # holds the one part a human reading it back would want.
+    enhanced_prompt = compilation.get("scene_prompt")
 
     payload = {
         "model": image_model,
@@ -169,6 +187,7 @@ def _generate_image_payload(
                 enhanced_prompt=enhanced_prompt,
                 grounded_in=grounded_in,
                 title=image_title,
+                compiler=compilation.get("provider"),
             )
 
         response = {
@@ -182,6 +201,14 @@ def _generate_image_payload(
             "model": image_model,
             "style": style_label,
             "image_saved": bool(image_saved_path),
+            # Which compiler drew it, and why it may not have compiled.
+            # Player-facing UI ignores both; the DM's comparison view and the
+            # logs are what these are here for.
+            "compiler": compilation.get("provider"),
+            "compiler_model": compilation.get("model"),
+            "compiler_error": compilation.get("error"),
+            "scene_prompt": compilation.get("scene_prompt"),
+            "compiler_record": compilation.get("record"),
         }
         if gallery_entry:
             response["gallery"] = {
@@ -216,6 +243,14 @@ def _infer_studio_error_code(error_message):
     return "unknown"
 
 
+def _row_value(row, column, default=None):
+    """sqlite3.Row raises KeyError for a column the query did not select."""
+    try:
+        return row[column]
+    except (IndexError, KeyError):
+        return default
+
+
 def _studio_job_payload(row):
     return {
         "id": row["id"],
@@ -225,6 +260,7 @@ def _studio_job_payload(row):
         "prompt": row["prompt"],
         "enhanced_prompt": row["enhanced_prompt"],
         "style": row["style"],
+        "compiler": _row_value(row, "compiler"),
         "status": row["status"],
         "result_url": row["result_url"],
         "gallery_id": row["gallery_id"],
@@ -237,7 +273,7 @@ def _studio_job_payload(row):
 
 def _update_studio_job(
     job_id, status, result_url=None, error_message=None,
-    enhanced_prompt=None, gallery_id=None, title=None,
+    enhanced_prompt=None, gallery_id=None, title=None, compiler=None,
 ):
     with _app_db() as conn:
         conn.execute("""
@@ -248,6 +284,7 @@ def _update_studio_job(
                 enhanced_prompt = COALESCE(?, enhanced_prompt),
                 gallery_id = COALESCE(?, gallery_id),
                 title = COALESCE(?, title),
+                compiler = COALESCE(?, compiler),
                 updated_at = ?
             WHERE id = ?
         """, (
@@ -257,6 +294,7 @@ def _update_studio_job(
             enhanced_prompt,
             gallery_id,
             title,
+            compiler,
             _utc_now_iso(),
             job_id,
         ))
@@ -329,15 +367,20 @@ def _notify_art_ready(creator, result_url, gallery_id=None):
         logging.exception("Art-ready push failed")
 
 
-def _run_studio_job(job_id, prompt, style_key, creator, enhance):
+def _run_studio_job(job_id, prompt, style_key, creator, enhance, compiler=None):
     try:
-        data, status = _generate_image_payload(prompt, style_key, creator, enhance)
+        data, status = _generate_image_payload(
+            prompt, style_key, creator, enhance, compiler=compiler,
+        )
         if status >= 400:
             error = data.get("error") or "Image generation failed"
             details = data.get("details")
             if details:
                 error = f"{error}: {details}"
-            _update_studio_job(job_id, "error", error_message=error[:500])
+            _update_studio_job(
+                job_id, "error", error_message=error[:500],
+                compiler=data.get("compiler"),
+            )
             return
 
         result_url = None
@@ -358,10 +401,11 @@ def _run_studio_job(job_id, prompt, style_key, creator, enhance):
             enhanced_prompt=data.get("enhanced_prompt"),
             gallery_id=gallery.get("id"),
             title=data.get("title") or gallery.get("title"),
+            compiler=data.get("compiler"),
         )
         _notify_art_ready(creator, result_url, gallery_id=gallery.get("id"))
     except Exception as exc:
         logging.exception("Studio job failed")
         _update_studio_job(job_id, "error", error_message=str(exc)[:500])
 
-__all__ = ['_studio_prompt_from_body', '_studio_style_from_body', '_studio_enhance_from_body', '_studio_creator_from_body', '_generate_image_payload', '_infer_studio_error_code', '_studio_job_payload', '_update_studio_job', '_studio_period', '_studio_period_reset_iso', '_studio_quota_count', '_studio_quota_consume', '_notify_art_ready', '_run_studio_job']
+__all__ = ['_row_value', '_studio_prompt_from_body', '_studio_style_from_body', '_studio_enhance_from_body', '_studio_creator_from_body', '_generate_image_payload', '_infer_studio_error_code', '_studio_job_payload', '_update_studio_job', '_studio_period', '_studio_period_reset_iso', '_studio_quota_count', '_studio_quota_consume', '_notify_art_ready', '_run_studio_job']

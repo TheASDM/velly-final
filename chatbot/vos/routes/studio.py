@@ -4,6 +4,29 @@ from ..config import *
 
 bp = Blueprint("studio", __name__)
 
+# Debug fields the DM's comparison view wants and a player has no business
+# seeing. The Studio UI never renders them either way.
+COMPILER_DEBUG_FIELDS = (
+    "compiler_model", "compiler_error", "scene_prompt", "compiler_record",
+)
+
+
+def _studio_compiler_from_body(body):
+    """A per-request prompt-compiler override, honored for the DM only.
+
+    Running the same request through both compilers is how they get compared,
+    so the DM gets to pick one per generation. Everyone else is silently
+    served whichever provider the console has set active — a player is never
+    told there are two, and cannot ask for one.
+    """
+    requested = (body.get("compiler") or "").strip().lower()
+    if not requested:
+        return None
+    if not _request_is_dm():
+        return None
+    return _normalize_image_compiler(requested)
+
+
 @bp.route("/api/studio/generate", methods=["POST"])
 def studio_generate():
     body = request.get_json(silent=True) or {}
@@ -29,6 +52,7 @@ def studio_generate():
             pass
         return auth_error
     enhance = _studio_enhance_from_body(body)
+    compiler = _studio_compiler_from_body(body)
 
     # Per-player monthly cap. STUDIO_MONTHLY_QUOTA=0 disables the check
     # (useful for local dev). The DM creator slot is also exempt so the
@@ -55,10 +79,10 @@ def studio_generate():
         conn.execute("""
             INSERT INTO studio_jobs (
                 id, creator, prompt, style, status, result_url,
-                error_message, created_at, updated_at
+                error_message, compiler, created_at, updated_at
             )
-            VALUES (?, ?, ?, ?, 'pending', NULL, NULL, ?, ?)
-        """, (job_id, creator, prompt, style_key, now, now))
+            VALUES (?, ?, ?, ?, 'pending', NULL, NULL, ?, ?, ?)
+        """, (job_id, creator, prompt, style_key, compiler, now, now))
 
     # Count the quota here, before kicking off the background job, so a
     # mid-job server crash can't be used to bypass the cap. The job
@@ -69,7 +93,7 @@ def studio_generate():
 
     thread = threading.Thread(
         target=_run_studio_job,
-        args=(job_id, prompt, style_key, creator, enhance),
+        args=(job_id, prompt, style_key, creator, enhance, compiler),
         daemon=True,
     )
     thread.start()
@@ -94,7 +118,7 @@ def studio_jobs():
     with _app_db() as conn:
         rows = list(conn.execute("""
             SELECT id, creator, title, prompt, enhanced_prompt, style,
-                   status, result_url, gallery_id, error_message,
+                   compiler, status, result_url, gallery_id, error_message,
                    created_at, updated_at
             FROM studio_jobs
             WHERE creator = ?
@@ -109,7 +133,7 @@ def studio_job(job_id):
     with _app_db() as conn:
         row = conn.execute("""
             SELECT id, creator, title, prompt, enhanced_prompt, style,
-                   status, result_url, gallery_id, error_message,
+                   compiler, status, result_url, gallery_id, error_message,
                    created_at, updated_at
             FROM studio_jobs
             WHERE id = ?
@@ -146,8 +170,42 @@ def generate_image():
     if auth_error:
         return auth_error
     enhance = _studio_enhance_from_body(body)
-    payload, status = _generate_image_payload(prompt, style_key, created_by, enhance)
+    compiler = _studio_compiler_from_body(body)
+    payload, status = _generate_image_payload(
+        prompt, style_key, created_by, enhance,
+        compiler=compiler, references=body.get("references"),
+    )
+    if not _request_is_dm():
+        for field in COMPILER_DEBUG_FIELDS:
+            payload.pop(field, None)
     return jsonify(payload), status
+
+
+@bp.route("/api/studio/compiler", methods=["GET", "PUT"])
+def studio_compiler():
+    """Read or set which prompt compiler is active. DM only.
+
+    The Studio's two "powered by" buttons and the console's setting are the
+    same knob seen from two places, so they share one endpoint: GET tells the
+    DM what is live, PUT changes what everyone gets.
+    """
+    admin_error = _admin_error_response()
+    if admin_error:
+        return admin_error
+
+    if request.method == "PUT":
+        body = request.get_json(silent=True) or {}
+        try:
+            _set_active_image_compiler(body.get("provider"))
+        except ValueError as exc:
+            return jsonify({"error": str(exc), "error_code": "invalid"}), 400
+
+    return jsonify({
+        "active": _active_image_compiler(),
+        "providers": _image_compiler_options(),
+        "reference_roles": list(REFERENCE_ROLES),
+        "debug": IMAGE_COMPILER_DEBUG,
+    })
 
 
 @bp.route("/api/art-styles", methods=["GET"])
@@ -165,4 +223,4 @@ def art_styles():
         ],
     })
 
-__all__ = ['studio_generate', 'studio_jobs', 'studio_job', 'generate_image', 'art_styles']
+__all__ = ['_studio_compiler_from_body', 'studio_compiler', 'studio_generate', 'studio_jobs', 'studio_job', 'generate_image', 'art_styles']

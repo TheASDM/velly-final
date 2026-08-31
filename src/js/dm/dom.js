@@ -60,6 +60,9 @@ export const pushSubsStatusEl = document.getElementById('vos-dm-subs-status');
 export const rumorFormEl = document.getElementById('vos-dm-rumor-form');
 export const rumorTextEl = document.getElementById('vos-dm-rumor-text');
 export const rumorAddEl = document.getElementById('vos-dm-rumor-add');
+export const artCompilersEl = document.getElementById('vos-dm-art-compilers');
+export const artStatusEl = document.getElementById('vos-dm-art-status');
+export const artRefreshEl = document.getElementById('vos-dm-art-refresh');
 export const rumorsListEl = document.getElementById('vos-dm-rumors-list');
 export const rumorsStatusEl = document.getElementById('vos-dm-rumors-status');
 

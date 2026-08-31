@@ -452,4 +452,31 @@ def apply_current_migrations(conn, done):
             ("028_player_profiles", _utc_now_iso()),
         )
 
+    if "029_app_settings" not in done:
+        # Runtime settings the DM flips from the console. One row per knob,
+        # so a new knob is a new key rather than a new migration.
+        conn.execute("""
+            CREATE TABLE IF NOT EXISTS app_settings (
+                key TEXT PRIMARY KEY,
+                value TEXT NOT NULL,
+                updated_at TEXT NOT NULL
+            )
+        """)
+        conn.execute(
+            "INSERT INTO schema_migrations (name, applied_at) VALUES (?, ?)",
+            ("029_app_settings", _utc_now_iso()),
+        )
+
+    if "030_studio_job_compiler" not in done:
+        # Which prompt compiler drew this one. The point of running two is
+        # comparing their output later, which needs the answer stored with
+        # the job rather than inferred from when it ran.
+        cols = _table_columns(conn, "studio_jobs")
+        if "compiler" not in cols:
+            conn.execute("ALTER TABLE studio_jobs ADD COLUMN compiler TEXT")
+        conn.execute(
+            "INSERT INTO schema_migrations (name, applied_at) VALUES (?, ?)",
+            ("030_studio_job_compiler", _utc_now_iso()),
+        )
+
 __all__ = ['apply_current_migrations']

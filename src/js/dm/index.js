@@ -15,6 +15,7 @@ import './calendar.js';
 import './questionnaires.js';
 import './push.js';
 import './rumors.js';
+import './art.js';
 import './handouts.js';
 import './sounds.js';
 import './availability.js';

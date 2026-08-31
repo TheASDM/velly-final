@@ -27,9 +27,12 @@ EXPECTED_MIGRATIONS = {
     "026_chat_depth",
     "027_chat_attachments",
     "028_player_profiles",
+    "029_app_settings",
+    "030_studio_job_compiler",
 }
 
 EXPECTED_TABLES = {
+    "app_settings",
     "availability",
     "calendar_events",
     "character_sheets",

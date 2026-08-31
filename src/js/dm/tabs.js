@@ -6,6 +6,7 @@
  * session dies so a re-auth doesn't stare at stale panels. */
 
 import { wikiQueryEl } from './dom.js';
+import { refreshArtCompilers } from './art.js';
 import { refreshAvailabilitySummary } from './availability.js';
 import { refreshCalendarEvents } from './calendar.js';
 import { refreshHandouts } from './handouts.js';
@@ -45,6 +46,7 @@ export const TAB_LOADERS = {
   },
   records: () => refreshQuestionnaires(),
   rumors: () => refreshRumors(),
+  art: () => refreshArtCompilers(),
   handouts: () => refreshHandouts(),
   sounds: () => refreshSounds(),
   npc: () => true,

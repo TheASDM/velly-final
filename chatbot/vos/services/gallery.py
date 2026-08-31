@@ -145,7 +145,7 @@ def _set_gallery_visibility(gallery_id, visibility, actor):
 
 def _save_gallery_entry(
     image_bytes, prompt, full_prompt, style_key, created_by, model,
-    enhanced_prompt=None, grounded_in=None, title=None,
+    enhanced_prompt=None, grounded_in=None, title=None, compiler=None,
 ):
     """Persist a generated image + append to the manifest.
 
@@ -174,6 +174,9 @@ def _save_gallery_entry(
             "style": style_key,
             "created_by": (created_by or "").strip()[:64] or None,
             "model": model,
+            # Which prompt compiler wrote the scene, so two pieces made the
+            # same week can be told apart when comparing the providers.
+            "compiler": compiler,
             "visibility": "private",
             "shared_at": None,
             "shared_by": None,

@@ -1,6 +1,7 @@
 import { studio } from './state.js';
 import { getCreatorName, hasAuthenticatedCreator, openStudioLogin, requestHeaders } from './identity.js';
 import { setStatus, showGenerating, showIdle, showJobError, showSubmitting, startPolling, storeActiveJob } from './jobs.js';
+import { selectedCompiler } from './compiler.js';
 
 export async function generate() {
     if (studio.isSubmitting || studio.generateEl.disabled) return;
@@ -26,6 +27,9 @@ export async function generate() {
     }
     studio.isSubmitting = true;
     const enhance = !!studio.enhanceEl.checked;
+    // Only ever set for the DM comparing the two prompt compilers; the
+    // server ignores it from anyone else.
+    const compiler = selectedCompiler();
     showSubmitting();
 
     try {
@@ -37,6 +41,7 @@ export async function generate() {
           style: studio.selectedStyle,
           creator: creatorName,
           enhance,
+          ...(compiler ? { compiler } : {}),
         }),
       });
       if (!res.ok) {

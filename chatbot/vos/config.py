@@ -291,135 +291,130 @@ ALLOWED_DM_DISCORD_IDS = {
     if _normalize_discord_principal(value)
 }
 
-# Style preset keys are stable strings sent from the UI; the corresponding
-# prompt prefix is prepended to the user prompt at generation time.
+# ── Image-prompt compiler configuration ─────────────────────────────────────
 #
-# These no longer need to be short. The old note here said to keep them tight
-# because the prefix ate the user's ~4000-character budget — that budget is
-# 30000 now, and the composer treats the style as the last thing it would ever
-# drop rather than the first. Say the look properly.
+# vos/image_prompt_compiler.json is the single source of truth for the house
+# look, the per-preset composition rules, and the compiler model's own
+# instructions. Nothing in Python restates the style text: two editable copies
+# of the Valley look is exactly how it drifted before.
 #
-# Everything below the valley group is an alternative look a player can opt
-# into; the valley group is the campaign's own.
+# The file sits next to the code (the Dockerfile does `COPY chatbot/vos ./vos`)
+# rather than in the /site bind mount, so a running container always has the
+# configuration it was built with.
+IMAGE_COMPILER_CONFIG_PATH = Path(os.environ.get(
+    "IMAGE_COMPILER_CONFIG",
+    str(Path(__file__).resolve().parent / "image_prompt_compiler.json"),
+))
 
-# The house look, in one place.
-#
-# The three Valley presets are the same photograph taken three ways, so the
-# look lives here rather than being restated three times and drifting apart.
-# Written as concrete camera and material direction: image models act on
-# "warm practical key light, shallow depth of field, tarnished brass" and
-# largely ignore "lush", "romantic", "editorial gloss". The reference is the
-# TV show Reign — a lush period drama with modern beauty styling — shot dark.
-_VALLEY_HOUSE = (
-    "Live-action photography from a lush romantic period drama in the manner "
-    "of the TV series Reign: sumptuous historical-fantasy costume with a "
-    "contemporary editorial beauty finish. Photographic, not illustrated or "
-    "painted. Lit by warm practical flame — candle, lantern, hearth, torch — "
-    "as a low golden key against deep blue-black shadow, strong chiaroscuro "
-    "with the background falling into darkness. Shallow depth of field, soft "
-    "focus falloff, fine film grain. Jewel-tone grade: amber and gold "
-    "highlights, teal and indigo shadows, restrained saturation elsewhere. "
-    "Rich tactile fabric — quilted wool, worn linen, embroidered silk, "
-    "oiled leather, tarnished brass and bronze. Real skin with visible pores "
-    "and stray hair, beautiful but not retouched smooth."
-)
 
-ART_STYLE_PRESETS = {
-    "valley-portrait": {
-        "label": "Valley of Shadows — Portrait",
-        "description": "House style for character portraits — Reign-style period drama, candlelit and close.",
-        "prefix": (
-            _VALLEY_HOUSE
-            + " Framing: a single figure, head-and-shoulders to waist-up, "
-            "filling the frame, eyes catching the light, background blurred "
-            "to soft shapes. Vertical portrait format."
-        ),
-    },
-    "valley-scene": {
-        "label": "Valley of Shadows — Scene",
-        "description": "House style for narrative moments — several figures, staged and atmospheric.",
-        "prefix": (
-            _VALLEY_HOUSE
-            + " Framing: a narrative moment with one or more figures staged "
-            "in the middle ground, caught mid-action rather than posed, the "
-            "room or street reading around them. Widescreen composition."
-        ),
-    },
-    "valley-place": {
-        "label": "Valley of Shadows — Place",
-        "description": "House style for locations and architecture — atmospheric establishing shots.",
-        "prefix": (
-            _VALLEY_HOUSE
-            + " Framing: an establishing shot of architecture or landscape "
-            "with no principal figure, depth carried by haze and receding "
-            "lantern light, stonework and water and weather rendered in "
-            "material detail. Widescreen environmental composition."
-        ),
-    },
-    "cinematic": {
-        "label": "Cinematic",
-        "description": "Anamorphic film still — dramatic lighting, shallow depth of field, color-graded.",
-        "prefix": (
-            "Cinematic still, anamorphic 2.39:1 framing, dramatic key light "
-            "and deep shadows, shallow depth of field, film grain, color "
-            "graded like a high-budget moody fantasy production."
-        ),
-    },
-    "illustrated": {
-        "label": "Illustrated",
-        "description": "Hand-painted, like a high-end fantasy book illustration.",
-        "prefix": (
-            "Hand-painted fantasy book illustration, rich painterly textures, "
-            "expressive linework, ink and gouache, the look of a Folio "
-            "Society or vintage Dragonlance interior plate."
-        ),
-    },
-    "watercolor": {
-        "label": "Watercolor & Parchment",
-        "description": "Soft watercolor wash on antique parchment, delicate ink linework.",
-        "prefix": (
-            "Soft watercolor wash on aged parchment, delicate sepia ink "
-            "outlines, gentle pigment bleeds, the look of an illuminated "
-            "manuscript or a Renaissance natural-philosophy plate."
-        ),
-    },
-    "ink": {
-        "label": "Ink & Woodcut",
-        "description": "High-contrast woodcut/etching, monochromatic with gold accents.",
-        "prefix": (
-            "Dark fantasy ink illustration in the style of a 16th-century "
-            "woodcut, heavy black linework, sharp contrast, etched cross-"
-            "hatching, monochromatic with restrained gold accents."
-        ),
-    },
-    "photoreal": {
-        "label": "Photorealistic",
-        "description": "Like a still from a prestige historical-fantasy production.",
-        "prefix": (
-            "Photorealistic, 50mm prime, naturalistic candlelight or moon-"
-            "light, fine detail in skin and fabric, the texture of a still "
-            "from a prestige historical-fantasy production."
-        ),
-    },
-    "sketch": {
-        "label": "Concept Sketch",
-        "description": "Quick exploratory pencil-on-parchment with atmospheric value.",
-        "prefix": (
-            "Loose exploratory concept sketch in graphite and sepia, on "
-            "aged parchment, light atmospheric value washes, expressive "
-            "energetic lines, room for the imagination to fill in."
-        ),
-    },
-    "stained-glass": {
-        "label": "Stained Glass",
-        "description": "Lead-cames and jewel tones — like the chapel windows of St. Viro's.",
-        "prefix": (
-            "Cathedral stained-glass composition, bold black lead cames, "
-            "luminous jewel tones, simplified forms, the look of the "
-            "chapel windows of a Venturian cathedral."
-        ),
-    },
+def _load_image_compiler_config(path=None):
+    """Read the compiler configuration. Raises on a missing or broken file —
+    the caller decides whether that is fatal."""
+    with open(Path(path or IMAGE_COMPILER_CONFIG_PATH), encoding="utf-8") as f:
+        data = json.load(f)
+    if not isinstance(data, dict):
+        raise ValueError("image_prompt_compiler.json is not a JSON object")
+    return data
+
+
+try:
+    IMAGE_COMPILER_CONFIG = _load_image_compiler_config()
+except Exception:
+    # Not fatal: Enzo, the calendar, and everything else still work. Art
+    # generation refuses with a 503 rather than quietly shipping unstyled
+    # prompts, and test_image_style covers the file actually loading.
+    logging.exception("Could not load %s — art styles unavailable", IMAGE_COMPILER_CONFIG_PATH)
+    IMAGE_COMPILER_CONFIG = {}
+
+_STYLE_SYSTEM = IMAGE_COMPILER_CONFIG.get("style_system") or {}
+VALLEY_HOUSE_STYLE = (_STYLE_SYSTEM.get("valley_house") or "").strip()
+VALLEY_CHARACTER_STYLE = (_STYLE_SYSTEM.get("valley_character") or "").strip()
+
+# What the picker says about each preset. The *look* is in the JSON; only the
+# UI copy lives here, keyed by the stable style keys the client sends.
+ART_STYLE_LABELS = {
+    "valley-portrait": (
+        "Valley of Shadows — Portrait",
+        "House style for character portraits — period-drama photography, candlelit and close.",
+    ),
+    "valley-scene": (
+        "Valley of Shadows — Scene",
+        "House style for narrative moments — figures caught mid-action in a place.",
+    ),
+    "valley-place": (
+        "Valley of Shadows — Place",
+        "House style for locations and architecture — atmospheric establishing shots.",
+    ),
+    "cinematic": (
+        "Cinematic",
+        "Widescreen film still — dramatic lighting, shallow depth of field, color-graded.",
+    ),
+    "illustrated": (
+        "Illustrated",
+        "Hand-painted, like a high-end fantasy book plate.",
+    ),
+    "watercolor": (
+        "Watercolor & Parchment",
+        "Soft watercolor wash on antique parchment, delicate ink linework.",
+    ),
+    "ink": (
+        "Ink & Woodcut",
+        "High-contrast woodcut/etching, monochromatic with gold accents.",
+    ),
+    "photoreal": (
+        "Photorealistic",
+        "Like a still from a prestige historical-fantasy production.",
+    ),
+    "sketch": (
+        "Concept Sketch",
+        "Exploratory pencil-on-parchment with atmospheric value.",
+    ),
+    "stained-glass": (
+        "Stained Glass",
+        "Lead cames and jewel tones — like the chapel windows of St. Viro's.",
+    ),
 }
+
+
+def _style_text_for_preset(key, preset):
+    """Assemble one preset's style block from the configuration.
+
+    Valley presets are the same photograph taken three ways: house look, then
+    the character-realism block where figures are the subject, then the
+    preset's own composition rules. Everything else carries a standalone
+    style. Assembled here, deterministically — the compiler model is never
+    asked to restate the house style, which is what let it drift.
+    """
+    standalone = (preset.get("standalone_style") or "").strip()
+    if standalone:
+        return standalone
+    parts = [VALLEY_HOUSE_STYLE]
+    if preset.get("include_character_block"):
+        parts.append(VALLEY_CHARACTER_STYLE)
+    parts.append((preset.get("append") or "").strip())
+    return " ".join(part for part in parts if part)
+
+
+def _build_art_style_presets():
+    """key → {label, description, kind, style}. The JSON decides which presets
+    exist and what they look like; ART_STYLE_LABELS supplies the UI copy."""
+    presets = {}
+    for key, preset in (_STYLE_SYSTEM.get("presets") or {}).items():
+        if not isinstance(preset, dict):
+            continue
+        label, description = ART_STYLE_LABELS.get(
+            key, (key.replace("-", " ").title(), ""),
+        )
+        presets[key] = {
+            "label": label,
+            "description": description,
+            "kind": preset.get("kind") or "other",
+            "style": _style_text_for_preset(key, preset),
+        }
+    return presets
+
+
+ART_STYLE_PRESETS = _build_art_style_presets()
 DEFAULT_STYLE_KEY = "valley-scene"
 
 RAG_SKIP_MAX_LEN = 15
@@ -432,4 +427,4 @@ RAG_SKIP_PATTERNS = re.compile(
     re.IGNORECASE,
 )
 
-__all__ = ['DATA_DIR', 'LOG_PATH', 'ANTHROPIC_API_KEY', 'ANTHROPIC_MODEL', 'MAX_TOKENS', 'OLLAMA_URL', 'OLLAMA_API_KEY', 'EMBEDDING_MODEL', 'RAG_TOP_K', 'RAG_AUTO_THRESHOLD', 'RAG_LIST_THRESHOLD', 'TEMPERATURE', 'GALLERY_DIR', 'GALLERY_IMAGES_DIR', 'GALLERY_MANIFEST', 'GALLERY_MAX_ENTRIES', 'GALLERY_PAGE_LIMIT', 'ALLOWED_IMAGE_MODELS', 'IMAGE_MODEL', 'STUDIO_MONTHLY_QUOTA', 'QUERY_EXPANSION_ENABLED', 'QUERY_EXPANSION_CACHE_TTL', 'QUERY_EXPANSION_CACHE_MAX', 'CHAT_RATE_LIMIT', 'MAX_CONVERSATION_BYTES', 'APP_DB_PATH', 'VECTOR_SQLITE_PATH', 'SITE_SOURCE_DIR', 'CAMPAIGN_TZ', 'REBUILD_STATUS_PATH', 'REBUILD_LOCK_PATH', 'REBUILD_PENDING_PATH', 'REBUILD_PENDING_LOCK_PATH', 'AUTO_REBUILD_ON_WIKI_SAVE', 'AUTO_KNOWLEDGE_ON_WIKI_SAVE', 'REBUILD_COMMAND_TIMEOUT_SECONDS', 'REBUILD_DEBOUNCE_SECONDS', 'REBUILD_KNOWLEDGE_MIN_INTERVAL_SECONDS', 'LORE_DRAFT_DIR', 'LORE_DRAFT_IMAGES_DIR', 'PUBLIC_FILES_DIR', 'GOOGLE_OAUTH_CLIENT_ID', 'GOOGLE_OAUTH_CLIENT_SECRET', 'ALLOWED_DM_EMAILS', 'SESSION_JWT_SECRET', 'SESSION_JWT_TTL_SECONDS', 'DISCORD_OAUTH_CLIENT_ID', 'DISCORD_OAUTH_CLIENT_SECRET', 'GOOGLE_OAUTH_REDIRECT_URI', 'DISCORD_OAUTH_REDIRECT_URI', 'PUBLIC_BASE_URL', 'AUTH_COOKIE_NAME', 'AUTH_COOKIE_SECURE', 'VAPID_PUBLIC_KEY', 'VAPID_PRIVATE_KEY', 'VAPID_SUBJECT', 'ADMIN_TOKEN', 'RSVP_STATUSES', 'DEFAULT_PLAYERS', 'PLAYER_CODE_ENV_VARS', 'LOGIN_NAME_ALIASES', 'AUTH_TOKEN_TTL_SECONDS', 'AUTH_TOKEN_SECRET', '_canonical_login_name', '_parse_revoked_players', 'REVOKED_PLAYERS', 'STATBLOCK_INGEST_TOKEN', 'STATBLOCK_MAX_BYTES', 'SYRINSCAPE_AUTH_TOKEN', '_parse_individual_login_codes', '_parse_login_codes', 'PLAYER_LOGIN_CODES', 'PLAYER_NAMES', '_parse_principal_map', '_normalize_discord_principal', 'GOOGLE_PLAYER_MAP', 'DISCORD_PLAYER_MAP', 'ALLOWED_DM_DISCORD_IDS', 'ART_STYLE_PRESETS', 'DEFAULT_STYLE_KEY', 'RAG_SKIP_MAX_LEN', 'RAG_SKIP_PATTERNS']
+__all__ = ['DATA_DIR', 'LOG_PATH', 'ANTHROPIC_API_KEY', 'ANTHROPIC_MODEL', 'MAX_TOKENS', 'OLLAMA_URL', 'OLLAMA_API_KEY', 'EMBEDDING_MODEL', 'RAG_TOP_K', 'RAG_AUTO_THRESHOLD', 'RAG_LIST_THRESHOLD', 'TEMPERATURE', 'GALLERY_DIR', 'GALLERY_IMAGES_DIR', 'GALLERY_MANIFEST', 'GALLERY_MAX_ENTRIES', 'GALLERY_PAGE_LIMIT', 'ALLOWED_IMAGE_MODELS', 'IMAGE_MODEL', 'STUDIO_MONTHLY_QUOTA', 'QUERY_EXPANSION_ENABLED', 'QUERY_EXPANSION_CACHE_TTL', 'QUERY_EXPANSION_CACHE_MAX', 'CHAT_RATE_LIMIT', 'MAX_CONVERSATION_BYTES', 'APP_DB_PATH', 'VECTOR_SQLITE_PATH', 'SITE_SOURCE_DIR', 'CAMPAIGN_TZ', 'REBUILD_STATUS_PATH', 'REBUILD_LOCK_PATH', 'REBUILD_PENDING_PATH', 'REBUILD_PENDING_LOCK_PATH', 'AUTO_REBUILD_ON_WIKI_SAVE', 'AUTO_KNOWLEDGE_ON_WIKI_SAVE', 'REBUILD_COMMAND_TIMEOUT_SECONDS', 'REBUILD_DEBOUNCE_SECONDS', 'REBUILD_KNOWLEDGE_MIN_INTERVAL_SECONDS', 'LORE_DRAFT_DIR', 'LORE_DRAFT_IMAGES_DIR', 'PUBLIC_FILES_DIR', 'GOOGLE_OAUTH_CLIENT_ID', 'GOOGLE_OAUTH_CLIENT_SECRET', 'ALLOWED_DM_EMAILS', 'SESSION_JWT_SECRET', 'SESSION_JWT_TTL_SECONDS', 'DISCORD_OAUTH_CLIENT_ID', 'DISCORD_OAUTH_CLIENT_SECRET', 'GOOGLE_OAUTH_REDIRECT_URI', 'DISCORD_OAUTH_REDIRECT_URI', 'PUBLIC_BASE_URL', 'AUTH_COOKIE_NAME', 'AUTH_COOKIE_SECURE', 'VAPID_PUBLIC_KEY', 'VAPID_PRIVATE_KEY', 'VAPID_SUBJECT', 'ADMIN_TOKEN', 'RSVP_STATUSES', 'DEFAULT_PLAYERS', 'PLAYER_CODE_ENV_VARS', 'LOGIN_NAME_ALIASES', 'AUTH_TOKEN_TTL_SECONDS', 'AUTH_TOKEN_SECRET', '_canonical_login_name', '_parse_revoked_players', 'REVOKED_PLAYERS', 'STATBLOCK_INGEST_TOKEN', 'STATBLOCK_MAX_BYTES', 'SYRINSCAPE_AUTH_TOKEN', '_parse_individual_login_codes', '_parse_login_codes', 'PLAYER_LOGIN_CODES', 'PLAYER_NAMES', '_parse_principal_map', '_normalize_discord_principal', 'GOOGLE_PLAYER_MAP', 'DISCORD_PLAYER_MAP', 'ALLOWED_DM_DISCORD_IDS', 'IMAGE_COMPILER_CONFIG_PATH', '_load_image_compiler_config', 'IMAGE_COMPILER_CONFIG', 'VALLEY_HOUSE_STYLE', 'VALLEY_CHARACTER_STYLE', 'ART_STYLE_LABELS', '_style_text_for_preset', '_build_art_style_presets', 'ART_STYLE_PRESETS', 'DEFAULT_STYLE_KEY', 'RAG_SKIP_MAX_LEN', 'RAG_SKIP_PATTERNS']

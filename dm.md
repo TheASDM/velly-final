@@ -68,6 +68,7 @@ templateEngineOverride: njk
         <button class="vos-seg-btn" type="button" data-view="lore">Lore</button>
         <button class="vos-seg-btn" type="button" data-view="wiki">Wiki</button>
         <button class="vos-seg-btn" type="button" data-view="rumors">Rumors</button>
+        <button class="vos-seg-btn" type="button" data-view="art">Art</button>
         <a class="vos-seg-btn vos-seg-link" href="/messages/">Inbox ↗</a>
       </div>
     </div>
@@ -446,6 +447,27 @@ templateEngineOverride: njk
     <datalist id="vos-dm-inplay-pages"></datalist>
     <div class="vos-dm-inplay-list" id="vos-dm-inplay-list"></div>
     <div class="vos-dm-status" id="vos-dm-inplay-status" role="status" aria-live="polite"></div>
+  </section>
+
+  </div>
+
+  <div class="vos-dm-view" data-vos-view="art" hidden>
+
+  <section class="vos-dm-panel" aria-labelledby="vos-dm-art-title">
+    <div class="vos-dm-panel-head">
+      <h2 id="vos-dm-art-title">Art</h2>
+      <div class="vos-dm-actions">
+        <button id="vos-dm-art-refresh" type="button">Reload</button>
+      </div>
+    </div>
+    <p class="vos-dm-helper">Which model turns a description into image
+    direction before the picture is drawn. Both read the same house style out
+    of <code>image_prompt_compiler.json</code>, so this changes who writes the
+    scene, not what the Valley looks like. Whatever is set here is what the
+    table gets; players are never shown that there are two. In the Studio you
+    can override it for a single piece to compare them.</p>
+    <div class="vos-dm-art-compilers" id="vos-dm-art-compilers"></div>
+    <div class="vos-dm-status" id="vos-dm-art-status" role="status" aria-live="polite"></div>
   </section>
 
   </div>

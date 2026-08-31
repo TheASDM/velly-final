@@ -8,6 +8,7 @@ import { deleteEntry, restoreStudioJobs, updateGenerateAccess } from './jobs.js'
 import { closeLightbox, openLightbox, togglePinMenu } from './lightbox.js';
 import { loadReferences } from './references.js';
 import { initStudioModes } from './modes.js';
+import { loadCompilerChoice } from './compiler.js';
 
 function bootStudio() {
   initStudioModes();
@@ -48,6 +49,8 @@ function bootStudio() {
         setGalleryScope(button.dataset.galleryScope);
       });
     }
+
+  loadCompilerChoice();
 
   loadGallery();
 
@@ -131,6 +134,7 @@ function bootStudio() {
     });
 
   window.addEventListener('vos:identity', () => {
+      loadCompilerChoice();
       syncGalleryChrome();
       updateGenerateAccess();
       restoreStudioJobs();

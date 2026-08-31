@@ -344,3 +344,43 @@
   color: var(--art-gold);
   opacity: 0.85;
 }
+
+/* Prompt-compiler pick — DM only ─────────────────────────────────────────
+   Rendered hidden and unhidden by the client for the DM seat. Deliberately
+   quiet: it is a workshop control for comparing two providers, not part of
+   the composing flow, so it reads as instrumentation rather than a choice
+   the piece depends on. */
+.vos-art-compiler[hidden] { display: none; }
+.vos-art-compiler-choices {
+  display: flex; flex-wrap: wrap; gap: 0.5rem;
+  margin-top: 0.35rem;
+}
+.vos-art-compiler-btn {
+  flex: 1 1 auto;
+  min-height: 2.4rem;
+  padding: 0.5rem 0.85rem;
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.66rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(232, 220, 200, 0.72);
+  background: rgba(7, 6, 10, 0.42);
+  border: 1px solid var(--art-border);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
+}
+.vos-art-compiler-btn:hover { border-color: var(--art-border-strong); }
+.vos-art-compiler-btn.is-active {
+  color: var(--art-gold);
+  border-color: var(--art-border-strong);
+  background: linear-gradient(180deg, rgba(196, 160, 92, 0.14), rgba(7, 6, 10, 0.5));
+}
+.vos-art-compiler-note {
+  margin-top: 0.4rem;
+  font-family: 'Crimson Text', Georgia, serif;
+  font-style: italic;
+  font-size: 0.82rem;
+  line-height: 1.35;
+  color: rgba(232, 220, 200, 0.58);
+}

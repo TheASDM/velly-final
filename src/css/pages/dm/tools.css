@@ -543,3 +543,29 @@
   color: rgba(203, 190, 168, 0.6);
   font-style: italic;
 }
+
+/* ── Art: which prompt compiler the table is on ─────────────────────── */
+.vos-dm-art-compilers {
+  display: flex; flex-direction: column; gap: 0.55rem;
+}
+.vos-dm-art-compiler {
+  display: flex; align-items: center; gap: 0.75rem;
+  padding: 0.65rem 0.8rem;
+  background: rgba(12, 10, 16, 0.42);
+  border: 1px solid rgba(139, 115, 85, 0.28);
+  border-radius: 8px;
+}
+.vos-dm-art-compiler.is-active {
+  border-color: rgba(196, 160, 92, 0.6);
+  background: rgba(196, 160, 92, 0.08);
+}
+.vos-dm-art-compiler > div {
+  display: flex; flex-direction: column; gap: 0.15rem;
+  flex: 1 1 auto; min-width: 0;
+}
+.vos-dm-art-compiler strong { font-size: 0.95rem; }
+.vos-dm-art-compiler span {
+  font-size: 0.82rem;
+  color: rgba(203, 190, 168, 0.62);
+}
+.vos-dm-art-compiler button { flex: 0 0 auto; }

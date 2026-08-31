@@ -151,6 +151,17 @@ templateEngineOverride: njk
         </label>
       </div>
 
+      {#- Which model writes the image direction. Two exist so the same
+          request can be drawn both ways and compared; the console sets the
+          one everybody gets, and this row only ever appears for the DM. A
+          player is served a compiler, not asked about one. -#}
+      <div class="vos-art-field vos-art-compiler" id="vos-art-compiler" hidden>
+        <span class="vos-art-field-label" id="vos-art-compiler-label">Prompt compiler</span>
+        <div class="vos-art-compiler-choices" role="group" aria-labelledby="vos-art-compiler-label"
+             id="vos-art-compiler-choices"></div>
+        <div class="vos-art-compiler-note" id="vos-art-compiler-note"></div>
+      </div>
+
       <div class="vos-art-actions">
         <button id="vos-art-generate" class="vos-art-btn" type="button">Generate</button>
         <div id="vos-art-status" class="vos-art-status" role="status" aria-live="polite"></div>
@@ -173,6 +184,36 @@ templateEngineOverride: njk
       </div>
     </div>
   </div>
+
+  {# TODO(DESIGN-PROJECT): Studio create — reference images
+
+     Intended users: anyone drawing a recurring character who already has a
+       portrait, and the DM keeping one face consistent across a season.
+     Entry point: this panel, beside Description.
+     Required data: uploaded reference bytes (app-data/, the way chat
+       attachments and handout images are already stored via
+       chatbot/vos/services/uploads.py), a per-image role from the vocabulary
+       the compiler already understands — identity / costume / environment /
+       composition / style, defined in
+       chatbot/vos/image_prompt_compiler.json — and a switch from OpenAI's
+       /v1/images/generations to /v1/images/edits so the bytes travel with
+       the compiled prompt.
+     Already built: the server accepts `references: [{role, note}]` on
+       /api/generate-image and the compiler is instructed per role. What is
+       missing is everything to do with the bytes.
+     Unresolved UX: how a role is assigned without asking a player to learn
+       five words; what happens when someone attaches four images; whether a
+       character's canonical portrait should be attached automatically rather
+       than uploaded each time.
+     Acceptance criteria for replacing this stub: changing a character's
+       clothing, pose, or location does not redesign their face; two
+       references never blend into one person; a reference is used only for
+       its assigned role. #}
+  <p class="vos-studio-deferred">
+    Attaching a reference image — a portrait to keep a face consistent, a
+    costume, a room — is ready for its detailed workflow design and will be
+    completed as a separate design project.
+  </p>
 
   {# TODO(DESIGN-PROJECT): Studio create — visibility assignment and job history
 

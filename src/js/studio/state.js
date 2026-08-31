@@ -21,6 +21,9 @@ studio.promptEl = studio.$('vos-art-prompt');
 studio.styleSelectEl = studio.$('vos-art-style-select');
 studio.styleSummaryEl = studio.$('vos-art-style-summary');
 studio.enhanceEl = studio.$('vos-art-enhance');
+studio.compilerEl = studio.$('vos-art-compiler');
+studio.compilerChoicesEl = studio.$('vos-art-compiler-choices');
+studio.compilerNoteEl = studio.$('vos-art-compiler-note');
 studio.generateEl = studio.$('vos-art-generate');
 studio.statusEl = studio.$('vos-art-status');
 studio.latestEl = studio.$('vos-art-latest');
@@ -42,6 +45,12 @@ studio.lightImg = studio.$('vos-art-lightbox-img');
 studio.lightCap = studio.$('vos-art-lightbox-caption');
 studio.lightDelete = studio.$('vos-art-lightbox-delete');
 studio.ENHANCE_KEY = 'velly.artStudio.enhance';
+studio.COMPILER_KEY = 'velly.artStudio.compiler';
+/* DM-only, and only for comparing the two providers. `activeCompiler` is what
+   the table is on; `selectedCompiler` is the DM's pick for the next piece. */
+studio.activeCompiler = null;
+studio.selectedCompiler = null;
+studio.compilerProviders = [];
 studio.selectedStyle = null;
 studio.defaultStyle = 'valley-scene';
 studio.availableStyles = [];

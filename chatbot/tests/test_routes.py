@@ -100,6 +100,8 @@ ROUTE_CONTRACT = """
 /api/sounds/soundsets/<uuid>|/api/sounds/soundsets/00000000-0000-0000-0000-000000000000|GET|api_soundset|401:json.error,error_code|403:json.error,error_code|503:json.error,error_code|503:json.error,error_code
 /api/sounds/stop-all|/api/sounds/stop-all|POST|api_stop_all|401:json.error,error_code|403:json.error,error_code|503:json.error,error_code|503:json.error,error_code
 /api/statblocks/ingest|/api/statblocks/ingest|POST|api_statblock_ingest|503:json.error,error_code|503:json.error,error_code|503:json.error,error_code|503:json.error,error_code
+/api/studio/compiler|/api/studio/compiler|GET|studio_compiler|401:json.error,error_code|403:json.error,error_code|200:json.active,debug,providers,reference_roles|200:json.active,debug,providers,reference_roles
+/api/studio/compiler|/api/studio/compiler|PUT|studio_compiler|401:json.error,error_code|403:json.error,error_code|400:json.error,error_code|400:json.error,error_code
 /api/studio/generate|/api/studio/generate|POST|studio_generate|400:json.error,error_code|400:json.error,error_code|400:json.error,error_code|400:json.error,error_code
 /api/studio/jobs|/api/studio/jobs|GET|studio_jobs|400:json.error|400:json.error|400:json.error|400:json.error
 /api/studio/jobs/<job_id>|/api/studio/jobs/missing|GET|studio_job|404:json.error|404:json.error|404:json.error|404:json.error
@@ -139,7 +141,7 @@ def test_route_inventory_and_response_contract(app, auth_headers):
     }
     expected_routes = {rule for rule, _, _, _endpoint, _ in cases}
     assert actual_routes == expected_routes
-    assert len(cases) == 107
+    assert len(cases) == 109
 
     for rule, path, method, _endpoint, expected in cases:
         for role in ROLES:

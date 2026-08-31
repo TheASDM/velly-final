@@ -2,34 +2,24 @@ from ..imports import *
 from ..symbols import *
 from ..config import *
 
-# ── Image-prompt enhancement (Haiku as image-prompt engineer) ────────────────
-# Takes the user's raw prompt + any campaign entities they named (resolved
-# against the RAG name/alias index) and lets Haiku rewrite it into a vivid,
-# specific image prompt that keeps named characters/locations faithful to
-# their canonical descriptions. Falls back to the raw prompt if Anthropic
-# is unreachable or returns an error — image generation never depends on
-# the enhancement step succeeding.
+# ── Canonical visual grounding for generated art ─────────────────────────────
+# Resolves the campaign entities a player named (against descriptions.json
+# first, the RAG name index second), turns the curated ones into a
+# deterministic visual lock, and assembles the text sent to the image model.
+#
+# The rewriting half of this used to live here too — one Anthropic call that
+# reworded the prompt and restated the house style. vos/services/prompt_compiler.py
+# replaced it with the structured compiler described in
+# vos/image_prompt_compiler.json; what is left here is the part that has no
+# model in it.
 
-# The Studio's prompt engineer. Opus rather than the chat model: this runs
-# once per generated image, a handful of times a day, and it is the step that
-# decides whether a piece comes out looking like the campaign. Enzo's
+# The model that writes gallery titles. Opus rather than the chat model:
+# ENHANCE_MODEL is the historical name of this knob and still sets the
+# default, so an existing deployment's value keeps meaning something. Enzo's
 # conversational model (ANTHROPIC_MODEL) is deliberately left alone — that one
 # runs on every chat turn and has different economics.
 ENHANCE_MODEL = os.environ.get("ENHANCE_MODEL", "claude-opus-5")
-# Kept for older models set via ENHANCE_MODEL; no longer sent by default.
-# Opus 5 rejects temperature/top_p/top_k with a 400, and this code swallows
-# request failures and quietly falls back to the un-enhanced prompt — so
-# sending it would have looked exactly like the drift it was meant to fix.
-ENHANCE_TEMPERATURE = float(os.environ.get("ENHANCE_TEMPERATURE", "0.2"))
-# low | medium | high | xhigh | max. The enhancer is doing real work, the
-# title is one sentence.
-ENHANCE_EFFORT = os.environ.get("ENHANCE_EFFORT", "medium")
 IMAGE_TITLE_EFFORT = os.environ.get("IMAGE_TITLE_EFFORT", "low")
-# Room for adaptive thinking as well as the prompt itself: on Opus, thinking
-# tokens come out of max_tokens, and 900 was tight enough to risk truncating
-# the rewrite mid-sentence.
-ENHANCE_MAX_TOKENS = int(os.environ.get("ENHANCE_MAX_TOKENS", "8000"))
-ENHANCE_TIMEOUT_S = int(os.environ.get("ENHANCE_TIMEOUT_S", "30"))
 ENHANCE_MAX_ENTITIES = int(os.environ.get("ENHANCE_MAX_ENTITIES", "6"))
 ENHANCE_ENTITY_CHARS = int(os.environ.get("ENHANCE_ENTITY_CHARS", "3000"))
 # Headroom, not a budget.
@@ -276,46 +266,62 @@ def _final_visual_grounding_block(matched_entries):
     return header + "\n" + "\n".join(lines)
 
 
-def _compose_final_image_prompt(style_prefix, image_prompt_body, matched_entries):
-    """Join style, deterministic visual grounding, and scene text.
+def _hard_constraints_block(constraints):
+    """The compiler's must-have / must-not-have list, as one closing line.
 
-    The visual reference block is preserved first and the scene text is trimmed
-    only if the combined prompt would exceed the configured image prompt cap.
+    Short, and always last: an image model reads the end of a prompt as the
+    final word on what must and must not be in frame.
     """
-    image_prompt_body = str(image_prompt_body or "").strip()
+    items, seen = [], set()
+    for raw in constraints or []:
+        text = re.sub(r"\s+", " ", str(raw or "")).strip().rstrip(".")
+        key = text.lower()
+        if not text or key in seen:
+            continue
+        seen.add(key)
+        items.append(text)
+    if not items:
+        return ""
+    return "Required: " + "; ".join(items[:12]) + "."
+
+
+def _compose_image_prompt(scene_prompt, style_text, matched_entries, hard_constraints=None):
+    """Assemble the text actually sent to the image model.
+
+    The order is fixed by image_prompt_compiler.json's assembly contract: the
+    scene the compiler wrote, then the deterministic canonical-visual lock for
+    any named campaign entity, then the selected style block, then the hard
+    constraints. The style is assembled from configuration rather than written
+    by the compiler model, so every Valley image comes out of the same
+    production instead of drifting one generation at a time.
+
+    Renamed from _compose_final_image_prompt when the argument order changed
+    (scene first, style second): a caller that missed the change should fail
+    loudly rather than silently pass the style as the scene.
+    """
+    scene = str(scene_prompt or "").strip()
+    style = str(style_text or "").strip()
     grounding = _final_visual_grounding_block(matched_entries)
-    fixed_parts = [p.strip() for p in (style_prefix, grounding) if p and p.strip()]
-    fixed = "\n\n".join(fixed_parts)
-    full_prompt = "\n\n".join(p for p in (fixed, image_prompt_body) if p).strip()
-    if len(full_prompt) <= IMAGE_PROMPT_MAX_CHARS:
-        return full_prompt
+    constraints = _hard_constraints_block(hard_constraints)
 
-    if not image_prompt_body:
-        return fixed[:IMAGE_PROMPT_MAX_CHARS].rstrip()
+    # The tail is short and load-bearing, so it is never what gets trimmed.
+    tail = "\n\n".join(part for part in (style, constraints) if part)
+    full = "\n\n".join(part for part in (scene, grounding, tail) if part).strip()
+    if len(full) <= IMAGE_PROMPT_MAX_CHARS:
+        return full
 
-    # The style prefix is the last thing to go, never the first.
-    #
-    # This used to drop `fixed` — style AND grounding — whenever the body left
-    # under 300 characters of room, so exactly the richest prompts, the ones
-    # naming several campaign entities, came back with no house style on them
-    # at all. That is what "the Studio has drifted" looks like from outside:
-    # most images right, the elaborate ones inexplicably generic.
-    style = str(style_prefix or "").strip()
-    separator_len = 2 if fixed else 0
-    body_budget = IMAGE_PROMPT_MAX_CHARS - len(fixed) - separator_len
-    if body_budget < 300:
-        # Give up the visual-grounding block first: the enhancer has already
-        # woven those details into the body, so it is the redundant half.
-        fixed = style
-        separator_len = 2 if fixed else 0
-        body_budget = IMAGE_PROMPT_MAX_CHARS - len(fixed) - separator_len
-    if body_budget < 300 and style:
-        # Still no room: keep the style and give the body whatever is left,
-        # rather than shipping a beautifully grounded prompt in no style.
-        body_budget = max(0, IMAGE_PROMPT_MAX_CHARS - len(style) - 2)
+    # Over the cap. Give up the grounding block first — the compiler has
+    # already woven those facts into the scene — then trim the scene itself.
+    # The style is the last thing to go, never the first: dropping it is what
+    # made exactly the richest prompts come back looking generic.
+    budget = IMAGE_PROMPT_MAX_CHARS - len(tail) - (2 if tail else 0)
+    if budget <= 0:
+        return tail[:IMAGE_PROMPT_MAX_CHARS].rstrip()
 
-    trimmed_body = _compact_grounding_text(image_prompt_body, max_chars=body_budget)
-    return "\n\n".join(p for p in (fixed, trimmed_body) if p).strip()
+    head = "\n\n".join(part for part in (scene, grounding) if part)
+    if len(head) > budget:
+        head = _compact_grounding_text(scene, max_chars=budget)
+    return "\n\n".join(part for part in (head, tail) if part).strip()
 
 
 def _match_descriptions(prompt, index):
@@ -375,4 +381,4 @@ def _relationship_description_matches(prompt, desc_index, already_matched):
 
     return additions
 
-__all__ = ['ENHANCE_MODEL', 'ENHANCE_TEMPERATURE', 'ENHANCE_MAX_TOKENS', 'ENHANCE_TIMEOUT_S', 'ENHANCE_EFFORT', 'IMAGE_TITLE_EFFORT', 'ENHANCE_MAX_ENTITIES', 'ENHANCE_ENTITY_CHARS', 'IMAGE_PROMPT_MAX_CHARS', 'FINAL_GROUNDING_MAX_CHARS', 'IMAGE_TITLE_MODEL', 'IMAGE_TITLE_TIMEOUT_S', 'DEFAULT_DESCRIPTIONS_FILE', 'DESCRIPTIONS_FILE', '_DESCRIPTIONS_CACHE_LOCK', '_DESCRIPTIONS_CACHE', 'ALIAS_MIN_LEN', '_normalize_description_phrase', '_flatten_descriptions', '_load_descriptions_data', '_load_descriptions_index', '_grounded_entity_names', '_compact_grounding_text', '_final_visual_grounding_block', '_compose_final_image_prompt', '_match_descriptions', '_relationship_description_matches']
+__all__ = ['ENHANCE_MODEL', 'IMAGE_TITLE_EFFORT', 'ENHANCE_MAX_ENTITIES', 'ENHANCE_ENTITY_CHARS', 'IMAGE_PROMPT_MAX_CHARS', 'FINAL_GROUNDING_MAX_CHARS', 'IMAGE_TITLE_MODEL', 'IMAGE_TITLE_TIMEOUT_S', 'DEFAULT_DESCRIPTIONS_FILE', 'DESCRIPTIONS_FILE', '_DESCRIPTIONS_CACHE_LOCK', '_DESCRIPTIONS_CACHE', 'ALIAS_MIN_LEN', '_normalize_description_phrase', '_flatten_descriptions', '_load_descriptions_data', '_load_descriptions_index', '_grounded_entity_names', '_compact_grounding_text', '_final_visual_grounding_block', '_hard_constraints_block', '_compose_image_prompt', '_match_descriptions', '_relationship_description_matches']

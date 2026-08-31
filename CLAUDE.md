@@ -58,6 +58,8 @@ images live in `generated-art/`.
 |---|---|
 | `chatbot/server.py`, `chatbot/vos/` | Gunicorn compatibility shim plus Flask blueprints, services, migrations, and RAG engine |
 | `chatbot/vos/services/uploads.py` | Magic bytes, a real image decode, and the pixel cap — shared by chat attachments and handout images |
+| `chatbot/vos/image_prompt_compiler.json` | **The only** source of the Valley house style, the per-preset composition rules, and the prompt compiler's instructions |
+| `chatbot/vos/services/prompt_compiler.py` | User request → compiler model → structured JSON → scene + style + constraints → the image API |
 | `campaign_lib/` | Shared frontmatter, wiki traversal, chunking, and 5e build helpers |
 | `build_tiers.py` | Published markdown + 5e data → `campaign-data/tier1.md` |
 | `build_vectors.py` | → `campaign-data/vector_store.json` via Ollama embeddings |
@@ -84,6 +86,28 @@ images live in `generated-art/`.
 `Venturia/DM/` tree and internal runbooks/plans are additionally excluded in
 `.eleventyignore`; keep sensitive additions covered there or set
 `permalink: false`.
+
+**Art style lives in one JSON file, and both compilers read it.**
+`chatbot/vos/image_prompt_compiler.json` is the source of truth for the house
+look, the ten preset keys, and the compiler's own instructions.
+`ART_STYLE_PRESETS` is *derived* from it at import — no Python restates the
+style text, because two editable copies is how the look drifted before. The
+compiler model is never asked to write or reword the style; it returns a
+structured scene and the server appends the configured style block, the
+canonical visual lock, then the hard constraints, in that order. The file is
+read from beside the code (`COPY chatbot/vos ./vos`), not the `/site` bind
+mount, so a container always has the config it was built with. If it fails to
+load, art generation returns 503 rather than quietly shipping unstyled prompts.
+
+**Two prompt compilers exist so they can be compared; players see neither.**
+Claude and ChatGPT both compile prompts. Which one is live is a DM setting
+(Campaign Settings → Art), stored in `app_settings`, defaulting to
+`IMAGE_COMPILER_PROVIDER`. The Studio shows a two-button "powered by" row
+**only to the DM seat**, and `compiler` in a generate request is honored only
+for a DM token — a player is served a compiler and is never told there is a
+choice. `IMAGE_COMPILER_DEBUG=1` logs the whole exchange, which is the only
+way to tell "the compiler misread the request" from "the image model rendered
+a good prompt badly".
 
 **Restarting nginx is not enough for content changes.** nginx serves a static
 build; the chatbot container produces it. Rebuild `chatbot` to pick up markdown,
