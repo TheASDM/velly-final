@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'foglight-pwa-v123';
+const CACHE_VERSION = 'foglight-pwa-v124';
 const PRECACHE = `${CACHE_VERSION}-precache`;
 const PAGES = `${CACHE_VERSION}-pages`;
 const ASSETS = `${CACHE_VERSION}-assets`;
@@ -109,6 +109,36 @@ async function cacheFirst(request, cacheName) {
   return response;
 }
 
+/* Serve the cached asset now, fetch a fresh one for next time.
+ *
+ * Styles and scripts used to be cacheFirst, which returns the cached copy and
+ * never asks again. Their URLs are stable — /css/app-shell.css is always
+ * /css/app-shell.css — so the only thing that could ever replace them was a
+ * new CACHE_VERSION taking control, and a new worker waits for every window to
+ * close or for someone to press Refresh. An installed app that is never fully
+ * closed is therefore pinned to the stylesheet it first cached, and a shipped
+ * visual fix is invisible on the one device that matters most.
+ *
+ * One load behind is the honest trade: the page still paints instantly from
+ * cache and still works offline, and the fix lands the next time it opens
+ * rather than never. Whole loads stay coherent — every asset answers from the
+ * same generation of cache and refreshes together.
+ */
+async function staleWhileRevalidateAsset(request, cacheName) {
+  const cache = await caches.open(cacheName);
+  const cached = await cache.match(request);
+
+  const network = fetch(request)
+    .then((response) => {
+      if (response && response.ok) cache.put(request, response.clone());
+      return response;
+    })
+    .catch(() => null);
+
+  if (cached) return cached;
+  return (await network) || Response.error();
+}
+
 async function staleWhileRevalidate(request) {
   const cache = await caches.open(PAGES);
   const cached = await cache.match(request);
@@ -181,7 +211,14 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  if (['style', 'script', 'font', 'image'].includes(request.destination)) {
+  // Code revalidates; fonts and images do not need to — they are effectively
+  // immutable, and re-fetching them would cost bandwidth for nothing.
+  if (['style', 'script'].includes(request.destination)) {
+    event.respondWith(staleWhileRevalidateAsset(request, ASSETS));
+    return;
+  }
+
+  if (['font', 'image'].includes(request.destination)) {
     event.respondWith(cacheFirst(request, ASSETS));
     return;
   }
