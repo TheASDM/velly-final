@@ -175,21 +175,91 @@ python3 build_questionnaire.py       # regenerates _data/questionnaire.json
 # Back up player records (VPS: reads SQLite; laptop: needs --url + token)
 python3 export_questionnaires.py
 
-# Deploy — then rebuild vectors, because git does not carry them
-git pull --ff-only && docker compose up -d --build --remove-orphans
-set -a && . ./.env && set +a && python3 build_tiers.py && python3 build_vectors.py \
-  && docker compose restart chatbot
+# Deploying is its own section below — follow all of it, not this summary.
 ```
 
-Pre-deploy checks:
+## Shipping: finish the job, do not ask
+
+**A change is not done until it is live on the VPS.** Commit, push, deploy,
+and verify — every time, without being asked and without offering it as an
+option. "Do you want me to deploy?" is not a question this project has; the
+answer has always been yes. The work is served from the VPS, so an unshipped
+change is a change nobody has.
+
+The whole sequence, in order. Skipping a step here has cost real time before,
+and each one is in the list because it went wrong once.
 
 ```bash
+# 1. Bump the caches, or installed apps keep serving the old shell.
+#    CACHE_VERSION in sw.js every time; `build` in _data/app.js when players
+#    should see a new number in Settings → About.
+
+# 2. Prove it locally first.
 npm run clean && npm run build
 # node --check only reads its FIRST file argument — loop, don't list.
 for f in .eleventy.js sw.js scripts/build-js.mjs public/js/*.js; do node --check "$f" || break; done
+npm run lint:js
 python3 -m py_compile chatbot/server.py
+(cd chatbot && python3 -m pytest tests/ -q)
 git diff --check
+
+# 3. Commit by named path — never `git add -A`. The repo is public and must
+#    never take player-written content. See the plumbing recipe below.
+# 4. git push origin <branch>
+
+# 5. Deploy. The VPS tracks the same branch you are on; check, do not assume.
+ssh vapp 'cd ~/vallombrosa && git pull --ff-only \
+  && docker compose up -d --build --remove-orphans'
+
+# 6. Clear _site inside the container and rebuild. Eleventy never prunes, so a
+#    deleted or renamed page keeps being served from the stale build.
+ssh vapp 'cd ~/vallombrosa && docker exec dnd_chatbot sh -c "rm -rf /site/_site" \
+  && docker exec -w /site dnd_chatbot npm run build'
+
+# 7. Only if published wiki content, _data/campaign.js, or the corpus changed:
+ssh vapp 'cd ~/vallombrosa && set -a && . ./.env && set +a \
+  && python3 build_tiers.py && python3 build_vectors.py \
+  && docker compose restart chatbot'
+
+# 8. Verify against the live URL, not the local build.
 ```
+
+**Committing.** `git status` and `git diff` hang in this working copy (they
+time out after two minutes); the plumbing commands are instant. Stage named
+paths, print what is staged as the check that replaces `git status`, then
+commit with plumbing:
+
+```bash
+git add -- path/one path/two               # never `git add -A`
+git --no-pager diff --cached --name-status # this is the review step
+TREE=$(git write-tree)
+COMMIT=$(git commit-tree "$TREE" -p HEAD -F /path/to/message.txt)
+git update-ref refs/heads/<branch> "$COMMIT"
+```
+
+Write the message to a file and use `-F`: a heredoc breaks on an apostrophe.
+`timeout` is not installed on this machine (BSD userland).
+
+**Verify on the public origin** (`PUBLIC_BASE_URL` in `.env` on the VPS — not
+written down here, the repo is public). A local build passing proves nothing
+about what players get; the last several defects were all invisible locally. At
+minimum: the routes you touched return 200, the changed markup or copy is in
+the served HTML, `sw.js` reports the new `CACHE_VERSION`, and the service
+worker still reaches `activated`.
+
+**Always confirm the worker installs.** Register `/sw.js` in a real browser
+and watch the state. `installing → redundant` means the install threw and
+**no client will ever take the update** — every deploy will report success
+while every device keeps the build it already had. This happened for four
+releases straight because `Cache.addAll()` rejects on a duplicate URL and two
+entries had been added to `APP_SHELL` that were already in it. Settings →
+About now prints the version actually serving that device; ask for it before
+believing a screenshot.
+
+**A fresh browser context has no service worker**, which is why headless checks
+pass while a phone shows something days old. That difference is a real
+condition of this app, not a testing artifact — reason about it before
+concluding a fix did not work.
 
 ## Environment
 
