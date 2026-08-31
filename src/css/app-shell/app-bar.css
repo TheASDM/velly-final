@@ -76,20 +76,6 @@
     stroke-linecap: round;
     stroke-linejoin: round;
   }
-  .vos-app-profile {
-    padding: 0;
-    border: none;
-    border-radius: 50%;
-    background: transparent;
-  }
-  .vos-app-actions .vos-app-profile {
-    width: 38px;
-    height: 38px;
-  }
-  .vos-app-profile:hover {
-    background: transparent;
-    border: none;
-  }
   .vos-app-avatar-wrap {
     position: relative;
     display: inline-flex;
@@ -185,10 +171,9 @@
     letter-spacing: 0.04em;
     line-height: 1.18;
   }
-  /* Four icon-only controls beside the title: chat, settings, menu, you.
-     At 390px that is 4 x 38px + gaps ~= 170px, the crest takes 42px, and
-     the title block gets the rest and truncates. Below 360px the gear
-     folds back into the menu rather than squeezing the title to nothing. */
+  /* Two controls beside the title: Messages, and you. That is 2 x 44px plus
+     a gap, the crest takes 44px, and the title block keeps the rest — enough
+     that the only meaningful label on the bar stops truncating. */
   .vos-app-actions {
     display: inline-flex;
     align-items: center;
@@ -196,8 +181,8 @@
     gap: 0.3rem;
   }
   .vos-app-actions .vos-app-icon-button {
-    width: 38px;
-    height: 38px;
+    width: 44px;
+    height: 44px;
     flex: 0 0 auto;
   }
   .vos-app-actions .vos-app-icon-button svg {
@@ -234,19 +219,6 @@
     border-color: rgba(212, 165, 116, 0.56);
     background: rgba(212, 165, 116, 0.14);
   }
-  /* Matched at the same weight as the `.vos-user-menu a` rule that gives
-     every row its display: flex, or the row never hides. */
-  .vos-user-menu a.vos-user-menu-narrow-only {
-    display: none;
-  }
-  @media (max-width: 359px) {
-    .vos-app-gear {
-      display: none;
-    }
-    .vos-user-menu a.vos-user-menu-narrow-only {
-      display: flex;
-    }
-  }
   .vos-app-user-menu-wrap {
     position: relative;
     display: inline-flex;
@@ -256,13 +228,13 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 38px;
-    min-width: 38px;
-    max-width: 38px;
-    height: 38px;
-    border: 1px solid rgba(212, 165, 116, 0.24);
-    border-radius: 8px;
-    background: rgba(212, 165, 116, 0.065);
+    width: 44px;
+    min-width: 44px;
+    max-width: 44px;
+    height: 44px;
+    border: 1px solid transparent;
+    border-radius: 50%;
+    background: transparent;
     color: rgba(232, 220, 200, 0.78);
     cursor: pointer;
     font-family: 'Cinzel', Georgia, serif;
@@ -287,6 +259,10 @@
     color: var(--vos-gold-bright);
     border-color: rgba(212, 165, 116, 0.46);
     background: rgba(212, 165, 116, 0.12);
+  }
+  .vos-app-identity[aria-expanded="true"] {
+    border-color: rgba(212, 165, 116, 0.56);
+    background: rgba(212, 165, 116, 0.14);
   }
   .vos-app-identity-label {
     position: absolute;
@@ -350,7 +326,7 @@
     display: flex;
     align-items: center;
     width: 100%;
-    min-height: 38px;
+    min-height: 44px;
     padding: 0.48rem 0.55rem;
     border: 0;
     border-radius: 6px;
@@ -360,6 +336,24 @@
     text-align: left;
     text-decoration: none;
     cursor: pointer;
+  }
+  /* The name row is a door to your own profile, not a caption. Set after the
+     generic row rule so it wins on the type-selector tie. */
+  a.vos-user-menu-head {
+    margin-bottom: 0.3rem;
+    border-bottom: 1px solid rgba(212, 165, 116, 0.18);
+    border-radius: 6px 6px 0 0;
+    color: var(--vos-cream);
+    font-family: 'Cinzel', Georgia, serif;
+    font-size: 0.74rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+  }
+  .vos-user-menu-group + .vos-user-menu-group,
+  #vos-user-menu-settings {
+    margin-top: 0.3rem;
+    border-top: 1px solid rgba(212, 165, 116, 0.14);
+    padding-top: 0.3rem;
   }
   .vos-user-menu a:hover,
   .vos-user-menu button:hover {
@@ -413,3 +407,79 @@
     white-space: nowrap;
     color: rgba(232, 220, 200, 0.72);
   }
+
+  /* ── Previewing a player ────────────────────────────────────────────
+   *
+   * A strip under the bar, roughly one row tall. The alternative — a card
+   * with a heading and a paragraph — pushed the page it was describing down
+   * by a third of a phone screen, on every screen of the preview.
+   *
+   * Warning-toned because edits here land on that player. If preview ever
+   * becomes read-only, this goes neutral and the copy says so.
+   */
+  .vos-preview-strip {
+    position: sticky;
+    top: calc(var(--vos-app-bar-h) + var(--vos-safe-top));
+    z-index: 1140;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    min-height: 40px;
+    padding: 0.35rem max(0.85rem, env(safe-area-inset-right)) 0.35rem max(0.85rem, env(safe-area-inset-left));
+    border-bottom: 1px solid rgba(217, 154, 78, 0.5);
+    background: linear-gradient(180deg, rgba(64, 38, 14, 0.98), rgba(43, 26, 11, 0.98));
+    color: #f3e2c6;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.9rem;
+    line-height: 1.2;
+  }
+  .vos-preview-who b {
+    color: #f6d9a4;
+    font-family: 'Cinzel', Georgia, serif;
+    font-size: 0.82rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+  }
+  .vos-preview-warn {
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: rgba(243, 226, 198, 0.82);
+  }
+  /* Narrow, the sentence drops to its own line rather than disappearing —
+     "changes affect this player" is the reason the strip is warning-coloured,
+     so it is not the part to cut. Two short rows, still under 60px. */
+  @media (max-width: 430px) {
+    .vos-preview-strip {
+      flex-wrap: wrap;
+      row-gap: 0.15rem;
+      padding-top: 0.3rem;
+      padding-bottom: 0.35rem;
+    }
+    .vos-preview-who { order: 1; flex: 1 1 auto; }
+    .vos-preview-exit { order: 2; }
+    .vos-preview-warn {
+      order: 3;
+      flex: 1 0 100%;
+      font-size: 0.82rem;
+      white-space: normal;
+    }
+  }
+  .vos-preview-exit {
+    flex: 0 0 auto;
+    min-height: 32px;
+    padding: 0.35rem 0.75rem;
+    border: 1px solid rgba(246, 217, 164, 0.55);
+    border-radius: 6px;
+    background: rgba(246, 217, 164, 0.12);
+    color: #f6d9a4;
+    font-family: 'Cinzel', Georgia, serif;
+    font-size: 0.6rem;
+    font-weight: 700;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+    cursor: pointer;
+  }
+  .vos-preview-exit:hover { background: rgba(246, 217, 164, 0.2); }

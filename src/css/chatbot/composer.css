@@ -36,7 +36,7 @@
 
 #chat-input {
     flex: 1;
-    min-height: 38px;
+    min-height: 44px;
     max-height: 116px;
     background: rgba(255,255,255,0.04);
     border: 1px solid rgba(201, 168, 76, 0.2);

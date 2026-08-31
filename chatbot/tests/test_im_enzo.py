@@ -56,11 +56,12 @@ def scripted_enzo(server_module, monkeypatch):
     """Replace the engine so no test touches an LLM."""
     seen = {}
 
-    def chat_stream(message, history, rules=False, vibe=None):
+    def chat_stream(message, history, rules=False, vibe=None, viewer=None):
         seen["message"] = message
         seen["history"] = history
         seen["rules"] = rules
         seen["vibe"] = vibe
+        seen["viewer"] = viewer
         yield {"type": "token", "text": "The fog "}
         yield {"type": "token", "text": "remembers."}
         yield {"type": "meta", "citations": [{"title": "Vallombrosa"}],
@@ -231,3 +232,22 @@ def test_an_empty_reply_stores_nothing(app, server_module, monkeypatch):
     # The question is kept — it is the player's — but no empty Enzo bubble.
     assert senders == ["Lotan"]
     assert not im_routes._enzo_in_flight
+
+
+def test_enzo_is_told_who_is_asking(app, server_module, scripted_enzo):
+    """Enzo inherits the caller's role from their credential. Nothing about
+    who is asking comes from the request body, where a client could write it."""
+    key = server_module._enzo_thread_key("Lotan")
+    with app.test_client() as client:
+        # The stream is a generator; nothing runs until it is consumed.
+        _events(client.post(_enzo_url(key), headers=_headers(server_module, "Lotan"),
+                            json={"body": "What do I know about the fog?"}))
+    assert scripted_enzo["viewer"]["name"] == "Lotan"
+    assert scripted_enzo["viewer"]["is_dm"] is False
+
+    dm_key = server_module._enzo_thread_key("DM")
+    with app.test_client() as client:
+        _events(client.post(_enzo_url(dm_key), headers=_headers(server_module, "DM", True),
+                            json={"body": "Remind me what they have not found yet."}))
+    assert scripted_enzo["viewer"]["name"] == "DM"
+    assert scripted_enzo["viewer"]["is_dm"] is True

@@ -11,12 +11,10 @@ pageScripts:
 ---
 
 <div class="vos-monsters-page">
-  <nav class="vos-dm-satellites" aria-label="DM surfaces">
-    <a href="/dm/">Console</a>
-    <a href="/party/">The Table</a>
-    <a href="/sheets/">Sheets</a>
-    <a href="/dossiers/">Dossiers</a>
-  </nav>
+  <a class="vos-row-chip vos-back-to-table" href="/party/">
+    <span><span class="vos-row-chip-title">The Table</span><span class="vos-row-chip-meta">Back to the workspace</span></span>
+    <span class="vos-row-chip-arrow" aria-hidden="true">›</span>
+  </a>
 
   <div id="vos-monsters-root">
     <div class="empty-state"><b>Loading the bench…</b>One moment.</div>

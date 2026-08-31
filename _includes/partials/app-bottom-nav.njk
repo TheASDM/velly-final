@@ -10,7 +10,10 @@
         loads — health readable from every screen in the app. -#}
     <a class="vos-app-tab vos-app-tab--hero{% if isActive %} is-active{% endif %}"
        href="{{ tab.href }}"{% if isActive %} aria-current="page"{% endif %}
-       id="vos-nav-sheet" data-vos-sheet-tab{% if tab.dm %} data-dm-href="{{ tab.dm.href }}" data-dm-label="{{ tab.dm.label }}"{% endif %}>
+       id="vos-nav-sheet" data-vos-sheet-tab
+       {#- A name before the hit points arrive, and the same name if they
+           never do. sheet-badge.js appends the count once it knows one. -#}
+       aria-label="Open character sheet"{% if tab.dm %} data-dm-href="{{ tab.dm.href }}" data-dm-label="{{ tab.dm.label }}"{% endif %}>
       <span class="vos-hero-medallion">
         <svg class="vos-hero-ring" viewBox="0 0 44 44" aria-hidden="true">
           <circle class="vos-hero-ring-track" cx="22" cy="22" r="20"/>
@@ -18,8 +21,15 @@
         </svg>
         <svg class="vos-hero-glyph" aria-hidden="true" viewBox="0 0 24 24">{{ tab.svg | safe }}</svg>
         {#- Inside the ring, under the mask — a watch face, not a caption
-            fighting the tab label for the same pixels. -#}
-        <span class="vos-hero-hp" data-vos-sheet-hp hidden></span>
+            fighting the tab label for the same pixels. The "HP" cap is there
+            because a bare 24/24 under a mask is a number without a noun. -#}
+        <span class="vos-hero-hp" data-vos-sheet-hp hidden>
+          <span class="vos-hero-hp-cap" aria-hidden="true">HP</span>
+          <span class="vos-hero-hp-value" data-vos-sheet-hp-value></span>
+        </span>
+        {#- The DM's slot in the same place: a count of things waiting at the
+            table, deliberately shaped nothing like the hit-point ring. -#}
+        <span class="vos-hero-badge" data-vos-table-badge hidden></span>
       </span>
       <span class="vos-app-tab-label">{{ tab.label }}</span>
     </a>

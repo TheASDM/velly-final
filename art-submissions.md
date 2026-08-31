@@ -18,7 +18,7 @@ pageScripts:
       <h1>Art Submissions</h1>
     </div>
     <div class="vos-art-submissions-actions">
-      <a class="vos-art-submissions-action" href="/en/Tools/art/">Studio</a>
+      <a class="vos-art-submissions-action" href="/studio/">Studio</a>
       <button id="vos-art-submissions-refresh" class="vos-art-submissions-refresh" type="button" aria-label="Refresh art submissions" title="Refresh">↻</button>
     </div>
   </header>

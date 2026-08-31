@@ -1,4 +1,4 @@
-/* Who has alerts on. Sending lives in the Compose tab (messages.js) — one
+/* Who has alerts on. Sending lives in the Announce tab (messages.js) — one
  * composer posts messages and, with the notify-only toggle, bare pushes. */
 import { pushSubsEl, pushSubsStatusEl, setStatus } from './dom.js';
 import { adminJson, withPanel } from './http.js';

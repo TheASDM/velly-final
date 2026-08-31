@@ -98,6 +98,9 @@
 /* ── The bar ───────────────────────────────────────────────────────── */
 
 .vos-play-bar {
+  /* Its own height, published so the page below can reserve exactly that
+     much and not a guessed 5.5rem. */
+  --vos-play-bar-h: 58px;
   position: fixed;
   left: 0;
   right: 0;
@@ -110,11 +113,20 @@
      the buttons give up their padding before they give up their labels. */
   overflow-x: auto;
   scrollbar-width: none;
-  padding: 0.5rem max(0.8rem, env(safe-area-inset-left)) 0.5rem max(0.8rem, env(safe-area-inset-right));
+  padding: 0.4rem max(0.8rem, env(safe-area-inset-left)) 0.4rem max(0.8rem, env(safe-area-inset-right));
   border-top: 1px solid var(--vos-border);
   background: linear-gradient(180deg, rgba(13, 11, 17, 0.94), rgba(7, 6, 10, 0.98));
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
+  /* Stacked on the tab bar, the two together were taking a fifth of a phone
+     screen and holding it. Reading down folds this one most of the way away;
+     reading back up brings it straight back, because the reason to scroll up
+     mid-combat is usually to touch it. */
+  transform: translate3d(0, var(--vos-play-y, 0px), 0);
+  transition: transform 0.18s ease;
+}
+@media (prefers-reduced-motion: reduce) {
+  .vos-play-bar { transition: none; }
 }
 @media (min-width: 1024px) { .vos-play-bar { left: var(--vos-nav-w, 0px); } }
 .vos-play-bar::-webkit-scrollbar { display: none; }
@@ -439,8 +451,14 @@
 }
 @media (prefers-reduced-motion: reduce) { .vos-play-toast { transition: none; } }
 
-/* The bar would otherwise cover the last of the sheet. */
-.vos-sheet-page.has-play-bar { padding-bottom: 5.5rem; }
+/* Both fixed bars, plus the home indicator, plus a thumb's worth of room.
+   The old flat 5.5rem was measured against one of the two and left the last
+   accordion row under the other. */
+.vos-sheet-page.has-play-bar {
+  padding-bottom: calc(
+    var(--vos-app-nav-h, 72px) + 58px + env(safe-area-inset-bottom) + 1.5rem
+  );
+}
 
 @media print {
   .vos-play-bar, .vos-play-toast, .vos-play-sheet { display: none !important; }

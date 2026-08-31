@@ -2,6 +2,7 @@ import { AUTH_TOKEN_KEY, PLAYER_KEY, PUSH_DISMISSED_KEY, getStorage, removeNode,
 import { announceIdentity, getAuthConfig, renderAuthReturnStatus, rosterNames } from './identity.js';
 import { setAvatarBadge, updateIdentityControls } from './profile.js';
 import { maybeShowPushPrompt } from './push.js';
+import { previewState } from './preview.js';
 
 export let authSession = null;
 
@@ -32,6 +33,21 @@ export function isAuthenticated(config = null) {
 }
 
 export async function syncAuthSession(config = null) {
+  /* While previewing, the session is the preview and nothing else gets a
+     vote. /api/auth/session answers from the cookie, which is still the DM's
+     — asking it here would put the DM's name back over the player's. */
+  const preview = previewState();
+  if (preview) {
+    authSession = {
+      ok: true,
+      loginRequired: true,
+      playerName: preview.player,
+      isDm: false,
+      preview: true,
+      previewActor: preview.actor,
+    };
+    return authSession;
+  }
   const activeConfig = config || await getAuthConfig();
   if (!activeConfig.loginRequired) {
     authSession = { ok: true, loginRequired: false, isDm: getStorage(PLAYER_KEY) === 'DM' };

@@ -19,6 +19,11 @@ pageScripts:
 
   <nav class="vos-sheet-index" id="vos-sheet-index" aria-label="Jump to a section" hidden></nav>
 
+  <button class="vos-enzo-action" type="button"
+          data-enzo-ask="Explain one of my character's abilities. Ask me which one.">
+    Ask Enzo about this
+  </button>
+
   <div class="vos-sheet-root" id="vos-sheet-root">
     <div class="empty-state"><b>Loading your sheet…</b>One moment.</div>
   </div>

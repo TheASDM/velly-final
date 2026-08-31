@@ -44,17 +44,23 @@
   color: var(--vos-cream);
   border-bottom: none;
 }
+/* Named areas are gone: the card set is role-dependent now, and an area
+   grid can only describe one arrangement. vos-home.js writes `order` from a
+   per-role list and the grid places them in that sequence. */
 .vos-dash {
   display: grid;
   grid-template-columns: minmax(0, 1.25fr) minmax(360px, 0.85fr);
-  grid-template-areas:
-    "message next"
-    "inplay next"
-    "inplay rumor"
-    "story story";
   gap: 1rem;
   align-items: start;
 }
+/* Sections that were siblings of the grid and are now members of it. Full
+   width, no card chrome — they carry their own heading rule. */
+.vos-dash-wide {
+  grid-column: 1 / -1;
+  min-width: 0;
+}
+.vos-dash-wide[hidden] { display: none !important; }
+.vos-dash-wide .vos-home-sec-head { margin-top: 1.5rem; }
 .vos-dash-card {
   position: relative;
   overflow: hidden;
@@ -76,18 +82,15 @@
   box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
 }
 .vos-story-card {
-  grid-area: story;
+  grid-column: 1 / -1;
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   align-items: end;
   gap: 0.8rem 1rem;
   padding: 1rem 1.15rem;
 }
-.vos-message-card { grid-area: message; }
 .vos-message-card[hidden],
 .vos-dash-card[hidden] { display: none !important; }
-.vos-next-card { grid-area: next; }
-.vos-rumor-card { grid-area: rumor; }
 .vos-rumor-text {
   margin: 0.55rem 0 0.85rem;
   color: var(--vos-cream, #e8dcc8);
@@ -120,7 +123,6 @@
   background: rgba(212,165,116,0.14);
 }
 .vos-rumor-roll:disabled { opacity: 0.6; cursor: default; }
-.vos-threads-card { grid-area: threads; }
 .vos-dash-side-card {
   padding: 1.1rem 1.2rem 1.2rem;
 }
@@ -217,9 +219,10 @@
 }
 .vos-next-where {
   margin: 0.25rem 0 0.75rem;
-  color: rgba(147,138,120,0.95);
+  /* Was a gray italic at 0.58 effective contrast against #07060a. Where and
+     when the session is should not be the hardest line on the card to read. */
+  color: rgba(206, 196, 176, 0.92);
   font-family: 'Cormorant Garamond', 'Crimson Text', Georgia, serif;
-  font-style: italic;
   font-size: 0.98rem;
 }
 .vos-next-rsvp {
@@ -374,7 +377,6 @@
   text-transform: uppercase;
 }
 .vos-inplay-card {
-  grid-area: inplay;
   padding: 1.05rem 1.15rem 1rem;
 }
 .vos-play-rail {
@@ -439,4 +441,101 @@
 }
 .vos-home-studio .vos-home-sec-head {
   margin-top: 1.35rem;
+}
+
+
+/* ── Cards that answer "what needs me" ───────────────────────────────
+ *
+ * One shape for every list card on this page: rows, or one line saying
+ * there is nothing. An empty card shrinks to that line rather than holding
+ * a card's worth of nothing, which is what the old announcements card did.
+ */
+.vos-dash-empty {
+  margin: 0.35rem 0 0;
+  color: rgba(203, 190, 168, 0.78);
+  font-family: 'Crimson Text', Georgia, serif;
+  font-size: 0.95rem;
+  line-height: 1.45;
+}
+/* A card with nothing in it should take a card's worth of room only when it
+   has a card's worth to say. Empty, it collapses to its heading and one line. */
+.vos-dash-card.is-empty {
+  padding: 0.75rem 1.1rem 0.85rem;
+}
+.vos-dash-card.is-empty h3 {
+  margin: 0 0 0.3rem;
+}
+.vos-dash-card.is-empty .vos-dash-empty,
+.vos-dash-card.is-empty .vos-next-where {
+  margin: 0;
+}
+.vos-dash-card.is-empty .vos-dash-more { display: none; }
+
+.vos-dash-more {
+  align-self: start;
+  margin-top: 0.75rem;
+  color: rgba(232, 205, 132, 0.82);
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  border-bottom: none;
+}
+.vos-dash-more:hover { color: var(--vos-cream); border-bottom: none; }
+.vos-dash-more[hidden] { display: none; }
+
+/* The DM's attendance figures: four numbers, read at a glance. */
+.vos-dash-figures {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.5rem;
+  margin-top: 0.55rem;
+}
+.vos-dash-figures[hidden] { display: none; }
+.vos-dash-figure {
+  display: grid;
+  gap: 0.15rem;
+  padding: 0.5rem 0.4rem;
+  border: 1px solid rgba(212, 165, 116, 0.2);
+  border-radius: 6px;
+  text-align: center;
+}
+.vos-dash-figure strong {
+  color: var(--vos-cream, #e8dcc8);
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 1.1rem;
+  font-weight: 700;
+  line-height: 1;
+}
+.vos-dash-figure span {
+  color: rgba(203, 190, 168, 0.78);
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.52rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+/* A rail of recent pieces. Wraps rather than side-scrolls — a drawer you
+   have to drag hides whatever you were looking for. */
+.vos-home-studio-rail {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+.vos-home-studio-rail[hidden] { display: none; }
+.vos-home-studio-piece {
+  flex: 0 0 auto;
+  width: clamp(88px, 22vw, 132px);
+  aspect-ratio: 1;
+  overflow: hidden;
+  border: 1px solid rgba(212, 165, 116, 0.24);
+  border-radius: 6px;
+  border-bottom: 1px solid rgba(212, 165, 116, 0.24);
+}
+.vos-home-studio-piece img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }

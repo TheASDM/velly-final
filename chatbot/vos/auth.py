@@ -35,7 +35,8 @@ def _is_dm_player(player_name):
     return player_name == "DM"
 
 
-def _issue_player_token(player_name, is_dm=False, provider="", principal=""):
+def _issue_player_token(player_name, is_dm=False, provider="", principal="",
+                        preview_actor=None, ttl_seconds=None):
     if not AUTH_TOKEN_SECRET:
         return None
     now = int(time.time())
@@ -45,8 +46,15 @@ def _issue_player_token(player_name, is_dm=False, provider="", principal=""):
         "provider": provider,
         "principal": principal,
         "iat": now,
-        "exp": now + AUTH_TOKEN_TTL_SECONDS,
+        "exp": now + (ttl_seconds or AUTH_TOKEN_TTL_SECONDS),
     }
+    # A preview token IS the player, for every purpose the server has. The
+    # actor is recorded so a write can be attributed honestly, never so that
+    # a check can look at it and decide to allow something extra.
+    if preview_actor:
+        payload["preview"] = True
+        payload["actor"] = preview_actor
+        payload["is_dm"] = False
     payload_b64 = _b64url_encode(json.dumps(payload, separators=(",", ":")).encode("utf-8"))
     sig = hmac.new(
         AUTH_TOKEN_SECRET.encode("utf-8"),
@@ -213,6 +221,13 @@ def _verify_session_jwt(token):
 
 def _admin_error_response():
     player_payload = _verify_player_token_payload(_extract_player_token())
+    if player_payload and player_payload.get("preview"):
+        # Refused deliberately. If the preview could still open DM doors it
+        # would not be a preview of anything.
+        return jsonify({
+            "error": "Not available while previewing a player",
+            "error_code": "forbidden",
+        }), 403
     if player_payload and bool(player_payload.get("is_dm") or _is_dm_player(player_payload.get("name"))):
         request.dm_email = player_payload.get("principal") or player_payload.get("name") or "DM"
         return None
@@ -240,11 +255,28 @@ def _admin_error_response():
     return None
 
 
+PREVIEW_TOKEN_TTL_SECONDS = 60 * 60
+
+
+def _preview_actor():
+    """The DM behind a preview token, or None. Read for attribution and for
+    the strip the client draws — never as grounds to widen access."""
+    payload = _verify_player_token_payload(_extract_player_token())
+    if not payload or not payload.get("preview"):
+        return None
+    return payload.get("actor") or "DM"
+
+
 def _request_is_dm():
     """True when the request carries a valid DM credential of either kind.
     Unlike _admin_error_response() this writes nothing — it is for endpoints
-    that shape their output by role rather than refusing service."""
+    that shape their output by role rather than refusing service.
+
+    A preview token is never DM here, which is the whole point: the DM asked
+    to see what a player sees, and a player does not see this."""
     payload = _verify_player_token_payload(_extract_player_token())
+    if payload and payload.get("preview"):
+        return False
     if payload and bool(payload.get("is_dm") or _is_dm_player(payload.get("name"))):
         return True
     email, _reason = _verify_session_jwt(_extract_bearer_token())
@@ -461,12 +493,15 @@ def _auth_session_payload(token):
     if not payload:
         return None
     name = payload.get("name")
+    preview = bool(payload.get("preview"))
     return {
         "ok": True,
         "loginRequired": _auth_login_required(),
         "playerName": name,
-        "isDm": bool(payload.get("is_dm") or _is_dm_player(name)),
+        "isDm": (not preview) and bool(payload.get("is_dm") or _is_dm_player(name)),
         "provider": payload.get("provider") or "",
+        "preview": preview,
+        "previewActor": (payload.get("actor") or "DM") if preview else "",
     }
 
-__all__ = ['_utc_now_iso', '_b64url_encode', '_b64url_decode', '_google_oauth_configured', '_discord_oauth_configured', '_oauth_login_configured', '_auth_login_required', '_is_dm_player', '_issue_player_token', '_verify_player_token_payload', '_verify_player_token', '_extract_player_token', '_authenticated_player_name', '_logged_in_player_name', '_player_name_from_request', '_admin_auth_configured', '_extract_bearer_token', '_verify_google_id_token', '_mint_session_jwt', '_verify_session_jwt', '_admin_error_response', '_request_is_dm', '_safe_next_url', '_with_auth_status', '_oauth_redirect_uri', '_oauth_state_secret', '_issue_oauth_state', '_verify_oauth_state', '_auth_provider_list', '_verify_google_oauth_id_token', '_exchange_google_code', '_exchange_discord_code', '_resolve_oauth_player', '_auth_session_payload']
+__all__ = ['_utc_now_iso', '_b64url_encode', '_b64url_decode', '_google_oauth_configured', '_discord_oauth_configured', '_oauth_login_configured', '_auth_login_required', '_is_dm_player', '_issue_player_token', '_verify_player_token_payload', '_verify_player_token', '_extract_player_token', '_authenticated_player_name', '_logged_in_player_name', '_player_name_from_request', '_admin_auth_configured', '_extract_bearer_token', '_verify_google_id_token', '_mint_session_jwt', '_verify_session_jwt', '_admin_error_response', '_request_is_dm', '_preview_actor', 'PREVIEW_TOKEN_TTL_SECONDS', '_safe_next_url', '_with_auth_status', '_oauth_redirect_uri', '_oauth_state_secret', '_issue_oauth_state', '_verify_oauth_state', '_auth_provider_list', '_verify_google_oauth_id_token', '_exchange_google_code', '_exchange_discord_code', '_resolve_oauth_player', '_auth_session_payload']

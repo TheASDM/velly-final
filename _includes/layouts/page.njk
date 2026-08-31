@@ -25,11 +25,11 @@
 {% endfor %}
 
 </head>
-<body class="{% if page.url == '/enzo/' %}vos-is-enzo-page{% endif %}{% if page.url == '/messages/' %}vos-is-messages-page{% endif %}{% if page.url and page.url.startsWith('/en/') and page.url != '/en/Tools/art/' %} vos-is-wiki-page{% endif %}{% if page.filePathStem and page.filePathStem.endsWith('/index') %} vos-is-index-page{% endif %}">
+<body class="{% if page.url == '/enzo/' %}vos-is-enzo-page{% endif %}{% if page.url == '/messages/' %}vos-is-messages-page{% endif %}{% if page.url and page.url.startsWith('/en/') %} vos-is-wiki-page{% endif %}{% if page.filePathStem and page.filePathStem.endsWith('/index') %} vos-is-index-page{% endif %}">
 
 <div class="vos-backdrop" aria-hidden="true"></div>
 
-{%- set isWikiPage = page.url and page.url.startsWith('/en/') and page.url != '/en/Tools/art/' -%}
+{%- set isWikiPage = page.url and page.url.startsWith('/en/') -%}
 {%- set crumbs = [] -%}
 {%- set parentCrumb = null -%}
 {%- if isWikiPage -%}
@@ -62,56 +62,45 @@
         <div class="vos-app-title">{{ appTitle }}</div>
       </div>
       <div class="vos-app-actions">
-        {#- Four icon-only controls beside a truncating title: chat, settings,
-            menu, you. Below 360px the gear folds back into the menu (CSS). -#}
-        <button class="vos-app-icon-button vos-app-chat" id="vos-chat-button" type="button" aria-label="Chat" title="Chat" aria-expanded="false">
+        {#- Two controls, not four. Messages is the one thing worth its own
+            door in the bar; everything else lives behind your own face. -#}
+        <button class="vos-app-icon-button vos-app-chat" id="vos-chat-button" type="button" aria-label="Messages" title="Messages" aria-expanded="false">
           <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M20 12a8 8 0 0 1-8 8H7.6L4 22.4V12a8 8 0 0 1 16 0z"/><path d="M8.5 11h7"/><path d="M8.5 14.5h4.5"/></svg>
           <span class="vos-app-chat-count" id="vos-chat-count" hidden></span>
         </button>
-        <a class="vos-app-icon-button vos-app-gear" id="vos-app-gear" href="/settings/" aria-label="Settings" title="Settings">
-          <svg aria-hidden="true" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.1"/><path d="M19.4 14.6a1.6 1.6 0 0 0 .32 1.77l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.6 1.6 0 0 0-1.77-.32 1.6 1.6 0 0 0-.97 1.47V21a2 2 0 1 1-4 0v-.11a1.6 1.6 0 0 0-1.05-1.47 1.6 1.6 0 0 0-1.77.32l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.6 1.6 0 0 0 .32-1.77 1.6 1.6 0 0 0-1.47-.97H3a2 2 0 1 1 0-4h.11a1.6 1.6 0 0 0 1.47-1.05 1.6 1.6 0 0 0-.32-1.77l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.6 1.6 0 0 0 1.77.32H9a1.6 1.6 0 0 0 .97-1.47V3a2 2 0 1 1 4 0v.11a1.6 1.6 0 0 0 .97 1.47 1.6 1.6 0 0 0 1.77-.32l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.6 1.6 0 0 0-.32 1.77V9a1.6 1.6 0 0 0 1.47.97H21a2 2 0 1 1 0 4h-.11a1.6 1.6 0 0 0-1.47.97z"/></svg>
-        </a>
         <div class="vos-app-user-menu-wrap">
+          {#- The avatar is the menu. The gear that used to sit beside it was
+              a second door to a room this menu already opens. -#}
           <button class="vos-app-identity" id="vos-app-identity-button" type="button" aria-label="Menu" title="Menu" aria-haspopup="menu" aria-expanded="false">
-            <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M4 7h16"/><path d="M4 12h16"/><path d="M4 17h16"/></svg>
+            <span class="vos-app-avatar-wrap">
+              <img class="vos-app-avatar-img" id="vos-app-avatar-img" alt="">
+              <svg class="vos-app-avatar-fallback" id="vos-app-avatar-fallback" aria-hidden="true" viewBox="0 0 24 24"><path d="M20 21a8 8 0 0 0-16 0"/><circle cx="12" cy="8" r="4"/></svg>
+              <span class="vos-app-avatar-badge" id="vos-app-avatar-badge" hidden></span>
+            </span>
             <span class="vos-app-identity-label" id="vos-app-identity-label">Log in</span>
           </button>
           <div class="vos-user-menu" id="vos-user-menu" role="menu" hidden>
-            <div class="vos-user-menu-head" id="vos-user-menu-name">Not signed in</div>
-            <a role="menuitem" href="/notes/">Notes</a>
-            <a role="menuitem" href="/questionnaire/">Character Record</a>
-            <a role="menuitem" href="/sheet/">Character Sheet</a>
-            <a role="menuitem" href="/calendar/#next">RSVPs</a>
-            <a role="menuitem" href="/calendar/#availability">Availability</a>
-            <a role="menuitem" href="/submit-lore/#vos-submit-mine-title">Lore Submissions</a>
-            <a role="menuitem" href="/art-submissions/">Art Submissions</a>
-            <a role="menuitem" href="/en/Tools/art/?favorites=1#vos-art-gallery-section">Favorites</a>
-            {#- Only rendered as a row on the narrowest phones, where the
-                gear leaves the bar. See .vos-user-menu-narrow-only. -#}
-            <a role="menuitem" class="vos-user-menu-narrow-only" href="/settings/">Settings</a>
-            <button role="menuitem" id="vos-user-menu-sign-in" type="button">Sign in</button>
-            {#- The console's grouped index carries the per-tool detail now;
-                the menu only needs the doors. -#}
-            <div class="vos-user-menu-group" id="vos-user-menu-dm" hidden>
-              <div class="vos-user-menu-label">DM</div>
-              <a role="menuitem" href="/dm/">Console</a>
-              <a role="menuitem" href="/party/">The Table</a>
-              <a role="menuitem" href="/monsters/">Bench</a>
-              <a role="menuitem" href="/sheets/">Character Sheets</a>
-              <a role="menuitem" href="/dossiers/">Dossiers</a>
+            <a class="vos-user-menu-head" id="vos-user-menu-name" role="menuitem" href="/profile/">Not signed in</a>
+            {#- The player's secondary doors. The Sheet tab already carries
+                Story and Stats, so Character Record is not repeated here. -#}
+            <div class="vos-user-menu-group" id="vos-user-menu-player">
+              <a role="menuitem" href="/notes/">Notes</a>
+              <a role="menuitem" href="/calendar/#next">RSVP and Availability</a>
+              <a role="menuitem" href="/studio/?tab=view&amp;filter=mine">My Submissions</a>
+              <a role="menuitem" href="/studio/?tab=view&amp;filter=favorites">Favorites</a>
             </div>
+            {#- The DM's core tools are in The Table now. What is left here is
+                the account, the campaign, and the way into someone's seat. -#}
+            <div class="vos-user-menu-group" id="vos-user-menu-dm" hidden>
+              <button role="menuitem" type="button" id="vos-user-menu-preview">Preview as Player</button>
+              <a role="menuitem" href="/notes/">Notes</a>
+              <a role="menuitem" href="/dm/">Campaign Settings</a>
+            </div>
+            <a role="menuitem" id="vos-user-menu-settings" href="/settings/">Settings</a>
+            <button role="menuitem" id="vos-user-menu-sign-in" type="button">Sign in</button>
             <button role="menuitem" id="vos-user-menu-sign-out" type="button" hidden>Sign out</button>
           </div>
         </div>
-        {#- The avatar opens your own profile; the gear beside it is the
-            door to settings. -#}
-        <a class="vos-app-icon-button vos-app-profile" id="vos-profile-button" href="/profile/" aria-label="Your profile" title="Your profile">
-          <span class="vos-app-avatar-wrap">
-            <img class="vos-app-avatar-img" id="vos-app-avatar-img" alt="">
-            <svg class="vos-app-avatar-fallback" id="vos-app-avatar-fallback" aria-hidden="true" viewBox="0 0 24 24"><path d="M20 21a8 8 0 0 0-16 0"/><circle cx="12" cy="8" r="4"/></svg>
-            <span class="vos-app-avatar-badge" id="vos-app-avatar-badge" hidden></span>
-          </span>
-        </a>
       </div>
     </div>
     {%- if crumbs.length > 1 -%}
@@ -139,7 +128,16 @@
   </article>
 
   {%- if isWikiPage -%}
-  <a class="vos-wiki-edit-link" id="vos-wiki-edit-link" href="/dm/?wiki={{ page.url }}#vos-dm-wiki-title" data-wiki-url="{{ page.url }}" hidden>Edit Wiki</a>
+  {#- Enzo answers from what this reader is permitted to know, so the ask
+      belongs beside the page rather than behind a tab they have to leave
+      the page to reach. -#}
+  <div class="vos-page-actions">
+    <button class="vos-enzo-action" type="button"
+            data-enzo-ask="Tell me about {title}. What should I know, and what am I missing?">
+      Ask Enzo about this
+    </button>
+    <a class="vos-wiki-edit-link" id="vos-wiki-edit-link" href="/dm/?wiki={{ page.url }}#vos-dm-wiki-title" data-wiki-url="{{ page.url }}" hidden>Edit Wiki</a>
+  </div>
   {%- endif -%}
 
   {#- Related pages, from tags the page already carried. A wiki this size is

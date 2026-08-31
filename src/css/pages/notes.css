@@ -14,7 +14,7 @@
   display: none;
 }
 .vos-notes-scope button {
-  min-height: 34px;
+  min-height: 44px;
   padding: 0.42rem 0.68rem;
 }
 .vos-notes-scope button.is-selected {

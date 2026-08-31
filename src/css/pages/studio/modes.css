@@ -1,0 +1,96 @@
+/* ── Studio: View / Create ────────────────────────────────────────────
+ *
+ * Two words at the top of the page, and the whole room changes. The old
+ * head — a kicker, an H1, and two anchors to other addresses — is gone,
+ * because the app bar already says where you are and the modes say what
+ * you are doing.
+ */
+.vos-studio-modes {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.35rem;
+  margin: 0 0 1.1rem;
+  padding: 0.28rem;
+  border: 1px solid var(--art-border);
+  border-radius: 9px;
+  background: rgba(7, 6, 10, 0.6);
+}
+.vos-studio-mode {
+  appearance: none;
+  min-height: 44px;
+  padding: 0.6rem 0.8rem;
+  border: 1px solid transparent;
+  border-radius: 7px;
+  background: transparent;
+  color: rgba(221, 183, 127, 0.72);
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.16s ease, color 0.16s ease;
+}
+.vos-studio-mode:hover { color: var(--vos-cream); }
+.vos-studio-mode.is-active {
+  border-color: var(--art-border-strong);
+  background: rgba(221, 183, 127, 0.14);
+  color: #f0d4a5;
+}
+.vos-studio-mode:focus-visible {
+  outline: 2px solid var(--art-border-strong);
+  outline-offset: 2px;
+}
+
+.vos-studio-panel[hidden] { display: none; }
+
+/* Art or Lore. Lore is a link because its pipeline already exists behind
+   /submit-lore/ — offering the door beats building a second one. */
+.vos-studio-kinds {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin: 0 0 1rem;
+}
+.vos-studio-kind {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0.5rem 1.1rem;
+  border: 1px solid rgba(221, 183, 127, 0.28);
+  border-radius: 6px;
+  background: rgba(7, 6, 10, 0.52);
+  color: rgba(221, 183, 127, 0.74);
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.64rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  text-decoration: none;
+  cursor: pointer;
+}
+.vos-studio-kind:hover { border-color: rgba(221, 183, 127, 0.5); color: var(--vos-cream); }
+.vos-studio-kind.is-active {
+  border-color: var(--art-border-strong);
+  background: rgba(221, 183, 127, 0.14);
+  color: #f0d4a5;
+}
+
+/* What is deferred, said plainly, in body copy rather than in the tracked
+   uppercase serif the headings own. Not a control — there is nothing here
+   to press that would not be a promise the server cannot keep. */
+.vos-studio-deferred {
+  margin: 1.4rem 0 0;
+  padding: 0.85rem 1rem;
+  border: 1px dashed rgba(176, 143, 100, 0.34);
+  border-radius: 8px;
+  background: rgba(13, 11, 17, 0.5);
+  color: rgba(226, 214, 196, 0.72);
+  font-family: 'Crimson Text', Georgia, serif;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+/* Touch targets. 38px was under the floor everywhere in this page. */
+.vos-art-gallery-tab { min-height: 44px; }

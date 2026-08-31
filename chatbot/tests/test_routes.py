@@ -18,9 +18,10 @@ ROUTE_CONTRACT = """
 /api/auth/config|/api/auth/config|GET|auth_config|200:json.authConfigured,legacyCodeLogin,loginRequired,players,providers|200:json.authConfigured,legacyCodeLogin,loginRequired,players,providers|200:json.authConfigured,legacyCodeLogin,loginRequired,players,providers|200:json.authConfigured,legacyCodeLogin,loginRequired,players,providers
 /api/auth/login|/api/auth/login|POST|auth_login|400:json.error|400:json.error|400:json.error|400:json.error
 /api/auth/logout|/api/auth/logout|POST|auth_logout|200:json.ok|200:json.ok|200:json.ok|200:json.ok
+/api/auth/preview|/api/auth/preview|POST|auth_preview|401:json.error,error_code|403:json.error,error_code|400:json.error,error_code|400:json.error,error_code
 /api/auth/oauth/<provider>/callback|/api/auth/oauth/discord/callback|GET|auth_oauth_callback|302:text/html.redirect|302:text/html.redirect|302:text/html.redirect|302:text/html.redirect
 /api/auth/oauth/<provider>/start|/api/auth/oauth/discord/start|GET|auth_oauth_start|302:text/html.redirect|302:text/html.redirect|302:text/html.redirect|302:text/html.redirect
-/api/auth/session|/api/auth/session|GET|auth_session|401:json.error|200:json.isDm,loginRequired,ok,playerName,provider|200:json.isDm,loginRequired,ok,playerName,provider|401:json.error
+/api/auth/session|/api/auth/session|GET|auth_session|401:json.error|200:json.isDm,loginRequired,ok,playerName,preview,previewActor,provider|200:json.isDm,loginRequired,ok,playerName,preview,previewActor,provider|401:json.error
 /api/availability|/api/availability|GET|availability|401:json.error|200:json.entries,playerName,updated_at|200:json.entries,playerName,updated_at|401:json.error
 /api/availability/summary|/api/availability/summary|GET|availability_summary|401:json.error,error_code|403:json.error,error_code|200:json.days,submitted|200:json.days,submitted
 /api/calendar/<event_id>.ics|/api/calendar/sample.ics|GET|calendar_event_ics|404:json.error,error_code|404:json.error,error_code|404:json.error,error_code|404:json.error,error_code
@@ -138,7 +139,7 @@ def test_route_inventory_and_response_contract(app, auth_headers):
     }
     expected_routes = {rule for rule, _, _, _endpoint, _ in cases}
     assert actual_routes == expected_routes
-    assert len(cases) == 106
+    assert len(cases) == 107
 
     for rule, path, method, _endpoint, expected in cases:
         for role in ROLES:

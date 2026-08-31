@@ -325,7 +325,7 @@ def test_a_deleted_message_stops_showing_its_files(app, server_module):
 def test_enzo_keeps_files_on_the_message_but_never_sees_them(app, server_module, monkeypatch):
     seen = {}
 
-    def chat_stream(message, history, rules=False, vibe=None):
+    def chat_stream(message, history, rules=False, vibe=None, viewer=None):
         seen["message"] = message
         seen["history"] = history
         yield {"type": "token", "text": "Noted."}

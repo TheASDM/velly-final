@@ -1,6 +1,6 @@
 ---
 title: Messages
-description: Direct messages, the party channel, and DM announcements.
+description: Direct and party conversations. Campaign announcements are on Home.
 permalink: /messages/
 published: false
 autoIndex: false

@@ -153,10 +153,60 @@ def auth_session():
     return jsonify(payload)
 
 
+@bp.route("/api/auth/preview", methods=["POST"])
+def auth_preview():
+    """Mint a short-lived token that IS a player, for the DM.
+
+    Hiding controls is not authorization, so previewing is not a client flag
+    over a DM credential — it is a different credential. Every existing route
+    scopes to the previewed player without knowing preview exists, and the
+    DM-only doors close because _request_is_dm() and _admin_error_response()
+    both refuse a preview token.
+
+    The DM's own token is not touched. The client keeps it and restores it on
+    Exit Preview, so leaving never depends on the network."""
+    admin_error = _admin_error_response()
+    if admin_error:
+        return admin_error
+
+    body = request.get_json(silent=True) or {}
+    target = body.get("player") or body.get("name")
+    if not isinstance(target, str) or not target.strip():
+        return jsonify({"error": "Name the player to preview",
+                        "error_code": "invalid"}), 400
+    target = target.strip()[:64]
+
+    if _is_dm_player(target):
+        return jsonify({"error": "That seat is yours already",
+                        "error_code": "invalid"}), 400
+    if target not in _roster_player_names():
+        return jsonify({"error": f"{target} is not at this table",
+                        "error_code": "not_found"}), 404
+
+    actor = getattr(request, "dm_email", None) or "DM"
+    token = _issue_player_token(
+        target,
+        provider="preview",
+        principal=actor,
+        preview_actor=actor,
+        ttl_seconds=PREVIEW_TOKEN_TTL_SECONDS,
+    )
+    if not token:
+        return jsonify({"error": "Preview is unavailable: AUTH_TOKEN_SECRET is not set.",
+                        "error_code": "auth_not_configured"}), 503
+
+    return jsonify({
+        "ok": True,
+        "token": token,
+        "playerName": target,
+        "expiresIn": PREVIEW_TOKEN_TTL_SECONDS,
+    })
+
+
 @bp.route("/api/auth/logout", methods=["POST"])
 def auth_logout():
     response = jsonify({"ok": True})
     response.delete_cookie(AUTH_COOKIE_NAME, samesite="Lax")
     return response
 
-__all__ = ['auth_config', 'auth_oauth_start', 'auth_oauth_callback', 'auth_login', 'auth_session', 'auth_logout']
+__all__ = ['auth_config', 'auth_oauth_start', 'auth_oauth_callback', 'auth_login', 'auth_session', 'auth_preview', 'auth_logout']

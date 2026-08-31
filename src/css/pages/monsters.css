@@ -15,7 +15,7 @@
 .vos-mon-topbar a {
   display: inline-flex;
   align-items: center;
-  min-height: 34px;
+  min-height: 44px;
   padding: 0 0.7rem;
   border: 1px solid var(--vos-border);
   border-radius: 8px;
@@ -43,7 +43,7 @@
   background: linear-gradient(180deg, var(--vos-bg) 78%, transparent);
 }
 .vos-mon-index a {
-  min-height: 36px;
+  min-height: 44px;
   display: inline-flex;
   align-items: center;
   padding: 0 0.75rem;

@@ -4,16 +4,25 @@ A self-hosted PWA for the **Valley of Shadows** D&D campaign. One repo holds the
 campaign wiki, the player-facing app shell, the Flask API, and the deployment
 config — the repo is the source of truth for all four.
 
+The five bottom-nav destinations. The middle one is role-specific: a player's
+primary workspace is their own Sheet, the DM's is The Table.
+
 | Surface | Route | What it is |
 |---|---|---|
-| Home | `/` | Session status, DM messages, open threads, tavern rumor |
+| Home | `/` | Next gathering, what needs you, News and Announcements — ordered by role |
 | Calendar | `/calendar/` | Scheduling, RSVP, weekly availability grid, `.ics` export |
+| Sheet / The Table | `/sheet/` · `/party/` | The player's character, or the DM's five-area workspace |
 | Wiki | `/en/Venturia/` | 178 markdown pages — characters, locations, factions, lore |
-| Studio | `/en/Tools/art/` | Image generation and a shared gallery |
-| Enzo | `/enzo/` | RAG chatbot over the campaign corpus and 5e reference data |
+| Studio | `/studio/` | View and create campaign art and lore |
+
+Enzo is a capability rather than a destination: contextual actions live on the
+wiki, the Sheet, Home, The Table, and in Studio Create. `/enzo/` is still the
+general conversation, just not a tab.
 
 Player-only surfaces: `/questionnaire/` (character record), `/notes/`,
-`/messages/`, `/submit-lore/`, `/settings/`. DM console at `/dm/`.
+`/messages/`, `/submit-lore/`, `/settings/`, `/profile/`.
+DM surfaces are areas of The Table: `/dm/` (campaign settings), `/monsters/`,
+`/sheets/`, `/dossiers/`.
 
 ## Stack
 

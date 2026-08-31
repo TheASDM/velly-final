@@ -250,7 +250,7 @@
   .vos-identity-options button,
   .vos-identity-actions button,
   .vos-push-actions button {
-    min-height: 42px;
+    min-height: 44px;
     border: 1px solid rgba(212, 165, 116, 0.34);
     border-radius: 6px;
     background: rgba(212, 165, 116, 0.08);

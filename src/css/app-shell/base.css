@@ -88,12 +88,22 @@
 
   img { max-width: 100%; height: auto; }
 
+  /* Any class that sets `display` outranks the UA's `[hidden] { display: none }`
+     rule, so an element the code has hidden can still be on screen. That is
+     how an empty announcements card kept offering "Show older" for a page of
+     announcements that did not exist. Said once, at a weight nothing loses to,
+     rather than chased class by class.
+
+     Safe because nothing in this stylesheet uses [hidden] to *show* anything —
+     every [hidden] rule in src/css sets display: none. */
+  [hidden] { display: none !important; }
+
   .vos-wiki-edit-link {
     position: fixed;
     right: calc(1rem + env(safe-area-inset-right, 0px));
     bottom: calc(var(--vos-app-nav-h) + 0.85rem + env(safe-area-inset-bottom, 0px));
     z-index: 720;
-    min-height: 38px;
+    min-height: 44px;
     display: inline-flex;
     align-items: center;
     justify-content: center;

@@ -11,12 +11,10 @@ pageScripts:
 ---
 
 <div class="vos-dossiers">
-  <nav class="vos-dm-satellites" aria-label="DM surfaces">
-    <a href="/dm/">Console</a>
-    <a href="/party/">The Table</a>
-    <a href="/monsters/">Bench</a>
-    <a href="/sheets/">Sheets</a>
-  </nav>
+  <a class="vos-row-chip vos-back-to-table" href="/party/">
+    <span><span class="vos-row-chip-title">The Table</span><span class="vos-row-chip-meta">Back to the workspace</span></span>
+    <span class="vos-row-chip-arrow" aria-hidden="true">›</span>
+  </a>
   <h1>Dossiers</h1>
   <p class="vos-dossiers-lede">
     Every character record in one place — read a full dossier, put one question to

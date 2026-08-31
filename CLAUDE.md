@@ -32,8 +32,9 @@ images live in `generated-art/`.
 | `_data/navigation.js` | Single source of truth for bottom-nav tabs and app-bar titles |
 | `_data/players.json` | Canonical roster names — auth maps and records key off these |
 | `_data/campaign.js` | Latest session, open threads (edit after each session, then rebuild) |
-| `home.md`, `calendar.md`, `enzo.md` | Root tab surfaces |
-| `Tools/art.md` | Studio |
+| `home.md`, `calendar.md`, `sheet.md`, `studio.md` | Root tab surfaces (the wiki is the fifth) |
+| `party.md` | The Table — the DM's Run/Prepare/Players/NPCs/Review workspace |
+| `enzo.md` | The general Enzo conversation; no longer a tab |
 | `dm.md`, `questionnaire.md`, `submit-lore.md`, `messages.md`, `notes.md`, `settings.md`, `profile.md` | Player/DM surfaces |
 
 ### Client
@@ -43,6 +44,9 @@ images live in `generated-art/`.
 | `src/js/pwa/` | Identity, push, install, `authHeaders()`, RSVP wiring. Bundles to `/js/pwa-client.js` and exposes `window.VOS_PWA` |
 | `sw.js` | Service worker — four caches keyed off `CACHE_VERSION` |
 | `src/js/dm/` | DM console modules; esbuild emits `public/js/vos-dm.js` |
+| `src/js/play/table.js` | The Table's five areas, the preview roster, the review count |
+| `src/js/pwa/preview.js` | Preview-as-player: token swap, sticky strip, Exit Preview |
+| `src/js/pwa/enzo-actions.js` | `data-enzo-ask="…"` — seeds the widget from anywhere |
 | `public/js/vos-calendar.js` | Calendar, RSVP, availability grid |
 | `src/js/questionnaire/` | Character record + DM proofing view + export |
 | `src/js/chatbot/`, `src/js/studio/` | Enzo client and Studio UI modules |
@@ -119,6 +123,23 @@ removed. Run `VACUUM` when the deletion was the point.
 
 **Bump `CACHE_VERSION` in `sw.js`** when shipping client changes, or installed
 apps keep serving the old shell.
+
+**Previewing a player is a credential, not a client flag.** `POST
+/api/auth/preview` (DM only) mints a short-lived token that *is* that player,
+carrying `preview: true`. Every route scopes to them without knowing preview
+exists, and `_request_is_dm()` / `_admin_error_response()` both refuse a
+preview token — so DM doors close for real, not just visually. The client
+stashes the DM's own token under `vos.preview.dmSeat` and restores it on Exit
+Preview, so leaving never depends on the network. See
+`chatbot/tests/test_preview.py`.
+
+**Enzo inherits the caller's role, but has only one corpus.** `/api/chat` now
+reads the caller's token and passes a viewer into the engine. The corpus is
+still published-wiki-only (`build_tiers.py` excludes `Venturia/DM/` and
+anything `published: false`), so a player cannot be told a DM secret — and
+neither can the DM. A DM-visible tier needs a second `tier1-dm.md` and vector
+namespace; see the `TODO(DESIGN-PROJECT)` in
+`chatbot/vos/engine/loremaster.py`.
 
 **Auth is OAuth, not tokens.** `AUTH_TOKEN_SECRET` signs player tokens; DM
 status is `player_name == "DM"`. `ADMIN_TOKEN` and `PLAYER_LOGIN_CODES` are

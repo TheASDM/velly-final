@@ -11,6 +11,7 @@
  */
 import { createControls } from './controls.js';
 import { sendOp } from './api.js';
+import { initTable } from './table.js';
 
 const REFRESH_MS = 12000;
 
@@ -146,8 +147,9 @@ function card(entry) {
       <button type="button" data-act="damage">Damage</button>
       <button type="button" data-act="heal">Heal</button>
       <button type="button" data-act="conditions">Conditions</button>
-      <a class="vos-party-view" href="/sheet/?as=${encodeURIComponent(entry.playerName)}"
-         title="Open their sheet as they see it">View</a>
+      <button type="button" class="vos-party-view" data-act="preview"
+              data-player="${esc(entry.playerName)}"
+              title="Open the app as they see it">Preview</button>
       <a class="vos-party-view" href="/profile/?p=${encodeURIComponent(entry.playerName)}"
          title="Open their profile">Profile</a>
     </div>
@@ -209,6 +211,16 @@ function onClick(event) {
 
   const action = button.dataset.act;
   if (action === 'damage' || action === 'heal') { quickAmount(entry, action); return; }
+  if (action === 'preview') {
+    const pwa = window.VOS_PWA;
+    if (!pwa || !pwa.beginPreview) return;
+    button.disabled = true;
+    pwa.beginPreview(entry.playerName).catch((error) => {
+      button.disabled = false;
+      setStatus(error.message || 'Could not open that seat.', 'error');
+    });
+    return;
+  }
 
   const controls = controlsFor(entry.playerName);
   if (!controls) return;
@@ -277,5 +289,9 @@ async function boot() {
   await refresh();
   start();
 }
+
+/* The areas are the page; the party grid is one of them. Wired before the
+   DM check so the tabs work even on the refusal screen. */
+initTable();
 
 if (root) boot();

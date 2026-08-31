@@ -124,13 +124,13 @@ export function showJobDone(job) {
     studio.latestEnhanced.innerHTML = '';
     const title = escapeHtml(job.title || job.prompt || 'Generated art');
     const privateHref = job.gallery_id
-      ? `/Tools/art/?gallery=mine&image=${encodeURIComponent(job.gallery_id)}`
+      ? `/studio/?gallery=mine&image=${encodeURIComponent(job.gallery_id)}`
       : '#vos-art-gallery-section';
-    studio.latestCap.innerHTML = `${title}<br><a href="${privateHref}">Open private piece &rarr;</a> · <a href="/art-submissions/">Art submissions &rarr;</a>`;
+    studio.latestCap.innerHTML = `${title}<br><a href="${privateHref}">Open private piece &rarr;</a> · <a href="/art-submissions/">Generation history &rarr;</a>`;
     studio.latestEl.classList.remove('has-error');
     studio.latestEl.classList.add('is-shown', 'has-image');
     setGenerateButton(false);
-    setStatus('Done. Saved privately. Share it to the group gallery when it is table-safe.', false, { clearAfter: 6500 });
+    setStatus('Done. Saved privately to you and the DM — share it to the campaign library when it is table-safe.', false, { clearAfter: 6500 });
   }
 
 export function copyForErrorCode(code, fallback, extras) {

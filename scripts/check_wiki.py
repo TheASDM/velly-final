@@ -19,7 +19,7 @@ ROOT = Path(__file__).resolve().parent.parent
 
 # Everything a reader can browse. DM/ is deliberately absent — it is
 # unpublished, and a check that demanded it be reachable would be wrong.
-# Tools/ is deliberately absent: Tools/art.md is the Studio, a root tab of the
+# Tools/ is deliberately absent: the Studio moved out of the wiki to /studio/, a root tab of the
 # app, not a wiki article. Holding it to wiki navigation rules would demand an
 # index page for a section that is not a section.
 WIKI_ROOTS = ["Venturia", "Articles", "House-Rules", "Class-Changes",

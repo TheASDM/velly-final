@@ -7,8 +7,11 @@ import { renderStyles, updateStyleSummary } from './identity.js';
 import { deleteEntry, restoreStudioJobs, updateGenerateAccess } from './jobs.js';
 import { closeLightbox, openLightbox, togglePinMenu } from './lightbox.js';
 import { loadReferences } from './references.js';
+import { initStudioModes } from './modes.js';
 
 function bootStudio() {
+  initStudioModes();
+
   if (studio.lightbox && studio.lightbox.parentNode !== document.body) {
       document.body.appendChild(studio.lightbox);
     }

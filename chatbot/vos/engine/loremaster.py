@@ -24,8 +24,12 @@ class Loremaster(KnowledgeMixin, RetrievalMixin, AnthropicMixin):
         self._loaded_data_signature = None
         self._load_lock = threading.RLock()
 
-    def chat(self, message, conversation_history, rules=False, vibe=None):
-        """Process a chat message. Returns (response_text, updated_history, rules, vibe)."""
+    def chat(self, message, conversation_history, rules=False, vibe=None, viewer=None):
+        """Process a chat message. Returns (response_text, updated_history, rules, vibe).
+
+        `viewer` is who is asking — {"name", "is_dm", "preview"} — resolved
+        from the caller's credential, never from anything the client asserts.
+        See _viewer_note() for what it currently does and does not change."""
         self.reload_if_stale()
         t_start = time.time()
         logging.info(
@@ -169,6 +173,7 @@ class Loremaster(KnowledgeMixin, RetrievalMixin, AnthropicMixin):
             )
         if rules:
             system_prompt += "The user has enabled rules lookup. You may receive D&D 5e rules references alongside campaign content.\n\n"
+        system_prompt += _viewer_note(viewer)
         system_prompt += self._tier1
 
         # Build Anthropic messages from conversation history
@@ -212,7 +217,7 @@ class Loremaster(KnowledgeMixin, RetrievalMixin, AnthropicMixin):
         ]
         return response_text, updated_history, rules, vibe, citations
 
-    def chat_stream(self, message, conversation_history, rules=False, vibe=None):
+    def chat_stream(self, message, conversation_history, rules=False, vibe=None, viewer=None):
         """Streaming variant of chat(). Yields the same event dicts
         as call_anthropic_stream() plus a final
         {type: 'meta', conversationHistory, rules, vibe, citations}.
@@ -294,6 +299,7 @@ class Loremaster(KnowledgeMixin, RetrievalMixin, AnthropicMixin):
             )
         if rules:
             system_prompt += "The user has enabled rules lookup. You may receive D&D 5e rules references alongside campaign content.\n\n"
+        system_prompt += _viewer_note(viewer)
         system_prompt += self._tier1
 
         anthropic_messages = []
@@ -351,4 +357,44 @@ class Loremaster(KnowledgeMixin, RetrievalMixin, AnthropicMixin):
             "citations": citations,
         }
 
-__all__ = ['Loremaster']
+def _viewer_note(viewer):
+    """The one line of system prompt that says who is asking.
+
+    Deliberately small. Enzo's corpus is built by build_tiers.py from
+    published wiki content only — Venturia/DM/ and anything `published: false`
+    never enters it — so a player cannot be told a DM secret today because no
+    DM secret is in the index to retrieve.
+
+    The consequence is the other half of the brief's requirement is not met
+    yet either: the DM gets no privileged answers here, because there is no
+    privileged tier to search. That needs a second corpus and a second vector
+    store, built and rebuilt on the server — a change to the knowledge
+    pipeline, not to this file. Until then this note is context, and the
+    boundary is still enforced by what was indexed rather than by what the
+    prompt asks the model to withhold.
+
+    TODO(DESIGN-PROJECT): DM-visible Enzo knowledge tier
+      Intended users: the DM only.
+      Required data: campaign-data/tier1-dm.md and a DM-scoped vector
+        namespace, both built from Venturia/DM/ by build_tiers.py and
+        build_vectors.py, loaded separately by knowledge.py.
+      Unresolved: whether preview mode should see the previewed player's
+        private handouts, and how retrieval mixes two indexes in one answer.
+      Acceptance criteria: retrieval — not the prompt — selects the tier from
+        viewer.is_dm; a player token can never surface a DM-tier chunk; and
+        rebuilding on the VPS covers both stores.
+    """
+    if not viewer or not viewer.get("name"):
+        return ""
+    if viewer.get("preview"):
+        return (
+            f"\nYou are answering {viewer['name']}. The person at the keyboard is "
+            "the DM previewing their app, so answer exactly as you would answer "
+            f"{viewer['name']} — nothing the DM knows that they do not.\n\n"
+        )
+    if viewer.get("is_dm"):
+        return "\nYou are answering the DM.\n\n"
+    return f"\nYou are answering {viewer['name']}, a player at this table.\n\n"
+
+
+__all__ = ['Loremaster', '_viewer_note']

@@ -18,6 +18,7 @@ function elements() {
     tab,
     fill: tab.querySelector('.vos-hero-ring-fill'),
     text: tab.querySelector('[data-vos-sheet-hp]'),
+    value: tab.querySelector('[data-vos-sheet-hp-value]'),
   };
 }
 
@@ -43,11 +44,11 @@ function paint(state) {
   parts.fill.style.strokeDashoffset = String(CIRCUMFERENCE * (1 - share));
   parts.tab.dataset.hp = tone;
 
-  parts.text.textContent = `${current}/${max}`;
+  if (parts.value) parts.value.textContent = `${current}/${max}`;
   parts.text.hidden = false;
 
   const label = tone === 'down' ? 'down' : `${current} of ${max} hit points`;
-  parts.tab.setAttribute('aria-label', `Character sheet — ${label}`);
+  parts.tab.setAttribute('aria-label', `Open character sheet; ${label}`);
 }
 
 function cached() {
@@ -73,6 +74,17 @@ async function fetchHp() {
     if (max == null) return null;
     return { current: current == null ? max : current, max };
   } catch { return null; }
+}
+
+/* The DM's medallion is The Table, and a hit-point ring on it would be a
+ * player's number worn by someone who is not that player. Blank it. */
+export function clearSheetBadge() {
+  const parts = elements();
+  if (!parts) return;
+  parts.text.hidden = true;
+  if (parts.value) parts.value.textContent = '';
+  delete parts.tab.dataset.hp;
+  if (parts.fill) parts.fill.style.strokeDashoffset = String(CIRCUMFERENCE);
 }
 
 export function initSheetBadge() {

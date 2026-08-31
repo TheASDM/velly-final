@@ -170,12 +170,6 @@
   .vos-home-hero { padding: 0.85rem 0 0.95rem; }
   .vos-dash {
     grid-template-columns: 1fr;
-    grid-template-areas:
-      "message"
-      "next"
-      "rumor"
-      "inplay"
-      "story";
   }
   .vos-home-sec-head {
     align-items: flex-start;

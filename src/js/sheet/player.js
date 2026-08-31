@@ -372,6 +372,43 @@ function renderRescueButton(dying) {
     title="${esc(feature.name)}">Stand at 1 HP</button>`;
 }
 
+/* The bar folds most of the way away while you read down the sheet and comes
+ * back the moment you scroll up. Not a hide: a stub of it stays visible, so
+ * it never disappears from a table that is about to need it, and it stops
+ * stacking a second fixed bar onto the tab bar for the whole page.
+ *
+ * Threshold and stub size are small on purpose — a bar that flickered on
+ * every one-line scroll would be worse than one that never moved. */
+function watchScrollForPlayBar(bar) {
+  if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const HIDDEN = 34;          // px of the bar tucked below the tab bar
+  const SLOP = 8;             // ignore scrolls smaller than a fingertip wobble
+  let last = window.scrollY;
+  let folded = false;
+  let queued = false;
+
+  function settle() {
+    queued = false;
+    const now = window.scrollY;
+    const delta = now - last;
+    if (Math.abs(delta) < SLOP) return;
+    last = now;
+    // Near the bottom the last content is the point; never fold there, and
+    // never fold when the page is too short to have anything to hide behind.
+    const atBottom = now + window.innerHeight >= document.body.scrollHeight - 24;
+    const next = delta > 0 && now > 120 && !atBottom;
+    if (next === folded) return;
+    folded = next;
+    bar.style.setProperty('--vos-play-y', folded ? `${HIDDEN}px` : '0px');
+  }
+
+  window.addEventListener('scroll', () => {
+    if (queued) return;
+    queued = true;
+    requestAnimationFrame(settle);
+  }, { passive: true });
+}
+
 function renderPlayBar() {
   const page = document.querySelector('.vos-sheet-page');
   let bar = document.getElementById('vos-play-bar');
@@ -386,6 +423,7 @@ function renderPlayBar() {
     bar.id = 'vos-play-bar';
     bar.className = 'vos-play-bar';
     document.body.appendChild(bar);
+    watchScrollForPlayBar(bar);
     bar.addEventListener('click', (event) => {
       const button = event.target.closest('[data-bar]');
       if (!button || !controls) return;

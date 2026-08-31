@@ -129,7 +129,7 @@
     margin-top: 0.8rem;
   }
   .vos-pwa-actions button {
-    min-height: 40px;
+    min-height: 44px;
     border-radius: 6px;
     border: 1px solid rgba(212, 165, 116, 0.42);
     background: rgba(212, 165, 116, 0.08);
@@ -255,9 +255,12 @@
    shown once we have one; the glyph rides a little higher to make room. */
 .vos-hero-hp {
   position: absolute;
-  bottom: 7px;
+  bottom: 6px;
   left: 50%;
   transform: translateX(-50%);
+  display: flex;
+  align-items: baseline;
+  gap: 0.16em;
   font-size: 0.56rem;
   font-variant-numeric: tabular-nums;
   letter-spacing: 0.04em;
@@ -266,7 +269,40 @@
   color: var(--vos-gold-dim);
   pointer-events: none;
 }
+/* The noun the number needed. Small enough to read as a unit rather than
+   compete with the value, large enough that 24/24 stops being a mystery. */
+.vos-hero-hp-cap {
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.42rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  opacity: 0.72;
+}
 .vos-hero-hp[hidden] { display: none; }
+
+/* The DM's counterpart: how many things are waiting at the table. A count in
+   the corner, deliberately unlike a ring that fills and drains. */
+.vos-hero-badge {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 4px;
+  border-radius: 999px;
+  background: var(--vos-quest-bright);
+  box-shadow: 0 0 0 2px rgba(7, 6, 10, 0.96);
+  color: #fff;
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.58rem;
+  font-weight: 700;
+  line-height: 1;
+  pointer-events: none;
+}
+.vos-hero-badge[hidden] { display: none; }
 .vos-app-tab--hero[data-hp] .vos-hero-glyph { transform: translateY(-3px); }
 .vos-app-tab--hero[data-hp="down"] .vos-hero-hp { color: var(--vos-quest-bright); }
 

@@ -7,10 +7,15 @@ studio.SEEN_DONE_JOB_KEY = 'vos.studio.seenDoneJobId';
 studio.POLL_MS = 2500;
 studio.urlParams = new URLSearchParams(window.location.search);
 studio.galleryFavoritesOnly = studio.urlParams.get('favorites') === '1';
-studio.requestedGalleryScope = (studio.urlParams.get('gallery') || studio.urlParams.get('scope') || '').toLowerCase();
-studio.initialGalleryScope = studio.galleryFavoritesOnly
+/* `filter` is the name the app bar's menu uses; `gallery`/`scope` are the
+   older ones that live in links people already shared. */
+studio.requestedGalleryScope = (studio.urlParams.get('gallery')
+    || studio.urlParams.get('scope')
+    || studio.urlParams.get('filter')
+    || '').toLowerCase();
+studio.initialGalleryScope = (studio.galleryFavoritesOnly || studio.requestedGalleryScope === 'favorites')
     ? 'favorites'
-    : (['mine', 'shared', 'all'].includes(studio.requestedGalleryScope) ? studio.requestedGalleryScope : 'mine');
+    : (['mine', 'shared', 'all'].includes(studio.requestedGalleryScope) ? studio.requestedGalleryScope : 'shared');
 studio.$ = (id) => document.getElementById(id);
 studio.promptEl = studio.$('vos-art-prompt');
 studio.styleSelectEl = studio.$('vos-art-style-select');
@@ -48,16 +53,16 @@ studio.statusTimer = null;
 studio.currentGalleryScope = studio.initialGalleryScope;
 studio.GALLERY_SCOPES = {
     mine: {
-      title: 'My Studio',
+      title: 'My Submissions',
       noun: 'piece',
-      note: 'New pieces start private here. Share table-safe art to the group gallery when ready.',
-      empty: 'Your private Studio library is empty. Generate a piece above and it will appear here.',
+      note: 'New pieces start private to you and the DM. Share one to the campaign library when it is table-safe.',
+      empty: 'Nothing here yet. Anything you make in Create lands here first.',
     },
     shared: {
-      title: 'Group Gallery',
+      title: 'Campaign',
       noun: 'piece',
-      note: 'Shared art is visible to the table.',
-      empty: 'No shared art yet.',
+      note: 'Art the table can see.',
+      empty: 'No campaign art yet.',
     },
     favorites: {
       title: 'Favorites',
@@ -66,7 +71,7 @@ studio.GALLERY_SCOPES = {
       empty: 'No favorites yet.',
     },
     all: {
-      title: 'DM All Art',
+      title: 'All — DM',
       noun: 'piece',
       note: 'DM view includes private and shared art from every creator.',
       empty: 'No Studio art has been generated yet.',
@@ -87,3 +92,4 @@ studio.lightShare = document.getElementById('vos-art-lightbox-share');
 studio.lightPin = document.getElementById('vos-art-lightbox-pin');
 studio.pinMenuEl = document.getElementById('vos-art-pin-menu');
 studio.wikiPagesByTitle = null;
+studio.mode = 'view';

@@ -80,9 +80,8 @@
 .vos-art-empty {
   padding: 2rem 1.4rem;
   text-align: center;
-  font-family: 'IM Fell English', Georgia, serif;
-  font-style: italic;
-  color: rgba(212, 165, 116, 0.55);
+  font-family: 'Crimson Text', Georgia, serif;
+  color: rgba(226, 214, 196, 0.8);
   font-size: 1rem;
   border: 1px dashed var(--art-border);
   border-radius: 6px;

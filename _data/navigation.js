@@ -55,13 +55,17 @@ module.exports = {
       svg: '<path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v16H6.5A2.5 2.5 0 0 0 4 21.5z"/><path d="M4 5.5v16"/><path d="M8 7h8"/><path d="M8 11h6"/>',
     },
     {
-      id: "enzo",
-      label: "Enzo",
-      title: "Enzo",
-      eyebrow: "Chat",
-      href: "/enzo/",
+      /* Enzo used to hold this slot. He is a capability now, offered inside
+         the work rather than as a place to go — so the fifth door is the one
+         room both roles share: where campaign material is looked at and made. */
+      id: "studio",
+      label: "Studio",
+      title: "Studio",
+      eyebrow: "View & create",
+      href: "/studio/",
       match: "exact",
-      svg: '<path d="M12 3c4.5 0 8 3 8 7.2 0 2.7-1.5 5-3.8 6.2L16.5 21l-4.1-3.5H12c-4.5 0-8-3-8-7.3C4 6 7.5 3 12 3z"/><path d="M8.5 10h7"/><path d="M8.5 13h4"/>',
+      /* A brush over a framed plate. */
+      svg: '<rect x="3" y="3" width="18" height="18" rx="2"/><path d="m8.5 15.5 6-6"/><path d="M13 8.2a2.2 2.2 0 0 1 3.1 3.1l-1.6 1.6-3.1-3.1z"/><path d="M8.6 15.4 7 17l2.6.4z"/>',
     },
   ],
 };

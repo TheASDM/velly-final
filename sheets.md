@@ -11,12 +11,10 @@ pageScripts:
 ---
 
 <div class="vos-sheet-page">
-  <nav class="vos-dm-satellites" aria-label="DM surfaces">
-    <a href="/dm/">Console</a>
-    <a href="/party/">The Table</a>
-    <a href="/monsters/">Bench</a>
-    <a href="/dossiers/">Dossiers</a>
-  </nav>
+  <a class="vos-row-chip vos-back-to-table" href="/party/">
+    <span><span class="vos-row-chip-title">The Table</span><span class="vos-row-chip-meta">Back to the workspace</span></span>
+    <span class="vos-row-chip-arrow" aria-hidden="true">›</span>
+  </a>
   <p class="vos-sheet-lede">
     Every character sheet in one place — read what the player reads, or flip to
     the sheet behind it.

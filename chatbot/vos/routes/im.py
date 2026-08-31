@@ -651,6 +651,9 @@ def im_thread_enzo(thread_key):
 
     rules = bool(body.get("rules"))
     vibe = body.get("vibe") if isinstance(body.get("vibe"), str) else None
+    # Enzo in a thread answers the person in the thread, with the same role
+    # the rest of the app gives them. Same shape as _chat_viewer().
+    viewer = {"name": caller, "is_dm": _request_is_dm(), "preview": bool(_preview_actor())}
     attachment_ids = _attachment_ids_from(body)
     if attachment_ids is None:
         return jsonify({"error": "attachments must be a list",
@@ -688,7 +691,7 @@ def im_thread_enzo(thread_key):
         new_rules, new_vibe = rules, vibe
         try:
             yield _sse("sent", {"message": sent_json})
-            for event in engine.chat_stream(text, history, rules, vibe):
+            for event in engine.chat_stream(text, history, rules, vibe, viewer=viewer):
                 etype = event.get("type")
                 if etype == "token":
                     chunks.append(event.get("text", ""))

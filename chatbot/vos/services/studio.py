@@ -315,9 +315,9 @@ def _notify_art_ready(creator, result_url, gallery_id=None):
     # nothing matches (image already deleted, etc.), it falls back to
     # the private library grid.
     if gallery_id:
-        target_url = f"/en/Tools/art/?gallery=mine&image={gallery_id}"
+        target_url = f"/studio/?gallery=mine&image={gallery_id}"
     else:
-        target_url = result_url or "/en/Tools/art/"
+        target_url = result_url or "/studio/"
     try:
         _fanout_push(
             "Your Vallombrosa art is ready",

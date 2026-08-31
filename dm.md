@@ -60,7 +60,7 @@ pageStyles:
     <div class="vos-dm-group">
       <div class="vos-dm-group-label">World &amp; comms<span class="vos-seg-dot" id="vos-dm-dot-comms" hidden></span></div>
       <div class="vos-seg vos-seg--index vos-dm-group-chips" role="tablist" aria-label="World and comms">
-        <button class="vos-seg-btn" type="button" data-view="compose">Compose</button>
+        <button class="vos-seg-btn" type="button" data-view="compose">Announce</button>
         <button class="vos-seg-btn" type="button" data-view="history">History</button>
         <button class="vos-seg-btn" type="button" data-view="lore">Lore</button>
         <button class="vos-seg-btn" type="button" data-view="wiki">Wiki</button>
@@ -151,11 +151,11 @@ pageStyles:
   <div class="vos-dm-view" data-vos-view="compose" hidden>
 
   <section class="vos-dm-panel" aria-labelledby="vos-dm-message-title">
-    <h2 id="vos-dm-message-title">Compose</h2>
+    <h2 id="vos-dm-message-title">Post an Announcement</h2>
     <form class="vos-dm-form" id="vos-dm-message-form">
       <label>
         Title
-        <input id="vos-dm-message-heading" type="text" value="Message from the DM">
+        <input id="vos-dm-message-heading" type="text" value="News from the DM">
       </label>
       <label>
         Message (Markdown)
@@ -196,7 +196,7 @@ pageStyles:
 
   <section class="vos-dm-panel" aria-labelledby="vos-dm-history-title">
     <div class="vos-dm-panel-head">
-      <h2 id="vos-dm-history-title">Message History</h2>
+      <h2 id="vos-dm-history-title">Announcement History</h2>
       <div class="vos-dm-actions">
         <label class="vos-dm-toggle">
           <input id="vos-dm-show-deleted" type="checkbox">

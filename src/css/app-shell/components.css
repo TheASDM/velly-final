@@ -61,7 +61,7 @@
   }
   .vos-panel-title::after { content: none; }
   .vos-panel-note {
-    color: rgba(212, 165, 116, 0.64);
+    color: rgba(212, 165, 116, 0.85);
     font-family: 'IM Fell English', Georgia, serif;
     font-style: italic;
     font-size: 0.9rem;

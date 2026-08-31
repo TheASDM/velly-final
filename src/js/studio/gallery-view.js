@@ -64,8 +64,10 @@ export function entryTitle(e) {
   }
 
 export function normalizeGalleryScope(scope) {
-    const candidate = studio.GALLERY_SCOPES[scope] ? scope : 'mine';
-    if (candidate === 'all' && !isCurrentDm()) return 'mine';
+    // Campaign is the honest default: it is the one filter that answers
+    // something for a reader who is not signed in.
+    const candidate = studio.GALLERY_SCOPES[scope] ? scope : 'shared';
+    if (candidate === 'all' && !isCurrentDm()) return 'shared';
     return candidate;
   }
 
@@ -74,7 +76,7 @@ export function syncDmMode() {
     document.body.classList.toggle('is-dm-mode', dm);
     const dmTab = studio.galleryTabsEl && studio.galleryTabsEl.querySelector('[data-gallery-scope="all"]');
     if (dmTab) dmTab.hidden = !dm;
-    if (!dm && studio.currentGalleryScope === 'all') studio.currentGalleryScope = 'mine';
+    if (!dm && studio.currentGalleryScope === 'all') studio.currentGalleryScope = 'shared';
   }
 
 export function syncGalleryChrome() {
@@ -235,8 +237,10 @@ export function renderGallery(entries, total) {
     studio.galleryEl.innerHTML = '';
     const config = studio.GALLERY_SCOPES[studio.currentGalleryScope] || studio.GALLERY_SCOPES.mine;
     const noun = config.noun;
+    // The tile below already says there is nothing; the counter saying it too
+    // printed the same sentence twice, a line apart.
     studio.countEl.textContent = total === 0
-      ? config.empty
+      ? ''
       : `${total} ${noun}${total === 1 ? '' : 's'}`;
     if (!entries.length) {
       studio.galleryEl.innerHTML = `<div class="vos-art-empty">${escapeHtml(config.empty)}</div>`;

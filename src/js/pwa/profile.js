@@ -41,10 +41,15 @@ export function getProfileDisplayName(name) {
   return (entry && entry.display) || name || '';
 }
 
+/* The avatar and the menu are one control now, so the face lives inside the
+ * button that opens the menu rather than beside it. */
+function identityButton() {
+  return document.getElementById('vos-app-identity-button');
+}
+
 export function updateProfileAvatar(name) {
-  const profileButton = document.getElementById('vos-profile-button');
   const img = document.getElementById('vos-app-avatar-img');
-  if (!profileButton || !img) return;
+  if (!identityButton() || !img) return;
 
   const displayName = getProfileDisplayName(name);
   const labelName = displayName || 'profile';
@@ -53,8 +58,6 @@ export function updateProfileAvatar(name) {
   // the first paint is never blocked on a request.
   const src = uploadedAvatar || (entry && entry.avatar) || PROFILE_AVATAR_FALLBACK;
   const alt = displayName || 'Unmapped profile';
-  profileButton.setAttribute('aria-label', name ? `Open profile — ${displayName}` : 'Log in');
-  profileButton.title = name ? `Open profile — ${displayName}` : 'Log in';
 
   if (img.dataset.avatarSrc === src && img.classList.contains('is-loaded')) {
     img.alt = alt;
@@ -91,20 +94,15 @@ export function updateIdentityControls(config = null) {
   const name = getActivePlayerName(config);
   const displayName = getProfileDisplayName(name);
   const label = document.getElementById('vos-app-identity-label');
-  const identityButton = document.getElementById('vos-app-identity-button');
-  const profileButton = document.getElementById('vos-profile-button');
+  const button = identityButton();
   const text = name ? displayName : 'Log in';
   const action = name ? `Menu — ${displayName}` : 'Log in';
 
   if (label) label.textContent = text;
-  if (identityButton) {
-    identityButton.classList.toggle('is-authenticated', !!name);
-    identityButton.setAttribute('aria-label', action);
-    identityButton.title = action;
-  }
-  if (profileButton) {
-    profileButton.setAttribute('aria-label', name ? `Open profile — ${displayName}` : action);
-    profileButton.title = name ? `Open profile — ${displayName}` : action;
+  if (button) {
+    button.classList.toggle('is-authenticated', !!name);
+    button.setAttribute('aria-label', action);
+    button.title = action;
   }
   updateUserMenuState();
   updateProfileAvatar(name);
@@ -126,14 +124,26 @@ export function updateUserMenuState() {
   const name = getStorage(PLAYER_KEY);
   const menu = document.getElementById('vos-user-menu');
   const dmSection = document.getElementById('vos-user-menu-dm');
+  const playerSection = document.getElementById('vos-user-menu-player');
+  const settingsItem = document.getElementById('vos-user-menu-settings');
   const signInItem = document.getElementById('vos-user-menu-sign-in');
   const signOutItem = document.getElementById('vos-user-menu-sign-out');
   const displayNameEl = document.getElementById('vos-user-menu-name');
   const isDm = !!((authSession && authSession.isDm) || name === 'DM');
+  // The two roles keep two lists. A player has no reason to read past their
+  // own submissions; the DM has no character record to keep.
   if (dmSection) dmSection.hidden = !isDm;
+  if (playerSection) playerSection.hidden = isDm || !name;
+  if (settingsItem) {
+    settingsItem.textContent = isDm ? 'Account Settings' : 'Settings';
+    settingsItem.hidden = !name;
+  }
   if (signInItem) signInItem.hidden = !!name;
   if (signOutItem) signOutItem.hidden = !name;
-  if (displayNameEl) displayNameEl.textContent = name ? getProfileDisplayName(name) : 'Not signed in';
+  if (displayNameEl) {
+    displayNameEl.textContent = name ? getProfileDisplayName(name) : 'Not signed in';
+    displayNameEl.href = name ? `/profile/?p=${encodeURIComponent(name)}` : '/profile/';
+  }
   if (menu && !name) menu.hidden = true;
   updateWikiEditLink();
 }

@@ -133,7 +133,7 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    min-height: 42px;
+    min-height: 44px;
     padding: 0.55rem 0.85rem;
     border: 1px solid rgba(212, 165, 116, 0.36);
     border-radius: 8px;
@@ -162,7 +162,7 @@
   .vos-rsvp-segmented {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    min-height: 42px;
+    min-height: 44px;
     overflow: hidden;
     border: 1px solid rgba(212, 165, 116, 0.28);
     border-radius: 999px;
@@ -170,7 +170,7 @@
   }
   .vos-rsvp-segment {
     min-width: 0;
-    min-height: 42px;
+    min-height: 44px;
     border: 0;
     border-right: 1px solid rgba(212, 165, 116, 0.18);
     border-radius: 0;

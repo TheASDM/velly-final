@@ -6,14 +6,22 @@ import { closeUserMenu, getProfileDisplayName, syncAvatarBadge, syncUploadedAvat
 import { disablePush, enablePush, getPushStatus, maybeShowPushPrompt, maybeSyncExistingSubscription } from './push.js';
 import { initRsvpControls } from './rsvp.js';
 import { enhanceWikiLinkedLists } from './wiki.js';
-import { initSheetBadge } from './sheet-badge.js';
 import { initCharacterBar } from './character-bar.js';
+import { beginPreview, exitPreview, initPreview, isPreviewing, previewState } from './preview.js';
+import { askEnzo, initEnzoActions } from './enzo-actions.js';
 
 window.VOS_PWA = {
   getPlayerName: () => getStorage(PLAYER_KEY),
   getAuthToken: () => getStorage(AUTH_TOKEN_KEY),
   isAuthenticated: () => isAuthenticated(),
-  isDm: () => !!((authSession && authSession.isDm) || getStorage(PLAYER_KEY) === 'DM'),
+  /* A preview is not a DM, anywhere, for any purpose. The server refuses a
+     preview token at every DM door; this is the same answer for the UI, so
+     the two never disagree about what the reader is allowed to see. */
+  isDm: () => !isPreviewing() && !!((authSession && authSession.isDm) || getStorage(PLAYER_KEY) === 'DM'),
+  isPreviewing,
+  getPreview: previewState,
+  beginPreview,
+  exitPreview,
   getAuthSession: () => authSession,
   authHeaders,
   ensureIdentity,
@@ -29,9 +37,14 @@ window.VOS_PWA = {
   getProfileDisplayName,
   renderSafeMarkdown,
   initRsvpControls,
+  askEnzo,
 };
 
 window.addEventListener('DOMContentLoaded', () => {
+  // First, so no page paints a frame of a preview that looks like a real
+  // signed-in session.
+  initPreview();
+  initEnzoActions();
   enhanceWikiLinkedLists();
   initRsvpControls();
   initNextGathering();
@@ -50,6 +63,14 @@ window.addEventListener('DOMContentLoaded', () => {
       toggleUserMenu();
     });
   }
+  /* The menu's entry point is a door to the roster, not a picker of its own —
+     the roster lives under Players in The Table, beside the sheets. */
+  const previewItem = document.getElementById('vos-user-menu-preview');
+  if (previewItem) previewItem.addEventListener('click', (event) => {
+    event.preventDefault();
+    closeUserMenu();
+    window.location.href = '/party/?area=players';
+  });
   const signInItem = document.getElementById('vos-user-menu-sign-in');
   if (signInItem) signInItem.addEventListener('click', (event) => {
     event.preventDefault();
@@ -84,7 +105,9 @@ window.addEventListener('DOMContentLoaded', () => {
       syncAvatarBadge(config);
     });
     ensureIdentity();
-    initSheetBadge();
+    /* One role check owns the whole medallion — the ring, the number and the
+       destination. Painting hit points and then relabelling the tab "The
+       Table" was two decisions that disagreed. */
     initCharacterBar();
     maybeSyncExistingSubscription();
     maybeShowPushPrompt();

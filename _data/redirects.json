@@ -1,5 +1,15 @@
 [
   {
+    "from": "/en/Tools/art/",
+    "to": "/studio/",
+    "why": "The Studio stopped being a wiki page and became a root tab."
+  },
+  {
+    "from": "/Tools/art/",
+    "to": "/studio/",
+    "why": "Older in-app links to the Studio predate the /en/ permalink scheme."
+  },
+  {
     "from": "/en/Venturia/Locations/masquers-sodality/",
     "to": "/en/Venturia/Factions/masquers-sodality/",
     "why": "A guild is a faction; its workshop is the location."

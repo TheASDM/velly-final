@@ -1,0 +1,157 @@
+/* ── The Table: five areas ────────────────────────────────────────────
+ *
+ * The row of links that used to sit above the party grid — Console, Bench,
+ * Sheets, Dossiers — was the same four words pasted onto four pages, and
+ * none of them said what they meant. This is one tab set, on one page.
+ */
+.vos-table-areas {
+  /* Five equal columns rather than a wrapping flex row: wrapped, the last two
+     centred themselves under the first three and stopped reading as one set. */
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 0.25rem;
+  margin: 0 0 1.1rem;
+  padding: 0.28rem;
+  border: 1px solid var(--vos-border);
+  border-radius: 9px;
+  background: rgba(7, 6, 10, 0.55);
+}
+.vos-table-area {
+  position: relative;
+  appearance: none;
+  min-width: 0;
+  min-height: 44px;
+  padding: 0.55rem 0.3rem;
+  border: 1px solid transparent;
+  border-radius: 7px;
+  background: transparent;
+  color: var(--vos-gold-dim);
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+/* Long labels give up their tracking before they give up the single row. */
+@media (max-width: 400px) {
+  .vos-table-area { font-size: 0.55rem; letter-spacing: 0.02em; }
+}
+.vos-table-area:hover { color: var(--vos-gold-bright); }
+.vos-table-area.is-active {
+  border-color: var(--vos-border-strong);
+  background: rgba(212, 165, 116, 0.13);
+  color: var(--vos-gold-bright);
+}
+.vos-table-area:focus-visible {
+  outline: 2px solid var(--vos-border-strong);
+  outline-offset: 2px;
+}
+/* A count, never a gauge — the medallion learned that lesson too. */
+.vos-table-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 17px;
+  height: 17px;
+  margin-left: 0.35rem;
+  padding: 0 4px;
+  border-radius: 999px;
+  background: var(--vos-quest-bright);
+  color: #fff;
+  font-size: 0.55rem;
+  line-height: 1;
+  vertical-align: middle;
+}
+.vos-table-count[hidden] { display: none; }
+
+.vos-table-panel[hidden] { display: none; }
+
+.vos-table-doors {
+  display: grid;
+  gap: 0.5rem;
+  margin: 1rem 0 0;
+}
+.vos-table-heading {
+  margin: 1.6rem 0 0.4rem;
+  padding: 0;
+  border: none;
+  color: var(--vos-gold-bright);
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+.vos-table-heading::after { content: none; }
+.vos-table-lede,
+.vos-table-empty {
+  margin: 0 0 0.75rem;
+  color: rgba(203, 190, 168, 0.82);
+  font-family: 'Crimson Text', Georgia, serif;
+  font-size: 0.96rem;
+  line-height: 1.5;
+}
+
+.vos-table-roster {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.vos-table-preview-seat {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  min-height: 44px;
+  padding: 0.45rem 0.85rem;
+  border: 1px solid var(--vos-border);
+  border-radius: 8px;
+  background: rgba(7, 6, 10, 0.5);
+  color: var(--vos-text-body);
+  cursor: pointer;
+}
+.vos-table-preview-seat:hover { border-color: var(--vos-border-strong); }
+.vos-table-preview-seat:disabled { opacity: 0.55; cursor: default; }
+.vos-table-preview-name {
+  font-family: 'Crimson Text', Georgia, serif;
+  font-size: 1rem;
+}
+.vos-table-preview-verb {
+  color: var(--vos-gold-dim);
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.55rem;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+.vos-table-preview-error {
+  display: block;
+  flex-basis: 100%;
+  color: var(--vos-quest-bright);
+  font-family: 'Crimson Text', Georgia, serif;
+  font-size: 0.9rem;
+}
+
+.vos-table-review-list {
+  display: grid;
+  gap: 0.5rem;
+  margin: 0 0 0.75rem;
+  padding: 0;
+  list-style: none;
+}
+.vos-table-review-list[hidden] { display: none; }
+
+/* Said plainly, in body copy, where a control would be a promise. */
+.vos-table-deferred {
+  margin: 1.4rem 0 0;
+  padding: 0.85rem 1rem;
+  border: 1px dashed rgba(176, 143, 100, 0.34);
+  border-radius: 8px;
+  background: rgba(13, 11, 17, 0.5);
+  color: rgba(226, 214, 196, 0.74);
+  font-family: 'Crimson Text', Georgia, serif;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+/* Touch targets: 38px was under the floor. */
+.vos-party-view { min-height: 44px; }

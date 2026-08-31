@@ -138,7 +138,7 @@
     links.className = 'vos-art-submission-links';
     if (job.gallery_id) {
       const gallery = document.createElement('a');
-      gallery.href = '/en/Tools/art/?image=' + encodeURIComponent(job.gallery_id);
+      gallery.href = '/studio/?image=' + encodeURIComponent(job.gallery_id);
       gallery.textContent = 'Open in Gallery';
       links.appendChild(gallery);
     } else if (job.result_url) {
@@ -148,7 +148,7 @@
       links.appendChild(image);
     }
     const studio = document.createElement('a');
-    studio.href = '/en/Tools/art/';
+    studio.href = '/studio/';
     studio.textContent = 'Studio';
     links.appendChild(studio);
     body.appendChild(links);

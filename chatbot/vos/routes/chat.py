@@ -5,6 +5,29 @@ from ..web import limiter
 
 bp = Blueprint("chat", __name__)
 
+
+def _chat_viewer():
+    """Who is asking, from the credential — never from the request body.
+
+    /api/chat took no credential at all before this, so Enzo answered every
+    request identically and had no way to know whether the reader was a
+    player, the DM, or nobody. Reading the token here is what makes "Enzo
+    inherits the caller's role" a fact the server can act on rather than a
+    sentence in a prompt.
+
+    Anonymous readers are still served: the corpus is published wiki content,
+    which is what an anonymous reader may see anyway. Refusing them would
+    take the widget off the public wiki for no gain in safety."""
+    payload = _verify_player_token_payload(_extract_player_token())
+    if not payload:
+        return None
+    preview = bool(payload.get("preview"))
+    return {
+        "name": payload.get("name"),
+        "is_dm": (not preview) and bool(payload.get("is_dm") or _is_dm_player(payload.get("name"))),
+        "preview": preview,
+    }
+
 @bp.route("/api/chat", methods=["POST"])
 @limiter.limit(lambda: CHAT_RATE_LIMIT)
 def chat():
@@ -46,6 +69,8 @@ def chat():
     # Streaming opt-in: the client sets Accept: text/event-stream when
     # it wants SSE. Otherwise we fall back to the legacy JSON response
     # so older clients + the offline stub keep working without change.
+    viewer = _chat_viewer()
+
     accept = (request.headers.get("Accept") or "").lower()
     wants_stream = "text/event-stream" in accept
 
@@ -56,7 +81,7 @@ def chat():
             try:
                 full_response_chunks = []
                 for event in engine.chat_stream(
-                    message, conversation_history, rules, vibe
+                    message, conversation_history, rules, vibe, viewer=viewer
                 ):
                     etype = event.get("type")
                     if etype == "token":
@@ -107,7 +132,7 @@ def chat():
 
     try:
         response_text, updated_history, new_rules, new_vibe, citations = engine.chat(
-            message, conversation_history, rules, vibe
+            message, conversation_history, rules, vibe, viewer=viewer
         )
 
         write_log("user", message)
@@ -128,4 +153,4 @@ def chat():
             "details": str(e),
         }), 500
 
-__all__ = ['chat']
+__all__ = ['chat', '_chat_viewer']

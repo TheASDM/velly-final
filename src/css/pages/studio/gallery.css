@@ -58,9 +58,10 @@
 .vos-art-gallery-tab[hidden] { display: none; }
 .vos-art-gallery-note {
   margin: -0.35rem 0 0.95rem;
-  color: rgba(232, 220, 200, 0.62);
+  /* Description copy, so a readable face at readable contrast — the tracked
+     serif italic belongs to headings and short controls. */
+  color: rgba(232, 220, 200, 0.86);
   font-family: 'Crimson Text', Georgia, serif;
-  font-style: italic;
   font-size: 0.94rem;
   line-height: 1.35;
 }
