@@ -1,5 +1,10 @@
 [
   {
+    "from": "/submit-lore/",
+    "to": "/studio/?tab=create&kind=lore",
+    "why": "Lore drafting moved inside Studio Create so it keeps the View/Create tabs."
+  },
+  {
     "from": "/en/Tools/art/",
     "to": "/studio/",
     "why": "The Studio stopped being a wiki page and became a root tab."

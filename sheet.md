@@ -8,6 +8,7 @@ pageStyles:
   - /css/sheet.css
 pageScripts:
   - /js/vos-sheet.js
+templateEngineOverride: njk
 ---
 
 <div class="vos-sheet-page">

@@ -2,6 +2,7 @@
 title: Offline
 description: Offline fallback for the Valley of Shadows app.
 permalink: /offline/
+templateEngineOverride: njk
 ---
 
 <div class="vos-offline-panel">

@@ -93,3 +93,4 @@ studio.lightPin = document.getElementById('vos-art-lightbox-pin');
 studio.pinMenuEl = document.getElementById('vos-art-pin-menu');
 studio.wikiPagesByTitle = null;
 studio.mode = 'view';
+studio.kind = 'art';

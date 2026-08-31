@@ -140,7 +140,7 @@ pageScripts:
     {# Was the first thing on the page. It is a good invitation and a poor
        answer to "what is happening next", so it sits below the answers. #}
     <div class="vos-dash-wide vos-home-cta" data-home-card="contribute" data-home-role-only="player" hidden>
-      <a class="vos-row-chip vos-row-chip-cta vos-row-chip-cta-compact" href="/submit-lore/">
+      <a class="vos-row-chip vos-row-chip-cta vos-row-chip-cta-compact" href="/studio/?tab=create&amp;kind=lore">
         <span>
           <span class="vos-row-chip-title">Contribute Lore</span>
           <span class="vos-row-chip-meta">Draft an entry — Enzo writes it up, the DM approves.</span>

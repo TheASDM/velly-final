@@ -20,7 +20,7 @@ wiki, the Sheet, Home, The Table, and in Studio Create. `/enzo/` is still the
 general conversation, just not a tab.
 
 Player-only surfaces: `/questionnaire/` (character record), `/notes/`,
-`/messages/`, `/submit-lore/`, `/settings/`, `/profile/`.
+`/messages/`, `/settings/`, `/profile/`.
 DM surfaces are areas of The Table: `/dm/` (campaign settings), `/monsters/`,
 `/sheets/`, `/dossiers/`.
 

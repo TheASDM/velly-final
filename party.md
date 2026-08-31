@@ -8,6 +8,7 @@ pageStyles:
   - /css/sheet.css
 pageScripts:
   - /js/vos-party.js
+templateEngineOverride: njk
 ---
 
 {# The Table is the DM's centre of gravity and the middle of their tab bar.

@@ -6,8 +6,11 @@ published: false
 autoIndex: false
 pageStyles:
   - /css/studio.css
+  - /css/submit-lore.css
 pageScripts:
   - /js/vos-studio.js
+  - /js/vos-submit-lore.js
+templateEngineOverride: njk
 ---
 
 {# Studio holds the fifth door in the tab bar for both roles. Enzo used to
@@ -88,14 +91,27 @@ pageScripts:
 <section class="vos-studio-panel" id="vos-studio-panel-create" role="tabpanel"
          aria-labelledby="vos-studio-tab-create" data-studio-panel="create" hidden>
 
-  {# Art or Lore. Lore already has a whole pipeline behind /submit-lore/ —
-     drafting, DM review, publication — so this offers the door rather than
-     building a second one that would drift out of step with the first. #}
-  <div class="vos-studio-kinds" role="group" aria-label="What are you making?">
-    <button class="vos-studio-kind is-active" type="button" data-studio-kind="art" aria-pressed="true">Art</button>
-    <a class="vos-studio-kind" href="/submit-lore/">Lore</a>
+  {# Art or Lore, both here. Lore used to be a link to its own page, which
+     meant choosing it left Studio — and with it the View/Create tabs, so the
+     way back was the browser's back button. Two panels, one room. #}
+  <div class="vos-studio-create-bar">
+    <div class="vos-studio-kinds" id="vos-studio-kinds" role="tablist" aria-label="What are you making?">
+      <button class="vos-studio-kind" type="button" role="tab" data-studio-kind="art"
+              id="vos-studio-kind-art" aria-controls="vos-studio-kind-panel-art" aria-selected="true">Art</button>
+      <button class="vos-studio-kind" type="button" role="tab" data-studio-kind="lore"
+              id="vos-studio-kind-lore" aria-controls="vos-studio-kind-panel-lore" aria-selected="false">Lore</button>
+    </div>
+    {#- Who the work will be attributed to, on the same line as what is being
+        made. It was a page header before this, and moving it into the panel
+        left it stacked in a row of its own saying very little. -#}
+    <div class="vos-submit-identity-card">
+      <p id="vos-submit-identity" class="vos-submit-identity-text">Checking login...</p>
+      <button class="vos-submit-secondary" id="vos-submit-login" type="button">Log In</button>
+    </div>
   </div>
 
+  <div class="vos-studio-kind-panel" id="vos-studio-kind-panel-art" role="tabpanel"
+       aria-labelledby="vos-studio-kind-art" data-studio-kind-panel="art">
   <div class="vos-art-workbench">
     <div class="vos-art-studio" aria-label="Generate new art">
       <div class="vos-art-studio-title">Compose a New Piece</div>
@@ -180,6 +196,98 @@ pageScripts:
     and recovering a generation that failed — is ready for its detailed
     workflow design and will be completed as a separate design project.
   </p>
+  </div>
+
+  <div class="vos-studio-kind-panel vos-submit-lore" id="vos-studio-kind-panel-lore" role="tabpanel"
+       aria-labelledby="vos-studio-kind-lore" data-studio-kind-panel="lore" hidden>
+    <div class="vos-submit-layout">
+      <section class="vos-submit-panel" aria-labelledby="vos-submit-form-title">
+        <div class="vos-submit-panel-head">
+          <h2 class="vos-submit-panel-title" id="vos-submit-form-title">New Entry</h2>
+          <span class="vos-submit-panel-note">DM review required</span>
+        </div>
+
+        <form class="vos-submit-form" id="vos-submit-form">
+          <select id="vos-submit-kind" class="vos-submit-kind-select" required tabindex="-1" aria-hidden="true">
+            <option value="item">Item</option>
+            <option value="person">Person</option>
+            <option value="place">Place</option>
+            <option value="faction">Faction</option>
+            <option value="lore">Lore</option>
+            <option value="culture">Culture</option>
+          </select>
+
+          <div class="vos-submit-type-grid" id="vos-submit-kind-picker" role="group" aria-label="Entry type">
+            <button class="vos-submit-type is-active" type="button" data-kind="item"><strong>Item</strong><span>Objects, gear, relics</span></button>
+            <button class="vos-submit-type" type="button" data-kind="person"><strong>Person</strong><span>NPCs and notable figures</span></button>
+            <button class="vos-submit-type" type="button" data-kind="place"><strong>Place</strong><span>Locations and districts</span></button>
+            <button class="vos-submit-type" type="button" data-kind="faction"><strong>Faction</strong><span>Guilds, crews, powers</span></button>
+            <button class="vos-submit-type" type="button" data-kind="lore"><strong>Lore</strong><span>History, rumors, records</span></button>
+            <button class="vos-submit-type" type="button" data-kind="culture"><strong>Culture</strong><span>Festivals, rites, customs</span></button>
+          </div>
+
+          <label class="vos-submit-field">
+            <span class="vos-submit-field-row">
+              <span class="vos-submit-label">Title</span>
+              <span class="vos-submit-count" data-count-for="vos-submit-entry-title">0 / 120</span>
+            </span>
+            <input id="vos-submit-entry-title" type="text" maxlength="120" placeholder="Kaligor, The Cask and Cube, Master Sarto..." required>
+          </label>
+
+          <label class="vos-submit-field">
+            <span class="vos-submit-field-row">
+              <span class="vos-submit-label">Player-Facing Lore</span>
+              <span class="vos-submit-count" data-count-for="vos-submit-description">0 / 2500</span>
+            </span>
+            <textarea id="vos-submit-description" maxlength="2500" data-autogrow placeholder="What should the table know? Include visible details, tone, rules hooks, and anything that should become public wiki canon." required></textarea>
+          </label>
+
+          <label class="vos-submit-field">
+            <span class="vos-submit-field-row">
+              <span class="vos-submit-label">Connections</span>
+              <span class="vos-submit-count" data-count-for="vos-submit-connections">Optional</span>
+            </span>
+            <textarea id="vos-submit-connections" data-autogrow placeholder="Owner: Lotan&#10;Near: The Tiered Gardens&#10;Opposes: The Fog Wardens"></textarea>
+          </label>
+
+          <label class="vos-submit-field">
+            <span class="vos-submit-field-row">
+              <span class="vos-submit-label">Notes For DM</span>
+              <span class="vos-submit-count" data-count-for="vos-submit-notes">0 / 2000</span>
+            </span>
+            <textarea id="vos-submit-notes" maxlength="2000" data-autogrow placeholder="Optional: uncertainty, spoiler boundaries, private context, or what you want the DM to decide before publishing."></textarea>
+          </label>
+
+          <div class="vos-submit-actions">
+            <button class="vos-submit-secondary" id="vos-submit-clear" type="button">Clear Draft</button>
+            <button class="vos-button" id="vos-submit-send" type="submit">Submit Draft</button>
+          </div>
+          <div class="vos-submit-status" id="vos-submit-status" role="status" aria-live="polite"></div>
+        </form>
+      </section>
+
+      <aside class="vos-submit-side" aria-label="Submission status">
+        <section class="vos-submit-panel vos-submit-ready">
+          <h2 class="vos-submit-panel-title">Ready Check</h2>
+          <ul class="vos-submit-ready-list" id="vos-submit-ready-list">
+            <li data-ready="identity">Signed in as a player</li>
+            <li data-ready="title">Title is filled in</li>
+            <li data-ready="description">Lore description has substance</li>
+            <li data-ready="draft">Draft is saved locally</li>
+          </ul>
+          <p class="vos-submit-draft-note" id="vos-submit-draft-note">Draft autosave is active.</p>
+        </section>
+      </aside>
+    </div>
+
+    <section class="vos-submit-panel vos-submit-list-panel" aria-labelledby="vos-submit-mine-title">
+      <div class="vos-submit-panel-head">
+        <h2 class="vos-submit-panel-title" id="vos-submit-mine-title">My Submissions</h2>
+        <button class="vos-submit-secondary" id="vos-submit-refresh" type="button">Refresh</button>
+      </div>
+      <div class="vos-submit-list" id="vos-submit-list"></div>
+      <div class="vos-submit-status" id="vos-submit-list-status" role="status" aria-live="polite"></div>
+  </div>
 </section>
 
 <div id="vos-art-lightbox" class="vos-art-lightbox" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="vos-art-lightbox-caption">

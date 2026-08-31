@@ -8,6 +8,7 @@ pageStyles:
   # real thing. Those rules live in home.css, which is entirely class-scoped —
   # nothing in it matches anything else on this page.
   - /css/home.css
+templateEngineOverride: njk
 ---
 
 <div class="vos-dm">

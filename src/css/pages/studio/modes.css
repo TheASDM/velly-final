@@ -94,3 +94,26 @@
 
 /* Touch targets. 38px was under the floor everywhere in this page. */
 .vos-art-gallery-tab { min-height: 44px; }
+
+/* What you are making, and who it will be attributed to, on one line. */
+.vos-studio-create-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem 1rem;
+  margin: 0 0 1rem;
+}
+.vos-studio-create-bar .vos-studio-kinds { margin: 0; }
+.vos-studio-create-bar .vos-submit-identity-card {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin: 0;
+}
+.vos-studio-create-bar .vos-submit-identity-text {
+  margin: 0;
+  color: rgba(226, 214, 196, 0.78);
+  font-family: 'Crimson Text', Georgia, serif;
+  font-size: 0.92rem;
+}
