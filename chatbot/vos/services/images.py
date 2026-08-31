@@ -90,6 +90,17 @@ def _enhance_image_prompt(raw_prompt, style_key, matched_entries):
         "5. DO NOT prepend a style description (e.g. 'cinematic,' "
         "'watercolor', 'illustrated'). The system prepends a style "
         "separately. Describe only the scene itself.\n"
+        "5a. The house style owns the LOOK, and you own the SUBJECT. Do not "
+        "write lighting, colour grade, lens, film stock, mood words, or "
+        "rendering medium — no 'harsh midday sun', 'flat even light', "
+        "'muted desaturated palette', 'oil painting', 'anime', 'photoreal', "
+        "'8k'. Those fight the prepended style and the fight is visible in "
+        "the result. Write who and what is in frame, their wardrobe and "
+        "features, where they are, what they are doing, and the framing "
+        "(close portrait, waist-up, wide establishing). Name a practical "
+        "light source only when the scene depends on one — a lantern being "
+        "carried, a forge, a single candle — and describe it as an object "
+        "in the world, not as a lighting instruction.\n"
         "6. If the prompt is unsafe, sexual, or violent in a way that "
         "image safety filters would refuse, soften it while preserving "
         "creative intent. If you can't soften it without losing meaning, "
@@ -108,10 +119,14 @@ def _enhance_image_prompt(raw_prompt, style_key, matched_entries):
         f"prompt now."
     )
 
+    # No temperature: Opus 5 rejects sampling parameters outright, and this
+    # function answers a failed request by returning the player's raw prompt —
+    # so a 400 here would silently un-style every image rather than raise.
+    # Depth is set with effort instead.
     payload = {
         "model": ENHANCE_MODEL,
         "max_tokens": ENHANCE_MAX_TOKENS,
-        "temperature": ENHANCE_TEMPERATURE,
+        "output_config": {"effort": ENHANCE_EFFORT},
         "system": system,
         "messages": [{"role": "user", "content": user_msg}],
     }
@@ -193,10 +208,12 @@ def _generate_image_title(raw_prompt, enhanced_prompt=None, grounded_in=None):
         f"Named campaign entities: {entity_text}\n\n"
         "Write the title sentence."
     )
+    # 80 tokens was the whole budget including thinking, which on an Opus
+    # model is not enough to reach the sentence it is asked for.
     payload = {
         "model": IMAGE_TITLE_MODEL,
-        "max_tokens": 80,
-        "temperature": 0.2,
+        "max_tokens": 2000,
+        "output_config": {"effort": IMAGE_TITLE_EFFORT},
         "system": system,
         "messages": [{"role": "user", "content": user_msg}],
     }

@@ -303,41 +303,58 @@ ALLOWED_DM_DISCORD_IDS = {
 # scene vs. environmental establishing shot) so the model frames the image
 # appropriately. Everything below the valley group is an alternative look
 # the player can opt into.
+# The house look, in one place.
+#
+# The three Valley presets are the same photograph taken three ways, so the
+# look lives here rather than being restated three times and drifting apart.
+# Written as concrete camera and material direction: image models act on
+# "warm practical key light, shallow depth of field, tarnished brass" and
+# largely ignore "lush", "romantic", "editorial gloss". The reference is the
+# TV show Reign — a lush period drama with modern beauty styling — shot dark.
+_VALLEY_HOUSE = (
+    "Live-action photography from a lush romantic period drama in the manner "
+    "of the TV series Reign: sumptuous historical-fantasy costume with a "
+    "contemporary editorial beauty finish. Photographic, not illustrated or "
+    "painted. Lit by warm practical flame — candle, lantern, hearth, torch — "
+    "as a low golden key against deep blue-black shadow, strong chiaroscuro "
+    "with the background falling into darkness. Shallow depth of field, soft "
+    "focus falloff, fine film grain. Jewel-tone grade: amber and gold "
+    "highlights, teal and indigo shadows, restrained saturation elsewhere. "
+    "Rich tactile fabric — quilted wool, worn linen, embroidered silk, "
+    "oiled leather, tarnished brass and bronze. Real skin with visible pores "
+    "and stray hair, beautiful but not retouched smooth."
+)
+
 ART_STYLE_PRESETS = {
     "valley-portrait": {
         "label": "Valley of Shadows — Portrait",
-        "description": "House style for character portraits — Reign-TV period drama with editorial gloss.",
+        "description": "House style for character portraits — Reign-style period drama, candlelit and close.",
         "prefix": (
-            "Cinematic character portrait in the lush, romantic style of a "
-            "modern period drama like the TV show Reign — rich period "
-            "fantasy costume with a contemporary editorial gloss. Soft "
-            "romantic lighting, shallow depth of field, soft photographic "
-            "focus, dewy modern beauty styling, jewel-tone color grade. "
-            "Portrait format."
+            _VALLEY_HOUSE
+            + " Framing: a single figure, head-and-shoulders to waist-up, "
+            "filling the frame, eyes catching the light, background blurred "
+            "to soft shapes. Vertical portrait format."
         ),
     },
     "valley-scene": {
         "label": "Valley of Shadows — Scene",
-        "description": "House style for narrative/action moments — wider framing, multiple subjects, atmospheric staging.",
+        "description": "House style for narrative moments — several figures, staged and atmospheric.",
         "prefix": (
-            "Cinematic narrative scene in the lush, romantic style of a "
-            "modern period drama like the TV show Reign — rich period "
-            "fantasy costuming with a contemporary editorial gloss, "
-            "atmospheric staging, mid-ground emphasis, soft photographic "
-            "focus with selective depth of field, jewel-tone color grade, "
-            "warm dramatic lighting. Widescreen composition."
+            _VALLEY_HOUSE
+            + " Framing: a narrative moment with one or more figures staged "
+            "in the middle ground, caught mid-action rather than posed, the "
+            "room or street reading around them. Widescreen composition."
         ),
     },
     "valley-place": {
         "label": "Valley of Shadows — Place",
-        "description": "House style for locations, architecture, and landscapes — atmospheric establishing shots.",
+        "description": "House style for locations and architecture — atmospheric establishing shots.",
         "prefix": (
-            "Cinematic establishing shot in the lush, romantic style of a "
-            "modern period drama like the TV show Reign — atmospheric "
-            "historical-fantasy architecture or landscape, golden-hour or "
-            "candlelit lighting, soft photographic focus with rich material "
-            "and texture detail, jewel-tone color grade, painterly depth. "
-            "Widescreen environmental composition."
+            _VALLEY_HOUSE
+            + " Framing: an establishing shot of architecture or landscape "
+            "with no principal figure, depth carried by haze and receding "
+            "lantern light, stonework and water and weather rendered in "
+            "material detail. Widescreen environmental composition."
         ),
     },
     "cinematic": {

@@ -10,14 +10,37 @@ from ..config import *
 # is unreachable or returns an error — image generation never depends on
 # the enhancement step succeeding.
 
-ENHANCE_MODEL = os.environ.get("ENHANCE_MODEL", ANTHROPIC_MODEL)
+# The Studio's prompt engineer. Opus rather than the chat model: this runs
+# once per generated image, a handful of times a day, and it is the step that
+# decides whether a piece comes out looking like the campaign. Enzo's
+# conversational model (ANTHROPIC_MODEL) is deliberately left alone — that one
+# runs on every chat turn and has different economics.
+ENHANCE_MODEL = os.environ.get("ENHANCE_MODEL", "claude-opus-5")
+# Kept for older models set via ENHANCE_MODEL; no longer sent by default.
+# Opus 5 rejects temperature/top_p/top_k with a 400, and this code swallows
+# request failures and quietly falls back to the un-enhanced prompt — so
+# sending it would have looked exactly like the drift it was meant to fix.
 ENHANCE_TEMPERATURE = float(os.environ.get("ENHANCE_TEMPERATURE", "0.2"))
-ENHANCE_MAX_TOKENS = int(os.environ.get("ENHANCE_MAX_TOKENS", "900"))
+# low | medium | high | xhigh | max. The enhancer is doing real work, the
+# title is one sentence.
+ENHANCE_EFFORT = os.environ.get("ENHANCE_EFFORT", "medium")
+IMAGE_TITLE_EFFORT = os.environ.get("IMAGE_TITLE_EFFORT", "low")
+# Room for adaptive thinking as well as the prompt itself: on Opus, thinking
+# tokens come out of max_tokens, and 900 was tight enough to risk truncating
+# the rewrite mid-sentence.
+ENHANCE_MAX_TOKENS = int(os.environ.get("ENHANCE_MAX_TOKENS", "8000"))
 ENHANCE_TIMEOUT_S = int(os.environ.get("ENHANCE_TIMEOUT_S", "30"))
 ENHANCE_MAX_ENTITIES = int(os.environ.get("ENHANCE_MAX_ENTITIES", "6"))
 ENHANCE_ENTITY_CHARS = int(os.environ.get("ENHANCE_ENTITY_CHARS", "3000"))
-IMAGE_PROMPT_MAX_CHARS = int(os.environ.get("IMAGE_PROMPT_MAX_CHARS", "3900"))
-FINAL_GROUNDING_MAX_CHARS = int(os.environ.get("FINAL_GROUNDING_MAX_CHARS", "2800"))
+# Headroom, not a budget.
+#
+# These were 3900 and 2800, which is well under what the image API accepts and
+# meant a prompt naming several campaign entities spent its whole allowance on
+# grounding and started throwing pieces away — the house style first. Set high
+# enough that ordinary prompts are never trimmed at all; they exist now only so
+# a runaway cannot post a megabyte to OpenAI. Both stay env-overridable.
+IMAGE_PROMPT_MAX_CHARS = int(os.environ.get("IMAGE_PROMPT_MAX_CHARS", "30000"))
+FINAL_GROUNDING_MAX_CHARS = int(os.environ.get("FINAL_GROUNDING_MAX_CHARS", "20000"))
 IMAGE_TITLE_MODEL = os.environ.get("IMAGE_TITLE_MODEL", ENHANCE_MODEL)
 IMAGE_TITLE_TIMEOUT_S = int(os.environ.get("IMAGE_TITLE_TIMEOUT_S", "12"))
 
@@ -186,11 +209,20 @@ def _grounded_entity_names(matched_entries):
 
 
 def _compact_grounding_text(text, max_chars=360):
+    """Trim to at most `max_chars`, ellipsis included.
+
+    The ellipsis used to be appended after the trim, so this returned
+    max_chars + 3 and every caller budgeting against it was quietly three
+    characters over.
+    """
     text = re.sub(r"\s+", " ", str(text or "")).strip()
     if len(text) <= max_chars:
         return text
-    cut = text[:max_chars].rsplit(" ", 1)[0].rstrip(" ,;:")
-    return (cut or text[:max_chars]).rstrip() + "..."
+    if max_chars <= 3:
+        return text[:max_chars]
+    budget = max_chars - 3
+    cut = text[:budget].rsplit(" ", 1)[0].rstrip(" ,;:")
+    return (cut or text[:budget]).rstrip() + "..."
 
 
 def _final_visual_grounding_block(matched_entries):
@@ -223,7 +255,10 @@ def _final_visual_grounding_block(matched_entries):
         # Group descriptions intentionally carry multiple characters. Give
         # them more room so prompts like "the party" still preserve each PC's
         # identity details instead of only the first few names in the list.
-        desc_max = 2400 if str(raw_desc).startswith("Group reference") else 520
+        # Was 2400 / 520. A curated description is hand-written and every
+        # line of it is there to keep a character recognisable; clipping it at
+        # 520 characters is how "her left hand is scarred" stopped arriving.
+        desc_max = 8000 if str(raw_desc).startswith("Group reference") else 4000
         desc = _compact_grounding_text(raw_desc, max_chars=desc_max)
         if not desc:
             continue
@@ -258,11 +293,26 @@ def _compose_final_image_prompt(style_prefix, image_prompt_body, matched_entries
     if not image_prompt_body:
         return fixed[:IMAGE_PROMPT_MAX_CHARS].rstrip()
 
+    # The style prefix is the last thing to go, never the first.
+    #
+    # This used to drop `fixed` — style AND grounding — whenever the body left
+    # under 300 characters of room, so exactly the richest prompts, the ones
+    # naming several campaign entities, came back with no house style on them
+    # at all. That is what "the Studio has drifted" looks like from outside:
+    # most images right, the elaborate ones inexplicably generic.
+    style = str(style_prefix or "").strip()
     separator_len = 2 if fixed else 0
     body_budget = IMAGE_PROMPT_MAX_CHARS - len(fixed) - separator_len
     if body_budget < 300:
-        body_budget = max(0, IMAGE_PROMPT_MAX_CHARS - separator_len)
-        fixed = ""
+        # Give up the visual-grounding block first: the enhancer has already
+        # woven those details into the body, so it is the redundant half.
+        fixed = style
+        separator_len = 2 if fixed else 0
+        body_budget = IMAGE_PROMPT_MAX_CHARS - len(fixed) - separator_len
+    if body_budget < 300 and style:
+        # Still no room: keep the style and give the body whatever is left,
+        # rather than shipping a beautifully grounded prompt in no style.
+        body_budget = max(0, IMAGE_PROMPT_MAX_CHARS - len(style) - 2)
 
     trimmed_body = _compact_grounding_text(image_prompt_body, max_chars=body_budget)
     return "\n\n".join(p for p in (fixed, trimmed_body) if p).strip()
@@ -325,4 +375,4 @@ def _relationship_description_matches(prompt, desc_index, already_matched):
 
     return additions
 
-__all__ = ['ENHANCE_MODEL', 'ENHANCE_TEMPERATURE', 'ENHANCE_MAX_TOKENS', 'ENHANCE_TIMEOUT_S', 'ENHANCE_MAX_ENTITIES', 'ENHANCE_ENTITY_CHARS', 'IMAGE_PROMPT_MAX_CHARS', 'FINAL_GROUNDING_MAX_CHARS', 'IMAGE_TITLE_MODEL', 'IMAGE_TITLE_TIMEOUT_S', 'DEFAULT_DESCRIPTIONS_FILE', 'DESCRIPTIONS_FILE', '_DESCRIPTIONS_CACHE_LOCK', '_DESCRIPTIONS_CACHE', 'ALIAS_MIN_LEN', '_normalize_description_phrase', '_flatten_descriptions', '_load_descriptions_data', '_load_descriptions_index', '_grounded_entity_names', '_compact_grounding_text', '_final_visual_grounding_block', '_compose_final_image_prompt', '_match_descriptions', '_relationship_description_matches']
+__all__ = ['ENHANCE_MODEL', 'ENHANCE_TEMPERATURE', 'ENHANCE_MAX_TOKENS', 'ENHANCE_TIMEOUT_S', 'ENHANCE_EFFORT', 'IMAGE_TITLE_EFFORT', 'ENHANCE_MAX_ENTITIES', 'ENHANCE_ENTITY_CHARS', 'IMAGE_PROMPT_MAX_CHARS', 'FINAL_GROUNDING_MAX_CHARS', 'IMAGE_TITLE_MODEL', 'IMAGE_TITLE_TIMEOUT_S', 'DEFAULT_DESCRIPTIONS_FILE', 'DESCRIPTIONS_FILE', '_DESCRIPTIONS_CACHE_LOCK', '_DESCRIPTIONS_CACHE', 'ALIAS_MIN_LEN', '_normalize_description_phrase', '_flatten_descriptions', '_load_descriptions_data', '_load_descriptions_index', '_grounded_entity_names', '_compact_grounding_text', '_final_visual_grounding_block', '_compose_final_image_prompt', '_match_descriptions', '_relationship_description_matches']
