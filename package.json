@@ -9,6 +9,7 @@
     "build:js": "node scripts/build-js.mjs",
     "lint:js": "eslint .eleventy.js sw.js scripts/build-js.mjs src/js lib",
     "test:unit": "vitest run",
+    "push:test": "python3 scripts/push_test_console.py",
     "knowledge": "npm run knowledge:tiers && npm run knowledge:vectors",
     "knowledge:tiers": "python3 build_tiers.py",
     "knowledge:vectors": "python3 build_vectors.py",
