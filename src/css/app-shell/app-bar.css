@@ -246,15 +246,11 @@
     text-transform: none;
     white-space: nowrap;
   }
-  .vos-app-identity svg {
-    width: 19px;
-    height: 19px;
-    fill: none;
-    stroke: currentColor;
-    stroke-width: 2;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-  }
+  /* No svg rule here on purpose. This button used to hold a hamburger glyph
+     that needed sizing to 19px; it holds your face now, and the only svg left
+     inside it is the avatar's fallback portrait — which must fill the circle.
+     A `.vos-app-identity svg` rule outranks `.vos-app-avatar-fallback`, so
+     sizing one shrank the other to a 19px person in a 32px ring. */
   .vos-app-identity:hover {
     color: var(--vos-gold-bright);
     border-color: rgba(212, 165, 116, 0.46);

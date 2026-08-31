@@ -277,11 +277,6 @@
       height: 40px;
       border-radius: 8px;
     }
-    .vos-app-profile {
-      width: 44px;
-      height: 44px;
-      border-radius: 50%;
-    }
     .vos-app-crumbs {
       padding-left: 3.05rem;
     }
@@ -289,11 +284,10 @@
       font-size: 1rem;
       letter-spacing: 0.025em;
     }
+    /* The bar carried four controls when this shrank the avatar to 38x36 to
+       buy the title some room. It carries two now, so the avatar keeps its
+       full 44px target on a phone — which is where the target matters. */
     .vos-app-identity {
-      width: 38px;
-      min-width: 38px;
-      max-width: 38px;
-      min-height: 36px;
       padding: 0;
       font-size: 0.56rem;
     }
