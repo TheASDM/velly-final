@@ -239,11 +239,12 @@ function render(reload) {
   card.append(head);
 
   if (profile.threadKey) {
+    const threadReference = profile.threadId || profile.threadKey;
     const message = el('button', 'vos-profile-message', `Message ${profile.display}`);
     message.type = 'button';
     message.addEventListener('click', () => {
-      if (window.VOS_CHAT) window.VOS_CHAT.open(profile.threadKey);
-      else window.location.href = `/messages/#${encodeURIComponent(profile.threadKey)}`;
+      if (window.VOS_CHAT) window.VOS_CHAT.open(threadReference);
+      else window.location.href = `/messages/#${encodeURIComponent(threadReference)}`;
     });
     card.append(message);
   }

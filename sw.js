@@ -261,6 +261,7 @@ self.addEventListener('push', (event) => {
       messageId: data.messageId || null,
       playerName: data.playerName || '',
       threadKey: data.threadKey || null,
+      threadId: data.threadId || null,
     },
   };
 
@@ -288,6 +289,7 @@ self.addEventListener('push', (event) => {
       windows.forEach((client) => client.postMessage({
         type: 'VOS_IM_PUSH',
         threadKey: data.threadKey,
+        threadId: data.threadId || null,
         unread: typeof data.unread === 'number' ? data.unread : null,
       }));
     }
@@ -320,7 +322,11 @@ self.addEventListener('notificationclick', (event) => {
         // A chat tap opens the overlay in place — the page you were on
         // stays put. Only a cold start has to navigate.
         if (noteData.threadKey) {
-          client.postMessage({ type: 'VOS_IM_OPEN', threadKey: noteData.threadKey });
+          client.postMessage({
+            type: 'VOS_IM_OPEN',
+            threadKey: noteData.threadKey,
+            threadId: noteData.threadId || null,
+          });
           return;
         }
         if ('navigate' in client) {

@@ -25,6 +25,10 @@ import {
   setStateIdentity,
   setDraft, setListWidth, setOpenKey, setScrollTop,
 } from './state.js';
+import { createAttachmentBlobStore } from './attachment-blobs.js';
+import { createChatController } from './controller.js';
+import { createDurableOutbox } from './outbox.js';
+import { createChatStore, threadIdOf } from './store.js';
 
 // Typing indicators only mean anything if the poll is faster than a
 // sentence. Six players at 4s is ~90 requests a minute worst case, and it
@@ -131,6 +135,10 @@ export function createChatPanel(options) {
   const mode = (options && options.mode) || 'overlay';
   const onUnreadChange = (options && options.onUnreadChange) || (() => {});
   const onCloseRequest = (options && options.onCloseRequest) || (() => {});
+  const chatStore = createChatStore();
+  const durableOutbox = createDurableOutbox();
+  const controller = createChatController({ store: chatStore, outbox: durableOutbox });
+  const attachmentBlobs = createAttachmentBlobStore();
 
   let playerName = null;
   let threads = [];
@@ -156,7 +164,7 @@ export function createChatPanel(options) {
   let appliedListFetchSeq = 0;
 
   // Per-thread depth, reset on every open.
-  const messagesById = new Map();
+  let messagesById = new Map();
   let reactions = {};
   let receipts = {};
   let presence = {};
@@ -167,6 +175,11 @@ export function createChatPanel(options) {
   let lastReadSent = 0;
   let hasOlder = false;
   let loadingOlder = false;
+  const activeDeliveries = new Set();
+
+  function findThread(reference) {
+    return chatStore.resolveThread(reference);
+  }
 
   // ── Shell ────────────────────────────────────────────────────────────
   const root = el('div', `vos-chat vos-chat--${mode}`);
@@ -343,15 +356,23 @@ export function createChatPanel(options) {
     onDelete: async (message) => {
       if (!window.confirm('Delete this message for everyone?')) return;
       try {
-        await deleteMessage(message.id);
+        const data = await deleteMessage(message.id);
         const stored = messagesById.get(message.id);
-        if (stored) messagesById.set(message.id, { ...stored, deleted: true, body: '' });
+        if (stored) {
+          attachmentBlobs.revokeMessage(stored);
+          const deleted = data.message
+            || { ...stored, deleted: true, body: '', attachments: [] };
+          messagesById.set(message.id, deleted);
+          chatStore.upsertMessage(openKey, deleted);
+        }
         redrawMessage(message.id);
       } catch (error) {
         setStatus(error.message, true);
       }
     },
-    onOpenImage: (file) => openImageViewer(file.url, file.filename || ''),
+    onOpenImage: (file) => {
+      if (file.blobUrl) openImageViewer(file.blobUrl, file.filename || '');
+    },
     onJump: (id) => {
       const target = messagesEl.querySelector(`[data-id="${id}"]`);
       if (!target) return;
@@ -362,8 +383,30 @@ export function createChatPanel(options) {
   };
 
   function messageBubble(message) {
-    messagesById.set(message.id, message);
-    return renderBubble(message, bubbleContext);
+    const previous = messagesById.get(Number(message.id));
+    if (message.deleted && previous) attachmentBlobs.revokeMessage(previous);
+    const canonical = chatStore.upsertMessage(
+      message.threadId || openKey || message.threadKey, message,
+    ) || message;
+    messagesById.set(Number(canonical.id), canonical);
+    const bubble = renderBubble(canonical, bubbleContext);
+    if (!canonical.deleted && (canonical.attachments || [])
+      .some((file) => !file.blobUrl && !file.blobError)) {
+      const key = openKey;
+      const generation = threadGeneration;
+      attachmentBlobs.hydrateMessage(canonical).then((hydrated) => {
+        if (openKey !== key || threadGeneration !== generation) return;
+        const current = messagesById.get(Number(hydrated.id));
+        if (!current || current.deleted) {
+          attachmentBlobs.revokeMessage(hydrated);
+          return;
+        }
+        messagesById.set(Number(hydrated.id), hydrated);
+        chatStore.upsertMessage(key, hydrated);
+        redrawMessage(hydrated.id);
+      });
+    }
+    return bubble;
   }
 
   function redrawMessage(id) {
@@ -494,11 +537,12 @@ export function createChatPanel(options) {
   const rowsByKey = new Map();
 
   function paintRow(row, thread) {
-    row.dataset.key = thread.key;
-    row.classList.toggle('is-open', thread.key === openKey);
+    const id = threadIdOf(thread);
+    row.dataset.key = id;
+    row.classList.toggle('is-open', id === openKey);
     row.classList.toggle('is-unread', !!thread.unread);
     row.classList.toggle('is-muted', !!thread.muted);
-    row.setAttribute('aria-selected', thread.key === openKey ? 'true' : 'false');
+    row.setAttribute('aria-selected', id === openKey ? 'true' : 'false');
 
     const avatarSlot = row.querySelector('.vos-chat-row-avatar');
     avatarSlot.textContent = '';
@@ -561,7 +605,7 @@ export function createChatPanel(options) {
         </span>
       </span>
     `;
-    row.addEventListener('click', () => openThread(thread.key));
+    row.addEventListener('click', () => openThread(threadIdOf(thread)));
     return row;
   }
 
@@ -594,8 +638,9 @@ export function createChatPanel(options) {
   }
 
   function paintPinnedRow(row, thread, variant) {
-    row.dataset.key = thread.key;
-    row.classList.toggle('is-open', thread.key === openKey);
+    const id = threadIdOf(thread);
+    row.dataset.key = id;
+    row.classList.toggle('is-open', id === openKey);
     row.classList.toggle('is-unread', !!thread.unread);
     row.querySelector('.vos-chat-pin-sub').textContent =
       thread.last ? previewText(thread) : PIN_COPY[variant].empty;
@@ -657,7 +702,7 @@ export function createChatPanel(options) {
     ).filter(matchesFilter);
 
     // Drop rows for threads that are gone or filtered out.
-    const wanted = new Set(rest.map((thread) => thread.key));
+    const wanted = new Set(rest.map(threadIdOf));
     rowsByKey.forEach((row, key) => {
       if (!wanted.has(key)) {
         row.remove();
@@ -673,10 +718,11 @@ export function createChatPanel(options) {
     // changes nothing touches nothing.
     let cursor = null;
     rest.forEach((thread) => {
-      let row = rowsByKey.get(thread.key);
+      const id = threadIdOf(thread);
+      let row = rowsByKey.get(id);
       if (!row) {
         row = buildRow(thread);
-        rowsByKey.set(thread.key, row);
+        rowsByKey.set(id, row);
       }
       paintRow(row, thread);
       const next = cursor ? cursor.nextSibling : listEl.firstChild;
@@ -704,7 +750,7 @@ export function createChatPanel(options) {
     const data = await fetchThreads({ signal: requestController.signal });
     if (generation !== lifecycleGeneration || sequence < appliedListFetchSeq) return threads;
     appliedListFetchSeq = sequence;
-    threads = data.threads || [];
+    threads = chatStore.replaceThreads(data.threads || []);
     presence = { ...presence, ...(data.presence || {}) };
     lastListRefreshAt = Date.now();
     renderList();
@@ -845,7 +891,7 @@ export function createChatPanel(options) {
   }
 
   function renderHeadPresence() {
-    const thread = threads.find((entry) => entry.key === openKey);
+    const thread = findThread(openKey);
     if (!thread || thread.kind !== 'direct' || !presence[thread.label]) {
       headPresenceEl.hidden = true;
       return;
@@ -869,7 +915,7 @@ export function createChatPanel(options) {
       const data = await markThreadRead(key, pointer);
       if (openKey !== key || generation !== threadGeneration) return;
       lastReadSent = Math.max(lastReadSent, data.lastReadId || 0);
-      const thread = threads.find((entry) => entry.key === key);
+      const thread = findThread(key);
       if (thread) thread.unread = 0;
       renderList();
       window.dispatchEvent(new CustomEvent('vos:im-read'));
@@ -891,15 +937,16 @@ export function createChatPanel(options) {
     if (openKey !== key || generation !== threadGeneration
         || sequence < appliedThreadFetchSeq) return;
     appliedThreadFetchSeq = sequence;
+    const normalized = chatStore.applyThreadPayload(key, data);
     if (!requestedAfter) {
       hasOlder = !!data.hasOlder;
       olderEl.hidden = !hasOlder;
     }
     since = data.now || since;
-    reactions = data.reactions || {};
-    receipts = data.receipts || {};
+    reactions = normalized ? normalized.reactions : (data.reactions || {});
+    receipts = normalized ? normalized.receipts : (data.receipts || {});
     presence = { ...presence, ...(data.presence || {}) };
-    typingNames = data.typing || [];
+    typingNames = normalized ? normalized.typing : (data.typing || []);
 
     // A rewrite or a delete lands on a message the client already has, so
     // it arrives separately from anything new.
@@ -929,7 +976,7 @@ export function createChatPanel(options) {
       if (wasAtBottom) scrollToLatest();
       else syncJump();
       if (wasAtBottom) markRead();
-      const thread = threads.find((entry) => entry.key === key);
+      const thread = findThread(key);
       if (thread) thread.last = messages[messages.length - 1];
       renderList();
     } else if ((data.revised && data.revised.length)
@@ -968,8 +1015,9 @@ export function createChatPanel(options) {
         key, beforeId, { signal: requestController.signal },
       );
       if (openKey !== key || generation !== threadGeneration) return;
-      reactions = data.reactions || reactions;
-      receipts = data.receipts || receipts;
+      const normalized = chatStore.applyThreadPayload(key, data);
+      reactions = normalized ? normalized.reactions : (data.reactions || reactions);
+      receipts = normalized ? normalized.receipts : (data.receipts || receipts);
       presence = { ...presence, ...(data.presence || {}) };
       const fragment = document.createDocumentFragment();
       (data.messages || []).forEach((message) => {
@@ -1017,7 +1065,7 @@ export function createChatPanel(options) {
   }
 
   function resetThreadState() {
-    messagesById.clear();
+    messagesById = new Map();
     reactions = {};
     receipts = {};
     typingNames = [];
@@ -1043,14 +1091,29 @@ export function createChatPanel(options) {
       setDraft(openKey, editing ? '' : inputEl.value);
       stopTyping();
     }
-    openKey = key;
+    const thread = findThread(key);
+    if (!thread) return;
+    const id = threadIdOf(thread);
+    openKey = id;
+    controller.selectThread(id);
     threadGeneration += 1;
-    setOpenKey(key);
+    setOpenKey(id);
     panelEl.classList.add('is-thread-open');
     backEl.hidden = false;
     resetThreadState();
 
-    const thread = threads.find((entry) => entry.key === key);
+    const stored = chatStore.stateFor(id);
+    if (stored) {
+      messagesById = stored.messages;
+      reactions = stored.reactions;
+      receipts = stored.receipts;
+      presence = { ...presence, ...stored.presence };
+      typingNames = stored.typing;
+      lastId = stored.cursor.lastId;
+      since = stored.cursor.since;
+      hasOlder = stored.cursor.hasOlder;
+      olderEl.hidden = !hasOlder;
+    }
     openKind = thread ? thread.kind : null;
     openMuted = !!(thread && thread.muted);
     titleEl.textContent = thread ? displayName(thread.label) : key;
@@ -1068,13 +1131,17 @@ export function createChatPanel(options) {
     composerEl.hidden = readOnly;
     placeholderEl.hidden = true;
     messagesEl.textContent = '';
-    inputEl.value = getDraft(key);
+    [...messagesById.values()]
+      .sort((left, right) => left.id - right.id)
+      .forEach((message) => messagesEl.append(messageBubble(message)));
+    restorePendingForThread(id);
+    inputEl.value = getDraft(id);
     autogrow();
     syncSendEnabled();
     renderList();
     renderHeadPresence();
 
-    const saved = getScrollTop(key);
+    const saved = getScrollTop(id);
     try {
       await fetchNew({ preservePosition: saved != null });
       regroup();
@@ -1179,6 +1246,35 @@ export function createChatPanel(options) {
     return bubble;
   }
 
+  function payloadFromOutbox(entry) {
+    return {
+      key: entry.threadId,
+      kind: entry.kind,
+      generation: threadGeneration,
+      text: entry.text,
+      replyToId: entry.replyToId,
+      attachmentIds: entry.attachmentIds,
+      clientMessageId: entry.clientMessageId,
+    };
+  }
+
+  function restorePendingForThread(threadId) {
+    controller.pending()
+      .filter((entry) => entry.threadId === threadId)
+      .forEach((entry) => {
+        const bubble = pendingBubble(entry.text
+          || (entry.attachmentIds.length === 1 ? '1 file' : `${entry.attachmentIds.length} files`));
+        bubble.dataset.clientMessageId = entry.clientMessageId;
+        messagesEl.append(bubble);
+        const payload = payloadFromOutbox(entry);
+        if (entry.state === 'failed') {
+          failBubble(bubble, payload, new Error(entry.lastError || 'Send failed'));
+        } else if (!activeDeliveries.has(entry.clientMessageId)) {
+          deliver(bubble, payload);
+        }
+      });
+  }
+
   function typingRow() {
     const row = el('div', 'vos-chat-typing');
     row.append(el('span', 'vos-chat-typing-who', 'Enzo is typing'));
@@ -1201,11 +1297,20 @@ export function createChatPanel(options) {
     }
     let reply = null;
     let streamError = null;
+    let sentCanonical = null;
     try {
-      const options = attachmentIds && attachmentIds.length
-        ? { attachments: attachmentIds } : {};
-      options.clientMessageId = clientMessageId;
-      await streamToEnzo(key, text, options, (name, payload) => {
+      await controller.deliver(clientMessageId, async (entry) => {
+        const options = entry.attachmentIds && entry.attachmentIds.length
+          ? { attachments: entry.attachmentIds } : {};
+        options.clientMessageId = entry.clientMessageId;
+        await streamToEnzo(entry.threadId, entry.text, options, (name, payload) => {
+          if (name === 'sent' && payload.message) {
+            sentCanonical = payload.message;
+            chatStore.upsertMessage(key, payload.message);
+          }
+          if (name === 'message' && payload.message) {
+            chatStore.upsertMessage(key, payload.message);
+          }
         // The stream belongs to the thread that started it. If the reader has
         // moved elsewhere, leave the server to finish and let a later fetch
         // hydrate this thread; never paint into the newly selected one.
@@ -1237,16 +1342,14 @@ export function createChatPanel(options) {
           return;
         }
         if (name === 'error') streamError = payload.message || 'Enzo lost the thread.';
-      }, { signal: requestController.signal });
-      if (streamError) setStatus(streamError, true);
+        }, { signal: requestController.signal });
+        if (streamError) throw new Error(streamError);
+        return { message: sentCanonical };
+      });
       maybeAskForPush();
       window.dispatchEvent(new CustomEvent('vos:enzo-exchange', {
         detail: { key, source: 'panel' },
       }));
-    } catch (error) {
-      failBubble(bubble, {
-        key, text, attachmentIds, generation, kind: 'enzo', clientMessageId,
-      }, error);
     } finally {
       typing.remove();
       if (reply) reply.remove();
@@ -1269,16 +1372,26 @@ export function createChatPanel(options) {
   }
 
   async function deliver(bubble, payload) {
-    const { key, text, replyToId, attachmentIds, clientMessageId, generation, kind } = payload;
+    const { key, text, attachmentIds, clientMessageId, generation, kind } = payload;
+    if (activeDeliveries.has(clientMessageId)) return;
+    activeDeliveries.add(clientMessageId);
     if (kind === 'enzo') {
-      return deliverToEnzo(
-        bubble, key, text, attachmentIds, generation, clientMessageId,
-      );
+      try {
+        return await deliverToEnzo(
+          bubble, key, text, attachmentIds, generation, clientMessageId,
+        );
+      } catch (error) {
+        failBubble(bubble, payload, error);
+        return undefined;
+      } finally {
+        activeDeliveries.delete(clientMessageId);
+      }
     }
     try {
-      const data = await sendMessage(
-        key, text, replyToId, attachmentIds, clientMessageId,
-      );
+      const data = await controller.deliver(clientMessageId, (entry) => sendMessage(
+        entry.threadId, entry.text, entry.replyToId, entry.attachmentIds,
+        entry.clientMessageId,
+      ));
       const message = data.message;
       if (openKey === key && threadGeneration === generation) {
         if (message.id > lastId) lastId = message.id;
@@ -1287,7 +1400,7 @@ export function createChatPanel(options) {
         markRead();
         renderReceipts();
       }
-      const thread = threads.find((entry) => entry.key === key);
+      const thread = findThread(key);
       if (thread) {
         thread.last = message;
         thread.unread = 0;
@@ -1296,6 +1409,8 @@ export function createChatPanel(options) {
       maybeAskForPush();
     } catch (error) {
       failBubble(bubble, payload, error);
+    } finally {
+      activeDeliveries.delete(clientMessageId);
     }
   }
 
@@ -1354,6 +1469,15 @@ export function createChatPanel(options) {
       attachmentIds,
       clientMessageId: newClientMessageId(),
     };
+    controller.enqueue({
+      threadId: payload.key,
+      threadKey: (findThread(payload.key) || {}).key,
+      kind: payload.kind,
+      text: payload.text,
+      replyToId: payload.replyToId,
+      attachmentIds: payload.attachmentIds,
+      clientMessageId: payload.clientMessageId,
+    });
     replyTo = null;
     renderContext();
     inputEl.value = '';
@@ -1536,7 +1660,7 @@ export function createChatPanel(options) {
       openMuted = !!data.muted;
       muteEl.textContent = openMuted ? 'Unmute' : 'Mute';
       muteEl.setAttribute('aria-pressed', openMuted ? 'true' : 'false');
-      const thread = threads.find((entry) => entry.key === openKey);
+      const thread = findThread(openKey);
       if (thread) thread.muted = openMuted;
       renderList();
     } catch (error) {
@@ -1569,6 +1693,7 @@ export function createChatPanel(options) {
     }
     setStateIdentity(playerName);
     stateIdentity = playerName;
+    controller.setIdentity(playerName);
     setStatus('Loading…');
     try {
       await Promise.all([loadAvatars(), loadThreads()]);
@@ -1600,8 +1725,15 @@ export function createChatPanel(options) {
 
     // A session ending is a privacy boundary. Keep no drafts, scroll
     // bookmarks, open-thread pointers, or rendered entities from that seat.
-    if (previousName && previousName !== nextName) clearChatState(previousName);
+    if (previousName && previousName !== nextName) {
+      clearChatState(previousName);
+      durableOutbox.clear(previousName);
+      attachmentBlobs.revokeAll();
+      chatStore.reset(null);
+      activeDeliveries.clear();
+    }
     setStateIdentity(nextName);
+    controller.setIdentity(nextName);
     stateIdentity = nextName;
     playerName = null;
     booted = false;
@@ -1676,14 +1808,14 @@ export function createChatPanel(options) {
     restore() {
       const key = getOpenKey();
       if (!key) return;
-      if (threads.some((thread) => thread.key === key)) {
+      if (findThread(key)) {
         openThread(key);
       } else {
         setOpenKey(null);
       }
     },
     hasThread(key) {
-      return threads.some((thread) => thread.key === key);
+      return !!findThread(key);
     },
     totalUnread,
   };

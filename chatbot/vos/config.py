@@ -293,6 +293,62 @@ PLAYER_LOGIN_CODES = (
 )
 PLAYER_NAMES = list(PLAYER_LOGIN_CODES.keys()) or DEFAULT_PLAYERS
 
+# Immutable chat identities. Display names remain the authentication and UI
+# labels during the compatibility window, but every conversation row also
+# carries one of these IDs so a later rename cannot orphan its history.
+_DEFAULT_CHAT_SEAT_IDS = {
+    'Caravel "Car" Asteri': "1b735713-0203-54b5-86dd-69dea9eeba71",
+    "Lotan": "abbc4459-5a97-5c5d-b950-a978cc277df0",
+    "Noname": "abb4cd9e-8426-5dc1-9859-415d66968b8d",
+    'Roxanya "Roxy"': "39f334af-8a2c-5cf6-87a6-3c1e175604d2",
+    "Valentro": "fce79031-c710-505d-afdd-87883f9d78fa",
+    "DM": "4bc8efd3-87bc-531e-8ca5-6d966ed806e4",
+}
+CHAT_SYSTEM_SEAT_IDS = {
+    "Enzo": "23a8c32a-6e85-55ca-89df-98e2c3ddeb6b",
+    "Vesper": "6e5f83fd-65ce-5895-92ff-4c9b7bc7feca",
+}
+CHAT_THREAD_NAMESPACE = uuid.UUID("e9bccaf8-9611-5e85-9965-57425722cff1")
+
+
+def _load_chat_seat_ids():
+    path = SITE_SOURCE_DIR / "_data" / "players.json"
+    loaded = {}
+    try:
+        rows = json.loads(path.read_text(encoding="utf-8"))
+        for row in rows:
+            name = row.get("name") if isinstance(row, dict) else None
+            seat_id = row.get("id") if isinstance(row, dict) else None
+            if name and seat_id:
+                # Canonicalize the textual form and fail on malformed IDs.
+                loaded[name] = str(uuid.UUID(str(seat_id)))
+    except OSError:
+        logging.exception("Could not load immutable chat seat IDs from %s", path)
+    except (TypeError, ValueError, json.JSONDecodeError) as exc:
+        raise RuntimeError(f"Invalid immutable chat seat catalog: {path}") from exc
+    merged = {**_DEFAULT_CHAT_SEAT_IDS, **loaded}
+    missing = [name for name in PLAYER_NAMES if name not in merged]
+    if missing:
+        raise RuntimeError(f"Missing immutable chat seat IDs: {', '.join(missing)}")
+    selected = {name: merged[name] for name in PLAYER_NAMES}
+    if len(set(selected.values())) != len(selected):
+        raise RuntimeError("Immutable chat seat IDs must be unique")
+    return selected
+
+
+CHAT_SEAT_IDS = _load_chat_seat_ids()
+CHAT_SEAT_NAMES = {seat_id: name for name, seat_id in CHAT_SEAT_IDS.items()}
+
+
+def chat_thread_id(kind, *seat_ids):
+    """Return a stable conversation ID derived only from immutable seats."""
+    normalized = [str(uuid.UUID(str(seat_id))) for seat_id in seat_ids]
+    identity = kind if kind == "party" else f"{kind}:{'|'.join(sorted(normalized))}"
+    return str(uuid.uuid5(CHAT_THREAD_NAMESPACE, identity))
+
+
+CHAT_PARTY_THREAD_ID = chat_thread_id("party")
+
 
 def _parse_principal_map(raw):
     """Parse env maps like `email@example.com=Lotan,123456=DM`.

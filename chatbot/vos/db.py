@@ -3,6 +3,7 @@ from .symbols import *
 from .config import *
 from .migrations_legacy import apply_legacy_migrations
 from .migrations_current import apply_current_migrations
+from .migrations_chat_identity import apply_chat_identity_migration
 
 @contextmanager
 def _app_db():
@@ -48,5 +49,13 @@ def _run_app_migrations():
         }
         apply_legacy_migrations(conn, done)
         apply_current_migrations(conn, done)
+        # Current migrations may have run in this transaction. Refresh before
+        # the independently owned chat migration so parallel feature work can
+        # reserve an adjacent migration number without a duplicate insert.
+        current_done = {
+            row["name"]
+            for row in conn.execute("SELECT name FROM schema_migrations")
+        }
+        apply_chat_identity_migration(conn, current_done)
 
 __all__ = ['_app_db', '_table_columns', '_run_app_migrations']

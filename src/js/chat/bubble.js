@@ -56,14 +56,19 @@ function humanBytes(value) {
  * PDFs as a row you download, because handing a PDF to the page to render
  * is a bigger surface than a conversation needs. */
 function docRow(file) {
-  const link = el('a', 'vos-chat-file-doc');
-  link.href = file.url;
-  link.rel = 'noopener';
+  const ready = !!file.blobUrl;
+  const link = el(ready ? 'a' : 'div', `vos-chat-file-doc${ready ? '' : ' is-loading'}`);
+  if (ready) {
+    link.href = file.blobUrl;
+    link.rel = 'noopener';
+    if (file.kind === 'pdf') link.download = file.filename || 'attachment.pdf';
+  }
   const label = file.kind === 'image' ? 'IMG' : 'PDF';
   link.append(el('span', 'vos-chat-file-icon', label));
   const text = el('span', 'vos-chat-file-text');
   text.append(el('span', 'vos-chat-file-name', file.filename || 'attachment'));
-  text.append(el('span', 'vos-chat-file-size', humanBytes(file.bytes)));
+  text.append(el('span', 'vos-chat-file-size', file.blobError
+    || (ready ? humanBytes(file.bytes) : 'Loading…')));
   link.append(text);
   link.addEventListener('click', (event) => event.stopPropagation());
   return link;
@@ -77,6 +82,10 @@ function attachmentsRow(message, ctx) {
   row.classList.toggle('is-grid', images.length > 1);
   files.forEach((file) => {
     if (file.kind === 'image') {
+      if (!file.blobUrl) {
+        row.append(docRow(file));
+        return;
+      }
       const figure = el('button', 'vos-chat-file-image');
       figure.type = 'button';
       figure.setAttribute('aria-label', `Open ${file.filename}`);
@@ -84,21 +93,12 @@ function attachmentsRow(message, ctx) {
       img.loading = 'lazy';
       img.decoding = 'async';
       img.alt = file.filename || '';
-      img.src = images.length > 1 && file.thumbUrl ? file.thumbUrl : file.url;
+      img.src = file.blobUrl;
       if (file.width && file.height) {
         img.width = file.width;
         img.height = file.height;
       }
-      // A thumb that will not load falls back to the full image, and an
-      // image that will not load at all becomes a plain row rather than a
-      // broken-picture icon.
-      let triedFull = false;
       img.addEventListener('error', () => {
-        if (!triedFull && img.src !== file.url) {
-          triedFull = true;
-          img.src = file.url;
-          return;
-        }
         figure.replaceWith(docRow(file));
       });
       figure.append(img);
@@ -169,7 +169,9 @@ export function renderBubble(message, ctx) {
   }
 
   if (message.replyToId) {
-    bubble.append(quoteRow(ctx.getMessage(message.replyToId), ctx));
+    bubble.append(quoteRow(
+      message.replyToMessage || ctx.getMessage(message.replyToId), ctx,
+    ));
   }
   // Enzo answers in the same shape as a person and is not one. The marker
   // is on every one of his bubbles, not just the first of a group, because

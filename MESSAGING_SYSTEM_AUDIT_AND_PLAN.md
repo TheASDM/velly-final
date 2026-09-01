@@ -5,9 +5,30 @@ eleventyExcludeFromCollections: true
 
 # Messaging System Audit and Remediation Plan
 
-Status: audit complete; implementation intentionally paused for review  
+Status: Phases 1 and 2 complete; Phase 3 synchronization is next
 Audit date: 2026-08-31  
 Audited revision: `f4c86e4` locally and in production
+
+## Phase 2 completion — 2026-09-01
+
+The durable-contract and client-core phase is implemented. The release adds
+immutable seat identities, opaque conversation IDs, authoritative membership
+rows, and a compatibility migration that backfills the existing name/key
+columns without breaking older installed clients. API responses now carry both
+contracts during the cache handoff.
+
+The browser now has a normalized per-thread store, a command/controller layer,
+an identity-scoped durable outbox, complete retry intent, stale-update guards,
+thread-bound asynchronous completions, deep-history reply snapshots, and
+authenticated attachment blobs whose object URLs are revoked on delete and
+logout. Sends remain idempotent across ambiguous retries.
+
+Release validation was performed from a clean worktree containing only the
+messaging changes: 282 backend tests and 11 browser unit tests passed, JavaScript
+lint passed, the complete 354-page site build passed, and `git diff --check`
+passed. A content-blind integrity checker was added for migration rehearsal and
+production verification; it reports schema, foreign-key, identity-backfill, and
+relationship consistency without reading message bodies.
 
 ## Executive verdict
 

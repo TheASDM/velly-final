@@ -10,6 +10,7 @@ import urllib.parse
 import pytest
 
 from vos.routes import im as im_routes
+from vos.config import CHAT_PARTY_THREAD_ID, CHAT_SEAT_IDS
 
 
 def _headers(server_module, name, is_dm=False):
@@ -67,6 +68,71 @@ def test_send_and_fetch_direct_thread(app, server_module):
     assert after.get_json()["messages"] == []
 
 
+def test_opaque_thread_contract_and_legacy_key_are_both_accepted(app, server_module):
+    lotan = _headers(server_module, "Lotan")
+    with app.test_client() as client:
+        listing = client.get("/api/im/threads", headers=lotan).get_json()
+        party = next(thread for thread in listing["threads"] if thread["key"] == "party")
+        opaque_url = _thread_url(party["threadId"])
+        created = client.post(opaque_url, json={
+            "body": "Addressed without a display name.",
+            "clientMessageId": "203563fa-a834-4efe-9690-9f54b1306497",
+        }, headers=lotan)
+        fetched = client.get(opaque_url, headers=lotan)
+        read = client.post("/api/im/read", json={
+            "threadId": party["threadId"],
+            "lastReadId": created.get_json()["message"]["id"],
+        }, headers=lotan)
+
+    assert listing["playerSeatId"] == CHAT_SEAT_IDS["Lotan"]
+    assert created.status_code == 201
+    message = created.get_json()["message"]
+    assert message["threadKey"] == "party"
+    assert message["threadId"] == party["threadId"]
+    assert message["senderSeatId"] == CHAT_SEAT_IDS["Lotan"]
+    assert fetched.get_json()["threadId"] == party["threadId"]
+    assert read.get_json()["threadId"] == party["threadId"]
+    with server_module._app_db() as conn:
+        row = conn.execute(
+            "SELECT thread_id, sender_seat_id, updated_at "
+            "FROM chat_messages WHERE id = ?", (message["id"],),
+        ).fetchone()
+    assert row["thread_id"] == party["threadId"]
+    assert row["sender_seat_id"] == CHAT_SEAT_IDS["Lotan"]
+    assert row["updated_at"]
+
+
+def test_reply_snapshot_survives_beyond_the_latest_page(app, server_module):
+    lotan = _headers(server_module, "Lotan")
+    with server_module._app_db() as conn:
+        quoted = server_module._store_chat_message(
+            conn, "party", "DM", "The original instruction."
+        )
+        for number in range(server_module.THREAD_PAGE_LIMIT):
+            server_module._store_chat_message(
+                conn, "party", "DM", f"Intervening message {number}"
+            )
+        reply = server_module._store_chat_message(
+            conn, "party", "DM", "Still following it.", reply_to_id=quoted["id"]
+        )
+
+    with app.test_client() as client:
+        data = client.get(_thread_url("party"), headers=lotan).get_json()
+
+    assert data["hasOlder"] is True
+    rendered = next(message for message in data["messages"] if message["id"] == reply["id"])
+    assert rendered["replyToId"] == quoted["id"]
+    assert rendered["replyToMessage"] == {
+        "id": quoted["id"],
+        "threadId": quoted["thread_id"],
+        "sender": "DM",
+        "senderSeatId": CHAT_SEAT_IDS["DM"],
+        "body": "The original instruction.",
+        "created_at": quoted["created_at"],
+        "deleted": False,
+    }
+
+
 def test_membership_is_enforced(app, server_module):
     lotan = _headers(server_module, "Lotan")
     noname = _headers(server_module, "Noname")
@@ -103,7 +169,11 @@ def test_vesper_thread_exists_only_for_the_dm(app, server_module):
         dm_thread = client.get(_thread_url("DM|Vesper"), headers=dm)
         player_guess = client.get(_thread_url("DM|Vesper"), headers=lotan)
 
-    assert next(thread for thread in dm_threads if thread["key"] == "DM|Vesper") == {
+    vesper_thread = next(thread for thread in dm_threads if thread["key"] == "DM|Vesper")
+    assert vesper_thread["id"] == vesper_thread["threadId"]
+    assert vesper_thread["id"]
+    assert {key: value for key, value in vesper_thread.items()
+            if key not in {"id", "threadId"}} == {
         "key": "DM|Vesper",
         "kind": "tester",
         "label": "Vesper",
@@ -407,7 +477,11 @@ def test_thread_push_carries_thread_key_tag_and_per_reader_unread(app, server_mo
     _send(app, roxy, "party", "The fog is moving.")
     assert delivered.wait(1)
 
-    assert calls["payload_extra"] == {"threadKey": "party", "tag": "im:party"}
+    assert calls["payload_extra"] == {
+        "threadKey": "party",
+        "threadId": CHAT_PARTY_THREAD_ID,
+        "tag": "im:party",
+    }
     assert calls["url"] == "/messages/#party"
     assert "Roxanya" in calls["title"]
     # Every other member gets their own count; the sender is not a recipient.

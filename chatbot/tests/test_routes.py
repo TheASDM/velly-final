@@ -64,10 +64,10 @@ ROUTE_CONTRACT = """
 /api/im/message/<int:message_id>/reaction|/api/im/message/1/reaction|DELETE|im_message_reaction|401:json.error|400:json.error,error_code|400:json.error,error_code|401:json.error
 /api/im/mute|/api/im/mute|POST|im_mute|401:json.error|404:json.error,error_code|404:json.error,error_code|401:json.error
 /api/im/read|/api/im/read|POST|im_read|401:json.error|404:json.error,error_code|404:json.error,error_code|401:json.error
-/api/im/thread/<path:thread_key>|/api/im/thread/party|GET|im_thread|401:json.error|200:json.hasNewer,hasOlder,messages,now,ok,oldestId,presence,reactions,receipts,revised,threadKey,typing|200:json.hasNewer,hasOlder,messages,now,ok,oldestId,presence,reactions,receipts,revised,threadKey,typing|401:json.error
+/api/im/thread/<path:thread_key>|/api/im/thread/party|GET|im_thread|401:json.error|200:json.hasNewer,hasOlder,messages,now,ok,oldestId,presence,reactions,receipts,revised,threadId,threadKey,typing|200:json.hasNewer,hasOlder,messages,now,ok,oldestId,presence,reactions,receipts,revised,threadId,threadKey,typing|401:json.error
 /api/im/thread/<path:thread_key>|/api/im/thread/party|POST|im_thread|401:json.error|400:json.error,error_code|400:json.error,error_code|401:json.error
 /api/im/thread/<path:thread_key>/enzo|/api/im/thread/Enzo%7CLotan/enzo|POST|im_thread_enzo|401:json.error|400:json.error,error_code|403:json.error,error_code|401:json.error
-/api/im/threads|/api/im/threads|GET|im_threads|401:json.error|200:json.ok,playerName,presence,threads|200:json.ok,playerName,presence,threads|401:json.error
+/api/im/threads|/api/im/threads|GET|im_threads|401:json.error|200:json.ok,playerName,playerSeatId,presence,threads|200:json.ok,playerName,playerSeatId,presence,threads|401:json.error
 /api/im/typing|/api/im/typing|POST|im_typing|401:json.error|404:json.error,error_code|404:json.error,error_code|401:json.error
 /api/identity|/api/identity|GET|api_identity|401:json.error|200:json.character,ok,playerName|200:json.character,ok,playerName|401:json.error
 /api/in-play|/api/in-play|GET|in_play_endpoint|200:json.items|200:json.items|200:json.items|200:json.items

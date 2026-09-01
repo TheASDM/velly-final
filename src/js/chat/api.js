@@ -94,6 +94,7 @@ export async function deleteMessage(messageId) {
     const data = await response.json().catch(() => ({}));
     throw new Error(data.error || `HTTP ${response.status}`);
   }
+  return response.json().catch(() => ({ ok: true, id: messageId, deleted: true }));
 }
 
 /* The DM's one-way broadcasts. A different system from threads — one-way
@@ -166,4 +167,20 @@ export async function uploadAttachment(threadKey, file) {
     throw error;
   }
   return data.attachment;
+}
+
+/* Private files use the same bearer credential as every other chat request.
+ * They are never assigned directly to img.src or a link because those browser
+ * fetches cannot attach the canonical Authorization header. */
+export async function fetchAttachmentBlob(file) {
+  const response = await fetch(file.url, {
+    method: 'GET',
+    cache: 'no-store',
+    headers: authHeaders(),
+  });
+  if (!response.ok) {
+    const data = await response.json().catch(() => ({}));
+    throw new Error(data.error || `HTTP ${response.status}`);
+  }
+  return response.blob();
 }

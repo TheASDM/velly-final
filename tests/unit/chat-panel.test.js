@@ -17,6 +17,7 @@ vi.mock('../../src/js/chat/api.js', () => ({
   deleteMessage: vi.fn(),
   editMessage: vi.fn(),
   fetchMessages: mocks.fetchMessages,
+  fetchAttachmentBlob: vi.fn(),
   fetchOlderMessages: vi.fn(),
   fetchProfiles: mocks.fetchProfiles,
   fetchThreads: mocks.fetchThreads,

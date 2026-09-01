@@ -22,6 +22,7 @@ Design rules, all enforced here rather than trusted from the client:
 from ..imports import *
 from ..symbols import *
 from ..config import *
+from ..config import CHAT_SEAT_IDS, CHAT_SYSTEM_SEAT_IDS
 from ..web import limiter
 
 bp = Blueprint("im", __name__)
@@ -106,27 +107,46 @@ def _enzo_partner(thread_key, roster):
     return other if other in roster else None
 
 
-def _thread_members(thread_key, roster):
-    """The members of a thread key, or None when the key names no valid
-    thread (unknown player, unsorted pair, self-pair).
+def _seat_id(name):
+    return CHAT_SEAT_IDS.get(name) or CHAT_SYSTEM_SEAT_IDS.get(name)
 
-    An Enzo thread has exactly one human member: the person he is talking
-    to. Enzo himself is not a caller and never reads anything."""
-    if thread_key == PARTY_THREAD_KEY:
-        return set(roster)
-    if thread_key == TEST_MESSENGER_THREAD_KEY:
-        return {"DM"}
-    partner = _enzo_partner(thread_key, roster)
-    if partner:
-        return {partner}
-    parts = thread_key.split("|")
-    if len(parts) != 2 or parts[0] == parts[1]:
-        return None
-    if parts != sorted(parts):
-        return None
-    if not all(part in roster for part in parts):
-        return None
-    return set(parts)
+
+def _thread_record(conn, reference):
+    return conn.execute("""
+        SELECT id, legacy_key, kind FROM chat_threads
+        WHERE id = ? OR legacy_key = ?
+        LIMIT 1
+    """, (reference, reference)).fetchone()
+
+
+def _resolve_thread_reference(reference):
+    """Return (legacy key, opaque ID), accepting either at the API edge."""
+    with _app_db() as conn:
+        row = _thread_record(conn, str(reference or ""))
+    return (row["legacy_key"], row["id"]) if row else (None, None)
+
+
+def _thread_members(thread_key, roster, conn=None):
+    """Human members from the authoritative stable membership table."""
+    def load(active_conn):
+        thread = _thread_record(active_conn, thread_key)
+        if not thread:
+            return None
+        rows = active_conn.execute("""
+            SELECT s.canonical_name
+            FROM chat_thread_members m
+            JOIN chat_seats s ON s.id = m.seat_id
+            WHERE m.thread_id = ? AND s.kind = 'human' AND s.active = 1
+        """, (thread["id"],)).fetchall()
+        return {
+            row["canonical_name"] for row in rows
+            if row["canonical_name"] in roster
+        }
+
+    if conn is not None:
+        return load(conn)
+    with _app_db() as active_conn:
+        return load(active_conn)
 
 
 def _im_caller():
@@ -166,20 +186,25 @@ def _thread_access_error(thread_key, caller):
     return None
 
 
-def _chat_message_json(row, attachments=None):
+def _chat_message_json(row, attachments=None, reply_to_message=None):
     deleted = bool(row["deleted_at"])
+    columns = set(row.keys())
     return {
         "id": row["id"],
         "threadKey": row["thread_key"],
+        "threadId": row["thread_id"] if "thread_id" in columns else None,
         "sender": row["sender"],
+        "senderSeatId": row["sender_seat_id"] if "sender_seat_id" in columns else None,
         # A deleted message keeps its slot (clients replace the bubble) but
         # its words are gone.
         "body": "" if deleted else row["body"],
         "created_at": row["created_at"],
         "deleted": deleted,
         "replyToId": row["reply_to_id"],
+        "replyToMessage": reply_to_message,
         # Stated, not hidden: an edited message is marked for everyone.
         "editedAt": None if deleted else row["edited_at"],
+        "updatedAt": row["updated_at"] if "updated_at" in columns else row["created_at"],
         "clientMessageId": row["client_message_id"],
         # A deleted message takes its files with it as far as the client is
         # concerned; the rows stay for the orphan sweep to find.
@@ -187,14 +212,50 @@ def _chat_message_json(row, attachments=None):
     }
 
 
+def _reply_snapshots(conn, rows):
+    """Compact quoted entities, including quotes outside the loaded page."""
+    ids = {
+        int(row["reply_to_id"])
+        for row in rows
+        if row["reply_to_id"] is not None
+    }
+    if not ids:
+        return {}
+    placeholders = ",".join("?" for _ in ids)
+    snapshots = {}
+    for quoted in conn.execute(f"""
+        SELECT * FROM chat_messages WHERE id IN ({placeholders})
+    """, sorted(ids)):
+        deleted = bool(quoted["deleted_at"])
+        snapshots[quoted["id"]] = {
+            "id": quoted["id"],
+            "threadId": quoted["thread_id"],
+            "sender": quoted["sender"],
+            "senderSeatId": quoted["sender_seat_id"],
+            "body": "" if deleted else quoted["body"],
+            "created_at": quoted["created_at"],
+            "deleted": deleted,
+        }
+    return snapshots
+
+
+def _complete_chat_message_json(conn, row, attachments=None):
+    if attachments is None:
+        attachments = _attachments_for_messages(conn, [row["id"]]).get(row["id"], [])
+    quote = _reply_snapshots(conn, [row]).get(row["reply_to_id"])
+    return _chat_message_json(row, attachments, quote)
+
+
 def _touch_presence(conn, player_name):
     """Last seen, per player rather than per thread. Touched by the polls
     the client already makes, so presence costs no extra request."""
     conn.execute("""
-        INSERT INTO player_presence (player_name, last_seen_at)
-        VALUES (?, ?)
-        ON CONFLICT(player_name) DO UPDATE SET last_seen_at = excluded.last_seen_at
-    """, (player_name, _utc_now_iso()))
+        INSERT INTO player_presence (player_name, seat_id, last_seen_at)
+        VALUES (?, ?, ?)
+        ON CONFLICT(player_name) DO UPDATE SET
+            seat_id = excluded.seat_id,
+            last_seen_at = excluded.last_seen_at
+    """, (player_name, _seat_id(player_name), _utc_now_iso()))
 
 
 def _thread_reactions(conn, thread_key, caller):
@@ -284,7 +345,7 @@ def _message_for_caller(conn, message_id, caller):
     ).fetchone()
     if not row:
         return None, (jsonify({"error": "Message not found", "error_code": "not_found"}), 404)
-    members = _thread_members(row["thread_key"], _im_roster())
+    members = _thread_members(row["thread_key"], _im_roster(), conn=conn)
     if not members or caller not in members:
         # Same shape as a missing message: whether a message exists in a
         # thread you cannot read is not yours to learn.
@@ -292,7 +353,7 @@ def _message_for_caller(conn, message_id, caller):
     return row, None
 
 
-def _caller_thread_keys(caller, roster):
+def _caller_thread_keys(caller, roster, conn=None):
     """The threads this caller belongs to, in display order: DM pinned
     first for players, then the other players, then the party channel."""
     keys = []
@@ -306,7 +367,24 @@ def _caller_thread_keys(caller, roster):
     others = sorted(name for name in roster if name not in (caller, "DM"))
     keys.extend(_direct_thread_key(caller, other) for other in others)
     keys.append(PARTY_THREAD_KEY)
-    return keys
+    def allowed(active_conn):
+        seat_id = _seat_id(caller)
+        return {
+            row["legacy_key"]
+            for row in active_conn.execute("""
+                SELECT t.legacy_key
+                FROM chat_thread_members m
+                JOIN chat_threads t ON t.id = m.thread_id
+                WHERE m.seat_id = ?
+            """, (seat_id,))
+        }
+
+    if conn is not None:
+        memberships = allowed(conn)
+    else:
+        with _app_db() as active_conn:
+            memberships = allowed(active_conn)
+    return [key for key in keys if key in memberships]
 
 
 def _thread_label(thread_key, caller):
@@ -327,6 +405,10 @@ def im_threads():
     placeholders = ",".join("?" for _ in keys)
 
     with _app_db() as conn:
+        thread_ids = {
+            row["legacy_key"]: row["id"]
+            for row in conn.execute("SELECT id, legacy_key FROM chat_threads")
+        }
         # Unread counts and the newest message id, one grouped pass.
         stats = {
             row["thread_key"]: row
@@ -381,6 +463,8 @@ def im_threads():
             kind = "direct"
         threads.append({
             "key": key,
+            "id": thread_ids[key],
+            "threadId": thread_ids[key],
             "kind": kind,
             "label": _thread_label(key, caller),
             "unread": int(stat["unread"] or 0) if stat else 0,
@@ -388,7 +472,11 @@ def im_threads():
             "last": preview,
         })
     return jsonify({
-        "ok": True, "playerName": caller, "threads": threads, "presence": presence,
+        "ok": True,
+        "playerName": caller,
+        "playerSeatId": _seat_id(caller),
+        "threads": threads,
+        "presence": presence,
     })
 
 
@@ -398,6 +486,9 @@ def im_thread(thread_key):
     caller, auth_error = _im_caller()
     if auth_error:
         return auth_error
+    thread_key, thread_id = _resolve_thread_reference(thread_key)
+    if not thread_key:
+        return jsonify({"error": "No such thread", "error_code": "not_found"}), 404
     access_error = _thread_access_error(thread_key, caller)
     if access_error:
         return access_error
@@ -476,12 +567,18 @@ def im_thread(thread_key):
             files = _attachments_for_messages(
                 conn, [row["id"] for row in rows] + [row["id"] for row in revised]
             )
+            quotes = _reply_snapshots(conn, [*rows, *revised])
         return jsonify({
             "ok": True,
             "threadKey": thread_key,
-            "messages": [_chat_message_json(row, files.get(row["id"]))
+            "threadId": thread_id,
+            "messages": [_chat_message_json(
+                row, files.get(row["id"]), quotes.get(row["reply_to_id"]),
+            )
                          for row in rows],
-            "revised": [_chat_message_json(row, files.get(row["id"]))
+            "revised": [_chat_message_json(
+                row, files.get(row["id"]), quotes.get(row["reply_to_id"]),
+            )
                         for row in revised],
             "reactions": reactions,
             "typing": typing,
@@ -530,11 +627,10 @@ def im_thread(thread_key):
                 WHERE thread_key = ? AND sender = ? AND client_message_id = ?
             """, (thread_key, caller, client_message_id)).fetchone()
             if existing:
-                files = _attachments_for_messages(conn, [existing["id"]])
                 return jsonify({
                     "ok": True,
                     "idempotent": True,
-                    "message": _chat_message_json(existing, files.get(existing["id"])),
+                    "message": _complete_chat_message_json(conn, existing),
                 }), 200
         if reply_to_id is not None:
             # You can only answer something in this thread — a reply is not
@@ -572,11 +668,10 @@ def im_thread(thread_key):
             """, (thread_key, caller, client_message_id)).fetchone()
             if not existing:
                 raise
-            files = _attachments_for_messages(conn, [existing["id"]])
             return jsonify({
                 "ok": True,
                 "idempotent": True,
-                "message": _chat_message_json(existing, files.get(existing["id"])),
+                "message": _complete_chat_message_json(conn, existing),
             }), 200
         attachments, claim_error = _claim_attachments(
             conn, attachment_ids, caller, thread_key, row["id"]
@@ -586,10 +681,11 @@ def im_thread(thread_key):
             # rather than leave a stub whose files never arrived.
             conn.execute("DELETE FROM chat_messages WHERE id = ?", (row["id"],))
             return claim_error
+        canonical = _complete_chat_message_json(conn, row, attachments)
 
     _notify_thread(thread_key, caller, text or _attachment_summary(attachments))
     return jsonify({
-        "ok": True, "message": _chat_message_json(row, attachments),
+        "ok": True, "message": canonical,
     }), 201
 
 
@@ -605,7 +701,7 @@ def _attachment_summary(attachments):
 def _unread_total(conn, reader, roster):
     """That reader's unread count across every thread they belong to — the
     number the app-icon badge and the app-bar bubble both show."""
-    keys = _caller_thread_keys(reader, roster)
+    keys = _caller_thread_keys(reader, roster, conn=conn)
     placeholders = ",".join("?" for _ in keys)
     row = conn.execute(f"""
         SELECT COUNT(*) AS unread
@@ -634,6 +730,7 @@ def _notify_thread(thread_key, sender, text):
         roster = _im_roster()
         members = _thread_members(thread_key, roster) or set()
         with _app_db() as conn:
+            thread = _thread_record(conn, thread_key)
             # The fixture exists specifically to test delivery. It cannot be
             # muted accidentally, and the client hides that control for it.
             muted = set()
@@ -659,7 +756,11 @@ def _notify_thread(thread_key, sender, text):
             text[:200],
             f"/messages/#{thread_key}",
             recipients=recipients,
-            payload_extra={"threadKey": thread_key, "tag": f"im:{thread_key}"},
+            payload_extra={
+                "threadKey": thread_key,
+                "threadId": thread["id"] if thread else None,
+                "tag": f"im:{thread_key}",
+            },
             per_recipient=per_recipient,
         )
     except Exception:
@@ -718,20 +819,33 @@ def _store_chat_message(conn, thread_key, sender, text, reader=None,
                         reply_to_id=None, client_message_id=None):
     """Insert a message and carry the reader's unread pointer past it."""
     now = _utc_now_iso()
+    thread = _thread_record(conn, thread_key)
+    sender_seat_id = _seat_id(sender)
+    if not thread or not sender_seat_id:
+        raise RuntimeError("Cannot store a message without stable chat identity")
     cursor = conn.execute("""
         INSERT INTO chat_messages
-            (thread_key, sender, body, created_at, reply_to_id, client_message_id)
-        VALUES (?, ?, ?, ?, ?, ?)
-    """, (thread_key, sender, text, now, reply_to_id, client_message_id))
+            (thread_key, thread_id, sender, sender_seat_id, body, created_at,
+             updated_at, reply_to_id, client_message_id)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+    """, (
+        thread_key, thread["id"], sender, sender_seat_id, text, now, now,
+        reply_to_id, client_message_id,
+    ))
     message_id = cursor.lastrowid
     if reader:
         conn.execute("""
-            INSERT INTO chat_reads (thread_key, player_name, last_read_id, updated_at)
-            VALUES (?, ?, ?, ?)
+            INSERT INTO chat_reads
+                (thread_key, thread_id, player_name, seat_id, last_read_id, updated_at)
+            VALUES (?, ?, ?, ?, ?, ?)
             ON CONFLICT(thread_key, player_name) DO UPDATE SET
+                thread_id = excluded.thread_id,
+                seat_id = excluded.seat_id,
                 last_read_id = MAX(last_read_id, excluded.last_read_id),
                 updated_at = excluded.updated_at
-        """, (thread_key, reader, message_id, now))
+        """, (
+            thread_key, thread["id"], reader, _seat_id(reader), message_id, now,
+        ))
     return conn.execute(
         "SELECT * FROM chat_messages WHERE id = ?", (message_id,)
     ).fetchone()
@@ -806,6 +920,9 @@ def im_thread_enzo(thread_key):
     caller, auth_error = _im_caller()
     if auth_error:
         return auth_error
+    thread_key, thread_id = _resolve_thread_reference(thread_key)
+    if not thread_key:
+        return jsonify({"error": "No such thread", "error_code": "not_found"}), 404
     access_error = _thread_access_error(thread_key, caller)
     if access_error:
         return access_error
@@ -977,7 +1094,11 @@ def im_read():
     if auth_error:
         return auth_error
     body = request.get_json(silent=True) or {}
-    thread_key = str(body.get("threadKey") or body.get("thread_key") or "")
+    reference = body.get("threadId") or body.get("thread_id") \
+        or body.get("threadKey") or body.get("thread_key") or ""
+    thread_key, thread_id = _resolve_thread_reference(reference)
+    if not thread_key:
+        return jsonify({"error": "No such thread", "error_code": "not_found"}), 404
     access_error = _thread_access_error(thread_key, caller)
     if access_error:
         return access_error
@@ -996,13 +1117,21 @@ def im_read():
         """, (thread_key, max(0, requested_id))).fetchone()
         last_read_id = int(row["last_read_id"] or 0)
         conn.execute("""
-            INSERT INTO chat_reads (thread_key, player_name, last_read_id, updated_at)
-            VALUES (?, ?, ?, ?)
+            INSERT INTO chat_reads
+                (thread_key, thread_id, player_name, seat_id, last_read_id, updated_at)
+            VALUES (?, ?, ?, ?, ?, ?)
             ON CONFLICT(thread_key, player_name) DO UPDATE SET
+                thread_id = excluded.thread_id,
+                seat_id = excluded.seat_id,
                 last_read_id = MAX(last_read_id, excluded.last_read_id),
                 updated_at = excluded.updated_at
-        """, (thread_key, caller, last_read_id, _utc_now_iso()))
-    return jsonify({"ok": True, "lastReadId": last_read_id})
+        """, (
+            thread_key, thread_id, caller, _seat_id(caller), last_read_id,
+            _utc_now_iso(),
+        ))
+    return jsonify({
+        "ok": True, "threadId": thread_id, "lastReadId": last_read_id,
+    })
 
 
 @bp.route("/api/im/mute", methods=["POST"])
@@ -1011,20 +1140,29 @@ def im_mute():
     if auth_error:
         return auth_error
     body = request.get_json(silent=True) or {}
-    thread_key = str(body.get("threadKey") or body.get("thread_key") or "")
+    reference = body.get("threadId") or body.get("thread_id") \
+        or body.get("threadKey") or body.get("thread_key") or ""
+    thread_key, thread_id = _resolve_thread_reference(reference)
+    if not thread_key:
+        return jsonify({"error": "No such thread", "error_code": "not_found"}), 404
     access_error = _thread_access_error(thread_key, caller)
     if access_error:
         return access_error
     muted = 1 if body.get("muted") else 0
     with _app_db() as conn:
         conn.execute("""
-            INSERT INTO chat_reads (thread_key, player_name, muted, updated_at)
-            VALUES (?, ?, ?, ?)
+            INSERT INTO chat_reads
+                (thread_key, thread_id, player_name, seat_id, muted, updated_at)
+            VALUES (?, ?, ?, ?, ?, ?)
             ON CONFLICT(thread_key, player_name) DO UPDATE SET
+                thread_id = excluded.thread_id,
+                seat_id = excluded.seat_id,
                 muted = excluded.muted,
                 updated_at = excluded.updated_at
-        """, (thread_key, caller, muted, _utc_now_iso()))
-    return jsonify({"ok": True, "muted": bool(muted)})
+        """, (
+            thread_key, thread_id, caller, _seat_id(caller), muted, _utc_now_iso(),
+        ))
+    return jsonify({"ok": True, "threadId": thread_id, "muted": bool(muted)})
 
 
 @bp.route("/api/im/typing", methods=["POST"])
@@ -1035,7 +1173,11 @@ def im_typing():
     if auth_error:
         return auth_error
     body = request.get_json(silent=True) or {}
-    thread_key = str(body.get("threadKey") or body.get("thread_key") or "")
+    reference = body.get("threadId") or body.get("thread_id") \
+        or body.get("threadKey") or body.get("thread_key") or ""
+    thread_key, thread_id = _resolve_thread_reference(reference)
+    if not thread_key:
+        return jsonify({"error": "No such thread", "error_code": "not_found"}), 404
     access_error = _thread_access_error(thread_key, caller)
     if access_error:
         return access_error
@@ -1045,17 +1187,22 @@ def im_typing():
         if typing:
             expires = _utc_now_iso_in(TYPING_TTL_SECONDS)
             conn.execute("""
-                INSERT INTO chat_typing (thread_key, player_name, expires_at)
-                VALUES (?, ?, ?)
+                INSERT INTO chat_typing
+                    (thread_key, thread_id, player_name, seat_id, expires_at)
+                VALUES (?, ?, ?, ?, ?)
                 ON CONFLICT(thread_key, player_name) DO UPDATE SET
+                    thread_id = excluded.thread_id,
+                    seat_id = excluded.seat_id,
                     expires_at = excluded.expires_at
-            """, (thread_key, caller, expires))
+            """, (thread_key, thread_id, caller, _seat_id(caller), expires))
         else:
             conn.execute(
                 "DELETE FROM chat_typing WHERE thread_key = ? AND player_name = ?",
                 (thread_key, caller),
             )
-    return jsonify({"ok": True, "typing": bool(typing)})
+    return jsonify({
+        "ok": True, "threadId": thread_id, "typing": bool(typing),
+    })
 
 
 @bp.route("/api/im/message/<int:message_id>/reaction", methods=["POST", "DELETE"])
@@ -1083,9 +1230,11 @@ def im_message_reaction(message_id):
         if request.method == "POST":
             conn.execute("""
                 INSERT OR IGNORE INTO chat_reactions
-                    (message_id, player_name, emoji, created_at)
-                VALUES (?, ?, ?, ?)
-            """, (message_id, caller, emoji, _utc_now_iso()))
+                    (message_id, player_name, seat_id, emoji, created_at)
+                VALUES (?, ?, ?, ?, ?)
+            """, (
+                message_id, caller, _seat_id(caller), emoji, _utc_now_iso(),
+            ))
         else:
             conn.execute("""
                 DELETE FROM chat_reactions
@@ -1096,6 +1245,7 @@ def im_message_reaction(message_id):
     return jsonify({
         "ok": True,
         "id": message_id,
+        "threadId": row["thread_id"],
         "reactions": reactions.get(str(message_id), []),
     })
 
@@ -1133,19 +1283,20 @@ def im_edit_message(message_id):
             }), 409
         now = _utc_now_iso()
         conn.execute(
-            "UPDATE chat_messages SET body = ?, edited_at = ? WHERE id = ?",
-            (text, now, message_id),
+            "UPDATE chat_messages "
+            "SET body = ?, edited_at = ?, updated_at = ? WHERE id = ?",
+            (text, now, now, message_id),
         )
         _touch_presence(conn, caller)
         updated = conn.execute(
             "SELECT * FROM chat_messages WHERE id = ?", (message_id,)
         ).fetchone()
 
-        files = _attachments_for_messages(conn, [message_id])
+        canonical = _complete_chat_message_json(conn, updated)
 
     return jsonify({
         "ok": True,
-        "message": _chat_message_json(updated, files.get(message_id)),
+        "message": canonical,
     })
 
 
@@ -1165,20 +1316,33 @@ def im_delete_message(message_id):
                 "error": "Only the sender can delete a message.",
                 "error_code": "forbidden",
             }), 403
+        now = _utc_now_iso()
         conn.execute(
-            "UPDATE chat_messages SET deleted_at = ? WHERE id = ?",
-            (_utc_now_iso(), message_id),
+            "UPDATE chat_messages SET deleted_at = ?, updated_at = ? WHERE id = ?",
+            (now, now, message_id),
         )
-    return jsonify({"ok": True, "id": message_id, "deleted": True})
+        deleted = conn.execute(
+            "SELECT * FROM chat_messages WHERE id = ?", (message_id,)
+        ).fetchone()
+        canonical = _complete_chat_message_json(conn, deleted)
+    return jsonify({
+        "ok": True,
+        "id": message_id,
+        "threadId": row["thread_id"],
+        "deleted": True,
+        "message": canonical,
+    })
 
 
-__all__ = ['CHAT_BODY_MAX_BYTES', 'PARTY_THREAD_KEY', 'ENZO_NAME', 'ENZO_HISTORY_LIMIT',
+__all__ = ['CHAT_BODY_MAX_BYTES', 'PARTY_THREAD_KEY', 'THREAD_PAGE_LIMIT',
+           'ENZO_NAME', 'ENZO_HISTORY_LIMIT',
            'TEST_MESSENGER_NAME', 'TEST_MESSENGER_THREAD_KEY',
            'CLIENT_MESSAGE_ID',
            'MESSAGE_EDIT_WINDOW_SECONDS', 'TYPING_TTL_SECONDS', 'REACTION_EMOJI',
            'PRESENT_WITHIN_SECONDS',
            '_utc_now_iso_in', '_iso_age_seconds',
            '_im_roster', '_direct_thread_key', '_enzo_thread_key', '_enzo_partner',
+           '_seat_id', '_thread_record', '_resolve_thread_reference',
            '_thread_members', '_im_caller', '_thread_access_error', '_chat_message_json',
            '_touch_presence', '_thread_reactions', '_thread_typing', '_thread_receipts',
            '_presence_map', '_present_since', '_message_for_caller',

@@ -131,13 +131,16 @@ def profile_detail(player_name):
         row = _profile_rows(conn, [player_name]).get(player_name)
         presence = _presence_map(conn, [player_name]).get(player_name)
         character = _character_line(conn, player_name)
+        thread_key = (None if player_name == caller
+                      else _direct_thread_key(caller, player_name))
+        thread = _thread_record(conn, thread_key) if thread_key else None
     profile = _profile_json(player_name, row, _roster_seat(player_name),
                             presence, character, full=True)
     profile["isYou"] = player_name == caller
     # The thread key the Message button opens, worked out here so the
     # client never has to know how a thread key is spelled.
-    profile["threadKey"] = (None if player_name == caller
-                            else _direct_thread_key(caller, player_name))
+    profile["threadKey"] = thread_key
+    profile["threadId"] = thread["id"] if thread else None
     return jsonify({"ok": True, "profile": profile})
 
 

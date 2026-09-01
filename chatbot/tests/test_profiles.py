@@ -116,9 +116,11 @@ def test_your_own_profile_knows_it_and_offers_no_thread_to_yourself(app, server_
         theirs = client.get("/api/profiles/Valentro", headers=lotan).get_json()["profile"]
     assert mine["isYou"] is True
     assert mine["threadKey"] is None
+    assert mine["threadId"] is None
     assert theirs["isYou"] is False
     # The client never has to know how a thread key is spelled.
     assert theirs["threadKey"] == "Lotan|Valentro"
+    assert theirs["threadId"]
 
 
 def test_a_stranger_has_no_profile(app, server_module):

@@ -44,7 +44,7 @@ function handleServiceWorkerMessage(event) {
     return;
   }
   if (data.type === 'VOS_IM_OPEN') {
-    api.open(data.threadKey || null);
+    api.open(data.threadId || data.threadKey || null);
   }
 }
 

@@ -32,6 +32,7 @@ ATTACHMENT_ID = re.compile(r"^[0-9a-f]{32}$")
 
 
 def _attachment_json(row):
+    columns = set(row.keys())
     return {
         "id": row["id"],
         "kind": row["kind"],
@@ -40,6 +41,7 @@ def _attachment_json(row):
         "bytes": row["bytes"],
         "width": row["width"],
         "height": row["height"],
+        "threadId": row["thread_id"] if "thread_id" in columns else None,
         "url": f"/api/im/attachment/{row['id']}",
         "thumbUrl": (f"/api/im/attachment/{row['id']}?thumb=1"
                      if row["kind"] == "image" else None),
@@ -148,7 +150,11 @@ def im_attachment_upload():
     caller, auth_error = _im_caller()
     if auth_error:
         return auth_error
-    thread_key = str(request.form.get("threadKey") or request.form.get("thread_key") or "")
+    reference = request.form.get("threadId") or request.form.get("thread_id") \
+        or request.form.get("threadKey") or request.form.get("thread_key") or ""
+    thread_key, thread_id = _resolve_thread_reference(reference)
+    if not thread_key:
+        return jsonify({"error": "No such thread", "error_code": "not_found"}), 404
     access_error = _thread_access_error(thread_key, caller)
     if access_error:
         return access_error
@@ -197,10 +203,11 @@ def im_attachment_upload():
         with _app_db() as conn:
             conn.execute("""
                 INSERT INTO chat_attachments
-                    (id, thread_key, uploader, message_id, kind, filename, mime,
-                     bytes, width, height, created_at)
-                VALUES (?, ?, ?, NULL, ?, ?, ?, ?, ?, ?, ?)
-            """, (attachment_id, thread_key, caller, kind,
+                    (id, thread_key, thread_id, uploader, uploader_seat_id,
+                     message_id, kind, filename, mime, bytes, width, height,
+                     created_at)
+                VALUES (?, ?, ?, ?, ?, NULL, ?, ?, ?, ?, ?, ?, ?)
+            """, (attachment_id, thread_key, thread_id, caller, _seat_id(caller), kind,
                   _safe_filename(upload.filename), mimetype, len(data),
                   width, height, _utc_now_iso()))
             # Rename on the same volume is atomic. It happens before commit,
