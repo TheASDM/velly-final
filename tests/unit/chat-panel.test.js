@@ -143,4 +143,27 @@ describe('chat panel privacy lifecycle', () => {
     expect(window.sessionStorage.getItem('vos:chat:state:Lotan')).toBeNull();
     expect(panel.playerName).toBeNull();
   });
+
+  it('renders the DM-only Vesper fixture as a read-only conversation', async () => {
+    mocks.whenPwaReady.mockResolvedValue({
+      isPreviewing: () => false,
+      ensureIdentity: () => Promise.resolve('DM'),
+    });
+    mocks.fetchThreads.mockResolvedValue({
+      threads: [{
+        key: 'DM|Vesper', kind: 'tester', label: 'Vesper', unread: 1, last: null,
+      }],
+      presence: {},
+    });
+    const panel = createChatPanel({ mode: 'page' });
+    document.body.append(panel.root);
+
+    await panel.boot();
+    await panel.openThread('DM|Vesper');
+
+    expect(panel.root.querySelector('.vos-chat-title').textContent).toBe('Vesper');
+    expect(panel.root.querySelector('.vos-chat-composer').hidden).toBe(true);
+    expect(panel.root.querySelector('.vos-chat-mute').hidden).toBe(true);
+    expect(panel.root.textContent).toContain('Use the local push console');
+  });
 });

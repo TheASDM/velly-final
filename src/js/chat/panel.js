@@ -46,6 +46,7 @@ const LIST_MAX_W = 340;
 const EMPTY_COPY = {
   party: 'The party channel is quiet. Break the silence.',
   enzo: 'Ask Enzo about the valley, its people, or the rules.',
+  tester: 'Vesper is waiting at the bell. Use the local push console to send a test.',
   direct: 'No messages yet — say something.',
 };
 // A finger, not a pointer: Enter makes a newline on touch, the Send button
@@ -1060,10 +1061,11 @@ export function createChatPanel(options) {
       titleLinkEl.href = `/profile/?p=${encodeURIComponent(person)}`;
       titleLinkEl.setAttribute('aria-label', `${displayName(person)}'s profile`);
     }
-    muteEl.hidden = openKind === 'enzo';
+    const readOnly = openKind === 'tester';
+    muteEl.hidden = openKind === 'enzo' || readOnly;
     muteEl.textContent = openMuted ? 'Unmute' : 'Mute';
     muteEl.setAttribute('aria-pressed', openMuted ? 'true' : 'false');
-    composerEl.hidden = false;
+    composerEl.hidden = readOnly;
     placeholderEl.hidden = true;
     messagesEl.textContent = '';
     inputEl.value = getDraft(key);
@@ -1087,7 +1089,7 @@ export function createChatPanel(options) {
       setStatus(error.message, true);
     }
     schedulePoll();
-    if (!COARSE_POINTER) inputEl.focus();
+    if (!COARSE_POINTER && !readOnly) inputEl.focus();
   }
 
   function closeThread() {

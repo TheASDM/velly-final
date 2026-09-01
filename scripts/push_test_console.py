@@ -1,200 +1,51 @@
 #!/usr/bin/env python3
-"""Run a loopback-only console that sends a real player DM to the DM seat.
+"""Run a no-login localhost console that sends a Vesper DM to the DM seat.
 
-The browser never receives a credential. This process reads the production
-origin and signing secret from the repository's local .env, mints a short-lived
-player token, and calls the same IM endpoint as the installed app.
+The console does not mint or transmit an application credential. It uses the
+developer machine's existing ``ssh vapp`` connection to call a route that is
+available only on loopback inside the production chatbot container.
 """
 
 from __future__ import annotations
 
 import argparse
-import base64
-import hashlib
-import hmac
 import html
 import json
-import os
-import secrets
+import subprocess
 import threading
 import time
 import uuid
-from dataclasses import dataclass
 from datetime import datetime
 from http import HTTPStatus
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
-from pathlib import Path
-from urllib.error import HTTPError, URLError
-from urllib.parse import parse_qs, quote, urlparse
-from urllib.request import Request, urlopen
+from urllib.parse import parse_qs, urlparse
 
 
-REPO_ROOT = Path(__file__).resolve().parents[1]
-DEFAULT_ENV_FILE = REPO_ROOT / ".env"
-PLAYERS_FILE = REPO_ROOT / "_data" / "players.json"
 LOOPBACK_HOST = "127.0.0.1"
 DEFAULT_PORT = 8765
+DEFAULT_SSH_HOST = "vapp"
+TEST_MESSENGER_NAME = "Vesper"
 MAX_FORM_BYTES = 16 * 1024
 MAX_MESSAGE_BYTES = 4096
-TOKEN_TTL_SECONDS = 10 * 60
 SEND_COOLDOWN_SECONDS = 1.5
+REMOTE_SEND_COMMAND = (
+    "docker exec -i dnd_chatbot "
+    "curl -sS --max-time 20 -X POST "
+    "-H 'Content-Type: application/json' --data-binary @- "
+    "-w '\\n%{http_code}' "
+    "http://127.0.0.1:3001/api/internal/im-test-message"
+)
+REMOTE_CHECK_COMMAND = (
+    "docker exec dnd_chatbot "
+    "curl -fsS --max-time 10 http://127.0.0.1:3001/health"
+)
 
 
 class ConsoleError(RuntimeError):
-    """An expected configuration, validation, or upstream API failure."""
+    """An expected validation, SSH, or private API failure."""
 
 
-@dataclass(frozen=True)
-class ConsoleConfig:
-    base_url: str
-    auth_token_secret: str
-    players: tuple[str, ...]
-
-
-def _b64url_encode(data: bytes) -> str:
-    return base64.urlsafe_b64encode(data).decode("ascii").rstrip("=")
-
-
-def read_dotenv(path: Path) -> dict[str, str]:
-    """Read simple KEY=VALUE entries without executing the env file."""
-    if not path.is_file():
-        raise ConsoleError(f"Environment file not found: {path}")
-    values: dict[str, str] = {}
-    for raw_line in path.read_text(encoding="utf-8").splitlines():
-        line = raw_line.strip()
-        if not line or line.startswith("#"):
-            continue
-        if line.startswith("export "):
-            line = line[7:].lstrip()
-        if "=" not in line:
-            continue
-        key, value = line.split("=", 1)
-        key = key.strip()
-        value = value.strip()
-        if len(value) >= 2 and value[0] == value[-1] and value[0] in "\"'":
-            value = value[1:-1]
-        values[key] = value
-    return values
-
-
-def _validated_base_url(value: str) -> str:
-    base_url = value.strip().rstrip("/")
-    parsed = urlparse(base_url)
-    if parsed.scheme not in {"http", "https"} or not parsed.netloc:
-        raise ConsoleError("PUBLIC_BASE_URL must be a complete http(s) URL.")
-    if parsed.username or parsed.password or parsed.query or parsed.fragment:
-        raise ConsoleError("PUBLIC_BASE_URL must be an origin, without credentials or a query.")
-    return base_url
-
-
-def load_config(env_file: Path = DEFAULT_ENV_FILE) -> ConsoleConfig:
-    file_values = read_dotenv(env_file)
-    base_url = os.environ.get("PUBLIC_BASE_URL", "").strip() or file_values.get(
-        "PUBLIC_BASE_URL", ""
-    )
-    secret = os.environ.get("AUTH_TOKEN_SECRET", "").strip() or file_values.get(
-        "AUTH_TOKEN_SECRET", ""
-    )
-    if not base_url:
-        raise ConsoleError(f"PUBLIC_BASE_URL is missing from {env_file}.")
-    if not secret:
-        raise ConsoleError(f"AUTH_TOKEN_SECRET is missing from {env_file}.")
-
-    try:
-        roster = json.loads(PLAYERS_FILE.read_text(encoding="utf-8"))
-        players = tuple(
-            row["name"]
-            for row in roster
-            if isinstance(row, dict)
-            and isinstance(row.get("name"), str)
-            and row["name"] != "DM"
-        )
-    except (OSError, json.JSONDecodeError, TypeError, KeyError) as exc:
-        raise ConsoleError(f"Could not load the player roster: {exc}") from exc
-    if not players:
-        raise ConsoleError("The player roster has no non-DM players.")
-    return ConsoleConfig(_validated_base_url(base_url), secret, players)
-
-
-def issue_player_token(player_name: str, secret: str, now: int | None = None) -> str:
-    """Mirror chatbot.vos.auth._issue_player_token without importing Flask."""
-    issued_at = int(time.time()) if now is None else int(now)
-    payload = {
-        "name": player_name,
-        "is_dm": False,
-        "provider": "push-test-console",
-        "principal": "loopback",
-        "iat": issued_at,
-        "exp": issued_at + TOKEN_TTL_SECONDS,
-    }
-    payload_b64 = _b64url_encode(
-        json.dumps(payload, separators=(",", ":")).encode("utf-8")
-    )
-    signature = hmac.new(
-        secret.encode("utf-8"), payload_b64.encode("ascii"), hashlib.sha256
-    ).digest()
-    return f"{payload_b64}.{_b64url_encode(signature)}"
-
-
-def direct_thread_key(first: str, second: str) -> str:
-    return "|".join(sorted((first, second)))
-
-
-def send_dm(
-    config: ConsoleConfig,
-    player_name: str,
-    message: str,
-    *,
-    opener=urlopen,
-) -> dict:
-    if player_name not in config.players:
-        raise ConsoleError("Choose a player from the roster.")
-    message = message.strip()
-    if not message:
-        raise ConsoleError("Write a test message first.")
-    if len(message.encode("utf-8")) > MAX_MESSAGE_BYTES:
-        raise ConsoleError("The message is longer than the app's 4 KB limit.")
-
-    thread_key = direct_thread_key("DM", player_name)
-    endpoint = f"{config.base_url}/api/im/thread/{quote(thread_key, safe='')}"
-    body = json.dumps(
-        {"body": message, "clientMessageId": str(uuid.uuid4())},
-        separators=(",", ":"),
-    ).encode("utf-8")
-    request = Request(
-        endpoint,
-        data=body,
-        method="POST",
-        headers={
-            "Authorization": f"Bearer {issue_player_token(player_name, config.auth_token_secret)}",
-            "Content-Type": "application/json",
-            "Accept": "application/json",
-            "User-Agent": "Vallombrosa-Push-Test-Console/1",
-        },
-    )
-    try:
-        with opener(request, timeout=15) as response:
-            status = response.status
-            raw = response.read()
-    except HTTPError as exc:
-        raw = exc.read()
-        detail = _upstream_error(raw) or exc.reason
-        raise ConsoleError(f"The messaging API returned {exc.code}: {detail}") from exc
-    except URLError as exc:
-        raise ConsoleError(f"Could not reach the messaging API: {exc.reason}") from exc
-
-    if status not in {HTTPStatus.OK, HTTPStatus.CREATED}:
-        raise ConsoleError(f"The messaging API returned unexpected status {status}.")
-    try:
-        payload = json.loads(raw.decode("utf-8"))
-    except (UnicodeDecodeError, json.JSONDecodeError) as exc:
-        raise ConsoleError("The messaging API returned an invalid response.") from exc
-    if not payload.get("ok"):
-        raise ConsoleError(_upstream_error(raw) or "The messaging API rejected the message.")
-    return payload
-
-
-def _upstream_error(raw: bytes) -> str:
+def _api_error(raw: bytes) -> str:
     try:
         payload = json.loads(raw.decode("utf-8"))
     except (UnicodeDecodeError, json.JSONDecodeError):
@@ -202,27 +53,98 @@ def _upstream_error(raw: bytes) -> str:
     return str(payload.get("error") or payload.get("message") or "")[:240]
 
 
-def default_message(player_name: str) -> str:
+def _run_ssh(
+    ssh_host: str,
+    remote_command: str,
+    *,
+    input_bytes: bytes | None = None,
+    runner=subprocess.run,
+) -> subprocess.CompletedProcess:
+    try:
+        return runner(
+            ["ssh", ssh_host, remote_command],
+            input=input_bytes,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            timeout=35,
+            check=False,
+        )
+    except FileNotFoundError as exc:
+        raise ConsoleError("ssh is not installed on this machine.") from exc
+    except subprocess.TimeoutExpired as exc:
+        raise ConsoleError("The private VPS request timed out.") from exc
+
+
+def check_private_connection(ssh_host: str, *, runner=subprocess.run) -> None:
+    result = _run_ssh(ssh_host, REMOTE_CHECK_COMMAND, runner=runner)
+    if result.returncode != 0:
+        detail = result.stderr.decode("utf-8", errors="replace").strip()
+        raise ConsoleError(detail or "Could not reach the production container over SSH.")
+    try:
+        payload = json.loads(result.stdout.decode("utf-8"))
+    except (UnicodeDecodeError, json.JSONDecodeError) as exc:
+        raise ConsoleError("The production health check returned invalid data.") from exc
+    if payload.get("status") != "ok":
+        raise ConsoleError("The production chatbot is not healthy.")
+
+
+def send_test_message(
+    message: str,
+    *,
+    ssh_host: str = DEFAULT_SSH_HOST,
+    runner=subprocess.run,
+) -> dict:
+    message = message.strip()
+    if not message:
+        raise ConsoleError("Write a test message first.")
+    if len(message.encode("utf-8")) > MAX_MESSAGE_BYTES:
+        raise ConsoleError("The message is longer than the app's 4 KB limit.")
+
+    request_body = json.dumps(
+        {"body": message, "clientMessageId": str(uuid.uuid4())},
+        separators=(",", ":"),
+    ).encode("utf-8")
+    result = _run_ssh(
+        ssh_host,
+        REMOTE_SEND_COMMAND,
+        input_bytes=request_body,
+        runner=runner,
+    )
+    if result.returncode != 0:
+        detail = result.stderr.decode("utf-8", errors="replace").strip()
+        raise ConsoleError(detail or "The private VPS request failed.")
+
+    try:
+        raw, status_text = result.stdout.rsplit(b"\n", 1)
+        status = int(status_text)
+    except (ValueError, TypeError) as exc:
+        raise ConsoleError("The private messaging route returned an invalid response.") from exc
+    if status not in {HTTPStatus.OK, HTTPStatus.CREATED}:
+        raise ConsoleError(
+            f"The private messaging route returned {status}: "
+            f"{_api_error(raw) or 'request rejected'}"
+        )
+    try:
+        payload = json.loads(raw.decode("utf-8"))
+    except (UnicodeDecodeError, json.JSONDecodeError) as exc:
+        raise ConsoleError("The private messaging route returned invalid JSON.") from exc
+    if not payload.get("ok"):
+        raise ConsoleError(_api_error(raw) or "The message was rejected.")
+    return payload
+
+
+def default_message() -> str:
     stamp = datetime.now().astimezone().strftime("%I:%M:%S %p")
-    return f"Push notification test from {player_name} at {stamp}"
+    return f"Push notification test from {TEST_MESSENGER_NAME} at {stamp}"
 
 
 def render_page(
-    config: ConsoleConfig,
-    form_nonce: str,
     *,
-    selected: str | None = None,
     message: str | None = None,
     notice: str = "",
     failed: bool = False,
 ) -> bytes:
-    selected = selected if selected in config.players else config.players[0]
-    message = default_message(selected) if message is None else message
-    options = "".join(
-        f'<option value="{html.escape(name, quote=True)}"'
-        f'{" selected" if name == selected else ""}>{html.escape(name)}</option>'
-        for name in config.players
-    )
+    message = default_message() if message is None else message
     status = ""
     if notice:
         status_class = "status error" if failed else "status success"
@@ -248,10 +170,10 @@ def render_page(
     .warning {{ margin: 22px 0; padding: 14px 16px; border-left: 3px solid #d9b86c;
       background: #282131; color: #eee2cf; line-height: 1.45; }}
     label {{ display: block; margin: 18px 0 8px; font-weight: 750; }}
-    select, textarea {{ width: 100%; border: 1px solid #695b73; border-radius: 12px; color: #fff;
-      background: #110e15; padding: 13px 14px; font: inherit; }}
-    textarea {{ min-height: 118px; resize: vertical; line-height: 1.45; }}
-    select:focus, textarea:focus {{ outline: 3px solid rgba(217,184,108,.25); border-color: #d9b86c; }}
+    textarea {{ width: 100%; min-height: 118px; resize: vertical; border: 1px solid #695b73;
+      border-radius: 12px; color: #fff; background: #110e15; padding: 13px 14px;
+      font: inherit; line-height: 1.45; }}
+    textarea:focus {{ outline: 3px solid rgba(217,184,108,.25); border-color: #d9b86c; }}
     button {{ width: 100%; margin-top: 18px; border: 0; border-radius: 12px; padding: 14px 18px;
       color: #171018; background: #d9b86c; font: inherit; font-weight: 850; cursor: pointer; }}
     button:hover {{ background: #efd18a; }}
@@ -266,19 +188,16 @@ def render_page(
 <body>
   <main>
     <p class="eyebrow">Local test console</p>
-    <h1>Send Dustin a DM</h1>
-    <p class="intro">This creates a real production message from the selected player to the DM seat and runs the normal push-notification fan-out.</p>
+    <h1>Ring the bell</h1>
+    <p class="intro"><strong>{TEST_MESSENGER_NAME}</strong> is a private test character who appears only in Dustin's DM inbox. This sends a real production message and runs the normal push fan-out.</p>
     <div class="warning"><strong>For a system banner:</strong> put Foglight in the background or lock the target device before sending. A visible app intentionally handles the event in-app instead.</div>
     {status}
     <form method="post" action="/send" autocomplete="off">
-      <input type="hidden" name="nonce" value="{html.escape(form_nonce, quote=True)}">
-      <label for="player">Message from</label>
-      <select id="player" name="player">{options}</select>
-      <label for="message">Message</label>
+      <label for="message">Message from {TEST_MESSENGER_NAME}</label>
       <textarea id="message" name="message" maxlength="4096" required>{html.escape(message)}</textarea>
       <button type="submit">Send real DM + push</button>
     </form>
-    <footer>Bound to <code>127.0.0.1</code> only · credentials never enter the browser</footer>
+    <footer>No app login, auth code, or token · bound to <code>127.0.0.1</code> only</footer>
   </main>
 </body>
 </html>"""
@@ -289,10 +208,9 @@ class PushTestServer(ThreadingHTTPServer):
     daemon_threads = True
     allow_reuse_address = True
 
-    def __init__(self, address, handler, config: ConsoleConfig):
+    def __init__(self, address, handler, ssh_host: str):
         super().__init__(address, handler)
-        self.config = config
-        self.form_nonce = secrets.token_urlsafe(32)
+        self.ssh_host = ssh_host
         self.send_lock = threading.Lock()
         self.last_send_at = 0.0
 
@@ -313,14 +231,17 @@ class PushTestHandler(BaseHTTPRequestHandler):
         }
 
     def _allowed_origin(self) -> bool:
+        if self.headers.get("Sec-Fetch-Site", "").lower() == "cross-site":
+            return False
         origin = self.headers.get("Origin", "")
-        if not origin:
+        if not origin or origin == "null":
             return True
-        port = self.server.server_port
-        return origin.lower() in {
-            f"http://{LOOPBACK_HOST}:{port}",
-            f"http://localhost:{port}",
-        }
+        parsed = urlparse(origin)
+        return (
+            parsed.scheme == "http"
+            and parsed.hostname in {LOOPBACK_HOST, "localhost"}
+            and parsed.port == self.server.server_port
+        )
 
     def _send_headers(self, status: int, content_type: str, length: int) -> None:
         self.send_response(status)
@@ -333,32 +254,33 @@ class PushTestHandler(BaseHTTPRequestHandler):
         self.send_header("X-Frame-Options", "DENY")
         self.end_headers()
 
-    def _reply(self, status: int, body: bytes, content_type: str = "text/html; charset=utf-8") -> None:
+    def _reply(
+        self,
+        status: int,
+        body: bytes,
+        content_type: str = "text/html; charset=utf-8",
+    ) -> None:
         self._send_headers(status, content_type, len(body))
         self.wfile.write(body)
 
     def do_GET(self) -> None:
         if not self._allowed_host():
-            self._reply(HTTPStatus.FORBIDDEN, b"Forbidden", "text/plain; charset=utf-8")
+            self._reply(HTTPStatus.NOT_FOUND, b"Not found", "text/plain; charset=utf-8")
             return
         if self.path == "/health":
-            body = b'{"ok":true}'
-            self._reply(HTTPStatus.OK, body, "application/json; charset=utf-8")
+            self._reply(HTTPStatus.OK, b'{"ok":true}', "application/json; charset=utf-8")
             return
         if self.path not in {"/", ""}:
             self._reply(HTTPStatus.NOT_FOUND, b"Not found", "text/plain; charset=utf-8")
             return
-        self._reply(
-            HTTPStatus.OK,
-            render_page(self.server.config, self.server.form_nonce),
-        )
+        self._reply(HTTPStatus.OK, render_page())
 
     def do_POST(self) -> None:
         if self.path != "/send":
             self._reply(HTTPStatus.NOT_FOUND, b"Not found", "text/plain; charset=utf-8")
             return
         if not self._allowed_host() or not self._allowed_origin():
-            self._reply(HTTPStatus.FORBIDDEN, b"Forbidden", "text/plain; charset=utf-8")
+            self._reply(HTTPStatus.NOT_FOUND, b"Not found", "text/plain; charset=utf-8")
             return
         if self.headers.get_content_type() != "application/x-www-form-urlencoded":
             self._reply(HTTPStatus.UNSUPPORTED_MEDIA_TYPE, b"Use the form", "text/plain; charset=utf-8")
@@ -374,17 +296,12 @@ class PushTestHandler(BaseHTTPRequestHandler):
             fields = parse_qs(
                 self.rfile.read(content_length).decode("utf-8"),
                 keep_blank_values=True,
-                max_num_fields=10,
+                max_num_fields=5,
             )
         except (UnicodeDecodeError, ValueError):
             self._reply(HTTPStatus.BAD_REQUEST, b"Invalid form", "text/plain; charset=utf-8")
             return
-        nonce = fields.get("nonce", [""])[0]
-        player = fields.get("player", [""])[0]
         message = fields.get("message", [""])[0]
-        if not secrets.compare_digest(nonce, self.server.form_nonce):
-            self._reply(HTTPStatus.FORBIDDEN, b"Refresh the page and try again", "text/plain; charset=utf-8")
-            return
 
         try:
             with self.server.send_lock:
@@ -392,36 +309,28 @@ class PushTestHandler(BaseHTTPRequestHandler):
                 if elapsed < SEND_COOLDOWN_SECONDS:
                     raise ConsoleError("Wait a moment before sending another test.")
                 self.server.last_send_at = time.monotonic()
-            payload = send_dm(self.server.config, player, message)
+            payload = send_test_message(message, ssh_host=self.server.ssh_host)
             message_id = payload.get("message", {}).get("id")
-            notice = f"Sent as {player}. Message #{message_id} is in the DM thread; push fan-out was queued."
-            body = render_page(
-                self.server.config,
-                self.server.form_nonce,
-                selected=player,
-                notice=notice,
+            notice = (
+                f"{TEST_MESSENGER_NAME} sent message #{message_id}. "
+                "It is in the DM-only thread and push fan-out was queued."
             )
-            self._reply(HTTPStatus.OK, body)
+            self._reply(HTTPStatus.OK, render_page(notice=notice))
         except ConsoleError as exc:
-            body = render_page(
-                self.server.config,
-                self.server.form_nonce,
-                selected=player,
-                message=message,
-                notice=str(exc),
-                failed=True,
+            self._reply(
+                HTTPStatus.BAD_GATEWAY,
+                render_page(message=message, notice=str(exc), failed=True),
             )
-            self._reply(HTTPStatus.BAD_REQUEST, body)
 
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--port", type=int, default=DEFAULT_PORT)
-    parser.add_argument("--env-file", type=Path, default=DEFAULT_ENV_FILE)
+    parser.add_argument("--ssh-host", default=DEFAULT_SSH_HOST)
     parser.add_argument(
         "--check",
         action="store_true",
-        help="validate configuration without starting the web server",
+        help="verify the private SSH path without starting the web server",
     )
     return parser.parse_args(argv)
 
@@ -430,21 +339,26 @@ def main(argv: list[str] | None = None) -> int:
     args = parse_args(argv)
     if not 1024 <= args.port <= 65535:
         raise SystemExit("--port must be between 1024 and 65535")
-    try:
-        config = load_config(args.env_file.resolve())
-    except ConsoleError as exc:
-        raise SystemExit(f"Configuration error: {exc}") from exc
+    if not args.ssh_host.strip() or any(char.isspace() for char in args.ssh_host):
+        raise SystemExit("--ssh-host must be one SSH host or alias")
     if args.check:
+        try:
+            check_private_connection(args.ssh_host)
+        except ConsoleError as exc:
+            raise SystemExit(f"Connection error: {exc}") from exc
         print(
-            f"Configuration ready: {len(config.players)} players, "
-            f"API origin {config.base_url}",
+            f"Private path ready: {args.ssh_host} -> dnd_chatbot -> {TEST_MESSENGER_NAME}",
             flush=True,
         )
         return 0
 
-    server = PushTestServer((LOOPBACK_HOST, args.port), PushTestHandler, config)
+    server = PushTestServer((LOOPBACK_HOST, args.port), PushTestHandler, args.ssh_host)
     print(f"Foglight push test console: http://{LOOPBACK_HOST}:{args.port}", flush=True)
-    print("Press Ctrl+C to stop. No credential is exposed to the browser.", flush=True)
+    print(
+        f"Messages come from {TEST_MESSENGER_NAME}; no app credential is used. "
+        "Press Ctrl+C to stop.",
+        flush=True,
+    )
     try:
         server.serve_forever()
     except KeyboardInterrupt:

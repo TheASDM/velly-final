@@ -9,6 +9,8 @@ import urllib.parse
 
 import pytest
 
+from vos.routes import im as im_routes
+
 
 def _headers(server_module, name, is_dm=False):
     token = server_module._issue_player_token(name, is_dm=is_dm)
@@ -89,6 +91,70 @@ def test_dm_is_refused_on_player_pair_threads_with_reason(app, server_module):
         response = client.get(_thread_url("Lotan|Noname"), headers=dm)
     assert response.status_code == 403
     assert "between players" in response.get_json()["error"]
+
+
+def test_vesper_thread_exists_only_for_the_dm(app, server_module):
+    dm = _headers(server_module, "DM", is_dm=True)
+    lotan = _headers(server_module, "Lotan")
+
+    with app.test_client() as client:
+        dm_threads = client.get("/api/im/threads", headers=dm).get_json()["threads"]
+        player_threads = client.get("/api/im/threads", headers=lotan).get_json()["threads"]
+        dm_thread = client.get(_thread_url("DM|Vesper"), headers=dm)
+        player_guess = client.get(_thread_url("DM|Vesper"), headers=lotan)
+
+    assert next(thread for thread in dm_threads if thread["key"] == "DM|Vesper") == {
+        "key": "DM|Vesper",
+        "kind": "tester",
+        "label": "Vesper",
+        "unread": 0,
+        "muted": False,
+        "last": None,
+    }
+    assert "DM|Vesper" not in {thread["key"] for thread in player_threads}
+    assert dm_thread.status_code == 200
+    assert player_guess.status_code == 403
+
+
+def test_loopback_can_inject_vesper_message_without_auth(
+    app, server_module, monkeypatch
+):
+    notified = []
+    monkeypatch.setattr(
+        im_routes,
+        "_notify_thread",
+        lambda thread, sender, text: notified.append((thread, sender, text)),
+    )
+    payload = {
+        "body": "The bell is ringing.",
+        "clientMessageId": "26c3b5a4-5fb3-44b2-97b4-d94e4d28ca9d",
+    }
+
+    with app.test_client() as client:
+        blocked = client.post(
+            "/api/internal/im-test-message",
+            json=payload,
+            environ_overrides={"REMOTE_ADDR": "172.20.0.3"},
+            headers={"X-Forwarded-For": "203.0.113.5"},
+        )
+        created = client.post(
+            "/api/internal/im-test-message",
+            json=payload,
+            environ_overrides={"REMOTE_ADDR": "127.0.0.1"},
+        )
+        replay = client.post(
+            "/api/internal/im-test-message",
+            json=payload,
+            environ_overrides={"REMOTE_ADDR": "127.0.0.1"},
+        )
+
+    assert blocked.status_code == 404
+    assert created.status_code == 201
+    assert created.get_json()["message"]["sender"] == "Vesper"
+    assert created.get_json()["message"]["threadKey"] == "DM|Vesper"
+    assert replay.status_code == 200
+    assert replay.get_json()["idempotent"] is True
+    assert notified == [("DM|Vesper", "Vesper", "The bell is ringing.")]
 
 
 def test_bad_thread_keys_are_not_found(app, server_module):

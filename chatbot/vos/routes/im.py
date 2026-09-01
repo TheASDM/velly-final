@@ -32,6 +32,11 @@ THREAD_PAGE_LIMIT = 200
 # Not a roster seat — adding him to _data/players.json would break the auth
 # maps and the records that key off it. He exists only as a thread partner.
 ENZO_NAME = "Enzo"
+# A one-way synthetic correspondent for exercising the real DM notification
+# path. It is deliberately not a roster seat and has no credential: messages
+# can enter its thread only through the container-local endpoint below.
+TEST_MESSENGER_NAME = "Vesper"
+TEST_MESSENGER_THREAD_KEY = "DM|Vesper"
 # Kept for presence labels and backward-compatible tests. Presence is never
 # used to suppress push: it is a player-wide timestamp, not proof that every
 # subscribed device can currently see this conversation.
@@ -109,6 +114,8 @@ def _thread_members(thread_key, roster):
     to. Enzo himself is not a caller and never reads anything."""
     if thread_key == PARTY_THREAD_KEY:
         return set(roster)
+    if thread_key == TEST_MESSENGER_THREAD_KEY:
+        return {"DM"}
     partner = _enzo_partner(thread_key, roster)
     if partner:
         return {partner}
@@ -291,6 +298,10 @@ def _caller_thread_keys(caller, roster):
     keys = []
     if caller != "DM":
         keys.append(_direct_thread_key(caller, "DM"))
+    else:
+        # Vesper is an inbox fixture, not a player. Only the DM seat gets the
+        # thread and the API membership rule above makes direct guessing fail.
+        keys.append(TEST_MESSENGER_THREAD_KEY)
     keys.append(_enzo_thread_key(caller))
     others = sorted(name for name in roster if name not in (caller, "DM"))
     keys.extend(_direct_thread_key(caller, other) for other in others)
@@ -361,6 +372,8 @@ def im_threads():
             preview = {**preview, "body": preview["body"][:140]}
         if key == PARTY_THREAD_KEY:
             kind = "party"
+        elif key == TEST_MESSENGER_THREAD_KEY:
+            kind = "tester"
         elif _enzo_partner(key, roster):
             # The client sends to a different endpoint for this one.
             kind = "enzo"
@@ -621,13 +634,17 @@ def _notify_thread(thread_key, sender, text):
         roster = _im_roster()
         members = _thread_members(thread_key, roster) or set()
         with _app_db() as conn:
-            muted = {
-                row["player_name"]
-                for row in conn.execute(
-                    "SELECT player_name FROM chat_reads WHERE thread_key = ? AND muted = 1",
-                    (thread_key,),
-                )
-            }
+            # The fixture exists specifically to test delivery. It cannot be
+            # muted accidentally, and the client hides that control for it.
+            muted = set()
+            if thread_key != TEST_MESSENGER_THREAD_KEY:
+                muted = {
+                    row["player_name"]
+                    for row in conn.execute(
+                        "SELECT player_name FROM chat_reads WHERE thread_key = ? AND muted = 1",
+                        (thread_key,),
+                    )
+                }
             recipients = sorted(members - muted - {sender})
             if not recipients:
                 return
@@ -718,6 +735,60 @@ def _store_chat_message(conn, thread_key, sender, text, reader=None,
     return conn.execute(
         "SELECT * FROM chat_messages WHERE id = ?", (message_id,)
     ).fetchone()
+
+
+@bp.route("/api/internal/im-test-message", methods=["POST"])
+def im_internal_test_message():
+    """Inject one Vesper message from inside the chatbot container.
+
+    nginx refuses this path before proxying it. The source-address check is a
+    second boundary so even another container cannot use the route. There is
+    intentionally no app credential: the local console reaches it with
+    ``ssh vapp -> docker exec -> 127.0.0.1``.
+    """
+    if request.remote_addr not in {"127.0.0.1", "::1"} \
+            or request.headers.get("X-Forwarded-For"):
+        return jsonify({"error": "Not found", "error_code": "not_found"}), 404
+
+    body = request.get_json(silent=True) or {}
+    text = body.get("body")
+    if not isinstance(text, str) or not text.strip():
+        return jsonify({"error": "Write the message first", "error_code": "invalid"}), 400
+    text = text.strip()
+    if len(text.encode("utf-8")) > CHAT_BODY_MAX_BYTES:
+        return jsonify({"error": "Message is too long (4KB max)", "error_code": "invalid"}), 400
+
+    client_message_id = body.get("clientMessageId")
+    if not isinstance(client_message_id, str) or not CLIENT_MESSAGE_ID.fullmatch(client_message_id):
+        return jsonify({
+            "error": "clientMessageId must be a UUID",
+            "error_code": "invalid",
+        }), 400
+    client_message_id = client_message_id.lower()
+
+    with _app_db() as conn:
+        existing = conn.execute("""
+            SELECT * FROM chat_messages
+            WHERE thread_key = ? AND sender = ? AND client_message_id = ?
+        """, (
+            TEST_MESSENGER_THREAD_KEY, TEST_MESSENGER_NAME, client_message_id,
+        )).fetchone()
+        if existing:
+            return jsonify({
+                "ok": True,
+                "idempotent": True,
+                "message": _chat_message_json(existing),
+            }), 200
+        row = _store_chat_message(
+            conn,
+            TEST_MESSENGER_THREAD_KEY,
+            TEST_MESSENGER_NAME,
+            text,
+            client_message_id=client_message_id,
+        )
+
+    _notify_thread(TEST_MESSENGER_THREAD_KEY, TEST_MESSENGER_NAME, text)
+    return jsonify({"ok": True, "message": _chat_message_json(row)}), 201
 
 
 def _sse(name, payload):
@@ -1102,6 +1173,7 @@ def im_delete_message(message_id):
 
 
 __all__ = ['CHAT_BODY_MAX_BYTES', 'PARTY_THREAD_KEY', 'ENZO_NAME', 'ENZO_HISTORY_LIMIT',
+           'TEST_MESSENGER_NAME', 'TEST_MESSENGER_THREAD_KEY',
            'CLIENT_MESSAGE_ID',
            'MESSAGE_EDIT_WINDOW_SECONDS', 'TYPING_TTL_SECONDS', 'REACTION_EMOJI',
            'PRESENT_WITHIN_SECONDS',
@@ -1112,5 +1184,6 @@ __all__ = ['CHAT_BODY_MAX_BYTES', 'PARTY_THREAD_KEY', 'ENZO_NAME', 'ENZO_HISTORY
            '_presence_map', '_present_since', '_message_for_caller',
            '_caller_thread_keys', '_thread_label', 'im_threads', 'im_thread', '_unread_total',
            '_enzo_history', '_enzo_claim', '_enzo_release', '_store_chat_message', '_sse',
+           'im_internal_test_message',
            'im_thread_enzo', '_attachment_summary', '_notify_thread', 'im_read', 'im_mute', 'im_typing',
            'im_message_reaction', 'im_edit_message', 'im_delete_message']
