@@ -99,6 +99,41 @@ read from beside the code (`COPY chatbot/vos ./vos`), not the `/site` bind
 mount, so a container always has the config it was built with. If it fails to
 load, art generation returns 503 rather than quietly shipping unstyled prompts.
 
+**Grounding is a lookup the app owns, and a name nobody typed still has to
+resolve.** `chatbot/descriptions.json` holds the curated visual description of
+every campaign entity, and it is the only thing that keeps a character's face
+the same from one generation to the next. It used to be reachable only by
+literal phrase: `"the party"` matched, `"each party member"` did not, and the
+compiler was then told the app knows nobody in this request — so it invented
+five strangers and drew them beautifully. Nothing in the response says the
+grounding was missing; you find out by looking at the picture.
+
+So there are now two stages, both in `_extract_campaign_entities`. The literal
+n-gram match runs first and is free. Then `_resolve_prompt_entities` shows a
+cheap model the **name catalog** — every canonical name, its aliases, and what
+each group expands to, built by `_build_descriptions_catalog` — and asks which
+entities the finished image must show. It returns names; the app looks them up
+itself. A model may pick an entity and may never write what one looks like,
+the same rule the house style follows. An invented name simply finds nothing,
+and every failure path returns `[]`, so resolution can improve an image but
+never cost one. `IMAGE_ENTITY_RESOLVER=0` turns it off.
+
+The compiler is also always handed the catalog, so a campaign name it
+half-recognizes reads as that entity rather than as an English word — "Noname"
+is a person here, not an instruction.
+
+**descriptions.json is read from the mount first, the image second.** The DM
+edits it and the next generation picks it up on mtime, no rebuild. The
+Dockerfile also copies it so a container with no `/site` mount still has one —
+the old fallback pointed at `vos/services/descriptions.json`, which has never
+existed anywhere, and a missing file costs all grounding silently.
+
+**A request that names no style still gets one.** Enzo's `/art` posts a prompt
+and a creator and nothing else, so with `IMAGE_STYLE_PROMPT` unset — which is
+how it ships — every chat-generated image went out with no style block at all.
+`_generate_image_payload` now falls back to `DEFAULT_STYLE_KEY`. The Studio has
+always sent an explicit style; `/art` never did.
+
 **Two prompt compilers exist so they can be compared; players see neither.**
 Claude and ChatGPT both compile prompts. Which one is live is a DM setting
 (Campaign Settings → Art), stored in `app_settings`, defaulting to

@@ -144,6 +144,205 @@ def _image_compiler_options():
     ]
 
 
+# ── Resolving which campaign entities a request is about ─────────────────────
+#
+# The literal matcher in descriptions.py only fires on phrases someone
+# actually typed. "the party" hits; "each party member" does not, and the
+# compiler is then told the app knows nobody in this request — so it invents
+# five strangers, which is exactly what continuity grounding exists to
+# prevent. This pass reads the request against the catalog of canonical names
+# and says which entities the finished image has to show, including the ones
+# referred to indirectly: a group, a role, a relationship.
+#
+# The model is shown names and aliases only. It never sees a description and
+# is never asked to write one — the app looks the picked names up in
+# descriptions.json itself. Same rule as the house style: a model may choose,
+# it may not author.
+IMAGE_ENTITY_RESOLVER_ENABLED = os.environ.get("IMAGE_ENTITY_RESOLVER", "1") != "0"
+# Haiku by default. This is a lookup, not a composition problem, and it sits
+# in front of every generation — the compiler model's economics are wrong for
+# a job whose whole output is a list of names.
+IMAGE_ENTITY_RESOLVER_CLAUDE_MODEL = os.environ.get(
+    "IMAGE_ENTITY_RESOLVER_CLAUDE_MODEL", "claude-haiku-4-5-20251001")
+IMAGE_ENTITY_RESOLVER_OPENAI_MODEL = os.environ.get(
+    "IMAGE_ENTITY_RESOLVER_OPENAI_MODEL", "gpt-5-mini")
+IMAGE_ENTITY_RESOLVER_TIMEOUT_S = int(
+    os.environ.get("IMAGE_ENTITY_RESOLVER_TIMEOUT_S", "30"))
+IMAGE_ENTITY_RESOLVER_MAX_TOKENS = int(
+    os.environ.get("IMAGE_ENTITY_RESOLVER_MAX_TOKENS", "1000"))
+# A prompt naming more than a handful of entities is already past what the
+# image model will keep straight, and the grounding block has its own cap.
+IMAGE_ENTITY_RESOLVER_MAX_NAMES = int(
+    os.environ.get("IMAGE_ENTITY_RESOLVER_MAX_NAMES", "8"))
+
+ENTITY_RESOLVER_SYSTEM = """You resolve an image request against a catalog of \
+canonical campaign entities. You do not write image prompts and you do not \
+describe anyone.
+
+Return every entity from the catalog that the finished image must actually \
+depict, including entities the request refers to indirectly:
+- a group by name, by role, or by any of its aliases ("each party member", \
+"the whole group", "all five of them") resolves to the GROUP entry, not to \
+its members individually
+- a person named by role, species, class, or relationship ("the gnome \
+trickster", "her fiance", "the fog warden") resolves to that person
+- a place, item, or creature named the same indirect way resolves the same way
+
+Rules:
+- Use the exact canonical name as written in the catalog, never an alias and \
+never a name that is not in the catalog.
+- Include an entity only when it should be visible in the image. A place \
+mentioned as backstory is not in the picture.
+- If the request is about no catalog entity at all, return an empty list. \
+Guessing is worse than nothing here: a wrong name puts the wrong face in the \
+picture.
+
+Return one JSON object and nothing else: {"entities": ["Exact Canonical Name"]}"""
+
+
+def _entity_resolver_provider():
+    """Whichever vendor this server has credentials for, Anthropic first.
+
+    Deliberately not the DM's compiler setting: that knob exists so the two
+    prompt compilers can be compared, and resolution is not part of the
+    comparison.
+    """
+    if ANTHROPIC_API_KEY:
+        return "claude"
+    if os.environ.get("OPENAI_KEY", ""):
+        return "chatgpt"
+    return None
+
+
+def _resolver_call_claude(system, user_message):
+    response = http_requests.post(
+        "https://api.anthropic.com/v1/messages",
+        headers={
+            "x-api-key": ANTHROPIC_API_KEY,
+            "anthropic-version": "2023-06-01",
+            "content-type": "application/json",
+        },
+        json={
+            "model": IMAGE_ENTITY_RESOLVER_CLAUDE_MODEL,
+            "max_tokens": IMAGE_ENTITY_RESOLVER_MAX_TOKENS,
+            "system": system,
+            "messages": [{"role": "user", "content": user_message}],
+        },
+        timeout=IMAGE_ENTITY_RESOLVER_TIMEOUT_S,
+    )
+    if response.status_code != 200:
+        raise RuntimeError(
+            f"Anthropic {response.status_code}: {response.text[:300]}")
+    for block in response.json().get("content") or []:
+        if block.get("type") == "text" and (block.get("text") or "").strip():
+            return block["text"]
+    raise RuntimeError("Anthropic returned no text block")
+
+
+def _resolver_call_chatgpt(system, user_message):
+    response = http_requests.post(
+        "https://api.openai.com/v1/chat/completions",
+        headers={
+            "Authorization": f"Bearer {os.environ.get('OPENAI_KEY', '')}",
+            "Content-Type": "application/json",
+        },
+        json={
+            "model": IMAGE_ENTITY_RESOLVER_OPENAI_MODEL,
+            "messages": [
+                {"role": "system", "content": system},
+                {"role": "user", "content": user_message},
+            ],
+            "response_format": {"type": "json_object"},
+            "max_completion_tokens": IMAGE_ENTITY_RESOLVER_MAX_TOKENS,
+        },
+        timeout=IMAGE_ENTITY_RESOLVER_TIMEOUT_S,
+    )
+    if response.status_code != 200:
+        raise RuntimeError(
+            f"OpenAI {response.status_code}: {response.text[:300]}")
+    choices = response.json().get("choices") or []
+    text = ((choices[0].get("message") or {}).get("content") or "") if choices else ""
+    if not text.strip():
+        raise RuntimeError("OpenAI returned no message content")
+    return text
+
+
+ENTITY_RESOLVER_CALLERS = {
+    "claude": _resolver_call_claude,
+    "chatgpt": _resolver_call_chatgpt,
+}
+
+
+def _parse_resolved_entities(text):
+    """The answer's entity list, however the model wrapped it."""
+    data = _parse_compiler_json(text)
+    names = data.get("entities")
+    if isinstance(names, str):
+        names = [names]
+    if not isinstance(names, list):
+        return []
+    cleaned = []
+    for name in names:
+        value = re.sub(r"\s+", " ", str(name or "")).strip()
+        if value and value not in cleaned:
+            cleaned.append(value)
+    return cleaned[:IMAGE_ENTITY_RESOLVER_MAX_NAMES]
+
+
+def _resolve_prompt_entities(raw_prompt, already_matched=()):
+    """Curated grounding for entities the request only implies. Never raises.
+
+    Returns entries in the same shape as the literal matcher, minus anything
+    already matched. Every failure — disabled, no credentials, no catalog, a
+    provider error, an unparseable answer, a hallucinated name — degrades to
+    an empty list, which is exactly the behavior that existed before this
+    pass. Resolution improves grounding; it can never cost an image.
+    """
+    prompt = str(raw_prompt or "").strip()
+    if not IMAGE_ENTITY_RESOLVER_ENABLED or not prompt:
+        return []
+    catalog = _descriptions_catalog()
+    if not catalog:
+        return []
+    provider = _entity_resolver_provider()
+    if not provider:
+        return []
+
+    known = ", ".join(
+        (m.get("name") or "").strip()
+        for m in (already_matched or ())
+        if (m.get("name") or "").strip()
+    )
+    user_message = "\n\n".join(part for part in (
+        f"CATALOG:\n{catalog}",
+        f"IMAGE REQUEST:\n{prompt}",
+        f"Already resolved by exact name match: {known}" if known else "",
+        "Return the JSON object now.",
+    ) if part)
+
+    started = time.time()
+    try:
+        answer = ENTITY_RESOLVER_CALLERS[provider](
+            ENTITY_RESOLVER_SYSTEM, user_message)
+        names = _parse_resolved_entities(answer)
+    except Exception as exc:
+        logging.warning("Entity resolver (%s) failed: %s", provider, exc)
+        if IMAGE_COMPILER_DEBUG:
+            logging.exception("Entity resolver (%s) traceback", provider)
+        return []
+
+    # A name the catalog does not hold is dropped here rather than trusted:
+    # the lookup is the app's, so an invented name simply finds nothing.
+    resolved = _lookup_descriptions_by_name(names, already_matched)
+    logging.info(
+        "  Entity resolver (%s) in %.1fs: asked for %s, grounded %s",
+        provider, time.time() - started,
+        ", ".join(names) or "nothing",
+        ", ".join(m["name"] for m in resolved) or "nothing new",
+    )
+    return resolved
+
+
 # ── Building the compiler request ────────────────────────────────────────────
 
 def _preset_style_text(style_key):
@@ -327,6 +526,19 @@ def _compiler_user_message(raw_prompt, style_key, matched_entries, references=()
             note = f" — {ref['note']}" if ref.get("note") else ""
             lines.append(f"- {ref['role']}{note}")
         blocks.append("REFERENCE IMAGES ATTACHED:\n" + "\n".join(lines))
+
+    # Always name-aware. Without the catalog the compiler cannot tell a
+    # campaign name it half-recognizes from a word it should render
+    # literally, and "Noname" is a person here, not an instruction.
+    catalog = _descriptions_catalog()
+    if catalog:
+        blocks.append(
+            "ENTITY CATALOG — the only real names in this campaign. Treat a "
+            "name from this list as that specific entity. Do not add anyone "
+            "the request did not ask for, and do not invent visual facts for "
+            "a catalog name whose description was not supplied above.\n\n"
+            + catalog
+        )
 
     blocks.append("Return the JSON object now.")
     return "\n\n".join(blocks)
@@ -637,6 +849,19 @@ __all__ = [
     '_compiler_call_chatgpt',
     '_parse_compiler_json',
     '_validate_compiler_record',
+    'IMAGE_ENTITY_RESOLVER_ENABLED',
+    'IMAGE_ENTITY_RESOLVER_CLAUDE_MODEL',
+    'IMAGE_ENTITY_RESOLVER_OPENAI_MODEL',
+    'IMAGE_ENTITY_RESOLVER_TIMEOUT_S',
+    'IMAGE_ENTITY_RESOLVER_MAX_TOKENS',
+    'IMAGE_ENTITY_RESOLVER_MAX_NAMES',
+    'ENTITY_RESOLVER_SYSTEM',
+    'ENTITY_RESOLVER_CALLERS',
+    '_entity_resolver_provider',
+    '_resolver_call_claude',
+    '_resolver_call_chatgpt',
+    '_parse_resolved_entities',
+    '_resolve_prompt_entities',
     '_uncompiled_image_prompt',
     '_compile_image_prompt',
     '_log_compilation',

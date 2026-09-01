@@ -24,6 +24,9 @@ ENV PATH=/opt/eleventy/node_modules/.bin:$PATH
 
 WORKDIR /app
 COPY chatbot/server.py .
+# descriptions.json is read from the /site mount first so the DM can edit it
+# without a rebuild; this copy is what the container falls back to.
+COPY chatbot/descriptions.json .
 COPY chatbot/vos ./vos
 
 EXPOSE 3001

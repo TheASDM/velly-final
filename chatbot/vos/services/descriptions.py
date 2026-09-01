@@ -34,21 +34,44 @@ FINAL_GROUNDING_MAX_CHARS = int(os.environ.get("FINAL_GROUNDING_MAX_CHARS", "200
 IMAGE_TITLE_MODEL = os.environ.get("IMAGE_TITLE_MODEL", ENHANCE_MODEL)
 IMAGE_TITLE_TIMEOUT_S = int(os.environ.get("IMAGE_TITLE_TIMEOUT_S", "12"))
 
-# Hand-curated visual-description grounding for the art enhancer. Lives in
-# the repo at chatbot/descriptions.json; the container bind-mounts the repo
-# at /site so we read straight from there. Falls back to (none) when the
-# file is missing or malformed — RAG keyword matching still works without
-# it, the result is just less specific.
-DEFAULT_DESCRIPTIONS_FILE = Path("/site/chatbot/descriptions.json")
-if not DEFAULT_DESCRIPTIONS_FILE.exists():
-    DEFAULT_DESCRIPTIONS_FILE = Path(__file__).resolve().parent / "descriptions.json"
-DESCRIPTIONS_FILE = Path(os.environ.get("ART_DESCRIPTIONS_FILE", str(DEFAULT_DESCRIPTIONS_FILE)))
+# Hand-curated visual-description grounding for generated art. Lives in the
+# repo at chatbot/descriptions.json, and is read from the bind mount first so
+# the DM can edit a character's look and have the next image use it without a
+# rebuild — the mtime check below picks it up.
+#
+# The packaged copy beside the code is the fallback, and it is why the
+# Dockerfile copies the file as well as mounting it. The previous fallback
+# pointed at vos/services/descriptions.json, which has never existed in the
+# repo or in the image: with no /site mount every generation silently lost
+# all grounding and still returned a perfectly good-looking picture of the
+# wrong people. Missing grounding has no symptom you can see in a response.
+DESCRIPTIONS_CANDIDATES = (
+    SITE_SOURCE_DIR / "chatbot" / "descriptions.json",
+    Path(__file__).resolve().parents[2] / "descriptions.json",
+)
+DEFAULT_DESCRIPTIONS_FILE = next(
+    (path for path in DESCRIPTIONS_CANDIDATES if path.exists()),
+    DESCRIPTIONS_CANDIDATES[0],
+)
+# `or` rather than a get() default: docker-compose passes the override
+# through as an empty string when it is unset, and Path("") is the working
+# directory, which opens as a directory and loses every description.
+DESCRIPTIONS_FILE = Path(
+    (os.environ.get("ART_DESCRIPTIONS_FILE") or "").strip()
+    or DEFAULT_DESCRIPTIONS_FILE
+)
+if not DESCRIPTIONS_FILE.exists():
+    logging.warning(
+        "No descriptions.json at %s — generated art will not be grounded in "
+        "canonical character or location descriptions", DESCRIPTIONS_FILE,
+    )
 _DESCRIPTIONS_CACHE_LOCK = threading.RLock()
 _DESCRIPTIONS_CACHE = {
     "path": None,
     "mtime_ns": None,
     "raw": {},
     "index": {},
+    "catalog": "",
 }
 
 # Aliases shorter than this rarely identify a unique entity (e.g. "lo",
@@ -138,6 +161,58 @@ def _flatten_descriptions(raw):
     return index
 
 
+# The catalog is names only — every canonical name and its aliases, plus which
+# entities a group expands to. It exists so a model can be asked *which*
+# entities a request is about without ever being shown, or asked to write,
+# what they look like: the app does the lookup itself and the descriptions
+# stay the one thing no model authors. Ordered most-identifying first, since
+# a long catalog is read top-down.
+CATALOG_SECTIONS = (
+    ("groups", "GROUPS \u2014 naming one of these means every member listed"),
+    ("player_characters", "PLAYER CHARACTERS"),
+    ("npcs", "NPCS"),
+    ("items", "ITEMS"),
+    ("creatures", "CREATURES AND MONSTERS"),
+    ("locations", "LOCATIONS"),
+)
+
+
+def _catalog_line(canon, payload):
+    aliases = []
+    if isinstance(payload, dict):
+        aliases = [str(a).strip() for a in (payload.get("aliases") or []) if str(a).strip()]
+    return f"- {canon} [{'; '.join(aliases)}]" if aliases else f"- {canon}"
+
+
+def _build_descriptions_catalog(raw):
+    """Every canonical name in descriptions.json, with aliases, by section.
+
+    Groups list their members so a request about "the party" resolves to the
+    five people rather than to an abstraction.
+    """
+    if not isinstance(raw, dict):
+        return ""
+    sections = []
+    for key, header in CATALOG_SECTIONS:
+        entries = raw.get(key)
+        if not isinstance(entries, dict):
+            continue
+        lines = []
+        for canon, payload in entries.items():
+            line = _catalog_line(canon, payload)
+            if key == "groups":
+                members = []
+                if isinstance(payload, dict):
+                    members = [str(m).strip() for m in (payload.get("members") or []) if str(m).strip()]
+                if not members:
+                    continue
+                line = f"{line} -> {', '.join(members)}"
+            lines.append(line)
+        if lines:
+            sections.append(f"{header}:\n" + "\n".join(lines))
+    return "\n\n".join(sections)
+
+
 def _load_descriptions_data():
     """Read descriptions.json once per mtime and return (raw, flattened_index).
 
@@ -161,15 +236,17 @@ def _load_descriptions_data():
             with open(DESCRIPTIONS_FILE, "r", encoding="utf-8") as f:
                 raw = json.load(f)
             index = _flatten_descriptions(raw)
+            catalog = _build_descriptions_catalog(raw)
         except Exception:
             logging.exception("Failed to load %s", DESCRIPTIONS_FILE)
-            raw, index = {}, {}
+            raw, index, catalog = {}, {}, ""
 
         _DESCRIPTIONS_CACHE.update({
             "path": path_key,
             "mtime_ns": stat.st_mtime_ns,
             "raw": raw if isinstance(raw, dict) else {},
             "index": index if isinstance(index, dict) else {},
+            "catalog": catalog if isinstance(catalog, str) else "",
         })
         return _DESCRIPTIONS_CACHE["raw"], _DESCRIPTIONS_CACHE["index"]
 
@@ -184,6 +261,51 @@ def _load_descriptions_index():
     except Exception:
         logging.exception("Failed to load %s", DESCRIPTIONS_FILE)
         return {}
+
+
+def _descriptions_catalog():
+    """The name catalog, or '' when descriptions.json is missing or broken."""
+    try:
+        _load_descriptions_data()
+    except Exception:
+        logging.exception("Failed to load %s", DESCRIPTIONS_FILE)
+        return ""
+    with _DESCRIPTIONS_CACHE_LOCK:
+        return _DESCRIPTIONS_CACHE.get("catalog") or ""
+
+
+def _lookup_descriptions_by_name(names, already_matched=()):
+    """Canonical names (or aliases) -> curated grounding entries.
+
+    The half of entity resolution that no model touches: something else may
+    decide a request is about Roxy, but what Roxy looks like only ever comes
+    out of descriptions.json.
+    """
+    index = _load_descriptions_index()
+    if not index:
+        return []
+    seen = {
+        (m.get("name") or "").strip().lower()
+        for m in (already_matched or ())
+    }
+    resolved = []
+    for raw_name in names or []:
+        phrase = _normalize_description_phrase(str(raw_name or "").strip())
+        hit = index.get(phrase)
+        if not hit:
+            continue
+        canon, desc = hit
+        key = canon.strip().lower()
+        if not desc or key in seen:
+            continue
+        seen.add(key)
+        resolved.append({
+            "name": canon,
+            "text": desc,
+            "source_file": "descriptions.json",
+            "page_id": f"desc:{canon}",
+        })
+    return resolved
 
 
 def _grounded_entity_names(matched_entries):
@@ -381,4 +503,4 @@ def _relationship_description_matches(prompt, desc_index, already_matched):
 
     return additions
 
-__all__ = ['ENHANCE_MODEL', 'IMAGE_TITLE_EFFORT', 'ENHANCE_MAX_ENTITIES', 'ENHANCE_ENTITY_CHARS', 'IMAGE_PROMPT_MAX_CHARS', 'FINAL_GROUNDING_MAX_CHARS', 'IMAGE_TITLE_MODEL', 'IMAGE_TITLE_TIMEOUT_S', 'DEFAULT_DESCRIPTIONS_FILE', 'DESCRIPTIONS_FILE', '_DESCRIPTIONS_CACHE_LOCK', '_DESCRIPTIONS_CACHE', 'ALIAS_MIN_LEN', '_normalize_description_phrase', '_flatten_descriptions', '_load_descriptions_data', '_load_descriptions_index', '_grounded_entity_names', '_compact_grounding_text', '_final_visual_grounding_block', '_hard_constraints_block', '_compose_image_prompt', '_match_descriptions', '_relationship_description_matches']
+__all__ = ['ENHANCE_MODEL', 'IMAGE_TITLE_EFFORT', 'ENHANCE_MAX_ENTITIES', 'ENHANCE_ENTITY_CHARS', 'IMAGE_PROMPT_MAX_CHARS', 'FINAL_GROUNDING_MAX_CHARS', 'IMAGE_TITLE_MODEL', 'IMAGE_TITLE_TIMEOUT_S', 'DESCRIPTIONS_CANDIDATES', 'DEFAULT_DESCRIPTIONS_FILE', 'DESCRIPTIONS_FILE', '_DESCRIPTIONS_CACHE_LOCK', '_DESCRIPTIONS_CACHE', 'ALIAS_MIN_LEN', 'CATALOG_SECTIONS', '_normalize_description_phrase', '_flatten_descriptions', '_catalog_line', '_build_descriptions_catalog', '_load_descriptions_data', '_load_descriptions_index', '_descriptions_catalog', '_lookup_descriptions_by_name', '_grounded_entity_names', '_compact_grounding_text', '_final_visual_grounding_block', '_hard_constraints_block', '_compose_image_prompt', '_match_descriptions', '_relationship_description_matches']

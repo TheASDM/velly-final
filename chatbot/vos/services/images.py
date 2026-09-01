@@ -5,11 +5,18 @@ from ..config import *
 def _extract_campaign_entities(prompt):
     """Find named campaign entities in the prompt for art grounding.
 
-    Two-stage match:
-      1. Hand-curated descriptions.json (preferred — pure visual detail)
-      2. RAG vector-store name index (fallback for entities not yet
+    Three-stage match:
+      1. Hand-curated descriptions.json by literal phrase (preferred — pure
+         visual detail, and free)
+      2. The same file resolved by a model against its name catalog, for the
+         entities a request refers to without naming: "each party member",
+         "her fiance", "the gnome trickster"
+      3. RAG vector-store name index (fallback for entities not yet
          covered by descriptions.json)
-    The two pools are merged, deduped, and capped at ENHANCE_MAX_ENTITIES.
+    The pools are merged, deduped, and capped at ENHANCE_MAX_ENTITIES.
+
+    Order is priority: the cap is real, and a curated visual description is
+    worth more to an image than a wiki paragraph, whichever stage found it.
     """
     matched = []
 
@@ -18,7 +25,11 @@ def _extract_campaign_entities(prompt):
     matched.extend(_match_descriptions(prompt, desc_index))
     matched.extend(_relationship_description_matches(prompt, desc_index, matched))
 
-    # Stage 2: RAG keyword match (filtered to wiki entries only — 5e rules
+    # Stage 2: the same curated file, for entities the prompt only implies.
+    # Costs one cheap call and returns [] on any failure.
+    matched.extend(_resolve_prompt_entities(prompt, matched))
+
+    # Stage 3: RAG keyword match (filtered to wiki entries only — 5e rules
     # noise is useless for image prompts)
     if engine and getattr(engine, "_name_index", None):
         # Skip RAG hits for any canonical name that's already in our

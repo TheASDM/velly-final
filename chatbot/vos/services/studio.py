@@ -60,9 +60,18 @@ def _generate_image_payload(
             "error": "Image generation not configured — OPENAI_KEY missing in server env"
         }, 503
 
-    # Resolve the style block. Explicit `style` from the body wins; if none
-    # provided, fall back to the legacy env var so existing /art chatbot
-    # callers keep working unchanged.
+    # Resolve the style block. Explicit `style` from the body wins, then the
+    # legacy env var so a deployment that set one keeps it, and otherwise the
+    # same default the Studio picker opens on.
+    #
+    # That last fallback is not cosmetic: Enzo's /art posts a prompt and a
+    # creator and no style at all, so with IMAGE_STYLE_PROMPT unset — which
+    # is how it ships — every chat-generated image went out with no style
+    # block whatsoever. Unstyled art is invisible in the response and obvious
+    # in the picture.
+    if not style_key and not legacy_style_prefix:
+        style_key = DEFAULT_STYLE_KEY
+
     if style_key:
         style_text = (ART_STYLE_PRESETS.get(style_key) or {}).get("style") or ""
         style_label = style_key
