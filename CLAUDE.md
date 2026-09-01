@@ -31,7 +31,7 @@ images live in `generated-art/`.
 | `.eleventy.js` | `/en/` permalink scheme, collections, `appBarMeta` / breadcrumb / tree filters |
 | `_data/navigation.js` | Single source of truth for bottom-nav tabs and app-bar titles |
 | `_data/players.json` | Canonical roster names — auth maps and records key off these |
-| `_data/campaign.js` | Latest session, open threads (edit after each session, then rebuild) |
+| `_data/campaign.js` | Latest session, open threads. Merges `_data/campaign-state.json` when the chronicler has written one |
 | `home.md`, `calendar.md`, `sheet.md`, `studio.md` | Root tab surfaces (the wiki is the fifth) |
 | `party.md` | The Table — the DM's Run/Prepare/Players/NPCs/Review workspace |
 | `enzo.md` | The general Enzo conversation; no longer a tab |
@@ -44,6 +44,7 @@ images live in `generated-art/`.
 | `src/js/pwa/` | Identity, push, install, `authHeaders()`, RSVP wiring. Bundles to `/js/pwa-client.js` and exposes `window.VOS_PWA` |
 | `sw.js` | Service worker — four caches keyed off `CACHE_VERSION` |
 | `src/js/dm/` | DM console modules; esbuild emits `public/js/vos-dm.js` |
+| `src/js/dm/chronicle.js` | The Chronicle tab — start a draft, follow the pipeline, approve the wiki edits |
 | `src/js/play/table.js` | The Table's five areas, the preview roster, the review count |
 | `src/js/pwa/preview.js` | Preview-as-player: token swap, sticky strip, Exit Preview |
 | `src/js/pwa/enzo-actions.js` | `data-enzo-ask="…"` — seeds the widget from anywhere |
@@ -58,6 +59,7 @@ images live in `generated-art/`.
 |---|---|
 | `chatbot/server.py`, `chatbot/vos/` | Gunicorn compatibility shim plus Flask blueprints, services, migrations, and RAG engine |
 | `chatbot/vos/services/uploads.py` | Magic bytes, a real image decode, and the pixel cap — shared by chat attachments and handout images |
+| `chatbot/vos/services/chronicle*.py` | The session chronicler: research pass, draft pass, art, and the only code that publishes a chronicle |
 | `chatbot/vos/image_prompt_compiler.json` | **The only** source of the Valley house style, the per-preset composition rules, and the prompt compiler's instructions |
 | `chatbot/vos/services/prompt_compiler.py` | User request → compiler model → structured JSON → scene + style + constraints → the image API |
 | `campaign_lib/` | Shared frontmatter, wiki traversal, chunking, and 5e build helpers |
@@ -143,6 +145,45 @@ for a DM token — a player is served a compiler and is never told there is a
 choice. `IMAGE_COMPILER_DEBUG=1` logs the whole exchange, which is the only
 way to tell "the compiler misread the request" from "the image model rendered
 a good prompt badly".
+
+**The chronicler proposes; only a publish writes.** The DM pastes a
+session's notes into /dm/ → Chronicle and the pipeline runs on a background
+thread in three stages, each written to the row so the console can say where
+it is: research (`chronicle_research.py` resolves the notes' subjects against
+`descriptions.json`'s name catalog, then retrieves **once per subject** — one
+retrieval over a whole session returns the top few chunks for an average of
+everything that happened, which is useless), draft (one Opus call returns the
+chronicle, the art moments, the proposed wiki updates, the open threads, and
+the continuity questions as one JSON object, because they have to agree), and
+illustration (each art moment goes through `_generate_image_payload`, so the
+compiler and `descriptions.json` ground the faces exactly as the Studio does).
+
+Nothing in `chronicle.py` writes to the wiki. `chronicle_publish.py` does, and
+only from an explicit publish: every proposed edit arrives with
+`approved: false` regardless of what the model said, and publishing applies
+only the ids the console sends. Appends resolve through
+`_wiki_url_to_source_path` + `_wiki_source_in_content_roots` — the same gate
+the wiki editor uses — and an append whose target is not a real editable page
+is dropped at draft time rather than retargeted. New pages go through the lore
+pipeline's kind map, so a page born from a chronicle gets the same directory,
+index entry, and `descriptions.json` line as a player submission.
+
+Publishing always rebuilds **with knowledge on**: a chronicle Enzo has not
+indexed is one he will confidently contradict.
+
+**The front page's campaign state is data now, not a module the API rewrites.**
+`_data/campaign.js` merges `_data/campaign-state.json` per top-level key when
+that file exists, and the chronicler writes it on publish. The file is
+gitignored — the container rewrites it, and committing it would collide with
+`git pull` on every deploy. Hand-editing `campaign.js` still works; a
+hand-written `openThreads` survives a chronicle that proposed none.
+
+**`{{ART:n}}` markers have to survive sanitizing.** The drafting model places
+them in the body and numbers its own art moments; anything without a prompt or
+over `CHRONICLE_MAX_ART` is dropped, so `_renumber_art_placeholders` rewrites
+the body to the slots that actually exist. A marker pointing at a dropped slot
+renders as literal braces on the published page — the kind of defect nobody
+notices until a player does.
 
 **Restarting nginx is not enough for content changes.** nginx serves a static
 build; the chatbot container produces it. Rebuild `chatbot` to pick up markdown,

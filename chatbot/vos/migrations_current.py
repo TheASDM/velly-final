@@ -506,4 +506,49 @@ def apply_current_migrations(conn, done):
             ("031_chat_delivery_hardening", _utc_now_iso()),
         )
 
+    if "032_session_chronicles" not in done:
+        # One row per session write-up, from the DM's raw notes through to a
+        # published chronicle. Everything the pipeline produces is stored as
+        # JSON on the row rather than in side tables: a draft is reviewed,
+        # regenerated, and thrown away as a unit, and nothing else joins to
+        # its parts.
+        conn.execute("""
+            CREATE TABLE IF NOT EXISTS session_chronicles (
+                id TEXT PRIMARY KEY,
+                created_by TEXT NOT NULL,
+                session_number TEXT,
+                session_date TEXT,
+                title TEXT,
+                slug TEXT,
+                raw_notes TEXT NOT NULL,
+                extra_sources TEXT,
+                art_count INTEGER NOT NULL DEFAULT 3,
+                status TEXT NOT NULL,
+                stage TEXT,
+                context_json TEXT,
+                research_json TEXT,
+                draft_markdown TEXT,
+                draft_summary TEXT,
+                recap TEXT,
+                continuity_json TEXT,
+                art_json TEXT,
+                updates_json TEXT,
+                threads_json TEXT,
+                in_play_json TEXT,
+                error_message TEXT,
+                created_at TEXT NOT NULL,
+                updated_at TEXT NOT NULL,
+                published_at TEXT,
+                published_url TEXT
+            )
+        """)
+        conn.execute("""
+            CREATE INDEX IF NOT EXISTS idx_session_chronicles_updated
+            ON session_chronicles (updated_at DESC)
+        """)
+        conn.execute(
+            "INSERT INTO schema_migrations (name, applied_at) VALUES (?, ?)",
+            ("032_session_chronicles", _utc_now_iso()),
+        )
+
 __all__ = ['apply_current_migrations']

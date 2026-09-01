@@ -65,6 +65,7 @@ templateEngineOverride: njk
       <div class="vos-seg vos-seg--index vos-dm-group-chips" role="tablist" aria-label="World and comms">
         <button class="vos-seg-btn" type="button" data-view="compose">Announce</button>
         <button class="vos-seg-btn" type="button" data-view="history">History</button>
+        <button class="vos-seg-btn" type="button" data-view="chronicle">Chronicle</button>
         <button class="vos-seg-btn" type="button" data-view="lore">Lore</button>
         <button class="vos-seg-btn" type="button" data-view="wiki">Wiki</button>
         <button class="vos-seg-btn" type="button" data-view="rumors">Rumors</button>
@@ -315,6 +316,129 @@ templateEngineOverride: njk
       </form>
     </div>
     <div class="vos-dm-status" id="vos-dm-lore-status" role="status" aria-live="polite"></div>
+  </section>
+
+  </div>
+
+  <div class="vos-dm-view" data-vos-view="chronicle" hidden>
+
+  {# The chronicler is two panels, not one: starting a draft and reviewing a
+     draft are different jobs minutes or days apart, and the review side is
+     where the DM actually spends their time. #}
+  <section class="vos-dm-panel" aria-labelledby="vos-dm-chronicle-new-title">
+    <div class="vos-dm-panel-head">
+      <h2 id="vos-dm-chronicle-new-title">Chronicle a Session</h2>
+    </div>
+    <p class="vos-dm-helper">Paste whatever you have — bullets, a wall of text, a transcript. It gets read against the wiki, written up in the chronicle voice, illustrated, and returned with the wiki edits it implies as proposals you approve one at a time. Nothing is published until you say so.</p>
+    <form class="vos-dm-form" id="vos-dm-chronicle-form">
+      <div class="vos-dm-field-row">
+        <label>
+          Session
+          <input id="vos-dm-chronicle-number" type="text" placeholder="Session 3" maxlength="60">
+        </label>
+        <label>
+          Played
+          <input id="vos-dm-chronicle-date" type="date">
+        </label>
+        <label>
+          Images
+          <input id="vos-dm-chronicle-art-count" type="number" min="0" max="6" value="3">
+        </label>
+      </div>
+      <label>
+        Working title <span class="vos-dm-optional">optional — the chronicler proposes one</span>
+        <input id="vos-dm-chronicle-working-title" type="text" maxlength="160">
+      </label>
+      <label>
+        Session notes
+        <textarea id="vos-dm-chronicle-notes" rows="10" spellcheck="false" placeholder="What happened, in whatever shape you wrote it down."></textarea>
+      </label>
+      <details class="vos-dm-details">
+        <summary>Additional material</summary>
+        <label>
+          Anything else worth reading — player recaps, a transcript, chat logs
+          <textarea id="vos-dm-chronicle-extra" rows="6" spellcheck="false"></textarea>
+        </label>
+      </details>
+      <div class="vos-dm-actions">
+        <button class="vos-dm-button" id="vos-dm-chronicle-start" type="submit">Draft chronicle</button>
+      </div>
+    </form>
+    <div class="vos-dm-status" id="vos-dm-chronicle-new-status" role="status" aria-live="polite"></div>
+  </section>
+
+  <section class="vos-dm-panel" aria-labelledby="vos-dm-chronicle-title">
+    <div class="vos-dm-panel-head">
+      <h2 id="vos-dm-chronicle-title">Chronicles</h2>
+      <div class="vos-dm-actions">
+        <button id="vos-dm-chronicle-refresh" type="button">Refresh</button>
+      </div>
+    </div>
+    <div class="vos-dm-submission-grid">
+      <div class="vos-dm-submission-list" id="vos-dm-chronicle-list"></div>
+      <form class="vos-dm-form vos-dm-submission-editor" id="vos-dm-chronicle-editor" hidden>
+        <div class="vos-dm-chronicle-stage" id="vos-dm-chronicle-stage" hidden></div>
+        <label>
+          Title
+          <input id="vos-dm-chronicle-entry-title" type="text">
+        </label>
+        <div class="vos-dm-field-row">
+          <label>
+            Slug
+            <input id="vos-dm-chronicle-slug" type="text">
+          </label>
+          <label>
+            Arc <span class="vos-dm-optional">shown on the front page</span>
+            <input id="vos-dm-chronicle-arc" type="text" maxlength="120">
+          </label>
+        </div>
+        <label>
+          Summary
+          <textarea id="vos-dm-chronicle-summary" rows="2"></textarea>
+        </label>
+        <label>
+          Front-page recap
+          <textarea id="vos-dm-chronicle-recap" rows="2"></textarea>
+        </label>
+
+        <div class="vos-dm-chronicle-section" id="vos-dm-chronicle-continuity-wrap" hidden>
+          <h3>Continuity questions</h3>
+          <p class="vos-dm-helper">What the chronicler was not sure about. Nothing here blocks publishing.</p>
+          <ul class="vos-dm-chronicle-continuity" id="vos-dm-chronicle-continuity"></ul>
+        </div>
+
+        <label>
+          Chronicle
+          <textarea id="vos-dm-chronicle-markdown" rows="18" spellcheck="false"></textarea>
+        </label>
+
+        <div class="vos-dm-chronicle-section" id="vos-dm-chronicle-art-wrap" hidden>
+          <h3>Art</h3>
+          <p class="vos-dm-helper">Each image sits where its <code>{% raw %}{{ART:n}}{% endraw %}</code> marker is in the chronicle. Dropped images are left out; anything with no marker is collected into a gallery at the end.</p>
+          <div class="vos-dm-chronicle-art" id="vos-dm-chronicle-art"></div>
+        </div>
+
+        <div class="vos-dm-chronicle-section" id="vos-dm-chronicle-updates-wrap" hidden>
+          <h3>Proposed wiki updates</h3>
+          <p class="vos-dm-helper">Approved updates are written into the wiki when you publish. Everything else is left alone.</p>
+          <div class="vos-dm-chronicle-updates" id="vos-dm-chronicle-updates"></div>
+        </div>
+
+        <label class="vos-dm-checkbox-row">
+          <input type="checkbox" id="vos-dm-chronicle-campaign-state" checked>
+          Update the front page — latest session, open threads, and what's in play
+        </label>
+
+        <div class="vos-dm-actions">
+          <button id="vos-dm-chronicle-redraft" type="button">Redraft</button>
+          <button class="vos-dm-button" id="vos-dm-chronicle-save" type="button">Save</button>
+          <a class="vos-dm-button" id="vos-dm-chronicle-open" href="#" hidden>Open Page</a>
+          <button class="vos-dm-button is-danger" id="vos-dm-chronicle-delete" type="button">Delete draft</button>
+          <button id="vos-dm-chronicle-publish" type="submit">Publish</button>
+        </div>
+      </form>
+    </div>
+    <div class="vos-dm-status" id="vos-dm-chronicle-status" role="status" aria-live="polite"></div>
   </section>
 
   </div>

@@ -33,6 +33,9 @@ CORE_MODULES = [
         ".services.wiki_source",
         ".services.wiki_render",
         ".services.publishing",
+        ".services.chronicle_research",
+        ".services.chronicle",
+        ".services.chronicle_publish",
         ".web",
     )
 ]
@@ -84,6 +87,7 @@ ROUTE_MODULES = [
         ".routes.rumors",
         ".routes.chat",
         ".routes.lore",
+        ".routes.chronicle",
         ".routes.studio",
         ".routes.gallery",
         ".routes.health",

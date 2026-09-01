@@ -1,0 +1,197 @@
+/* ── The session chronicler ────────────────────────────────────────────
+ *
+ * Reuses the submissions grid for the list-plus-editor shape. What is new
+ * here is the review furniture: art cards, proposed-update cards, and the
+ * continuity list — all of which are read far more often than they are
+ * typed into, so they lead with their content rather than their controls.
+ */
+
+.vos-dm-field-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 0.7rem;
+}
+
+.vos-dm-optional {
+  color: var(--vos-gold-dim, #8b7355);
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  text-transform: none;
+}
+
+.vos-dm-details {
+  margin: 0.2rem 0 0.6rem;
+  border: 1px solid rgba(139, 115, 85, 0.25);
+  border-radius: 8px;
+  padding: 0.5rem 0.7rem;
+}
+.vos-dm-details summary {
+  min-height: 32px;
+  color: var(--vos-gold-dim, #8b7355);
+  cursor: pointer;
+  font-size: 0.82rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.vos-dm-checkbox-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 44px;
+  cursor: pointer;
+}
+.vos-dm-checkbox-row input {
+  width: 1.05rem;
+  height: 1.05rem;
+  flex: 0 0 auto;
+}
+
+/* The stage line while the pipeline runs. It replaces a spinner, because
+ * "Drawing image 2 of 3" is the difference between waiting and worrying. */
+.vos-dm-chronicle-stage {
+  padding: 0.5rem 0.75rem;
+  border: 1px solid rgba(212, 165, 116, 0.35);
+  border-left-width: 3px;
+  border-radius: 6px;
+  background: rgba(212, 165, 116, 0.08);
+  color: var(--vos-gold, #d4a574);
+  font-size: 0.86rem;
+}
+
+.vos-dm-chronicle-section {
+  display: grid;
+  gap: 0.5rem;
+  margin: 0.4rem 0 0.2rem;
+  padding-top: 0.8rem;
+  border-top: 1px solid rgba(139, 115, 85, 0.2);
+}
+.vos-dm-chronicle-section h3 {
+  margin: 0;
+  color: var(--vos-gold, #d4a574);
+  font-size: 0.95rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+/* ── Continuity ─────────────────────────────────────────────────────── */
+
+.vos-dm-chronicle-continuity {
+  display: grid;
+  gap: 0.4rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.vos-dm-chronicle-continuity-item {
+  padding: 0.45rem 0.65rem;
+  border-left: 3px solid rgba(139, 115, 85, 0.5);
+  border-radius: 0 6px 6px 0;
+  background: rgba(139, 115, 85, 0.08);
+  font-size: 0.88rem;
+  line-height: 1.5;
+}
+.vos-dm-chronicle-continuity-item.is-conflict {
+  border-left-color: #c25a48;
+  background: rgba(194, 90, 72, 0.1);
+}
+
+/* ── Art cards ──────────────────────────────────────────────────────── */
+
+.vos-dm-chronicle-art {
+  display: grid;
+  gap: 0.8rem;
+}
+.vos-dm-chronicle-art-card {
+  display: grid;
+  grid-template-columns: 180px minmax(0, 1fr);
+  gap: 0.8rem;
+  padding: 0.7rem;
+  border: 1px solid rgba(139, 115, 85, 0.3);
+  border-radius: 8px;
+  background: rgba(20, 18, 24, 0.4);
+}
+.vos-dm-chronicle-art-card.is-dropped {
+  opacity: 0.45;
+}
+.vos-dm-chronicle-art-figure {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 120px;
+  border-radius: 6px;
+  background: rgba(8, 7, 11, 0.6);
+  overflow: hidden;
+}
+.vos-dm-chronicle-art-figure img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+.vos-dm-chronicle-art-placeholder {
+  padding: 0.6rem;
+  color: var(--vos-gold-dim, #8b7355);
+  font-size: 0.8rem;
+  text-align: center;
+}
+.vos-dm-chronicle-art-fields {
+  display: grid;
+  align-content: start;
+  gap: 0.45rem;
+}
+.vos-dm-chronicle-art-marker {
+  color: var(--vos-gold-dim, #8b7355);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.75rem;
+}
+.vos-dm-chronicle-art-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+/* ── Proposed wiki updates ──────────────────────────────────────────── */
+
+.vos-dm-chronicle-updates {
+  display: grid;
+  gap: 0.7rem;
+}
+.vos-dm-chronicle-update {
+  display: grid;
+  gap: 0.35rem;
+  padding: 0.7rem;
+  border: 1px solid rgba(139, 115, 85, 0.3);
+  border-radius: 8px;
+  background: rgba(20, 18, 24, 0.4);
+}
+/* An approved card is the one thing on this page that is about to change
+ * the wiki, so it says so before the confirm sheet does. */
+.vos-dm-chronicle-update.is-approved {
+  border-color: rgba(212, 165, 116, 0.65);
+  background: rgba(212, 165, 116, 0.08);
+}
+.vos-dm-chronicle-update-meta {
+  color: var(--vos-gold-dim, #8b7355);
+  font-size: 0.76rem;
+  word-break: break-word;
+}
+.vos-dm-chronicle-update-reason {
+  margin: 0;
+  color: var(--vos-cream, #e8d5b7);
+  font-size: 0.84rem;
+  font-style: italic;
+  opacity: 0.8;
+}
+.vos-dm-chronicle-update-result {
+  font-size: 0.8rem;
+  color: var(--vos-gold, #d4a574);
+}
+.vos-dm-chronicle-update-result.is-error {
+  color: #e08a7a;
+}
+
+@media (max-width: 720px) {
+  .vos-dm-chronicle-art-card { grid-template-columns: 1fr; }
+  .vos-dm-field-row { grid-template-columns: 1fr; }
+}

@@ -10,6 +10,7 @@ import './tabs.js';
 import './wiki.js';
 import './messages.js';
 import './lore.js';
+import './chronicle.js';
 import './rsvp.js';
 import './calendar.js';
 import './questionnaires.js';

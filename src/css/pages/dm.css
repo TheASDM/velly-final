@@ -1,5 +1,6 @@
 @import './dm/tools.css';
 @import './dm/submissions.css';
+@import './dm/chronicle.css';
 @import './dm/mobile.css';
 /* The handout preview renders with the players' own document styles, so what
  * the DM proofs is what the sheet shows — same classes, same bundle rules. */

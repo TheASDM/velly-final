@@ -12,6 +12,7 @@ import { refreshCalendarEvents } from './calendar.js';
 import { refreshHandouts } from './handouts.js';
 import { refreshInPlay } from './in-play.js';
 import { refreshSounds } from './sounds.js';
+import { refreshChronicles } from './chronicle.js';
 import { refreshLoreSubmissions } from './lore.js';
 import { refreshMessages } from './messages.js';
 import { refreshPushSubscribers } from './push.js';
@@ -44,6 +45,7 @@ export const TAB_LOADERS = {
     await loadWikiPages(); // lore editor reuses the wiki page list
     return refreshLoreSubmissions();
   },
+  chronicle: () => refreshChronicles(),
   records: () => refreshQuestionnaires(),
   rumors: () => refreshRumors(),
   art: () => refreshArtCompilers(),

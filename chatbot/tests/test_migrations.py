@@ -30,6 +30,7 @@ EXPECTED_MIGRATIONS = {
     "029_app_settings",
     "030_studio_job_compiler",
     "031_chat_delivery_hardening",
+    "032_session_chronicles",
 }
 
 EXPECTED_TABLES = {
@@ -62,6 +63,7 @@ EXPECTED_TABLES = {
     "rsvps",
     "rumors",
     "schema_migrations",
+    "session_chronicles",
     "studio_jobs",
     "studio_quotas",
     "subscriptions",

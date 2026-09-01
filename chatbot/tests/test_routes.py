@@ -1,4 +1,13 @@
 ROUTE_CONTRACT = """
+/api/admin/chronicles|/api/admin/chronicles|GET|admin_chronicles|401:json.error,error_code|403:json.error,error_code|200:json.chronicles,default_art,max_art|200:json.chronicles,default_art,max_art
+/api/admin/chronicles|/api/admin/chronicles|POST|admin_chronicles|401:json.error,error_code|403:json.error,error_code|400:json.error,error_code|400:json.error,error_code
+/api/admin/chronicles/<chronicle_id>|/api/admin/chronicles/missing|GET|admin_chronicle_detail|401:json.error,error_code|403:json.error,error_code|404:json.error|404:json.error
+/api/admin/chronicles/<chronicle_id>|/api/admin/chronicles/missing|DELETE|admin_chronicle_detail|401:json.error,error_code|403:json.error,error_code|404:json.error|404:json.error
+/api/admin/chronicles/<chronicle_id>/art/<int:slot>|/api/admin/chronicles/missing/art/1|GET|admin_chronicle_art_image|401:json.error,error_code|403:json.error,error_code|404:json.error,error_code|404:json.error,error_code
+/api/admin/chronicles/<chronicle_id>/art/<int:slot>|/api/admin/chronicles/missing/art/1|POST|admin_chronicle_art_redraw|401:json.error,error_code|403:json.error,error_code|404:json.error|404:json.error
+/api/admin/chronicles/<chronicle_id>/draft|/api/admin/chronicles/missing/draft|POST|admin_chronicle_redraft|401:json.error,error_code|403:json.error,error_code|404:json.error|404:json.error
+/api/admin/chronicles/<chronicle_id>/publish|/api/admin/chronicles/missing/publish|POST|admin_chronicle_publish|401:json.error,error_code|403:json.error,error_code|404:json.error|404:json.error
+/api/admin/chronicles/<chronicle_id>/save|/api/admin/chronicles/missing/save|POST|admin_chronicle_save|401:json.error,error_code|403:json.error,error_code|404:json.error|404:json.error
 /api/admin/config|/api/admin/config|GET|admin_config|200:json.configured,google_client_id|200:json.configured,google_client_id|200:json.configured,google_client_id|200:json.configured,google_client_id
 /api/admin/dashboard|/api/admin/dashboard|GET|admin_dashboard|401:json.error,error_code|403:json.error,error_code|200:json.availability,gathering,im,lore,push,rebuild,rsvp|200:json.availability,gathering,im,lore,push,rebuild,rsvp
 /api/admin/login|/api/admin/login|POST|admin_login|401:json.error,error_code|401:json.error,error_code|401:json.error,error_code|401:json.error,error_code
@@ -142,7 +151,7 @@ def test_route_inventory_and_response_contract(app, auth_headers):
     }
     expected_routes = {rule for rule, _, _, _endpoint, _ in cases}
     assert actual_routes == expected_routes
-    assert len(cases) == 110
+    assert len(cases) == 119
 
     for rule, path, method, _endpoint, expected in cases:
         for role in ROLES:

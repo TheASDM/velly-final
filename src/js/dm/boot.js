@@ -1,7 +1,9 @@
 import { rollNpc } from './availability.js';
 import { exitEditMode, saveCalendarEvent } from './calendar.js';
-import { calCancelEl, calFormEl, handoutCancelEl, handoutFormEl, handoutImageEl, loreBulkPublishEl, loreBulkRejectEl, loreForm, loreRedraftEl, loreRejectEl, loreSaveEl, loreSelectAllEl, npcRollEl, rumorFormEl, setStatus, showDeletedEl, wikiForm, wikiLoadEl, wikiQueryEl, wikiRebuildEl, wikiStatusEl } from './dom.js';
+import { calCancelEl, calFormEl, chronicleDeleteEl, chronicleEditorEl, chronicleFormEl,
+  chronicleRedraftEl, chronicleRefreshEl, chronicleSaveEl, handoutCancelEl, handoutFormEl, handoutImageEl, loreBulkPublishEl, loreBulkRejectEl, loreForm, loreRedraftEl, loreRejectEl, loreSaveEl, loreSelectAllEl, npcRollEl, rumorFormEl, setStatus, showDeletedEl, wikiForm, wikiLoadEl, wikiQueryEl, wikiRebuildEl, wikiStatusEl } from './dom.js';
 import { attachHandoutImage, cancelHandoutEdit, saveHandout } from './handouts.js';
+import { deleteChronicle, publishChronicle, redraftChronicle, refreshChronicles, saveChronicle, startChronicle } from './chronicle.js';
 import { bulkPublishSelected, bulkRejectSelected, publishLoreSubmission, redraftLoreSubmission, rejectLoreSubmission, saveLoreSubmission, toggleSelectAll } from './lore.js';
 import { initMessagePreview, initRecipientPickers, refreshMessages } from './messages.js';
 import { triggerRebuild } from './rebuild.js';
@@ -42,6 +44,13 @@ if (loreSelectAllEl) loreSelectAllEl.addEventListener('change', toggleSelectAll)
 if (loreBulkPublishEl) loreBulkPublishEl.addEventListener('click', bulkPublishSelected);
 
 if (loreBulkRejectEl) loreBulkRejectEl.addEventListener('click', bulkRejectSelected);
+
+if (chronicleFormEl) chronicleFormEl.addEventListener('submit', startChronicle);
+if (chronicleEditorEl) chronicleEditorEl.addEventListener('submit', publishChronicle);
+if (chronicleSaveEl) chronicleSaveEl.addEventListener('click', saveChronicle);
+if (chronicleRedraftEl) chronicleRedraftEl.addEventListener('click', redraftChronicle);
+if (chronicleDeleteEl) chronicleDeleteEl.addEventListener('click', deleteChronicle);
+if (chronicleRefreshEl) chronicleRefreshEl.addEventListener('click', () => refreshChronicles());
 
 if (wikiLoadEl) wikiLoadEl.addEventListener('click', loadWikiEntry);
 

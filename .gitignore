@@ -102,3 +102,8 @@ public-files/
 # public repo is permanent history for a file only the person who made it
 # needs. The web-sized derivatives beside them are what the app serves.
 images/logos/*gigapixel*
+
+# Front-page campaign state — written by the session chronicler on publish.
+# _data/campaign.js merges it when present; committing it would make every
+# `git pull` on the VPS collide with the file the API just rewrote.
+_data/campaign-state.json

@@ -2,8 +2,31 @@
 // The next gathering is no longer defined here: it lives in the
 // calendar_events table (DM-scheduled from /dm/) and pages hydrate it
 // from /api/calendar/next.
+//
+// The chronicler writes _data/campaign-state.json when the DM publishes a
+// session chronicle, and whatever it contains wins over the defaults below.
+// Editing this file by hand still works — the merge is per top-level key, so
+// a hand-written openThreads survives a chronicle that proposed none.
+const fs = require("node:fs");
+const path = require("node:path");
 
-module.exports = {
+function publishedState() {
+  try {
+    return JSON.parse(
+      fs.readFileSync(path.join(__dirname, "campaign-state.json"), "utf8")
+    );
+  } catch (error) {
+    // No file, or a half-written one mid-publish: the defaults below are
+    // always a valid campaign state, so a broken merge costs a stale front
+    // page rather than a failed build.
+    if (error.code !== "ENOENT") {
+      console.warn(`[campaign] ignoring campaign-state.json: ${error.message}`);
+    }
+    return {};
+  }
+}
+
+const defaults = {
   latestSession: {
     number: "Update 4",
     arc: "Road to Session 1",
@@ -66,4 +89,12 @@ module.exports = {
       link: "/en/Venturia/Locations/vallombrosa",
     },
   ],
+};
+
+const state = publishedState();
+
+module.exports = {
+  ...defaults,
+  ...state,
+  latestSession: { ...defaults.latestSession, ...(state.latestSession || {}) },
 };

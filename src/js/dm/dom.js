@@ -131,6 +131,42 @@ export const loreRejectEl = document.getElementById('vos-dm-lore-reject');
 export const loreRejectReasonEl = document.getElementById('vos-dm-lore-reject-reason');
 export const lorePublishEl = document.getElementById('vos-dm-lore-publish');
 
+/* ── Session chronicler ─────────────────────────────────────────────── */
+
+export const chronicleFormEl = document.getElementById('vos-dm-chronicle-form');
+export const chronicleNumberEl = document.getElementById('vos-dm-chronicle-number');
+export const chronicleDateEl = document.getElementById('vos-dm-chronicle-date');
+export const chronicleArtCountEl = document.getElementById('vos-dm-chronicle-art-count');
+export const chronicleWorkingTitleEl = document.getElementById('vos-dm-chronicle-working-title');
+export const chronicleNotesEl = document.getElementById('vos-dm-chronicle-notes');
+export const chronicleExtraEl = document.getElementById('vos-dm-chronicle-extra');
+export const chronicleStartEl = document.getElementById('vos-dm-chronicle-start');
+export const chronicleNewStatusEl = document.getElementById('vos-dm-chronicle-new-status');
+
+export const chronicleRefreshEl = document.getElementById('vos-dm-chronicle-refresh');
+export const chronicleListEl = document.getElementById('vos-dm-chronicle-list');
+export const chronicleEditorEl = document.getElementById('vos-dm-chronicle-editor');
+export const chronicleStageEl = document.getElementById('vos-dm-chronicle-stage');
+export const chronicleTitleEl = document.getElementById('vos-dm-chronicle-entry-title');
+export const chronicleSlugEl = document.getElementById('vos-dm-chronicle-slug');
+export const chronicleArcEl = document.getElementById('vos-dm-chronicle-arc');
+export const chronicleSummaryEl = document.getElementById('vos-dm-chronicle-summary');
+export const chronicleRecapEl = document.getElementById('vos-dm-chronicle-recap');
+export const chronicleContinuityWrapEl = document.getElementById('vos-dm-chronicle-continuity-wrap');
+export const chronicleContinuityEl = document.getElementById('vos-dm-chronicle-continuity');
+export const chronicleMarkdownEl = document.getElementById('vos-dm-chronicle-markdown');
+export const chronicleArtWrapEl = document.getElementById('vos-dm-chronicle-art-wrap');
+export const chronicleArtEl = document.getElementById('vos-dm-chronicle-art');
+export const chronicleUpdatesWrapEl = document.getElementById('vos-dm-chronicle-updates-wrap');
+export const chronicleUpdatesEl = document.getElementById('vos-dm-chronicle-updates');
+export const chronicleCampaignStateEl = document.getElementById('vos-dm-chronicle-campaign-state');
+export const chronicleRedraftEl = document.getElementById('vos-dm-chronicle-redraft');
+export const chronicleSaveEl = document.getElementById('vos-dm-chronicle-save');
+export const chronicleOpenEl = document.getElementById('vos-dm-chronicle-open');
+export const chronicleDeleteEl = document.getElementById('vos-dm-chronicle-delete');
+export const chroniclePublishEl = document.getElementById('vos-dm-chronicle-publish');
+export const chronicleStatusEl = document.getElementById('vos-dm-chronicle-status');
+
 export function setStatus(target, text, isError) {
   if (!target) return;
   target.textContent = text || '';
