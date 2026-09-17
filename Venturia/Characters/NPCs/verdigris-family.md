@@ -55,7 +55,7 @@ The Verdigris run the [Mirrorwright's Court](/en/Venturia/Locations/mirrorwright
 
 ## The Family
 - **[Cosimo Verdigris](/en/Venturia/Characters/NPCs/cosimo-verdigris)** — Patriarch and respected guild elder, in his seventies.
-- **[Isidore Verdigris](/en/Venturia/Characters/NPCs/isidore-verdigris)** — The heir and a master craftsman, in his forties.
+- **[Isidore Verdigris](/en/Venturia/Characters/NPCs/isidore-verdigris)** — The heir and a master craftsman, in his forties; holds the [Metals Guild](/en/Venturia/Factions/metals-guild)'s seat on the [Autumn Council](/en/Venturia/Government/autumn-council).
 - **[Thalia Verdigris](/en/Venturia/Characters/NPCs/thalia-verdigris)** — The youngest, a charming socialite gifted with reflection magic.
 
 
@@ -63,4 +63,4 @@ The Verdigris run the [Mirrorwright's Court](/en/Venturia/Locations/mirrorwright
 
 ## Connections
 - **[The Mirrorwright's Court](/en/Venturia/Locations/mirrorwrights-court)** — The family's guild workshop in the Market Tiers.
-- **[Guildmaster Vincenzo Copper](/en/Venturia/Characters/NPCs/vincenzo-copper)** — The Mirrorwrights fall under his [Metals Guild](/en/Venturia/Factions/metals-guild); Cosimo Verdigris was his mentor.
+- **[Guildmaster Vincenzo Copper](/en/Venturia/Characters/NPCs/vincenzo-copper)** — The Mirrorwrights fall under his [Metals Guild](/en/Venturia/Factions/metals-guild); Cosimo Verdigris was his mentor, and Isidore now holds the Council seat he lost.

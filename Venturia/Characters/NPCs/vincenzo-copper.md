@@ -1,9 +1,9 @@
 ---
 title: Guildmaster Vincenzo Copper
-description: Guild-Master on the Autumn Council representing the Metals Guild — a conservative dwarf traditionalist whose family has led the guild for three generations.
+description: 'Guildmaster of the Metals Guild and, until this year, its Guild-Master on the Autumn Council — a conservative dwarf traditionalist voted off the seat his family held for three generations.'
 published: true
 date: 2026-05-22T00:00:00.000Z
-tags: characters, npcs, autumn-council, guild-master, metals-guild, dwarf
+tags: characters, npcs, autumn-council, former-guild-master, metals-guild, dwarf
 editor: markdown
 dateCreated: 2026-05-22T00:00:00.000Z
 ---
@@ -29,19 +29,28 @@ dateCreated: 2026-05-22T00:00:00.000Z
 
 </div>
 
-Guild-Master on the [Autumn Council](/en/Venturia/Government/autumn-council), representing the [Metals Guild](/en/Venturia/Factions/metals-guild) — smiths, metalworkers, jewelers, and the Mirrorwrights. A conservative dwarf traditionalist whose family has led the guild for three generations, he takes the seven-generation view of every problem: wise and steadying, and maddeningly slow to act.
+Guildmaster of the [Metals Guild](/en/Venturia/Factions/metals-guild) — smiths, metalworkers, jewelers, and the Mirrorwrights — and, until this year, its Guild-Master on the [Autumn Council](/en/Venturia/Government/autumn-council). A conservative dwarf traditionalist whose family has led the guild for three generations, he takes the seven-generation view of every problem: wise and steadying, and maddeningly slow to act. The guild's younger houses ran out of patience for it and voted the seat to [Isidore Verdigris](/en/Venturia/Characters/NPCs/isidore-verdigris). He still runs the guild. He no longer speaks for it in the chamber.
 
 
 ---
 
-## On the Council
-The voice of caution and continuity. Vincenzo trusts the guilds' long survival over panic and resists rushing into emergency measures or sweeping new laws. He sees wealth as a responsibility and standards as the thing that outlasts every crisis.
+## What He Did With the Seat
+For as long as he held it, the voice of caution and continuity. Vincenzo trusted the guilds' long survival over panic and resisted rushing into emergency measures or sweeping new laws. He saw wealth as a responsibility and standards as the thing that outlasts every crisis. In the years the chamber merely argued, that was ballast. In the year the fog turned, it was read as the reason nothing had been done.
+
+
+---
+
+## Out of the Chamber
+He took the vote without protest and has not asked for the seat back, which the younger houses mistake for acceptance. He is a dwarf; he can wait out everyone who removed him. In the meantime the guild's ledgers, its standards, its apprenticeships, and its seals are still his, and none of those things stopped being leverage when the vote did.
+
+What he will not say aloud is that he has doubts about where the Mirrorwrights' money comes from — which was one of the reasons he was slow, and is now a reason he watches.
 
 
 ---
 
 ## Connections
-- **[The Autumn Council](/en/Venturia/Government/autumn-council)** — Holds one of the two Guild-Master seats.
-- **[The Metals Guild](/en/Venturia/Factions/metals-guild)** — The smiths, jewelers, and Mirrorwrights under his leadership.
+- **[The Autumn Council](/en/Venturia/Government/autumn-council)** — Held one of the two Guild-Master seats until the guild voted it elsewhere.
+- **[Isidore Verdigris](/en/Venturia/Characters/NPCs/isidore-verdigris)** — Took the seat from him.
+- **[The Metals Guild](/en/Venturia/Factions/metals-guild)** — The smiths, jewelers, and Mirrorwrights still under his leadership.
 - **[Cosimo Verdigris](/en/Venturia/Characters/NPCs/cosimo-verdigris)** — Names this character in its connections.
 - **[The Verdigris Family](/en/Venturia/Characters/NPCs/verdigris-family)** — Names this character in its connections.

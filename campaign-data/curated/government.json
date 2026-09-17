@@ -26,7 +26,7 @@
       "details": [
         {
           "label": "Structure",
-          "content": "Eleven voting members: two Harbor-Lords, two Guild-Masters, two Temple Authority representatives, the Master of the Tidekeeper's Lodge, the Archmagister of VAVA, the Primo Navigante of the Ferriers' Confraternity, the Watch Commander of the Fog Wardens, and an empty honorary seat for the Signore of Venturia. The Council Chair rotates annually among the Harbor-Lords, Guild-Masters, and Temple Authority.",
+          "content": "Eleven voting members: two Harbor-Lords, two Guild-Masters, two Temple Authority representatives, the Master of the Tidekeeper's Lodge, the Archmagister of VAVA, the Primo Navigante of the Ferriers' Confraternity, the Watch Commander of the Fog Wardens, and an empty honorary seat for the Signore of Venturia. The Council Chair rotates annually among the Harbor-Lords, Guild-Masters, and Temple Authority. A guild's seat belongs to the guild rather than to its master: the trade houses choose which of their own carries it, and may choose again. This year the Metals Guild voted its seat away from Guildmaster Vincenzo Copper and gave it to Isidore Verdigris of the Mirrorwrights.",
           "spoiler": false
         },
         {
@@ -70,9 +70,9 @@
           "spoiler": false
         },
         {
-          "target_id": "vincenzo_copper",
-          "target_name": "Guildmaster Vincenzo Copper",
-          "relationship": "Guild-Master",
+          "target_id": "isidore_verdigris",
+          "target_name": "Isidore Verdigris",
+          "relationship": "Guild-Master (Metals Guild); took the seat from Vincenzo Copper this year",
           "spoiler": false
         },
         {
@@ -281,6 +281,73 @@
       "dm_notes": "Celeste's missing son is a personal hook that could connect her to the party. Her Liminal House connection means she might be on the Shadowed Wardens' supernatural registry, which she doesn't know. She's the most emotionally vulnerable council member — an asset for Marcello's manipulation."
     },
     {
+      "id": "isidore_verdigris",
+      "type": "npc",
+      "name": "Isidore Verdigris",
+      "aliases": [
+        "Isidore",
+        "Verdigris heir"
+      ],
+      "tags": [
+        "guild_master",
+        "autumn_council",
+        "metals_guild",
+        "verdigris",
+        "mirrorwrights",
+        "human"
+      ],
+      "spoiler": false,
+      "summary": "Guild-Master on the Autumn Council representing the Metals Guild, and the Verdigris heir — a master mirror-maker in his forties, ambitious and impatient, seated this year when the guild's younger houses voted the seat away from Guildmaster Vincenzo Copper. The first Verdigris ever to vote on anything that governs the city.",
+      "details": [
+        {
+          "label": "Description",
+          "content": "Human man in his forties; dark hair, a neat dark beard, sharp handsome features, a dark green-black craftsman's doublet. Genuinely skilled at the craft and openly contemptuous of his father Cosimo's caution — where the elder Verdigris guards and studies, Isidore wants to expand.",
+          "spoiler": false
+        },
+        {
+          "label": "How He Got the Seat",
+          "content": "The Metals Guild's Council seat belongs to the trade houses, not to the Guildmaster. For three generations it went with the Copper name. With the fog turning and the count of the missing climbing, the guild's younger houses stopped calling Vincenzo's patience wisdom and started calling it the reason nothing had been done, and voted the seat to Isidore. Vincenzo remains Guildmaster. The vote is Isidore's.",
+          "spoiler": false
+        },
+        {
+          "label": "Council Position",
+          "content": "'Caution is only a slower way of losing.' He argues for moving first and arguing afterward: sanctioned entry into the fog zone, guild money spent without waiting on the Temple bloc, decisions made at the speed the disappearances are actually happening. He is the only member who treats the deadlock as a problem to be broken rather than a condition to be managed.",
+          "spoiler": false
+        },
+        {
+          "label": "What He Is Not Good At",
+          "content": "He owes the houses that seated him, he has never held public office, and he is unpractised at telling the difference between a chamber he is persuading and one that is letting him spend his credit for it.",
+          "spoiler": false
+        },
+        {
+          "label": "What He Is Selling",
+          "content": "Isidore wants to supply the Undertow with mirrors that show the owner what they want to see rather than what is — deceptive glass, a step past the family's true-mirror reputation. The Metals Guild's vote is now held by the man running that line, and the family's compromise is no longer one step removed from government. See the Verdigris DM notes.",
+          "spoiler": true
+        }
+      ],
+      "connections": [
+        {
+          "target_id": "autumn_council",
+          "target_name": "The Autumn Council",
+          "relationship": "Guild-Master (Metals Guild)",
+          "spoiler": false
+        },
+        {
+          "target_id": "vincenzo_copper",
+          "target_name": "Guildmaster Vincenzo Copper",
+          "relationship": "The Guildmaster he took the Council seat from",
+          "spoiler": false
+        },
+        {
+          "target_id": "mirrorwrights_court",
+          "target_name": "The Mirrorwright's Court",
+          "relationship": "The family's guild workshop",
+          "spoiler": false
+        }
+      ],
+      "dm_notes": "The lever on Isidore is the debt: he did not win the seat so much as get handed it, and he does not know how much of that was bought or by whom. Cosimo has not said. A party that learns who paid for the vote has something on a sitting Council member — and the Verdigris now have a vote on any motion about the fog."
+    },
+    {
       "id": "vincenzo_copper",
       "type": "npc",
       "name": "Guildmaster Vincenzo Copper",
@@ -289,15 +356,15 @@
         "Guildmaster Copper"
       ],
       "tags": [
-        "guild_master",
         "autumn_council",
         "metals_guild",
         "dwarf",
         "traditionalist",
-        "mirrorwrights"
+        "mirrorwrights",
+        "former_guild_master"
       ],
       "spoiler": false,
-      "summary": "Guild-Master on the Autumn Council representing the Metals Guild (smiths, metalworkers, jewelers, Mirrorwrights). Conservative dwarf traditionalist. Takes the seven-generation view of problems — simultaneously wise and frustratingly slow to act.",
+      "summary": "Guildmaster of the Metals Guild (smiths, metalworkers, jewelers, Mirrorwrights) and, until this year, its Guild-Master on the Autumn Council. Conservative dwarf traditionalist. Takes the seven-generation view of problems — simultaneously wise and frustratingly slow to act. The guild's younger houses ran out of patience and voted the Council seat to Isidore Verdigris. He still runs the guild; he no longer votes.",
       "details": [
         {
           "label": "Description",
@@ -305,7 +372,7 @@
           "spoiler": false
         },
         {
-          "label": "Council Position",
+          "label": "Council Position (while he held the seat)",
           "content": "'The guilds have survived plagues, fires, wars, and three different forms of government. We'll survive this by doing what we've always done — maintaining our standards, protecting our people, and not panicking into stupid decisions. Rush produces shoddy work whether you're forging a sword or writing a law.'",
           "spoiler": false
         },
@@ -313,13 +380,23 @@
           "label": "Mirrorwright Reports",
           "content": "The Mirrorwrights have been reporting increasingly disturbing phenomena — mirrors behaving impossibly even for Venturia. He knows this is connected to something big but is trying to handle it internally through guild channels rather than admitting to the council that the crisis is affecting even the most skilled craftspeople.",
           "spoiler": true
+        },
+        {
+          "label": "Losing the Seat",
+          "content": "The Metals Guild's trade houses voted the Council seat away from him this year and gave it to Isidore Verdigris of the Mirrorwrights, who had been arguing for years that caution was only a slower way of losing. Vincenzo took it without protest and has not asked for the seat back, which the younger houses mistake for acceptance. He is a dwarf; he can wait out everyone who removed him. The ledgers, standards, apprenticeships, and seals are still his, and none of those stopped being leverage when the vote did.",
+          "spoiler": false
+        },
+        {
+          "label": "Why He Was Slow",
+          "content": "Part of his caution was a doubt he would not say aloud: he is not sure where the Mirrorwrights' money comes from. Losing the seat did not end the doubt. It gave him time to follow it.",
+          "spoiler": true
         }
       ],
       "connections": [
         {
           "target_id": "autumn_council",
           "target_name": "The Autumn Council",
-          "relationship": "Guild-Master",
+          "relationship": "Held a Guild-Master seat until the guild voted it to Isidore Verdigris",
           "spoiler": false
         },
         {
@@ -327,9 +404,15 @@
           "target_name": "The Mirrorwright's Court",
           "relationship": "The Mirrorwrights fall under his Metals Guild jurisdiction",
           "spoiler": false
+        },
+        {
+          "target_id": "isidore_verdigris",
+          "target_name": "Isidore Verdigris",
+          "relationship": "Took his Council seat",
+          "spoiler": false
         }
       ],
-      "dm_notes": "Vincenzo's Mirrorwright connection is the political bridge to the mirror investigation thread. The disturbing mirror phenomena are connected to the Keeper of Faces' influence. His traditionalist patience is both obstacle (won't act quickly) and asset (won't be easily manipulated by Marcello's urgency)."
+      "dm_notes": "Vincenzo's Mirrorwright connection is the political bridge to the mirror investigation thread. The disturbing mirror phenomena are connected to the Keeper of Faces' influence. His traditionalist patience is both obstacle (won't act quickly) and asset (won't be easily manipulated by Marcello's urgency). Losing the seat sharpens rather than removes him: he is now a well-resourced guild head with a grievance, private doubts about the Mirrorwrights, and no obligation to defend the chamber's decisions. He is the natural ally for a party investigating the Verdigris."
     },
     {
       "id": "lucia_virosdottir",

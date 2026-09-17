@@ -1,9 +1,9 @@
 ---
 title: The Metals Guild
-description: The guild of smiths, metalworkers, jewelers, and Mirrorwrights represented by Guildmaster Vincenzo Copper.
+description: The guild of smiths, metalworkers, jewelers, and Mirrorwrights — led by Guildmaster Vincenzo Copper, but seated on the Autumn Council by Isidore Verdigris since the younger houses voted the seat away.
 published: true
 date: 2026-05-25T00:00:00.000Z
-tags: factions, guilds, metals-guild, smiths, jewelers, mirrorwrights, vincenzo-copper
+tags: factions, guilds, metals-guild, smiths, jewelers, mirrorwrights, autumn-council, vincenzo-copper, isidore-verdigris
 editor: markdown
 dateCreated: 2026-05-25T00:00:00.000Z
 ---
@@ -18,7 +18,8 @@ dateCreated: 2026-05-25T00:00:00.000Z
 <div style="font-family: Georgia, serif; font-size: 0.95rem; color: #e8dcc8; line-height: 1.85;">
 <div><span style="color: #8b7355; letter-spacing: 0.18em; text-transform: uppercase; font-size: 0.7rem; font-weight: 600;">Type</span> &nbsp;&middot;&nbsp; Guild</div>
 <div><span style="color: #8b7355; letter-spacing: 0.18em; text-transform: uppercase; font-size: 0.7rem; font-weight: 600;">Trades</span> &nbsp;&middot;&nbsp; Smiths, metalworkers, jewelers, Mirrorwrights</div>
-<div><span style="color: #8b7355; letter-spacing: 0.18em; text-transform: uppercase; font-size: 0.7rem; font-weight: 600;">Council seat</span> &nbsp;&middot;&nbsp; <a href="/en/Venturia/Characters/NPCs/vincenzo-copper">Guildmaster Vincenzo Copper</a></div>
+<div><span style="color: #8b7355; letter-spacing: 0.18em; text-transform: uppercase; font-size: 0.7rem; font-weight: 600;">Council seat</span> &nbsp;&middot;&nbsp; <a href="/en/Venturia/Characters/NPCs/isidore-verdigris">Isidore Verdigris</a></div>
+<div><span style="color: #8b7355; letter-spacing: 0.18em; text-transform: uppercase; font-size: 0.7rem; font-weight: 600;">Guildmaster</span> &nbsp;&middot;&nbsp; <a href="/en/Venturia/Characters/NPCs/vincenzo-copper">Vincenzo Copper</a></div>
 </div>
 <div style="margin-top: 1.25rem; padding-left: 1rem; border-left: 2px solid rgba(212, 165, 116, 0.4); font-style: italic; color: rgba(212, 165, 116, 0.9); font-family: 'IM Fell English', Georgia, serif; font-size: 1rem;">"The seven-generation view."</div>
 </div>
@@ -41,9 +42,20 @@ The guild values continuity. Its elders tend to think in decades, not moods. Tha
 
 ---
 
+## A Split Head
+
+The guild is one of the few bodies in Venturia whose leadership and whose vote are now held by two different people. [Vincenzo Copper](/en/Venturia/Characters/NPCs/vincenzo-copper) remains Guildmaster — the ledgers, the standards, the seals, the apprenticeships. But the trade houses hold the [Council](/en/Venturia/Government/autumn-council) seat separately from the guildmastership, and this year they voted it to [Isidore Verdigris](/en/Venturia/Characters/NPCs/isidore-verdigris) of the Mirrorwrights, who had spent years saying out loud what the younger houses had started thinking: that the seven-generation view is a fine thing to hold in a century with a spare decade in it.
+
+So the oldest, slowest guild in the city now speaks in the chamber with the fastest voice it has, and the elder it deposed still signs everything.
+
+
+---
+
 ## Connections
 
-- **[Guildmaster Vincenzo Copper](/en/Venturia/Characters/NPCs/vincenzo-copper)** - The guild's current Council voice.
+- **[Isidore Verdigris](/en/Venturia/Characters/NPCs/isidore-verdigris)** - The guild's current Council voice.
+- **[Guildmaster Vincenzo Copper](/en/Venturia/Characters/NPCs/vincenzo-copper)** - The guild's head, and its Council voice until this year.
+- **[The Autumn Council](/en/Venturia/Government/autumn-council)** - Where the guild's seat is cast.
 - **[The Mirrorwright's Court](/en/Venturia/Locations/mirrorwrights-court)** - A specialized craft tradition under the Metals Guild's umbrella.
 - **[The Verdigris Family](/en/Venturia/Characters/NPCs/verdigris-family)** - The family most associated with mirror-craft.
 - **[Cosimo Verdigris](/en/Venturia/Characters/NPCs/cosimo-verdigris)** — Names this faction in its connections.

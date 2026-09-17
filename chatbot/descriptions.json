@@ -274,6 +274,12 @@
         "the real table"
       ],
       "desc": "The real-world room the campaign is played in: a deep-blue wainscoted den under a cedar-beamed coffered ceiling, an oval blue-felt gaming table with leather captain's chairs on a patterned rug, a stone fireplace with candelabra, a lit bottle cabinet, a dartboard in a built-in wood surround, and a wrought-iron lantern chandelier over the table. Warm low lamplight, night in the windows."
+    },
+    "The Fang of Barovia": {
+      "aliases": [
+        "The Fang of Barovia"
+      ],
+      "desc": "Lotan's ship, lost at the seawall — and the deck he keeps returning to in the same recurring dream."
     }
   },
   "player_characters": {
@@ -632,6 +638,36 @@
         "the bruxa of the Amber Temple"
       ],
       "desc": "A bruxa — a vampire the equal of Strahd, dead a thousand years by Lotan's reckoning. A tall, beautiful, imperious woman with bloodless white skin that takes daylight without harm, black hair coiled high, black-red eyes and a mouth that hides its fangs until it does not; a severe high-collared gown of black and old wine-red with amber at the throat. A hall of black marble veined with amber behind her, mad wine-drunk followers at the edges. Beautiful, hateful, unafraid."
+    },
+    "Ferro Lask": {
+      "aliases": [
+        "Ferro Lask"
+      ],
+      "desc": "The Fog Wardens' rotations officer at the Overlook garrison, who conducts the Beyond Relief rite."
+    },
+    "Donata Vell": {
+      "aliases": [
+        "Donata Vell"
+      ],
+      "desc": "The merchant who sponsored Lotan's Wine Merchants' Guild membership, does not remember doing so, and is determinedly finding him a wife."
+    },
+    "Ottilia": {
+      "aliases": [
+        "Ottilia"
+      ],
+      "desc": "Baker at the Fenn stall on the Overlook stair, who taught the boy Cesco his numbers."
+    },
+    "Wylks Ottren": {
+      "aliases": [
+        "Wylks Ottren"
+      ],
+      "desc": "Journeyman of the Mirrorwrights and Valentro's best friend — currently holding an unregistered piece of optical work overnight."
+    },
+    "Master Benedetta Sarre": {
+      "aliases": [
+        "Master Benedetta Sarre"
+      ],
+      "desc": "A senior of the Mirrorwright's Court with forty years behind her, asked in a corridor who grinds a mirror with the silver on the wrong side."
     }
   },
   "creatures": {
@@ -1080,6 +1116,13 @@
         "Aurelio's coin"
       ],
       "desc": "A worn bronze listening coin currently carried by Roxanya \"Roxy\" and formerly owned by Aurelio Volante. The coin is smooth from long handling, its faces too weathered to read, with subtle magic that lets its holder hear clearly through a solid wall, door, floor, or window for ten minutes before recharging at dawn."
+    },
+    "Maruk Grommarg's Lantern": {
+      "aliases": [
+        "Maruk Grommarg's Lantern",
+        "maruk grommarg s lantern"
+      ],
+      "desc": "A Warden-issue lantern rebuilt with a disc of mirror glass for a front lens — burned for weeks, bone dry, and cold to the touch."
     }
   },
   "groups": {
@@ -1112,7 +1155,7 @@
         "Lord-Admiral Teodor Vast",
         "Constanza Marea",
         "Master Artisan Celeste Orion",
-        "Guildmaster Vincenzo Copper",
+        "Isidore Verdigris",
         "Mother-Abbot Lucia Virosdottir",
         "Father Domenico of the Four Winds",
         "Vincen Tidecaller"

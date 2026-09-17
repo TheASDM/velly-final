@@ -35,7 +35,7 @@ Venturia's governing body: eleven seats meant to balance the powers that actuall
 ---
 
 ## Composition
-Eleven voting seats: two Harbor-Lords, two Guild-Masters, two Temple Authority representatives, the Master of the [Tidekeeper's Lodge](/en/Venturia/Factions/tidekeepers-lodge), the Archmagister of VAVA, the Primo Navigante of the [Ferriers' Confraternity](/en/Venturia/Factions/ferriers-confraternity), the Watch Commander of the Fog Wardens, and an honorary seat for [the Signore of Venturia](/en/Venturia/Government/signore-of-venturia) that has stood empty for as long as anyone living remembers. The Council Chair rotates each year among the Harbor-Lords, Guild-Masters, and Temple Authority.
+Eleven voting seats: two Harbor-Lords, two Guild-Masters, two Temple Authority representatives, the Master of the [Tidekeeper's Lodge](/en/Venturia/Factions/tidekeepers-lodge), the Archmagister of VAVA, the Primo Navigante of the [Ferriers' Confraternity](/en/Venturia/Factions/ferriers-confraternity), the Watch Commander of the Fog Wardens, and an honorary seat for [the Signore of Venturia](/en/Venturia/Government/signore-of-venturia) that has stood empty for as long as anyone living remembers. The Council Chair rotates each year among the Harbor-Lords, Guild-Masters, and Temple Authority. A guild's seat belongs to the guild rather than to its master: the trade houses choose which of their own carries it, and they are free to choose again.
 
 
 ---
@@ -56,7 +56,7 @@ Because the faction blocs must move together to pass anything, and the unaligned
 - **[Lord-Admiral Teodor Vast](/en/Venturia/Characters/NPCs/teodor-vast)** — Harbor-Lord
 - **[Constanza Marea](/en/Venturia/Characters/NPCs/constanza-marea)** — Harbor-Lord
 - **[Master Artisan Celeste Orion](/en/Venturia/Characters/NPCs/celeste-orion)** — Guild-Master
-- **[Guildmaster Vincenzo Copper](/en/Venturia/Characters/NPCs/vincenzo-copper)** — Guild-Master
+- **[Isidore Verdigris](/en/Venturia/Characters/NPCs/isidore-verdigris)** — Guild-Master, seated for the [Metals Guild](/en/Venturia/Factions/metals-guild)
 - **[Mother-Abbot Lucia Virosdottir](/en/Venturia/Characters/NPCs/lucia-virosdottir)** — Temple Authority, current Council Chair
 - **[Father Domenico of the Four Winds](/en/Venturia/Characters/NPCs/father-domenico)** — Temple Authority
 - **[Vincen Tidecaller](/en/Venturia/Characters/NPCs/vincen-tidecaller)** — Master of the [Tidekeeper's Lodge](/en/Venturia/Factions/tidekeepers-lodge)
@@ -68,7 +68,18 @@ Because the faction blocs must move together to pass anything, and the unaligned
 
 ---
 
+## The Metals Seat
+The Metals Guild's seat is the one thing in the chamber that has moved this year. For three generations it went with the Copper name, and [Guildmaster Vincenzo Copper](/en/Venturia/Characters/NPCs/vincenzo-copper) held it on the seven-generation view — patient, steadying, and unwilling to be hurried. With the fog turning and the count of the missing climbing, the guild's younger houses stopped calling that wisdom and started calling it the reason nothing had been done. They voted the seat to [Isidore Verdigris](/en/Venturia/Characters/NPCs/isidore-verdigris) of the Mirrorwrights, who had been arguing for years that caution was simply a slower way of losing. Vincenzo remains Guildmaster. He no longer votes.
+
+Whether the chamber gained anything by it is an open question. Isidore moves, which is more than the seat did before — but he arrived owing the houses that put him there, and a Verdigris on the Council now has a vote on the fog.
+
+
+---
+
 ## Connections
 
+- **[Isidore Verdigris](/en/Venturia/Characters/NPCs/isidore-verdigris)** — Holds the Metals Guild's Guild-Master seat.
+- **[Guildmaster Vincenzo Copper](/en/Venturia/Characters/NPCs/vincenzo-copper)** — Held that seat for three generations of his family until this year.
+- **[The Metals Guild](/en/Venturia/Factions/metals-guild)** — The guild whose seat changed hands.
 - **[The Binding Crafts Guild](/en/Venturia/Factions/binding-crafts-guild)** — Names this government entry in its connections.
 - **[The High Quarter](/en/Venturia/Locations/high-quarter)** — Cross-references this government entry.

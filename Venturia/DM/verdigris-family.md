@@ -32,6 +32,10 @@ A recent, quiet pattern: people who received Verdigris "custom reflection mirror
 ## Isidore's Ambition
 Isidore wanted to supply the Undertow with mirrors that show the owner what they *want* to see rather than what *is* — deceptive glass, a step beyond the family's true-mirror reputation. It's part of his broader push to expand the operation.
 
+**He now holds the Metals Guild's seat on the [Autumn Council](/en/Venturia/Government/autumn-council).** The guild's younger houses voted it away from [Vincenzo Copper](/en/Venturia/Characters/NPCs/vincenzo-copper) — Cosimo's own protégé, the clean public face — and handed it to the man running the deceptive-glass line. The family's compromise is no longer one step removed from government; it votes. Isidore also arrived owing whoever seated him, which is the obvious lever: the party, or the Undertow, or Cosimo, or whoever gets there first.
+
+What Isidore does not know is how much of the seat was bought for him rather than won, or by whom. Cosimo has not said.
+
 ---
 
 ## Thalia's Experiments
@@ -56,4 +60,4 @@ Cosimo uses Noname's fiancé to further his own ends, feeding him information gl
 ## Connections
 - **[The Undertow](/en/Venturia/Locations/the-undertow)** — Buyer of the family's memory-extraction mirrors.
 - **[Noname](/en/Venturia/Characters/PCs/noname)** &amp; her fiancé (**[Maruk Grommarg](/en/Venturia/Characters/NPCs/maruk-grommarg)** in campaign canon) — Cosimo's instrument; Thalia's fixation.
-- **[Guildmaster Vincenzo Copper](/en/Venturia/Characters/NPCs/vincenzo-copper)** — The Metals Guild elder Cosimo mentored; a clean public face over a compromised guild.
+- **[Guildmaster Vincenzo Copper](/en/Venturia/Characters/NPCs/vincenzo-copper)** — The Metals Guild elder Cosimo mentored; a clean public face over a compromised guild, now voted off the Council in favor of Isidore. He was slow partly because he had doubts about where the Mirrorwrights' money comes from, and losing the seat has not ended the doubts.
